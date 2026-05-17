@@ -31,8 +31,8 @@ body{background:#F8F9FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .sb{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:transparent;font-size:11px;color:#6B7280;cursor:pointer}
 .sb.a{background:rgba(26,92,219,.15);color:#1A5CDB;border-color:rgba(26,92,219,.4)}
 .sb:hover:not(.a){background:#EEF3FD;color:#666}
-.tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:auto;min-width:900px}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
 thead th{padding:7px 8px;font-size:10px;font-weight:500;color:#666;border-bottom:1px solid #e8e8e8;cursor:pointer;text-align:right;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:#F8F9FB}
 thead th:first-child{text-align:left}
 thead th.sa{color:#1A5CDB}
@@ -345,6 +345,14 @@ function rt(){
   }).join('');
   document.getElementById('pi').textContent=`แสดง ${Math.min(cnt,sd.length)} จาก ${sd.length} creators`;
   document.getElementById('smb').style.display=cnt>=sd.length?'none':'block';
+  // Re-apply column visibility after re-rendering rows
+  document.querySelectorAll('#mt tbody tr').forEach(row=>{
+    const cells=row.querySelectorAll('td');
+    for(let i=0;i<7;i++){
+      const vis=i>=afRS&&i<=afRE;
+      if(cells[i+1])cells[i+1].style.display=vis?'':'none';
+    }
+  });
 }
 function ss(k){
   cur=k;cnt=20;
@@ -549,7 +557,7 @@ function afApplyRange(s,e){
   thEls.forEach((th,i)=>{
     if(i>=1&&i<=7)th.style.display=(i-1>=s&&i-1<=e)?'':'none';
   });
-  if(colEls){colEls.forEach((c,i)=>{if(i>=1&&i<=7)c.style.display=(i-1>=s&&i-1<=e)?'':'none';});}
+  if(colEls){colEls.forEach((c,i)=>{if(i>=1&&i<=7)c.style.visibility=(i-1>=s&&i-1<=e)?'':'collapse';});}
 
   // Highlight chart
   const inR=i=>i>=s&&i<=e;
