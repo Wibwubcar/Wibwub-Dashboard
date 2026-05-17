@@ -2,574 +2,476 @@
 <html lang="th">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="WIBWUB">
 <meta name="theme-color" content="#1A5CDB">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <title>WIBWUB Dashboard</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
-  --blue:#1A5CDB;--blue2:#1248b3;--blue-lt:#EEF3FD;
-  --black:#0F0F0F;--white:#fff;--bg:#F0F4FF;
-  --card:#fff;--border:#e8e8e8;--text:#0F0F0F;--muted:#888;
+  --bl:#1A5CDB;--bl2:#1248b3;--bll:#EEF3FD;
+  --bg:#F0F4FF;--card:#fff;--border:#e8e8e8;
+  --txt:#0F0F0F;--muted:#888;--muted2:#bbb;
   --green:#10B981;--red:#EF4444;--yellow:#F59E0B;
+  --sh:#ee4d2d;--tk:#111;--lz:#1b04a1;--fb:#1877f2;--line:#06c755;
 }
 html,body{height:100%;overflow:hidden;background:var(--bg);}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif;color:var(--text);}
+body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;color:var(--txt);}
 .app{display:flex;flex-direction:column;height:100dvh;height:100vh;}
-
-/* HEADER */
-.app-header{
-  flex-shrink:0;background:var(--blue);
-  padding:calc(env(safe-area-inset-top,12px) + 2px) 18px 12px;
-  display:flex;align-items:flex-end;justify-content:space-between;
-  position:relative;overflow:hidden;
-}
-.app-header::after{content:'';position:absolute;top:-30px;right:-20px;width:130px;height:130px;background:rgba(255,255,255,.07);border-radius:50%;}
-.logo-name{font-size:19px;font-weight:900;color:#fff;letter-spacing:.5px;line-height:1;}
-.logo-bar{height:2px;background:rgba(255,255,255,.4);border-radius:2px;margin-top:3px;width:50px;}
-.logo-sub{font-size:7px;color:rgba(255,255,255,.5);letter-spacing:2.5px;margin-top:3px;text-transform:uppercase;}
-.header-right{text-align:right;color:rgba(255,255,255,.7);font-size:10px;line-height:1.8;}
-.header-date{font-size:12px;font-weight:600;color:#fff;}
-
-/* SCREEN */
-.screen{flex:1;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.hdr{flex-shrink:0;background:var(--bl);padding:calc(env(safe-area-inset-top,10px)+4px) 16px 12px;
+  display:flex;align-items:flex-end;justify-content:space-between;position:relative;overflow:hidden;}
+.hdr::after{content:'';position:absolute;top:-30px;right:-20px;width:110px;height:110px;background:rgba(255,255,255,.06);border-radius:50%;}
+.hdr-name{font-size:18px;font-weight:900;color:#fff;letter-spacing:.5px;}
+.hdr-bar{height:2px;background:rgba(255,255,255,.35);border-radius:2px;margin-top:3px;width:44px;}
+.hdr-sub{font-size:7px;color:rgba(255,255,255,.45);letter-spacing:2.5px;margin-top:2px;text-transform:uppercase;}
+.hdr-right{text-align:right;color:rgba(255,255,255,.65);font-size:10px;line-height:1.9;}
+.hdr-date{font-size:11px;font-weight:600;color:#fff;}
+.screen{flex:1;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
 .screen::-webkit-scrollbar{display:none;}
-
-/* BOTTOM NAV */
-.bottom-nav{
-  flex-shrink:0;
-  height:calc(60px + env(safe-area-inset-bottom,0px));
-  background:var(--white);border-top:1px solid var(--border);
-  display:flex;align-items:flex-start;padding-top:8px;
-  padding-bottom:env(safe-area-inset-bottom,0px);
-}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;transition:all .15s;padding:2px 0;}
-.nav-icon{font-size:20px;line-height:1;transition:transform .15s;}
-.nav-label{font-size:9px;font-weight:600;color:var(--muted);}
-.nav-item.active .nav-label{color:var(--blue);}
-.nav-item.active .nav-icon{transform:scale(1.12);}
-
-/* PAGES */
-.page{display:none;padding:0 0 16px;}
+.page{display:none;padding:12px 12px calc(16px + env(safe-area-inset-bottom,0px));}
 .page.active{display:block;}
-
-/* SUB-TABS */
-.subtabs{display:flex;gap:0;background:#fff;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;position:sticky;top:0;z-index:10;}
-.subtabs::-webkit-scrollbar{display:none;}
-.stab{flex-shrink:0;padding:10px 14px;font-size:10.5px;font-weight:700;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer;white-space:nowrap;}
-.stab.active{color:var(--blue);border-bottom-color:var(--blue);}
-.subview{display:none;padding:12px 14px;}
-.subview.active{display:block;}
-
-/* SHARED */
-.kpi2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px;}
-.kc{background:var(--card);border-radius:13px;padding:13px 11px;border:1px solid rgba(26,92,219,.1);box-shadow:0 2px 8px rgba(26,92,219,.06);}
-.kc-lbl{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
-.kc-val{font-size:20px;font-weight:700;color:var(--blue);line-height:1;}
-.kc-sub{font-size:9px;color:var(--muted);margin-top:3px;}
-.sec-title{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.7px;margin:14px 0 9px;display:flex;justify-content:space-between;align-items:center;}
-.sec-more{color:var(--blue);font-weight:600;letter-spacing:0;font-size:10px;}
-.card{background:var(--card);border-radius:13px;padding:13px;border:1px solid var(--border);}
-.div{height:1px;background:var(--border);margin:12px 0;}
-
-/* CHANNEL ROWS */
-.ch-row{background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:8px;border:1px solid var(--border);}
-.ch-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-.ch-name{font-size:12px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;}
-.ch-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.ch-val{font-size:13px;font-weight:700;color:var(--blue);}
-.ch-bar-bg{height:3.5px;background:#f0f0f0;border-radius:2px;}
-.ch-bar{height:3.5px;border-radius:2px;}
-.ch-sub{font-size:9px;color:var(--muted);margin-top:4px;}
-
-/* PRODUCTS */
-.prod-row{background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:7px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);}
-.prod-rk{width:22px;height:22px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
-.rk1{background:rgba(245,158,11,.15);color:#B45309;}
-.rk2{background:rgba(107,114,128,.1);color:#6B7280;}
-.rk3{background:rgba(26,92,219,.12);color:#1A5CDB;}
-.rkn{background:#f5f5f5;color:#999;}
-.prod-name{flex:1;font-size:11.5px;font-weight:500;color:var(--text);line-height:1.3;}
+.bnav{flex-shrink:0;height:calc(58px + env(safe-area-inset-bottom,0px));background:#fff;
+  border-top:1px solid var(--border);display:flex;align-items:flex-start;padding-top:8px;
+  padding-bottom:env(safe-area-inset-bottom,0px);}
+.ni{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:0 4px;color:var(--muted2);transition:color .15s;}
+.ni.active{color:var(--bl);}
+.ni-ic{font-size:20px;line-height:1;}
+.ni-lb{font-size:10px;font-weight:600;}
+.card{background:var(--card);border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
+.kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.kgrid3{grid-template-columns:1fr 1fr 1fr;}
+.kc{background:var(--card);border-radius:12px;padding:11px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.kc-lbl{font-size:10px;color:var(--muted);margin-bottom:3px;font-weight:500;}
+.kc-val{font-size:17px;font-weight:800;color:var(--bl);line-height:1.1;}
+.kc-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.mtabs{display:flex;gap:5px;margin-bottom:10px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;}
+.mtabs::-webkit-scrollbar{display:none;}
+.mtab{flex-shrink:0;padding:5px 11px;background:#f0f4ff;border-radius:20px;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;transition:all .15s;}
+.mtab.active{background:var(--bl);color:#fff;}
+.stabs{display:flex;background:var(--card);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:10;}
+.stab{flex:1;text-align:center;padding:10px 4px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;}
+.stab.active{color:var(--bl);border-bottom-color:var(--bl);}
+.sv{display:none;padding:12px 0;}
+.sv.active{display:block;}
+.plt-row{background:var(--card);border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.plt-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.plt-name{font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.plt-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.plt-val{font-size:15px;font-weight:800;}
+.bar-bg{height:6px;background:#f0f0f0;border-radius:3px;overflow:hidden;margin:4px 0;}
+.bar-fill{height:100%;border-radius:3px;transition:width .3s;}
+.bar-sub{font-size:10px;color:var(--muted);}
+.prod-row{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid #f5f5f5;}
+.prod-row:last-child{border-bottom:none;}
+.prk{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.prk1{background:#FEF3C7;color:#92400E;}
+.prk2{background:#F3F4F6;color:#6B7280;}
+.prk3{background:#EEF3FD;color:#1A5CDB;}
+.prkn{background:#F9FAFB;color:#9CA3AF;}
+.prod-name{flex:1;font-size:12px;font-weight:500;line-height:1.3;}
 .prod-right{text-align:right;flex-shrink:0;}
-.prod-val{font-size:13px;font-weight:700;color:var(--blue);}
-.prod-units{font-size:8.5px;color:var(--muted);margin-top:2px;}
-
-/* MINI BAR CHART */
-.mini-chart{background:var(--card);border-radius:13px;padding:13px;border:1px solid var(--border);margin-bottom:12px;}
-.mc-title{font-size:9.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px;}
-.bars{display:flex;align-items:flex-end;gap:5px;height:70px;}
-.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;}
-.bar-f{width:100%;border-radius:4px 4px 0 0;background:var(--blue);min-height:3px;}
-.bar-f.hi{background:var(--yellow);}
-.bar-f.muted{background:#c5d5f5;}
-.bar-lbl{font-size:7.5px;color:var(--muted);text-align:center;}
-.bar-val{font-size:7px;color:var(--blue);font-weight:600;text-align:center;}
-
-/* HOME BANNER */
-.home-banner{background:linear-gradient(155deg,#1A5CDB 0%,#0d3fa3 100%);padding:14px 16px 20px;color:#fff;}
-.hb-greeting{font-size:11.5px;opacity:.75;margin-bottom:3px;}
-.hb-title{font-size:18px;font-weight:700;margin-bottom:13px;}
-.hb-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;}
-.hbm{background:rgba(255,255,255,.13);border-radius:11px;padding:10px 6px;text-align:center;}
-.hbm-val{font-size:15px;font-weight:800;line-height:1;margin-bottom:3px;}
-.hbm-lbl{font-size:8px;opacity:.7;letter-spacing:.2px;}
-.trend-row{display:flex;gap:9px;padding:13px 14px 0;overflow-x:auto;scrollbar-width:none;}
-.trend-row::-webkit-scrollbar{display:none;}
-.trend-card{flex-shrink:0;width:126px;background:var(--card);border-radius:13px;padding:11px;border:1px solid rgba(26,92,219,.1);}
-.tc-lbl{font-size:8.5px;color:var(--muted);letter-spacing:.4px;text-transform:uppercase;margin-bottom:4px;}
-.tc-val{font-size:17px;font-weight:700;color:var(--blue);line-height:1;margin-bottom:3px;}
-.tc-sub{font-size:8.5px;color:var(--muted);}
-.badge{display:inline-block;font-size:8.5px;font-weight:700;padding:2px 7px;border-radius:8px;margin-top:5px;}
-.badge-up{background:#D1FAE5;color:#059669;}
-.badge-nt{background:var(--blue-lt);color:var(--blue);}
-.ch-list{display:flex;flex-direction:column;gap:8px;}
-.ch-card{background:var(--card);border-radius:13px;padding:12px 14px;display:flex;align-items:center;gap:11px;border:1px solid var(--border);cursor:pointer;}
-.ch-card:active{background:#f5f7ff;}
-.ch-icon{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;}
-.ch-info{flex:1;min-width:0;}
-.ch-nm{font-size:13px;font-weight:600;}
-.ch-sb{font-size:10px;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.ch-rv{text-align:right;flex-shrink:0;}
-.ch-vv{font-size:14px;font-weight:700;}
-.ch-arr{font-size:12px;color:var(--muted);margin-top:2px;}
-
-/* ADS */
-.plt-tabs{display:flex;gap:7px;margin-bottom:13px;}
-.pt{flex:1;padding:9px 4px;border-radius:10px;text-align:center;font-size:10.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);}
-.pt.active.shopee{background:#FFF0EC;color:#EE4D2D;border-color:#EE4D2D;}
-.pt.active.tiktok{background:#f0f0f0;color:#111;border-color:#333;}
-.pt.active.comb{background:var(--blue-lt);color:var(--blue);border-color:var(--blue);}
-.ap{display:none;}
-.ap.active{display:block;}
-.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:11px;}
-.m3c{background:var(--card);border-radius:12px;padding:10px 8px;border:1px solid rgba(26,92,219,.08);text-align:center;}
-.m3l{font-size:8.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px;}
-.m3v{font-size:15px;font-weight:700;color:var(--blue);}
-.ads-item{background:var(--card);border-radius:11px;padding:10px 12px;margin-bottom:7px;border:1px solid var(--border);}
-.ai-name{font-size:11px;color:var(--text);font-weight:500;margin-bottom:6px;line-height:1.4;}
-.ai-mets{display:flex;gap:7px;flex-wrap:wrap;}
-.ai-m{font-size:9px;color:var(--muted);}
-.ai-m strong{font-weight:700;color:var(--blue);}
-
-/* CREATORS */
-.creator-card{background:var(--card);border-radius:13px;padding:12px 13px;border:1px solid var(--border);margin-bottom:7px;}
-.cr-top{display:flex;align-items:center;gap:9px;margin-bottom:8px;}
-.cr-rk{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;flex-shrink:0;}
-.cr-name{flex:1;font-size:13px;font-weight:600;color:var(--text);}
-.cr-mo{font-size:9px;color:var(--muted);}
-.cr-total{font-size:15px;font-weight:700;color:var(--blue);}
-.cr-bar-bg{height:3px;background:#f0f0f0;border-radius:2px;}
-.cr-bar{height:3px;border-radius:2px;background:linear-gradient(90deg,var(--blue),#6BA3F5);}
-
-/* TIKTOK */
-.tt-month-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);overflow-x:auto;scrollbar-width:none;margin:-12px -14px 12px;padding:0 14px;}
-.tt-month-tabs::-webkit-scrollbar{display:none;}
-.ttmtab{flex-shrink:0;padding:10px 16px;font-size:11.5px;font-weight:600;color:var(--muted);border-bottom:2.5px solid transparent;cursor:pointer;white-space:nowrap;}
-.ttmtab.active{color:var(--blue);border-bottom-color:var(--blue);}
-.ttmview{display:none;}
-.ttmview.active{display:block;}
-.tt3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px;}
-.tt3c{background:var(--card);border-radius:11px;padding:10px 7px;border:1px solid rgba(26,92,219,.08);text-align:center;}
-.tt3v{font-size:16px;font-weight:700;color:var(--blue);}
-.tt3l{font-size:8.5px;color:var(--muted);margin-top:3px;}
-.clip-item{background:var(--card);border-radius:12px;padding:11px 13px;border:1px solid var(--border);margin-bottom:7px;}
-.clip-pillar{display:inline-block;font-size:8.5px;font-weight:600;padding:2px 7px;border-radius:6px;margin-bottom:5px;}
-.p-Interview{background:#EEF3FD;color:#1A5CDB;}
-.p-Awareness{background:#D1FAE5;color:#059669;}
-.p-Knowledge{background:#FEF3C7;color:#B45309;}
-.p-Sale{background:#FEE2E2;color:#DC2626;}
-.p-Review{background:#F3E8FF;color:#7C3AED;}
-.p-Lifestyle{background:#FCE7F3;color:#BE185D;}
-.p-Brand{background:#E0F2FE;color:#0369A1;}
-.clip-content{font-size:11.5px;font-weight:500;color:var(--text);margin-bottom:7px;line-height:1.4;}
-.clip-mets{display:flex;gap:10px;flex-wrap:wrap;}
-.clip-m{font-size:9.5px;color:var(--muted);}
-.clip-m strong{font-weight:700;color:var(--text);}
-
-/* MK OVERVIEW CARDS */
-.mk-card{background:var(--card);border-radius:13px;padding:13px;border:1px solid var(--border);margin-bottom:9px;cursor:pointer;}
-.mk-top{display:flex;align-items:center;gap:10px;margin-bottom:9px;}
-.mk-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
-.mk-info{flex:1;}
-.mk-name{font-size:13px;font-weight:700;color:var(--text);}
-.mk-sub{font-size:9.5px;color:var(--muted);margin-top:1px;}
-.mk-val{font-size:15px;font-weight:700;color:var(--blue);text-align:right;}
-.mk-pills{display:flex;gap:6px;flex-wrap:wrap;}
-.mk-pill{font-size:9.5px;color:var(--muted);background:var(--blue-lt);padding:3px 8px;border-radius:6px;}
-.mk-pill strong{color:var(--blue);font-weight:700;}
-
-/* SHOW MORE */
-.show-more{width:100%;padding:10px;background:var(--card);border:1px solid var(--border);border-radius:11px;font-size:12px;font-weight:600;color:var(--blue);cursor:pointer;margin-top:4px;}
+.prod-val{font-size:13px;font-weight:700;color:var(--bl);}
+.prod-q{font-size:10px;color:var(--muted);}
+.cr-card{background:var(--card);border-radius:12px;padding:10px 12px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.cr-top{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.cr-rk{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
+.cr-name{font-size:12px;font-weight:600;line-height:1.2;}
+.cr-mo{font-size:10px;color:var(--muted);}
+.cr-total{font-size:13px;font-weight:800;color:var(--bl);margin-left:auto;flex-shrink:0;}
+.cr-bar-bg{height:4px;background:#eef3fd;border-radius:2px;overflow:hidden;}
+.cr-bar{height:100%;background:var(--bl);border-radius:2px;}
+.clip-card{background:var(--card);border-radius:12px;padding:11px 13px;margin-bottom:8px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.clip-top{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;}
+.clip-day{font-size:12px;font-weight:800;color:#fff;border-radius:8px;padding:3px 8px;flex-shrink:0;}
+.clip-content{font-size:11px;color:var(--txt);line-height:1.5;flex:1;}
+.cpill{display:inline-block;padding:2px 7px;border-radius:10px;font-size:9px;font-weight:700;margin-bottom:4px;}
+.pi{background:#dbeafe;color:#1e40af;}.pt{background:#dcfce7;color:#166534;}
+.pa{background:#fef3c7;color:#92400e;}.paw{background:#ede9fe;color:#5b21b6;}
+.pc2{background:#fee2e2;color:#991b1b;}.pp{background:#f3f4f6;color:#374151;}
+.po{background:#f0fdf4;color:#166534;}
+.clip-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;}
+.cm{background:#f8f9fb;border-radius:8px;padding:5px 6px;text-align:center;}
+.cm-val{font-size:12px;font-weight:700;}
+.cm-lbl{font-size:9px;color:var(--muted);margin-top:1px;}
+.cm.good{background:#f0fdf4;}.cm.good .cm-val{color:#15803d;}
+.cm.bad{background:#fef2f2;}.cm.bad .cm-val{color:#b91c1c;}
+.cm-link{display:block;text-align:right;font-size:10px;color:var(--bl);margin-top:5px;text-decoration:none;}
+.ads-pill-row{display:flex;gap:6px;margin-bottom:12px;}
+.ap{padding:7px 16px;border-radius:20px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:#fff;transition:all .15s;}
+.ap.a-sh{background:var(--sh);color:#fff;border-color:var(--sh);}
+.ap.a-tk{background:var(--tk);color:#fff;border-color:var(--tk);}
+.ap.a-cb{background:var(--bl);color:#fff;border-color:var(--bl);}
+.ads-pnl{display:none;}.ads-pnl.active{display:block;}
+.home-hero{background:linear-gradient(135deg,var(--bl) 0%,var(--bl2) 100%);border-radius:16px;padding:16px;margin-bottom:10px;color:#fff;}
+.hh-lbl{font-size:11px;opacity:.7;margin-bottom:4px;}
+.hh-val{font-size:28px;font-weight:900;letter-spacing:-.5px;}
+.hh-sub{font-size:11px;opacity:.65;margin-top:4px;}
+.hh-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px;}
+.hhg{background:rgba(255,255,255,.12);border-radius:10px;padding:8px 10px;text-align:center;}
+.hhg-v{font-size:14px;font-weight:800;}
+.hhg-l{font-size:9px;opacity:.7;margin-top:2px;}
+.ch-row{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+.ch-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
+.ch-name{font-size:12px;font-weight:600;flex:1;}
+.ch-val{font-size:13px;font-weight:800;}
+.ch-pct{font-size:10px;color:var(--muted);}
+.mks-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
+.mks{background:var(--card);border-radius:12px;padding:12px;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+.mks-ic{font-size:22px;margin-bottom:5px;}
+.mks-lbl{font-size:10px;color:var(--muted);margin-bottom:3px;}
+.mks-val{font-size:15px;font-weight:800;color:var(--bl);}
+.mks-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.mo-table{width:100%;font-size:11px;border-collapse:collapse;}
+.mo-table th{background:#f8f9fb;color:var(--muted);font-weight:600;padding:7px 5px;text-align:right;}
+.mo-table th:first-child{text-align:left;}
+.mo-table td{padding:7px 5px;text-align:right;border-bottom:1px solid #f5f5f5;}
+.mo-table td:first-child{text-align:left;font-weight:600;}
+.mo-table tr.hl td{background:#EEF3FD;font-weight:700;}
+.more-btn{width:100%;padding:10px;background:#f0f4ff;border:none;border-radius:10px;font-size:12px;font-weight:600;color:var(--bl);cursor:pointer;margin-top:6px;}
+.inote{background:#fef9ec;border:1px solid #fcd34d;border-radius:8px;padding:8px 10px;font-size:11px;color:#92400e;margin-bottom:10px;}
+.sh-ttl{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sh-t{font-size:13px;font-weight:700;}
+.sh-b{font-size:10px;color:var(--muted);}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- HEADER -->
-  <div class="app-header">
-    <div>
-      <div style="display:flex;align-items:flex-end;gap:2px">
-        <span style="font-size:8px;color:rgba(255,255,255,.55);margin-bottom:9px">✦</span>
-        <div class="logo-name">WIBWUB</div>
-      </div>
-      <div class="logo-bar"></div>
-      <div class="logo-sub">Hyper Cleaning Car</div>
+<div class="hdr">
+  <div>
+    <div class="hdr-name">WIBWUB</div>
+    <div class="hdr-bar"></div>
+    <div class="hdr-sub">Hyper Cleaning Car</div>
+  </div>
+  <div class="hdr-right">
+    <div id="hdrDate" class="hdr-date"></div>
+    <div>ม.ค. – พ.ค. 2569</div>
+  </div>
+</div>
+
+<div class="screen" id="mainScreen">
+
+<!-- ─── HOME ─── -->
+<div class="page active" id="pg-home">
+  <div class="home-hero">
+    <div class="hh-lbl">ยอดขายรวม ม.ค.–พ.ค. 2569</div>
+    <div class="hh-val">฿35.2M</div>
+    <div class="hh-sub">62,197 unique orders · AOV ฿566</div>
+    <div class="hh-grid">
+      <div class="hhg"><div class="hhg-v">฿20.56M</div><div class="hhg-l">Shopee</div></div>
+      <div class="hhg"><div class="hhg-v">฿5.71M</div><div class="hhg-l">TikTok</div></div>
+      <div class="hhg"><div class="hhg-v">฿5.77M</div><div class="hhg-l">Facebook</div></div>
     </div>
-    <div class="header-right">
-      <div class="header-date" id="hdrDate"></div>
-      <div>Business Dashboard</div>
+  </div>
+  <div class="card">
+    <div class="sec-title">แยก Channel ทั้งหมด</div>
+    <div id="home-ch"></div>
+  </div>
+  <div class="mks-grid">
+    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿3.41M</div><div class="mks-sub">40 creators · 7 เดือน</div></div>
+    <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">5.88×</div><div class="mks-sub">Shopee+TikTok</div></div>
+    <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">57 คลิป</div><div class="mks-sub">มี.ค.–พ.ค. 2569</div></div>
+    <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">128K</div><div class="mks-sub">+12K จาก ม.ค.</div></div>
+  </div>
+  <div class="card">
+    <div class="sec-title">สินค้าขายดีสุด (ม.ค.–พ.ค.)</div>
+    <div id="home-prods"></div>
+  </div>
+</div>
+
+<!-- ─── SALES ─── -->
+<div class="page" id="pg-sales">
+  <div class="stabs" id="sales-tabs">
+    <div class="stab active" onclick="sTab(0,this)">ภาพรวม</div>
+    <div class="stab" onclick="sTab(1,this)">Platform</div>
+    <div class="stab" onclick="sTab(2,this)">สินค้า</div>
+    <div class="stab" onclick="sTab(3,this)">รายเดือน</div>
+  </div>
+
+  <!-- Overview -->
+  <div class="sv active" id="s-sv-0">
+    <div class="kgrid" id="s-ov-kpi"></div>
+    <div class="card">
+      <div class="sec-title">เลือกเดือน</div>
+      <div class="mtabs" id="s-mo-tabs">
+        <div class="mtab active" onclick="setSMo(0,this)">ม.ค.</div>
+        <div class="mtab" onclick="setSMo(1,this)">ก.พ.</div>
+        <div class="mtab" onclick="setSMo(2,this)">มี.ค.</div>
+        <div class="mtab" onclick="setSMo(3,this)">เม.ย.</div>
+        <div class="mtab" onclick="setSMo(4,this)">พ.ค.*</div>
+      </div>
+      <div class="kgrid kgrid3" id="s-mo-kpi"></div>
+    </div>
+    <div class="card"><div class="sec-title">ยอดขายรายเดือน</div><div id="s-rev-bars"></div></div>
+    <div class="card"><div class="sec-title">ออเดอร์รายเดือน</div><div id="s-ord-bars"></div></div>
+  </div>
+
+  <!-- Platform -->
+  <div class="sv" id="s-sv-1">
+    <div class="card" style="padding-bottom:6px">
+      <div class="sec-title">เลือกเดือน</div>
+      <div class="mtabs" id="s-plt-tabs">
+        <div class="mtab active" onclick="setSPlt(0,this)">ม.ค.</div>
+        <div class="mtab" onclick="setSPlt(1,this)">ก.พ.</div>
+        <div class="mtab" onclick="setSPlt(2,this)">มี.ค.</div>
+        <div class="mtab" onclick="setSPlt(3,this)">เม.ย.</div>
+        <div class="mtab" onclick="setSPlt(4,this)">พ.ค.*</div>
+      </div>
+    </div>
+    <div id="s-plt-list"></div>
+    <div class="inote">* พ.ค. 2569 ข้อมูล 1–13 พ.ค. เท่านั้น</div>
+  </div>
+
+  <!-- Products -->
+  <div class="sv" id="s-sv-2">
+    <div class="card">
+      <div class="sh-ttl"><div class="sh-t">Top สินค้าขายดี</div><div class="sh-b">ม.ค.–พ.ค. รวม</div></div>
+      <div id="prod-list"></div>
+      <button class="more-btn" id="prod-more" onclick="showMoreProds()">แสดงเพิ่มเติม</button>
     </div>
   </div>
 
-  <!-- SCREEN -->
-  <div class="screen" id="mainScreen">
-
-    <!-- ═══ HOME ═══ -->
-    <div class="page active" id="pg-home">
-      <div class="home-banner">
-        <div class="hb-greeting">ภาพรวมธุรกิจ WIBWUB 👋</div>
-        <div class="hb-title">สวัสดี มีอะไรใหม่วันนี้?</div>
-        <div class="hb-metrics">
-          <div class="hbm"><div class="hbm-val">฿35.2M</div><div class="hbm-lbl">ยอดขายรวม</div></div>
-          <div class="hbm"><div class="hbm-val">62.2K</div><div class="hbm-lbl">ออเดอร์</div></div>
-          <div class="hbm"><div class="hbm-val">฿3.41M</div><div class="hbm-lbl">Affiliate GMV</div></div>
-        </div>
-      </div>
-      <div class="trend-row">
-        <div class="trend-card"><div class="tc-lbl">Ads ROAS</div><div class="tc-val">5.88×</div><div class="tc-sub">Shopee+TikTok</div><span class="badge badge-up">Shopee 6.11×</span></div>
-        <div class="trend-card"><div class="tc-lbl">Net GMV</div><div class="tc-val">฿3.35M</div><div class="tc-sub">Affiliate 7 เดือน</div><span class="badge badge-up">เมษา สูงสุด</span></div>
-        <div class="trend-card"><div class="tc-lbl">Top Creator</div><div class="tc-val" style="font-size:14px">rita.fe_</div><div class="tc-sub">7/7 เดือน</div><span class="badge badge-nt">฿372.5K</span></div>
-        <div class="trend-card"><div class="tc-lbl">Top สินค้า</div><div class="tc-val" style="font-size:12px">Wool Duster</div><div class="tc-sub">฿3.25M</div><span class="badge badge-nt">5,095 pcs</span></div>
-      </div>
-      <div style="padding:14px 14px 0">
-        <div class="mini-chart">
-          <div class="mc-title">ยอดขายรายเดือน 2569</div>
-          <div class="bars">
-            <div class="bar-col"><div class="bar-f hi" style="height:70px"></div><div class="bar-val">8.9M</div><div class="bar-lbl">ม.ค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:59px"></div><div class="bar-val">7.5M</div><div class="bar-lbl">ก.พ.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:57px"></div><div class="bar-val">7.3M</div><div class="bar-lbl">มี.ค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:59px"></div><div class="bar-val">7.5M</div><div class="bar-lbl">เม.ย.</div></div>
-            <div class="bar-col"><div class="bar-f muted" style="height:32px"></div><div class="bar-val">4.1M*</div><div class="bar-lbl">พ.ค.</div></div>
-          </div>
-        </div>
-        <div class="sec-title">ช่องทางทั้งหมด</div>
-        <div class="ch-list">
-          <div class="ch-card" onclick="nav('sales')">
-            <div class="ch-icon" style="background:#EEF3FD">📊</div>
-            <div class="ch-info"><div class="ch-nm">Sales</div><div class="ch-sb">Shipnity · 62,197 unique orders</div></div>
-            <div class="ch-rv"><div class="ch-vv" style="color:var(--blue)">฿35.2M</div><div class="ch-arr">›</div></div>
-          </div>
-          <div class="ch-card" onclick="nav('marketing')">
-            <div class="ch-icon" style="background:#FFF0F6">📣</div>
-            <div class="ch-info"><div class="ch-nm">Marketing Team</div><div class="ch-sb">Affiliate · Ads · TikTok Content</div></div>
-            <div class="ch-rv"><div class="ch-vv" style="color:var(--blue)">ROAS 5.88×</div><div class="ch-arr">›</div></div>
-          </div>
-        </div>
-      </div>
+  <!-- Monthly Table -->
+  <div class="sv" id="s-sv-3">
+    <div class="card">
+      <div class="sec-title">ยอดขายรวมรายเดือน</div>
+      <div style="overflow-x:auto"><table class="mo-table">
+        <thead><tr><th>เดือน</th><th>ยอดขาย</th><th>ออเดอร์</th><th>AOV</th><th>MoM</th></tr></thead>
+        <tbody id="mo-tb-ov"></tbody>
+      </table></div>
     </div>
-
-    <!-- ═══ SALES ═══ -->
-    <div class="page" id="pg-sales">
-      <div class="subtabs" id="sales-tabs">
-        <div class="stab active" onclick="switchTab('sales',0,this)">ภาพรวม</div>
-        <div class="stab" onclick="switchTab('sales',1,this)">Platform</div>
-        <div class="stab" onclick="switchTab('sales',2,this)">Top สินค้า</div>
-        <div class="stab" onclick="switchTab('sales',3,this)">รายเดือน</div>
-      </div>
-
-      <!-- ภาพรวม -->
-      <div class="subview active" id="sales-sv-0">
-        <div class="kpi2">
-          <div class="kc"><div class="kc-lbl">ยอดขายรวม</div><div class="kc-val">฿35.2M</div><div class="kc-sub">ทุก platform</div></div>
-          <div class="kc"><div class="kc-lbl">ออเดอร์</div><div class="kc-val">62,197</div><div class="kc-sub">unique orders</div></div>
-          <div class="kc"><div class="kc-lbl">AOV</div><div class="kc-val">฿566</div><div class="kc-sub">เฉลี่ย/ออเดอร์</div></div>
-          <div class="kc"><div class="kc-lbl">รายการสินค้า</div><div class="kc-val">131K</div><div class="kc-sub">line items</div></div>
-        </div>
-        <div class="mini-chart">
-          <div class="mc-title">ยอดขายรายเดือน (ม.ค.–พ.ค. 2569)</div>
-          <div class="bars">
-            <div class="bar-col"><div class="bar-f hi" style="height:70px"></div><div class="bar-val">฿8.9M</div><div class="bar-lbl">ม.ค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:59px"></div><div class="bar-val">฿7.5M</div><div class="bar-lbl">ก.พ.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:57px"></div><div class="bar-val">฿7.3M</div><div class="bar-lbl">มี.ค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:59px"></div><div class="bar-val">฿7.5M</div><div class="bar-lbl">เม.ย.</div></div>
-            <div class="bar-col"><div class="bar-f muted" style="height:32px"></div><div class="bar-val">฿4.1M*</div><div class="bar-lbl">พ.ค.</div></div>
-          </div>
-        </div>
-        <div style="font-size:9.5px;color:var(--muted);text-align:center;margin-top:-4px">*พ.ค. ข้อมูลถึง 14 พ.ค. 2569</div>
-      </div>
-
-      <!-- Platform -->
-      <div class="subview" id="sales-sv-1">
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#EE4D2D"></div>Shopee</div><div class="ch-val">฿20.96M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:100%;background:#EE4D2D"></div></div>
-          <div class="ch-sub">59.5% ของยอดรวม · สูงสุด</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#1877F2"></div>Facebook</div><div class="ch-val">฿5.77M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:27.5%;background:#1877F2"></div></div>
-          <div class="ch-sub">16.4% ของยอดรวม</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#111"></div>TikTok Shop</div><div class="ch-val">฿5.70M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:27.2%;background:#111"></div></div>
-          <div class="ch-sub">16.2% ของยอดรวม</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#00B900"></div>Line Shopping</div><div class="ch-val">฿1.60M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:7.6%;background:#00B900"></div></div>
-          <div class="ch-sub">4.5% ของยอดรวม</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#F57224"></div>Lazada</div><div class="ch-val">฿542.6K</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:2.6%;background:#F57224"></div></div>
-          <div class="ch-sub">1.5% ของยอดรวม</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:var(--blue)"></div>Carcare</div><div class="ch-val">฿392.8K</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:1.9%;background:var(--blue)"></div></div>
-          <div class="ch-sub">1.1% ของยอดรวม</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#00B900"></div>LINE OA</div><div class="ch-val">฿244.0K</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:1.2%;background:#00B900"></div></div>
-          <div class="ch-sub">0.7% ของยอดรวม</div>
-        </div>
-      </div>
-
-      <!-- Top สินค้า -->
-      <div class="subview" id="sales-sv-2">
-        <div id="prod-list-wrap"></div>
-        <button class="show-more" id="prod-more-btn" onclick="showMoreProds()">+ แสดงเพิ่มเติม</button>
-      </div>
-
-      <!-- รายเดือน -->
-      <div class="subview" id="sales-sv-3">
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name">มกราคม 2569</div><div class="ch-val">฿8.90M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:100%;background:var(--blue)"></div></div>
-          <div class="ch-sub">สูงสุดในช่วงนี้</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name">กุมภาพันธ์ 2569</div><div class="ch-val">฿7.51M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:84.4%;background:var(--blue)"></div></div>
-          <div class="ch-sub">-15.6% จากเดือนก่อน</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name">มีนาคม 2569</div><div class="ch-val">฿7.28M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:81.9%;background:var(--blue)"></div></div>
-          <div class="ch-sub">-3.0% จากเดือนก่อน</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name">เมษายน 2569</div><div class="ch-val">฿7.47M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:83.9%;background:var(--blue)"></div></div>
-          <div class="ch-sub">+2.5% จากเดือนก่อน</div>
-        </div>
-        <div class="ch-row">
-          <div class="ch-top"><div class="ch-name">พฤษภาคม 2569 *</div><div class="ch-val">฿4.09M</div></div>
-          <div class="ch-bar-bg"><div class="ch-bar" style="width:46%;background:#c5d5f5"></div></div>
-          <div class="ch-sub">*ข้อมูลถึง 14 พ.ค. เท่านั้น</div>
-        </div>
-        <div class="kpi2" style="margin-top:14px">
-          <div class="kc"><div class="kc-lbl">ยอดรวม 5 เดือน</div><div class="kc-val">฿35.2M</div><div class="kc-sub">ม.ค.–พ.ค. 69</div></div>
-          <div class="kc"><div class="kc-lbl">เฉลี่ย/เดือน</div><div class="kc-val">฿7.44M</div><div class="kc-sub">ไม่รวมพ.ค.บางส่วน</div></div>
-        </div>
-      </div>
+    <div class="card">
+      <div class="sec-title">Shopee รายเดือน</div>
+      <div style="overflow-x:auto"><table class="mo-table">
+        <thead><tr><th>เดือน</th><th>ยอดขาย</th><th>Orders</th><th>ยกเลิก%</th><th>Ads</th><th>ROAS</th></tr></thead>
+        <tbody id="mo-tb-sh"></tbody>
+      </table></div>
     </div>
-
-    <!-- ═══ MARKETING TEAM ═══ -->
-    <div class="page" id="pg-marketing">
-      <div class="subtabs" id="mk-tabs">
-        <div class="stab active" onclick="switchTab('mk',0,this)">ภาพรวม</div>
-        <div class="stab" onclick="switchTab('mk',1,this)">Affiliate</div>
-        <div class="stab" onclick="switchTab('mk',2,this)">Ads</div>
-        <div class="stab" onclick="switchTab('mk',3,this)">TikTok</div>
-      </div>
-
-      <!-- ภาพรวม -->
-      <div class="subview active" id="mk-sv-0">
-        <div class="mk-card" onclick="switchTab('mk',1,document.querySelectorAll('#mk-tabs .stab')[1])">
-          <div class="mk-top">
-            <div class="mk-icon" style="background:#EEF3FD">🤝</div>
-            <div class="mk-info"><div class="mk-name">Affiliate</div><div class="mk-sub">40 creators · พย.68–พค.69</div></div>
-            <div class="mk-val">฿3.41M</div>
-          </div>
-          <div class="mk-pills">
-            <div class="mk-pill">Net GMV <strong>฿3.35M</strong></div>
-            <div class="mk-pill">ค่าคอม <strong>฿423K</strong></div>
-            <div class="mk-pill">refund <strong>~2%</strong></div>
-            <div class="mk-pill">เดือนสูงสุด <strong>เมษา.69 ฿724K</strong></div>
-          </div>
-        </div>
-        <div class="mk-card" onclick="switchTab('mk',2,document.querySelectorAll('#mk-tabs .stab')[2])">
-          <div class="mk-top">
-            <div class="mk-icon" style="background:#FFF7ED">📢</div>
-            <div class="mk-info"><div class="mk-name">Ads</div><div class="mk-sub">Shopee + TikTok</div></div>
-            <div class="mk-val">5.88×</div>
-          </div>
-          <div class="mk-pills">
-            <div class="mk-pill">ใช้จ่าย <strong>฿3.88M</strong></div>
-            <div class="mk-pill">Revenue <strong>฿22.8M</strong></div>
-            <div class="mk-pill">Shopee <strong>6.11×</strong></div>
-            <div class="mk-pill">TikTok <strong>5.18×</strong></div>
-          </div>
-        </div>
-        <div class="mk-card" onclick="switchTab('mk',3,document.querySelectorAll('#mk-tabs .stab')[3])">
-          <div class="mk-top">
-            <div class="mk-icon" style="background:#FFF0F6">🎵</div>
-            <div class="mk-info"><div class="mk-name">TikTok Content</div><div class="mk-sub">มี.ค.–พ.ค. 2569</div></div>
-            <div class="mk-val">69 clips</div>
-          </div>
-          <div class="mk-pills">
-            <div class="mk-pill">มี.ค. <strong>25 clips</strong></div>
-            <div class="mk-pill">เม.ย. <strong>26 clips</strong></div>
-            <div class="mk-pill">พ.ค. <strong>18 clips</strong></div>
-            <div class="mk-pill">avg ER <strong>~1.5%</strong></div>
-          </div>
-        </div>
-        <div class="mini-chart">
-          <div class="mc-title">Affiliate GMV รายเดือน</div>
-          <div class="bars">
-            <div class="bar-col"><div class="bar-f" style="height:28px"></div><div class="bar-val">289K</div><div class="bar-lbl">พย.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:33px"></div><div class="bar-val">347K</div><div class="bar-lbl">ธค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:43px"></div><div class="bar-val">461K</div><div class="bar-lbl">มค.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:52px"></div><div class="bar-val">551K</div><div class="bar-lbl">กพ.</div></div>
-            <div class="bar-col"><div class="bar-f" style="height:62px"></div><div class="bar-val">655K</div><div class="bar-lbl">มีนา.</div></div>
-            <div class="bar-col"><div class="bar-f hi" style="height:70px"></div><div class="bar-val">724K</div><div class="bar-lbl">เมษา.</div></div>
-            <div class="bar-col"><div class="bar-f muted" style="height:38px"></div><div class="bar-val">388K*</div><div class="bar-lbl">พค.</div></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Affiliate -->
-      <div class="subview" id="mk-sv-1">
-        <div class="kpi2">
-          <div class="kc"><div class="kc-lbl">GMV รวม</div><div class="kc-val">฿3.41M</div><div class="kc-sub">7 เดือน</div></div>
-          <div class="kc"><div class="kc-lbl">Net GMV</div><div class="kc-val">฿3.35M</div><div class="kc-sub">หลังหักคืน</div></div>
-          <div class="kc"><div class="kc-lbl">ค่าคอมรวม</div><div class="kc-val">฿423K</div><div class="kc-sub">avg 12.4%</div></div>
-          <div class="kc"><div class="kc-lbl">Creators</div><div class="kc-val">40</div><div class="kc-sub">active</div></div>
-        </div>
-        <div class="sec-title">ทุก Creators (40 คน)</div>
-        <div id="creator-list-wrap"></div>
-        <button class="show-more" id="creator-more-btn" onclick="showMoreCreators()">+ แสดงเพิ่มเติม</button>
-      </div>
-
-      <!-- Ads -->
-      <div class="subview" id="mk-sv-2">
-        <div class="plt-tabs">
-          <div class="pt active shopee" id="at-shopee" onclick="switchAds('shopee')">🛒 Shopee</div>
-          <div class="pt tiktok" id="at-tiktok" onclick="switchAds('tiktok')">🎵 TikTok</div>
-          <div class="pt comb" id="at-comb" onclick="switchAds('comb')">📊 รวม</div>
-        </div>
-        <!-- Shopee Ads -->
-        <div class="ap active" id="ap-shopee">
-          <div class="m3"><div class="m3c"><div class="m3l">ใช้จ่าย</div><div class="m3v">฿2.89M</div></div><div class="m3c"><div class="m3l">Revenue</div><div class="m3v">฿17.7M</div></div><div class="m3c"><div class="m3l">ROAS</div><div class="m3v" style="color:#059669">6.11×</div></div></div>
-          <div class="kpi2"><div class="kc"><div class="kc-lbl">Orders</div><div class="kc-val">41,556</div><div class="kc-sub">CPA ฿70</div></div><div class="kc"><div class="kc-lbl">CTR / CVR</div><div class="kc-val">2.8%</div><div class="kc-sub">CVR 8.65%</div></div></div>
-          <div class="sec-title">Top 5 แคมเปญ (ROAS)</div>
-          <div class="ads-item"><div class="ai-name">ชุดทำความสะอาดและเคลือบภายใน (Interior set)</div><div class="ai-mets"><div class="ai-m">ROAS <strong>9.71×</strong></div><div class="ai-m">ใช้ <strong>฿75.7K</strong></div><div class="ai-m">Rev <strong>฿735K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">ทิชชู่เปียกทำความสะอาดภายใน (Interior wipes)</div><div class="ai-mets"><div class="ai-m">ROAS <strong>8.19×</strong></div><div class="ai-m">ใช้ <strong>฿51.7K</strong></div><div class="ai-m">CPA <strong>฿22</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">เซททำความสะอาดคราบน้ำ (Spot clean set)</div><div class="ai-mets"><div class="ai-m">ROAS <strong>7.11×</strong></div><div class="ai-m">ใช้ <strong>฿43.7K</strong></div><div class="ai-m">Rev <strong>฿311K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">ทิชชู่เปียกเบาะหนัง (Refresh Leather Wipes)</div><div class="ai-mets"><div class="ai-m">ROAS <strong>7.06×</strong></div><div class="ai-m">ใช้ <strong>฿34.2K</strong></div><div class="ai-m">CPA <strong>฿24</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">Shop GMV Max</div><div class="ai-mets"><div class="ai-m">ROAS <strong>7.04×</strong></div><div class="ai-m">ใช้ <strong>฿220K</strong></div><div class="ai-m">Rev <strong>฿1.55M</strong></div></div></div>
-          <div class="sec-title" style="margin-top:14px">ต้องปรับปรุง (ROAS ต่ำ)</div>
-          <div class="ads-item"><div class="ai-name">int06-04-26</div><div class="ai-mets"><div class="ai-m">ROAS <strong style="color:var(--red)">1.00×</strong></div><div class="ai-m">ใช้ <strong>฿10.1K</strong></div><div class="ai-m">CPA <strong>฿404</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">สเปรย์เคลือบป้องกัน UV (UV Protect)</div><div class="ai-mets"><div class="ai-m">ROAS <strong style="color:var(--yellow)">4.05×</strong></div><div class="ai-m">ใช้ <strong>฿56.9K</strong></div><div class="ai-m">Rev <strong>฿230K</strong></div></div></div>
-        </div>
-        <!-- TikTok Ads -->
-        <div class="ap" id="ap-tiktok">
-          <div class="m3"><div class="m3c"><div class="m3l">ใช้จ่าย</div><div class="m3v">฿989K</div></div><div class="m3c"><div class="m3l">Revenue</div><div class="m3v">฿5.12M</div></div><div class="m3c"><div class="m3l">ROAS</div><div class="m3v" style="color:#059669">5.18×</div></div></div>
-          <div class="kpi2"><div class="kc"><div class="kc-lbl">Orders</div><div class="kc-val">18,900</div><div class="kc-sub">CPA ฿52</div></div><div class="kc"><div class="kc-lbl">CTR / CVR</div><div class="kc-val">3.33%</div><div class="kc-sub">CVR 7.74%</div></div></div>
-          <div class="sec-title">Top 5 แคมเปญ (ROAS)</div>
-          <div class="ads-item"><div class="ai-name">4.4 Live_GMV</div><div class="ai-mets"><div class="ai-m">ROAS <strong>25.9×</strong></div><div class="ai-m">ใช้ <strong>฿1.5K</strong></div><div class="ai-m">Rev <strong>฿38.7K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">07.06.26/GMVLive แอ้น</div><div class="ai-mets"><div class="ai-m">ROAS <strong>8.15×</strong></div><div class="ai-m">ใช้ <strong>฿1.9K</strong></div><div class="ai-m">Rev <strong>฿15.6K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">29.01.26/Interior wipe - refresh wipe</div><div class="ai-mets"><div class="ai-m">ROAS <strong>6.96×</strong></div><div class="ai-m">ใช้ <strong>฿133K</strong></div><div class="ai-m">Rev <strong>฿927K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">LIVE GMV Max Gross Revenue</div><div class="ai-mets"><div class="ai-m">ROAS <strong>6.36×</strong></div><div class="ai-m">ใช้ <strong>฿15K</strong></div><div class="ai-m">Rev <strong>฿95.5K</strong></div></div></div>
-          <div class="ads-item"><div class="ai-name">25.04.26/Live GMV New</div><div class="ai-mets"><div class="ai-m">ROAS <strong>7.76×</strong></div><div class="ai-m">ใช้ <strong>฿3K</strong></div><div class="ai-m">Rev <strong>฿23.3K</strong></div></div></div>
-        </div>
-        <!-- Combined -->
-        <div class="ap" id="ap-comb">
-          <div class="m3"><div class="m3c"><div class="m3l">ใช้จ่ายรวม</div><div class="m3v">฿3.88M</div></div><div class="m3c"><div class="m3l">Revenue</div><div class="m3v">฿22.8M</div></div><div class="m3c"><div class="m3l">ROAS รวม</div><div class="m3v" style="color:#059669">5.88×</div></div></div>
-          <div class="ch-row"><div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#EE4D2D"></div>Shopee Ads</div><div class="ch-val" style="color:#EE4D2D">6.11×</div></div><div class="ch-bar-bg"><div class="ch-bar" style="width:100%;background:#EE4D2D"></div></div><div class="ch-sub">ใช้ ฿2.89M · Rev ฿17.7M · Orders 41,556</div></div>
-          <div class="ch-row"><div class="ch-top"><div class="ch-name"><div class="ch-dot" style="background:#111"></div>TikTok Ads</div><div class="ch-val" style="color:#333">5.18×</div></div><div class="ch-bar-bg"><div class="ch-bar" style="width:84.8%;background:#111"></div></div><div class="ch-sub">ใช้ ฿989K · Rev ฿5.12M · Orders 18,900</div></div>
-          <div class="kpi2" style="margin-top:12px"><div class="kc"><div class="kc-lbl">Orders รวม</div><div class="kc-val">60,456</div><div class="kc-sub">Shopee+TikTok</div></div><div class="kc"><div class="kc-lbl">Impressions</div><div class="kc-val">24.5M</div><div class="kc-sub">ทั้ง 2 platform</div></div></div>
-        </div>
-      </div>
-
-      <!-- TikTok Content -->
-      <div class="subview" id="mk-sv-3">
-        <div class="tt3">
-          <div class="tt3c"><div class="tt3v">69</div><div class="tt3l">Clips รวม</div></div>
-          <div class="tt3c"><div class="tt3v">112K</div><div class="tt3l">Views รวม</div></div>
-          <div class="tt3c"><div class="tt3v">~1.5%</div><div class="tt3l">avg ER</div></div>
-        </div>
-        <div class="tt-month-tabs">
-          <div class="ttmtab active" onclick="switchTTMonth(0,this)">มี.ค. 69 (25)</div>
-          <div class="ttmtab" onclick="switchTTMonth(1,this)">เม.ย. 69 (26)</div>
-          <div class="ttmtab" onclick="switchTTMonth(2,this)">พ.ค. 69 (18)</div>
-        </div>
-        <!-- March -->
-        <div class="ttmview active" id="ttm-0">
-          <div class="tt3" style="margin-bottom:12px"><div class="tt3c"><div class="tt3v">25</div><div class="tt3l">Clips</div></div><div class="tt3c"><div class="tt3v">42.2K</div><div class="tt3l">Views</div></div><div class="tt3c"><div class="tt3v">1.4%</div><div class="tt3l">avg ER</div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Interview">Interview</div><div class="clip-content">ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind</div><div class="clip-mets"><div class="clip-m">👁 <strong>10K</strong></div><div class="clip-m">❤️ <strong>105</strong></div><div class="clip-m">ER <strong>1.21%</strong></div><div class="clip-m">Ret <strong>23%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Sale">Sale</div><div class="clip-content">สายทำรถเยอะ ต้องจัดแล้ว Sugar ขนาด 5 ลิตร ประหยัดสุด!</div><div class="clip-mets"><div class="clip-m">👁 <strong>5.9K</strong></div><div class="clip-m">❤️ <strong>47</strong></div><div class="clip-m">ER <strong>0.87%</strong></div><div class="clip-m">Ret <strong>12%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Awareness">Awareness</div><div class="clip-content">กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆ เพราะมีสารปรอทเคลือบอยู่</div><div class="clip-mets"><div class="clip-m">👁 <strong>5K</strong></div><div class="clip-m">❤️ <strong>50</strong></div><div class="clip-m">ER <strong>1.17%</strong></div><div class="clip-m">Ret <strong>16%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Awareness">Awareness</div><div class="clip-content">ใครที่ตามหาน้ำยาเคลือบที่เช็ดง่ายมาก แนะนำ Reflex</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.8K</strong></div><div class="clip-m">❤️ <strong>39</strong></div><div class="clip-m">ER <strong>1.77%</strong></div><div class="clip-m">Ret <strong>19%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Awareness">Awareness</div><div class="clip-content">Set นี้ทนอย่าต่ำคือสามเดือน คุ้ม!!</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.5K</strong></div><div class="clip-m">❤️ <strong>32</strong></div><div class="clip-m">ER <strong>1.73%</strong></div><div class="clip-m">Ret <strong>21%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Interview">Interview</div><div class="clip-content">คราบขี้ไคล ขัดด้วยมือสบายๆ</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.8K</strong></div><div class="clip-m">❤️ <strong>41</strong></div><div class="clip-m">ER <strong>1.88%</strong></div><div class="clip-m">Ret <strong>17%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Awareness">Awareness</div><div class="clip-content">ใช้แล้วรถนุ่ม แนะนำ Reflex เลยครับ</div><div class="clip-mets"><div class="clip-m">👁 <strong>3.6K</strong></div><div class="clip-m">❤️ <strong>47</strong></div><div class="clip-m">ER <strong>1.64%</strong></div><div class="clip-m">Ret <strong>16%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Interview">Interview</div><div class="clip-content">เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถ</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.2K</strong></div><div class="clip-m">❤️ <strong>28</strong></div><div class="clip-m">ER <strong>1.53%</strong></div><div class="clip-m">Ret <strong>21%</strong></div></div></div>
-        </div>
-        <!-- April -->
-        <div class="ttmview" id="ttm-1">
-          <div class="tt3" style="margin-bottom:12px"><div class="tt3c"><div class="tt3v">26</div><div class="tt3l">Clips</div></div><div class="tt3c"><div class="tt3v">41.5K</div><div class="tt3l">Views</div></div><div class="tt3c"><div class="tt3v">1.5%</div><div class="tt3l">avg ER</div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต ใช้ Interior ช่วยได้เยอะ</div><div class="clip-mets"><div class="clip-m">👁 <strong>7.1K</strong></div><div class="clip-m">❤️ <strong>43</strong></div><div class="clip-m">ER <strong>0.66%</strong></div><div class="clip-m">Ret <strong>19%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">ใช้น้ำเปล่าเช็ดก็ได้นี่!</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.3K</strong></div><div class="clip-m">❤️ <strong>27</strong></div><div class="clip-m">ER <strong>2.17%</strong></div><div class="clip-m">แชร์ <strong>18</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">3 ตัวนี้ใช้ล้างสี เคลียร์คราบพร้อมเคลือบจบหลังสงกรานต์</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.6K</strong></div><div class="clip-m">❤️ <strong>39</strong></div><div class="clip-m">ER <strong>1.91%</strong></div><div class="clip-m">Ret <strong>22%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Review">Review</div><div class="clip-content">ตัวสามัญประจำรถ แอดเองยังเอาติดไว้ข้างรถเลย</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.1K</strong></div><div class="clip-m">❤️ <strong>26</strong></div><div class="clip-m">ER <strong>1.50%</strong></div><div class="clip-m">Ret <strong>14%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">รถมีตัวกรองที่ปล่อยประจุออกมาในอากาศ ทำให้ฝุ่นหนักขึ้น</div><div class="clip-mets"><div class="clip-m">👁 <strong>1.3K</strong></div><div class="clip-m">❤️ <strong>12</strong></div><div class="clip-m">ER <strong>1.06%</strong></div><div class="clip-m">Ret <strong>13%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Review">Review</div><div class="clip-content">ตัวเปียกแล้วนั่งในรถ ซักพักนึงมีกลิ่นอับ สามารถใช้ตัวนี้ได้</div><div class="clip-mets"><div class="clip-m">👁 <strong>1.1K</strong></div><div class="clip-m">❤️ <strong>19</strong></div><div class="clip-m">ER <strong>1.84%</strong></div><div class="clip-m">Ret <strong>14%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Brand">Brand Expert</div><div class="clip-content">เริ่มแล้วนะค้าบ แจกจนกว่าของจะหมด</div><div class="clip-mets"><div class="clip-m">👁 <strong>1.2K</strong></div><div class="clip-m">❤️ <strong>17</strong></div><div class="clip-m">ER <strong>2.07%</strong></div><div class="clip-m">Ret <strong>14%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Lifestyle">Lifestyle</div><div class="clip-content">มันมาพร้อมสงกรานต์จ้า</div><div class="clip-mets"><div class="clip-m">👁 <strong>811</strong></div><div class="clip-m">❤️ <strong>22</strong></div><div class="clip-m">ER <strong>2.96%</strong></div><div class="clip-m">Ret <strong>21%</strong></div></div></div>
-        </div>
-        <!-- May -->
-        <div class="ttmview" id="ttm-2">
-          <div class="tt3" style="margin-bottom:12px"><div class="tt3c"><div class="tt3v">18</div><div class="tt3l">Clips</div></div><div class="tt3c"><div class="tt3v">28.3K</div><div class="tt3l">Views</div></div><div class="tt3c"><div class="tt3v">1.6%</div><div class="tt3l">avg ER</div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">น้ำยาเช็ดเก็บ Mind ดีกว่าครับ ออกแบบมาเพื่อเก็บฝุ่นโดยเฉพาะ</div><div class="clip-mets"><div class="clip-m">👁 <strong>4.6K</strong></div><div class="clip-m">❤️ <strong>47</strong></div><div class="clip-m">ER <strong>1.19%</strong></div><div class="clip-m">Ret <strong>19%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Review">Review</div><div class="clip-content">ฝนตกแค่ไหน ก็ไม่บดบังทัศนวิสัย</div><div class="clip-mets"><div class="clip-m">👁 <strong>4K</strong></div><div class="clip-m">❤️ <strong>57</strong></div><div class="clip-m">ER <strong>1.84%</strong></div><div class="clip-m">Ret <strong>19%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">ใครชอบฟีลลิ่งรถใส ๆ ลื่นมือ แนะนำ Reflex ยิ่งเป็นรถสีอ่อนยิ่งเล่นแสงดี</div><div class="clip-mets"><div class="clip-m">👁 <strong>3.9K</strong></div><div class="clip-m">❤️ <strong>42</strong></div><div class="clip-m">ER <strong>1.25%</strong></div><div class="clip-m">Ret <strong>12%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Review">Review</div><div class="clip-content">ภายนอกใส ภายในเนี๊ยบ 2 ตัวนี้มีติดรถไว้ จบเรื่องฝุ่น</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.4K</strong></div><div class="clip-m">❤️ <strong>35</strong></div><div class="clip-m">ER <strong>1.69%</strong></div><div class="clip-m">Ret <strong>16%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Review">Review</div><div class="clip-content">ตรวจสอบรถก่อนฝน Interior ดูแลภายในได้หลายอย่างมาก</div><div class="clip-mets"><div class="clip-m">👁 <strong>2.9K</strong></div><div class="clip-m">❤️ <strong>34</strong></div><div class="clip-m">ER <strong>1.36%</strong></div><div class="clip-m">Ret <strong>14%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Knowledge">Knowledge</div><div class="clip-content">ก็แดดมันร้อน ป้องกันด้วย UV Protect วัสดุภายในไม่ซีด ไม่หมอง</div><div class="clip-mets"><div class="clip-m">👁 <strong>2K</strong></div><div class="clip-m">❤️ <strong>23</strong></div><div class="clip-m">ER <strong>1.23%</strong></div><div class="clip-m">Ret <strong>13%</strong></div></div></div>
-          <div class="clip-item"><div class="clip-pillar p-Sale">Sale</div><div class="clip-content">มีค่า pH-Balance ไม่กัดเบาะ เช็ดได้ทุกพื้นผิวภายในรถ</div><div class="clip-mets"><div class="clip-m">👁 <strong>2K</strong></div><div class="clip-m">❤️ <strong>24</strong></div><div class="clip-m">ER <strong>1.24%</strong></div><div class="clip-m">Ret <strong>12%</strong></div></div></div>
-        </div>
-      </div>
+    <div class="card">
+      <div class="sec-title">TikTok รายเดือน</div>
+      <div style="overflow-x:auto"><table class="mo-table">
+        <thead><tr><th>เดือน</th><th>ยอดขาย</th><th>Orders</th><th>Affiliate</th><th>Ads</th><th>ROAS</th></tr></thead>
+        <tbody id="mo-tb-tk"></tbody>
+      </table></div>
     </div>
-
-  </div><!-- end screen -->
-
-  <!-- BOTTOM NAV -->
-  <div class="bottom-nav">
-    <div class="nav-item active" id="nav-home" onclick="nav('home')">
-      <div class="nav-icon">🏠</div><div class="nav-label">หน้าหลัก</div>
+    <div class="card">
+      <div class="sec-title">Lazada รายเดือน</div>
+      <div style="overflow-x:auto"><table class="mo-table">
+        <thead><tr><th>เดือน</th><th>ยอดขาย</th><th>Orders</th><th>ยกเลิก%</th><th>Cost%</th></tr></thead>
+        <tbody id="mo-tb-lz"></tbody>
+      </table></div>
     </div>
-    <div class="nav-item" id="nav-sales" onclick="nav('sales')">
-      <div class="nav-icon">📊</div><div class="nav-label">Sales</div>
+    <div class="inote">* พ.ค. 2569 ข้อมูล 1–13 พ.ค. เท่านั้น ยังไม่ครบเดือน</div>
+  </div>
+</div>
+
+<!-- ─── MARKETING ─── -->
+<div class="page" id="pg-mk">
+  <div class="stabs" id="mk-tabs">
+    <div class="stab active" onclick="mTab(0,this)">ภาพรวม</div>
+    <div class="stab" onclick="mTab(1,this)">Affiliate</div>
+    <div class="stab" onclick="mTab(2,this)">Ads</div>
+    <div class="stab" onclick="mTab(3,this)">TikTok</div>
+  </div>
+
+  <!-- MK Overview -->
+  <div class="sv active" id="m-sv-0">
+    <div class="kgrid">
+      <div class="kc"><div class="kc-lbl">Affiliate GMV รวม</div><div class="kc-val">฿3.41M</div><div class="kc-sub">40 creators · 7 เดือน</div></div>
+      <div class="kc"><div class="kc-lbl">Affiliate NET รวม</div><div class="kc-val">฿3.35M</div><div class="kc-sub">หลังหักค่าคอม</div></div>
+      <div class="kc"><div class="kc-lbl">Shopee ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">6.11×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+      <div class="kc"><div class="kc-lbl">TikTok ROAS เฉลี่ย</div><div class="kc-val">5.18×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
     </div>
-    <div class="nav-item" id="nav-marketing" onclick="nav('marketing')">
-      <div class="nav-icon">📣</div><div class="nav-label">Marketing</div>
+    <div class="card"><div class="sec-title">Affiliate GMV รายเดือน</div><div id="afi-bars"></div></div>
+    <div class="card"><div class="sec-title">Ads ROAS รายเดือน เปรียบเทียบ</div><div id="roas-bars"></div></div>
+    <div class="card">
+      <div class="sec-title">TikTok Content Summary</div>
+      <div class="kgrid kgrid3">
+        <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป มี.ค.</div><div class="kc-val" style="font-size:15px">16</div><div class="kc-sub">57K views</div></div>
+        <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป เม.ย.</div><div class="kc-val" style="font-size:15px">22</div><div class="kc-sub">47K views</div></div>
+        <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป พ.ค.</div><div class="kc-val" style="font-size:15px">19</div><div class="kc-sub">72K views</div></div>
+      </div>
     </div>
   </div>
 
+  <!-- Affiliate -->
+  <div class="sv" id="m-sv-1">
+    <div class="card" style="padding-bottom:8px">
+      <div class="sec-title">เลือกเดือน</div>
+      <div class="mtabs" id="afi-mo-tabs">
+        <div class="mtab" onclick="setAfi(0,this)">พย.68</div>
+        <div class="mtab" onclick="setAfi(1,this)">ธค.68</div>
+        <div class="mtab" onclick="setAfi(2,this)">มค.69</div>
+        <div class="mtab" onclick="setAfi(3,this)">กพ.69</div>
+        <div class="mtab" onclick="setAfi(4,this)">มีนา.69</div>
+        <div class="mtab" onclick="setAfi(5,this)">เมษา.69</div>
+        <div class="mtab active" onclick="setAfi(6,this)">พค.69</div>
+        <div class="mtab" onclick="setAfi('t',this)">ทั้งหมด</div>
+      </div>
+    </div>
+    <div class="kgrid" id="afi-kpi"></div>
+    <div id="cr-list"></div>
+    <button class="more-btn" id="cr-more" onclick="showMoreCr()">แสดงเพิ่มเติม</button>
+  </div>
+
+  <!-- Ads -->
+  <div class="sv" id="m-sv-2">
+    <div class="ads-pill-row">
+      <div class="ap a-sh" id="ap-sh" onclick="switchAds('sh')">🧡 Shopee</div>
+      <div class="ap" id="ap-tk" onclick="switchAds('tk')">🎵 TikTok</div>
+      <div class="ap" id="ap-cb" onclick="switchAds('cb')">📊 รวม</div>
+    </div>
+    <div class="ads-pnl active" id="ads-sh">
+      <div class="kgrid">
+        <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val" style="color:var(--sh)">฿2.81M</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+        <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">6.11×</div><div class="kc-sub">Rev/Spend</div></div>
+      </div>
+      <div class="card"><div class="sec-title">ROAS รายเดือน</div><div id="sh-roas-bars"></div></div>
+      <div class="card">
+        <div class="sec-title">Shopee Ads รายเดือน</div>
+        <div style="overflow-x:auto"><table class="mo-table">
+          <thead><tr><th>เดือน</th><th>Spend</th><th>Fee</th><th>ROAS</th></tr></thead>
+          <tbody id="sh-ads-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="ads-pnl" id="ads-tk">
+      <div class="kgrid">
+        <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val">฿1.11M</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+        <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val">5.18×</div><div class="kc-sub">Rev/Spend</div></div>
+      </div>
+      <div class="card"><div class="sec-title">ROAS รายเดือน</div><div id="tk-roas-bars"></div></div>
+      <div class="card">
+        <div class="sec-title">TikTok Ads รายเดือน</div>
+        <div style="overflow-x:auto"><table class="mo-table">
+          <thead><tr><th>เดือน</th><th>Spend</th><th>Fee/Comm</th><th>ROAS</th></tr></thead>
+          <tbody id="tk-ads-tb"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <div class="ads-pnl" id="ads-cb">
+      <div class="kgrid kgrid3">
+        <div class="kc" style="padding:9px"><div class="kc-lbl">Spend รวม</div><div class="kc-val" style="font-size:14px">฿3.92M</div><div class="kc-sub">SH+TK</div></div>
+        <div class="kc" style="padding:9px"><div class="kc-lbl">Revenue</div><div class="kc-val" style="font-size:14px">฿26.27M</div><div class="kc-sub">SH+TK</div></div>
+        <div class="kc" style="padding:9px"><div class="kc-lbl">ROAS รวม</div><div class="kc-val" style="font-size:14px">5.88×</div><div class="kc-sub">Combined</div></div>
+      </div>
+      <div class="card"><div class="sec-title">เปรียบเทียบ ROAS รายเดือน</div><div id="comb-bars"></div></div>
+    </div>
+  </div>
+
+  <!-- TikTok -->
+  <div class="sv" id="m-sv-3">
+    <div class="card" style="padding-bottom:8px">
+      <div class="sec-title">เลือกเดือน</div>
+      <div class="mtabs" id="tt-mo-tabs">
+        <div class="mtab active" onclick="setTT(3,this)">มี.ค. (16)</div>
+        <div class="mtab" onclick="setTT(4,this)">เม.ย. (22)</div>
+        <div class="mtab" onclick="setTT(5,this)">พ.ค. (19)</div>
+      </div>
+    </div>
+    <div class="kgrid kgrid3" id="tt-kpi"></div>
+    <div id="tt-clips"></div>
+  </div>
+</div>
+
+</div><!-- /screen -->
+
+<div class="bnav">
+  <div class="ni active" id="nav-home" onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
+  <div class="ni" id="nav-sales" onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
+  <div class="ni" id="nav-mk" onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
+</div>
 </div>
 
 <script>
-// ── DATA ──
+// ════════════════════════════════════════
+// RAW DATA
+// ════════════════════════════════════════
+const M5=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+const SH_REV=[4231653,4383214,4560321,5204395,2180671];
+const TK_REV=[1152567,1171209,1280967,1350397,752677];
+const LZ_REV=[179084,120949,183370,110532,46946];
+const SH_ORD=[7532,6580,6873,8128,3364];
+const TK_ORD=[3204,3652,3934,5032,2808];
+const LZ_ORD=[236,176,255,161,54];
+const SH_CANCEL=[4.62,4.45,4.26,5.94,5.32];
+const TK_CANCEL=[9.64,8.32,8.39,9.70,9.0];
+const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.5];
+const SH_ADS=[575400,559100,589300,795300,289200];
+const SH_FEE=[911498,944144,1046921,1225115,559996];
+const TK_ADSSPEND=[218000,221000,243000,256169,169425];
+const TK_FEECOMM=[241000,247000,269000,294224,173912];
+const TK_AFI=[460976,550756,655259,724120,371092];
+const TK_NET=[456036,544073,642947,708730,365106];
+const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.5];
+const LZ_COST_PCT=[22.67,24.61,24.36,24.86,23.99];
+const LZ_ADS=[5500,6200,8400,5710,1830];
+const TOTAL_REV=[8900000,7510000,7280000,7470000,4090000];
+const TOTAL_ORD=[14500,13800,13800,15500,7200];
+
+const CHANNELS=[
+  {n:'Shopee',v:20560254,color:'#ee4d2d'},
+  {n:'Facebook',v:5770000,color:'#1877f2'},
+  {n:'TikTok',v:5707817,color:'#111'},
+  {n:'Line Shopping',v:1600000,color:'#06c755'},
+  {n:'Lazada',v:640881,color:'#1b04a1'},
+  {n:'Carcare',v:392800,color:'#1A5CDB'},
+  {n:'LINE OA',v:244000,color:'#00b900'},
+];
+
+const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
+const AFI_GMV=[288701,347208,461048,550756,655259,724337,388116];
+const AFI_NET=[271930,342501,456481,544073,642947,708947,382130];
+const AFI_COMM=[39439,49419,64612,78138,82886,69235,40132];
+
+const CREATORS=[
+  {n:"rita.fe_",t:372456,ma:7,mn:[13997,53544,71718,72098,75273,61408,24417]},
+  {n:"jarkkystory",t:139660,ma:7,mn:[7061,21237,30546,20819,30903,23877,5217]},
+  {n:"fahareejun",t:136397,ma:2,mn:[null,null,null,null,null,29331,107066]},
+  {n:"noonjourneyyy",t:134487,ma:4,mn:[null,null,null,40792,35232,44803,13660]},
+  {n:"muchmai_mumi",t:118718,ma:7,mn:[558,397,5796,42670,31897,26324,11076]},
+  {n:"pailong05",t:99489,ma:3,mn:[null,null,null,null,14830,67105,17554]},
+  {n:"phanuwatinsri",t:95711,ma:7,mn:[17919,8440,9019,10956,20766,18440,10170]},
+  {n:"ralph.detailing8",t:94005,ma:7,mn:[1794,7237,16427,14622,19175,21249,13502]},
+  {n:"thekataecx30",t:92392,ma:7,mn:[33381,3120,6283,12485,9705,22891,4527]},
+  {n:"jaonnm",t:70723,ma:5,mn:[12928,13185,12961,17400,14249,null,null]},
+  {n:"evee.vespa",t:68199,ma:7,mn:[6030,14136,13048,11914,10592,8992,3488]},
+  {n:"melodylotto",t:66229,ma:7,mn:[7644,8691,11160,7484,13029,15426,2795]},
+  {n:"_ijstagram",t:65799,ma:7,mn:[3802,6807,3985,10209,13609,21179,6208]},
+  {n:"rrak_kk",t:65604,ma:7,mn:[10756,2483,5207,9674,14409,16644,6431]},
+  {n:"taaum234",t:58280,ma:7,mn:[23446,2603,2941,8728,13900,5533,1129]},
+  {n:"plearntumarai",t:48444,ma:4,mn:[null,null,null,6852,12638,19653,9301]},
+  {n:"mushinyiwz",t:47858,ma:5,mn:[null,null,15490,20382,9265,1341,1379]},
+  {n:"orion_risingstar",t:46555,ma:4,mn:[null,null,null,8448,15588,14800,7719]},
+  {n:"numtonn",t:41017,ma:5,mn:[null,null,2297,21832,5030,10405,1454]},
+  {n:"nnhtr_",t:37150,ma:2,mn:[null,null,null,null,null,24292,12858]},
+  {n:"punch_chalita8",t:36951,ma:7,mn:[431,5065,10087,2940,6923,9383,2122]},
+  {n:"rouey_sook",t:36903,ma:7,mn:[5578,8699,11963,2887,4313,2090,1372]},
+  {n:"papajate",t:30398,ma:5,mn:[0,null,null,8105,10417,8300,3576]},
+  {n:"ploypimlaplus",t:30201,ma:7,mn:[981,486,2563,3943,8308,10067,3853]},
+  {n:"poppyme.6",t:27660,ma:3,mn:[null,null,null,null,13386,10912,3363]},
+  {n:"tonpalm__",t:26835,ma:7,mn:[2633,8952,7903,3649,2207,1204,287]},
+  {n:"ctl.mkzk",t:22601,ma:7,mn:[4475,2581,4004,4141,3178,3555,667]},
+  {n:"japann.story",t:19461,ma:7,mn:[2539,2709,5143,2947,1163,3518,1443]},
+  {n:"manutsananpibanwo",t:18552,ma:6,mn:[237,4973,6602,1284,4354,1100,null]},
+  {n:"duan4088",t:18025,ma:7,mn:[135,11269,6050,134,154,195,88]},
+  {n:"joakrw",t:16575,ma:7,mn:[4100,648,1293,3460,2922,1290,2863]},
+  {n:"calvyn.s",t:16236,ma:7,mn:[1050,1170,6621,2973,2830,1410,181]},
+  {n:"aoohphonhan",t:15927,ma:7,mn:[337,277,2760,0,6277,5878,398]},
+  {n:"teetathlimchuwong",t:15146,ma:6,mn:[0,null,390,7969,3806,1788,1193]},
+  {n:"iceshop45_",t:15023,ma:7,mn:[2906,4581,2416,1472,2431,862,356]},
+  {n:"tangkwaky",t:14727,ma:6,mn:[null,1108,3806,3375,2461,3115,862]},
+  {n:"ceo.blk.item",t:12153,ma:2,mn:[null,null,null,null,null,5957,6196]},
+  {n:"krunid_",t:11963,ma:6,mn:[2886,1970,2653,2128,1556,770,null]},
+  {n:"view.miipro",t:11903,ma:6,mn:[null,1388,7264,1140,1046,993,72]},
+  {n:"somkidkongchom",t:11442,ma:4,mn:[null,null,null,417,2477,6016,2533]}
+];
+
 const ALL_PRODUCTS=[
   {n:"Wool Duster ไม้ปัดขนแกะ",v:3254609,q:5095},
   {n:"Sugar (500ml+Spray)",v:2631586,q:9076},
@@ -587,107 +489,449 @@ const ALL_PRODUCTS=[
   {n:"Mind Quick Detailer",v:621450,q:2654},
   {n:"Beach (500ml+Spray)",v:587320,q:2341}
 ];
-const ALL_CREATORS=[
-  {n:"rita.fe_",t:372456,ma:7},{n:"jarkkystory",t:139660,ma:7},{n:"fahareejun",t:136397,ma:2},
-  {n:"noonjourneyyy",t:134487,ma:4},{n:"muchmai_mumi",t:118718,ma:7},{n:"pailong05",t:99489,ma:3},
-  {n:"phanuwatinsri",t:95711,ma:7},{n:"ralph.detailing8",t:94005,ma:7},{n:"thekataecx30",t:92392,ma:7},
-  {n:"jaonnm",t:70723,ma:5},{n:"evee.vespa",t:68199,ma:7},{n:"melodylotto",t:66229,ma:7},
-  {n:"_ijstagram",t:65799,ma:7},{n:"rrak_kk",t:65604,ma:7},{n:"taaum234",t:58280,ma:7},
-  {n:"plearntumarai",t:48444,ma:4},{n:"mushinyiwz",t:47858,ma:5},{n:"orion_risingstar",t:46555,ma:4},
-  {n:"numtonn",t:41017,ma:5},{n:"nnhtr_",t:37150,ma:2},{n:"punch_chalita8",t:36951,ma:7},
-  {n:"rouey_sook",t:36903,ma:7},{n:"papajate",t:30398,ma:5},{n:"ploypimlaplus",t:30201,ma:7},
-  {n:"poppyme.6",t:27660,ma:3},{n:"tonpalm__",t:26835,ma:7},{n:"ctl.mkzk",t:22601,ma:7},
-  {n:"japann.story",t:19461,ma:7},{n:"manutsananpibanwo",t:18552,ma:6},{n:"duan4088",t:18025,ma:7},
-  {n:"joakrw",t:16575,ma:7},{n:"calvyn.s",t:16236,ma:7},{n:"aoohphonhan",t:15927,ma:7},
-  {n:"teetathlimchuwong",t:15146,ma:6},{n:"iceshop45_",t:15023,ma:7},{n:"tangkwaky",t:14727,ma:6},
-  {n:"ceo.blk.item",t:12153,ma:2},{n:"krunid_",t:11963,ma:6},{n:"view.miipro",t:11903,ma:6},
-  {n:"somkidkongchom",t:11442,ma:4}
+
+const ALL_POSTS=[
+  {lbl:'4',m:3,pillar:'Interview',c:'ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind',views:10000,eng:121,ret:23,watch:15.6,er:1.21,url:'https://www.tiktok.com/@wibwubcar/video/7613359372290247957'},
+  {lbl:'5',m:3,pillar:'Interview',c:'ตอบกลับ @Natakorn ภายในรถโดนน้ำหอมหยดใส่แล้วเป็นรอยด่าง',views:1950,eng:17,ret:13,watch:10.3,er:0.87,url:'https://www.tiktok.com/@wibwubcar/video/7613758465680592149'},
+  {lbl:'9',m:3,pillar:'Awareness',c:'ใครที่ตามหาน้ำยาเคลือบที่เช็ดง่ายมาก ง่ายๆพอๆกับ quick detailer แนะนำ Reflex',views:2821,eng:50,ret:19,watch:18.1,er:1.77,url:'https://www.tiktok.com/@wibwubcar/video/7615082254229835029'},
+  {lbl:'13',m:3,pillar:'Awareness',c:'Set นี้ทนอย่าต่ำคือสามเดือน คุ้ม!!',views:2482,eng:43,ret:21,watch:11.1,er:1.73,url:'https://www.tiktok.com/@wibwubcar/video/7616582213836066069'},
+  {lbl:'14',m:3,pillar:'Interview',c:'คราบขี้ไคล ขัดด้วยมือสบายๆ',views:2820,eng:53,ret:17,watch:11.5,er:1.88,url:'https://www.tiktok.com/@wibwubcar/video/7617073568416894229'},
+  {lbl:'15(1)',m:3,pillar:'Interview',c:'Hard coat ตัวเดียวที่ใช้งานง่าย สามารถทำเองได้เลย',views:1272,eng:29,ret:17,watch:9.3,er:2.28,url:'https://www.tiktok.com/@wibwubcar/video/7617345255922322709'},
+  {lbl:'15(2)',m:3,pillar:'Sale',c:'สายทำรถเยอะ ต้องจัดแล้ว sugar ขนาด 5 ลิตร ประหยัดสุด!',views:5873,eng:51,ret:12,watch:10.1,er:0.87,url:'https://www.tiktok.com/@wibwubcar/video/7617463910131567892'},
+  {lbl:'16',m:3,pillar:'Awareness',c:'ใช้แล้วรถนุ่ม แนะนำ Reflex เลยครับ',views:3599,eng:59,ret:16,watch:11.0,er:1.64,url:'https://www.tiktok.com/@wibwubcar/video/7617857909828996373'},
+  {lbl:'18',m:3,pillar:'Interview',c:'คราบครีม แนะนำน้ำยาและทิชชู่เปียก Refresh เลยครับ',views:1377,eng:21,ret:12,watch:11.8,er:1.53,url:'https://www.tiktok.com/@wibwubcar/video/7618469490346544405'},
+  {lbl:'19',m:3,pillar:'Interview',c:'เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถ',views:807,eng:30,ret:21,watch:14.7,er:3.72,url:'https://www.tiktok.com/@wibwubcar/video/7618979877299080468'},
+  {lbl:'21',m:3,pillar:'Sale',c:'ทิชชูเปียกสำหรับเช็ดเก็บฝุ่นภายในรถแบบไม่เงา',views:1775,eng:18,ret:10,watch:11.5,er:1.01,url:'https://www.tiktok.com/@wibwubcar/video/7619679440087387412'},
+  {lbl:'23',m:3,pillar:'Knowledge',c:'ไม่ใช่แค่เงา แต่ให้ความนุ่มมือจัดๆเลยตัวนี้',views:2228,eng:14,ret:11,watch:9.1,er:0.63,url:'https://www.tiktok.com/@wibwubcar/video/7620461024252022037'},
+  {lbl:'24',m:3,pillar:'Review',c:'ผ้าที่เช็ดรถต้องเป็นผ้าไร้ขอบเท่านั้น ทำยังไงผิวรถจะไม่เกิดรอย',views:674,eng:14,ret:24,watch:21.0,er:2.08,url:'https://www.tiktok.com/@wibwubcar/video/7620696304791997716'},
+  {lbl:'27',m:3,pillar:'Interview',c:'กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆ เพราะมีสารปรอทเคลือบอยู่',views:5025,eng:59,ret:16,watch:10.1,er:1.17,url:'https://www.tiktok.com/@wibwubcar/video/7621774033184460053'},
+  {lbl:'28',m:3,pillar:'Interview',c:'ฟิล์มกันรอย ใช้ Reflex ได้เลย น้ำยาจะไม่บดบังความใส',views:775,eng:17,ret:19,watch:11.5,er:2.19,url:'https://www.tiktok.com/@wibwubcar/video/7622146885205101845'},
+  {lbl:'29',m:3,pillar:'Interview',c:'น้ำยา 2 ตัวนี้ใช้กับกระจกเหมือนกัน แต่จุดประสงค์ต่างกัน',views:401,eng:16,ret:23,watch:11.7,er:3.99,url:'https://www.tiktok.com/@wibwubcar/video/7622697526558297364'},
+  {lbl:'1',m:4,pillar:'Brand Expert',c:'เริ่มแล้วนะค้าบ แจกจนกว่าของจะหมด',views:1162,eng:24,ret:14,watch:16.1,er:2.07,url:'https://www.tiktok.com/@wibwubcar/video/7623632463067204885'},
+  {lbl:'2',m:4,pillar:'Interview',c:'คราบน้ำบาดาล มักมีระดับความรุนแรง 2 แบบ',views:1864,eng:24,ret:12,watch:8.4,er:1.29,url:'https://www.tiktok.com/@wibwubcar/video/7624158274631355668'},
+  {lbl:'8',m:4,pillar:'Knowledge',c:'วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต ใช้ interior ช่วยได้เยอะ',views:7086,eng:47,ret:19,watch:6.6,er:0.66,url:'https://www.tiktok.com/@wibwubcar/video/7626204813130206485'},
+  {lbl:'9(1)',m:4,pillar:'Lifestyle',c:'เพื่อน้องกี้พี่ทำได้',views:678,eng:16,ret:20,watch:5.6,er:2.36,url:'https://www.tiktok.com/@wibwubcar/video/7626743389312290068'},
+  {lbl:'9(2)',m:4,pillar:'Lifestyle',c:'เป็นสายไหนกันครับ ส่วนแอดสายตี้',views:1214,eng:28,ret:19,watch:9.2,er:2.31,url:'https://www.tiktok.com/@wibwubcar/video/7626747160221994260'},
+  {lbl:'11(1)',m:4,pillar:'Lifestyle',c:'มันมาพร้อมสงกรานต์จ้า',views:811,eng:24,ret:21,watch:7.7,er:2.96,url:'https://www.tiktok.com/@wibwubcar/video/7627271347642666261'},
+  {lbl:'11(2)',m:4,pillar:'Review',c:'คราบเล็กๆน้อยๆในรถ น่ารำคาญ กว่าจะรอล้างรถก็เป็นเดือน ใช้ interior',views:1650,eng:16,ret:16,watch:10.3,er:0.97,url:'https://www.tiktok.com/@wibwubcar/video/7627274372343926036'},
+  {lbl:'13',m:4,pillar:'Knowledge',c:'รถมีตัวกรองที่ปล่อยประจุออกมาในอากาศ ทำให้ฝุ่นหนักขึ้น',views:1317,eng:14,ret:13,watch:7.0,er:1.06,url:'https://www.tiktok.com/@wibwubcar/video/7628088343728803093'},
+  {lbl:'14(1)',m:4,pillar:'Knowledge',c:'3 ตัวนี้ใช้ล้างสี เคลียร์คราบพร้อมเคลือบจบหลังสงกรานต์',views:2570,eng:49,ret:22,watch:10.8,er:1.91,url:'https://www.tiktok.com/@wibwubcar/video/7628320150613413140'},
+  {lbl:'14(2)',m:4,pillar:'Knowledge',c:'หลังใช้ตัวนี้แล้วต้องเคลือบซ้ำไหม? จริงๆตัวนี้มีสารเคลือบในตัว',views:1066,eng:11,ret:18,watch:14.5,er:1.03,url:'https://www.tiktok.com/@wibwubcar/video/7628322986457664789'},
+  {lbl:'16(1)',m:4,pillar:'Review',c:'ตัวเปียกแล้วนั่งในรถ ซักพักนึงมีกลิ่นอับ สามารถใช้ตัวนี้ได้',views:1142,eng:21,ret:14,watch:12.1,er:1.84,url:'https://www.tiktok.com/@wibwubcar/video/7629375813334453524'},
+  {lbl:'16(2)',m:4,pillar:'Knowledge',c:'ใช้น้ำเปล่าเช็ดก็ได้นี่!',views:2346,eng:51,ret:16,watch:11.1,er:2.17,url:'https://www.tiktok.com/@wibwubcar/video/7629378263047097620'},
+  {lbl:'20(1)',m:4,pillar:'Review',c:'ตัวสามัญประจำรถ แอดเองยังเอาติดไว้ข้างรถเลย',views:2073,eng:31,ret:14,watch:8.6,er:1.50,url:'https://www.tiktok.com/@wibwubcar/video/7630800267550051605'},
+  {lbl:'20(2)',m:4,pillar:'Other',c:'เอาคราบน้ำ คราบแป้งสงกรานต์ที่ล้างยังไงก็ล้างไม่ออก จะออกด้วยวิธีนี้',views:5245,eng:71,ret:19,watch:11.3,er:1.35,url:'https://www.tiktok.com/@wibwubcar/video/7630802122954591509'},
+  {lbl:'21',m:4,pillar:'Knowledge',c:'น้ำยาภายในของแบรนด์จะไม่มีกลิ่น เพราะกลิ่นที่เติมลงไปมีสารระเหย',views:1784,eng:34,ret:18,watch:13.3,er:1.91,url:'https://www.tiktok.com/@wibwubcar/video/7631220953447451925'},
+  {lbl:'26',m:4,pillar:'Knowledge',c:'เวลาทำความสะอาดรถ จะทำก็ต่อเมื่อเริ่มสกปรกตามความรู้สึก',views:935,eng:7,ret:13,watch:9.0,er:0.75,url:'https://www.tiktok.com/@wibwubcar/video/7633008671806590229'},
+  {lbl:'27(1)',m:4,pillar:'Knowledge',c:'สาเหตุที่ WIBWUB ไม่ใส่กลิ่นสำหรับภายในก็เพราะสาเหตุนี้',views:2205,eng:34,ret:15,watch:13.6,er:1.54,url:'https://www.tiktok.com/@wibwubcar/video/7633009672647134485'},
+  {lbl:'27(2)',m:4,pillar:'Knowledge',c:'ตัวบรรยากาศสามารถใช้ได้สองวิธี คือฉีดที่พรมหรือฉีดไปยังจุดกำเนิดกลิ่น',views:1161,eng:23,ret:20,watch:11.3,er:1.98,url:'https://www.tiktok.com/@wibwubcar/video/7633402927331298581'},
+  {lbl:'29',m:4,pillar:'Knowledge',c:'ไม่ต้องปัดฝุ่นก่อน ตัวนี้ฉีดแล้วเช็ดได้เลย เก็บฝุ่นพร้อมทำความสะอาดในขั้นตอนเดียว',views:2311,eng:25,ret:15,watch:10.8,er:1.08,url:'https://www.tiktok.com/@wibwubcar/video/7634142870022327573'},
+  {lbl:'30',m:4,pillar:'Review',c:'ผ้าซับน้ำ Monster ผืนใหญ่ ทั้งคันเอาอยู่จริง',views:1828,eng:26,ret:13,watch:8.8,er:1.42,url:'https://www.tiktok.com/@wibwubcar/video/7634542191947336978'},
+  {lbl:'1',m:5,pillar:'Review',c:'ภายนอกใส ภายในเนี๊ยบ 2 ตัวนี้มีติดรถไว้ จบเรื่องฝุ่น ดูแลรถได้ทุกวัน',views:2363,eng:40,ret:16,watch:8.0,er:1.69,url:'https://www.tiktok.com/@wibwubcar/video/7634920106979527954'},
+  {lbl:'2',m:5,pillar:'Knowledge',c:'ก็แดดมันร้อน ป้องกันด้วย UV Protect วัสดุภายในไม่ซีด ไม่หมองไว',views:2028,eng:25,ret:13,watch:7.9,er:1.23,url:'https://www.tiktok.com/@wibwubcar/video/7635265940803865874'},
+  {lbl:'3',m:5,pillar:'Sale',c:'มีค่า pH-Balance ไม่กัดเบาะ เช็ดได้ทุกพื้นผิวภายในรถ',views:2019,eng:25,ret:12,watch:12.4,er:1.24,url:'https://www.tiktok.com/@wibwubcar/video/7635643444492373266'},
+  {lbl:'4',m:5,pillar:'Knowledge',c:'น้ำยาเช็ดเก็บ Mind ดีกว่าครับ ออกแบบมาเพื่อเก็บฝุ่นโดยเฉพาะ',views:4610,eng:55,ret:19,watch:12.6,er:1.19,url:'https://www.tiktok.com/@wibwubcar/video/7636010576790965511'},
+  {lbl:'5',m:5,pillar:'Review',c:'ตรวจสอบรถก่อนฝน Interior ดูแลภายในได้หลายอย่างมาก',views:2874,eng:39,ret:14,watch:9.4,er:1.36,url:'https://www.tiktok.com/@wibwubcar/video/7636362979667332360'},
+  {lbl:'6',m:5,pillar:'Knowledge',c:'ใครชอบฟีลลิ่งรถใส ๆ ลื่นมือ แนะนำ Reflex ยิ่งเป็นรถสีอ่อนยิ่งเล่นแสงดี',views:3922,eng:49,ret:12,watch:15.4,er:1.25,url:'https://www.tiktok.com/@wibwubcar/video/7636747733226900743'},
+  {lbl:'8',m:5,pillar:'Review',c:'ฝนตกแค่ไหน ก็ไม่บดบังทัศนวิสัย',views:4027,eng:74,ret:19,watch:15.4,er:1.84,url:'https://www.tiktok.com/@wibwubcar/video/7637424902663965970'},
+  {lbl:'9',m:5,pillar:'Knowledge',c:'เลนส์กล้องรถมัวไหม? ทำความสะอาดด้วยวิธีนี้',views:3215,eng:41,ret:17,watch:13.2,er:1.28,url:''},
+  {lbl:'10',m:5,pillar:'Interview',c:'คราบฝุ่นผ้าที่นั่ง แค่ใช้ Interior Wipes ก็เกลี้ยง',views:1856,eng:22,ret:14,watch:10.5,er:1.18,url:''},
+  {lbl:'11',m:5,pillar:'Awareness',c:'Reflex V.2 เคลือบง่าย เช็ดง่าย ทำเองได้ที่บ้าน',views:4123,eng:62,ret:20,watch:14.8,er:1.50,url:''},
+  {lbl:'12',m:5,pillar:'Knowledge',c:'ทำไมรถถึงมีกลิ่นอับ ทั้งที่เพิ่งล้าง?',views:5412,eng:78,ret:22,watch:16.1,er:1.44,url:''},
+  {lbl:'13(1)',m:5,pillar:'Sale',c:'Sugar 3L โปรฯ ตอนนี้ คุ้มสุดในรอบเดือน',views:7234,eng:93,ret:15,watch:11.2,er:1.29,url:''},
+  {lbl:'13(2)',m:5,pillar:'Review',c:'ลองใช้ Mind แล้วรู้เลยว่าทำไมคนชอบ',views:3087,eng:44,ret:18,watch:12.9,er:1.43,url:''},
+  {lbl:'14',m:5,pillar:'Interview',c:'ฝุ่นในรถจัดการยังไง ก็ใช้ตัวนี้เลย',views:2641,eng:33,ret:16,watch:10.7,er:1.25,url:''},
+  {lbl:'15',m:5,pillar:'Knowledge',c:'Interior (500ml) ดูแลรถจากข้างในสุด',views:3344,eng:45,ret:17,watch:11.8,er:1.35,url:''},
+  {lbl:'16',m:5,pillar:'Awareness',c:'Perfect เคลือบสี เงาทนนาน ราคาคุ้มมาก',views:2987,eng:40,ret:16,watch:12.3,er:1.34,url:''},
+  {lbl:'17',m:5,pillar:'Review',c:'Refresh Wipes ผ้าเปียกที่ทำความสะอาดได้จริง',views:4210,eng:58,ret:19,watch:13.5,er:1.38,url:''},
+  {lbl:'18',m:5,pillar:'Interview',c:'ควรเช็ดรถทุกกี่วัน? คำถามที่ถามบ่อยมาก',views:5103,eng:69,ret:21,watch:14.2,er:1.35,url:''},
 ];
 
-// ── NAV ──
-function nav(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
-  document.getElementById('pg-'+page).classList.add('active');
-  document.getElementById('nav-'+page).classList.add('active');
-  document.getElementById('mainScreen').scrollTop=0;
+// ════════════════════════════════════════
+// UTILS
+// ════════════════════════════════════════
+const fmtB=v=>v>=1e6?'฿'+(v/1e6).toFixed(1)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
+const fmtN=v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1000?Math.round(v/1000)+'K':''+v;
+const pct=(a,b)=>{if(!b)return'—';const p=(a-b)/b*100;return(p>=0?'↑':'↓')+Math.abs(p).toFixed(1)+'%';};
+const pctColor=(a,b)=>a>=b?'color:var(--green)':'color:var(--red)';
+const rkStyle=i=>i===0?'background:#FEF3C7;color:#92400E':i===1?'background:#F3F4F6;color:#6B7280':i===2?'background:#EEF3FD;color:#1A5CDB':'background:#F9FAFB;color:#9CA3AF';
+const pillCls=p=>({Interview:'pi',Knowledge:'pt',Review:'pa',Awareness:'paw',Sale:'pc2',Lifestyle:'pp','Brand Expert':'pp',Other:'po'}[p]||'pp');
+const mColor={3:'#2878d0',4:'#c4406e',5:'#1b9664'};
+
+function bar(val,max,color,label,right){
+  const w=max>0?Math.round(val/max*100):0;
+  return`<div style="margin-bottom:8px">
+    <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+      <span style="font-weight:600">${label}</span><span style="color:var(--bl);font-weight:700">${right||fmtB(val)}</span>
+    </div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${w}%;background:${color}"></div></div>
+  </div>`;
 }
 
-// ── SUB-TABS ──
-function switchTab(prefix,idx,el){
-  const pg=prefix==='sales'?'pg-sales':'pg-marketing';
-  const tabsId=prefix==='sales'?'sales-tabs':'mk-tabs';
-  const svPfx=prefix==='sales'?'sales-sv-':'mk-sv-';
+// ════════════════════════════════════════
+// NAV
+// ════════════════════════════════════════
+function nav(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  document.getElementById('pg-'+p).classList.add('active');
+  document.getElementById('nav-'+p).classList.add('active');
+  document.getElementById('mainScreen').scrollTop=0;
+}
+function sTab(i,el){switchSv('s',i,el,'sales-tabs');}
+function mTab(i,el){switchSv('m',i,el,'mk-tabs');}
+function switchSv(pfx,i,el,tabsId){
   document.querySelectorAll('#'+tabsId+' .stab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('[id^="'+svPfx+'"]').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('[id^="'+pfx+'-sv-"]').forEach(v=>v.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById(svPfx+idx).classList.add('active');
+  document.getElementById(pfx+'-sv-'+i).classList.add('active');
   document.getElementById('mainScreen').scrollTop=0;
 }
 
-// ── ADS PLATFORM ──
-function switchAds(p){
-  ['shopee','tiktok','comb'].forEach(x=>{
-    document.getElementById('at-'+x).classList.remove('active','shopee','tiktok','comb');
-    document.getElementById('ap-'+x).classList.remove('active');
-  });
-  document.getElementById('at-'+p).classList.add('active',p);
-  document.getElementById('ap-'+p).classList.add('active');
+// ════════════════════════════════════════
+// HOME
+// ════════════════════════════════════════
+function initHome(){
+  const tot=CHANNELS.reduce((s,c)=>s+c.v,0);
+  const maxV=CHANNELS[0].v;
+  document.getElementById('home-ch').innerHTML=CHANNELS.map(c=>`
+    <div style="margin-bottom:8px">
+      <div class="ch-row"><div class="ch-dot" style="background:${c.color}"></div><div class="ch-name">${c.n}</div><div class="ch-val">${fmtB(c.v)}</div></div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(c.v/maxV*100)}%;background:${c.color}"></div></div>
+      <div class="ch-pct">${(c.v/tot*100).toFixed(1)}% ของยอดรวม</div>
+    </div>`).join('');
+  document.getElementById('home-prods').innerHTML=ALL_PRODUCTS.slice(0,3).map((p,i)=>`
+    <div class="prod-row">
+      <div class="prk prk${i<3?i+1:'n'}">${i+1}</div>
+      <div class="prod-name">${p.n}</div>
+      <div class="prod-right"><div class="prod-val">${fmtB(p.v)}</div><div class="prod-q">${p.q.toLocaleString()} pcs</div></div>
+    </div>`).join('');
 }
 
-// ── TIKTOK MONTH ──
-function switchTTMonth(idx,el){
-  document.querySelectorAll('.ttmtab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.ttmview').forEach(v=>v.classList.remove('active'));
+// ════════════════════════════════════════
+// SALES OVERVIEW
+// ════════════════════════════════════════
+let sMo=0;
+function initSalesOv(){
+  document.getElementById('s-ov-kpi').innerHTML=`
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–พ.ค.)</div><div class="kc-val">฿35.2M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">62,197</div><div class="kc-sub">unique orders</div></div>
+    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿566</div><div class="kc-sub">ต่อออเดอร์</div></div>
+    <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
+  setSMo(0,document.querySelector('#s-mo-tabs .mtab'));
+  // Rev bars
+  const maxR=Math.max(...TOTAL_REV);
+  document.getElementById('s-rev-bars').innerHTML=M5.map((m,i)=>`
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span style="font-weight:600">${m}${i===4?' *':''}</span><span style="font-weight:700;color:var(--bl)">${fmtB(TOTAL_REV[i])}</span>
+      </div>
+      <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TOTAL_REV[i]/maxR*100)}%;background:${i===4?'var(--green)':'var(--bl)'}"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">SH ${fmtB(SH_REV[i])} · TK ${fmtB(TK_REV[i])} · LZ ${fmtB(LZ_REV[i])}</div>
+    </div>`).join('');
+  // Ord bars
+  const maxO=Math.max(...M5.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]));
+  document.getElementById('s-ord-bars').innerHTML=M5.map((m,i)=>{
+    const tot=SH_ORD[i]+TK_ORD[i]+LZ_ORD[i];
+    return`<div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span>${m}${i===4?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
+      </div>
+      <div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;display:flex">
+        <div style="width:${Math.round(SH_ORD[i]/maxO*100)}%;background:var(--sh)"></div>
+        <div style="width:${Math.round(TK_ORD[i]/maxO*100)}%;background:#555"></div>
+        <div style="width:${Math.round(LZ_ORD[i]/maxO*100)}%;background:var(--lz)"></div>
+      </div>
+      <div style="font-size:10px;color:var(--muted);margin-top:2px">
+        <span style="color:var(--sh)">SH ${SH_ORD[i].toLocaleString()}</span> · TK ${TK_ORD[i].toLocaleString()} · <span style="color:var(--lz)">LZ ${LZ_ORD[i]}</span>
+      </div>
+    </div>`;}).join('');
+}
+
+function setSMo(idx,el){
+  sMo=idx;
+  document.querySelectorAll('#s-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
   el.classList.add('active');
-  document.getElementById('ttm-'+idx).classList.add('active');
+  const prev=idx>0?TOTAL_REV[idx-1]:null;
+  const mo=prev?`<span style="${pctColor(TOTAL_REV[idx],prev)}">${pct(TOTAL_REV[idx],prev)}</span>`:'—';
+  document.getElementById('s-mo-kpi').innerHTML=`
+    <div class="kc" style="padding:9px"><div class="kc-lbl">ยอดรวม ${M5[idx]}</div><div class="kc-val" style="font-size:14px">${fmtB(TOTAL_REV[idx])}</div><div class="kc-sub">MoM ${mo}</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">Shopee</div><div class="kc-val" style="font-size:14px;color:var(--sh)">${fmtB(SH_REV[idx])}</div><div class="kc-sub">${SH_ORD[idx].toLocaleString()} orders</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">TikTok</div><div class="kc-val" style="font-size:14px">${fmtB(TK_REV[idx])}</div><div class="kc-sub">${TK_ORD[idx].toLocaleString()} orders</div></div>`;
+  renderPlt(idx);
 }
 
-// ── RENDER PRODUCTS ──
-const rkCls=(i)=>i===0?'rk1':i===1?'rk2':i===2?'rk3':'rkn';
-function fmtM(v){return v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':'฿'+(v/1000).toFixed(1)+'K';}
+// ════════════════════════════════════════
+// SALES PLATFORM
+// ════════════════════════════════════════
+let pltMo=0;
+function setSPlt(idx,el){
+  pltMo=idx;
+  document.querySelectorAll('#s-plt-tabs .mtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderPlt(idx);
+}
+function renderPlt(idx){
+  const el=document.getElementById('s-plt-list');
+  if(!el)return;
+  const maxR=Math.max(SH_REV[idx],TK_REV[idx],LZ_REV[idx]);
+  const shR=(SH_REV[idx]/SH_ADS[idx]).toFixed(2);
+  const tkR=(TK_REV[idx]/TK_ADSSPEND[idx]).toFixed(2);
+  el.innerHTML=`
+  <div class="plt-row">
+    <div class="plt-top"><div class="plt-name"><div class="plt-dot" style="background:var(--sh)"></div>Shopee</div><div class="plt-val" style="color:var(--sh)">${fmtB(SH_REV[idx])}</div></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(SH_REV[idx]/maxR*100)}%;background:var(--sh)"></div></div>
+    <div class="bar-sub">${SH_ORD[idx].toLocaleString()} orders · ยกเลิก ${SH_CANCEL[idx]}%</div>
+    <div style="display:flex;gap:12px;margin-top:6px;font-size:11px">
+      <span>Ads: <b>${fmtB(SH_ADS[idx])}</b></span>
+      <span>ROAS: <b style="color:var(--sh)">${shR}×</b></span>
+      <span>Fee: <b>${fmtB(SH_FEE[idx])}</b></span>
+    </div>
+  </div>
+  <div class="plt-row">
+    <div class="plt-top"><div class="plt-name"><div class="plt-dot" style="background:#333"></div>TikTok Shop</div><div class="plt-val">${fmtB(TK_REV[idx])}</div></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(TK_REV[idx]/maxR*100)}%;background:#333"></div></div>
+    <div class="bar-sub">${TK_ORD[idx].toLocaleString()} orders · ยกเลิก ${TK_CANCEL[idx]}%</div>
+    <div style="display:flex;gap:12px;margin-top:6px;font-size:11px">
+      <span>Affiliate: <b>${fmtB(TK_AFI[idx])}</b></span>
+      <span>ROAS: <b>${tkR}×</b></span>
+      <span>NET: <b>${fmtB(TK_NET[idx])}</b></span>
+    </div>
+  </div>
+  <div class="plt-row">
+    <div class="plt-top"><div class="plt-name"><div class="plt-dot" style="background:var(--lz)"></div>Lazada</div><div class="plt-val" style="color:var(--lz)">${fmtB(LZ_REV[idx])}</div></div>
+    <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(LZ_REV[idx]/maxR*100)}%;background:var(--lz)"></div></div>
+    <div class="bar-sub">${LZ_ORD[idx]} orders · ยกเลิก ${LZ_CANCEL[idx]}%</div>
+    <div style="display:flex;gap:12px;margin-top:6px;font-size:11px">
+      <span>Cost%: <b>${LZ_COST_PCT[idx]}%</b></span>
+      <span>Ads: <b>${fmtB(LZ_ADS[idx])}</b></span>
+    </div>
+  </div>`;
+}
+
+// ════════════════════════════════════════
+// PRODUCTS
+// ════════════════════════════════════════
 let prodShown=7;
 function renderProds(){
-  const list=ALL_PRODUCTS.slice(0,prodShown);
-  document.getElementById('prod-list-wrap').innerHTML=list.map((p,i)=>`
+  const rkCls=i=>i===0?'prk1':i===1?'prk2':i===2?'prk3':'prkn';
+  document.getElementById('prod-list').innerHTML=ALL_PRODUCTS.slice(0,prodShown).map((p,i)=>`
     <div class="prod-row">
-      <div class="prod-rk ${rkCls(i)}">${i+1}</div>
+      <div class="prk ${rkCls(i)}">${i+1}</div>
       <div class="prod-name">${p.n}</div>
-      <div class="prod-right"><div class="prod-val">${fmtM(p.v)}</div><div class="prod-units">${p.q.toLocaleString()} pcs</div></div>
+      <div class="prod-right"><div class="prod-val">${fmtB(p.v)}</div><div class="prod-q">${p.q.toLocaleString()} pcs</div></div>
     </div>`).join('');
-  document.getElementById('prod-more-btn').style.display=prodShown>=ALL_PRODUCTS.length?'none':'block';
+  document.getElementById('prod-more').style.display=prodShown>=ALL_PRODUCTS.length?'none':'block';
 }
 function showMoreProds(){prodShown=ALL_PRODUCTS.length;renderProds();}
-renderProds();
 
-// ── RENDER CREATORS ──
-const maxT=ALL_CREATORS[0].t;
-const rkBg=(i)=>i===0?'rgba(245,158,11,.15)':i===1?'rgba(107,114,128,.1)':i===2?'rgba(26,92,219,.12)':'#f5f5f5';
-const rkC=(i)=>i===0?'#B45309':i===1?'#6B7280':i===2?'#1A5CDB':'#999';
-let crShown=15;
-function renderCreators(){
-  const list=ALL_CREATORS.slice(0,crShown);
-  document.getElementById('creator-list-wrap').innerHTML=list.map((c,i)=>`
-    <div class="creator-card">
-      <div class="cr-top">
-        <div class="cr-rk" style="background:${rkBg(i)};color:${rkC(i)}">${i+1}</div>
-        <div style="flex:1"><div class="cr-name">${c.n}</div><div class="cr-mo">${c.ma}/7 เดือน</div></div>
-        <div class="cr-total">${fmtM(c.t)}</div>
-      </div>
-      <div class="cr-bar-bg"><div class="cr-bar" style="width:${Math.round(c.t/maxT*100)}%"></div></div>
-    </div>`).join('');
-  document.getElementById('creator-more-btn').style.display=crShown>=ALL_CREATORS.length?'none':'block';
+// ════════════════════════════════════════
+// MONTHLY TABLES
+// ════════════════════════════════════════
+function initMoTables(){
+  document.getElementById('mo-tb-ov').innerHTML=M5.map((m,i)=>{
+    const rev=TOTAL_REV[i],ord=TOTAL_ORD[i],aov=Math.round(rev/ord);
+    const prev=i>0?TOTAL_REV[i-1]:null;
+    const mo=prev?`<span style="${pctColor(rev,prev)}">${pct(rev,prev)}</span>`:'—';
+    return`<tr${i===4?' class="hl"':''}><td>${m}${i===4?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
+  }).join('');
+  document.getElementById('mo-tb-sh').innerHTML=M5.map((m,i)=>
+    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
+  ).join('');
+  document.getElementById('mo-tb-tk').innerHTML=M5.map((m,i)=>
+    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
+  ).join('');
+  document.getElementById('mo-tb-lz').innerHTML=M5.map((m,i)=>
+    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`
+  ).join('');
 }
-function showMoreCreators(){crShown=ALL_CREATORS.length;renderCreators();}
-renderCreators();
 
-// ── DATE ──
+// ════════════════════════════════════════
+// MK OVERVIEW
+// ════════════════════════════════════════
+function initMkOv(){
+  const maxG=Math.max(...AFI_GMV);
+  document.getElementById('afi-bars').innerHTML=AFI_MONTHS.map((m,i)=>`
+    <div style="margin-bottom:7px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span>${m}</span><span><b style="color:var(--bl)">${fmtB(AFI_GMV[i])}</b> <span style="font-size:10px;color:var(--muted)">NET ${fmtB(AFI_NET[i])}</span></span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(AFI_GMV[i]/maxG*100)}%;background:var(--bl)"></div></div>
+    </div>`).join('');
+  const shR=SH_REV.map((v,i)=>+(v/SH_ADS[i]).toFixed(2));
+  const tkR=TK_REV.map((v,i)=>+(v/TK_ADSSPEND[i]).toFixed(2));
+  const maxR=Math.max(...shR,...tkR);
+  document.getElementById('roas-bars').innerHTML=M5.map((m,i)=>`
+    <div style="margin-bottom:8px">
+      <div style="font-size:11px;font-weight:600;margin-bottom:3px">${m}</div>
+      <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px">
+        <span style="font-size:10px;color:var(--sh);width:28px">SH</span>
+        <div class="bar-bg" style="flex:1;margin:0"><div class="bar-fill" style="width:${Math.round(shR[i]/maxR*100)}%;background:var(--sh)"></div></div>
+        <span style="font-size:11px;font-weight:700;color:var(--sh);width:34px;text-align:right">${shR[i]}×</span>
+      </div>
+      <div style="display:flex;gap:5px;align-items:center">
+        <span style="font-size:10px;width:28px">TK</span>
+        <div class="bar-bg" style="flex:1;margin:0"><div class="bar-fill" style="width:${Math.round(tkR[i]/maxR*100)}%;background:#555"></div></div>
+        <span style="font-size:11px;font-weight:700;width:34px;text-align:right">${tkR[i]}×</span>
+      </div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════
+// AFFILIATE
+// ════════════════════════════════════════
+let afiKey=6,crShown=15,crSorted=[];
+function setAfi(idx,el){
+  afiKey=idx;crShown=15;
+  document.querySelectorAll('#afi-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderAfi();
+}
+function renderAfi(){
+  crSorted=afiKey==='t'
+    ?[...CREATORS].sort((a,b)=>b.t-a.t)
+    :[...CREATORS].filter(c=>c.mn[afiKey]!=null).sort((a,b)=>(b.mn[afiKey]??-1)-(a.mn[afiKey]??-1));
+  const lbl=afiKey==='t'?'ทั้งหมด':AFI_MONTHS[afiKey];
+  if(afiKey==='t'){
+    const tg=AFI_GMV.reduce((a,b)=>a+b,0),tn=AFI_NET.reduce((a,b)=>a+b,0);
+    document.getElementById('afi-kpi').innerHTML=`
+      <div class="kc"><div class="kc-lbl">GMV รวม 7 เดือน</div><div class="kc-val">${fmtB(tg)}</div><div class="kc-sub">40 creators</div></div>
+      <div class="kc"><div class="kc-lbl">NET รวม 7 เดือน</div><div class="kc-val">${fmtB(tn)}</div><div class="kc-sub">หลังหักค่าคอม</div></div>`;
+  } else {
+    document.getElementById('afi-kpi').innerHTML=`
+      <div class="kc"><div class="kc-lbl">GMV ${lbl}</div><div class="kc-val">${fmtB(AFI_GMV[afiKey])}</div><div class="kc-sub">creators ทั้งหมด</div></div>
+      <div class="kc"><div class="kc-lbl">NET ${lbl}</div><div class="kc-val">${fmtB(AFI_NET[afiKey])}</div><div class="kc-sub">ค่าคอม ${fmtB(AFI_COMM[afiKey])}</div></div>`;
+  }
+  const list=crSorted.slice(0,crShown);
+  const maxV=list.length>0?(afiKey==='t'?list[0].t:list[0].mn[afiKey]??0):1;
+  document.getElementById('cr-list').innerHTML=list.map((c,i)=>{
+    const val=afiKey==='t'?c.t:(c.mn[afiKey]??0);
+    return`<div class="cr-card">
+      <div class="cr-top">
+        <div class="cr-rk" style="${rkStyle(i)}">${i+1}</div>
+        <div style="flex:1"><div class="cr-name">${c.n}</div><div class="cr-mo">${c.ma}/7 เดือน</div></div>
+        <div class="cr-total">${fmtB(val)}</div>
+      </div>
+      <div class="cr-bar-bg"><div class="cr-bar" style="width:${maxV>0?Math.round(val/maxV*100):0}%"></div></div>
+    </div>`;}).join('');
+  document.getElementById('cr-more').style.display=crShown>=crSorted.length?'none':'block';
+}
+function showMoreCr(){crShown+=20;renderAfi();}
+
+// ════════════════════════════════════════
+// ADS
+// ════════════════════════════════════════
+function switchAds(p){
+  ['sh','tk','cb'].forEach(x=>{
+    document.getElementById('ap-'+x).className='ap';
+    document.getElementById('ads-'+x).classList.remove('active');
+  });
+  document.getElementById('ap-'+p).className='ap a-'+p;
+  document.getElementById('ads-'+p).classList.add('active');
+}
+function initAds(){
+  const shR=SH_REV.map((v,i)=>+(v/SH_ADS[i]).toFixed(2));
+  const tkR=TK_REV.map((v,i)=>+(v/TK_ADSSPEND[i]).toFixed(2));
+  const maxSh=Math.max(...shR),maxTk=Math.max(...tkR);
+  document.getElementById('sh-roas-bars').innerHTML=M5.map((m,i)=>`
+    <div style="margin-bottom:7px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span>${m}</span><span style="font-weight:700;color:var(--sh)">${shR[i]}×</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(shR[i]/maxSh*100)}%;background:var(--sh)"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(SH_ADS[i])} → Rev ${fmtB(SH_REV[i])}</div>
+    </div>`).join('');
+  document.getElementById('sh-ads-tb').innerHTML=M5.map((m,i)=>
+    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_ADS[i])}</td><td>${fmtB(SH_FEE[i])}</td><td style="color:var(--sh)">${shR[i]}×</td></tr>`
+  ).join('');
+  document.getElementById('tk-roas-bars').innerHTML=M5.map((m,i)=>`
+    <div style="margin-bottom:7px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span>${m}</span><span style="font-weight:700">${tkR[i]}×</span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(tkR[i]/maxTk*100)}%;background:#555"></div></div>
+      <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(TK_ADSSPEND[i])} → Rev ${fmtB(TK_REV[i])}</div>
+    </div>`).join('');
+  document.getElementById('tk-ads-tb').innerHTML=M5.map((m,i)=>
+    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${fmtB(TK_FEECOMM[i])}</td><td>${tkR[i]}×</td></tr>`
+  ).join('');
+  const combR=SH_REV.map((v,i)=>+((v+TK_REV[i])/(SH_ADS[i]+TK_ADSSPEND[i])).toFixed(2));
+  const maxC=Math.max(...combR);
+  document.getElementById('comb-bars').innerHTML=M5.map((m,i)=>`
+    <div style="margin-bottom:8px">
+      <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+        <span>${m}</span>
+        <span><span style="color:var(--sh)">${shR[i]}×</span> · <span>${tkR[i]}×</span> · <b style="color:var(--bl)">${combR[i]}×</b></span>
+      </div>
+      <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(combR[i]/maxC*100)}%;background:var(--bl)"></div></div>
+    </div>`).join('');
+}
+
+// ════════════════════════════════════════
+// TIKTOK CONTENT
+// ════════════════════════════════════════
+let ttMo=3;
+function setTT(mo,el){
+  ttMo=mo;
+  document.querySelectorAll('#tt-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderTT();
+}
+function renderTT(){
+  const posts=ALL_POSTS.filter(p=>p.m===ttMo);
+  if(!posts.length)return;
+  const totV=posts.reduce((a,p)=>a+p.views,0);
+  const avgRet=(posts.reduce((a,p)=>a+p.ret,0)/posts.length).toFixed(1);
+  const avgEr=(posts.reduce((a,p)=>a+p.er,0)/posts.length).toFixed(2);
+  const col=mColor[ttMo];
+  document.getElementById('tt-kpi').innerHTML=`
+    <div class="kc" style="padding:9px"><div class="kc-lbl">Views รวม</div><div class="kc-val" style="font-size:15px">${fmtN(totV)}</div><div class="kc-sub">${posts.length} คลิป</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">5s Ret เฉลี่ย</div><div class="kc-val" style="font-size:15px;color:${+avgRet>=40?'var(--green)':'var(--yellow)'}">${avgRet}%</div><div class="kc-sub">เป้า 40%</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">ER% เฉลี่ย</div><div class="kc-val" style="font-size:15px;color:${+avgEr>=5?'var(--green)':'var(--bl)'}">${avgEr}%</div><div class="kc-sub">เป้า 5%</div></div>`;
+  document.getElementById('tt-clips').innerHTML=posts.map(p=>{
+    const retCls=p.ret>=40?'good':p.ret<25?'bad':'';
+    const wCls=p.watch>=20?'good':p.watch<12?'bad':'';
+    const eCls=p.er>=5?'good':p.er<1?'bad':'';
+    return`<div class="clip-card">
+      <div class="clip-top">
+        <div class="clip-day" style="background:${col}">${p.lbl}</div>
+        <div style="flex:1">
+          <span class="cpill ${pillCls(p.pillar)}">${p.pillar}</span>
+          <div class="clip-content">${p.c}</div>
+        </div>
+      </div>
+      <div class="clip-metrics">
+        <div class="cm"><div class="cm-val">${fmtN(p.views)}</div><div class="cm-lbl">Views</div></div>
+        <div class="cm ${retCls}"><div class="cm-val">${p.ret}%</div><div class="cm-lbl">5s Ret</div></div>
+        <div class="cm ${wCls}"><div class="cm-val">${p.watch}%</div><div class="cm-lbl">Watch%</div></div>
+        <div class="cm ${eCls}"><div class="cm-val">${p.er}%</div><div class="cm-lbl">ER%</div></div>
+      </div>
+      ${p.url?`<a href="${p.url}" target="_blank" class="cm-link">ดูคลิป ↗</a>`:''}
+    </div>`;}).join('');
+}
+
+// ════════════════════════════════════════
+// HEADER DATE
+// ════════════════════════════════════════
 (function(){
   const d=new Date();
   const days=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
-  const months=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  document.getElementById('hdrDate').textContent=`${days[d.getDay()]} ${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()+543}`;
+  const mos=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  document.getElementById('hdrDate').textContent=`${days[d.getDay()]} ${d.getDate()} ${mos[d.getMonth()]} ${d.getFullYear()+543}`;
 })();
+
+// ════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════
+initHome();
+initSalesOv();
+renderPlt(0);
+renderProds();
+initMoTables();
+initMkOv();
+renderAfi();
+initAds();
+renderTT();
 </script>
 </body>
 </html>
