@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB Affiliate Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0D0D0D;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;padding:24px;color:#E5E7EB;min-height:100vh}
+.wrap{max-width:1100px;margin:0 auto}
+.wh{background:#111;border-radius:12px;padding:16px 22px;display:flex;align-items:center;gap:16px;margin-bottom:14px;border:1px solid rgba(249,115,22,.25)}
+.wlogo{height:36px;filter:brightness(0) invert(1)}
+.wbrand{font-size:17px;font-weight:500;color:#fff;letter-spacing:3px}
+.wtag{font-size:9px;color:#F97316;letter-spacing:2px;margin-top:3px;text-transform:uppercase}
+.wperiod{margin-left:auto;font-size:10px;color:#4B5563;text-align:right;line-height:1.6}
+.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kc{background:#1A1A1A;border-radius:10px;padding:14px 16px;border:1px solid rgba(249,115,22,.14)}
+.kl{font-size:10px;color:#6B7280;margin:0 0 4px;letter-spacing:.5px;text-transform:uppercase}
+.kv{font-size:22px;font-weight:500;color:#F97316;margin:0}
+.ks{font-size:10px;color:#374151;margin:3px 0 0}
+.cg{display:grid;grid-template-columns:2fr 1fr;gap:10px;margin-bottom:14px}
+.cc{background:#1A1A1A;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06)}
+.ct{font-size:10px;font-weight:500;color:#6B7280;margin:0 0 8px;letter-spacing:.5px;text-transform:uppercase}
+.lr{display:flex;gap:12px;margin-bottom:7px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:4px;font-size:10px;color:#6B7280}
+.ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.tc2{background:#1A1A1A;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06)}
+.sec-label{font-size:10px;font-weight:500;color:#6B7280;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
+.sr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.sb{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:transparent;font-size:11px;color:#6B7280;cursor:pointer}
+.sb.a{background:rgba(249,115,22,.15);color:#F97316;border-color:rgba(249,115,22,.4)}
+.sb:hover:not(.a){background:rgba(255,255,255,.04);color:#9CA3AF}
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
+thead th{padding:7px 8px;font-size:10px;font-weight:500;color:#4B5563;border-bottom:1px solid rgba(255,255,255,.08);cursor:pointer;text-align:right;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;position:sticky;top:0;background:#1A1A1A}
+thead th:first-child{text-align:left}
+thead th.sa{color:#F97316}
+thead th:hover{color:#9CA3AF}
+td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#9CA3AF}
+td:first-child{text-align:left;font-weight:500;color:#E5E7EB}
+tbody tr:hover td{background:rgba(255,255,255,.025)}
+tbody tr:last-child td{border-bottom:none}
+.hc{display:inline-block;border-radius:3px;padding:2px 6px;min-width:52px;text-align:right}
+.tx{color:#F97316!important;font-weight:500!important}
+.mx{color:#374151!important;font-size:10px!important}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;font-size:9px;font-weight:500;flex-shrink:0;margin-right:4px}
+.r1{background:rgba(249,115,22,.3);color:#F97316}
+.r2{background:rgba(156,163,175,.15);color:#9CA3AF}
+.r3{background:rgba(249,115,22,.12);color:#D97706}
+.rn{background:rgba(255,255,255,.05);color:#4B5563}
+.pi{font-size:10px;color:#374151;margin-top:7px}
+.smb{width:100%;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,.07);background:transparent;font-size:12px;color:#4B5563;cursor:pointer;margin-top:8px}
+.smb:hover{color:#6B7280;background:rgba(255,255,255,.03)}
+.div-sep{height:1px;background:rgba(255,255,255,.06);margin:14px 0}
+footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-spacing:1px;text-transform:uppercase}
+
+/* MONTH RANGE PICKER – dark theme */
+.af-mbar{background:#161616;border:1px solid rgba(249,115,22,.2);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
+.af-mbar-label{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;}
+.af-mrange-btn{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:16px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid rgba(249,115,22,.5);color:#F97316;background:rgba(249,115,22,.08);user-select:none;white-space:nowrap;}
+.af-mrange-btn:hover{background:rgba(249,115,22,.15);}
+.af-mrange-btn .caret{font-size:9px;transition:transform .2s;}
+.af-mrange-btn.open .caret{transform:rotate(180deg);}
+.af-mpicker-wrap{position:relative;}
+.af-mpicker-panel{position:absolute;top:calc(100% + 8px);left:0;background:#1A1A1A;border:1.5px solid rgba(249,115,22,.25);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.5);z-index:200;display:none;min-width:580px;}
+.af-mpicker-panel.open{display:flex;}
+.af-backdrop{position:fixed;inset:0;z-index:199;display:none;}
+.af-backdrop.open{display:block;}
+.af-summary{margin-left:auto;font-size:11px;color:#4B5563;white-space:nowrap;}
+.af-mpc-side{display:flex;flex-direction:column;gap:8px;padding:18px 16px;border-right:1px solid rgba(255,255,255,.08);min-width:148px;}
+.af-mpc-side-title{font-size:9px;font-weight:700;color:#4B5563;text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+.af-mpc-pill{padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid rgba(255,255,255,.1);color:#6B7280;background:transparent;text-align:left;transition:all .15s;width:100%;}
+.af-mpc-pill:hover{border-color:#F97316;color:#F97316;}
+.af-mpc-pill.active{background:rgba(249,115,22,.15);color:#F97316;border-color:rgba(249,115,22,.5);}
+.af-mpc-cals{display:flex;flex-direction:column;padding:14px 18px;gap:10px;}
+.af-mpc-cals-row{display:flex;gap:20px;}
+.af-mpc-cal{min-width:195px;}
+.af-mpc-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
+.af-mpc-cal-nav{background:none;border:none;cursor:pointer;font-size:16px;color:#6B7280;padding:2px 6px;border-radius:4px;line-height:1;}
+.af-mpc-cal-nav:hover{color:#F97316;}
+.af-mpc-cal-title{font-size:12px;font-weight:700;color:#D1D5DB;}
+.af-mpc-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
+.af-mpc-dow{font-size:9px;font-weight:700;color:#4B5563;text-align:center;padding:3px 0;}
+.af-mpc-day{font-size:11px;text-align:center;padding:5px 2px;cursor:pointer;border-radius:4px;color:#D1D5DB;}
+.af-mpc-day:hover:not(.af-mpc-disabled):not(.af-mpc-empty){background:rgba(249,115,22,.15);color:#F97316;}
+.af-mpc-day.af-mpc-in-range{background:rgba(249,115,22,.1);color:#D97706;}
+.af-mpc-day.af-mpc-sel-start,.af-mpc-day.af-mpc-sel-end{background:#F97316;color:#fff;}
+.af-mpc-day.af-mpc-disabled{color:#374151;cursor:default;}
+.af-mpc-day.af-mpc-empty{cursor:default;}
+.af-mpc-hint{font-size:10px;color:#4B5563;text-align:center;padding:4px 0;}
+.af-mpc-footer{display:flex;justify-content:flex-end;gap:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.07);}
+.af-mpc-apply{padding:8px 22px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:#F97316;color:#fff;}
+.af-mpc-apply:hover{background:#EA6C10;}
+.af-mpc-cancel{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:transparent;color:#6B7280;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="wh">
+  <img src="https://image.makewebeasy.net/makeweb/m_200x200/GICXTtd1a/wibwub/WIBWUB.png" class="wlogo" alt="WIBWUB" onerror="this.style.display='none'">
+  <div>
+    <div class="wbrand">WIBWUB</div>
+    <div class="wtag">Hyper Cleaning Car · Affiliate Performance Report</div>
+  </div>
+  <div class="wperiod">พฤศจิกายน 2568 — พฤษภาคม 2569<br><span style="color:#F97316;font-size:11px">Net GMV Dashboard</span></div>
+</div>
+
+<!-- Month Range Picker -->
+<div class="af-mbar">
+  <span class="af-mbar-label">📅 ช่วงเวลา:</span>
+  <div class="af-mpicker-wrap">
+    <div class="af-mrange-btn" id="afMRangeBtn" onclick="afTogglePicker()">
+      <span id="afRangeLabel">มค.69 – พค.69</span>
+      <span class="caret">▾</span>
+    </div>
+    <div class="af-backdrop" id="afBackdrop" onclick="afClosePicker()"></div>
+    <div class="af-mpicker-panel" id="afMPickerPanel">
+      <div class="af-mpc-side">
+        <div class="af-mpc-side-title">เลือกด่วน</div>
+        <button class="af-mpc-pill" id="afPill-today" onclick="afPresetRelative('today')">วันนี้</button>
+        <button class="af-mpc-pill" id="afPill-7d" onclick="afPresetRelative('7d')">ย้อนหลัง 7 วัน</button>
+        <button class="af-mpc-pill" id="afPill-30d" onclick="afPresetRelative('30d')">ย้อนหลัง 30 วัน</button>
+        <button class="af-mpc-pill active" id="afPill-year" onclick="afPresetRelative('year')">ตลอดทั้งปีปัจจุบัน</button>
+      </div>
+      <div class="af-mpc-cals">
+        <div class="af-mpc-cals-row">
+          <div class="af-mpc-cal" id="afCalLeft"></div>
+          <div class="af-mpc-cal" id="afCalRight"></div>
+        </div>
+        <div class="af-mpc-hint" id="afCalHint">คลิกเลือกวันเริ่ม</div>
+        <div class="af-mpc-footer">
+          <button class="af-mpc-cancel" onclick="afClosePicker()">ปิด</button>
+          <button class="af-mpc-apply" onclick="afApplyCalRange()">ยืนยัน ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span class="af-summary" id="afSummary"></span>
+</div>
+
+<div class="kg" id="afKpiRow">
+  <div class="kc"><p class="kl">GMV รวมทุกเดือน</p><p class="kv" id="af-kpi-gmv">฿3.40M</p><p class="ks" id="af-kpi-gmv-sub">7 เดือน รวมกัน</p></div>
+  <div class="kc"><p class="kl">Net GMV (หลังหักคืน)</p><p class="kv" id="af-kpi-net">฿3.33M</p><p class="ks" id="af-kpi-net-sub">Refund rate ~2%</p></div>
+  <div class="kc"><p class="kl">ค่าคอมมิชชั่นรวม</p><p class="kv" id="af-kpi-comm">฿422K</p><p class="ks" id="af-kpi-comm-sub">avg 12.4% of GMV</p></div>
+  <div class="kc"><p class="kl">เดือนยอดสูงสุด</p><p class="kv" id="af-kpi-best">เมษา.69</p><p class="ks" id="af-kpi-best-sub">฿708,947 net GMV</p></div>
+</div>
+
+<div class="cg">
+  <div class="cc">
+    <p class="ct">GMV รายเดือน</p>
+    <div class="lr">
+      <span class="li"><span class="ld" style="background:#F97316"></span>GMV</span>
+      <span class="li"><span class="ld" style="background:#3B82F6;border-radius:50%"></span>Net GMV</span>
+      <span class="li"><span class="ld" style="background:#10B981;border-radius:50%"></span>ค่าคอม</span>
+    </div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="gc"></canvas></div>
+  </div>
+  <div class="cc">
+    <p class="ct">จำนวน Creators รายเดือน</p>
+    <div class="lr">
+      <span class="li"><span class="ld" style="background:#A78BFA;border-radius:50%"></span>Creators</span>
+    </div>
+    <div style="position:relative;width:100%;height:200px"><canvas id="cc2"></canvas></div>
+  </div>
+</div>
+
+<div class="div-sep"></div>
+
+<div class="tc2">
+  <p class="sec-label">Net GMV (หลังหักคืนเงิน) แยกรายเดือน</p>
+  <div class="sr" id="sr"></div>
+  <div class="tw">
+    <table id="mt">
+      <colgroup>
+        <col style="width:140px">
+        <col style="width:78px"><col style="width:78px"><col style="width:78px"><col style="width:78px">
+        <col style="width:78px"><col style="width:78px"><col style="width:78px">
+        <col style="width:88px"><col style="width:38px">
+      </colgroup>
+      <thead>
+        <tr>
+          <th onclick="ss('t')" style="text-align:left">Creator</th>
+          <th onclick="ss(0)" id="h0">พย.68</th>
+          <th onclick="ss(1)" id="h1">ธค.68</th>
+          <th onclick="ss(2)" id="h2">มค.69</th>
+          <th onclick="ss(3)" id="h3">กพ.69</th>
+          <th onclick="ss(4)" id="h4">มีนา.69</th>
+          <th onclick="ss(5)" id="h5">เมษา.69</th>
+          <th onclick="ss(6)" id="h6">พค.69*</th>
+          <th onclick="ss('t')" id="ht" class="sa">Net รวม</th>
+          <th style="cursor:default">เดือน</th>
+        </tr>
+      </thead>
+      <tbody id="tb"></tbody>
+    </table>
+  </div>
+  <p class="pi" id="pi"></p>
+  <button class="smb" id="smb" onclick="sm()" style="display:none">+ แสดงเพิ่มเติม</button>
+</div>
+
+<footer>WIBWUB HYPER CLEANING CAR · Affiliate Data Report · Generated 2569</footer>
+
+</div>
+<script>
+const months=["พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
+const gmvD=[288701,347208,461048,550756,655259,724337,388116];
+const netD=[271930,342501,456481,544073,642947,708947,382130];
+const commD=[39439,49419,64612,78138,82886,69235,40132];
+const crD=[266,282,326,706,765,645,371];
+const gridC='rgba(255,255,255,0.07)';
+const tickC='#4B5563';
+
+new Chart(document.getElementById('gc'),{
+  type:'bar',
+  data:{labels:months,datasets:[
+    {label:'GMV',data:gmvD,backgroundColor:'rgba(249,115,22,0.55)',borderColor:'#F97316',borderWidth:1,order:2},
+    {label:'Net GMV',data:netD,type:'line',borderColor:'#3B82F6',backgroundColor:'transparent',borderWidth:2.5,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:'#3B82F6',fill:false,order:1,tension:0.3},
+    {label:'ค่าคอม',data:commD,type:'line',borderColor:'#10B981',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#10B981',fill:false,order:0,tension:0.3}
+  ]},
+  options:{
+    responsive:true,
+    maintainAspectRatio:false,
+    interaction:{mode:'index',intersect:false},
+    plugins:{
+      legend:{display:false},
+      tooltip:{
+        backgroundColor:'#1F1F1F',
+        titleColor:'#E5E7EB',
+        bodyColor:'#9CA3AF',
+        borderColor:'rgba(249,115,22,.4)',
+        borderWidth:1,
+        padding:12,
+        titleFont:{size:12,weight:'500'},
+        bodyFont:{size:12},
+        callbacks:{
+          title:items=>`📅 ${items[0].label}`,
+          label:ctx=>{
+            const v=ctx.parsed.y;
+            const lbl=ctx.dataset.label;
+            const prefix=lbl==='GMV'?'📊':lbl==='Net GMV'?'💰':'🏷️';
+            return` ${prefix} ${lbl}:  ฿${v.toLocaleString()}`;
+          },
+          afterBody:items=>{
+            const gmv=items.find(i=>i.dataset.label==='GMV')?.parsed.y||0;
+            const net=items.find(i=>i.dataset.label==='Net GMV')?.parsed.y||0;
+            const comm=items.find(i=>i.dataset.label==='ค่าคอม')?.parsed.y||0;
+            const refund=gmv-net;
+            const commPct=((comm/gmv)*100).toFixed(1);
+            const refundPct=((refund/gmv)*100).toFixed(1);
+            return['',` 🔄 คืนเงิน:  ฿${refund.toLocaleString()} (${refundPct}%)`,` 📈 คอม/GMV:  ${commPct}%`];
+          }
+        }
+      }
+    },
+    scales:{
+      x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},
+      y:{ticks:{color:tickC,font:{size:10},callback:v=>'฿'+(v>=1000?Math.round(v/1000)+'K':v)},grid:{color:gridC}}
+    }
+  }
+});
+
+new Chart(document.getElementById('cc2'),{type:'line',data:{labels:months,datasets:[{label:'Creators',data:crD,borderColor:'#A78BFA',backgroundColor:'rgba(167,139,250,0.1)',borderWidth:2,pointRadius:5,pointBackgroundColor:'#A78BFA',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',callbacks:{label:c=>`${c.parsed.y.toLocaleString()} คน`}}},scales:{x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},y:{ticks:{color:tickC,font:{size:10}},grid:{color:gridC}}}}});
+
+const raw=[
+  {n:"rita.fe_",t:372456,ma:7,mn:[13997,53544,71718,72098,75273,61408,24417]},
+  {n:"jarkkystory",t:139660,ma:7,mn:[7061,21237,30546,20819,30903,23877,5217]},
+  {n:"fahareejun",t:136397,ma:2,mn:[null,null,null,null,null,29331,107066]},
+  {n:"noonjourneyyy",t:134487,ma:4,mn:[null,null,null,40792,35232,44803,13660]},
+  {n:"muchmai_mumi",t:118718,ma:7,mn:[558,397,5796,42670,31897,26324,11076]},
+  {n:"pailong05",t:99489,ma:3,mn:[null,null,null,null,14830,67105,17554]},
+  {n:"phanuwatinsri",t:95711,ma:7,mn:[17919,8440,9019,10956,20766,18440,10170]},
+  {n:"ralph.detailing8",t:94005,ma:7,mn:[1794,7237,16427,14622,19175,21249,13502]},
+  {n:"thekataecx30",t:92392,ma:7,mn:[33381,3120,6283,12485,9705,22891,4527]},
+  {n:"jaonnm",t:70723,ma:5,mn:[12928,13185,12961,17400,14249,null,null]},
+  {n:"evee.vespa",t:68199,ma:7,mn:[6030,14136,13048,11914,10592,8992,3488]},
+  {n:"melodylotto",t:66229,ma:7,mn:[7644,8691,11160,7484,13029,15426,2795]},
+  {n:"_ijstagram",t:65799,ma:7,mn:[3802,6807,3985,10209,13609,21179,6208]},
+  {n:"rrak_kk",t:65604,ma:7,mn:[10756,2483,5207,9674,14409,16644,6431]},
+  {n:"taaum234",t:58280,ma:7,mn:[23446,2603,2941,8728,13900,5533,1129]},
+  {n:"plearntumarai",t:48444,ma:4,mn:[null,null,null,6852,12638,19653,9301]},
+  {n:"mushinyiwz",t:47858,ma:5,mn:[null,null,15490,20382,9265,1341,1379]},
+  {n:"orion_risingstar",t:46555,ma:4,mn:[null,null,null,8448,15588,14800,7719]},
+  {n:"numtonn",t:41017,ma:5,mn:[null,null,2297,21832,5030,10405,1454]},
+  {n:"nnhtr_",t:37150,ma:2,mn:[null,null,null,null,null,24292,12858]},
+  {n:"punch_chalita8",t:36951,ma:7,mn:[431,5065,10087,2940,6923,9383,2122]},
+  {n:"rouey_sook",t:36903,ma:7,mn:[5578,8699,11963,2887,4313,2090,1372]},
+  {n:"papajate",t:30398,ma:5,mn:[0,null,null,8105,10417,8300,3576]},
+  {n:"ploypimlaplus",t:30201,ma:7,mn:[981,486,2563,3943,8308,10067,3853]},
+  {n:"poppyme.6",t:27660,ma:3,mn:[null,null,null,null,13386,10912,3363]},
+  {n:"tonpalm__",t:26835,ma:7,mn:[2633,8952,7903,3649,2207,1204,287]},
+  {n:"ctl.mkzk",t:22601,ma:7,mn:[4475,2581,4004,4141,3178,3555,667]},
+  {n:"japann.story",t:19461,ma:7,mn:[2539,2709,5143,2947,1163,3518,1443]},
+  {n:"manutsananpibanwo",t:18552,ma:6,mn:[237,4973,6602,1284,4354,1100,null]},
+  {n:"duan4088",t:18025,ma:7,mn:[135,11269,6050,134,154,195,88]},
+  {n:"joakrw",t:16575,ma:7,mn:[4100,648,1293,3460,2922,1290,2863]},
+  {n:"calvyn.s",t:16236,ma:7,mn:[1050,1170,6621,2973,2830,1410,181]},
+  {n:"aoohphonhan",t:15927,ma:7,mn:[337,277,2760,0,6277,5878,398]},
+  {n:"teetathlimchuwong",t:15146,ma:6,mn:[0,null,390,7969,3806,1788,1193]},
+  {n:"iceshop45_",t:15023,ma:7,mn:[2906,4581,2416,1472,2431,862,356]},
+  {n:"tangkwaky",t:14727,ma:6,mn:[null,1108,3806,3375,2461,3115,862]},
+  {n:"ceo.blk.item",t:12153,ma:2,mn:[null,null,null,null,null,5957,6196]},
+  {n:"krunid_",t:11963,ma:6,mn:[2886,1970,2653,2128,1556,770,null]},
+  {n:"view.miipro",t:11903,ma:6,mn:[null,1388,7264,1140,1046,993,72]},
+  {n:"somkidkongchom",t:11442,ma:4,mn:[null,null,null,417,2477,6016,2533]}
+];
+
+const maxV=Math.max(...raw.flatMap(r=>r.mn.filter(v=>v!=null)));
+let cur='t',cnt=20,sd=[...raw];
+
+function hc(v){
+  if(v==null)return null;
+  const r=v/maxV;
+  if(r===0)return null;
+  if(r<0.08)return{bg:'rgba(249,115,22,0.07)',c:'#92400E'};
+  if(r<0.2)return{bg:'rgba(249,115,22,0.15)',c:'#B45309'};
+  if(r<0.4)return{bg:'rgba(249,115,22,0.28)',c:'#D97706'};
+  if(r<0.65)return{bg:'rgba(249,115,22,0.45)',c:'#F97316'};
+  return{bg:'rgba(249,115,22,0.7)',c:'#FED7AA'};
+}
+function fmt(v){
+  if(v==null)return'<span style="color:#374151;font-size:10px">—</span>';
+  if(v===0)return'<span style="color:#374151;font-size:10px">0</span>';
+  const h=hc(v);
+  const t=v>=1000?(v/1000).toFixed(1)+'K':v;
+  if(!h)return`<span style="color:#374151;font-size:10px">฿${t}</span>`;
+  return`<span class="hc" style="background:${h.bg};color:${h.c}">฿${t}</span>`;
+}
+function fmtT(v){
+  if(v>=1000000)return'฿'+(v/1000000).toFixed(2)+'M';
+  if(v>=1000)return'฿'+(v/1000).toFixed(1)+'K';
+  return'฿'+v;
+}
+function rt(){
+  const sl=sd.slice(0,cnt);
+  document.getElementById('tb').innerHTML=sl.map((r,i)=>{
+    const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+    return`<tr><td title="${r.n}"><span class="rk ${rc}">${i+1}</span>${r.n}</td>${r.mn.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tx">${fmtT(r.t)}</td><td class="mx">${r.ma}/7</td></tr>`;
+  }).join('');
+  document.getElementById('pi').textContent=`แสดง ${Math.min(cnt,sd.length)} จาก ${sd.length} creators`;
+  document.getElementById('smb').style.display=cnt>=sd.length?'none':'block';
+}
+function ss(k){
+  cur=k;cnt=20;
+  sd=k==='t'?[...raw].sort((a,b)=>b.t-a.t):[...raw].sort((a,b)=>(b.mn[k]??-1)-(a.mn[k]??-1));
+  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('a'));
+  document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sa'));
+  const bid=k==='t'?'bt':'b'+k;
+  const thid=k==='t'?'ht':'h'+k;
+  document.getElementById(bid)?.classList.add('a');
+  document.getElementById(thid)?.classList.add('sa');
+  rt();
+}
+function sm(){cnt+=20;rt();}
+
+const bKeys=['t',0,1,2,3,4,5,6];
+const bLabels=["ทั้งหมด", "พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
+const bIds=['bt','b0','b1','b2','b3','b4','b5','b6'];
+document.getElementById('sr').innerHTML=bKeys.map((k,i)=>`<button class="sb${k==='t'?' a':''}" id="${bIds[i]}" onclick="ss(${JSON.stringify(k)})">${bLabels[i]}</button>`).join('');
+rt();
+
+// ── AFFILIATE DUAL-CALENDAR PICKER ──
+const AF_DATE_MIN = '2025-11-01';
+const AF_DATE_MAX = '2026-05-31';
+const AF_MONTH_BOUNDS = [
+  {s:'2025-11-01',e:'2025-11-30'},{s:'2025-12-01',e:'2025-12-31'},
+  {s:'2026-01-01',e:'2026-01-31'},{s:'2026-02-01',e:'2026-02-28'},
+  {s:'2026-03-01',e:'2026-03-31'},{s:'2026-04-01',e:'2026-04-30'},
+  {s:'2026-05-01',e:'2026-05-31'}
+];
+let afRS=2, afRE=6;
+let afDraftStart='2026-01-01', afDraftEnd=AF_DATE_MAX;
+let afCalStep=0;
+let afCalLeft={y:2026,m:0}, afCalRight={y:2026,m:1};
+const AF_THAI_MONTHS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const AF_DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const afML=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
+
+function afParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function afFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function afFmtThai(s){const d=afParseDate(s);return d.getDate()+' '+AF_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
+function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(s)+' – '+afFmtThai(e);}
+
+function afRangeToMonths(s,e){
+  const sd=afParseDate(s),ed=afParseDate(e);
+  let first=-1,last=-1;
+  for(let i=0;i<AF_MONTH_BOUNDS.length;i++){
+    const ms=afParseDate(AF_MONTH_BOUNDS[i].s),me=afParseDate(AF_MONTH_BOUNDS[i].e);
+    if(sd<=me&&ed>=ms){if(first===-1)first=i;last=i;}
+  }
+  return first===-1?[0,0]:[first,last];
+}
+
+function afRenderCal(cid,cal){
+  const el=document.getElementById(cid);if(!el)return;
+  const{y,m}=cal;
+  const minD=afParseDate(AF_DATE_MIN),maxD=afParseDate(AF_DATE_MAX);
+  const selS=afDraftStart?afParseDate(afDraftStart):null;
+  const selE=afDraftEnd?afParseDate(afDraftEnd):null;
+  let h=`<div class="af-mpc-cal-head"><button class="af-mpc-cal-nav" onclick="afNavCal('${cid}',-1)">&#8249;</button><span class="af-mpc-cal-title">${AF_THAI_MONTHS[m]} ${y+543}</span><button class="af-mpc-cal-nav" onclick="afNavCal('${cid}',1)">&#8250;</button></div><div class="af-mpc-cal-grid">`;
+  AF_DOW.forEach(d=>{h+=`<div class="af-mpc-dow">${d}</div>`;});
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
+  for(let i=0;i<fd;i++)h+=`<div class="af-mpc-day af-mpc-empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const cur=new Date(y,m,d),cs=afFmtDate(cur);
+    const dis=cur<minD||cur>maxD;
+    let cls='af-mpc-day';
+    if(dis)cls+=' af-mpc-disabled';
+    else if(selS&&selE){
+      if(cs===afDraftStart)cls+=' af-mpc-sel-start';
+      else if(cs===afDraftEnd)cls+=' af-mpc-sel-end';
+      else if(cur>selS&&cur<selE)cls+=' af-mpc-in-range';
+    }else if(selS&&cs===afDraftStart)cls+=' af-mpc-sel-start';
+    const cl=dis?'':`onclick="afDayClick('${cs}')"`;
+    h+=`<div class="${cls}" ${cl}>${d}</div>`;
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+function afNavCal(cid,dir){
+  const c=cid==='afCalLeft'?afCalLeft:afCalRight;
+  c.m+=dir;if(c.m<0){c.m=11;c.y--;}if(c.m>11){c.m=0;c.y++;}
+  afRenderCals();
+}
+function afRenderCals(){afRenderCal('afCalLeft',afCalLeft);afRenderCal('afCalRight',afCalRight);}
+
+function afDayClick(ds){
+  const minD=afParseDate(AF_DATE_MIN),maxD=afParseDate(AF_DATE_MAX),d=afParseDate(ds);
+  if(d<minD||d>maxD)return;
+  if(afCalStep===0){afDraftStart=ds;afDraftEnd=ds;afCalStep=1;}
+  else{
+    if(ds<afDraftStart){afDraftEnd=afDraftStart;afDraftStart=ds;}
+    else afDraftEnd=ds;
+    afCalStep=0;
+  }
+  const hint=document.getElementById('afCalHint');
+  if(hint)hint.textContent=afCalStep===0?afRangeLabel(afDraftStart,afDraftEnd):'คลิกเลือกวันสิ้นสุด';
+  afHighlightPills();afRenderCals();
+}
+function afHighlightPills(){
+  document.querySelectorAll('.af-mpc-pill').forEach(b=>b.classList.remove('active'));
+  const today=new Date();today.setHours(0,0,0,0);
+  const minD=afParseDate(AF_DATE_MIN),maxD=afParseDate(AF_DATE_MAX);
+  const clamp=d=>d<minD?minD:(d>maxD?maxD:d);
+  const fmt=d=>afFmtDate(d);
+  const t7=new Date(today);t7.setDate(t7.getDate()-6);
+  const t30=new Date(today);t30.setDate(t30.getDate()-29);
+  const yr=new Date(today.getFullYear(),0,1);
+  const presets={'today':{s:fmt(clamp(today)),e:fmt(clamp(today))},'7d':{s:fmt(clamp(t7)),e:fmt(clamp(today))},'30d':{s:fmt(clamp(t30)),e:fmt(clamp(today))},'year':{s:fmt(clamp(yr)),e:fmt(clamp(today))}};
+  for(const[type,{s,e}]of Object.entries(presets)){
+    if(afDraftStart===s&&afDraftEnd===e){document.getElementById('afPill-'+type)?.classList.add('active');break;}
+  }
+}
+function afPresetRelative(type){
+  const today=new Date();today.setHours(0,0,0,0);
+  const minD=afParseDate(AF_DATE_MIN),maxD=afParseDate(AF_DATE_MAX);
+  const clamp=d=>d<minD?minD:(d>maxD?maxD:d);
+  let s,e;
+  if(type==='today'){s=e=clamp(today);}
+  else if(type==='7d'){const t7=new Date(today);t7.setDate(t7.getDate()-6);s=clamp(t7);e=clamp(today);}
+  else if(type==='30d'){const t30=new Date(today);t30.setDate(t30.getDate()-29);s=clamp(t30);e=clamp(today);}
+  else{const yr=new Date(today.getFullYear(),0,1);s=clamp(yr);e=clamp(today);}
+  afDraftStart=afFmtDate(s);afDraftEnd=afFmtDate(e);
+  afCalStep=0;
+  document.querySelectorAll('.af-mpc-pill').forEach(b=>b.classList.remove('active'));
+  document.getElementById('afPill-'+type)?.classList.add('active');
+  const hint=document.getElementById('afCalHint');
+  if(hint)hint.textContent=afRangeLabel(afDraftStart,afDraftEnd);
+  afCalLeft={y:s.getFullYear(),m:s.getMonth()};
+  afCalRight={y:s.getFullYear(),m:s.getMonth()+1};
+  if(afCalRight.m>11){afCalRight.m=0;afCalRight.y++;}
+  afRenderCals();
+}
+function afApplyCalRange(){
+  const[ms,me]=afRangeToMonths(afDraftStart,afDraftEnd);
+  afClosePicker();
+  afApplyRange(ms,me);
+}
+function afTogglePicker(){
+  const panel=document.getElementById('afMPickerPanel');
+  const btn=document.getElementById('afMRangeBtn');
+  const bd=document.getElementById('afBackdrop');
+  const isOpen=panel.classList.contains('open');
+  panel.classList.toggle('open',!isOpen);
+  btn.classList.toggle('open',!isOpen);
+  bd.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    afCalStep=0;
+    const hint=document.getElementById('afCalHint');
+    if(hint)hint.textContent=afRangeLabel(afDraftStart,afDraftEnd);
+    afRenderCals();
+  }
+}
+function afClosePicker(){
+  document.getElementById('afMPickerPanel').classList.remove('open');
+  document.getElementById('afMRangeBtn').classList.remove('open');
+  document.getElementById('afBackdrop').classList.remove('open');
+  afCalStep=0;
+}
+function afRefreshUI(){}
+
+function afApplyRange(s,e){
+  afRS=s;afRE=e;
+  afRefreshUI(s,e);
+  const lbl=s===e?afML[s]:`${afML[s]} – ${afML[e]}`;
+  document.getElementById('afRangeLabel').textContent=lbl;
+  const n=e-s+1;
+
+  // Sum data over range
+  const gmvSum=gmvD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const netSum=netD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const commSum=commD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const refund=gmvSum-netSum;
+  const refundPct=gmvSum>0?(refund/gmvSum*100).toFixed(1):0;
+  const commPct=gmvSum>0?(commSum/gmvSum*100).toFixed(1):0;
+
+  // Best month in range
+  let bestIdx=s,bestVal=netD[s];
+  for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
+
+  // Format
+  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
+  document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
+  document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
+  document.getElementById('af-kpi-net').textContent=fv(netSum);
+  document.getElementById('af-kpi-net-sub').textContent=`Refund rate ~${refundPct}%`;
+  document.getElementById('af-kpi-comm').textContent=fv(commSum);
+  document.getElementById('af-kpi-comm-sub').textContent=`avg ${commPct}% of GMV`;
+  document.getElementById('af-kpi-best').textContent=afML[bestIdx];
+  document.getElementById('af-kpi-best-sub').textContent=`฿${bestVal.toLocaleString()} net GMV`;
+  document.getElementById('afSummary').textContent=`รวม: ${fv(netSum)} net GMV · ${n} เดือน`;
+
+  // Show/hide table columns (columns 1..7 = months 0..6)
+  const colEls=document.querySelectorAll('#mt colgroup col');
+  const thEls=document.querySelectorAll('#mt thead th');
+  document.querySelectorAll('#mt tbody tr').forEach(row=>{
+    const cells=row.querySelectorAll('td');
+    for(let i=0;i<7;i++){
+      const vis=i>=s&&i<=e;
+      if(cells[i+1])cells[i+1].style.display=vis?'':'none';
+    }
+  });
+  thEls.forEach((th,i)=>{
+    if(i>=1&&i<=7)th.style.display=(i-1>=s&&i-1<=e)?'':'none';
+  });
+  if(colEls){colEls.forEach((c,i)=>{if(i>=1&&i<=7)c.style.display=(i-1>=s&&i-1<=e)?'':'none';});}
+
+  // Highlight chart
+  const inR=i=>i>=s&&i<=e;
+  const hlBg=i=>inR(i)?'rgba(249,115,22,0.65)':'rgba(249,115,22,0.2)';
+  const hlPt=i=>inR(i)?6:3;
+  // Update chart if it exists (Chart.js 4: getChart requires canvas element, not string ID)
+  const gc=Chart.getChart(document.getElementById('gc'));
+  if(gc){
+    gc.data.datasets[0].backgroundColor=Array.from({length:7},(_,i)=>hlBg(i));
+    gc.data.datasets[1].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    gc.data.datasets[2].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    gc.update();
+  }
+  const cc2c=Chart.getChart(document.getElementById('cc2'));
+  if(cc2c){
+    cc2c.data.datasets[0].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    cc2c.update();
+  }
+}
+
+// Init – show all months
+afApplyRange(2,6);
+</script>
+</body>
+</html>

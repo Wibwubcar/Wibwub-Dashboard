@@ -1,0 +1,1301 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Company Dashboard</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #f4f6fb;
+      --sidebar: #1e2a3a;
+      --sidebar-text: #a8b8cc;
+      --sidebar-active: #ffffff;
+      --card: #ffffff;
+      --border: #e5eaf2;
+      --text: #1a2233;
+      --text-muted: #7a8599;
+      --primary: #4f7ef8;
+      --success: #22c55e;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --teal: #14b8a6;
+      --shadow: 0 2px 12px rgba(0,0,0,0.07);
+      --radius: 14px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: 240px;
+      min-height: 100vh;
+      background: var(--sidebar);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      z-index: 100;
+      transition: width .3s;
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .logo-icon {
+      width: 38px; height: 38px;
+      background: var(--primary);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #fff; font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .logo-text { font-size: 16px; font-weight: 700; color: #fff; }
+    .logo-sub  { font-size: 11px; color: var(--sidebar-text); }
+
+    .sidebar-nav { flex: 1; padding: 16px 0; }
+
+    .nav-section { padding: 12px 20px 6px; font-size: 10px; font-weight: 700; color: rgba(168,184,204,.5); letter-spacing: 1px; text-transform: uppercase; }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 11px 20px;
+      cursor: pointer;
+      color: var(--sidebar-text);
+      font-size: 14px; font-weight: 500;
+      border-left: 3px solid transparent;
+      transition: all .2s;
+    }
+    .nav-item:hover { color: #fff; background: rgba(255,255,255,.06); }
+    .nav-item.active { color: #fff; background: rgba(79,126,248,.18); border-left-color: var(--primary); }
+    .nav-item .icon { font-size: 17px; width: 22px; text-align: center; }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,.07);
+    }
+    .user-chip {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .user-avatar {
+      width: 34px; height: 34px; background: var(--primary);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      color: #fff; font-weight: 700; font-size: 13px; flex-shrink: 0;
+    }
+    .user-name  { font-size: 13px; font-weight: 600; color: #fff; }
+    .user-role  { font-size: 11px; color: var(--sidebar-text); }
+
+    /* ── MAIN ── */
+    .main {
+      margin-left: 240px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--card);
+      padding: 16px 28px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 90;
+    }
+
+    .topbar-title { font-size: 20px; font-weight: 700; }
+    .topbar-date  { font-size: 13px; color: var(--text-muted); }
+
+    .topbar-actions { display: flex; gap: 10px; align-items: center; }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; border: none;
+      transition: all .2s;
+    }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: #3b68e8; }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+    .btn-ghost:hover { background: var(--bg); }
+
+    .notif-btn {
+      width: 38px; height: 38px;
+      border-radius: 8px; background: var(--bg);
+      border: 1px solid var(--border);
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      font-size: 17px; position: relative;
+    }
+    .notif-dot {
+      position: absolute; top: 6px; right: 6px;
+      width: 8px; height: 8px;
+      background: var(--danger); border-radius: 50%;
+      border: 2px solid #fff;
+    }
+
+    /* ── CONTENT ── */
+    .content { padding: 28px; flex: 1; }
+
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex; gap: 4px;
+      background: var(--card);
+      padding: 5px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      display: inline-flex;
+      margin-bottom: 24px;
+    }
+    .tab {
+      padding: 8px 18px; border-radius: 7px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer; transition: all .2s;
+      color: var(--text-muted);
+    }
+    .tab.active { background: var(--primary); color: #fff; }
+    .tab:hover:not(.active) { background: var(--bg); color: var(--text); }
+
+    /* ── KPI CARDS ── */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .kpi-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+    }
+    .kpi-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+    }
+    .kpi-card.blue::before  { background: var(--primary); }
+    .kpi-card.green::before { background: var(--success); }
+    .kpi-card.orange::before{ background: var(--warning); }
+    .kpi-card.red::before   { background: var(--danger); }
+    .kpi-card.purple::before{ background: var(--purple); }
+    .kpi-card.teal::before  { background: var(--teal); }
+
+    .kpi-label { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: .5px; }
+    .kpi-value { font-size: 28px; font-weight: 800; margin: 8px 0 4px; }
+    .kpi-change { font-size: 12px; font-weight: 600; }
+    .kpi-change.up   { color: var(--success); }
+    .kpi-change.down { color: var(--danger); }
+    .kpi-icon {
+      position: absolute; top: 18px; right: 18px;
+      font-size: 28px; opacity: .15;
+    }
+
+    /* ── CHART CARDS ── */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .chart-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    .chart-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+
+    .chart-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+    }
+    .chart-title {
+      font-size: 15px; font-weight: 700;
+      margin-bottom: 4px;
+    }
+    .chart-sub {
+      font-size: 12px; color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+    .chart-canvas-wrap { position: relative; }
+
+    /* ── TABLE ── */
+    .table-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .table-header {
+      padding: 18px 22px;
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+    }
+    .table-header h3 { font-size: 15px; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      padding: 12px 18px;
+      font-size: 11px; font-weight: 700; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: .5px;
+      text-align: left;
+      background: var(--bg);
+      border-bottom: 1px solid var(--border);
+    }
+    td {
+      padding: 13px 18px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #fafbff; }
+
+    /* ── BADGE ── */
+    .badge {
+      display: inline-flex; align-items: center;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+    }
+    .badge-green  { background: #dcfce7; color: #15803d; }
+    .badge-blue   { background: #dbeafe; color: #1d4ed8; }
+    .badge-orange { background: #fff7ed; color: #c2410c; }
+    .badge-red    { background: #fee2e2; color: #dc2626; }
+    .badge-purple { background: #ede9fe; color: #6d28d9; }
+    .badge-gray   { background: #f1f5f9; color: #64748b; }
+
+    /* ── PROGRESS ── */
+    .progress-bar {
+      height: 7px; background: var(--border);
+      border-radius: 4px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 4px;
+      transition: width 1s ease;
+    }
+
+    /* ── AVATAR ── */
+    .avatar {
+      width: 32px; height: 32px;
+      border-radius: 50%; display: inline-flex;
+      align-items: center; justify-content: center;
+      font-weight: 700; font-size: 12px; color: #fff;
+      flex-shrink: 0;
+    }
+    .avatar-group { display: flex; }
+    .avatar-group .avatar { margin-left: -8px; border: 2px solid #fff; }
+    .avatar-group .avatar:first-child { margin-left: 0; }
+
+    /* ── TASK BOARD ── */
+    .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+    .kanban-col {
+      background: var(--bg);
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      padding: 14px;
+    }
+    .kanban-col-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .kanban-col-title { font-size: 13px; font-weight: 700; }
+    .kanban-count {
+      background: var(--border); border-radius: 20px;
+      padding: 2px 8px; font-size: 11px; font-weight: 700;
+    }
+    .task-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      margin-bottom: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.05);
+      cursor: pointer;
+      transition: box-shadow .2s;
+    }
+    .task-card:hover { box-shadow: 0 4px 14px rgba(0,0,0,.1); }
+    .task-card-title { font-size: 13px; font-weight: 600; margin-bottom: 8px; }
+    .task-card-meta { font-size: 11px; color: var(--text-muted); margin-top: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .task-tag {
+      font-size: 10px; font-weight: 700;
+      padding: 2px 8px; border-radius: 4px;
+    }
+
+    /* ── HR ── */
+    .hr-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 18px; margin-bottom: 24px; }
+    .employee-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      display: flex; gap: 14px; align-items: center;
+    }
+    .emp-avatar {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 800; color: #fff;
+      flex-shrink: 0;
+    }
+    .emp-name  { font-size: 14px; font-weight: 700; }
+    .emp-role  { font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+    .emp-status { display: flex; align-items: center; gap: 5px; font-size: 12px; }
+    .status-dot {
+      width: 7px; height: 7px; border-radius: 50%;
+    }
+    .dot-green  { background: var(--success); }
+    .dot-orange { background: var(--warning); }
+    .dot-gray   { background: #94a3b8; }
+
+    /* ── SOCIAL ── */
+    .social-platform {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .platform-icon {
+      width: 34px; height: 34px; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width: 900px){
+      .chart-grid { grid-template-columns: 1fr; }
+      .chart-grid-3 { grid-template-columns: 1fr; }
+      .kanban { grid-template-columns: repeat(2,1fr); }
+    }
+    @media(max-width: 640px){
+      .sidebar { width: 64px; }
+      .logo-text, .logo-sub, .nav-item span, .nav-section, .user-name, .user-role { display: none; }
+      .main { margin-left: 64px; }
+      .kpi-grid { grid-template-columns: repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">C</div>
+    <div>
+      <div class="logo-text">CompanyHQ</div>
+      <div class="logo-sub">Business Dashboard</div>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-section">ภาพรวม</div>
+    <div class="nav-item active" onclick="showSection('overview', this)">
+      <span class="icon">🏠</span><span>ภาพรวม</span>
+    </div>
+
+    <div class="nav-section">ธุรกิจ</div>
+    <div class="nav-item" onclick="showSection('sales', this)">
+      <span class="icon">💰</span><span>ยอดขาย & รายได้</span>
+    </div>
+    <div class="nav-item" onclick="showSection('social', this)">
+      <span class="icon">📣</span><span>Social Media</span>
+    </div>
+
+    <div class="nav-section">ทีม</div>
+    <div class="nav-item" onclick="showSection('hr', this)">
+      <span class="icon">👥</span><span>HR & พนักงาน</span>
+    </div>
+    <div class="nav-item" onclick="showSection('projects', this)">
+      <span class="icon">📋</span><span>Projects & Tasks</span>
+    </div>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar">A</div>
+      <div>
+        <div class="user-name">Admin</div>
+        <div class="user-role">Manager</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ── MAIN ── -->
+<div class="main">
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div>
+      <div class="topbar-title" id="page-title">ภาพรวมองค์กร</div>
+      <div class="topbar-date" id="page-date"></div>
+    </div>
+    <div class="topbar-actions">
+      <div class="notif-btn">🔔<span class="notif-dot"></span></div>
+      <button class="btn btn-ghost" onclick="exportData()">⬇ Export</button>
+      <button class="btn btn-primary">+ เพิ่มข้อมูล</button>
+    </div>
+  </header>
+
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <!-- ══════ OVERVIEW ══════ -->
+    <section id="overview" class="section active">
+      <div class="tabs">
+        <div class="tab active">มกราคม - พฤษภาคม 2569</div>
+        <div class="tab">รายสัปดาห์</div>
+        <div class="tab">วันนี้</div>
+      </div>
+
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">รายได้รวม</div>
+          <div class="kpi-value">฿4.8M</div>
+          <div class="kpi-change up">↑ 12.4% จากเดือนที่แล้ว</div>
+          <div class="kpi-icon">💰</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">ยอดขายใหม่</div>
+          <div class="kpi-value">1,248</div>
+          <div class="kpi-change up">↑ 8.1% จากเดือนที่แล้ว</div>
+          <div class="kpi-icon">🛒</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">พนักงานทั้งหมด</div>
+          <div class="kpi-value">64</div>
+          <div class="kpi-change up">↑ 3 คนใหม่เดือนนี้</div>
+          <div class="kpi-icon">👥</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">โปรเจคที่ดำเนินอยู่</div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-change up">↑ 4 โปรเจคใหม่</div>
+          <div class="kpi-icon">📋</div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-label">Followers รวม</div>
+          <div class="kpi-value">186K</div>
+          <div class="kpi-change up">↑ 5.2% จากเดือนที่แล้ว</div>
+          <div class="kpi-icon">📣</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">ค่าใช้จ่าย</div>
+          <div class="kpi-value">฿1.9M</div>
+          <div class="kpi-change down">↑ 3.2% จากเดือนที่แล้ว</div>
+          <div class="kpi-icon">📊</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">รายได้รายเดือน</div>
+          <div class="chart-sub">ปี 2569</div>
+          <div class="chart-canvas-wrap"><canvas id="revenueChart" height="90"></canvas></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">สัดส่วนรายได้</div>
+          <div class="chart-sub">แบ่งตามแผนก</div>
+          <div class="chart-canvas-wrap"><canvas id="deptDonut" height="180"></canvas></div>
+        </div>
+      </div>
+
+      <div class="chart-grid-3">
+        <div class="chart-card">
+          <div class="chart-title">Social Media Reach</div>
+          <div class="chart-sub">ทุก Platform</div>
+          <canvas id="socialBar" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">สถานะโปรเจค</div>
+          <div class="chart-sub">ทั้งหมด 18 โปรเจค</div>
+          <canvas id="projectDonut" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">อัตราการเข้างาน</div>
+          <div class="chart-sub">5 วันล่าสุด</div>
+          <canvas id="attendanceBar" height="180"></canvas>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════ SALES ══════ -->
+    <section id="sales" class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">รายได้เดือนนี้</div>
+          <div class="kpi-value">฿1.24M</div>
+          <div class="kpi-change up">↑ 14% เทียบปีก่อน</div>
+          <div class="kpi-icon">💰</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">กำไรสุทธิ</div>
+          <div class="kpi-value">฿387K</div>
+          <div class="kpi-change up">↑ 9.8%</div>
+          <div class="kpi-icon">📈</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">ออเดอร์ใหม่</div>
+          <div class="kpi-value">342</div>
+          <div class="kpi-change up">↑ 6.2%</div>
+          <div class="kpi-icon">🛒</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">ยกเลิก</div>
+          <div class="kpi-value">17</div>
+          <div class="kpi-change down">↑ 2 รายการ</div>
+          <div class="kpi-icon">❌</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">รายได้ vs ค่าใช้จ่าย vs กำไร</div>
+          <div class="chart-sub">ย้อนหลัง 6 เดือน</div>
+          <canvas id="salesLineChart" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">ยอดขายแยกหมวดสินค้า</div>
+          <div class="chart-sub">เดือนนี้</div>
+          <canvas id="categoryDonut" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>รายการขายล่าสุด</h3>
+          <button class="btn btn-ghost" style="font-size:12px;">ดูทั้งหมด →</button>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th>ออเดอร์</th>
+              <th>ลูกค้า</th>
+              <th>สินค้า</th>
+              <th>ยอด</th>
+              <th>วันที่</th>
+              <th>สถานะ</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>#ORD-2025</td><td>บริษัท ABC จำกัด</td><td>Package Pro</td><td>฿42,000</td><td>12 พ.ค. 69</td><td><span class="badge badge-green">ชำระแล้ว</span></td></tr>
+            <tr><td>#ORD-2024</td><td>ร้าน XYZ</td><td>Package Basic</td><td>฿12,500</td><td>11 พ.ค. 69</td><td><span class="badge badge-green">ชำระแล้ว</span></td></tr>
+            <tr><td>#ORD-2023</td><td>คุณสมชาย ใจดี</td><td>Consulting 1 วัน</td><td>฿28,000</td><td>10 พ.ค. 69</td><td><span class="badge badge-orange">รอชำระ</span></td></tr>
+            <tr><td>#ORD-2022</td><td>บริษัท DEF</td><td>Package Enterprise</td><td>฿95,000</td><td>9 พ.ค. 69</td><td><span class="badge badge-blue">ดำเนินการ</span></td></tr>
+            <tr><td>#ORD-2021</td><td>คุณมาลี สุขใจ</td><td>Package Basic</td><td>฿12,500</td><td>8 พ.ค. 69</td><td><span class="badge badge-red">ยกเลิก</span></td></tr>
+            <tr><td>#ORD-2020</td><td>บริษัท GHI</td><td>Consulting 3 วัน</td><td>฿75,000</td><td>7 พ.ค. 69</td><td><span class="badge badge-green">ชำระแล้ว</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════ SOCIAL MEDIA ══════ -->
+    <section id="social" class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">TikTok Followers</div>
+          <div class="kpi-value">128K</div>
+          <div class="kpi-change up">↑ 8.4%</div>
+          <div class="kpi-icon">🎵</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">Instagram Followers</div>
+          <div class="kpi-value">42K</div>
+          <div class="kpi-change up">↑ 2.1%</div>
+          <div class="kpi-icon">📷</div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-label">Facebook Likes</div>
+          <div class="kpi-value">16K</div>
+          <div class="kpi-change up">↑ 1.3%</div>
+          <div class="kpi-icon">👍</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">Engagement Rate</div>
+          <div class="kpi-value">6.8%</div>
+          <div class="kpi-change up">↑ 0.5%</div>
+          <div class="kpi-icon">❤️</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">Total Views (เดือน)</div>
+          <div class="kpi-value">2.4M</div>
+          <div class="kpi-change up">↑ 18.2%</div>
+          <div class="kpi-icon">👁</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">Reach</div>
+          <div class="kpi-value">890K</div>
+          <div class="kpi-change up">↑ 11.7%</div>
+          <div class="kpi-icon">📡</div>
+        </div>
+      </div>
+
+      <div class="chart-grid">
+        <div class="chart-card">
+          <div class="chart-title">Follower Growth</div>
+          <div class="chart-sub">ทุก Platform ย้อนหลัง 6 เดือน</div>
+          <canvas id="followerChart" height="100"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">Engagement แยก Platform</div>
+          <div class="chart-sub">เดือนนี้</div>
+          <canvas id="engagementDonut" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Top Posts เดือนนี้</h3>
+          <button class="btn btn-ghost" style="font-size:12px;">ดูทั้งหมด →</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>Platform</th><th>เนื้อหา</th><th>Views</th><th>Likes</th><th>Comments</th><th>Engagement</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div class="social-platform"><div class="platform-icon" style="background:#f0f4ff">🎵</div><span>TikTok</span></div></td>
+              <td>รีวิวสินค้าใหม่ประจำเดือน</td><td>324,500</td><td>18,200</td><td>1,450</td>
+              <td><span class="badge badge-green">8.2%</span></td>
+            </tr>
+            <tr>
+              <td><div class="social-platform"><div class="platform-icon" style="background:#fdf4ff">📷</div><span>Instagram</span></div></td>
+              <td>Behind the scenes ทีมงาน</td><td>89,000</td><td>7,300</td><td>620</td>
+              <td><span class="badge badge-green">7.8%</span></td>
+            </tr>
+            <tr>
+              <td><div class="social-platform"><div class="platform-icon" style="background:#f0f4ff">🎵</div><span>TikTok</span></div></td>
+              <td>Tutorial การใช้สินค้า 5 ขั้นตอน</td><td>218,000</td><td>14,600</td><td>980</td>
+              <td><span class="badge badge-blue">7.1%</span></td>
+            </tr>
+            <tr>
+              <td><div class="social-platform"><div class="platform-icon" style="background:#fff4e5">👍</div><span>Facebook</span></div></td>
+              <td>โปรโมชั่นพิเศษวันหยุด</td><td>42,000</td><td>2,800</td><td>340</td>
+              <td><span class="badge badge-blue">5.2%</span></td>
+            </tr>
+            <tr>
+              <td><div class="social-platform"><div class="platform-icon" style="background:#fdf4ff">📷</div><span>Instagram</span></div></td>
+              <td>Infographic เคล็ดลับธุรกิจ</td><td>65,000</td><td>5,100</td><td>480</td>
+              <td><span class="badge badge-orange">4.8%</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════ HR ══════ -->
+    <section id="hr" class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">พนักงานทั้งหมด</div>
+          <div class="kpi-value">64</div>
+          <div class="kpi-change up">↑ 3 คนเดือนนี้</div>
+          <div class="kpi-icon">👥</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">ออนไลน์วันนี้</div>
+          <div class="kpi-value">52</div>
+          <div class="kpi-change up">81% อัตราเข้างาน</div>
+          <div class="kpi-icon">✅</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">ลาวันนี้</div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-change down">ลาป่วย 4 / ลากิจ 4</div>
+          <div class="kpi-icon">🏖</div>
+        </div>
+        <div class="kpi-card purple">
+          <div class="kpi-label">เปิดรับสมัคร</div>
+          <div class="kpi-value">5</div>
+          <div class="kpi-change up">ตำแหน่งว่าง</div>
+          <div class="kpi-icon">📝</div>
+        </div>
+      </div>
+
+      <div class="chart-grid-2">
+        <div class="chart-card">
+          <div class="chart-title">พนักงานแยกแผนก</div>
+          <div class="chart-sub">ทั้งหมด 64 คน</div>
+          <canvas id="deptBar" height="180"></canvas>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title">อัตราการเข้างานรายสัปดาห์</div>
+          <div class="chart-sub">เปอร์เซ็นต์</div>
+          <canvas id="attendLine" height="180"></canvas>
+        </div>
+      </div>
+
+      <div class="hr-grid">
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#4f7ef8">ส</div>
+          <div>
+            <div class="emp-name">สมชาย รักงาน</div>
+            <div class="emp-role">ผู้จัดการฝ่ายขาย</div>
+            <div class="emp-status">
+              <span class="status-dot dot-green"></span>
+              <span style="color:var(--success);font-weight:600">ออนไลน์</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#8b5cf6">ม</div>
+          <div>
+            <div class="emp-name">มาลี ใจดี</div>
+            <div class="emp-role">นักออกแบบ UX/UI</div>
+            <div class="emp-status">
+              <span class="status-dot dot-green"></span>
+              <span style="color:var(--success);font-weight:600">ออนไลน์</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#14b8a6">ว</div>
+          <div>
+            <div class="emp-name">วิชัย เก่งมาก</div>
+            <div class="emp-role">หัวหน้าฝ่าย IT</div>
+            <div class="emp-status">
+              <span class="status-dot dot-orange"></span>
+              <span style="color:var(--warning);font-weight:600">ประชุม</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#ef4444">น</div>
+          <div>
+            <div class="emp-name">นิตยา สวยงาม</div>
+            <div class="emp-role">Content Creator</div>
+            <div class="emp-status">
+              <span class="status-dot dot-gray"></span>
+              <span style="color:#64748b;font-weight:600">ลา</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#f59e0b">ป</div>
+          <div>
+            <div class="emp-name">ประเสริฐ ดีมาก</div>
+            <div class="emp-role">นักการตลาด</div>
+            <div class="emp-status">
+              <span class="status-dot dot-green"></span>
+              <span style="color:var(--success);font-weight:600">ออนไลน์</span>
+            </div>
+          </div>
+        </div>
+        <div class="employee-card">
+          <div class="emp-avatar" style="background:#22c55e">อ</div>
+          <div>
+            <div class="emp-name">อรอนงค์ รวยเงิน</div>
+            <div class="emp-role">นักบัญชี</div>
+            <div class="emp-status">
+              <span class="status-dot dot-green"></span>
+              <span style="color:var(--success);font-weight:600">ออนไลน์</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>การลาเดือนนี้</h3>
+          <button class="btn btn-ghost" style="font-size:12px;">ดูทั้งหมด →</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>พนักงาน</th><th>แผนก</th><th>ประเภทการลา</th><th>วันที่</th><th>จำนวน</th><th>สถานะ</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>นิตยา สวยงาม</td><td>Marketing</td><td>ลาป่วย</td><td>10–12 พ.ค.</td><td>3 วัน</td><td><span class="badge badge-green">อนุมัติ</span></td></tr>
+            <tr><td>สุชาติ ขยันดี</td><td>IT</td><td>ลากิจ</td><td>15 พ.ค.</td><td>1 วัน</td><td><span class="badge badge-orange">รออนุมัติ</span></td></tr>
+            <tr><td>รัตนา มีแรง</td><td>Sales</td><td>ลาพักร้อน</td><td>20–24 พ.ค.</td><td>5 วัน</td><td><span class="badge badge-green">อนุมัติ</span></td></tr>
+            <tr><td>กมล ทำงานดี</td><td>HR</td><td>ลาป่วย</td><td>8 พ.ค.</td><td>1 วัน</td><td><span class="badge badge-green">อนุมัติ</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ══════ PROJECTS ══════ -->
+    <section id="projects" class="section">
+      <div class="kpi-grid">
+        <div class="kpi-card blue">
+          <div class="kpi-label">โปรเจคทั้งหมด</div>
+          <div class="kpi-value">18</div>
+          <div class="kpi-change up">↑ 4 ใหม่เดือนนี้</div>
+          <div class="kpi-icon">📋</div>
+        </div>
+        <div class="kpi-card green">
+          <div class="kpi-label">เสร็จสิ้น</div>
+          <div class="kpi-value">7</div>
+          <div class="kpi-change up">39% ของทั้งหมด</div>
+          <div class="kpi-icon">✅</div>
+        </div>
+        <div class="kpi-card orange">
+          <div class="kpi-label">กำลังดำเนิน</div>
+          <div class="kpi-value">8</div>
+          <div class="kpi-change up">44%</div>
+          <div class="kpi-icon">⚙️</div>
+        </div>
+        <div class="kpi-card red">
+          <div class="kpi-label">ล่าช้า</div>
+          <div class="kpi-value">3</div>
+          <div class="kpi-change down">ต้องดูแลด่วน</div>
+          <div class="kpi-icon">⚠️</div>
+        </div>
+      </div>
+
+      <!-- Kanban Board -->
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div style="font-size:15px;font-weight:700;">📋 Kanban Board</div>
+        <button class="btn btn-primary" style="font-size:12px;">+ เพิ่มงาน</button>
+      </div>
+
+      <div class="kanban">
+        <!-- Backlog -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#64748b">📥 Backlog</div>
+            <div class="kanban-count">3</div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">Redesign Website หน้าหลัก</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%;background:#94a3b8"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-gray badge">Design</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#4f7ef8">ม</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">วิจัยตลาด Q3 2569</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%;background:#94a3b8"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-purple badge">Research</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#8b5cf6">ป</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">ระบบ CRM ใหม่</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:0%;background:#94a3b8"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-blue badge">IT</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#14b8a6">ว</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- In Progress -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#f59e0b">⚙️ กำลังทำ</div>
+            <div class="kanban-count">4</div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">แคมเปญ TikTok พ.ค.</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:65%;background:#4f7ef8"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">65%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-blue badge">Marketing</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#f59e0b">ป</div>
+                <div class="avatar" style="background:#ef4444">น</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">พัฒนา Mobile App v2</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:40%;background:#8b5cf6"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">40%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-purple badge">Dev</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#14b8a6">ว</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">Training พนักงานใหม่</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:80%;background:#22c55e"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">80%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-green badge">HR</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#22c55e">อ</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">รายงานการเงิน Q1</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:90%;background:#14b8a6"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">90%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-gray badge">Finance</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#22c55e">อ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Review -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#4f7ef8">🔍 ตรวจสอบ</div>
+            <div class="kanban-count">4</div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">Branding Guidelines ใหม่</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:95%;background:#4f7ef8"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">95%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-blue badge">Design</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#4f7ef8">ส</div>
+                <div class="avatar" style="background:#8b5cf6">ม</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">Content Plan มิ.ย.</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:100%;background:#22c55e"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">100%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-orange badge">Content</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#ef4444">น</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">ระบบ HR Payroll</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:98%;background:#14b8a6"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">98%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-purple badge">HR</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#22c55e">อ</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card">
+            <div class="task-card-title">Landing Page โปรโมชั่น</div>
+            <div class="progress-bar" style="margin-bottom:4px"><div class="progress-fill" style="width:92%;background:#8b5cf6"></div></div>
+            <div style="font-size:10px;color:var(--text-muted);margin-bottom:6px">92%</div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-blue badge">Dev</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#14b8a6">ว</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div class="kanban-col">
+          <div class="kanban-col-header">
+            <div class="kanban-col-title" style="color:#22c55e">✅ เสร็จแล้ว</div>
+            <div class="kanban-count">7</div>
+          </div>
+          <div class="task-card" style="opacity:.7">
+            <div class="task-card-title">แคมเปญ Songkran Sale</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#22c55e"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-green badge">Marketing</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#f59e0b">ป</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card" style="opacity:.7">
+            <div class="task-card-title">รีพอร์ต Sales Q1</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#22c55e"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-gray badge">Finance</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#4f7ef8">ส</div>
+              </div>
+            </div>
+          </div>
+          <div class="task-card" style="opacity:.7">
+            <div class="task-card-title">Onboarding พนักงานใหม่ 3 คน</div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#22c55e"></div></div>
+            <div class="task-card-meta">
+              <span class="task-tag badge-green badge">HR</span>
+              <div class="avatar-group">
+                <div class="avatar" style="background:#22c55e">อ</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Projects Table -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>รายการโปรเจคทั้งหมด</h3>
+          <button class="btn btn-ghost" style="font-size:12px;">ดูทั้งหมด →</button>
+        </div>
+        <table>
+          <thead>
+            <tr><th>โปรเจค</th><th>ทีม</th><th>ความคืบหน้า</th><th>กำหนด</th><th>สถานะ</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>แคมเปญ TikTok พ.ค.</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#f59e0b;width:26px;height:26px;font-size:11px">ป</div><div class="avatar" style="background:#ef4444;width:26px;height:26px;font-size:11px">น</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:65%;background:#4f7ef8"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">65%</span></div></td>
+              <td>31 พ.ค. 69</td><td><span class="badge badge-blue">กำลังทำ</span></td>
+            </tr>
+            <tr>
+              <td><strong>Mobile App v2</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#14b8a6;width:26px;height:26px;font-size:11px">ว</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:40%;background:#8b5cf6"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">40%</span></div></td>
+              <td>30 มิ.ย. 69</td><td><span class="badge badge-blue">กำลังทำ</span></td>
+            </tr>
+            <tr>
+              <td><strong>Branding Guidelines</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#4f7ef8;width:26px;height:26px;font-size:11px">ส</div><div class="avatar" style="background:#8b5cf6;width:26px;height:26px;font-size:11px">ม</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:95%;background:#4f7ef8"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">95%</span></div></td>
+              <td>15 พ.ค. 69</td><td><span class="badge badge-orange">รีวิว</span></td>
+            </tr>
+            <tr>
+              <td><strong>HR Payroll System</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#22c55e;width:26px;height:26px;font-size:11px">อ</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:98%;background:#14b8a6"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">98%</span></div></td>
+              <td>18 พ.ค. 69</td><td><span class="badge badge-orange">รีวิว</span></td>
+            </tr>
+            <tr>
+              <td><strong>ระบบ CRM ใหม่</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#14b8a6;width:26px;height:26px;font-size:11px">ว</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:5%;background:#94a3b8"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">5%</span></div></td>
+              <td>31 ส.ค. 69</td><td><span class="badge badge-gray">Backlog</span></td>
+            </tr>
+            <tr>
+              <td><strong>วิจัยตลาด Q3</strong></td>
+              <td><div class="avatar-group"><div class="avatar" style="background:#8b5cf6;width:26px;height:26px;font-size:11px">ป</div></div></td>
+              <td><div style="display:flex;align-items:center;gap:8px"><div class="progress-bar" style="flex:1"><div class="progress-fill" style="width:0%;background:#94a3b8"></div></div><span style="font-size:12px;font-weight:700;color:var(--text-muted)">0%</span></div></td>
+              <td>15 ก.ค. 69</td><td><span class="badge badge-red">ล่าช้า</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /main -->
+
+<script>
+// ── DATE ──
+const d = new Date();
+document.getElementById('page-date').textContent =
+  d.toLocaleDateString('th-TH', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+
+// ── NAVIGATION ──
+const titles = {
+  overview: 'ภาพรวมองค์กร',
+  sales:    'ยอดขาย & รายได้',
+  social:   'Social Media & Marketing',
+  hr:       'HR & พนักงาน',
+  projects: 'Projects & Tasks'
+};
+function showSection(id, el) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('page-title').textContent = titles[id];
+}
+function exportData() { alert('กำลังส่งออกข้อมูล...'); }
+
+// ── CHART HELPERS ──
+const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
+const commonOpts = { responsive: true, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } };
+
+// 1. Revenue Line
+new Chart(document.getElementById('revenueChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [{
+      label: 'รายได้',
+      data: [820,910,750,1050,1240,0],
+      borderColor: '#4f7ef8', backgroundColor: 'rgba(79,126,248,.1)',
+      tension: .4, fill: true, pointRadius: 5
+    }]
+  },
+  options: { ...commonOpts, scales: { y: { beginAtZero: true, ticks: { callback: v => '฿'+v+'K' } } } }
+});
+
+// 2. Dept Donut
+new Chart(document.getElementById('deptDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Sales','Marketing','IT','HR','Finance'],
+    datasets: [{ data: [38,25,18,12,7],
+      backgroundColor: ['#4f7ef8','#8b5cf6','#14b8a6','#f59e0b','#ef4444'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: commonOpts
+});
+
+// 3. Social Bar
+new Chart(document.getElementById('socialBar'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'TikTok', data: [180,210,195,240,324,0], backgroundColor: '#4f7ef8', borderRadius: 4 },
+      { label: 'Instagram', data: [60,70,65,80,89,0], backgroundColor: '#8b5cf6', borderRadius: 4 }
+    ]
+  },
+  options: { ...commonOpts, scales: { x: { stacked: false }, y: { beginAtZero: true, ticks: { callback: v => v+'K' } } } }
+});
+
+// 4. Project Donut
+new Chart(document.getElementById('projectDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['เสร็จแล้ว','กำลังทำ','รีวิว','ล่าช้า','Backlog'],
+    datasets: [{ data: [7,4,4,3,0],
+      backgroundColor: ['#22c55e','#4f7ef8','#f59e0b','#ef4444','#94a3b8'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: commonOpts
+});
+
+// 5. Attendance Bar
+new Chart(document.getElementById('attendanceBar'), {
+  type: 'bar',
+  data: {
+    labels: ['จ.','อ.','พ.','พฤ.','ศ.'],
+    datasets: [{
+      label: 'เข้างาน (%)',
+      data: [88, 92, 85, 90, 81],
+      backgroundColor: '#14b8a6', borderRadius: 6
+    }]
+  },
+  options: { ...commonOpts, scales: { y: { beginAtZero: false, min: 70, max: 100 } } }
+});
+
+// 6. Sales Line
+new Chart(document.getElementById('salesLineChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'รายได้', data: [820,910,750,1050,1240,0], borderColor: '#4f7ef8', tension: .4, fill: false, pointRadius: 4 },
+      { label: 'ค่าใช้จ่าย', data: [480,520,430,580,680,0], borderColor: '#ef4444', tension: .4, fill: false, pointRadius: 4 },
+      { label: 'กำไร', data: [340,390,320,470,560,0], borderColor: '#22c55e', tension: .4, fill: false, pointRadius: 4 }
+    ]
+  },
+  options: { ...commonOpts, scales: { y: { beginAtZero: true, ticks: { callback: v => '฿'+v+'K' } } } }
+});
+
+// 7. Category Donut
+new Chart(document.getElementById('categoryDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Package Pro','Package Basic','Enterprise','Consulting','อื่นๆ'],
+    datasets: [{ data: [35,28,18,12,7],
+      backgroundColor: ['#4f7ef8','#8b5cf6','#22c55e','#f59e0b','#94a3b8'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: commonOpts
+});
+
+// 8. Follower Line
+new Chart(document.getElementById('followerChart'), {
+  type: 'line',
+  data: {
+    labels: months,
+    datasets: [
+      { label: 'TikTok', data: [95,102,108,115,122,128], borderColor: '#4f7ef8', tension: .4, fill: false, pointRadius: 4 },
+      { label: 'Instagram', data: [35,37,38,39,41,42], borderColor: '#8b5cf6', tension: .4, fill: false, pointRadius: 4 },
+      { label: 'Facebook', data: [13,14,14,15,15,16], borderColor: '#f59e0b', tension: .4, fill: false, pointRadius: 4 }
+    ]
+  },
+  options: { ...commonOpts, scales: { y: { ticks: { callback: v => v+'K' } } } }
+});
+
+// 9. Engagement Donut
+new Chart(document.getElementById('engagementDonut'), {
+  type: 'doughnut',
+  data: {
+    labels: ['TikTok','Instagram','Facebook'],
+    datasets: [{ data: [68, 22, 10],
+      backgroundColor: ['#4f7ef8','#8b5cf6','#f59e0b'],
+      borderWidth: 2, borderColor: '#fff'
+    }]
+  },
+  options: commonOpts
+});
+
+// 10. Dept Bar (HR)
+new Chart(document.getElementById('deptBar'), {
+  type: 'bar',
+  data: {
+    labels: ['Sales','Marketing','IT','HR','Finance','Operations'],
+    datasets: [{
+      label: 'จำนวนพนักงาน',
+      data: [18, 12, 10, 8, 7, 9],
+      backgroundColor: ['#4f7ef8','#8b5cf6','#14b8a6','#22c55e','#f59e0b','#ef4444'],
+      borderRadius: 6
+    }]
+  },
+  options: { ...commonOpts, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+});
+
+// 11. Attendance Line
+new Chart(document.getElementById('attendLine'), {
+  type: 'line',
+  data: {
+    labels: ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'],
+    datasets: [{
+      label: 'อัตราการเข้างาน (%)',
+      data: [91, 88, 93, 87, 90],
+      borderColor: '#22c55e', backgroundColor: 'rgba(34,197,94,.1)',
+      tension: .4, fill: true, pointRadius: 5
+    }]
+  },
+  options: { ...commonOpts, scales: { y: { min: 75, max: 100, ticks: { callback: v => v+'%' } } } }
+});
+</script>
+
+</body>
+</html>
