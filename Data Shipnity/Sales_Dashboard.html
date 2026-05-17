@@ -9,12 +9,12 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Sukhumvit Set', 'Sarabun', sans-serif;
-    background: #f3f4f6; color: #111827; padding: 24px; min-height: 100vh;
+    background: #F8F9FB; color: #0F0F0F; padding: 24px; min-height: 100vh;
   }
   .container { max-width: 1400px; margin: 0 auto; }
   .header { margin-bottom: 18px; }
   .header h1 { font-size: 26px; font-weight: 700; margin-bottom: 4px; }
-  .header p { color: #6b7280; font-size: 13px; }
+  .header p { color: #777; font-size: 13px; }
   
   /* Date range bar */
   .range-bar {
@@ -30,13 +30,13 @@
   .range-btn:hover { background: #f0fdfa; }
   .range-btn.primary { background: #14b8a6; color: white; }
   .range-btn .icon { font-size: 10px; }
-  .range-label { font-size: 10px; color: #6b7280; }
-  .range-current { font-size: 10px; color: #111827; font-weight: 600; }
+  .range-label { font-size: 10px; color: #777; }
+  .range-current { font-size: 10px; color: #0F0F0F; font-weight: 600; }
   .compare-toggle {
     display: flex; align-items: center; gap: 4px; font-size: 10px; cursor: pointer; user-select: none;
     margin-left: auto;
   }
-  .compare-toggle input { accent-color: #6366f1; }
+  .compare-toggle input { accent-color: #1A5CDB; }
 
   /* Picker overlay */
   .picker-overlay {
@@ -72,9 +72,9 @@
   }
   .cal-nav-title { font-weight: 500; font-size: 10px; }
   .cal-nav-btn {
-    background: none; border: none; cursor: pointer; padding: 1px 4px; color: #6b7280; font-size: 10px;
+    background: none; border: none; cursor: pointer; padding: 1px 4px; color: #777; font-size: 10px;
   }
-  .cal-nav-btn:hover { color: #111827; }
+  .cal-nav-btn:hover { color: #0F0F0F; }
   .cal-grid {
     display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; text-align: center;
   }
@@ -85,7 +85,7 @@
     padding: 3.5px 0; cursor: pointer; border-radius: 3px; user-select: none;
     font-size: 9.5px;
   }
-  .cal-day:hover:not(.disabled):not(.out) { background: #f3f4f6; }
+  .cal-day:hover:not(.disabled):not(.out) { background: #F8F9FB; }
   .cal-day.out { color: #d1d5db; cursor: default; }
   .cal-day.disabled { color: #e5e7eb; cursor: not-allowed; }
   .cal-day.range { background: #d1fae5; color: #065f46; border-radius: 0; }
@@ -101,7 +101,7 @@
     padding: 6px 10px; border-top: 1px solid #e5e7eb; display: flex; justify-content: flex-end; gap: 5px;
   }
   .btn-cancel {
-    padding: 3px 10px; background: white; border: 1px solid #d1d5db; color: #374151;
+    padding: 3px 10px; background: white; border: 1px solid #d1d5db; color: #333;
     border-radius: 4px; font-size: 10px; cursor: pointer;
   }
   .btn-apply {
@@ -119,8 +119,8 @@
   .kpi {
     background: white; padding: 18px; border-radius: 12px; border: 1px solid #e5e7eb;
   }
-  .kpi-label { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-  .kpi-value { font-size: 24px; font-weight: 700; color: #111827; }
+  .kpi-label { font-size: 11px; color: #777; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+  .kpi-value { font-size: 24px; font-weight: 700; color: #0F0F0F; }
   .kpi-sub { font-size: 12px; color: #9ca3af; margin-top: 4px; }
   .kpi-delta { font-size: 12px; margin-top: 4px; font-weight: 600; }
   .delta-pos { color: #059669; }
@@ -131,19 +131,19 @@
   .grid-2 { grid-template-columns: 1fr 1fr; }
   @media (max-width: 900px) { .grid-2 { grid-template-columns: 1fr; } .calendars { grid-template-columns: 1fr; } }
   .card { background: white; padding: 20px; border-radius: 12px; border: 1px solid #e5e7eb; }
-  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #111827; }
-  .card .sub { font-size: 12px; color: #6b7280; margin-bottom: 12px; margin-top: -8px; }
+  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 14px; color: #0F0F0F; }
+  .card .sub { font-size: 12px; color: #777; margin-bottom: 12px; margin-top: -8px; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 9px 8px; font-weight: 600; color: #6b7280;
+  th { text-align: left; padding: 9px 8px; font-weight: 600; color: #777;
        border-bottom: 1px solid #e5e7eb; font-size: 11px; text-transform: uppercase;
        letter-spacing: 0.3px; position: sticky; top: 0; background: white; }
   td { padding: 9px 8px; border-bottom: 1px solid #f3f4f6; vertical-align: middle; }
   tr:last-child td { border-bottom: none; }
   td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
-  td.rank { font-weight: 700; color: #6366f1; width: 32px; }
+  td.rank { font-weight: 700; color: #1A5CDB; width: 32px; }
   .bar-cell { position: relative; }
   .bar-fill { position: absolute; left: 0; bottom: 2px; height: 4px;
-              background: linear-gradient(90deg, #6366f1, #818cf8); border-radius: 2px; }
+              background: linear-gradient(90deg, #1A5CDB, #5c8fdb); border-radius: 2px; }
   .table-wrap { max-height: 540px; overflow-y: auto; }
   .chart-box { position: relative; height: 320px; }
   .chart-box.tall { height: 440px; }
@@ -161,17 +161,28 @@
     padding: 6px 14px; background: #f9fafb; border: 1px solid #e5e7eb;
     border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 500;
   }
-  .channel-tab.active { background: #6366f1; color: white; border-color: #6366f1; }
-  .compare-note { font-size: 12px; color: #6b7280; }
-  .vs-label { display: inline-block; padding: 2px 8px; background: #f3f4f6; color: #6b7280;
+  .channel-tab.active { background: #1A5CDB; color: white; border-color: #1A5CDB; }
+  .compare-note { font-size: 12px; color: #777; }
+  .vs-label { display: inline-block; padding: 2px 8px; background: #F8F9FB; color: #777;
               border-radius: 4px; font-size: 11px; margin: 0 8px; }
 </style>
 </head>
 <body>
 <div class="container">
-  <div class="header">
-    <h1>Sales Dashboard</h1>
-    <p>ยอดขาย × ช่องทาง × สินค้า — เลือกช่วงเวลาได้</p>
+  <div class="header" style="display:flex;align-items:center;gap:16px">
+    <div>
+      <div style="display:flex;align-items:flex-end;gap:1px">
+        <span style="font-size:9px;color:#1A5CDB;margin-bottom:10px">✦</span>
+        <span style="font-size:18px;font-weight:900;color:#0F0F0F;letter-spacing:0.5px">WIBWUB</span>
+      </div>
+      <div style="height:3px;background:#1A5CDB;border-radius:2px;margin-top:2px"></div>
+      <div style="font-size:8px;color:#999;letter-spacing:2px;margin-top:2px">HYPER CLEANING CAR</div>
+    </div>
+    <div style="width:1px;height:36px;background:#e8e8e8"></div>
+    <div>
+      <h1 style="font-size:15px;font-weight:600;color:#0F0F0F">Sales Dashboard</h1>
+      <p style="font-size:11px;color:#999;margin-top:2px">ยอดขาย × ช่องทาง × สินค้า — เลือกช่วงเวลาได้</p>
+    </div>
   </div>
 
   <div class="range-bar">
@@ -218,7 +229,7 @@ const RAW = {"date_min":"2026-01-01","date_max":"2026-05-14","channels":["Carcar
 const TODAY = '2026-05-14'; // current date from env
 const fmt = (n) => Number(n||0).toLocaleString('th-TH', {maximumFractionDigits: 0});
 const fmtBaht = (n) => '฿' + fmt(n);
-const PALETTE = ['#6366f1','#ec4899','#f59e0b','#10b981','#3b82f6','#8b5cf6','#ef4444','#14b8a6','#f97316','#a855f7','#06b6d4','#84cc16'];
+const PALETTE = ['#1A5CDB','#ec4899','#f59e0b','#10b981','#1A5CDB','#8b5cf6','#ef4444','#14b8a6','#1A5CDB','#a855f7','#06b6d4','#84cc16'];
 const THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const THAI_MONTHS_FULL = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const THAI_DOW = ['จ.','อ.','พ.','พฤ.','ศ.','ส.','อา.'];
@@ -683,7 +694,7 @@ function render() {
   // Trend
   const t = D.trend;
   const datasets = [
-    {label: `ยอดขาย (฿) — ${rangeLabel(currentRange.start, currentRange.end)}`, data: t.map(d => d.sales), borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3, yAxisID:'y'},
+    {label: `ยอดขาย (฿) — ${rangeLabel(currentRange.start, currentRange.end)}`, data: t.map(d => d.sales), borderColor:'#1A5CDB', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3, yAxisID:'y'},
   ];
   if (C) {
     // Align by day-offset from start
@@ -708,7 +719,7 @@ function render() {
     charts.trend = new Chart(document.getElementById('trend-chart'), {
       type: 'line',
       data: {labels, datasets: [
-        {label: `ปัจจุบัน: ${rangeLabel(currentRange.start, currentRange.end)}`, data: main, borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3},
+        {label: `ปัจจุบัน: ${rangeLabel(currentRange.start, currentRange.end)}`, data: main, borderColor:'#1A5CDB', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3},
         {label: `เปรียบเทียบ: ${rangeLabel(cmpRange.start, cmpRange.end)}`, data: cmp, borderColor:'#ec4899', borderDash:[6,4], tension:0.3},
       ]},
       options: {responsive: true, maintainAspectRatio: false, scales: {y: {beginAtZero: true, ticks: {callback: v => fmt(v)}}}}
@@ -717,7 +728,7 @@ function render() {
     charts.trend = new Chart(document.getElementById('trend-chart'), {
       type: 'line',
       data: {labels: t.map(d => d.date_str), datasets: [
-        {label: 'ยอดขาย (฿)', data: t.map(d => d.sales), borderColor:'#6366f1', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3, yAxisID:'y'},
+        {label: 'ยอดขาย (฿)', data: t.map(d => d.sales), borderColor:'#1A5CDB', backgroundColor:'rgba(99,102,241,0.1)', fill:true, tension:0.3, yAxisID:'y'},
         {label: 'ออเดอร์', data: t.map(d => d.orders), borderColor:'#ec4899', tension:0.3, yAxisID:'y1'},
       ]},
       options: {responsive: true, maintainAspectRatio: false,
@@ -731,7 +742,7 @@ function render() {
   charts.top20 = new Chart(document.getElementById('top20-chart'), {
     type: 'bar',
     data: {labels: top20.map(p => p.product.length>28 ? p.product.slice(0,26)+'...' : p.product),
-      datasets: [{label: 'จำนวนชิ้น', data: top20.map(p => p.qty), backgroundColor: '#6366f1'}]},
+      datasets: [{label: 'จำนวนชิ้น', data: top20.map(p => p.qty), backgroundColor: '#1A5CDB'}]},
     options: {indexAxis: 'y', responsive: true, maintainAspectRatio: false,
       plugins: {legend: {display:false},
         tooltip: {callbacks: {title: ctx => top20[ctx[0].dataIndex].product, label: ctx => fmt(ctx.parsed.x)+' ชิ้น | '+fmtBaht(top20[ctx.dataIndex].sales)}}}}

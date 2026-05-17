@@ -8,28 +8,28 @@
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
     :root{
-      --bg:#f3f4f8; --sidebar:#12161f; --card:#fff;
-      --border:#e8ebf2; --text:#161d2f; --muted:#7b86a0;
-      --orange:#ff6b2b; --orange2:#e85c1f; --orange-lt:#fff1eb;
-      --blue:#3b82f6; --green:#22c55e; --yellow:#f59e0b;
+      --bg:#F8F9FB; --sidebar:#0F0F0F; --card:#fff;
+      --border:#e8e8e8; --text:#0F0F0F; --muted:#999;
+      --orange:#1A5CDB; --orange2:#1248b3; --orange-lt:#EEF3FD;
+      --blue:#1A5CDB; --green:#22c55e; --yellow:#f59e0b;
       --red:#ef4444; --purple:#8b5cf6; --teal:#14b8a6;
       --shopee:#ee4d2d; --tiktok:#111111; --lazada:#1b04a1;
-      --shadow:0 2px 14px rgba(0,0,0,.07); --r:14px;
+      --shadow:0 2px 12px rgba(0,0,0,.06); --r:10px;
     }
     body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);display:flex;min-height:100vh;}
     .sidebar{width:248px;min-height:100vh;background:var(--sidebar);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;}
-    .sb-logo{padding:22px 20px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.06);}
-    .sb-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--orange),var(--orange2));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:900;color:#fff;flex-shrink:0;}
+    .sb-logo{padding:20px 18px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #222;}
+    .sb-icon{display:none}
     .sb-name{font-size:16px;font-weight:800;color:#fff;}
     .sb-sub{font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.5px;text-transform:uppercase;}
     .nav-sec{padding:16px 20px 5px;font-size:10px;font-weight:700;color:rgba(255,255,255,.2);letter-spacing:1.2px;text-transform:uppercase;}
     .nav-item{display:flex;align-items:center;gap:11px;padding:11px 20px;cursor:pointer;color:rgba(255,255,255,.45);font-size:13.5px;font-weight:500;border-left:3px solid transparent;transition:all .2s;}
     .nav-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05);}
-    .nav-item.active{color:#fff;background:linear-gradient(90deg,rgba(255,107,43,.18),transparent);border-left-color:var(--orange);}
+    .nav-item.active{color:#fff;background:rgba(26,92,219,.15);border-left-color:#1A5CDB;}
     .nav-icon{font-size:16px;width:20px;text-align:center;}
     .sb-footer{padding:16px 20px;border-top:1px solid rgba(255,255,255,.06);margin-top:auto;}
     .user-row{display:flex;align-items:center;gap:10px;}
-    .user-av{width:36px;height:36px;background:linear-gradient(135deg,var(--orange),var(--orange2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
+    .user-av{width:36px;height:36px;background:linear-gradient(135deg,#1A5CDB,var(--orange2));border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;flex-shrink:0;}
     .user-name{font-size:13px;font-weight:700;color:#fff;}
     .user-role{font-size:11px;color:rgba(255,255,255,.35);}
     .main{margin-left:248px;flex:1;display:flex;flex-direction:column;}
@@ -38,7 +38,7 @@
     .tb-date{font-size:12px;color:var(--muted);margin-top:2px;}
     .tb-right{display:flex;gap:10px;align-items:center;}
     .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
-    .btn-primary{background:var(--orange);color:#fff;}
+    .btn-primary{background:#1A5CDB;color:#fff;}
     .btn-primary:hover{background:var(--orange2);}
     .btn-ghost{background:transparent;border:1px solid var(--border);color:var(--text);}
     .btn-ghost:hover{background:var(--bg);}
@@ -51,7 +51,7 @@
     .month-summary{margin-left:auto;font-size:12px;font-weight:700;color:var(--muted);}
 
     /* MONTH RANGE PICKER */
-    .mrange-btn{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--orange);color:var(--orange);background:var(--orange-lt);user-select:none;white-space:nowrap;}
+    .mrange-btn{display:flex;align-items:center;gap:8px;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid #1A5CDB;color:#1A5CDB;background:var(--orange-lt);user-select:none;white-space:nowrap;}
     .mrange-btn:hover{background:#ffe0d0;}
     .mrange-btn .caret{font-size:10px;transition:transform .2s;}
     .mrange-btn.open .caret{transform:rotate(180deg);}
@@ -63,26 +63,26 @@
     .mpc-side{display:flex;flex-direction:column;gap:8px;padding:18px 16px;border-right:1px solid var(--border);min-width:148px;}
     .mpc-side-title{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
     .mpc-pill{padding:8px 12px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:transparent;text-align:left;transition:all .15s;width:100%;}
-    .mpc-pill:hover{border-color:var(--orange);color:var(--orange);}
-    .mpc-pill.active{background:rgba(249,115,22,.12);color:var(--orange);border-color:rgba(249,115,22,.45);}
+    .mpc-pill:hover{border-color:#1A5CDB;color:#1A5CDB;}
+    .mpc-pill.active{background:rgba(249,115,22,.12);color:#1A5CDB;border-color:rgba(249,115,22,.45);}
     .mpc-cals{display:flex;flex-direction:column;padding:14px 18px;gap:10px;}
     .mpc-cals-row{display:flex;gap:20px;}
     .mpc-cal{min-width:195px;}
     .mpc-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
     .mpc-cal-nav{background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);padding:2px 6px;border-radius:4px;line-height:1;}
-    .mpc-cal-nav:hover{color:var(--orange);}
+    .mpc-cal-nav:hover{color:#1A5CDB;}
     .mpc-cal-title{font-size:12px;font-weight:700;color:var(--text);}
     .mpc-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;}
     .mpc-dow{font-size:9px;font-weight:700;color:var(--muted);text-align:center;padding:3px 0;}
     .mpc-day{font-size:11px;text-align:center;padding:5px 2px;cursor:pointer;border-radius:4px;color:var(--text);}
-    .mpc-day:hover:not(.mpc-disabled):not(.mpc-empty){background:var(--orange-lt);color:var(--orange);}
-    .mpc-day.mpc-in-range{background:#fff1eb;color:var(--orange);}
-    .mpc-day.mpc-sel-start,.mpc-day.mpc-sel-end{background:var(--orange);color:#fff;}
+    .mpc-day:hover:not(.mpc-disabled):not(.mpc-empty){background:var(--orange-lt);color:#1A5CDB;}
+    .mpc-day.mpc-in-range{background:#fff1eb;color:#1A5CDB;}
+    .mpc-day.mpc-sel-start,.mpc-day.mpc-sel-end{background:#1A5CDB;color:#fff;}
     .mpc-day.mpc-disabled{color:#d1d5db;cursor:default;}
     .mpc-day.mpc-empty{cursor:default;}
     .mpc-hint{font-size:10px;color:var(--muted);text-align:center;padding:4px 0;}
     .mpc-footer{display:flex;justify-content:flex-end;gap:8px;padding-top:8px;border-top:1px solid var(--border);}
-    .mpc-apply{padding:8px 22px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--orange);color:#fff;}
+    .mpc-apply{padding:8px 22px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:#1A5CDB;color:#fff;}
     .mpc-apply:hover{background:var(--orange2);}
     .mpc-cancel{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);}
 
@@ -91,14 +91,14 @@
     .section.active{display:block;}
     .ptabs{display:inline-flex;gap:3px;background:var(--card);border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:22px;}
     .ptab{padding:7px 16px;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .2s;}
-    .ptab.active{background:var(--orange);color:#fff;}
+    .ptab.active{background:#1A5CDB;color:#fff;}
     .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:22px;}
     .kpi-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
     .kpi-grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
     .kpi-grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:16px;margin-bottom:22px;}
     .kpi{background:var(--card);border-radius:var(--r);padding:18px;box-shadow:var(--shadow);border:1px solid var(--border);position:relative;overflow:hidden;}
     .kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
-    .kpi.or::after{background:linear-gradient(90deg,var(--orange),#ffaa80);}
+    .kpi.or::after{background:linear-gradient(90deg,#1A5CDB,#ffaa80);}
     .kpi.gr::after{background:linear-gradient(90deg,var(--green),#86efac);}
     .kpi.bl::after{background:linear-gradient(90deg,var(--blue),#93c5fd);}
     .kpi.yw::after{background:linear-gradient(90deg,var(--yellow),#fcd34d);}
@@ -171,8 +171,14 @@
 
 <aside class="sidebar">
   <div class="sb-logo">
-    <div class="sb-icon">W</div>
-    <div><div class="sb-name">WIBWUB</div><div class="sb-sub">Hyper Cleaning Car</div></div>
+    <div>
+      <div style="display:flex;align-items:flex-end;gap:1px">
+        <span style="font-size:9px;color:#1A5CDB;margin-bottom:11px">✦</span>
+        <span style="font-size:19px;font-weight:900;color:#fff;letter-spacing:0.5px">WIBWUB</span>
+      </div>
+      <div style="height:3px;background:#1A5CDB;border-radius:2px;margin-top:2px"></div>
+      <div style="font-size:8px;color:#555;letter-spacing:2px;margin-top:3px">HYPER CLEANING CAR</div>
+    </div>
   </div>
   <nav style="flex:1;padding:12px 0;overflow-y:auto;">
     <div class="nav-sec">ภาพรวม</div>
@@ -310,9 +316,9 @@
           <div class="po-icon" style="background:#fff1eb">🌐</div>
           <div style="flex:1">
             <div class="po-name">MyShop</div>
-            <div class="po-val" style="color:var(--orange)">—</div>
+            <div class="po-val" style="color:#1A5CDB">—</div>
             <div class="po-chg neutral">wibwubcar.com</div>
-            <div class="pb"><div class="pf" style="width:0%;background:var(--orange)"></div></div>
+            <div class="pb"><div class="pf" style="width:0%;background:#1A5CDB"></div></div>
           </div>
         </div>
       </div>
@@ -580,10 +586,10 @@
           <div class="kpi-val" id="v-tk-feecomm">฿294,224</div>
           <div class="kpi-sub" id="s-tk-feecomm">21.8% ของยอดขาย</div>
         </div>
-        <div class="kpi or" style="border:2px solid var(--orange);">
-          <div class="kpi-label" style="color:var(--orange)">รวมค่าใช้จ่ายทั้งหมด</div>
-          <div class="kpi-val" style="color:var(--orange)" id="v-tk-totalcost">฿550,393</div>
-          <div class="kpi-sub" style="color:var(--orange);font-weight:700" id="s-tk-totalcost">= 40.76% ของยอดขาย</div>
+        <div class="kpi or" style="border:2px solid #1A5CDB;">
+          <div class="kpi-label" style="color:#1A5CDB">รวมค่าใช้จ่ายทั้งหมด</div>
+          <div class="kpi-val" style="color:#1A5CDB" id="v-tk-totalcost">฿550,393</div>
+          <div class="kpi-sub" style="color:#1A5CDB;font-weight:700" id="s-tk-totalcost">= 40.76% ของยอดขาย</div>
           <div style="margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5" id="sub-tk-totalcost">Ads+GMV ฿256,169<br>+ ค่าธรรมเนียม+Afi ฿294,224</div>
         </div>
         <div class="kpi or">
@@ -785,7 +791,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr><td><span class="badge bg-orange">1</span></td><td>Wool duster-ไม้ปัดขนแกะ</td><td style="text-align:right">฿982,320</td><td style="text-align:right">฿788,587</td><td style="text-align:right">฿261,372</td><td style="text-align:right;font-weight:800;color:var(--orange)">฿2,032,279</td><td style="text-align:right">3,182</td></tr>
+            <tr><td><span class="badge bg-orange">1</span></td><td>Wool duster-ไม้ปัดขนแกะ</td><td style="text-align:right">฿982,320</td><td style="text-align:right">฿788,587</td><td style="text-align:right">฿261,372</td><td style="text-align:right;font-weight:800;color:#1A5CDB">฿2,032,279</td><td style="text-align:right">3,182</td></tr>
             <tr><td><span class="badge bg-blue">2</span></td><td>Sugar (500ml+Spray)</td><td style="text-align:right">฿607,194</td><td style="text-align:right">฿563,474</td><td style="text-align:right">฿280,407</td><td style="text-align:right;font-weight:800">฿1,451,075</td><td style="text-align:right">4,726</td></tr>
             <tr><td><span class="badge bg-blue">3</span></td><td>Interior (500ml+Spray)</td><td style="text-align:right">฿471,963</td><td style="text-align:right">฿525,051</td><td style="text-align:right">฿260,367</td><td style="text-align:right;font-weight:800">฿1,257,381</td><td style="text-align:right">3,653</td></tr>
             <tr><td><span class="badge bg-gray">4</span></td><td>Interior wipes</td><td style="text-align:right">฿237,744</td><td style="text-align:right">฿332,227</td><td style="text-align:right">฿174,842</td><td style="text-align:right;font-weight:800">฿744,813</td><td style="text-align:right">10,068</td></tr>
@@ -802,7 +808,7 @@
       <!-- Detailed Sales Dashboard iframe -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <iframe
-          src="Data Shipnity/Sales_Dashboard.html?v=3"
+          src="Sales_Dashboard.html?v=3"
           style="width:100%;height:900px;border:none;display:block"
           title="Sales Detail Dashboard"
         ></iframe>
@@ -814,7 +820,7 @@
     <section id="ads" class="section">
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <iframe
-          src="data Ads/WIBWUB_Ads_Dashboard.html?v=4"
+          src="WIBWUB_Ads_Dashboard.html?v=4"
           style="width:100%;height:960px;border:none;display:block"
           title="Ads Dashboard"
         ></iframe>
@@ -903,6 +909,7 @@
           src="WIBWUB_Affiliate_Dashboard.html"
           style="width:100%;height:960px;border:none;display:block"
           title="Affiliate Dashboard"
+          onload="try{var s=this.contentDocument.createElement('style');s.textContent='body,div{max-width:100%!important}.tw{overflow-x:auto!important}';this.contentDocument.head.appendChild(s)}catch(e){}"
         ></iframe>
       </div>
 
@@ -917,7 +924,7 @@
         <div class="kpi bl"><div class="kpi-label">เปิดรับสมัคร</div><div class="kpi-val">2</div><div class="kpi-sub">Content & Sales</div><div class="kpi-ico">📝</div></div>
       </div>
       <div class="emp-grid">
-        <div class="emp-card"><div class="emp-av" style="background:var(--orange)">ต</div><div><div class="emp-name">ตั้ม</div><div class="emp-role">Founder / เจ้าของ</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:#1A5CDB">ต</div><div><div class="emp-name">ตั้ม</div><div class="emp-role">Founder / เจ้าของ</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
         <div class="emp-card"><div class="emp-av" style="background:var(--blue)">ส</div><div><div class="emp-name">สมหญิง</div><div class="emp-role">Content Creator</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
         <div class="emp-card"><div class="emp-av" style="background:var(--purple)">ว</div><div><div class="emp-name">วิโรจน์</div><div class="emp-role">Video Editor</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
         <div class="emp-card"><div class="emp-av" style="background:var(--teal)">น</div><div><div class="emp-name">นันท์</div><div class="emp-role">Marketing & Ads</div><div class="emp-status"><span class="sdot" style="background:var(--yellow)"></span><span style="color:var(--yellow);font-weight:700">ประชุม</span></div></div></div>
@@ -945,7 +952,7 @@
           <div class="task-card"><div class="task-title">คลิป TikTok รีวิว Wool Duster #2</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:70%;background:#333"></div></div><div class="task-meta"><span class="task-tag badge bg-tiktok">TikTok</span><span>สมหญิง</span></div></div>
           <div class="task-card"><div class="task-title">อัพเดทรูปสินค้า Shopee</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:45%;background:var(--shopee)"></div></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>วิโรจน์</span></div></div>
           <div class="task-card"><div class="task-title">LINE OA Flash Sale</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:60%;background:var(--green)"></div></div><div class="task-meta"><span class="task-tag badge bg-green">LINE OA</span><span>นัน</span></div></div>
-          <div class="task-card"><div class="task-title">Packaging Design ใหม่</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:35%;background:var(--orange)"></div></div><div class="task-meta"><span class="task-tag badge bg-orange">Branding</span><span>ตั้ม</span></div></div>
+          <div class="task-card"><div class="task-title">Packaging Design ใหม่</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:35%;background:#1A5CDB"></div></div><div class="task-meta"><span class="task-tag badge bg-orange">Branding</span><span>ตั้ม</span></div></div>
         </div>
         <div class="kb-col">
           <div class="kb-hd"><div class="kb-title" style="color:var(--blue)">🔍 รีวิว</div><div class="kb-cnt">3</div></div>
@@ -1078,7 +1085,7 @@ charts['tk_afi'] = new Chart('tk_afi',{type:'bar',data:{labels:M4,datasets:[
 charts['tk_afipct'] = new Chart('tk_afipct',{type:'line',data:{labels:M4,datasets:[{label:'% Afi',data:TK_AFIPCT,borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.1)',tension:.4,fill:true,pointRadius:[3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 charts['tk_adslive'] = new Chart('tk_adslive',{type:'bar',data:{labels:M4,datasets:[
   {label:'ยอดจาก Ads',data:TK_ADS,backgroundColor:TK_ADS.map((_,i)=>i===4?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:4},
-  {label:'ยอด Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===4?'rgba(255,107,43,.7)':'rgba(255,107,43,.25)'),borderRadius:4},
+  {label:'ยอด Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===4?'rgba(26,92,219,.7)':'rgba(26,92,219,.25)'),borderRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['tk_cust'] = new Chart('tk_cust',{type:'bar',data:{labels:M4,datasets:[
   {label:'ลูกค้าใหม่',data:TK_NEW,backgroundColor:TK_NEW.map((_,i)=>i===4?'rgba(30,30,30,.7)':'rgba(30,30,30,.25)'),borderRadius:4,stack:'c'},
@@ -1094,7 +1101,7 @@ new Chart('pr_top10',{
   data:{
     labels:['Wool Duster','Sugar 500ml','Interior 500ml','Interior Wipes','Refresh 500ml','Refresh Wipes','Spot 500ml','Perfect','Reflex 250ml','Mind 500ml'],
     datasets:[
-      {label:'มีนาคม', data:[982320,607194,471963,237744,282595,167063,116783,235953,229583,191279], backgroundColor:'rgba(255,107,43,.75)', borderRadius:4},
+      {label:'มีนาคม', data:[982320,607194,471963,237744,282595,167063,116783,235953,229583,191279], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
       {label:'เมษายน', data:[788587,563474,525051,332227,307258,269674,306497,221777,173243,176574], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
       {label:'พฤษภาคม', data:[261372,280407,260367,174842,153452,265443,187580,112377,87351,87051], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
     ]
