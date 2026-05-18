@@ -183,7 +183,7 @@
 <div class="header">
   <div class="logo"><img src="../logo-header.png" alt="WIBWUB" style="height:24px;display:block;"></div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span class="period-badge"><span id="period-badge-txt">1 ม.ค. – 14 พ.ค. 2569</span></span>
+    <span class="period-badge"><span id="period-badge-txt">1 ม.ค. – 17 พ.ค. 2569</span></span>
     <span style="font-size:11px;color:var(--muted)">ข้อมูลจริงจาก Shopee + TikTok</span>
   </div>
 </div>
@@ -200,7 +200,7 @@
   <span class="period-bar-label">📅 ช่วงเวลา:</span>
   <div class="ads-mpicker-wrap">
     <div class="ads-mrange-btn" id="adsMRangeBtn" onclick="adsTogglePicker()">
-      <span id="adsPeriodLabel">ทั้งหมด (ม.ค. – 14 พ.ค. 2569)</span>
+      <span id="adsPeriodLabel">ทั้งหมด (ม.ค. – 17 พ.ค. 2569)</span>
       <span class="caret">▾</span>
     </div>
     <div class="ads-backdrop" id="adsBackdrop" onclick="adsClosePicker()"></div>
@@ -208,7 +208,7 @@
       <div class="ads-mp-sec-label">เลือกช่วงเวลา</div>
       <button class="ads-period-btn active" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
         <span class="pb-label">ทั้งหมด</span>
-        <span class="pb-sub">ม.ค. – 14 พ.ค. 2569 · Shopee ฿17.65M · TikTok ฿5.12M</span>
+        <span class="pb-sub">ม.ค. – 17 พ.ค. 2569 · Shopee ฿17.65M · TikTok ฿5.12M</span>
       </button>
       <button class="ads-period-btn" id="adsPeriodBtn-jan" onclick="adsPickPeriod('jan',this)">
         <span class="pb-label">มกราคม 2569</span>
@@ -228,7 +228,7 @@
       </button>
       <button class="ads-period-btn" id="adsPeriodBtn-may" onclick="adsPickPeriod('may',this)">
         <span class="pb-label">พฤษภาคม 2569</span>
-        <span class="pb-sub">01–14 พ.ค. · Shopee ฿2.33M · TikTok ฿773K</span>
+        <span class="pb-sub">01–17 พ.ค. · Shopee ฿2.33M · TikTok ฿773K</span>
       </button>
     </div>
   </div>
@@ -957,12 +957,12 @@ function renderKPIs(){
 // ── Period switcher ────────────────────────────────────────────────
 // ── NEW: Dropdown Picker Functions ────────────────────────────────
 const ADS_PERIOD_LABELS = {
-  all: 'ทั้งหมด (ม.ค. – 14 พ.ค. 2569)',
+  all: 'ทั้งหมด (ม.ค. – 17 พ.ค. 2569)',
   jan: 'มกราคม 2569',
   feb: 'กุมภาพันธ์ 2569',
   mar: 'มีนาคม 2569',
   apr: 'เมษายน 2569',
-  may: 'พฤษภาคม 2569 (1–14)',
+  may: 'พฤษภาคม 2569 (1–17)',
 };
 const ADS_PERIOD_SUMMARY = {
   all: 'Shopee ฿17.65M · TikTok ฿5.12M',
@@ -975,7 +975,7 @@ const ADS_PERIOD_SUMMARY = {
 
 // ── Period Picker ─────────────────────────────────────────────────
 const ADS_PERIOD_DEFS = {
-  all: { keys:['all'],  label:'ทั้งหมด (ม.ค. – 14 พ.ค. 2569)', badge:'1 ม.ค. – 14 พ.ค. 2569' },
+  all: { keys:['all'],  label:'ทั้งหมด (ม.ค. – 17 พ.ค. 2569)', badge:'1 ม.ค. – 17 พ.ค. 2569' },
   jan: { keys:['jan'],  label:'มกราคม 2569',                    badge:'ม.ค. 2569' },
   feb: { keys:['feb'],  label:'กุมภาพันธ์ 2569',                badge:'ก.พ. 2569' },
   mar: { keys:['mar'],  label:'มีนาคม 2569',                    badge:'มี.ค. 2569' },
