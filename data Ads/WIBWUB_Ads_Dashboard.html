@@ -161,39 +161,16 @@
   .ads-mrange-btn:hover{background:rgba(255,107,43,.15);}
   .ads-mrange-btn .caret{font-size:10px;transition:transform .2s;}
   .ads-mrange-btn.open .caret{transform:rotate(180deg);}
-  .ads-mpicker-panel{position:absolute;top:calc(100% + 8px);left:0;background:var(--panel);border:1.5px solid var(--border);border-radius:16px;box-shadow:0 10px 36px rgba(0,0,0,.28);padding:18px;z-index:300;min-width:600px;display:none;flex-direction:column;gap:12px;}
+  .ads-mpicker-panel{position:absolute;top:calc(100% + 8px);left:0;background:var(--panel);border:1.5px solid var(--border);border-radius:16px;box-shadow:0 10px 36px rgba(0,0,0,.28);padding:16px 18px;z-index:300;min-width:280px;display:none;flex-direction:column;gap:8px;}
   .ads-mpicker-panel.open{display:flex;}
-  .ads-mp-sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
-  /* Picker layout */
-  .ads-picker-layout{display:flex;gap:14px;}
-  .ads-picker-side{width:110px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;}
-  .ads-preset-pill{padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--muted);background:transparent;text-align:left;transition:all .15s;width:100%;}
-  .ads-preset-pill:hover{border-color:#1A5CDB;color:#1A5CDB;}
-  .ads-preset-pill.active{background:#EEF3FD;color:#1A5CDB;border-color:rgba(249,115,22,.5);}
-  /* Calendars */
-  .ads-picker-calendars{display:flex;gap:12px;flex:1;}
-  .ads-cal{flex:1;}
-  .ads-cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-  .ads-cal-nav-title{font-size:11px;font-weight:700;color:var(--white);}
-  .ads-cal-nav-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:14px;padding:2px 6px;border-radius:4px;}
-  .ads-cal-nav-btn:hover{color:var(--white);background:rgba(255,255,255,.08);}
-  .ads-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;text-align:center;}
-  .ads-cal-dow{font-size:9px;color:var(--muted);padding:3px 0;font-weight:600;}
-  .ads-cal-day{padding:4px 1px;cursor:pointer;border-radius:3px;font-size:10px;color:var(--gray);user-select:none;line-height:1.4;}
-  .ads-cal-day:hover:not(.disabled):not(.out){background:rgba(255,255,255,.1);}
-  .ads-cal-day.out{color:#374151;cursor:default;}
-  .ads-cal-day.disabled{color:#374151;cursor:not-allowed;opacity:.35;}
-  .ads-cal-day.in-range{background:#EEF3FD;color:#FED7AA;border-radius:0;}
-  .ads-cal-day.range-start{background:var(--orange);color:#fff;border-radius:3px 0 0 3px;}
-  .ads-cal-day.range-end{background:var(--orange);color:#fff;border-radius:0 3px 3px 0;}
-  .ads-cal-day.range-start.range-end{border-radius:3px;}
-  /* Picker footer */
-  .ads-picker-footer{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid var(--border);}
-  .ads-range-hint{font-size:11px;color:var(--muted);}
-  .ads-apply-btn{padding:7px 18px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:var(--orange);color:#fff;}
-  .ads-apply-btn:hover{background:#ea6c10;}
-  .ads-picker-close{padding:7px 14px;border-radius:10px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);}
-  .ads-picker-close:hover{color:var(--white);}
+  .ads-mp-sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+  .ads-period-btn{padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--gray);background:transparent;text-align:left;transition:all .15s;width:100%;display:flex;flex-direction:column;gap:2px;}
+  .ads-period-btn .pb-label{font-size:13px;font-weight:700;}
+  .ads-period-btn .pb-sub{font-size:10px;color:var(--muted);}
+  .ads-period-btn:hover{border-color:#1A5CDB;color:#1A5CDB;}
+  .ads-period-btn:hover .pb-sub{color:#1A5CDB;}
+  .ads-period-btn.active{background:#EEF3FD;color:#1A5CDB;border-color:#1A5CDB;}
+  .ads-period-btn.active .pb-sub{color:#1A5CDB;}
   .ads-backdrop{position:fixed;inset:0;z-index:299;display:none;}
   .ads-backdrop.open{display:block;}
   .period-summary-txt{font-size:11px;color:var(--muted);}
@@ -235,26 +212,23 @@
     </div>
     <div class="ads-backdrop" id="adsBackdrop" onclick="adsClosePicker()"></div>
     <div class="ads-mpicker-panel" id="adsMPickerPanel">
-      <div class="ads-picker-layout">
-        <div class="ads-picker-side">
-          <div class="ads-mp-sec-label">เลือกด่วน</div>
-          <button class="ads-preset-pill" id="adsPill-today" onclick="adsPresetRelative('today')">วันนี้</button>
-          <button class="ads-preset-pill" id="adsPill-7d" onclick="adsPresetRelative('7d')">ย้อนหลัง 7 วัน</button>
-          <button class="ads-preset-pill" id="adsPill-30d" onclick="adsPresetRelative('30d')">ย้อนหลัง 30 วัน</button>
-          <button class="ads-preset-pill active" id="adsPill-year" onclick="adsPresetRelative('year')">ตลอดทั้งปีปัจจุบัน</button>
-        </div>
-        <div class="ads-picker-calendars">
-          <div class="ads-cal" id="ads-cal-left"></div>
-          <div class="ads-cal" id="ads-cal-right"></div>
-        </div>
-      </div>
-      <div class="ads-picker-footer">
-        <span class="ads-range-hint" id="ads-range-hint">📅 คลิกเลือกวันเริ่มต้น</span>
-        <div style="display:flex;gap:8px;">
-          <button class="ads-picker-close" onclick="adsClosePicker()">ยกเลิก</button>
-          <button class="ads-apply-btn" onclick="adsApplyDateRange()">ยืนยัน ✓</button>
-        </div>
-      </div>
+      <div class="ads-mp-sec-label">เลือกช่วงเวลา</div>
+      <button class="ads-period-btn active" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
+        <span class="pb-label">ทั้งหมด</span>
+        <span class="pb-sub">ม.ค. – 14 พ.ค. 2569 · Shopee ฿17.65M · TikTok ฿5.12M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-q1" onclick="adsPickPeriod('q1',this)">
+        <span class="pb-label">Q1 — ม.ค. – มี.ค. 2569</span>
+        <span class="pb-sub">3 เดือนแรก · Shopee ฿10.99M · TikTok ฿4.35M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-apr" onclick="adsPickPeriod('apr',this)">
+        <span class="pb-label">เมษายน 2569</span>
+        <span class="pb-sub">01–30 เม.ย. · Shopee ฿4.34M · TikTok ไม่มีข้อมูลแยก</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-may" onclick="adsPickPeriod('may',this)">
+        <span class="pb-label">พฤษภาคม 2569</span>
+        <span class="pb-sub">01–14 พ.ค. · Shopee ฿2.33M · TikTok ฿773K</span>
+      </button>
     </div>
   </div>
   <span class="period-summary-txt" id="ads-period-summary"></span>
@@ -973,8 +947,8 @@ function renderKPIs(){
   set('tk-kpi-cpa','฿'+fmtD(tk.cpa));
   set('tk-kpi-orders',fmt(tk.orders));
   set('tk-kpi-imp',fmtM(tk.imp));
-  const periods={'all':'1 ม.ค. – 14 พ.ค. 2569','q1':'ม.ค. – มี.ค. 2569','apr':'เม.ย. 2569','may':'พ.ค. (1–14) 2569'};
-  const pb=document.getElementById('period-badge-txt');if(pb)pb.textContent=periods[curPeriod]||'';
+  const pb=document.getElementById('period-badge-txt');
+  if(pb)pb.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
 }
 
 // ── Period switcher ────────────────────────────────────────────────
@@ -992,154 +966,31 @@ const ADS_PERIOD_SUMMARY = {
   may: 'Shopee ฿2.33M · TikTok ฿773K',
 };
 
-// ── Date picker state ─────────────────────────────────────────────
-const ADS_DATE_MIN = '2026-01-01';
-const ADS_DATE_MAX = '2026-05-14';
-let adsDraftStart = ADS_DATE_MIN;
-let adsDraftEnd   = ADS_DATE_MAX;
-let adsPickStep   = 0;
-let adsCalLeftMonth  = {y:2026, m:0};
-let adsCalRightMonth = {y:2026, m:3};
+// ── Period Picker ─────────────────────────────────────────────────
+const ADS_PERIOD_DEFS = {
+  all: { keys:['q1','apr','may'], label:'ทั้งหมด (ม.ค. – 14 พ.ค. 2569)',  badge:'1 ม.ค. – 14 พ.ค. 2569' },
+  q1:  { keys:['q1'],             label:'Q1: ม.ค. – มี.ค. 2569',          badge:'ม.ค. – มี.ค. 2569' },
+  apr: { keys:['apr'],            label:'เมษายน 2569',                     badge:'เม.ย. 2569' },
+  may: { keys:['may'],            label:'พ.ค. 2569 (1–14)',                badge:'พ.ค. (1–14) 2569' },
+};
+let curPickedPeriod = 'all';
 
-function adsParseDate(s){ return new Date(s+'T00:00:00'); }
-function adsFmtThai(s){
-  const d=adsParseDate(s);
-  const M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  return `${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()+543}`;
-}
-function adsRangeLabel(s,e){ return s===e ? adsFmtThai(s) : `${adsFmtThai(s)} – ${adsFmtThai(e)}`; }
-
-function mapDatesToPeriodKeys(start,end){
-  const s=adsParseDate(start), e=adsParseDate(end);
-  const keys=[];
-  if(s<=new Date('2026-03-31T00:00:00')&&e>=new Date('2026-01-01T00:00:00')) keys.push('q1');
-  if(s<=new Date('2026-04-30T00:00:00')&&e>=new Date('2026-04-01T00:00:00')) keys.push('apr');
-  if(s<=new Date('2026-05-14T00:00:00')&&e>=new Date('2026-05-01T00:00:00')) keys.push('may');
-  return keys.length?keys:['q1'];
-}
-
-function adsRenderCal(side){
-  const info=side==='left'?adsCalLeftMonth:adsCalRightMonth;
-  const {y,m}=info;
-  const el=document.getElementById('ads-cal-'+side);
-  if(!el)return;
-  const TH_M=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
-  const DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
-  const fd=new Date(y,m,1).getDay(), dim=new Date(y,m+1,0).getDate();
-  const minD=adsParseDate(ADS_DATE_MIN), maxD=adsParseDate(ADS_DATE_MAX);
-  const thisM=new Date(y,m,1), minM=new Date(minD.getFullYear(),minD.getMonth(),1), maxM=new Date(maxD.getFullYear(),maxD.getMonth(),1);
-  const canP=thisM>minM, canN=thisM<maxM;
-  let h=`<div class="ads-cal-nav">
-    <button class="ads-cal-nav-btn" onclick="adsNavCal('${side}',-1)" ${canP?'':'disabled style="opacity:.25;cursor:default"'}>&#8249;</button>
-    <span class="ads-cal-nav-title">${TH_M[m]} ${y+543}</span>
-    <button class="ads-cal-nav-btn" onclick="adsNavCal('${side}',1)" ${canN?'':'disabled style="opacity:.25;cursor:default"'}>&#8250;</button>
-  </div><div class="ads-cal-grid">`;
-  DOW.forEach(d=>{h+=`<div class="ads-cal-dow">${d}</div>`;});
-  for(let i=0;i<fd;i++) h+='<div class="ads-cal-day out"></div>';
-  for(let day=1;day<=dim;day++){
-    const ds=`${y}-${String(m+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-    const dObj=adsParseDate(ds);
-    const dis=dObj<minD||dObj>maxD;
-    const iS=ds===adsDraftStart, iE=ds===adsDraftEnd;
-    const inR=adsDraftStart&&adsDraftEnd&&ds>adsDraftStart&&ds<adsDraftEnd;
-    let cls='ads-cal-day';
-    if(dis) cls+=' disabled';
-    if(iS)  cls+=' range-start';
-    if(iE&&adsDraftEnd!==adsDraftStart) cls+=' range-end';
-    if(iS&&adsDraftEnd===adsDraftStart) cls+=' range-end';
-    if(inR) cls+=' in-range';
-    h+=`<div class="${cls}" ${dis?'':`onclick="adsDayClick('${ds}')"`}>${day}</div>`;
-  }
-  h+='</div>';
-  el.innerHTML=h;
-}
-function adsNavCal(side,dir){
-  const info=side==='left'?adsCalLeftMonth:adsCalRightMonth;
-  info.m+=dir;
-  if(info.m>11){info.m=0;info.y++;} if(info.m<0){info.m=11;info.y--;}
-  adsRenderCals();
-}
-function adsRenderCals(){adsRenderCal('left');adsRenderCal('right');}
-
-function adsDayClick(ds){
-  if(adsPickStep===0){
-    adsDraftStart=ds;adsDraftEnd=ds;adsPickStep=1;
-    document.getElementById('ads-range-hint').textContent=`เริ่ม: ${adsFmtThai(ds)} — คลิกเลือกวันสิ้นสุด`;
-  } else {
-    if(ds<adsDraftStart){adsDraftEnd=adsDraftStart;adsDraftStart=ds;}
-    else adsDraftEnd=ds;
-    adsPickStep=0;
-    document.getElementById('ads-range-hint').textContent=adsRangeLabel(adsDraftStart,adsDraftEnd);
-  }
-  adsHighlightPills(); adsRenderCals();
-}
-function adsHighlightPills(){
-  document.querySelectorAll('.ads-preset-pill').forEach(b=>b.classList.remove('active'));
-  const today=new Date();today.setHours(0,0,0,0);
-  const minD=adsParseDate(ADS_DATE_MIN),maxD=adsParseDate(ADS_DATE_MAX);
-  const clamp=d=>d<minD?minD:(d>maxD?maxD:d);
-  const fmt=d=>d.toISOString().slice(0,10);
-  const t7=new Date(today);t7.setDate(t7.getDate()-6);
-  const t30=new Date(today);t30.setDate(t30.getDate()-29);
-  const presets={'today':{s:fmt(clamp(today)),e:fmt(clamp(today))},'7d':{s:fmt(clamp(t7)),e:fmt(clamp(today))},'30d':{s:fmt(clamp(t30)),e:fmt(clamp(today))},'year':{s:ADS_DATE_MIN,e:ADS_DATE_MAX}};
-  for(const [type,{s,e}] of Object.entries(presets)){
-    if(adsDraftStart===s&&adsDraftEnd===e){document.getElementById('adsPill-'+type)?.classList.add('active');break;}
-  }
-}
-function adsPresetRelative(type){
-  const today=new Date();today.setHours(0,0,0,0);
-  const minD=adsParseDate(ADS_DATE_MIN),maxD=adsParseDate(ADS_DATE_MAX);
-  const clamp=d=>d<minD?minD:(d>maxD?maxD:d);
-  const fmt=d=>d.toISOString().slice(0,10);
-  let s,e;
-  if(type==='today'){s=e=clamp(today);}
-  else if(type==='7d'){const t7=new Date(today);t7.setDate(t7.getDate()-6);s=clamp(t7);e=clamp(today);}
-  else if(type==='30d'){const t30=new Date(today);t30.setDate(t30.getDate()-29);s=clamp(t30);e=clamp(today);}
-  else{s=minD;e=maxD;}
-  adsDraftStart=fmt(s);adsDraftEnd=fmt(e);
-  adsPickStep=0;
-  document.querySelectorAll('.ads-preset-pill').forEach(b=>b.classList.remove('active'));
-  document.getElementById('adsPill-'+type)?.classList.add('active');
-  document.getElementById('ads-range-hint').textContent=adsRangeLabel(adsDraftStart,adsDraftEnd);
-  adsCalLeftMonth={y:s.getFullYear(),m:s.getMonth()};
-  adsCalRightMonth={y:s.getFullYear(),m:s.getMonth()+1};
-  if(adsCalRightMonth.m>11){adsCalRightMonth.m=0;adsCalRightMonth.y++;}
-  adsRenderCals();
-}
-function adsQuickPick(start,end,btn){
-  adsDraftStart=start;adsDraftEnd=end;adsPickStep=0;
-  document.querySelectorAll('.ads-preset-pill').forEach(b=>b.classList.remove('active'));
+function adsPickPeriod(key, btn){
+  curPickedPeriod = key;
+  curPeriodKeys = ADS_PERIOD_DEFS[key].keys;
+  document.querySelectorAll('.ads-period-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('ads-range-hint').textContent=adsRangeLabel(start,end);
-  const d=adsParseDate(start);
-  adsCalLeftMonth={y:d.getFullYear(),m:d.getMonth()};
-  adsCalRightMonth={y:d.getFullYear(),m:d.getMonth()+1};
-  if(adsCalRightMonth.m>11){adsCalRightMonth.m=0;adsCalRightMonth.y++;}
-  adsRenderCals();
-}
-function adsApplyDateRange(){
-  curPeriodKeys=mapDatesToPeriodKeys(adsDraftStart,adsDraftEnd);
-  const label=adsRangeLabel(adsDraftStart,adsDraftEnd);
-  document.getElementById('adsPeriodLabel').textContent=label;
-  document.getElementById('period-badge-txt').textContent=label;
+  document.getElementById('adsPeriodLabel').textContent = ADS_PERIOD_DEFS[key].label;
+  document.getElementById('period-badge-txt').textContent = ADS_PERIOD_DEFS[key].badge;
   adsClosePicker();
   renderDashboard();
 }
+
 function adsTogglePicker(){
   const panel=document.getElementById('adsMPickerPanel');
   const btn=document.getElementById('adsMRangeBtn');
   const bd=document.getElementById('adsBackdrop');
   const open=panel.classList.contains('open');
-  if(!open){
-    const d=adsParseDate(adsDraftStart);
-    adsCalLeftMonth={y:d.getFullYear(),m:d.getMonth()};
-    adsCalRightMonth={y:d.getFullYear(),m:d.getMonth()+1};
-    if(adsCalRightMonth.m>11){adsCalRightMonth.m=0;adsCalRightMonth.y++;}
-    adsPickStep=0;
-    document.getElementById('ads-range-hint').textContent=adsRangeLabel(adsDraftStart,adsDraftEnd);
-    adsHighlightPills();
-    adsRenderCals();
-  }
   panel.classList.toggle('open',!open);
   btn.classList.toggle('open',!open);
   bd.classList.toggle('open',!open);
@@ -1155,8 +1006,6 @@ function adsPeriodSelect(){}  // legacy no-op
 // Legacy setPeriod kept for backward compat
 function setPeriod(key, btn){
   curPeriod=key;
-  const noteEl=document.getElementById('tk-avail-note');
-  if(noteEl) noteEl.textContent=TK_AVAIL[key]||'';
   renderDashboard();
 }
 
