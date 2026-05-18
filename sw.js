@@ -1,11 +1,12 @@
 // WIBWUB Service Worker — auto-update on new version
-const CACHE = 'wibwub-v4';
+const CACHE = 'wibwub-v5';
 const FILES = [
   '/Wibwub-Dashboard/WIBWUB_Mobile.html',
   '/Wibwub-Dashboard/manifest.json',
   '/Wibwub-Dashboard/icon-180.png',
   '/Wibwub-Dashboard/icon-192.png',
   '/Wibwub-Dashboard/icon-512.png',
+  '/Wibwub-Dashboard/logo-header.png',
 ];
 
 // Install: cache all files, activate immediately (don't wait)
