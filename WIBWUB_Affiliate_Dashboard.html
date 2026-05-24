@@ -55,7 +55,7 @@ tbody tr:last-child td{border-bottom:none}
 .div-sep{height:1px;background:rgba(255,255,255,.06);margin:14px 0}
 footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-spacing:1px;text-transform:uppercase}
 
-/* MONTH RANGE PICKER â dark theme */
+/* MONTH RANGE PICKER – dark theme */
 .af-mbar{background:#161616;border:1px solid rgba(26,92,219,.2);border-radius:10px;padding:10px 16px;display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;}
 .af-mbar-label{font-size:10px;font-weight:600;color:#6B7280;text-transform:uppercase;letter-spacing:.8px;white-space:nowrap;}
 .af-mrange-btn{display:flex;align-items:center;gap:8px;padding:6px 14px;border-radius:16px;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid rgba(26,92,219,.5);color:#1A5CDB;background:rgba(26,92,219,.08);user-select:none;white-space:nowrap;}
@@ -102,35 +102,35 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
   <img src="logo-header.png" alt="WIBWUB" style="height:24px;display:block;">
   <div style="width:1px;height:32px;background:#e8e8e8"></div>
   <div style="font-size:11px;color:#666">Affiliate Performance Report</div>
-  <div class="wperiod">à¸à¸¤à¸¨à¸à¸´à¸à¸²à¸¢à¸ 2568 â à¸à¸¤à¸©à¸ à¸²à¸à¸¡ 2569<br><span style="color:#1A5CDB;font-size:11px">Net GMV Dashboard</span></div>
+  <div class="wperiod">พฤศจิกายน 2568 — พฤษภาคม 2569<br><span style="color:#1A5CDB;font-size:11px">Net GMV Dashboard</span></div>
 </div>
 
 <!-- Month Range Picker -->
 <div class="af-mbar">
-  <span class="af-mbar-label">ð à¸à¹à¸§à¸à¹à¸§à¸¥à¸²:</span>
+  <span class="af-mbar-label">📅 ช่วงเวลา:</span>
   <div class="af-mpicker-wrap">
     <div class="af-mrange-btn" id="afMRangeBtn" onclick="afTogglePicker()">
-      <span id="afRangeLabel">à¸¡à¸.69 â à¸à¸.69</span>
-      <span class="caret">â¾</span>
+      <span id="afRangeLabel">มค.69 – พค.69</span>
+      <span class="caret">▾</span>
     </div>
     <div class="af-backdrop" id="afBackdrop" onclick="afClosePicker()"></div>
     <div class="af-mpicker-panel" id="afMPickerPanel">
       <div class="af-mpc-side">
-        <div class="af-mpc-side-title">à¹à¸¥à¸·à¸­à¸à¸à¹à¸§à¸</div>
-        <button class="af-mpc-pill" id="afPill-today" onclick="afPresetRelative('today')">à¸§à¸±à¸à¸à¸µà¹</button>
-        <button class="af-mpc-pill" id="afPill-7d" onclick="afPresetRelative('7d')">à¸¢à¹à¸­à¸à¸«à¸¥à¸±à¸ 7 à¸§à¸±à¸</button>
-        <button class="af-mpc-pill" id="afPill-30d" onclick="afPresetRelative('30d')">à¸¢à¹à¸­à¸à¸«à¸¥à¸±à¸ 30 à¸§à¸±à¸</button>
-        <button class="af-mpc-pill active" id="afPill-year" onclick="afPresetRelative('year')">à¸à¸¥à¸­à¸à¸à¸±à¹à¸à¸à¸µà¸à¸±à¸à¸à¸¸à¸à¸±à¸</button>
+        <div class="af-mpc-side-title">เลือกด่วน</div>
+        <button class="af-mpc-pill" id="afPill-today" onclick="afPresetRelative('today')">วันนี้</button>
+        <button class="af-mpc-pill" id="afPill-7d" onclick="afPresetRelative('7d')">ย้อนหลัง 7 วัน</button>
+        <button class="af-mpc-pill" id="afPill-30d" onclick="afPresetRelative('30d')">ย้อนหลัง 30 วัน</button>
+        <button class="af-mpc-pill active" id="afPill-year" onclick="afPresetRelative('year')">ตลอดทั้งปีปัจจุบัน</button>
       </div>
       <div class="af-mpc-cals">
         <div class="af-mpc-cals-row">
           <div class="af-mpc-cal" id="afCalLeft"></div>
           <div class="af-mpc-cal" id="afCalRight"></div>
         </div>
-        <div class="af-mpc-hint" id="afCalHint">à¸à¸¥à¸´à¸à¹à¸¥à¸·à¸­à¸à¸§à¸±à¸à¹à¸£à¸´à¹à¸¡</div>
+        <div class="af-mpc-hint" id="afCalHint">คลิกเลือกวันเริ่ม</div>
         <div class="af-mpc-footer">
-          <button class="af-mpc-cancel" onclick="afClosePicker()">à¸à¸´à¸</button>
-          <button class="af-mpc-apply" onclick="afApplyCalRange()">à¸¢à¸·à¸à¸¢à¸±à¸ â</button>
+          <button class="af-mpc-cancel" onclick="afClosePicker()">ปิด</button>
+          <button class="af-mpc-apply" onclick="afApplyCalRange()">ยืนยัน ✓</button>
         </div>
       </div>
     </div>
@@ -139,24 +139,24 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 </div>
 
 <div class="kg" id="afKpiRow">
-  <div class="kc"><p class="kl">GMV à¸£à¸§à¸¡à¸à¸¸à¸à¹à¸à¸·à¸­à¸</p><p class="kv" id="af-kpi-gmv">à¸¿2.78M</p><p class="ks" id="af-kpi-gmv-sub">5 à¹à¸à¸·à¸­à¸ à¸£à¸§à¸¡à¸à¸±à¸</p></div>
-  <div class="kc"><p class="kl">Net GMV (à¸«à¸¥à¸±à¸à¸«à¸±à¸à¸à¸·à¸)</p><p class="kv" id="af-kpi-net">à¸¿2.73M</p><p class="ks" id="af-kpi-net-sub">Refund rate ~1.6%</p></div>
-  <div class="kc"><p class="kl">à¸à¹à¸²à¸à¸­à¸¡à¸¡à¸´à¸à¸à¸±à¹à¸à¸£à¸§à¸¡</p><p class="kv" id="af-kpi-comm">à¸¿335K</p><p class="ks" id="af-kpi-comm-sub">avg 12.1% of GMV</p></div>
-  <div class="kc"><p class="kl">à¹à¸à¸·à¸­à¸à¸¢à¸­à¸à¸ªà¸¹à¸à¸ªà¸¸à¸</p><p class="kv" id="af-kpi-best">à¹à¸¡à¸©à¸².69</p><p class="ks" id="af-kpi-best-sub">à¸¿708,947 net GMV</p></div>
+  <div class="kc"><p class="kl">GMV รวมทุกเดือน</p><p class="kv" id="af-kpi-gmv">฿2.78M</p><p class="ks" id="af-kpi-gmv-sub">5 เดือน รวมกัน</p></div>
+  <div class="kc"><p class="kl">Net GMV (หลังหักคืน)</p><p class="kv" id="af-kpi-net">฿2.73M</p><p class="ks" id="af-kpi-net-sub">Refund rate ~1.6%</p></div>
+  <div class="kc"><p class="kl">ค่าคอมมิชชั่นรวม</p><p class="kv" id="af-kpi-comm">฿335K</p><p class="ks" id="af-kpi-comm-sub">avg 12.1% of GMV</p></div>
+  <div class="kc"><p class="kl">เดือนยอดสูงสุด</p><p class="kv" id="af-kpi-best">เมษา.69</p><p class="ks" id="af-kpi-best-sub">฿708,947 net GMV</p></div>
 </div>
 
 <div class="cg">
   <div class="cc">
-    <p class="ct">GMV à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</p>
+    <p class="ct">GMV รายเดือน</p>
     <div class="lr">
       <span class="li"><span class="ld" style="background:#1A5CDB"></span>GMV</span>
       <span class="li"><span class="ld" style="background:#3B82F6;border-radius:50%"></span>Net GMV</span>
-      <span class="li"><span class="ld" style="background:#10B981;border-radius:50%"></span>à¸à¹à¸²à¸à¸­à¸¡</span>
+      <span class="li"><span class="ld" style="background:#10B981;border-radius:50%"></span>ค่าคอม</span>
     </div>
     <div style="position:relative;width:100%;height:200px"><canvas id="gc"></canvas></div>
   </div>
   <div class="cc">
-    <p class="ct">à¸à¸³à¸à¸§à¸ Creators à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</p>
+    <p class="ct">จำนวน Creators รายเดือน</p>
     <div class="lr">
       <span class="li"><span class="ld" style="background:#A78BFA;border-radius:50%"></span>Creators</span>
     </div>
@@ -167,7 +167,7 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 <div class="div-sep"></div>
 
 <div class="tc2">
-  <p class="sec-label">Net GMV (à¸«à¸¥à¸±à¸à¸«à¸±à¸à¸à¸·à¸à¹à¸à¸´à¸) à¹à¸¢à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</p>
+  <p class="sec-label">Net GMV (หลังหักคืนเงิน) แยกรายเดือน</p>
   <div class="sr" id="sr"></div>
   <div class="tw">
     <table id="mt">
@@ -180,29 +180,29 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
       <thead>
         <tr>
           <th onclick="ss('t')" style="text-align:left">Creator</th>
-          <th onclick="ss(0)" id="h0">à¸à¸¢.68</th>
-          <th onclick="ss(1)" id="h1">à¸à¸.68</th>
-          <th onclick="ss(2)" id="h2">à¸¡à¸.69</th>
-          <th onclick="ss(3)" id="h3">à¸à¸.69</th>
-          <th onclick="ss(4)" id="h4">à¸¡à¸µà¸à¸².69</th>
-          <th onclick="ss(5)" id="h5">à¹à¸¡à¸©à¸².69</th>
-          <th onclick="ss(6)" id="h6">à¸à¸.69*</th>
-          <th onclick="ss('t')" id="ht" class="sa">Net à¸£à¸§à¸¡</th>
-          <th style="cursor:default">à¹à¸à¸·à¸­à¸</th>
+          <th onclick="ss(0)" id="h0">พย.68</th>
+          <th onclick="ss(1)" id="h1">ธค.68</th>
+          <th onclick="ss(2)" id="h2">มค.69</th>
+          <th onclick="ss(3)" id="h3">กพ.69</th>
+          <th onclick="ss(4)" id="h4">มีนา.69</th>
+          <th onclick="ss(5)" id="h5">เมษา.69</th>
+          <th onclick="ss(6)" id="h6">พค.69*</th>
+          <th onclick="ss('t')" id="ht" class="sa">Net รวม</th>
+          <th style="cursor:default">เดือน</th>
         </tr>
       </thead>
       <tbody id="tb"></tbody>
     </table>
   </div>
   <p class="pi" id="pi"></p>
-  <button class="smb" id="smb" onclick="sm()" style="display:none">+ à¹à¸ªà¸à¸à¹à¸à¸´à¹à¸¡à¹à¸à¸´à¸¡</button>
+  <button class="smb" id="smb" onclick="sm()" style="display:none">+ แสดงเพิ่มเติม</button>
 </div>
 
-<footer>WIBWUB HYPER CLEANING CAR Â· Affiliate Data Report Â· Generated 2569</footer>
+<footer>WIBWUB HYPER CLEANING CAR · Affiliate Data Report · Generated 2569</footer>
 
 </div>
 <script>
-const months=["à¸à¸¢.68", "à¸à¸.68", "à¸¡à¸.69", "à¸à¸.69", "à¸¡à¸µà¸à¸².69", "à¹à¸¡à¸©à¸².69", "à¸à¸.69"];
+const months=["พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
 const gmvD=[288701,347208,461048,550756,655259,724337,626556];
 const netD=[271930,342501,456481,544073,642947,708947,612387];
 const commD=[39439,49419,64612,78138,82886,69235,66163];
@@ -215,7 +215,7 @@ new Chart(document.getElementById('gc'),{
   data:{labels:months,datasets:[
     {label:'GMV',data:gmvD,backgroundColor:'rgba(26,92,219,0.55)',borderColor:'#1A5CDB',borderWidth:1,order:2},
     {label:'Net GMV',data:netD,type:'line',borderColor:'#3B82F6',backgroundColor:'transparent',borderWidth:2.5,pointRadius:5,pointHoverRadius:7,pointBackgroundColor:'#3B82F6',fill:false,order:1,tension:0.3},
-    {label:'à¸à¹à¸²à¸à¸­à¸¡',data:commD,type:'line',borderColor:'#10B981',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#10B981',fill:false,order:0,tension:0.3}
+    {label:'ค่าคอม',data:commD,type:'line',borderColor:'#10B981',backgroundColor:'transparent',borderWidth:2,borderDash:[5,4],pointRadius:4,pointHoverRadius:6,pointBackgroundColor:'#10B981',fill:false,order:0,tension:0.3}
   ]},
   options:{
     responsive:true,
@@ -233,33 +233,33 @@ new Chart(document.getElementById('gc'),{
         titleFont:{size:12,weight:'500'},
         bodyFont:{size:12},
         callbacks:{
-          title:items=>`ð ${items[0].label}`,
+          title:items=>`📅 ${items[0].label}`,
           label:ctx=>{
             const v=ctx.parsed.y;
             const lbl=ctx.dataset.label;
-            const prefix=lbl==='GMV'?'ð':lbl==='Net GMV'?'ð°':'ð·ï¸';
-            return` ${prefix} ${lbl}:  à¸¿${v.toLocaleString()}`;
+            const prefix=lbl==='GMV'?'📊':lbl==='Net GMV'?'💰':'🏷️';
+            return` ${prefix} ${lbl}:  ฿${v.toLocaleString()}`;
           },
           afterBody:items=>{
             const gmv=items.find(i=>i.dataset.label==='GMV')?.parsed.y||0;
             const net=items.find(i=>i.dataset.label==='Net GMV')?.parsed.y||0;
-            const comm=items.find(i=>i.dataset.label==='à¸à¹à¸²à¸à¸­à¸¡')?.parsed.y||0;
+            const comm=items.find(i=>i.dataset.label==='ค่าคอม')?.parsed.y||0;
             const refund=gmv-net;
             const commPct=((comm/gmv)*100).toFixed(1);
             const refundPct=((refund/gmv)*100).toFixed(1);
-            return['',` ð à¸à¸·à¸à¹à¸à¸´à¸:  à¸¿${refund.toLocaleString()} (${refundPct}%)`,` ð à¸à¸­à¸¡/GMV:  ${commPct}%`];
+            return['',` 🔄 คืนเงิน:  ฿${refund.toLocaleString()} (${refundPct}%)`,` 📈 คอม/GMV:  ${commPct}%`];
           }
         }
       }
     },
     scales:{
       x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},
-      y:{ticks:{color:tickC,font:{size:10},callback:v=>'à¸¿'+(v>=1000?Math.round(v/1000)+'K':v)},grid:{color:gridC}}
+      y:{ticks:{color:tickC,font:{size:10},callback:v=>'฿'+(v>=1000?Math.round(v/1000)+'K':v)},grid:{color:gridC}}
     }
   }
 });
 
-new Chart(document.getElementById('cc2'),{type:'line',data:{labels:months,datasets:[{label:'Creators',data:crD,borderColor:'#A78BFA',backgroundColor:'rgba(167,139,250,0.1)',borderWidth:2,pointRadius:5,pointBackgroundColor:'#A78BFA',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',callbacks:{label:c=>`${c.parsed.y.toLocaleString()} à¸à¸`}}},scales:{x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},y:{ticks:{color:tickC,font:{size:10}},grid:{color:gridC}}}}});
+new Chart(document.getElementById('cc2'),{type:'line',data:{labels:months,datasets:[{label:'Creators',data:crD,borderColor:'#A78BFA',backgroundColor:'rgba(167,139,250,0.1)',borderWidth:2,pointRadius:5,pointBackgroundColor:'#A78BFA',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',callbacks:{label:c=>`${c.parsed.y.toLocaleString()} คน`}}},scales:{x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},y:{ticks:{color:tickC,font:{size:10}},grid:{color:gridC}}}}});
 
 const raw=[
   {n:"rita.fe_",t:372456,ma:7,mn:[13997,53544,71718,72098,75273,61408,24417]},
@@ -318,17 +318,17 @@ function hc(v){
   return{bg:'rgba(26,92,219,0.7)',c:'#FED7AA'};
 }
 function fmt(v){
-  if(v==null)return'<span style="color:#374151;font-size:10px">â</span>';
+  if(v==null)return'<span style="color:#374151;font-size:10px">—</span>';
   if(v===0)return'<span style="color:#374151;font-size:10px">0</span>';
   const h=hc(v);
   const t=v>=1000?(v/1000).toFixed(1)+'K':v;
-  if(!h)return`<span style="color:#374151;font-size:10px">à¸¿${t}</span>`;
-  return`<span class="hc" style="background:${h.bg};color:${h.c}">à¸¿${t}</span>`;
+  if(!h)return`<span style="color:#374151;font-size:10px">฿${t}</span>`;
+  return`<span class="hc" style="background:${h.bg};color:${h.c}">฿${t}</span>`;
 }
 function fmtT(v){
-  if(v>=1000000)return'à¸¿'+(v/1000000).toFixed(2)+'M';
-  if(v>=1000)return'à¸¿'+(v/1000).toFixed(1)+'K';
-  return'à¸¿'+v;
+  if(v>=1000000)return'฿'+(v/1000000).toFixed(2)+'M';
+  if(v>=1000)return'฿'+(v/1000).toFixed(1)+'K';
+  return'฿'+v;
 }
 function rt(){
   const sl=sd.slice(0,cnt);
@@ -336,7 +336,7 @@ function rt(){
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
     return`<tr><td title="${r.n}"><span class="rk ${rc}">${i+1}</span>${r.n}</td>${r.mn.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tx">${fmtT(r.t)}</td><td class="mx">${r.ma}/7</td></tr>`;
   }).join('');
-  document.getElementById('pi').textContent=`à¹à¸ªà¸à¸ ${Math.min(cnt,sd.length)} à¸à¸²à¸ ${sd.length} creators`;
+  document.getElementById('pi').textContent=`แสดง ${Math.min(cnt,sd.length)} จาก ${sd.length} creators`;
   document.getElementById('smb').style.display=cnt>=sd.length?'none':'block';
   // Re-apply column visibility after re-rendering rows
   document.querySelectorAll('#mt tbody tr').forEach(row=>{
@@ -361,12 +361,12 @@ function ss(k){
 function sm(){cnt+=20;rt();}
 
 const bKeys=['t',0,1,2,3,4,5,6];
-const bLabels=["à¸à¸±à¹à¸à¸«à¸¡à¸", "à¸à¸¢.68", "à¸à¸.68", "à¸¡à¸.69", "à¸à¸.69", "à¸¡à¸µà¸à¸².69", "à¹à¸¡à¸©à¸².69", "à¸à¸.69"];
+const bLabels=["ทั้งหมด", "พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
 const bIds=['bt','b0','b1','b2','b3','b4','b5','b6'];
 document.getElementById('sr').innerHTML=bKeys.map((k,i)=>`<button class="sb${k==='t'?' a':''}" id="${bIds[i]}" onclick="ss(${JSON.stringify(k)})">${bLabels[i]}</button>`).join('');
 rt();
 
-// ââ AFFILIATE DUAL-CALENDAR PICKER ââ
+// ── AFFILIATE DUAL-CALENDAR PICKER ──
 const AF_DATE_MIN = '2025-11-01';
 const AF_DATE_MAX = '2026-05-31';
 const AF_MONTH_BOUNDS = [
@@ -379,14 +379,14 @@ let afRS=2, afRE=6;
 let afDraftStart='2026-01-01', afDraftEnd=AF_DATE_MAX;
 let afCalStep=0;
 let afCalLeft={y:2026,m:0}, afCalRight={y:2026,m:1};
-const AF_THAI_MONTHS=['à¸¡.à¸.','à¸.à¸.','à¸¡à¸µ.à¸.','à¹à¸¡.à¸¢.','à¸.à¸.','à¸¡à¸´.à¸¢.','à¸.à¸.','à¸ª.à¸.','à¸.à¸¢.','à¸.à¸.','à¸.à¸¢.','à¸.à¸.'];
-const AF_DOW=['à¸­à¸²','à¸','à¸­','à¸','à¸à¸¤','à¸¨','à¸ª'];
-const afML=['à¸à¸¢.68','à¸à¸.68','à¸¡à¸.69','à¸à¸.69','à¸¡à¸µà¸à¸².69','à¹à¸¡à¸©à¸².69','à¸à¸.69'];
+const AF_THAI_MONTHS=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const AF_DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
+const afML=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
 
 function afParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function afFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function afFmtThai(s){const d=afParseDate(s);return d.getDate()+' '+AF_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
-function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(s)+' â '+afFmtThai(e);}
+function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(s)+' – '+afFmtThai(e);}
 
 function afRangeToMonths(s,e){
   const sd=afParseDate(s),ed=afParseDate(e);
@@ -441,7 +441,7 @@ function afDayClick(ds){
     afCalStep=0;
   }
   const hint=document.getElementById('afCalHint');
-  if(hint)hint.textContent=afCalStep===0?afRangeLabel(afDraftStart,afDraftEnd):'à¸à¸¥à¸´à¸à¹à¸¥à¸·à¸­à¸à¸§à¸±à¸à¸ªà¸´à¹à¸à¸ªà¸¸à¸';
+  if(hint)hint.textContent=afCalStep===0?afRangeLabel(afDraftStart,afDraftEnd):'คลิกเลือกวันสิ้นสุด';
   afHighlightPills();afRenderCals();
 }
 function afHighlightPills(){
@@ -509,7 +509,7 @@ function afRefreshUI(){}
 function afApplyRange(s,e){
   afRS=s;afRE=e;
   afRefreshUI(s,e);
-  const lbl=s===e?afML[s]:`${afML[s]} â ${afML[e]}`;
+  const lbl=s===e?afML[s]:`${afML[s]} – ${afML[e]}`;
   document.getElementById('afRangeLabel').textContent=lbl;
   const n=e-s+1;
 
@@ -526,16 +526,16 @@ function afApplyRange(s,e){
   for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
 
   // Format
-  const fv=v=>v>=1000000?'à¸¿'+(v/1000000).toFixed(2)+'M':v>=1000?'à¸¿'+(v/1000).toFixed(0)+'K':'à¸¿'+v;
+  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
   document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
-  document.getElementById('af-kpi-gmv-sub').textContent=`${n} à¹à¸à¸·à¸­à¸ à¸£à¸§à¸¡à¸à¸±à¸`;
+  document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
   document.getElementById('af-kpi-net').textContent=fv(netSum);
   document.getElementById('af-kpi-net-sub').textContent=`Refund rate ~${refundPct}%`;
   document.getElementById('af-kpi-comm').textContent=fv(commSum);
   document.getElementById('af-kpi-comm-sub').textContent=`avg ${commPct}% of GMV`;
   document.getElementById('af-kpi-best').textContent=afML[bestIdx];
-  document.getElementById('af-kpi-best-sub').textContent=`à¸¿${bestVal.toLocaleString()} net GMV`;
-  document.getElementById('afSummary').textContent=`à¸£à¸§à¸¡: ${fv(netSum)} net GMV Â· ${n} à¹à¸à¸·à¸­à¸`;
+  document.getElementById('af-kpi-best-sub').textContent=`฿${bestVal.toLocaleString()} net GMV`;
+  document.getElementById('afSummary').textContent=`รวม: ${fv(netSum)} net GMV · ${n} เดือน`;
 
   // Show/hide table columns (columns 1..7 = months 0..6)
   const colEls=document.querySelectorAll('#mt colgroup col');
@@ -571,7 +571,7 @@ function afApplyRange(s,e){
   }
 }
 
-// Init â show current year (à¸¡à¸.69âà¸à¸.69)
+// Init – show current year (มค.69–พค.69)
 afApplyRange(2,6);
 </script>
 </body>
