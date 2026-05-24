@@ -1,5 +1,5 @@
-// WIBWUB Service Worker â auto-update on new version
-const CACHE = 'wibwub-v14';
+// WIBWUB Service Worker Ã¢ÂÂ auto-update on new version
+const CACHE = 'wibwub-v15';
 const FILES = [
   '/Wibwub-Dashboard/WIBWUB_Mobile.html',
   '/Wibwub-Dashboard/manifest.json',
@@ -28,7 +28,7 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch: network first â if offline fallback to cache
+// Fetch: network first Ã¢ÂÂ if offline fallback to cache
 self.addEventListener('fetch', e => {
   e.respondWith(
     fetch(e.request)
