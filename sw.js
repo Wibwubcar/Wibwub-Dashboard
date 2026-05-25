@@ -28,7 +28,7 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch: network first → if offline fallback to cache
+// Fetch: network first Ã¢ÂÂ if offline fallback to cache
 self.addEventListener('fetch', e => {
   e.respondWith(
     fetch(e.request)
