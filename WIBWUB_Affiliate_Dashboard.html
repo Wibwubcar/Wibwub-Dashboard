@@ -356,7 +356,7 @@ const raw=[
   {n:"somkidkongchom",t:12459,ma:4,mn:[null,null,null,417,2477,6016,3549]},
   {n:"krunid_",t:11963,ma:6,mn:[2886,1970,2653,2128,1556,770,null]},
   {n:"view.miipro",t:11903,ma:6,mn:[null,1388,7264,1140,1046,993,72]},
-  {n:"rawinreview2465",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
+  {n:"rawinreview"465",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
   {n:"matenatthapong",t:3609,ma:1,mn:[null,null,null,null,null,null,3609]},
   {n:"chayaanit_",t:3378,ma:1,mn:[null,null,null,null,null,null,3378]},
   {n:"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
@@ -455,7 +455,7 @@ const AF_DOW=['‡∏≠‡∏≤','‡∏à','‡∏≠','‡∏û','‡∏û‡∏§','‡∏®','‡∏™'];
 function afParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function afFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function afFmtThai(s){const d=afParseDate(s);return d.getDate()+' '+AF_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
-function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(!)+' ‚Äì '+afFmtThai(e);}
+function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(c)+' ‚Äì '+afFmtThai(e);}
 
 function afRangeToMonths(s,e){
   const sd=afParseDate(s),ed=afParseDate(e);
@@ -648,7 +648,7 @@ afApplyRange(2,6);
 <div id="panelKol" class="tab-panel">
 
 <div class="kol-kpi-grid" id="kolKpiGrid">
-  <div class="kol-kc"><p class="kol-kl">‡∏ï‡πâ‡∏ô‡∏ó‡∏∏‡∏ô KOL ‡∏£‡∏ß‡∏°</p><p class="kol-kv" id="kk-spend">‡∏ø417K</p><p class="kol-ks">‡∏°.‡∏Ñ.69 ‚Äì‡∏û.‡∏Ñ.69</p></div>
+  <div class="kol-kc"><p class="kol-kl">‡∏ï‡πâ‡∏ô‡∏ó‡∏∏‡∏ô KOL ‡∏£‡∏ß‡∏°</p><p class="kol-kv" id="kk-spend">‡∏ø417K</p><p class="kol-ks">‡∏°.‡∏Ñ.‚Äì‡∏û.‡∏Ñ. 2569</p></div>
   <div class="kol-kc"><p class="kol-kl">Affiliate GMV ‡∏à‡∏≤‡∏Å KOL ‡∏ó‡∏µ‡πà‡∏à‡πà‡∏≤‡∏¢</p><p class="kol-kv" id="kk-gmv">‡∏ø1.04M</p><p class="kol-ks">‡πÄ‡∏â‡∏û‡∏≤‡∏∞‡∏ó‡∏µ‡πà‡∏°‡∏µ affiliate link</p></div>
   <div class="kol-kc"><p class="kol-kl">Blended ROI</p><p class="kol-kv" id="kk-roi" style="color:#059669;">2.49√ó</p><p class="kol-ks">GMV √∑ ‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á</p></div>
   <div class="kol-kc"><p class="kol-kl">KOL ‡∏ó‡∏µ‡πà‡∏à‡πà‡∏≤‡∏¢‡πÅ‡∏•‡πâ‡∏ß</p><p class="kol-kv" id="kk-paid">13 ‡∏Ñ‡∏ô</p><p class="kol-ks">paid + seeding + bonus</p></div>
@@ -758,7 +758,28 @@ const KOLS = [
    spend:12000, spendMo:[[4,12000]],
    mn:[0,null,null,8105,10417,8300,3576],
    scenario:1,
-   insight:'‡∏à‡πà‡∏≤‡∏¢ ‡∏ø12,000 the ‡∏¢‡∏≠‡∏î affiliate ‡∏î‡∏µ‡∏ï‡∏±W ‡πâ„Ç·‡∏á‡πÅ‡∏ï‡πà‡∏Å‡πà‡∏≠‡∏ô‡∏à‡πà‡∏≤‡∏¢‡∏î‡πâ„Ç‚üÇ‚àÉäPÅÖ’ë•ïπçîÉÇÊÇ‚+Ç‚ﬂÇÊ#Ç‚∑Ç‚áÇ‚«ÇÊ#Ç‚gÇÊÇ‚gÇ‚WÇ‚«Ç‚úÅ-=0ú∞(ÄÄÅ—•¿ËüÇ‚áÇ‚◊Ç‚CÇ‚ÀÇ‚dÅΩ…ùÖπ•åÉÇ‚∑Ç‚ãÇ‚ÁÇÊ#ÇÊÇ‚óÇÊ'Ç‚úÉÇ‚Ç‚ÀÇ‚èÇ‚#ÇÊ#Ç‚ÀÇ‚ãÇ‚ÇÊ#Ç‚ÀÇ‚#ÇÊ'éã.à~àÆòéä~ä"&ˆ˜7Bä.äﬁâNòâÓãNòéäÇ‚ﬁã^à„CRw“¿¢ÚÚ6VVFñÊrÚ÷ñ7&Ú(	B$ÙíäÆãûàp¢∂ñC¢w&«ÇÊFWFñ∆ñÊsÇr¬FñW#¢w6VVFñÊrr¬FñW$∆&V√¢t÷ñ7&Úr¿¢7VÊC£s¬7VÊD÷Û•µ≥B√s’“¿¢÷„•∂ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬√3C#C√SìscE“¿¢66VÊ&ñÛ£B¿¢ñÁ6ñváC¢~ä^à~â~ãéâíãÛr√äãRÓàB‚ä.äﬁâBffñ∆ñFRâÓãéòéàròäÓä"Ó(	>â‚ÓàB‚ä>ä~äãÛìD≤(	B$Ùí<9ròâæò~âíÜñFFV‚vV“à.äﬁà~ò.âæä>òàä>är¿¢Fó¢~òâÓãNòéä'VFvWBòâæò~âíãÛR”#≤òä^òûär$Ùíä.ãà~âûòéã.àéãâNã^äã.àòâÓä>ã.ãäãR∆˜ñ¬VFñVÊ6Rw“¿¢ÚÚffñ∆ñFR&ˆÁW2(	BòNäòéòàNä.àéòéã.ä"6ˆÁFVÁBòâ^òéà.ã.ä.âNã^äã.à¢∂ñC¢w&óFÊfUÚr¬FñW#¢v&ˆÁW2r¬FñW$∆&V√¢tfb‚&ˆÁW2r¿¢7VÊC£S¬7VÊD÷Û•µ≥R√S’“¿¢÷„•∂ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬√##ìÉsB√C#SÉ%“¿¢66VÊ&ñÛ£2¿¢ñÁ6ñváC¢~àéòéã.ä.òàNòÇ&ˆÁW2ãÛR√FÜRòäÓä"‚t’bä>ä~äãÛ3s$≤(	BF˜ffñ∆ñFRà.äﬁà~â~ãòûà~ò.âæä>òàä>ä$ÙíäÆãûà~äã.àr¿¢Fó¢tWÜ6«W6ófRFV¬äæä>ã~ä“ÜñvÜW"6ˆ÷÷ó76ñˆ‚FñW"àéãàÆòéä~ä"&WFñ‚òNä~òûò>âûò.âæä>òàä>äw“¿¢∂ñC¢v¶&∂∑ó7F˜'ír¬FñW#¢v&ˆÁW2r¬FñW$∆&V√¢tfb‚&ˆÁW2r¿¢7VÊC£#¬7VÊD÷Û•µ≥R√#’“¿¢÷„•∂ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬∆ÁV∆¬√s3É"√cSÉCÖ“¿¢66VÊ&ñÛ£2¿¢ñÁ6ñváC¢t&ˆÁW2ãÛ"√òäÓä"‚ä.äﬁâBffñ∆ñFRãÛ3î≤ò>âí"òâNã~äﬁâí(	B$Ùís9ròâæò~âí7WW"÷Vffñ6ñVÁB7&VF˜"r¿¢Fó¢~òâÓãNòéä6ˆ÷÷ó76ñˆ‚&FRäæä>ã~ä“vófRWÜ6«W6ófR&ˆGV7B66W72òâÓã~òéäﬁä>ãàäûã.àNä~ã.ääÆäòéã>òäÆää“w“¿¢∂ñC¢vÊˆˆÊ¶˜W&ÊWóêπÄ‡∏™‡∏°‡∏≠'},
+   insight:'‡∏à‡πà‡∏≤‡∏¢ ‡∏ø12,000 ‡∏°‡∏µ.‡∏Ñ. affiliate ‡∏¢‡∏≠‡∏î‡∏î‡∏µ‡∏ï‡∏±‡πâ‡∏á‡πÅ‡∏ï‡πà‡∏Å‡πà‡∏≠‡∏ô‡∏à‡πà‡∏≤‡∏¢‡∏î‡πâ‡∏ß‡∏¢ ‚Äî audience ‡πÄ‡∏ä‡∏∑‡πà‡∏≠‡∏°‡∏±‡πà‡∏ô‡πÉ‡∏ô‡∏ï‡∏±‡∏ß KOL',
+   tip:'‡∏°‡∏µ‡∏ê‡∏≤‡∏ô organic ‡∏≠‡∏¢‡∏π‡πà‡πÅ‡∏•‡πâ‡∏ß ‡∏Å‡∏≤‡∏£‡∏à‡πà‡∏≤‡∏¢‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á‡∏ä‡πà‡∏ß‡∏¢ boost ‡∏¢‡∏≠‡∏î‡πÄ‡∏û‡∏¥‡πà‡∏°‡∏≠‡∏µ‡∏Å ~40%'},
+  // Seeding / Micro ‚Äî ‡∏ï‡πâ‡∏ô‡∏ó‡∏∏‡∏ô‡∏ï‡πà‡∏≥ ROI ‡∏™‡∏π‡∏á
+  {id:'ralph.detailing8', tier:'seeding', tierLabel:'Micro',
+   spend:7000, spendMo:[[4,7000]],
+   mn:[null,null,null,null,null,34241,59764],
+   scenario:4,
+   insight:'‡∏•‡∏á‡∏ó‡∏∏‡∏ô ‡∏ø7,000 ‡∏°‡∏µ.‡∏Ñ. ‡∏¢‡∏≠‡∏î affiliate ‡∏û‡∏∏‡πà‡∏á ‡πÄ‡∏°.‡∏¢.‚Äì‡∏û.‡∏Ñ. ‡∏£‡∏ß‡∏° ‡∏ø94K ‚Äî ROI 13√ó ‡πÄ‡∏õ‡πá‡∏ô hidden gem ‡∏Ç‡∏≠‡∏á‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°',
+   tip:'‡πÄ‡∏û‡∏¥‡πà‡∏° budget ‡πÄ‡∏õ‡πá‡∏ô ‡∏ø15-20K ‡πÅ‡∏•‡πâ‡∏ß ROI ‡∏¢‡∏±‡∏á‡∏ô‡πà‡∏≤‡∏à‡∏∞‡∏î‡∏µ‡∏°‡∏≤‡∏Å ‡πÄ‡∏û‡∏£‡∏≤‡∏∞‡∏°‡∏µ loyal audience'},
+  // Affiliate Bonus ‚Äî ‡πÑ‡∏°‡πà‡πÄ‡∏Ñ‡∏¢‡∏à‡πà‡∏≤‡∏¢ content ‡πÅ‡∏ï‡πà‡∏Ç‡∏≤‡∏¢‡∏î‡∏µ‡∏°‡∏≤‡∏Å
+  {id:'rita.fe_', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:5000, spendMo:[[5,5000]],
+   mn:[null,null,null,null,null,229874,142582],
+   scenario:3,
+   insight:'‡∏à‡πà‡∏≤‡∏¢‡πÅ‡∏Ñ‡πà bonus ‡∏ø5,000 ‡πÄ‡∏°.‡∏¢. ‡πÅ‡∏ï‡πà GMV ‡∏£‡∏ß‡∏° ‡∏ø372K ‚Äî top affiliate ‡∏Ç‡∏≠‡∏á‡∏ó‡∏±‡πâ‡∏á‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏° ROI ‡∏™‡∏π‡∏á‡∏°‡∏≤‡∏Å',
+   tip:'Exclusive deal ‡∏´‡∏£‡∏∑‡∏≠ higher commission tier ‡∏à‡∏∞‡∏ä‡πà‡∏ß‡∏¢ retain ‡πÑ‡∏ß‡πâ‡πÉ‡∏ô‡πÇ‡∏õ‡∏£‡πÅ‡∏Å‡∏£‡∏°'},
+  {id:'jarkkystory', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:2000, spendMo:[[5,2000]],
+   mn:[null,null,null,null,null,73812,65848],
+   scenario:3,
+   insight:'Bonus ‡∏ø2,000 ‡πÄ‡∏°.‡∏¢. ‡∏¢‡∏≠‡∏î affiliate ‡∏ø139K ‡πÉ‡∏ô 2 ‡πÄ‡∏î‡∏∑‡∏≠‡∏ô ‚Äî ROI 70√ó ‡πÄ‡∏õ‡πá‡∏ô super-efficient creator',
+   tip:'‡πÄ‡∏û‡∏¥‡πà‡∏° commission rate ‡∏´‡∏£‡∏∑‡∏≠ give exclusive product access ‡πÄ‡∏û‡∏∑‡πà‡∏≠‡∏£‡∏±‡∏Å‡∏©‡∏≤‡∏Ñ‡∏ß‡∏≤‡∏°‡∏™‡∏°‡πà‡∏≥‡πÄ‡∏™‡∏°‡∏≠'},
   {id:'noonjourneyyy', tier:'bonus', tierLabel:'Aff. Bonus',
    spend:4000, spendMo:[[5,4000]],
    mn:[null,null,null,null,null,75430,59057],
@@ -882,7 +903,7 @@ function openKolDetail(id){
   document.getElementById('kd-kpis').innerHTML=[
     {l:'‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á KOL', v:k.spend===0?'‡∏ø0':fmtV(k.spend), s:'cash ‡∏ó‡∏µ‡πà‡∏à‡πà‡∏≤‡∏¢‡πÑ‡∏õ'},
     {l:'Affiliate GMV', v:fmtV(gmv), s:'‡∏¢‡∏≠‡∏î‡∏Ç‡∏≤‡∏¢‡∏ú‡πà‡∏≤‡∏ô link'},
-    {l:'ROI', v:roiStr, s:'GMV √∑ ‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á', c:roiColor(roi)},
+    {l:'ROI', v:roiStr, s:'‡∏á‡πà‡∏≤ GMV √∑ ‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á', c:roiColor(roi)},
     {l:'Commission (~7.5%)', v:fmtV(comm), s:'‡∏ï‡πâ‡∏ô‡∏ó‡∏∏‡∏ô commission'},
     {l:'Net Profit', v:fmtV(netProfit), s:'GMV ‚àí ‡∏Ñ‡πà‡∏≤‡∏à‡πâ‡∏≤‡∏á ‚àí comm', c:netProfit>=0?'#059669':'#DC2626'},
   ].map(x=>`<div class="kol-detail-kc"><p style="font-size:10px;color:#6B7280;margin:0 0 4px;text-transform:uppercase;letter-spacing:.4px;">${x.l}</p><p style="font-size:18px;font-weight:500;margin:0;color:${x.c||'#1A5CDB'};">${x.v}</p><p style="font-size:10px;color:#374151;margin:2px 0 0;">${x.s}</p></div>`).join('');
@@ -891,6 +912,7 @@ function openKolDetail(id){
   if(kdBar)kdBar.destroy();
   const moData = (k.mn||[]).map(v=>v||0);
   kdBar = new Chart(document.getElementById('kd-bar'),{
+
     type:'bar',
     data:{labels:MO_LABELS, datasets:[{data:moData, backgroundColor:moData.map((_,i)=>i===moData.length-1?'#1A5CDB':'rgba(26,92,219,0.45)'), borderRadius:4}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
@@ -898,7 +920,7 @@ function openKolDetail(id){
   });
 
   // Donut
-  if(kdDonut)kdDonut.destroy();
+  kdDonut.destroy();
   const hasSpend = k.spend>0;
   kdDonut = new Chart(document.getElementById('kd-donut'),{
     type:'doughnut',
