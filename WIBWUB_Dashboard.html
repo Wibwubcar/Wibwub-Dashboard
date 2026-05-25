@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>WIBWUB — Business Dashboard</title>
+  <title>WIBWUB â Business Dashboard</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;}
@@ -172,21 +172,21 @@
 <aside class="sidebar">
   <div class="sb-logo"><img src="logo-header.png" alt="WIBWUB" style="height:26px;filter:brightness(0)invert(1);display:block;"></div>
   <nav style="flex:1;padding:12px 0;overflow-y:auto;">
-    <div class="nav-sec">ภาพรวม</div>
-    <div class="nav-item active" onclick="go('overview',this)"><span class="nav-icon">🏠</span><span>ภาพรวมธุรกิจ</span></div>
-    <div class="nav-sec">ยอดขาย</div>
-    <div class="nav-item" onclick="go('sales',this)"><span class="nav-icon">💰</span><span>ยอดขาย & รายได้</span></div>
-    <div class="nav-item" onclick="go('shopee',this)"><span class="nav-icon">🧡</span><span>Shopee</span></div>
-    <div class="nav-item" onclick="go('tiktok',this)"><span class="nav-icon">🎵</span><span>TikTok Shop</span></div>
-    <div class="nav-item" onclick="go('lazada',this)"><span class="nav-icon">💙</span><span>Lazada</span></div>
+    <div class="nav-sec">à¸ à¸²à¸à¸£à¸§à¸¡</div>
+    <div class="nav-item active" onclick="go('overview',this)"><span class="nav-icon">ð </span><span>à¸ à¸²à¸à¸£à¸§à¸¡à¸à¸¸à¸£à¸à¸´à¸</span></div>
+    <div class="nav-sec">à¸¢à¸­à¸à¸à¸²à¸¢</div>
+    <div class="nav-item" onclick="go('sales',this)"><span class="nav-icon">ð°</span><span>à¸¢à¸­à¸à¸à¸²à¸¢ & à¸£à¸²à¸¢à¹à¸à¹</span></div>
+    <div class="nav-item" onclick="go('shopee',this)"><span class="nav-icon">ð§¡</span><span>Shopee</span></div>
+    <div class="nav-item" onclick="go('tiktok',this)"><span class="nav-icon">ðµ</span><span>TikTok Shop</span></div>
+    <div class="nav-item" onclick="go('lazada',this)"><span class="nav-icon">ð</span><span>Lazada</span></div>
     <div class="nav-sec">Marketing Team</div>
-    <div class="nav-item" onclick="go('products',this)"><span class="nav-icon">🏆</span><span>Top สินค้าขายดี</span></div>
-    <div class="nav-item" onclick="go('ads',this)"><span class="nav-icon">📢</span><span>Ads Dashboard</span></div>
-    <div class="nav-item" onclick="go('social',this)"><span class="nav-icon">📣</span><span>Social Media</span></div>
-    <div class="nav-item" onclick="go('affiliate',this)"><span class="nav-icon">🤝</span><span>Affiliate</span></div>
-    <div class="nav-sec">ทีม</div>
-    <div class="nav-item" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
-    <div class="nav-item" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
+    <div class="nav-item" onclick="go('products',this)"><span class="nav-icon">ð</span><span>Top à¸ªà¸´à¸à¸à¹à¸²à¸à¸²à¸¢à¸à¸µ</span></div>
+    <div class="nav-item" onclick="go('ads',this)"><span class="nav-icon">ð¢</span><span>Ads Dashboard</span></div>
+    <div class="nav-item" onclick="go('social',this)"><span class="nav-icon">ð£</span><span>Social Media</span></div>
+    <div class="nav-item" onclick="go('affiliate',this)"><span class="nav-icon">ð¤</span><span>Affiliate</span></div>
+    <div class="nav-sec">à¸à¸µà¸¡</div>
+    <div class="nav-item" onclick="go('hr',this)"><span class="nav-icon">ð¥</span><span>HR & à¸à¸à¸±à¸à¸à¸²à¸</span></div>
+    <div class="nav-item" onclick="go('projects',this)"><span class="nav-icon">ð</span><span>Projects & Tasks</span></div>
   </nav>
   <div class="sb-footer">
     <div class="user-row">
@@ -199,43 +199,43 @@
 <div class="main">
   <header class="topbar">
     <div>
-      <div class="tb-title" id="ptitle">ภาพรวมธุรกิจ</div>
+      <div class="tb-title" id="ptitle">à¸ à¸²à¸à¸£à¸§à¸¡à¸à¸¸à¸£à¸à¸´à¸</div>
       <div class="tb-date" id="pdate"></div>
     </div>
     <div class="tb-right">
-      <div class="notif-btn">🔔<span class="ndot"></span></div>
-      <button class="btn btn-ghost">⬇ Export</button>
-      <button class="btn btn-primary">+ เพิ่มข้อมูล</button>
+      <div class="notif-btn">ð<span class="ndot"></span></div>
+      <button class="btn btn-ghost">â¬ Export</button>
+      <button class="btn btn-primary">+ à¹à¸à¸´à¹à¸¡à¸à¹à¸­à¸¡à¸¹à¸¥</button>
     </div>
   </header>
 
   <!-- MONTH FILTER BAR -->
   <div class="month-bar" id="monthBar">
-    <span class="month-bar-label">📅 ช่วงเวลา:</span>
+    <span class="month-bar-label">ð à¸à¹à¸§à¸à¹à¸§à¸¥à¸²:</span>
     <div class="mpicker-wrap">
       <div class="mrange-btn" id="mrangeBtn" onclick="toggleMPicker()">
-        <span id="mrange-label">ม.ค. – พ.ค. 2569</span>
-        <span class="caret">▾</span>
+        <span id="mrange-label">à¸¡.à¸. â à¸.à¸. 2569</span>
+        <span class="caret">â¾</span>
       </div>
       <!-- Backdrop to close on outside click -->
       <div class="mpicker-backdrop" id="mpickerBackdrop" onclick="closeMPicker()"></div>
       <div class="mpicker-panel" id="mpickerPanel">
         <div class="mpc-side">
-          <div class="mpc-side-title">เลือกด่วน</div>
-          <button class="mpc-pill" id="mpPill-today" onclick="mpPresetRelative('today')">วันนี้</button>
-          <button class="mpc-pill" id="mpPill-7d" onclick="mpPresetRelative('7d')">ย้อนหลัง 7 วัน</button>
-          <button class="mpc-pill" id="mpPill-30d" onclick="mpPresetRelative('30d')">ย้อนหลัง 30 วัน</button>
-          <button class="mpc-pill active" id="mpPill-year" onclick="mpPresetRelative('year')">ตลอดทั้งปีปัจจุบัน</button>
+          <div class="mpc-side-title">à¹à¸¥à¸·à¸­à¸à¸à¹à¸§à¸</div>
+          <button class="mpc-pill" id="mpPill-today" onclick="mpPresetRelative('today')">à¸§à¸±à¸à¸à¸µà¹</button>
+          <button class="mpc-pill" id="mpPill-7d" onclick="mpPresetRelative('7d')">à¸¢à¹à¸­à¸à¸«à¸¥à¸±à¸ 7 à¸§à¸±à¸</button>
+          <button class="mpc-pill" id="mpPill-30d" onclick="mpPresetRelative('30d')">à¸¢à¹à¸­à¸à¸«à¸¥à¸±à¸ 30 à¸§à¸±à¸</button>
+          <button class="mpc-pill active" id="mpPill-year" onclick="mpPresetRelative('year')">à¸à¸¥à¸­à¸à¸à¸±à¹à¸à¸à¸µà¸à¸±à¸à¸à¸¸à¸à¸±à¸</button>
         </div>
         <div class="mpc-cals">
           <div class="mpc-cals-row">
             <div class="mpc-cal" id="mpcCalLeft"></div>
             <div class="mpc-cal" id="mpcCalRight"></div>
           </div>
-          <div class="mpc-hint" id="mpcHint">คลิกเลือกวันเริ่ม</div>
+          <div class="mpc-hint" id="mpcHint">à¸à¸¥à¸´à¸à¹à¸¥à¸·à¸­à¸à¸§à¸±à¸à¹à¸£à¸´à¹à¸¡</div>
           <div class="mpc-footer">
-            <button class="mpc-cancel" onclick="closeMPicker()">ปิด</button>
-            <button class="mpc-apply" onclick="mpApplyRange()">ยืนยัน ✓</button>
+            <button class="mpc-cancel" onclick="closeMPicker()">à¸à¸´à¸</button>
+            <button class="mpc-apply" onclick="mpApplyRange()">à¸¢à¸·à¸à¸¢à¸±à¸ â</button>
           </div>
         </div>
       </div>
@@ -245,69 +245,69 @@
 
   <div class="content">
 
-    <!-- ═══ OVERVIEW ═══ -->
+    <!-- âââ OVERVIEW âââ -->
     <section id="overview" class="section active">
       <div class="kpi-grid">
         <div class="kpi or">
-          <div class="kpi-label">รายได้รวมทุก Platform</div>
-          <div class="kpi-val" id="v-ov-rev">฿6,665,324</div>
-          <div class="kpi-sub up" id="s-ov-rev">↑ 10.6% จากมี.ค.</div>
-          <div class="kpi-ico">💰</div>
+          <div class="kpi-label">à¸£à¸²à¸¢à¹à¸à¹à¸£à¸§à¸¡à¸à¸¸à¸ Platform</div>
+          <div class="kpi-val" id="v-ov-rev">à¸¿6,665,324</div>
+          <div class="kpi-sub up" id="s-ov-rev">â 10.6% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð°</div>
         </div>
         <div class="kpi gr">
-          <div class="kpi-label">ออเดอร์รวม</div>
+          <div class="kpi-label">à¸­à¸­à¹à¸à¸­à¸£à¹à¸£à¸§à¸¡</div>
           <div class="kpi-val" id="v-ov-ord">13,321</div>
-          <div class="kpi-sub up" id="s-ov-ord">↑ 8.4% จากมี.ค.</div>
-          <div class="kpi-ico">🛒</div>
+          <div class="kpi-sub up" id="s-ov-ord">â 8.4% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð</div>
         </div>
         <div class="kpi bl">
-          <div class="kpi-label">ลูกค้าใหม่ (รวม)</div>
+          <div class="kpi-label">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ (à¸£à¸§à¸¡)</div>
           <div class="kpi-val" id="v-ov-new">8,896</div>
-          <div class="kpi-sub neutral" id="s-ov-new">66.8% ของออเดอร์</div>
-          <div class="kpi-ico">👤</div>
+          <div class="kpi-sub neutral" id="s-ov-new">66.8% à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹</div>
+          <div class="kpi-ico">ð¤</div>
         </div>
         <div class="kpi rd">
-          <div class="kpi-label">ยกเลิก order รวม</div>
+          <div class="kpi-label">à¸¢à¸à¹à¸¥à¸´à¸ order à¸£à¸§à¸¡</div>
           <div class="kpi-val" id="v-ov-cancel">1,004</div>
           <div class="kpi-sub dn" id="s-ov-cancel">7.54% cancel rate</div>
-          <div class="kpi-ico">↩️</div>
+          <div class="kpi-ico">â©ï¸</div>
         </div>
       </div>
 
-      <div class="sec-label" id="lbl-ov-plat">🛍 ยอดขายแยก Platform — เม.ย. 2569</div>
+      <div class="sec-label" id="lbl-ov-plat">ð à¸¢à¸­à¸à¸à¸²à¸¢à¹à¸¢à¸ Platform â à¹à¸¡.à¸¢. 2569</div>
       <div class="plat-overview">
         <div class="po-card">
-          <div class="po-icon" style="background:#fff0ec">🧡</div>
+          <div class="po-icon" style="background:#fff0ec">ð§¡</div>
           <div style="flex:1">
             <div class="po-name">Shopee</div>
-            <div class="po-val" style="color:var(--shopee)" id="v-po-sh">฿5,204,395</div>
+            <div class="po-val" style="color:var(--shopee)" id="v-po-sh">à¸¿5,204,395</div>
             <div class="po-chg up" id="s-po-sh">8,128 orders</div>
             <div class="pb"><div class="pf" id="pb-sh" style="width:78.1%;background:var(--shopee)"></div></div>
           </div>
         </div>
         <div class="po-card">
-          <div class="po-icon" style="background:#f0f0f0">🎵</div>
+          <div class="po-icon" style="background:#f0f0f0">ðµ</div>
           <div style="flex:1">
             <div class="po-name">TikTok Shop</div>
-            <div class="po-val" style="color:#111" id="v-po-tk">฿1,350,397</div>
-            <div class="po-chg up" id="s-po-tk">5,032 orders · Live ฿145K</div>
+            <div class="po-val" style="color:#111" id="v-po-tk">à¸¿1,350,397</div>
+            <div class="po-chg up" id="s-po-tk">5,032 orders Â· Live à¸¿145K</div>
             <div class="pb"><div class="pf" id="pb-tk" style="width:20.3%;background:#333"></div></div>
           </div>
         </div>
         <div class="po-card">
-          <div class="po-icon" style="background:#ece9ff">💙</div>
+          <div class="po-icon" style="background:#ece9ff">ð</div>
           <div style="flex:1">
             <div class="po-name">Lazada</div>
-            <div class="po-val" style="color:var(--lazada)" id="v-po-lz">฿110,532</div>
+            <div class="po-val" style="color:var(--lazada)" id="v-po-lz">à¸¿110,532</div>
             <div class="po-chg neutral" id="s-po-lz">161 orders</div>
             <div class="pb"><div class="pf" id="pb-lz" style="width:1.66%;background:var(--lazada)"></div></div>
           </div>
         </div>
         <div class="po-card">
-          <div class="po-icon" style="background:#fff1eb">🌐</div>
+          <div class="po-icon" style="background:#fff1eb">ð</div>
           <div style="flex:1">
             <div class="po-name">MyShop</div>
-            <div class="po-val" style="color:#1A5CDB">—</div>
+            <div class="po-val" style="color:#1A5CDB">â</div>
             <div class="po-chg neutral">wibwubcar.com</div>
             <div class="pb"><div class="pf" style="width:0%;background:#1A5CDB"></div></div>
           </div>
@@ -316,449 +316,449 @@
 
       <div class="cg-2">
         <div class="chart-card">
-          <div class="cc-title">ยอดขายรายเดือน แยก Platform</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569 (ข้อมูลจริง)</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ à¹à¸¢à¸ Platform</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569 (à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸£à¸´à¸)</div>
           <canvas id="ov_rev" height="95"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">สัดส่วนยอดขาย</div>
-          <div class="cc-sub" id="cc-pie-sub">Shopee 78.1% · TikTok 20.3% · Lazada 1.6%</div>
+          <div class="cc-title">à¸ªà¸±à¸à¸ªà¹à¸§à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="cc-sub" id="cc-pie-sub">Shopee 78.1% Â· TikTok 20.3% Â· Lazada 1.6%</div>
           <canvas id="ov_pie" height="190"></canvas>
         </div>
       </div>
       <div class="cg-3">
         <div class="chart-card">
-          <div class="cc-title">ออเดอร์รายเดือน</div>
-          <div class="cc-sub">รวมทุก Platform</div>
+          <div class="cc-title">à¸­à¸­à¹à¸à¸­à¸£à¹à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
+          <div class="cc-sub">à¸£à¸§à¸¡à¸à¸¸à¸ Platform</div>
           <canvas id="ov_orders" height="180"></canvas>
         </div>
         <div class="chart-card">
           <div class="cc-title">% Cancel Rate</div>
-          <div class="cc-sub">แยก Platform</div>
+          <div class="cc-sub">à¹à¸¢à¸ Platform</div>
           <canvas id="ov_cancel" height="180"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ลูกค้าใหม่ vs เก่า</div>
-          <div class="cc-sub" id="cc-cust-sub">เม.ย. 2569 รวมทุก Platform</div>
+          <div class="cc-title">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ vs à¹à¸à¹à¸²</div>
+          <div class="cc-sub" id="cc-cust-sub">à¹à¸¡.à¸¢. 2569 à¸£à¸§à¸¡à¸à¸¸à¸ Platform</div>
           <canvas id="ov_cust" height="180"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- ═══ SALES ═══ -->
+    <!-- âââ SALES âââ -->
     <section id="sales" class="section">
-      <div class="sec-label" id="lbl-sl">📊 สรุปยอดขาย เม.ย. 2569 — ทุก Platform</div>
+      <div class="sec-label" id="lbl-sl">ð à¸ªà¸£à¸¸à¸à¸¢à¸­à¸à¸à¸²à¸¢ à¹à¸¡.à¸¢. 2569 â à¸à¸¸à¸ Platform</div>
       <div class="kpi-grid-4">
         <div class="kpi sh-c">
-          <div class="kpi-label">🧡 Shopee</div>
-          <div class="kpi-val" style="color:var(--shopee)" id="v-sl-sh">฿5,204,395</div>
-          <div class="kpi-sub" id="s-sl-sh">8,128 orders · Cancel 5.9%</div>
+          <div class="kpi-label">ð§¡ Shopee</div>
+          <div class="kpi-val" style="color:var(--shopee)" id="v-sl-sh">à¸¿5,204,395</div>
+          <div class="kpi-sub" id="s-sl-sh">8,128 orders Â· Cancel 5.9%</div>
         </div>
         <div class="kpi tk-c">
-          <div class="kpi-label">🎵 TikTok Shop</div>
-          <div class="kpi-val" style="color:#222" id="v-sl-tk">฿1,350,397</div>
-          <div class="kpi-sub" id="s-sl-tk">5,032 orders · Cancel 9.7%</div>
+          <div class="kpi-label">ðµ TikTok Shop</div>
+          <div class="kpi-val" style="color:#222" id="v-sl-tk">à¸¿1,350,397</div>
+          <div class="kpi-sub" id="s-sl-tk">5,032 orders Â· Cancel 9.7%</div>
         </div>
         <div class="kpi lz-c">
-          <div class="kpi-label">💙 Lazada</div>
-          <div class="kpi-val" style="color:var(--lazada)" id="v-sl-lz">฿110,532</div>
-          <div class="kpi-sub" id="s-sl-lz">161 orders · Cancel 20.5%</div>
+          <div class="kpi-label">ð Lazada</div>
+          <div class="kpi-val" style="color:var(--lazada)" id="v-sl-lz">à¸¿110,532</div>
+          <div class="kpi-sub" id="s-sl-lz">161 orders Â· Cancel 20.5%</div>
         </div>
         <div class="kpi or">
-          <div class="kpi-label">💰 รวมทั้งหมด</div>
-          <div class="kpi-val" id="v-sl-total">฿6,665,324</div>
-          <div class="kpi-sub up" id="s-sl-total">↑ 10.6% จากมี.ค.</div>
+          <div class="kpi-label">ð° à¸£à¸§à¸¡à¸à¸±à¹à¸à¸«à¸¡à¸</div>
+          <div class="kpi-val" id="v-sl-total">à¸¿6,665,324</div>
+          <div class="kpi-sub up" id="s-sl-total">â 10.6% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
         </div>
       </div>
 
-      <div class="sec-label">📈 Ads Spend & Cost Ratio</div>
+      <div class="sec-label">ð Ads Spend & Cost Ratio</div>
       <div class="kpi-grid-3">
         <div class="kpi sh-c">
-          <div class="kpi-label">🧡 Shopee — ยอดใช้ Ads</div>
-          <div class="kpi-val" style="color:var(--shopee)" id="v-sl-sh-ads">฿795,300</div>
-          <div class="kpi-sub" id="s-sl-sh-fee">ค่าธรรมเนียม ฿1,225,115</div>
-          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% ค่าใช้จ่าย/ยอดขาย</span><span style="font-weight:800;color:var(--shopee)" id="v-sl-sh-cost">38.82%</span></div>
+          <div class="kpi-label">ð§¡ Shopee â à¸¢à¸­à¸à¹à¸à¹ Ads</div>
+          <div class="kpi-val" style="color:var(--shopee)" id="v-sl-sh-ads">à¸¿795,300</div>
+          <div class="kpi-sub" id="s-sl-sh-fee">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡ à¸¿1,225,115</div>
+          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢/à¸¢à¸­à¸à¸à¸²à¸¢</span><span style="font-weight:800;color:var(--shopee)" id="v-sl-sh-cost">38.82%</span></div>
         </div>
         <div class="kpi tk-c">
-          <div class="kpi-label">🎵 TikTok — รวมค่าใช้จ่ายทั้งหมด</div>
-          <div class="kpi-val" style="color:#222" id="v-sl-tk-total">฿550,393</div>
-          <div class="kpi-sub" id="s-sl-tk-breakdown" style="line-height:1.7">Ads+GMV ฿256,169 (19.0%)<br>+ ค่าธรรมเนียม+Afi ฿294,224 (21.8%)</div>
-          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% ค่าใช้จ่าย/ยอดขาย</span><span style="font-weight:800;color:#333" id="v-sl-tk-cost">40.76%</span></div>
+          <div class="kpi-label">ðµ TikTok â à¸£à¸§à¸¡à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢à¸à¸±à¹à¸à¸«à¸¡à¸</div>
+          <div class="kpi-val" style="color:#222" id="v-sl-tk-total">à¸¿550,393</div>
+          <div class="kpi-sub" id="s-sl-tk-breakdown" style="line-height:1.7">Ads+GMV à¸¿256,169 (19.0%)<br>+ à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡+Afi à¸¿294,224 (21.8%)</div>
+          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢/à¸¢à¸­à¸à¸à¸²à¸¢</span><span style="font-weight:800;color:#333" id="v-sl-tk-cost">40.76%</span></div>
         </div>
         <div class="kpi lz-c">
-          <div class="kpi-label">💙 Lazada — ยอดใช้ Ads</div>
-          <div class="kpi-val" style="color:var(--lazada)" id="v-sl-lz-ads">฿5,710</div>
-          <div class="kpi-sub" id="s-sl-lz-fees">ค่าธรรมเนียม ฿19,521 · คูปอง ฿2,250</div>
-          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% ค่าใช้จ่าย/ยอดขาย</span><span style="font-weight:800;color:var(--lazada)" id="v-sl-lz-cost">24.86%</span></div>
+          <div class="kpi-label">ð Lazada â à¸¢à¸­à¸à¹à¸à¹ Ads</div>
+          <div class="kpi-val" style="color:var(--lazada)" id="v-sl-lz-ads">à¸¿5,710</div>
+          <div class="kpi-sub" id="s-sl-lz-fees">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡ à¸¿19,521 Â· à¸à¸¹à¸à¸­à¸ à¸¿2,250</div>
+          <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢/à¸¢à¸­à¸à¸à¸²à¸¢</span><span style="font-weight:800;color:var(--lazada)" id="v-sl-lz-cost">24.86%</span></div>
         </div>
       </div>
 
       <div class="cg-2">
         <div class="chart-card">
-          <div class="cc-title">ยอดขายรายเดือน แยก Platform</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ à¹à¸¢à¸ Platform</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sl_line" height="95"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ออเดอร์รวม แยก Platform</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸­à¸­à¹à¸à¸­à¸£à¹à¸£à¸§à¸¡ à¹à¸¢à¸ Platform</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sl_orders" height="190"></canvas>
         </div>
       </div>
       <div class="tbl-wrap">
-        <div class="tbl-head"><h3>ออเดอร์ล่าสุด — ทุก Platform</h3><button class="btn btn-ghost" style="font-size:12px;">ดูทั้งหมด →</button></div>
+        <div class="tbl-head"><h3>à¸­à¸­à¹à¸à¸­à¸£à¹à¸¥à¹à¸²à¸ªà¸¸à¸ â à¸à¸¸à¸ Platform</h3><button class="btn btn-ghost" style="font-size:12px;">à¸à¸¹à¸à¸±à¹à¸à¸«à¸¡à¸ â</button></div>
         <table>
-          <thead><tr><th>ออเดอร์</th><th>สินค้า</th><th>Platform</th><th>ยอด</th><th>วันที่</th><th>สถานะ</th></tr></thead>
+          <thead><tr><th>à¸­à¸­à¹à¸à¸­à¸£à¹</th><th>à¸ªà¸´à¸à¸à¹à¸²</th><th>Platform</th><th>à¸¢à¸­à¸</th><th>à¸§à¸±à¸à¸à¸µà¹</th><th>à¸ªà¸à¸²à¸à¸°</th></tr></thead>
           <tbody>
-            <tr><td>#SH-9821</td><td>Wool Duster × 2</td><td><span class="badge bg-shopee">🧡 Shopee</span></td><td>฿1,380</td><td>12 เม.ย. 69</td><td><span class="badge bg-green">จัดส่งแล้ว</span></td></tr>
-            <tr><td>#TK-5412</td><td>Graphene Sealant</td><td><span class="badge bg-tiktok">🎵 TikTok</span></td><td>฿490</td><td>12 เม.ย. 69</td><td><span class="badge bg-green">จัดส่งแล้ว</span></td></tr>
-            <tr><td>#LZ-3093</td><td>Set แปรง Detailing</td><td><span class="badge bg-lazada">💙 Lazada</span></td><td>฿375</td><td>11 เม.ย. 69</td><td><span class="badge bg-blue">กำลังจัดส่ง</span></td></tr>
-            <tr><td>#SH-9820</td><td>Promo Brush Set</td><td><span class="badge bg-shopee">🧡 Shopee</span></td><td>฿890</td><td>11 เม.ย. 69</td><td><span class="badge bg-green">จัดส่งแล้ว</span></td></tr>
+            <tr><td>#SH-9821</td><td>Wool Duster Ã 2</td><td><span class="badge bg-shopee">ð§¡ Shopee</span></td><td>à¸¿1,380</td><td>12 à¹à¸¡.à¸¢. 69</td><td><span class="badge bg-green">à¸à¸±à¸à¸ªà¹à¸à¹à¸¥à¹à¸§</span></td></tr>
+            <tr><td>#TK-5412</td><td>Graphene Sealant</td><td><span class="badge bg-tiktok">ðµ TikTok</span></td><td>à¸¿490</td><td>12 à¹à¸¡.à¸¢. 69</td><td><span class="badge bg-green">à¸à¸±à¸à¸ªà¹à¸à¹à¸¥à¹à¸§</span></td></tr>
+            <tr><td>#LZ-3093</td><td>Set à¹à¸à¸£à¸ Detailing</td><td><span class="badge bg-lazada">ð Lazada</span></td><td>à¸¿375</td><td>11 à¹à¸¡.à¸¢. 69</td><td><span class="badge bg-blue">à¸à¸³à¸¥à¸±à¸à¸à¸±à¸à¸ªà¹à¸</span></td></tr>
+            <tr><td>#SH-9820</td><td>Promo Brush Set</td><td><span class="badge bg-shopee">ð§¡ Shopee</span></td><td>à¸¿890</td><td>11 à¹à¸¡.à¸¢. 69</td><td><span class="badge bg-green">à¸à¸±à¸à¸ªà¹à¸à¹à¸¥à¹à¸§</span></td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ═══ SHOPEE ═══ -->
+    <!-- âââ SHOPEE âââ -->
     <section id="shopee" class="section">
-      <div class="sec-label" id="lbl-sh" style="color:var(--shopee)">🧡 ยอดรายเดือน Shopee — เม.ย. 2569</div>
+      <div class="sec-label" id="lbl-sh" style="color:var(--shopee)">ð§¡ à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ Shopee â à¹à¸¡.à¸¢. 2569</div>
       <div class="kpi-grid-4">
         <div class="kpi sh-c">
-          <div class="kpi-label">ยอดขาย</div>
-          <div class="kpi-val" style="color:var(--shopee)" id="v-sh-rev">฿5,204,395</div>
-          <div class="kpi-sub up" id="s-sh-rev">↑ 14.1% จากมี.ค.</div>
-          <div class="kpi-ico">💰</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="kpi-val" style="color:var(--shopee)" id="v-sh-rev">à¸¿5,204,395</div>
+          <div class="kpi-sub up" id="s-sh-rev">â 14.1% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð°</div>
         </div>
         <div class="kpi gr">
-          <div class="kpi-label">จำนวน order</div>
+          <div class="kpi-label">à¸à¸³à¸à¸§à¸ order</div>
           <div class="kpi-val" id="v-sh-ord">8,128</div>
-          <div class="kpi-sub up" id="s-sh-ord">↑ 18.2% จากมี.ค.</div>
-          <div class="kpi-ico">🛒</div>
+          <div class="kpi-sub up" id="s-sh-ord">â 18.2% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð</div>
         </div>
         <div class="kpi yw">
-          <div class="kpi-label">ยกเลิก order</div>
+          <div class="kpi-label">à¸¢à¸à¹à¸¥à¸´à¸ order</div>
           <div class="kpi-val" id="v-sh-cancel">483</div>
           <div class="kpi-sub dn" id="s-sh-cancel">5.94% cancel rate</div>
-          <div class="kpi-ico">↩️</div>
+          <div class="kpi-ico">â©ï¸</div>
         </div>
         <div class="kpi rd">
-          <div class="kpi-label">ยอดใช้ Ads</div>
-          <div class="kpi-val" id="v-sh-ads">฿795,300</div>
-          <div class="kpi-sub dn" id="s-sh-ads">15.3% ของยอดขาย</div>
-          <div class="kpi-ico">📢</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¹à¸à¹ Ads</div>
+          <div class="kpi-val" id="v-sh-ads">à¸¿795,300</div>
+          <div class="kpi-sub dn" id="s-sh-ads">15.3% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="kpi-ico">ð¢</div>
         </div>
       </div>
       <div class="kpi-grid-5">
         <div class="kpi bl">
-          <div class="kpi-label">ค่าธรรมเนียม</div>
-          <div class="kpi-val" id="v-sh-fee">฿1,225,115</div>
-          <div class="kpi-sub" id="s-sh-fee">23.5% ของยอดขาย</div>
+          <div class="kpi-label">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡</div>
+          <div class="kpi-val" id="v-sh-fee">à¸¿1,225,115</div>
+          <div class="kpi-sub" id="s-sh-fee">23.5% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
         <div class="kpi pu">
-          <div class="kpi-label">คูปอง (ใช้งบไป)</div>
-          <div class="kpi-val">—</div>
-          <div class="kpi-sub neutral">ดูรายงานคูปอง</div>
+          <div class="kpi-label">à¸à¸¹à¸à¸­à¸ (à¹à¸à¹à¸à¸à¹à¸)</div>
+          <div class="kpi-val">â</div>
+          <div class="kpi-sub neutral">à¸à¸¹à¸£à¸²à¸¢à¸à¸²à¸à¸à¸¹à¸à¸­à¸</div>
         </div>
         <div class="kpi or">
-          <div class="kpi-label">% ค่าใช้จ่าย/ยอดขาย</div>
+          <div class="kpi-label">% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢/à¸¢à¸­à¸à¸à¸²à¸¢</div>
           <div class="kpi-val" id="v-sh-cost-pct">38.82%</div>
-          <div class="kpi-sub neutral">Ads + ค่าธรรมเนียม</div>
+          <div class="kpi-sub neutral">Ads + à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡</div>
         </div>
         <div class="kpi gr">
-          <div class="kpi-label">ลูกค้าใหม่</div>
+          <div class="kpi-label">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹</div>
           <div class="kpi-val" id="v-sh-new">4,873</div>
-          <div class="kpi-sub" id="s-sh-new">59.9% ของออเดอร์</div>
+          <div class="kpi-sub" id="s-sh-new">59.9% à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹</div>
         </div>
         <div class="kpi tl">
-          <div class="kpi-label">ลูกค้าเก่า</div>
+          <div class="kpi-label">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸à¹à¸²</div>
           <div class="kpi-val" id="v-sh-old">1,985</div>
-          <div class="kpi-sub" id="s-sh-old">24.4% ของออเดอร์</div>
+          <div class="kpi-sub" id="s-sh-old">24.4% à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹</div>
         </div>
       </div>
 
       <div id="sh-live-section">
-        <div class="sec-label" style="color:var(--shopee)">📺 Shopee Live — เม.ย. 2569</div>
+        <div class="sec-label" style="color:var(--shopee)">ðº Shopee Live â à¹à¸¡.à¸¢. 2569</div>
         <div class="kpi-grid-3">
-          <div class="kpi sh-c"><div class="kpi-label">ยอดรวมไลฟ์</div><div class="kpi-val" style="color:var(--shopee)">฿114,738</div><div class="kpi-sub">3 ไลฟ์ในเดือน เม.ย.</div></div>
-          <div class="kpi gr"><div class="kpi-label">ยอดไลฟ์สูงสุด</div><div class="kpi-val">฿56,891</div><div class="kpi-sub">4 เม.ย. · 2,706 คนชม</div></div>
-          <div class="kpi bl"><div class="kpi-label">ผู้ชมรวม</div><div class="kpi-val">~5,053</div><div class="kpi-sub">เฉลี่ย 1,684/ไลฟ์</div></div>
+          <div class="kpi sh-c"><div class="kpi-label">à¸¢à¸­à¸à¸£à¸§à¸¡à¹à¸¥à¸à¹</div><div class="kpi-val" style="color:var(--shopee)">à¸¿114,738</div><div class="kpi-sub">3 à¹à¸¥à¸à¹à¹à¸à¹à¸à¸·à¸­à¸ à¹à¸¡.à¸¢.</div></div>
+          <div class="kpi gr"><div class="kpi-label">à¸¢à¸­à¸à¹à¸¥à¸à¹à¸ªà¸¹à¸à¸ªà¸¸à¸</div><div class="kpi-val">à¸¿56,891</div><div class="kpi-sub">4 à¹à¸¡.à¸¢. Â· 2,706 à¸à¸à¸à¸¡</div></div>
+          <div class="kpi bl"><div class="kpi-label">à¸à¸¹à¹à¸à¸¡à¸£à¸§à¸¡</div><div class="kpi-val">~5,053</div><div class="kpi-sub">à¹à¸à¸¥à¸µà¹à¸¢ 1,684/à¹à¸¥à¸à¹</div></div>
         </div>
         <div class="tbl-wrap">
-          <div class="tbl-head"><h3>📺 Shopee Live — เม.ย. 2569</h3></div>
+          <div class="tbl-head"><h3>ðº Shopee Live â à¹à¸¡.à¸¢. 2569</h3></div>
           <table>
-            <thead><tr><th>วันที่</th><th>รายการ</th><th>ยอดขาย</th><th>จำนวนผู้ชม</th><th>แอดมิน</th><th>ชม.</th></tr></thead>
+            <thead><tr><th>à¸§à¸±à¸à¸à¸µà¹</th><th>à¸£à¸²à¸¢à¸à¸²à¸£</th><th>à¸¢à¸­à¸à¸à¸²à¸¢</th><th>à¸à¸³à¸à¸§à¸à¸à¸¹à¹à¸à¸¡</th><th>à¹à¸­à¸à¸¡à¸´à¸</th><th>à¸à¸¡.</th></tr></thead>
             <tbody>
-              <tr><td>04-04-2026 0:27</td><td>ไลฟ์ + Flash Sale 4.4</td><td>฿23,086</td><td>572</td><td>พี่เจา</td><td>1:00</td></tr>
-              <tr><td>04-04-2026 19:57</td><td>ลดสูงสุด 44% 4 นาทีแรกเท่านั้น</td><td>฿56,891</td><td>2,706</td><td>แอ้น+พี่เจา</td><td>4:08</td></tr>
-              <tr><td>25-04-2026 19:54</td><td>เก็บโค้ด Payday กันครับ</td><td>฿34,760</td><td>1,775</td><td>ปาย+พี่เจา</td><td>3:13</td></tr>
+              <tr><td>04-04-2026 0:27</td><td>à¹à¸¥à¸à¹ + Flash Sale 4.4</td><td>à¸¿23,086</td><td>572</td><td>à¸à¸µà¹à¹à¸à¸²</td><td>1:00</td></tr>
+              <tr><td>04-04-2026 19:57</td><td>à¸¥à¸à¸ªà¸¹à¸à¸ªà¸¸à¸ 44% 4 à¸à¸²à¸à¸µà¹à¸£à¸à¹à¸à¹à¸²à¸à¸±à¹à¸</td><td>à¸¿56,891</td><td>2,706</td><td>à¹à¸­à¹à¸+à¸à¸µà¹à¹à¸à¸²</td><td>4:08</td></tr>
+              <tr><td>25-04-2026 19:54</td><td>à¹à¸à¹à¸à¹à¸à¹à¸ Payday à¸à¸±à¸à¸à¸£à¸±à¸</td><td>à¸¿34,760</td><td>1,775</td><td>à¸à¸²à¸¢+à¸à¸µà¹à¹à¸à¸²</td><td>3:13</td></tr>
             </tbody>
           </table>
         </div>
       </div>
-      <div id="sh-live-note" class="info-note" style="display:none;">ℹ️ ข้อมูล Shopee Live มีเฉพาะเดือน เม.ย. 2569 เลือกเดือน เม.ย. เพื่อดูตาราง Live</div>
+      <div id="sh-live-note" class="info-note" style="display:none;">â¹ï¸ à¸à¹à¸­à¸¡à¸¹à¸¥ Shopee Live à¸¡à¸µà¹à¸à¸à¸²à¸°à¹à¸à¸·à¸­à¸ à¹à¸¡.à¸¢. 2569 à¹à¸¥à¸·à¸­à¸à¹à¸à¸·à¸­à¸ à¹à¸¡.à¸¢. à¹à¸à¸·à¹à¸­à¸à¸¹à¸à¸²à¸£à¸²à¸ Live</div>
 
       <div class="tbl-wrap">
-        <div class="tbl-head"><h3>🎯 Campaign — เม.ย. 2569 (ข้อมูล 2568)</h3></div>
+        <div class="tbl-head"><h3>ð¯ Campaign â à¹à¸¡.à¸¢. 2569 (à¸à¹à¸­à¸¡à¸¹à¸¥ 2568)</h3></div>
         <table>
-          <thead><tr><th>ชื่อแคมเปญ</th><th>ระยะเวลา</th><th>คำสั่งซื้อ</th><th>ยอดขาย</th><th>จำนวนผู้ซื้อ</th></tr></thead>
+          <thead><tr><th>à¸à¸·à¹à¸­à¹à¸à¸¡à¹à¸à¸</th><th>à¸£à¸°à¸¢à¸°à¹à¸§à¸¥à¸²</th><th>à¸à¸³à¸ªà¸±à¹à¸à¸à¸·à¹à¸­</th><th>à¸¢à¸­à¸à¸à¸²à¸¢</th><th>à¸à¸³à¸à¸§à¸à¸à¸¹à¹à¸à¸·à¹à¸­</th></tr></thead>
           <tbody>
-            <tr><td>Shopee 4.4 ลด ร้อน แรง</td><td>03-05 เม.ย. 68</td><td>1,011</td><td>฿625,357</td><td>—</td></tr>
-            <tr><td>Midmonth Sale 15.04</td><td>15 เม.ย. 68</td><td>244</td><td>฿145,669</td><td>—</td></tr>
-            <tr><td>Payday</td><td>25-30 เม.ย. 68</td><td>1,221</td><td>฿766,976</td><td>—</td></tr>
+            <tr><td>Shopee 4.4 à¸¥à¸ à¸£à¹à¸­à¸ à¹à¸£à¸</td><td>03-05 à¹à¸¡.à¸¢. 68</td><td>1,011</td><td>à¸¿625,357</td><td>â</td></tr>
+            <tr><td>Midmonth Sale 15.04</td><td>15 à¹à¸¡.à¸¢. 68</td><td>244</td><td>à¸¿145,669</td><td>â</td></tr>
+            <tr><td>Payday</td><td>25-30 à¹à¸¡.à¸¢. 68</td><td>1,221</td><td>à¸¿766,976</td><td>â</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="cg-2">
         <div class="chart-card">
-          <div class="cc-title">ยอดขาย Shopee รายเดือน 2569</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢ Shopee à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ 2569</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sh_line" height="100"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ลูกค้าใหม่ vs เก่า</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ vs à¹à¸à¹à¸²</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sh_cust" height="190"></canvas>
         </div>
       </div>
       <div class="cg-3">
         <div class="chart-card">
-          <div class="cc-title">ค่าธรรมเนียม + Ads รายเดือน</div>
-          <div class="cc-sub">฿</div>
+          <div class="cc-title">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡ + Ads à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
+          <div class="cc-sub">à¸¿</div>
           <canvas id="sh_cost" height="180"></canvas>
         </div>
         <div class="chart-card">
           <div class="cc-title">% Cancel Rate</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sh_cancel" height="180"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">จำนวน order รายเดือน</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸à¸³à¸à¸§à¸ order à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="sh_orders" height="180"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- ═══ TIKTOK ═══ -->
+    <!-- âââ TIKTOK âââ -->
     <section id="tiktok" class="section">
-      <div class="sec-label" id="lbl-tk" style="color:#333">🎵 ยอดรายเดือน TikTok Shop — เม.ย. 2569</div>
+      <div class="sec-label" id="lbl-tk" style="color:#333">ðµ à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ TikTok Shop â à¹à¸¡.à¸¢. 2569</div>
       <div class="kpi-grid-4">
         <div class="kpi tk-c">
-          <div class="kpi-label">ยอดขาย</div>
-          <div class="kpi-val" style="color:#111" id="v-tk-rev">฿1,350,397</div>
-          <div class="kpi-sub up" id="s-tk-rev">↑ 5.4% จากมี.ค.</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="kpi-val" style="color:#111" id="v-tk-rev">à¸¿1,350,397</div>
+          <div class="kpi-sub up" id="s-tk-rev">â 5.4% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
         </div>
         <div class="kpi pu">
-          <div class="kpi-label">ยอด Affiliate (Afi)</div>
-          <div class="kpi-val" id="v-tk-afi">฿724,120</div>
-          <div class="kpi-sub dn" id="s-tk-afi">52.5% ของยอดขาย</div>
+          <div class="kpi-label">à¸¢à¸­à¸ Affiliate (Afi)</div>
+          <div class="kpi-val" id="v-tk-afi">à¸¿724,120</div>
+          <div class="kpi-sub dn" id="s-tk-afi">52.5% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
         <div class="kpi tl">
-          <div class="kpi-label">ยอดหลังหัก</div>
-          <div class="kpi-val" id="v-tk-net">฿708,730</div>
-          <div class="kpi-sub neutral">ยอดจริงหลังหัก Afi</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¸«à¸¥à¸±à¸à¸«à¸±à¸</div>
+          <div class="kpi-val" id="v-tk-net">à¸¿708,730</div>
+          <div class="kpi-sub neutral">à¸¢à¸­à¸à¸à¸£à¸´à¸à¸«à¸¥à¸±à¸à¸«à¸±à¸ Afi</div>
         </div>
         <div class="kpi bl">
-          <div class="kpi-label">ยอดจาก Ads</div>
-          <div class="kpi-val" id="v-tk-ads">฿1,299,260</div>
-          <div class="kpi-sub" id="s-tk-ads">96.2% ของยอดขาย</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¸à¸²à¸ Ads</div>
+          <div class="kpi-val" id="v-tk-ads">à¸¿1,299,260</div>
+          <div class="kpi-sub" id="s-tk-ads">96.2% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
       </div>
 
       <div class="kpi-grid-4">
         <div class="kpi rd">
-          <div class="kpi-label">ยอดใช้จ่าย Ads+GMV</div>
-          <div class="kpi-val" id="v-tk-adsspend">฿256,169</div>
-          <div class="kpi-sub" id="s-tk-adsspend">19.0% ของยอดขาย</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¹à¸à¹à¸à¹à¸²à¸¢ Ads+GMV</div>
+          <div class="kpi-val" id="v-tk-adsspend">à¸¿256,169</div>
+          <div class="kpi-sub" id="s-tk-adsspend">19.0% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
         <div class="kpi yw">
-          <div class="kpi-label">ค่าธรรมเนียม+คอม Afi</div>
-          <div class="kpi-val" id="v-tk-feecomm">฿294,224</div>
-          <div class="kpi-sub" id="s-tk-feecomm">21.8% ของยอดขาย</div>
+          <div class="kpi-label">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡+à¸à¸­à¸¡ Afi</div>
+          <div class="kpi-val" id="v-tk-feecomm">à¸¿294,224</div>
+          <div class="kpi-sub" id="s-tk-feecomm">21.8% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
         <div class="kpi or" style="border:2px solid #1A5CDB;">
-          <div class="kpi-label" style="color:#1A5CDB">รวมค่าใช้จ่ายทั้งหมด</div>
-          <div class="kpi-val" style="color:#1A5CDB" id="v-tk-totalcost">฿550,393</div>
-          <div class="kpi-sub" style="color:#1A5CDB;font-weight:700" id="s-tk-totalcost">= 40.76% ของยอดขาย</div>
-          <div style="margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5" id="sub-tk-totalcost">Ads+GMV ฿256,169<br>+ ค่าธรรมเนียม+Afi ฿294,224</div>
+          <div class="kpi-label" style="color:#1A5CDB">à¸£à¸§à¸¡à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢à¸à¸±à¹à¸à¸«à¸¡à¸</div>
+          <div class="kpi-val" style="color:#1A5CDB" id="v-tk-totalcost">à¸¿550,393</div>
+          <div class="kpi-sub" style="color:#1A5CDB;font-weight:700" id="s-tk-totalcost">= 40.76% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div style="margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5" id="sub-tk-totalcost">Ads+GMV à¸¿256,169<br>+ à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡+Afi à¸¿294,224</div>
         </div>
         <div class="kpi or">
-          <div class="kpi-label">ยอด Live รวม</div>
-          <div class="kpi-val" id="v-tk-live">฿144,970</div>
-          <div class="kpi-sub">งบ Ads Live ฿4,503</div>
+          <div class="kpi-label">à¸¢à¸­à¸ Live à¸£à¸§à¸¡</div>
+          <div class="kpi-val" id="v-tk-live">à¸¿144,970</div>
+          <div class="kpi-sub">à¸à¸ Ads Live à¸¿4,503</div>
         </div>
       </div>
 
       <div class="kpi-grid-3">
         <div class="kpi tl">
-          <div class="kpi-label">จำนวน order</div>
+          <div class="kpi-label">à¸à¸³à¸à¸§à¸ order</div>
           <div class="kpi-val" id="v-tk-ord">5,032</div>
-          <div class="kpi-sub up" id="s-tk-ord">↑ 27.9% จากมี.ค.</div>
+          <div class="kpi-sub up" id="s-tk-ord">â 27.9% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
         </div>
         <div class="kpi rd">
-          <div class="kpi-label">ยกเลิก order</div>
+          <div class="kpi-label">à¸¢à¸à¹à¸¥à¸´à¸ order</div>
           <div class="kpi-val" id="v-tk-cancel">488</div>
           <div class="kpi-sub dn" id="s-tk-cancel">9.7% cancel rate</div>
         </div>
         <div class="kpi gr">
-          <div class="kpi-label">ลูกค้าใหม่ / เก่า</div>
+          <div class="kpi-label">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ / à¹à¸à¹à¸²</div>
           <div class="kpi-val" id="v-tk-new">3,915</div>
-          <div class="kpi-sub" id="s-tk-new">77.8% ของออเดอร์</div>
+          <div class="kpi-sub" id="s-tk-new">77.8% à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹</div>
         </div>
       </div>
 
       <div class="tbl-wrap">
-        <div class="tbl-head"><h3>🎯 Campaign — TikTok 2568</h3></div>
+        <div class="tbl-head"><h3>ð¯ Campaign â TikTok 2568</h3></div>
         <table>
-          <thead><tr><th>ชื่อแคมเปญ</th><th>ระยะเวลา</th><th>คำสั่งซื้อ</th><th>ยอดขาย</th><th>จำนวนสินค้า</th></tr></thead>
+          <thead><tr><th>à¸à¸·à¹à¸­à¹à¸à¸¡à¹à¸à¸</th><th>à¸£à¸°à¸¢à¸°à¹à¸§à¸¥à¸²</th><th>à¸à¸³à¸ªà¸±à¹à¸à¸à¸·à¹à¸­</th><th>à¸¢à¸­à¸à¸à¸²à¸¢</th><th>à¸à¸³à¸à¸§à¸à¸ªà¸´à¸à¸à¹à¸²</th></tr></thead>
           <tbody>
-            <tr><td>9.9 Campaign</td><td>06-09 ก.ย. 68</td><td>316</td><td>฿91,249</td><td>322</td></tr>
-            <tr><td>8.8 Campaign</td><td>06-08 ส.ค. 68</td><td>174</td><td>฿51,680</td><td>179</td></tr>
-            <tr><td>4.4 ไลฟ์สด ลดเดือด</td><td>02-04 เม.ย. 68</td><td>179</td><td>฿54,714</td><td>188</td></tr>
+            <tr><td>9.9 Campaign</td><td>06-09 à¸.à¸¢. 68</td><td>316</td><td>à¸¿91,249</td><td>322</td></tr>
+            <tr><td>8.8 Campaign</td><td>06-08 à¸ª.à¸. 68</td><td>174</td><td>à¸¿51,680</td><td>179</td></tr>
+            <tr><td>4.4 à¹à¸¥à¸à¹à¸ªà¸ à¸¥à¸à¹à¸à¸·à¸­à¸</td><td>02-04 à¹à¸¡.à¸¢. 68</td><td>179</td><td>à¸¿54,714</td><td>188</td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="cg-2">
         <div class="chart-card">
-          <div class="cc-title">ยอดขาย TikTok รายเดือน 2569</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢ TikTok à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ 2569</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="tk_line" height="100"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ยอดขาย vs Affiliate vs ยอดหลังหัก</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢ vs Affiliate vs à¸¢à¸­à¸à¸«à¸¥à¸±à¸à¸«à¸±à¸</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="tk_afi" height="190"></canvas>
         </div>
       </div>
       <div class="cg-3">
         <div class="chart-card">
-          <div class="cc-title">% Affiliate / ยอดขาย</div>
-          <div class="cc-sub">รายเดือน</div>
+          <div class="cc-title">% Affiliate / à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="cc-sub">à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
           <canvas id="tk_afipct" height="180"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ยอด Ads vs ยอด Live</div>
-          <div class="cc-sub">รายเดือน</div>
+          <div class="cc-title">à¸¢à¸­à¸ Ads vs à¸¢à¸­à¸ Live</div>
+          <div class="cc-sub">à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
           <canvas id="tk_adslive" height="180"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ลูกค้าใหม่ vs เก่า</div>
-          <div class="cc-sub">รายเดือน</div>
+          <div class="cc-title">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ vs à¹à¸à¹à¸²</div>
+          <div class="cc-sub">à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
           <canvas id="tk_cust" height="180"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- ═══ LAZADA ═══ -->
+    <!-- âââ LAZADA âââ -->
     <section id="lazada" class="section">
-      <div class="sec-label" id="lbl-lz" style="color:var(--lazada)">💙 ยอดรายเดือน Lazada — เม.ย. 2569</div>
+      <div class="sec-label" id="lbl-lz" style="color:var(--lazada)">ð à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ Lazada â à¹à¸¡.à¸¢. 2569</div>
       <div class="kpi-grid-4">
         <div class="kpi lz-c">
-          <div class="kpi-label">ยอดขาย</div>
-          <div class="kpi-val" style="color:var(--lazada)" id="v-lz-rev">฿110,532</div>
-          <div class="kpi-sub dn" id="s-lz-rev">↓ 39.7% จากมี.ค.</div>
-          <div class="kpi-ico">💰</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="kpi-val" style="color:var(--lazada)" id="v-lz-rev">à¸¿110,532</div>
+          <div class="kpi-sub dn" id="s-lz-rev">â 39.7% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð°</div>
         </div>
         <div class="kpi gr">
-          <div class="kpi-label">จำนวน order</div>
+          <div class="kpi-label">à¸à¸³à¸à¸§à¸ order</div>
           <div class="kpi-val" id="v-lz-ord">161</div>
-          <div class="kpi-sub dn" id="s-lz-ord">↓ 36.9% จากมี.ค.</div>
-          <div class="kpi-ico">🛒</div>
+          <div class="kpi-sub dn" id="s-lz-ord">â 36.9% à¸à¸²à¸à¸¡à¸µ.à¸.</div>
+          <div class="kpi-ico">ð</div>
         </div>
         <div class="kpi rd">
-          <div class="kpi-label">ยกเลิก order</div>
+          <div class="kpi-label">à¸¢à¸à¹à¸¥à¸´à¸ order</div>
           <div class="kpi-val" id="v-lz-cancel">33</div>
           <div class="kpi-sub dn" id="s-lz-cancel">20.5% cancel rate</div>
-          <div class="kpi-ico">↩️</div>
+          <div class="kpi-ico">â©ï¸</div>
         </div>
         <div class="kpi yw">
-          <div class="kpi-label">ยอดใช้ Ads</div>
-          <div class="kpi-val" id="v-lz-ads">฿5,710</div>
-          <div class="kpi-sub neutral" id="s-lz-ads">5.2% ของยอดขาย</div>
-          <div class="kpi-ico">📢</div>
+          <div class="kpi-label">à¸¢à¸­à¸à¹à¸à¹ Ads</div>
+          <div class="kpi-val" id="v-lz-ads">à¸¿5,710</div>
+          <div class="kpi-sub neutral" id="s-lz-ads">5.2% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="kpi-ico">ð¢</div>
         </div>
       </div>
       <div class="kpi-grid-4">
         <div class="kpi bl">
-          <div class="kpi-label">ค่าธรรมเนียม</div>
-          <div class="kpi-val" id="v-lz-fee">฿19,521</div>
-          <div class="kpi-sub" id="s-lz-fee">17.7% ของยอดขาย</div>
+          <div class="kpi-label">à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡</div>
+          <div class="kpi-val" id="v-lz-fee">à¸¿19,521</div>
+          <div class="kpi-sub" id="s-lz-fee">17.7% à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢</div>
         </div>
         <div class="kpi or">
-          <div class="kpi-label">คูปอง (ใช้งบไป)</div>
-          <div class="kpi-val" id="v-lz-coupon">฿2,250</div>
-          <div class="kpi-sub neutral">งบคูปองเดือนนี้</div>
+          <div class="kpi-label">à¸à¸¹à¸à¸­à¸ (à¹à¸à¹à¸à¸à¹à¸)</div>
+          <div class="kpi-val" id="v-lz-coupon">à¸¿2,250</div>
+          <div class="kpi-sub neutral">à¸à¸à¸à¸¹à¸à¸­à¸à¹à¸à¸·à¸­à¸à¸à¸µà¹</div>
         </div>
         <div class="kpi tl">
-          <div class="kpi-label">% ค่าใช้จ่าย/ยอดขาย</div>
+          <div class="kpi-label">% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢/à¸¢à¸­à¸à¸à¸²à¸¢</div>
           <div class="kpi-val" id="v-lz-cost-pct">24.86%</div>
-          <div class="kpi-sub neutral">ต่ำสุดในทุก Platform</div>
+          <div class="kpi-sub neutral">à¸à¹à¸³à¸ªà¸¸à¸à¹à¸à¸à¸¸à¸ Platform</div>
         </div>
         <div class="kpi pu">
-          <div class="kpi-label">ลูกค้าใหม่ / เก่า</div>
+          <div class="kpi-label">à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹ / à¹à¸à¹à¸²</div>
           <div class="kpi-val" id="v-lz-new-old">108 / 42</div>
-          <div class="kpi-sub" id="s-lz-new-old">67.1% ลูกค้าใหม่</div>
+          <div class="kpi-sub" id="s-lz-new-old">67.1% à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹</div>
         </div>
       </div>
 
-      <div class="sec-label" style="color:var(--lazada)">📢 Lazada Ads — ROAS</div>
+      <div class="sec-label" style="color:var(--lazada)">ð¢ Lazada Ads â ROAS</div>
       <div class="kpi-grid-3">
-        <div class="kpi lz-c"><div class="kpi-label">ROAS สูงสุด (ปี 68)</div><div class="kpi-val">17.75x</div><div class="kpi-sub">ส.ค. 68 · Ads ฿9,070</div></div>
-        <div class="kpi bl"><div class="kpi-label">ROAS เฉลี่ย 2568</div><div class="kpi-val">~14.2x</div><div class="kpi-sub">New Reach Campaign</div></div>
-        <div class="kpi gr"><div class="kpi-label">ROAS ดีที่สุด</div><div class="kpi-val">18.84x</div><div class="kpi-sub">ก.ย. 68 · Ads ฿3,490</div></div>
+        <div class="kpi lz-c"><div class="kpi-label">ROAS à¸ªà¸¹à¸à¸ªà¸¸à¸ (à¸à¸µ 68)</div><div class="kpi-val">17.75x</div><div class="kpi-sub">à¸ª.à¸. 68 Â· Ads à¸¿9,070</div></div>
+        <div class="kpi bl"><div class="kpi-label">ROAS à¹à¸à¸¥à¸µà¹à¸¢ 2568</div><div class="kpi-val">~14.2x</div><div class="kpi-sub">New Reach Campaign</div></div>
+        <div class="kpi gr"><div class="kpi-label">ROAS à¸à¸µà¸à¸µà¹à¸ªà¸¸à¸</div><div class="kpi-val">18.84x</div><div class="kpi-sub">à¸.à¸¢. 68 Â· Ads à¸¿3,490</div></div>
       </div>
 
       <div class="tbl-wrap">
-        <div class="tbl-head"><h3>📢 Lazada Ads — ROAS History</h3></div>
+        <div class="tbl-head"><h3>ð¢ Lazada Ads â ROAS History</h3></div>
         <table>
-          <thead><tr><th>ช่วงเวลา</th><th>ชื่อแคมเปญ</th><th>ค่า Ads</th><th>ยอดขาย Ads</th><th>ROAS</th></tr></thead>
+          <thead><tr><th>à¸à¹à¸§à¸à¹à¸§à¸¥à¸²</th><th>à¸à¸·à¹à¸­à¹à¸à¸¡à¹à¸à¸</th><th>à¸à¹à¸² Ads</th><th>à¸¢à¸­à¸à¸à¸²à¸¢ Ads</th><th>ROAS</th></tr></thead>
           <tbody>
-            <tr><td>01-31/08/25</td><td>New Reach All Product</td><td>฿9,070</td><td>฿223,464</td><td><span class="badge bg-green">17.75x</span></td></tr>
-            <tr><td>01-11/09/25</td><td>New Reach</td><td>฿3,490</td><td>฿65,740</td><td><span class="badge bg-green">18.84x</span></td></tr>
-            <tr><td>01-30/11/25</td><td>New Reach</td><td>฿8,380</td><td>฿135,870</td><td><span class="badge bg-green">16.21x</span></td></tr>
-            <tr><td>01-31/07/25</td><td>New Reach</td><td>฿10,530</td><td>฿118,120</td><td><span class="badge bg-blue">11.22x</span></td></tr>
-            <tr><td>01-06/10/25</td><td>New Reach</td><td>฿1,190</td><td>฿7,580</td><td><span class="badge bg-orange">6.40x</span></td></tr>
+            <tr><td>01-31/08/25</td><td>New Reach All Product</td><td>à¸¿9,070</td><td>à¸¿223,464</td><td><span class="badge bg-green">17.75x</span></td></tr>
+            <tr><td>01-11/09/25</td><td>New Reach</td><td>à¸¿3,490</td><td>à¸¿65,740</td><td><span class="badge bg-green">18.84x</span></td></tr>
+            <tr><td>01-30/11/25</td><td>New Reach</td><td>à¸¿8,380</td><td>à¸¿135,870</td><td><span class="badge bg-green">16.21x</span></td></tr>
+            <tr><td>01-31/07/25</td><td>New Reach</td><td>à¸¿10,530</td><td>à¸¿118,120</td><td><span class="badge bg-blue">11.22x</span></td></tr>
+            <tr><td>01-06/10/25</td><td>New Reach</td><td>à¸¿1,190</td><td>à¸¿7,580</td><td><span class="badge bg-orange">6.40x</span></td></tr>
           </tbody>
         </table>
       </div>
 
       <div class="cg-2">
         <div class="chart-card">
-          <div class="cc-title">ยอดขาย Lazada รายเดือน 2569</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢ Lazada à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ 2569</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="lz_line" height="100"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">% ค่าใช้จ่าย / ยอดขาย</div>
-          <div class="cc-sub">ม.ค. – พ.ค. 2569</div>
+          <div class="cc-title">% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢ / à¸¢à¸­à¸à¸à¸²à¸¢</div>
+          <div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div>
           <canvas id="lz_cost" height="190"></canvas>
         </div>
       </div>
     </section>
 
-    <!-- ═══ PRODUCTS (Top สินค้าขายดี) ═══ -->
+    <!-- âââ PRODUCTS (Top à¸ªà¸´à¸à¸à¹à¸²à¸à¸²à¸¢à¸à¸µ) âââ -->
     <section id="products" class="section">
 
       <!-- KPI row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">ยอดขายรวม 3 เดือน</div><div class="kpi-val">฿18.0M</div><div class="kpi-sub neutral">มี.ค. – พ.ค. 2569</div><div class="kpi-ico">💰</div></div>
-        <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val">Wool Duster</div><div class="kpi-sub up">฿2.06M · 3,441 ชิ้น</div><div class="kpi-ico">🏆</div></div>
-        <div class="kpi bl"><div class="kpi-label">จำนวนสินค้า (SKU)</div><div class="kpi-val">167 SKU</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity</div><div class="kpi-ico">📦</div></div>
-        <div class="kpi yw"><div class="kpi-label">ออเดอร์รวม 3 เดือน</div><div class="kpi-val">~37K</div><div class="kpi-sub neutral">Shopee · TikTok · Lazada · อื่นๆ</div><div class="kpi-ico">🛒</div></div>
+        <div class="kpi or"><div class="kpi-label">à¸¢à¸­à¸à¸à¸²à¸¢à¸£à¸§à¸¡ 3 à¹à¸à¸·à¸­à¸</div><div class="kpi-val">à¸¿18.0M</div><div class="kpi-sub neutral">à¸¡à¸µ.à¸. â à¸.à¸. 2569</div><div class="kpi-ico">ð°</div></div>
+        <div class="kpi gr"><div class="kpi-label">à¸ªà¸´à¸à¸à¹à¸²à¸à¸²à¸¢à¸à¸µà¸ªà¸¸à¸</div><div class="kpi-val">Wool Duster</div><div class="kpi-sub up">à¸¿2.06M Â· 3,441 à¸à¸´à¹à¸</div><div class="kpi-ico">ð</div></div>
+        <div class="kpi bl"><div class="kpi-label">à¸à¸³à¸à¸§à¸à¸ªà¸´à¸à¸à¹à¸² (SKU)</div><div class="kpi-val">167 SKU</div><div class="kpi-sub neutral">à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸²à¸ Shipnity</div><div class="kpi-ico">ð¦</div></div>
+        <div class="kpi yw"><div class="kpi-label">à¸­à¸­à¹à¸à¸­à¸£à¹à¸£à¸§à¸¡ 3 à¹à¸à¸·à¸­à¸</div><div class="kpi-val">~37K</div><div class="kpi-sub neutral">Shopee Â· TikTok Â· Lazada Â· à¸­à¸·à¹à¸à¹</div><div class="kpi-ico">ð</div></div>
       </div>
 
       <!-- Charts row -->
       <div class="cg-22" style="margin-bottom:22px">
         <div class="chart-card">
-          <div class="cc-title">Top 10 สินค้า — ยอดขาย 3 เดือน</div>
-          <div class="cc-sub">มี.ค. / เม.ย. / พ.ค. 2569 (฿)</div>
+          <div class="cc-title">Top 10 à¸ªà¸´à¸à¸à¹à¸² â à¸¢à¸­à¸à¸à¸²à¸¢ 3 à¹à¸à¸·à¸­à¸</div>
+          <div class="cc-sub">à¸¡à¸µ.à¸. / à¹à¸¡.à¸¢. / à¸.à¸. 2569 (à¸¿)</div>
           <canvas id="pr_top10" height="260"></canvas>
         </div>
         <div class="chart-card">
-          <div class="cc-title">ยอดขายแยกช่องทาง</div>
-          <div class="cc-sub">รวม 3 เดือน (จำนวนออเดอร์)</div>
+          <div class="cc-title">à¸¢à¸­à¸à¸à¸²à¸¢à¹à¸¢à¸à¸à¹à¸­à¸à¸à¸²à¸</div>
+          <div class="cc-sub">à¸£à¸§à¸¡ 3 à¹à¸à¸·à¸­à¸ (à¸à¸³à¸à¸§à¸à¸­à¸­à¹à¸à¸­à¸£à¹)</div>
           <canvas id="pr_channel" height="260"></canvas>
         </div>
       </div>
@@ -766,32 +766,32 @@
       <!-- Top products table -->
       <div class="tbl-wrap">
         <div class="tbl-head">
-          <h3>🏆 ตารางสินค้าขายดี — มี.ค. ถึง พ.ค. 2569</h3>
-          <span style="font-size:12px;color:var(--muted)">ข้อมูลจาก Shipnity</span>
+          <h3>ð à¸à¸²à¸£à¸²à¸à¸ªà¸´à¸à¸à¹à¸²à¸à¸²à¸¢à¸à¸µ â à¸¡à¸µ.à¸. à¸à¸¶à¸ à¸.à¸. 2569</h3>
+          <span style="font-size:12px;color:var(--muted)">à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸²à¸ Shipnity</span>
         </div>
         <table>
           <thead>
             <tr>
               <th style="width:36px">#</th>
-              <th>สินค้า</th>
-              <th style="text-align:right">มีนาคม</th>
-              <th style="text-align:right">เมษายน</th>
-              <th style="text-align:right">พฤษภาคม</th>
-              <th style="text-align:right">รวม (฿)</th>
-              <th style="text-align:right">จำนวน (ชิ้น)</th>
+              <th>à¸ªà¸´à¸à¸à¹à¸²</th>
+              <th style="text-align:right">à¸¡à¸µà¸à¸²à¸à¸¡</th>
+              <th style="text-align:right">à¹à¸¡à¸©à¸²à¸¢à¸</th>
+              <th style="text-align:right">à¸à¸¤à¸©à¸ à¸²à¸à¸¡</th>
+              <th style="text-align:right">à¸£à¸§à¸¡ (à¸¿)</th>
+              <th style="text-align:right">à¸à¸³à¸à¸§à¸ (à¸à¸´à¹à¸)</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td><span class="badge bg-orange">1</span></td><td>Wool Duster ไม้ปัดขนแกะ</td><td style="text-align:right">฿2,800,561</td><td style="text-align:right">฿440,436</td><td style="text-align:right">฿40,299</td><td style="text-align:right;color:#1A5CDB;font-weight:800">฿4,636,572</td><td style="text-align:right">7,237</td></tr>
-            <tr><td><span class="badge bg-blue">2</span></td><td>Sugar (500ml+Spray)</td><td style="text-align:right">฿1,360,068</td><td style="text-align:right">฿891,351</td><td style="text-align:right">฿28,047</td><td style="text-align:right;font-weight:800">฿3,000,367</td><td style="text-align:right">10,315</td></tr>
-            <tr><td><span class="badge bg-blue">3</span></td><td>Interior (500ml+Spray)</td><td style="text-align:right">฿1,297,499</td><td style="text-align:right">฿394,709</td><td style="text-align:right">฿32,972</td><td style="text-align:right;font-weight:800">฿2,345,554</td><td style="text-align:right">6,853</td></tr>
-            <tr><td><span class="badge bg-gray">4</span></td><td>Refresh (500ml+หัวโฟม)</td><td style="text-align:right">฿824,322</td><td style="text-align:right">฿305,883</td><td style="text-align:right">฿19,345</td><td style="text-align:right;font-weight:800">฿1,323,848</td><td style="text-align:right">3,635</td></tr>
-            <tr><td><span class="badge bg-gray">5</span></td><td>Perfect</td><td style="text-align:right">฿657,911</td><td style="text-align:right">฿133,416</td><td style="text-align:right">฿14,685</td><td style="text-align:right;font-weight:800">฿1,216,090</td><td style="text-align:right">8,168</td></tr>
-            <tr><td><span class="badge bg-gray">6</span></td><td>Interior Wipes</td><td style="text-align:right">฿675,302</td><td style="text-align:right">฿473,399</td><td style="text-align:right">฿12,712</td><td style="text-align:right;font-weight:800">฿1,185,106</td><td style="text-align:right">16,452</td></tr>
-            <tr><td><span class="badge bg-gray">7</span></td><td>Reflex (250ml+Spray)</td><td style="text-align:right">฿458,184</td><td style="text-align:right">฿176,288</td><td style="text-align:right">฿20,261</td><td style="text-align:right;font-weight:800">฿1,095,854</td><td style="text-align:right">2,910</td></tr>
-            <tr><td><span class="badge bg-gray">8</span></td><td>Refresh Wipes</td><td style="text-align:right">฿457,825</td><td style="text-align:right">฿538,814</td><td style="text-align:right">฿12,867</td><td style="text-align:right;font-weight:800">฿1,044,388</td><td style="text-align:right">13,731</td></tr>
-            <tr><td><span class="badge bg-gray">9</span></td><td>Spot (500ml)</td><td style="text-align:right">฿560,854</td><td style="text-align:right">฿182,310</td><td style="text-align:right">฿15,971</td><td style="text-align:right;font-weight:800">฿974,988</td><td style="text-align:right">2,625</td></tr>
-            <tr><td><span class="badge bg-gray">10</span></td><td>Mind (500ml+Spray)</td><td style="text-align:right">฿637,187</td><td style="text-align:right">฿151,704</td><td style="text-align:right">฿12,028</td><td style="text-align:right;font-weight:800">฿908,427</td><td style="text-align:right">2,254</td></tr>
+            <tr><td><span class="badge bg-orange">1</span></td><td>Wool Duster à¹à¸¡à¹à¸à¸±à¸à¸à¸à¹à¸à¸°</td><td style="text-align:right">à¸¿2,800,561</td><td style="text-align:right">à¸¿440,436</td><td style="text-align:right">à¸¿40,299</td><td style="text-align:right;color:#1A5CDB;font-weight:800">à¸¿4,636,572</td><td style="text-align:right">7,237</td></tr>
+            <tr><td><span class="badge bg-blue">2</span></td><td>Sugar (500ml+Spray)</td><td style="text-align:right">à¸¿1,360,068</td><td style="text-align:right">à¸¿891,351</td><td style="text-align:right">à¸¿28,047</td><td style="text-align:right;font-weight:800">à¸¿3,000,367</td><td style="text-align:right">10,315</td></tr>
+            <tr><td><span class="badge bg-blue">3</span></td><td>Interior (500ml+Spray)</td><td style="text-align:right">à¸¿1,297,499</td><td style="text-align:right">à¸¿394,709</td><td style="text-align:right">à¸¿32,972</td><td style="text-align:right;font-weight:800">à¸¿2,345,554</td><td style="text-align:right">6,853</td></tr>
+            <tr><td><span class="badge bg-gray">4</span></td><td>Refresh (500ml+à¸«à¸±à¸§à¹à¸à¸¡)</td><td style="text-align:right">à¸¿824,322</td><td style="text-align:right">à¸¿305,883</td><td style="text-align:right">à¸¿19,345</td><td style="text-align:right;font-weight:800">à¸¿1,323,848</td><td style="text-align:right">3,635</td></tr>
+            <tr><td><span class="badge bg-gray">5</span></td><td>Perfect</td><td style="text-align:right">à¸¿657,911</td><td style="text-align:right">à¸¿133,416</td><td style="text-align:right">à¸¿14,685</td><td style="text-align:right;font-weight:800">à¸¿1,216,090</td><td style="text-align:right">8,168</td></tr>
+            <tr><td><span class="badge bg-gray">6</span></td><td>Interior Wipes</td><td style="text-align:right">à¸¿675,302</td><td style="text-align:right">à¸¿473,399</td><td style="text-align:right">à¸¿12,712</td><td style="text-align:right;font-weight:800">à¸¿1,185,106</td><td style="text-align:right">16,452</td></tr>
+            <tr><td><span class="badge bg-gray">7</span></td><td>Reflex (250ml+Spray)</td><td style="text-align:right">à¸¿458,184</td><td style="text-align:right">à¸¿176,288</td><td style="text-align:right">à¸¿20,261</td><td style="text-align:right;font-weight:800">à¸¿1,095,854</td><td style="text-align:right">2,910</td></tr>
+            <tr><td><span class="badge bg-gray">8</span></td><td>Refresh Wipes</td><td style="text-align:right">à¸¿457,825</td><td style="text-align:right">à¸¿538,814</td><td style="text-align:right">à¸¿12,867</td><td style="text-align:right;font-weight:800">à¸¿1,044,388</td><td style="text-align:right">13,731</td></tr>
+            <tr><td><span class="badge bg-gray">9</span></td><td>Spot (500ml)</td><td style="text-align:right">à¸¿560,854</td><td style="text-align:right">à¸¿182,310</td><td style="text-align:right">à¸¿15,971</td><td style="text-align:right;font-weight:800">à¸¿974,988</td><td style="text-align:right">2,625</td></tr>
+            <tr><td><span class="badge bg-gray">10</span></td><td>Mind (500ml+Spray)</td><td style="text-align:right">à¸¿637,187</td><td style="text-align:right">à¸¿151,704</td><td style="text-align:right">à¸¿12,028</td><td style="text-align:right;font-weight:800">à¸¿908,427</td><td style="text-align:right">2,254</td></tr>
           </tbody>
         </table>
       </div>
@@ -807,7 +807,7 @@
 
     </section>
 
-    <!-- ═══ ADS DASHBOARD ═══ -->
+    <!-- âââ ADS DASHBOARD âââ -->
     <section id="ads" class="section">
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <iframe
@@ -818,58 +818,58 @@
       </div>
     </section>
 
-    <!-- ═══ SOCIAL ═══ -->
+    <!-- âââ SOCIAL âââ -->
     <section id="social" class="section">
       <div class="kpi-grid">
-        <div class="kpi tk-c"><div class="kpi-label">TikTok Followers</div><div class="kpi-val">25,944</div><div class="kpi-sub up">↑ 2.47% จากเม.ย. · ข้อมูล 10 พ.ค.</div><div class="kpi-ico">🎵</div></div>
-        <div class="kpi bl"><div class="kpi-label">Facebook Likes</div><div class="kpi-val">62K</div><div class="kpi-sub up">↑ 3.1%</div><div class="kpi-ico">👍</div></div>
-        <div class="kpi pu"><div class="kpi-label">Instagram Followers</div><div class="kpi-val">38K</div><div class="kpi-sub up">↑ 2.8%</div><div class="kpi-ico">📷</div></div>
-        <div class="kpi rd"><div class="kpi-label">YouTube Subscribers</div><div class="kpi-val">17K</div><div class="kpi-sub up">↑ 1.2%</div><div class="kpi-ico">▶️</div></div>
-        <div class="kpi gr"><div class="kpi-label">Engagement Rate</div><div class="kpi-val">7.2%</div><div class="kpi-sub up">↑ 0.4%</div><div class="kpi-ico">❤️</div></div>
-        <div class="kpi or"><div class="kpi-label">Total Views (เดือน)</div><div class="kpi-val">3.1M</div><div class="kpi-sub up">↑ 22.6%</div><div class="kpi-ico">👁</div></div>
+        <div class="kpi tk-c"><div class="kpi-label">TikTok Followers</div><div class="kpi-val">25,944</div><div class="kpi-sub up">â 2.47% à¸à¸²à¸à¹à¸¡.à¸¢. Â· à¸à¹à¸­à¸¡à¸¹à¸¥ 10 à¸.à¸.</div><div class="kpi-ico">ðµ</div></div>
+        <div class="kpi bl"><div class="kpi-label">Facebook Likes</div><div class="kpi-val">62K</div><div class="kpi-sub up">â 3.1%</div><div class="kpi-ico">ð</div></div>
+        <div class="kpi pu"><div class="kpi-label">Instagram Followers</div><div class="kpi-val">38K</div><div class="kpi-sub up">â 2.8%</div><div class="kpi-ico">ð·</div></div>
+        <div class="kpi rd"><div class="kpi-label">YouTube Subscribers</div><div class="kpi-val">17K</div><div class="kpi-sub up">â 1.2%</div><div class="kpi-ico">â¶ï¸</div></div>
+        <div class="kpi gr"><div class="kpi-label">Engagement Rate</div><div class="kpi-val">7.2%</div><div class="kpi-sub up">â 0.4%</div><div class="kpi-ico">â¤ï¸</div></div>
+        <div class="kpi or"><div class="kpi-label">Total Views (à¹à¸à¸·à¸­à¸)</div><div class="kpi-val">3.1M</div><div class="kpi-sub up">â 22.6%</div><div class="kpi-ico">ð</div></div>
       </div>
       <div class="cg-2">
-        <div class="chart-card"><div class="cc-title">Followers Growth</div><div class="cc-sub">ม.ค. – พ.ค. 2569</div><canvas id="soc_follow" height="100"></canvas></div>
-        <div class="chart-card"><div class="cc-title">Engagement แยก Platform</div><div class="cc-sub">เดือนนี้</div><canvas id="soc_eng" height="190"></canvas></div>
+        <div class="chart-card"><div class="cc-title">Followers Growth</div><div class="cc-sub">à¸¡.à¸. â à¸.à¸. 2569</div><canvas id="soc_follow" height="100"></canvas></div>
+        <div class="chart-card"><div class="cc-title">Engagement à¹à¸¢à¸ Platform</div><div class="cc-sub">à¹à¸à¸·à¸­à¸à¸à¸µà¹</div><canvas id="soc_eng" height="190"></canvas></div>
       </div>
-      <!-- ── TikTok Follower Growth ── -->
+      <!-- ââ TikTok Follower Growth ââ -->
       <div style="margin:24px 0 12px;display:flex;align-items:center;gap:8px">
         <div style="width:3px;height:18px;background:#111;border-radius:2px"></div>
-        <div style="font-size:.85rem;font-weight:700;color:#111;letter-spacing:.3px">🎵 TikTok Followers — รายเดือน</div>
+        <div style="font-size:.85rem;font-weight:700;color:#111;letter-spacing:.3px">ðµ TikTok Followers â à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸</div>
       </div>
       <div class="kpi-grid" style="grid-template-columns:repeat(3,1fr)">
 
-        <!-- มีนาคม -->
+        <!-- à¸¡à¸µà¸à¸²à¸à¸¡ -->
         <div class="kpi" style="background:#f8f8f8;border:1.5px solid #e2e2e2">
-          <div class="kpi-label" style="color:#888">มีนาคม 2569 <span style="font-weight:400;font-size:10px">(12–31 มี.ค.)</span></div>
+          <div class="kpi-label" style="color:#888">à¸¡à¸µà¸à¸²à¸à¸¡ 2569 <span style="font-weight:400;font-size:10px">(12â31 à¸¡à¸µ.à¸.)</span></div>
           <div class="kpi-val" style="color:#111">24,967</div>
           <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="background:#111;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+422 คน</span>
+            <span style="background:#111;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+422 à¸à¸</span>
             <span style="color:#111;font-size:.8rem;font-weight:700">+1.72%</span>
           </div>
-          <div class="kpi-sub" style="margin-top:4px;color:#888">จาก 24,545 ต้นเดือน</div>
+          <div class="kpi-sub" style="margin-top:4px;color:#888">à¸à¸²à¸ 24,545 à¸à¹à¸à¹à¸à¸·à¸­à¸</div>
         </div>
 
-        <!-- เมษายน -->
+        <!-- à¹à¸¡à¸©à¸²à¸¢à¸ -->
         <div class="kpi" style="background:#111;border:1.5px solid #111">
-          <div class="kpi-label" style="color:#aaa">เมษายน 2569 <span style="font-weight:400;font-size:10px">(เต็มเดือน)</span></div>
+          <div class="kpi-label" style="color:#aaa">à¹à¸¡à¸©à¸²à¸¢à¸ 2569 <span style="font-weight:400;font-size:10px">(à¹à¸à¹à¸¡à¹à¸à¸·à¸­à¸)</span></div>
           <div class="kpi-val" style="color:#fff">25,590</div>
           <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="background:#ff6b2b;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+617 คน</span>
-            <span style="color:#ff6b2b;font-size:.8rem;font-weight:700">+2.47% ↑</span>
+            <span style="background:#ff6b2b;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+617 à¸à¸</span>
+            <span style="color:#ff6b2b;font-size:.8rem;font-weight:700">+2.47% â</span>
           </div>
-          <div class="kpi-sub" style="margin-top:4px;color:#888">จาก 24,973 ต้นเดือน · เดือนที่โต สุด</div>
+          <div class="kpi-sub" style="margin-top:4px;color:#888">à¸à¸²à¸ 24,973 à¸à¹à¸à¹à¸à¸·à¸­à¸ Â· à¹à¸à¸·à¸­à¸à¸à¸µà¹à¹à¸ à¸ªà¸¸à¸</div>
         </div>
 
-        <!-- พฤษภาคม -->
+        <!-- à¸à¸¤à¸©à¸ à¸²à¸à¸¡ -->
         <div class="kpi" style="background:#f8f8f8;border:1.5px solid #e2e2e2">
-          <div class="kpi-label" style="color:#888">พฤษภาคม 2569 <span style="font-weight:400;font-size:10px">(1–10 พ.ค.)</span></div>
+          <div class="kpi-label" style="color:#888">à¸à¸¤à¸©à¸ à¸²à¸à¸¡ 2569 <span style="font-weight:400;font-size:10px">(1â10 à¸.à¸.)</span></div>
           <div class="kpi-val" style="color:#111">25,944</div>
           <div style="margin-top:4px;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
-            <span style="background:#111;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+347 คน</span>
+            <span style="background:#111;color:#fff;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:20px">+347 à¸à¸</span>
             <span style="color:#111;font-size:.8rem;font-weight:700">+1.36%</span>
           </div>
-          <div class="kpi-sub" style="margin-top:4px;color:#888">จาก 25,597 ต้นเดือน · ข้อมูลถึง 10 พ.ค.</div>
+          <div class="kpi-sub" style="margin-top:4px;color:#888">à¸à¸²à¸ 25,597 à¸à¹à¸à¹à¸à¸·à¸­à¸ Â· à¸à¹à¸­à¸¡à¸¹à¸¥à¸à¸¶à¸ 10 à¸.à¸.</div>
         </div>
 
       </div>
@@ -884,15 +884,15 @@
 
     </section>
 
-    <!-- ═══ AFFILIATE ═══ -->
+    <!-- âââ AFFILIATE âââ -->
     <section id="affiliate" class="section">
 
       <!-- KPI summary row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">GMV รวมทุกเดือน</div><div class="kpi-val">฿3.42M</div><div class="kpi-sub neutral">7 เดือน รวมกัน</div><div class="kpi-ico">📊</div></div>
-        <div class="kpi bl"><div class="kpi-label">Net GMV (หลังหักคืน)</div><div class="kpi-val">฿3.35M</div><div class="kpi-sub neutral">Refund rate ~2%</div><div class="kpi-ico">💰</div></div>
-        <div class="kpi pu"><div class="kpi-label">ค่าคอมมิชชั่นรวม</div><div class="kpi-val">฿424K</div><div class="kpi-sub neutral">avg 12.4% of GMV</div><div class="kpi-ico">🏷️</div></div>
-        <div class="kpi gr"><div class="kpi-label">เดือนยอดสูงสุด</div><div class="kpi-val">เมษา.69</div><div class="kpi-sub up">฿708,947 net GMV</div><div class="kpi-ico">🏆</div></div>
+        <div class="kpi or"><div class="kpi-label">GMV à¸£à¸§à¸¡à¸à¸¸à¸à¹à¸à¸·à¸­à¸</div><div class="kpi-val">à¸¿3.42M</div><div class="kpi-sub neutral">7 à¹à¸à¸·à¸­à¸ à¸£à¸§à¸¡à¸à¸±à¸</div><div class="kpi-ico">ð</div></div>
+        <div class="kpi bl"><div class="kpi-label">Net GMV (à¸«à¸¥à¸±à¸à¸«à¸±à¸à¸à¸·à¸)</div><div class="kpi-val">à¸¿3.35M</div><div class="kpi-sub neutral">Refund rate ~2%</div><div class="kpi-ico">ð°</div></div>
+        <div class="kpi pu"><div class="kpi-label">à¸à¹à¸²à¸à¸­à¸¡à¸¡à¸´à¸à¸à¸±à¹à¸à¸£à¸§à¸¡</div><div class="kpi-val">à¸¿424K</div><div class="kpi-sub neutral">avg 12.4% of GMV</div><div class="kpi-ico">ð·ï¸</div></div>
+        <div class="kpi gr"><div class="kpi-label">à¹à¸à¸·à¸­à¸à¸¢à¸­à¸à¸ªà¸¹à¸à¸ªà¸¸à¸</div><div class="kpi-val">à¹à¸¡à¸©à¸².69</div><div class="kpi-sub up">à¸¿708,947 net GMV</div><div class="kpi-ico">ð</div></div>
       </div>
 
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
@@ -905,55 +905,55 @@
 
     </section>
 
-    <!-- ═══ HR ═══ -->
+    <!-- âââ HR âââ -->
     <section id="hr" class="section">
       <div class="kpi-grid">
-        <div class="kpi or"><div class="kpi-label">พนักงานทั้งหมด</div><div class="kpi-val">12</div><div class="kpi-sub up">↑ 2 ใหม่</div><div class="kpi-ico">👥</div></div>
-        <div class="kpi gr"><div class="kpi-label">ออนไลน์วันนี้</div><div class="kpi-val">10</div><div class="kpi-sub">83%</div><div class="kpi-ico">✅</div></div>
-        <div class="kpi yw"><div class="kpi-label">ลาวันนี้</div><div class="kpi-val">2</div><div class="kpi-sub">ลาป่วย 1 / ลากิจ 1</div><div class="kpi-ico">🏖</div></div>
-        <div class="kpi bl"><div class="kpi-label">เปิดรับสมัคร</div><div class="kpi-val">2</div><div class="kpi-sub">Content & Sales</div><div class="kpi-ico">📝</div></div>
+        <div class="kpi or"><div class="kpi-label">à¸à¸à¸±à¸à¸à¸²à¸à¸à¸±à¹à¸à¸«à¸¡à¸</div><div class="kpi-val">12</div><div class="kpi-sub up">â 2 à¹à¸«à¸¡à¹</div><div class="kpi-ico">ð¥</div></div>
+        <div class="kpi gr"><div class="kpi-label">à¸­à¸­à¸à¹à¸¥à¸à¹à¸§à¸±à¸à¸à¸µà¹</div><div class="kpi-val">10</div><div class="kpi-sub">83%</div><div class="kpi-ico">â</div></div>
+        <div class="kpi yw"><div class="kpi-label">à¸¥à¸²à¸§à¸±à¸à¸à¸µà¹</div><div class="kpi-val">2</div><div class="kpi-sub">à¸¥à¸²à¸à¹à¸§à¸¢ 1 / à¸¥à¸²à¸à¸´à¸ 1</div><div class="kpi-ico">ð</div></div>
+        <div class="kpi bl"><div class="kpi-label">à¹à¸à¸´à¸à¸£à¸±à¸à¸ªà¸¡à¸±à¸à¸£</div><div class="kpi-val">2</div><div class="kpi-sub">Content & Sales</div><div class="kpi-ico">ð</div></div>
       </div>
       <div class="emp-grid">
-        <div class="emp-card"><div class="emp-av" style="background:#1A5CDB">ต</div><div><div class="emp-name">ตั้ม</div><div class="emp-role">Founder / เจ้าของ</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
-        <div class="emp-card"><div class="emp-av" style="background:var(--blue)">ส</div><div><div class="emp-name">สมหญิง</div><div class="emp-role">Content Creator</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
-        <div class="emp-card"><div class="emp-av" style="background:var(--purple)">ว</div><div><div class="emp-name">วิโรจน์</div><div class="emp-role">Video Editor</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
-        <div class="emp-card"><div class="emp-av" style="background:var(--teal)">น</div><div><div class="emp-name">นันท์</div><div class="emp-role">Marketing & Ads</div><div class="emp-status"><span class="sdot" style="background:var(--yellow)"></span><span style="color:var(--yellow);font-weight:700">ประชุม</span></div></div></div>
-        <div class="emp-card"><div class="emp-av" style="background:var(--green)">ป</div><div><div class="emp-name">ป้อม</div><div class="emp-role">Order & Warehouse</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">ออนไลน์</span></div></div></div>
-        <div class="emp-card"><div class="emp-av" style="background:#94a3b8">ม</div><div><div class="emp-name">มลิ</div><div class="emp-role">Customer Service</div><div class="emp-status"><span class="sdot" style="background:#94a3b8"></span><span style="color:#64748b;font-weight:700">ลาป่วย</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:#1A5CDB">à¸</div><div><div class="emp-name">à¸à¸±à¹à¸¡</div><div class="emp-role">Founder / à¹à¸à¹à¸²à¸à¸­à¸</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">à¸­à¸­à¸à¹à¸¥à¸à¹</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:var(--blue)">à¸ª</div><div><div class="emp-name">à¸ªà¸¡à¸«à¸à¸´à¸</div><div class="emp-role">Content Creator</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">à¸­à¸­à¸à¹à¸¥à¸à¹</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:var(--purple)">à¸§</div><div><div class="emp-name">à¸§à¸´à¹à¸£à¸à¸à¹</div><div class="emp-role">Video Editor</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">à¸­à¸­à¸à¹à¸¥à¸à¹</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:var(--teal)">à¸</div><div><div class="emp-name">à¸à¸±à¸à¸à¹</div><div class="emp-role">Marketing & Ads</div><div class="emp-status"><span class="sdot" style="background:var(--yellow)"></span><span style="color:var(--yellow);font-weight:700">à¸à¸£à¸°à¸à¸¸à¸¡</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:var(--green)">à¸</div><div><div class="emp-name">à¸à¹à¸­à¸¡</div><div class="emp-role">Order & Warehouse</div><div class="emp-status"><span class="sdot" style="background:var(--green)"></span><span style="color:var(--green);font-weight:700">à¸­à¸­à¸à¹à¸¥à¸à¹</span></div></div></div>
+        <div class="emp-card"><div class="emp-av" style="background:#94a3b8">à¸¡</div><div><div class="emp-name">à¸¡à¸¥à¸´</div><div class="emp-role">Customer Service</div><div class="emp-status"><span class="sdot" style="background:#94a3b8"></span><span style="color:#64748b;font-weight:700">à¸¥à¸²à¸à¹à¸§à¸¢</span></div></div></div>
       </div>
     </section>
 
-    <!-- ═══ PROJECTS ═══ -->
+    <!-- âââ PROJECTS âââ -->
     <section id="projects" class="section">
       <div class="kpi-grid">
-        <div class="kpi or"><div class="kpi-label">โปรเจคทั้งหมด</div><div class="kpi-val">14</div><div class="kpi-sub up">↑ 3 ใหม่</div><div class="kpi-ico">📋</div></div>
-        <div class="kpi gr"><div class="kpi-label">เสร็จแล้ว</div><div class="kpi-val">5</div><div class="kpi-sub">36%</div><div class="kpi-ico">✅</div></div>
-        <div class="kpi yw"><div class="kpi-label">กำลังดำเนิน</div><div class="kpi-val">7</div><div class="kpi-sub">50%</div><div class="kpi-ico">⚙️</div></div>
-        <div class="kpi rd"><div class="kpi-label">ล่าช้า</div><div class="kpi-val">2</div><div class="kpi-sub dn">ต้องเร่ง</div><div class="kpi-ico">⚠️</div></div>
+        <div class="kpi or"><div class="kpi-label">à¹à¸à¸£à¹à¸à¸à¸à¸±à¹à¸à¸«à¸¡à¸</div><div class="kpi-val">14</div><div class="kpi-sub up">â 3 à¹à¸«à¸¡à¹</div><div class="kpi-ico">ð</div></div>
+        <div class="kpi gr"><div class="kpi-label">à¹à¸ªà¸£à¹à¸à¹à¸¥à¹à¸§</div><div class="kpi-val">5</div><div class="kpi-sub">36%</div><div class="kpi-ico">â</div></div>
+        <div class="kpi yw"><div class="kpi-label">à¸à¸³à¸¥à¸±à¸à¸à¸³à¹à¸à¸´à¸</div><div class="kpi-val">7</div><div class="kpi-sub">50%</div><div class="kpi-ico">âï¸</div></div>
+        <div class="kpi rd"><div class="kpi-label">à¸¥à¹à¸²à¸à¹à¸²</div><div class="kpi-val">2</div><div class="kpi-sub dn">à¸à¹à¸­à¸à¹à¸£à¹à¸</div><div class="kpi-ico">â ï¸</div></div>
       </div>
       <div class="kanban">
         <div class="kb-col">
-          <div class="kb-hd"><div class="kb-title" style="color:#64748b">📥 Backlog</div><div class="kb-cnt">2</div></div>
-          <div class="task-card"><div class="task-title">Shopee Ads แคมเปญ มิ.ย.</div><div style="height:5px;background:var(--border);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>นัน</span></div></div>
-          <div class="task-card"><div class="task-title">สินค้าใหม่ Interior Line</div><div style="height:5px;background:var(--border);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-gray">Product</span><span>ตั้ม</span></div></div>
+          <div class="kb-hd"><div class="kb-title" style="color:#64748b">ð¥ Backlog</div><div class="kb-cnt">2</div></div>
+          <div class="task-card"><div class="task-title">Shopee Ads à¹à¸à¸¡à¹à¸à¸ à¸¡à¸´.à¸¢.</div><div style="height:5px;background:var(--border);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>à¸à¸±à¸</span></div></div>
+          <div class="task-card"><div class="task-title">à¸ªà¸´à¸à¸à¹à¸²à¹à¸«à¸¡à¹ Interior Line</div><div style="height:5px;background:var(--border);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-gray">Product</span><span>à¸à¸±à¹à¸¡</span></div></div>
         </div>
         <div class="kb-col">
-          <div class="kb-hd"><div class="kb-title" style="color:var(--yellow)">⚙️ กำลังทำ</div><div class="kb-cnt">4</div></div>
-          <div class="task-card"><div class="task-title">คลิป TikTok รีวิว Wool Duster #2</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:70%;background:#333"></div></div><div class="task-meta"><span class="task-tag badge bg-tiktok">TikTok</span><span>สมหญิง</span></div></div>
-          <div class="task-card"><div class="task-title">อัพเดทรูปสินค้า Shopee</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:45%;background:var(--shopee)"></div></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>วิโรจน์</span></div></div>
-          <div class="task-card"><div class="task-title">LINE OA Flash Sale</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:60%;background:var(--green)"></div></div><div class="task-meta"><span class="task-tag badge bg-green">LINE OA</span><span>นัน</span></div></div>
-          <div class="task-card"><div class="task-title">Packaging Design ใหม่</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:35%;background:#1A5CDB"></div></div><div class="task-meta"><span class="task-tag badge bg-orange">Branding</span><span>ตั้ม</span></div></div>
+          <div class="kb-hd"><div class="kb-title" style="color:var(--yellow)">âï¸ à¸à¸³à¸¥à¸±à¸à¸à¸³</div><div class="kb-cnt">4</div></div>
+          <div class="task-card"><div class="task-title">à¸à¸¥à¸´à¸ TikTok à¸£à¸µà¸§à¸´à¸§ Wool Duster #2</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:70%;background:#333"></div></div><div class="task-meta"><span class="task-tag badge bg-tiktok">TikTok</span><span>à¸ªà¸¡à¸«à¸à¸´à¸</span></div></div>
+          <div class="task-card"><div class="task-title">à¸­à¸±à¸à¹à¸à¸à¸£à¸¹à¸à¸ªà¸´à¸à¸à¹à¸² Shopee</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:45%;background:var(--shopee)"></div></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>à¸§à¸´à¹à¸£à¸à¸à¹</span></div></div>
+          <div class="task-card"><div class="task-title">LINE OA Flash Sale</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:60%;background:var(--green)"></div></div><div class="task-meta"><span class="task-tag badge bg-green">LINE OA</span><span>à¸à¸±à¸</span></div></div>
+          <div class="task-card"><div class="task-title">Packaging Design à¹à¸«à¸¡à¹</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:35%;background:#1A5CDB"></div></div><div class="task-meta"><span class="task-tag badge bg-orange">Branding</span><span>à¸à¸±à¹à¸¡</span></div></div>
         </div>
         <div class="kb-col">
-          <div class="kb-hd"><div class="kb-title" style="color:var(--blue)">🔍 รีวิว</div><div class="kb-cnt">3</div></div>
-          <div class="task-card"><div class="task-title">Script TikTok 10 คลิป</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:95%;background:var(--blue)"></div></div><div class="task-meta"><span class="task-tag badge bg-tiktok">Content</span><span>สมหญิง</span></div></div>
-          <div class="task-card"><div class="task-title">ตั้งค่า Lazada Store</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:90%;background:var(--lazada)"></div></div><div class="task-meta"><span class="task-tag badge bg-lazada">Lazada</span><span>ป้อม</span></div></div>
-          <div class="task-card"><div class="task-title">รายงานยอดขาย เม.ย.</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:98%;background:var(--green)"></div></div><div class="task-meta"><span class="task-tag badge bg-gray">Report</span><span>นัน</span></div></div>
+          <div class="kb-hd"><div class="kb-title" style="color:var(--blue)">ð à¸£à¸µà¸§à¸´à¸§</div><div class="kb-cnt">3</div></div>
+          <div class="task-card"><div class="task-title">Script TikTok 10 à¸à¸¥à¸´à¸</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:95%;background:var(--blue)"></div></div><div class="task-meta"><span class="task-tag badge bg-tiktok">Content</span><span>à¸ªà¸¡à¸«à¸à¸´à¸</span></div></div>
+          <div class="task-card"><div class="task-title">à¸à¸±à¹à¸à¸à¹à¸² Lazada Store</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:90%;background:var(--lazada)"></div></div><div class="task-meta"><span class="task-tag badge bg-lazada">Lazada</span><span>à¸à¹à¸­à¸¡</span></div></div>
+          <div class="task-card"><div class="task-title">à¸£à¸²à¸¢à¸à¸²à¸à¸¢à¸­à¸à¸à¸²à¸¢ à¹à¸¡.à¸¢.</div><div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;width:98%;background:var(--green)"></div></div><div class="task-meta"><span class="task-tag badge bg-gray">Report</span><span>à¸à¸±à¸</span></div></div>
         </div>
         <div class="kb-col">
-          <div class="kb-hd"><div class="kb-title" style="color:var(--green)">✅ เสร็จ</div><div class="kb-cnt">5</div></div>
-          <div class="task-card" style="opacity:.65"><div class="task-title">Songkran Sale 2569</div><div style="height:5px;background:var(--green);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>ทีม</span></div></div>
-          <div class="task-card" style="opacity:.65"><div class="task-title">คลิป Viral Wool Duster</div><div style="height:5px;background:var(--green);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-tiktok">TikTok</span><span>สมหญิง</span></div></div>
+          <div class="kb-hd"><div class="kb-title" style="color:var(--green)">â à¹à¸ªà¸£à¹à¸</div><div class="kb-cnt">5</div></div>
+          <div class="task-card" style="opacity:.65"><div class="task-title">Songkran Sale 2569</div><div style="height:5px;background:var(--green);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-shopee">Shopee</span><span>à¸à¸µà¸¡</span></div></div>
+          <div class="task-card" style="opacity:.65"><div class="task-title">à¸à¸¥à¸´à¸ Viral Wool Duster</div><div style="height:5px;background:var(--green);border-radius:3px"></div><div class="task-meta"><span class="task-tag badge bg-tiktok">TikTok</span><span>à¸ªà¸¡à¸«à¸à¸´à¸</span></div></div>
         </div>
       </div>
     </section>
@@ -965,7 +965,7 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks'};
+const TITLES = {overview:'à¸ à¸²à¸à¸£à¸§à¸¡à¸à¸¸à¸£à¸à¸´à¸',sales:'à¸¢à¸­à¸à¸à¸²à¸¢ & à¸£à¸²à¸¢à¹à¸à¹ (à¸à¸¸à¸ Platform)',shopee:'ð§¡ Shopee',tiktok:'ðµ TikTok Shop',lazada:'ð Lazada',products:'ð Top à¸ªà¸´à¸à¸à¹à¸²à¸à¸²à¸¢à¸à¸µ',ads:'ð¢ Ads Dashboard',social:'Social Media',affiliate:'ð¤ Affiliate',hr:'HR & à¸à¸à¸±à¸à¸à¸²à¸',projects:'Projects & Tasks'};
 
 function go(id, el) {
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -976,19 +976,19 @@ function go(id, el) {
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
 }
 
-// ── RAW DATA (from spreadsheets) ──
-const M5 = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
-const SH_REV  = [4231653,4383214,4560321,5204395,3289284];
+// ââ RAW DATA (from spreadsheets) ââ
+const M5 = ['à¸¡.à¸.','à¸.à¸.','à¸¡à¸µ.à¸.','à¹à¸¡.à¸¢.','à¸.à¸.'];
+const SH_REV  = [4231653,4383214,4560321,5204395,4322412];
 const TK_REV  = [1152567,1171209,1280967,1350397,1073249];
 const LZ_REV  = [179084, 120949, 183370, 110532, 84597];
-const SH_ORD  = [7532,6580,6873,8128,5232];
+const SH_ORD  = [7532,6580,6873,8128,7050];
 const TK_ORD  = [3204,3652,3934,5032,2808];
 const LZ_ORD  = [236,176,255,161,54];
-const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.52];
+const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.43];
 const TK_CANCEL_PCT = [9.64,8.32,8.39,9.70,9.0];
 const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.5];
-const SH_ADS  = [575400,559100,589300,795300,631751];
-const SH_FEE  = [911498,944144,1046921,1225115,844688];
+const SH_ADS  = [575400,559100,589300,795300,631800];
+const SH_FEE  = [911498,944144,1046921,1225115,1109995];
 const SH_NEW  = [4453,3817,4050,4873,3108];
 const SH_OLD  = [1940,1869,1891,1985,1450];
 const TK_AFI  = [460976,550756,655259,724120,625436];
@@ -1019,12 +1019,12 @@ function barColors(base, selIdx, totalBars) {
   return Array.from({length: totalBars}, (_,i) => i === selIdx ? base : base + '44');
 }
 
-// ── INIT CHARTS ──
+// ââ INIT CHARTS ââ
 charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_REV,backgroundColor:SH_REV.map((_,i)=>i===4?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
   {label:'TikTok',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===4?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
   {label:'Lazada',data:LZ_REV,backgroundColor:LZ_REV.map((_,i)=>i===4?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
-]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
+]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'à¸¿'+(v/1e6).toFixed(1)+'M'}}}}});
 
 charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 78.1%','TikTok 20.3%','Lazada 1.6%'],datasets:[{data:[5204395,1350397,110532],backgroundColor:[SHOPEE,TIKTOK,LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
@@ -1040,13 +1040,13 @@ charts['ov_cancel'] = new Chart('ov_cancel',{type:'bar',data:{labels:M5,datasets
   {label:'Lazada',data:LZ_CANCEL_PCT,backgroundColor:LZ_CANCEL_PCT.map((_,i)=>i===4?LAZADA+'cc':LAZADA+'44'),borderRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 
-charts['ov_cust'] = new Chart('ov_cust',{type:'doughnut',data:{labels:['ใหม่ Shopee','เก่า Shopee','ใหม่ TikTok','เก่า TikTok','ใหม่ Lazada'],datasets:[{data:[4873,1985,3915,632,108],backgroundColor:['#ee4d2d','#ffaa7a','#444','#aaa','#1b04a1'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'55%'}});
+charts['ov_cust'] = new Chart('ov_cust',{type:'doughnut',data:{labels:['à¹à¸«à¸¡à¹ Shopee','à¹à¸à¹à¸² Shopee','à¹à¸«à¸¡à¹ TikTok','à¹à¸à¹à¸² TikTok','à¹à¸«à¸¡à¹ Lazada'],datasets:[{data:[4873,1985,3915,632,108],backgroundColor:['#ee4d2d','#ffaa7a','#444','#aaa','#1b04a1'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'55%'}});
 
 charts['sl_line'] = new Chart('sl_line',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_REV,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:4,borderWidth:2},
   {label:'TikTok',data:TK_REV,borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4,borderWidth:2},
   {label:'Lazada',data:LZ_REV,borderColor:LAZADA,tension:.4,fill:false,pointRadius:4,borderWidth:2},
-]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
+]},options:{...BASE,scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1e6).toFixed(1)+'M'}}}}});
 
 charts['sl_orders'] = new Chart('sl_orders',{type:'bar',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===4?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
@@ -1054,62 +1054,62 @@ charts['sl_orders'] = new Chart('sl_orders',{type:'bar',data:{labels:M5,datasets
   {label:'Lazada',data:LZ_ORD,backgroundColor:LZ_ORD.map((_,i)=>i===4?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 
-charts['sh_line'] = new Chart('sh_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:SH_REV,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
+charts['sh_line'] = new Chart('sh_line',{type:'line',data:{labels:M5,datasets:[{label:'à¸¢à¸­à¸à¸à¸²à¸¢',data:SH_REV,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1e6).toFixed(1)+'M'}}}}});
 charts['sh_cust'] = new Chart('sh_cust',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ลูกค้าใหม่',data:SH_NEW,backgroundColor:SH_NEW.map((_,i)=>i===4?'rgba(238,77,45,.85)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
-  {label:'ลูกค้าเก่า',data:SH_OLD,backgroundColor:SH_OLD.map((_,i)=>i===4?'rgba(238,77,45,.45)':'rgba(238,77,45,.15)'),borderRadius:4,stack:'c'},
+  {label:'à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹',data:SH_NEW,backgroundColor:SH_NEW.map((_,i)=>i===4?'rgba(238,77,45,.85)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
+  {label:'à¸¥à¸¹à¸à¸à¹à¸²à¹à¸à¹à¸²',data:SH_OLD,backgroundColor:SH_OLD.map((_,i)=>i===4?'rgba(238,77,45,.45)':'rgba(238,77,45,.15)'),borderRadius:4,stack:'c'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 charts['sh_cost'] = new Chart('sh_cost',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดใช้ Ads',data:SH_ADS,backgroundColor:SH_ADS.map((_,i)=>i===4?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
-  {label:'ค่าธรรมเนียม',data:SH_FEE,backgroundColor:SH_FEE.map((_,i)=>i===4?'rgba(251,146,60,.8)':'rgba(251,146,60,.3)'),borderRadius:4,stack:'c'},
-]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
-charts['sh_cancel'] = new Chart('sh_cancel',{type:'line',data:{labels:M5,datasets:[{label:'% ยกเลิก',data:SH_CANCEL_PCT,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.1)',tension:.4,fill:true,pointRadius:[3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
+  {label:'à¸¢à¸­à¸à¹à¸à¹ Ads',data:SH_ADS,backgroundColor:SH_ADS.map((_,i)=>i===4?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
+  {label:'à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡',data:SH_FEE,backgroundColor:SH_FEE.map((_,i)=>i===4?'rgba(251,146,60,.8)':'rgba(251,146,60,.3)'),borderRadius:4,stack:'c'},
+]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'à¸¿'+(v/1000).toFixed(0)+'K'}}}}});
+charts['sh_cancel'] = new Chart('sh_cancel',{type:'line',data:{labels:M5,datasets:[{label:'% à¸¢à¸à¹à¸¥à¸´à¸',data:SH_CANCEL_PCT,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.1)',tension:.4,fill:true,pointRadius:[3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 charts['sh_orders'] = new Chart('sh_orders',{type:'bar',data:{labels:M5,datasets:[{label:'order',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===4?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:6}]},options:{...BASE,plugins:{legend:{display:false}}}});
 
-charts['tk_line'] = new Chart('tk_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:TK_REV,borderColor:TIKTOK,backgroundColor:'rgba(30,30,30,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
+charts['tk_line'] = new Chart('tk_line',{type:'line',data:{labels:M5,datasets:[{label:'à¸¢à¸­à¸à¸à¸²à¸¢',data:TK_REV,borderColor:TIKTOK,backgroundColor:'rgba(30,30,30,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1e6).toFixed(1)+'M'}}}}});
 charts['tk_afi'] = new Chart('tk_afi',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดขาย',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===4?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:3},
-  {label:'ยอด Affiliate',data:TK_AFI,backgroundColor:TK_AFI.map((_,i)=>i===4?'rgba(139,92,246,.7)':'rgba(139,92,246,.25)'),borderRadius:3},
-  {label:'ยอดหลังหัก',data:TK_NET,backgroundColor:TK_NET.map((_,i)=>i===4?'rgba(20,184,166,.7)':'rgba(20,184,166,.25)'),borderRadius:3},
-]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
+  {label:'à¸¢à¸­à¸à¸à¸²à¸¢',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===4?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:3},
+  {label:'à¸¢à¸­à¸ Affiliate',data:TK_AFI,backgroundColor:TK_AFI.map((_,i)=>i===4?'rgba(139,92,246,.7)':'rgba(139,92,246,.25)'),borderRadius:3},
+  {label:'à¸¢à¸­à¸à¸«à¸¥à¸±à¸à¸«à¸±à¸',data:TK_NET,backgroundColor:TK_NET.map((_,i)=>i===4?'rgba(20,184,166,.7)':'rgba(20,184,166,.25)'),borderRadius:3},
+]},options:{...BASE,scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['tk_afipct'] = new Chart('tk_afipct',{type:'line',data:{labels:M5,datasets:[{label:'% Afi',data:TK_AFIPCT,borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.1)',tension:.4,fill:true,pointRadius:[3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 charts['tk_adslive'] = new Chart('tk_adslive',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดจาก Ads',data:TK_ADS,backgroundColor:TK_ADS.map((_,i)=>i===4?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:4},
-  {label:'ยอด Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===4?'rgba(26,92,219,.7)':'rgba(26,92,219,.25)'),borderRadius:4},
-]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
+  {label:'à¸¢à¸­à¸à¸à¸²à¸ Ads',data:TK_ADS,backgroundColor:TK_ADS.map((_,i)=>i===4?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:4},
+  {label:'à¸¢à¸­à¸ Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===4?'rgba(26,92,219,.7)':'rgba(26,92,219,.25)'),borderRadius:4},
+]},options:{...BASE,scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['tk_cust'] = new Chart('tk_cust',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ลูกค้าใหม่',data:TK_NEW,backgroundColor:TK_NEW.map((_,i)=>i===4?'rgba(30,30,30,.7)':'rgba(30,30,30,.25)'),borderRadius:4,stack:'c'},
-  {label:'ลูกค้าเก่า',data:TK_OLD,backgroundColor:TK_OLD.map((_,i)=>i===4?'rgba(30,30,30,.35)':'rgba(30,30,30,.12)'),borderRadius:4,stack:'c'},
+  {label:'à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹',data:TK_NEW,backgroundColor:TK_NEW.map((_,i)=>i===4?'rgba(30,30,30,.7)':'rgba(30,30,30,.25)'),borderRadius:4,stack:'c'},
+  {label:'à¸¥à¸¹à¸à¸à¹à¸²à¹à¸à¹à¸²',data:TK_OLD,backgroundColor:TK_OLD.map((_,i)=>i===4?'rgba(30,30,30,.35)':'rgba(30,30,30,.12)'),borderRadius:4,stack:'c'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 
-charts['lz_line'] = new Chart('lz_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:LZ_REV,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
-charts['lz_cost'] = new Chart('lz_cost',{type:'line',data:{labels:M5,datasets:[{label:'% ค่าใช้จ่าย',data:LZ_COST_PCT,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{min:18,max:28,ticks:{callback:v=>v+'%'}}}}});
+charts['lz_line'] = new Chart('lz_line',{type:'line',data:{labels:M5,datasets:[{label:'à¸¢à¸­à¸à¸à¸²à¸¢',data:LZ_REV,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'à¸¿'+(v/1000).toFixed(0)+'K'}}}}});
+charts['lz_cost'] = new Chart('lz_cost',{type:'line',data:{labels:M5,datasets:[{label:'% à¸à¹à¸²à¹à¸à¹à¸à¹à¸²à¸¢',data:LZ_COST_PCT,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{min:18,max:28,ticks:{callback:v=>v+'%'}}}}});
 
-// ── Top 10 Products grouped bar (3 months) ──
+// ââ Top 10 Products grouped bar (3 months) ââ
 new Chart('pr_top10',{
   type:'bar',
   data:{
     labels:['Wool Duster','Sugar (500ml)','Interior (500ml)','Interior Wipes','Refresh (500ml)','Refresh Wipes','Spot (500ml)','Perfect','Reflex (250ml)','Mind (500ml)'],
     datasets:[
-      {label:'มีนาคม', data:[986897,613458,479936,238831,286729,168249,118836,233888,234059,192243], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
-      {label:'เมษายน', data:[792481,564875,527884,333028,309950,271024,310269,215398,175201,176966], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
-      {label:'พฤษภาคม', data:[304693,324589,309221,212068,185484,327181,233270,128902,102148,103342], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
+      {label:'à¸¡à¸µà¸à¸²à¸à¸¡', data:[986897,613458,479936,238831,286729,168249,118836,233888,234059,192243], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
+      {label:'à¹à¸¡à¸©à¸²à¸¢à¸', data:[792481,564875,527884,333028,309950,271024,310269,215398,175201,176966], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
+      {label:'à¸à¸¤à¸©à¸ à¸²à¸à¸¡', data:[304693,324589,309221,212068,185484,327181,233270,128902,102148,103342], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
     ]
   },
-  options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}}}}
+  options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' à¸¿'+c.parsed.x.toLocaleString()}}},scales:{x:{ticks:{callback:v=>'à¸¿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}}}}
 });
-// ── Channel doughnut ──
+// ââ Channel doughnut ââ
 new Chart('pr_channel',{
   type:'doughnut',
   data:{
-    labels:['Shopee','TikTok','Facebook','Line Shopping','Lazada','อื่นๆ'],
+    labels:['Shopee','TikTok','Facebook','Line Shopping','Lazada','à¸­à¸·à¹à¸à¹'],
     datasets:[{
       data:[33012,16414,6401,2213,905,800],
       backgroundColor:['#ee4d2d','#111111','#1877f2','#06c755','#1b04a1','#9ca3af'],
       borderWidth:3,borderColor:'#fff'
     }]
   },
-  options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.toLocaleString()} ออเดอร์`}}}}
+  options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.toLocaleString()} à¸­à¸­à¹à¸à¸­à¸£à¹`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
   {label:'TikTok',data:[116,120,124,128,130],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
@@ -1118,7 +1118,7 @@ new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
 new Chart('soc_eng',{type:'doughnut',data:{labels:['TikTok','Facebook','Instagram','YouTube'],datasets:[{data:[58,22,14,6],backgroundColor:[TIKTOK,'#1877f2','#e1306c','#ff0000'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'58%'}});
 
-// ── DUAL-CALENDAR DATE PICKER ──
+// ââ DUAL-CALENDAR DATE PICKER ââ
 const MP_DATE_MIN = '2026-01-01';
 const MP_DATE_MAX = '2026-05-17';
 const MP_MONTH_BOUNDS = [
@@ -1126,19 +1126,19 @@ const MP_MONTH_BOUNDS = [
   {s:'2026-03-01',e:'2026-03-31'},{s:'2026-04-01',e:'2026-04-30'},
   {s:'2026-05-01',e:'2026-05-31'}
 ];
-const MONTH_LABELS_FULL = ['ม.ค. 2569','ก.พ. 2569','มี.ค. 2569','เม.ย. 2569','พ.ค. 2569 (1–17)'];
-const MONTH_LABELS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+const MONTH_LABELS_FULL = ['à¸¡.à¸. 2569','à¸.à¸. 2569','à¸¡à¸µ.à¸. 2569','à¹à¸¡.à¸¢. 2569','à¸.à¸. 2569 (1â17)'];
+const MONTH_LABELS_SHORT = ['à¸¡.à¸.','à¸.à¸.','à¸¡à¸µ.à¸.','à¹à¸¡.à¸¢.','à¸.à¸.'];
 let rangeStart = 0, rangeEnd = 4;
 let mpDraftStart = MP_DATE_MIN, mpDraftEnd = MP_DATE_MAX;
 let mpPickStep = 0;
 let mpCalLeft = {y:2026, m:0}, mpCalRight = {y:2026, m:1};
-const MP_THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-const MP_DOW = ['อา','จ','อ','พ','พฤ','ศ','ส'];
+const MP_THAI_MONTHS = ['à¸¡.à¸.','à¸.à¸.','à¸¡à¸µ.à¸.','à¹à¸¡.à¸¢.','à¸.à¸.','à¸¡à¸´.à¸¢.','à¸.à¸.','à¸ª.à¸.','à¸.à¸¢.','à¸.à¸.','à¸.à¸¢.','à¸.à¸.'];
+const MP_DOW = ['à¸­à¸²','à¸','à¸­','à¸','à¸à¸¤','à¸¨','à¸ª'];
 
 function mpParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function mpFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function mpFmtThai(s){const d=mpParseDate(s);return d.getDate()+' '+MP_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
-function mpRangeLabel(s,e){return s===e?mpFmtThai(s):mpFmtThai(s)+' – '+mpFmtThai(e);}
+function mpRangeLabel(s,e){return s===e?mpFmtThai(s):mpFmtThai(s)+' â '+mpFmtThai(e);}
 
 function mpRangeToMonths(s,e){
   const sd=mpParseDate(s),ed=mpParseDate(e);
@@ -1193,7 +1193,7 @@ function mpDayClick(ds){
     mpPickStep=0;
   }
   const hint=document.getElementById('mpcHint');
-  if(hint)hint.textContent=mpPickStep===0?mpRangeLabel(mpDraftStart,mpDraftEnd):'คลิกเลือกวันสิ้นสุด';
+  if(hint)hint.textContent=mpPickStep===0?mpRangeLabel(mpDraftStart,mpDraftEnd):'à¸à¸¥à¸´à¸à¹à¸¥à¸·à¸­à¸à¸§à¸±à¸à¸ªà¸´à¹à¸à¸ªà¸¸à¸';
   mpHighlightPills();mpRenderCals();
 }
 function mpHighlightPills(){
@@ -1265,33 +1265,33 @@ function setMonthRange(s, e) {
 
   // Update button label
   const lbl = s===e ? MONTH_LABELS_FULL[s] :
-    `${MONTH_LABELS_SHORT[s]} – ${MONTH_LABELS_SHORT[e]} 2569`;
+    `${MONTH_LABELS_SHORT[s]} â ${MONTH_LABELS_SHORT[e]} 2569`;
   document.getElementById('mrange-label').textContent = lbl;
 
-  // ── HELPERS ──
+  // ââ HELPERS ââ
   const sum = arr => arr.slice(s, e+1).reduce((a,b)=>a+b, 0);
   const isRange = s !== e;
-  const f  = n => (n===undefined||isNaN(n)) ? '—' : '฿' + Math.round(n).toLocaleString('th-TH');
-  const fn = n => (n===undefined||isNaN(n)) ? '—' : n.toLocaleString('th-TH');
-  const fp = n => (n===undefined||isNaN(n)) ? '—%' : n.toFixed(1) + '%';
-  const fk = n => (n===undefined||isNaN(n)) ? '—' : '฿' + (n/1000).toFixed(0) + 'K';
+  const f  = n => (n===undefined||isNaN(n)) ? 'â' : 'à¸¿' + Math.round(n).toLocaleString('th-TH');
+  const fn = n => (n===undefined||isNaN(n)) ? 'â' : n.toLocaleString('th-TH');
+  const fp = n => (n===undefined||isNaN(n)) ? 'â%' : n.toFixed(1) + '%';
+  const fk = n => (n===undefined||isNaN(n)) ? 'â' : 'à¸¿' + (n/1000).toFixed(0) + 'K';
   const set = (id, txt) => { const e2=document.getElementById(id); if(e2) e2.textContent=txt; };
   const setH= (id,html) => { const e2=document.getElementById(id); if(e2) e2.innerHTML=html; };
   const cls = (id, c)   => { const e2=document.getElementById(id); if(e2) e2.className='kpi-sub '+c; };
 
   // Period label for headings
-  const MN = isRange ? `${MONTH_LABELS_SHORT[s]}–${MONTH_LABELS_SHORT[e]}` : M5[s];
+  const MN = isRange ? `${MONTH_LABELS_SHORT[s]}â${MONTH_LABELS_SHORT[e]}` : M5[s];
   const m = s; // single-month index (used for non-summable fields like cancel%)
 
   const delta = (arr, i) => {
-    if (isRange) return {t:`รวม ${MN} 2569`, c:'neutral'};
-    if (i===0) return {t:'— (เดือนแรก)', c:'neutral'};
-    if (arr[i]===undefined || arr[i-1]===undefined || arr[i-1]===0) return {t:'—', c:'neutral'};
+    if (isRange) return {t:`à¸£à¸§à¸¡ ${MN} 2569`, c:'neutral'};
+    if (i===0) return {t:'â (à¹à¸à¸·à¸­à¸à¹à¸£à¸)', c:'neutral'};
+    if (arr[i]===undefined || arr[i-1]===undefined || arr[i-1]===0) return {t:'â', c:'neutral'};
     const d = (arr[i]-arr[i-1])/arr[i-1]*100;
-    return d>=0 ? {t:`↑ ${d.toFixed(1)}% จาก${M5[i-1]}`, c:'up'} : {t:`↓ ${Math.abs(d).toFixed(1)}% จาก${M5[i-1]}`, c:'dn'};
+    return d>=0 ? {t:`â ${d.toFixed(1)}% à¸à¸²à¸${M5[i-1]}`, c:'up'} : {t:`â ${Math.abs(d).toFixed(1)}% à¸à¸²à¸${M5[i-1]}`, c:'dn'};
   };
 
-  // ── AGGREGATE VALUES ──
+  // ââ AGGREGATE VALUES ââ
   const shRev = sum(SH_REV), tkRev = sum(TK_REV), lzRev = sum(LZ_REV);
   const shOrd = sum(SH_ORD), tkOrd = sum(TK_ORD), lzOrd = sum(LZ_ORD);
   const shAds = sum(SH_ADS), shFee = sum(SH_FEE);
@@ -1334,22 +1334,22 @@ function setMonthRange(s, e) {
   const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]);
 
   // Month summary bar
-  set('monthSummary', `${isRange?'สะสม':''} ${MN} 2569: ${f(totRev)} · ${fn(totOrd)} orders`);
+  set('monthSummary', `${isRange?'à¸ªà¸°à¸ªà¸¡':''} ${MN} 2569: ${f(totRev)} Â· ${fn(totOrd)} orders`);
 
-  // ── OVERVIEW ──
+  // ââ OVERVIEW ââ
   set('v-ov-rev', f(totRev));
   const rd = delta(TOTAL_REV, s); set('s-ov-rev', rd.t); cls('s-ov-rev', rd.c);
   set('v-ov-ord', fn(totOrd));
   const od = delta(TOTAL_ORD, s); set('s-ov-ord', od.t); cls('s-ov-ord', od.c);
   set('v-ov-new', fn(totNew));
-  set('s-ov-new', `${fp(totNew/totOrd*100)} ของออเดอร์`); cls('s-ov-new','neutral');
+  set('s-ov-new', `${fp(totNew/totOrd*100)} à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹`); cls('s-ov-new','neutral');
   set('v-ov-cancel', fn(totCan));
   set('s-ov-cancel', `${fp(totCan/totOrd*100)} cancel rate`); cls('s-ov-cancel','dn');
 
-  set('lbl-ov-plat', `🛍 ยอดขายแยก Platform — ${MN} 2569`);
-  set('v-po-sh', f(shRev)); set('s-po-sh', `${fn(shOrd)} orders · Ads ${fk(shAds)}`);
-  set('v-po-tk', f(tkRev)); set('s-po-tk', `${fn(tkOrd)} orders · Live ${fk(tkLive)}`);
-  set('v-po-lz', f(lzRev)); set('s-po-lz', `${fn(lzOrd)} orders · Ads ${fk(lzAds)}`);
+  set('lbl-ov-plat', `ð à¸¢à¸­à¸à¸à¸²à¸¢à¹à¸¢à¸ Platform â ${MN} 2569`);
+  set('v-po-sh', f(shRev)); set('s-po-sh', `${fn(shOrd)} orders Â· Ads ${fk(shAds)}`);
+  set('v-po-tk', f(tkRev)); set('s-po-tk', `${fn(tkOrd)} orders Â· Live ${fk(tkLive)}`);
+  set('v-po-lz', f(lzRev)); set('s-po-lz', `${fn(lzOrd)} orders Â· Ads ${fk(lzAds)}`);
   document.getElementById('pb-sh').style.width = shPct.toFixed(1)+'%';
   document.getElementById('pb-tk').style.width = tkPct.toFixed(1)+'%';
   document.getElementById('pb-lz').style.width = lzPct.toFixed(1)+'%';
@@ -1359,66 +1359,66 @@ function setMonthRange(s, e) {
   charts['ov_pie'].update();
   charts['ov_cust'].data.datasets[0].data = [shNew, sum(SH_OLD), tkNew, sum(TK_OLD), lzNew>0?lzNew:0];
   charts['ov_cust'].update();
-  set('cc-cust-sub', `${MN} 2569 รวมทุก Platform`);
-  set('cc-pie-sub', `Shopee ${fp(shPct)} · TikTok ${fp(tkPct)} · Lazada ${fp(lzPct)}`);
+  set('cc-cust-sub', `${MN} 2569 à¸£à¸§à¸¡à¸à¸¸à¸ Platform`);
+  set('cc-pie-sub', `Shopee ${fp(shPct)} Â· TikTok ${fp(tkPct)} Â· Lazada ${fp(lzPct)}`);
 
-  // ── SALES ──
-  set('lbl-sl', `📊 สรุปยอดขาย ${MN} 2569 — ทุก Platform`);
-  set('v-sl-sh', f(shRev)); set('s-sl-sh', `${fn(shOrd)} orders · Cancel ${fp(shCancelPct)}`);
-  set('v-sl-tk', f(tkRev)); set('s-sl-tk', `${fn(tkOrd)} orders · Cancel ${fp(tkCancelPct)}`);
-  set('v-sl-lz', f(lzRev)); set('s-sl-lz', `${fn(lzOrd)} orders · Cancel ${fp(lzCancelPct)}`);
+  // ââ SALES ââ
+  set('lbl-sl', `ð à¸ªà¸£à¸¸à¸à¸¢à¸­à¸à¸à¸²à¸¢ ${MN} 2569 â à¸à¸¸à¸ Platform`);
+  set('v-sl-sh', f(shRev)); set('s-sl-sh', `${fn(shOrd)} orders Â· Cancel ${fp(shCancelPct)}`);
+  set('v-sl-tk', f(tkRev)); set('s-sl-tk', `${fn(tkOrd)} orders Â· Cancel ${fp(tkCancelPct)}`);
+  set('v-sl-lz', f(lzRev)); set('s-sl-lz', `${fn(lzOrd)} orders Â· Cancel ${fp(lzCancelPct)}`);
   set('v-sl-total', f(totRev)); set('s-sl-total', rd.t); cls('s-sl-total', rd.c);
-  set('v-sl-sh-ads', f(shAds)); set('s-sl-sh-fee', `ค่าธรรมเนียม ${f(shFee)}`); set('v-sl-sh-cost', fp(shCostPct));
+  set('v-sl-sh-ads', f(shAds)); set('s-sl-sh-fee', `à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡ ${f(shFee)}`); set('v-sl-sh-cost', fp(shCostPct));
   set('v-sl-tk-total', f(tkTotCost));
-  setH('s-sl-tk-breakdown', `Ads+GMV ${f(tkAdsSpend)} (${fp(tkAdsSpendPct)})<br>+ ค่าธรรมเนียม+Afi ${f(tkFeeComm)} (${fp(tkFeeCommPct)})`);
+  setH('s-sl-tk-breakdown', `Ads+GMV ${f(tkAdsSpend)} (${fp(tkAdsSpendPct)})<br>+ à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡+Afi ${f(tkFeeComm)} (${fp(tkFeeCommPct)})`);
   set('v-sl-tk-cost', fp(tkTotCostPct));
-  set('v-sl-lz-ads', f(lzAds)); set('s-sl-lz-fees', `ค่าธรรมเนียม ${f(lzFee)} · คูปอง ${f(lzCoupon)}`); set('v-sl-lz-cost', fp(lzCostPct));
+  set('v-sl-lz-ads', f(lzAds)); set('s-sl-lz-fees', `à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡ ${f(lzFee)} Â· à¸à¸¹à¸à¸­à¸ ${f(lzCoupon)}`); set('v-sl-lz-cost', fp(lzCostPct));
 
-  // ── SHOPEE ──
-  set('lbl-sh', `🧡 ยอดรายเดือน Shopee — ${MN} 2569`);
+  // ââ SHOPEE ââ
+  set('lbl-sh', `ð§¡ à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ Shopee â ${MN} 2569`);
   const shRd = delta(SH_REV,s); set('v-sh-rev',f(shRev)); set('s-sh-rev',shRd.t); cls('s-sh-rev',shRd.c);
   const shOd2 = delta(SH_ORD,s); set('v-sh-ord',fn(shOrd)); set('s-sh-ord',shOd2.t); cls('s-sh-ord',shOd2.c);
   set('v-sh-cancel', fn(shCC)); set('s-sh-cancel', `${fp(shCancelPct)} cancel rate`); cls('s-sh-cancel','dn');
-  set('v-sh-ads', f(shAds)); set('s-sh-ads', `${fp(shAdsPct)} ของยอดขาย`);
-  set('v-sh-fee', f(shFee)); set('s-sh-fee', `${fp(shFeePct)} ของยอดขาย`);
+  set('v-sh-ads', f(shAds)); set('s-sh-ads', `${fp(shAdsPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  set('v-sh-fee', f(shFee)); set('s-sh-fee', `${fp(shFeePct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
   set('v-sh-cost-pct', fp(shCostPct));
-  set('v-sh-new', fn(shNew)); set('s-sh-new', `${fp(shOrd>0?shNew/shOrd*100:0)} ของออเดอร์`);
-  set('v-sh-old', fn(sum(SH_OLD))); set('s-sh-old', `${fp(shOrd>0?sum(SH_OLD)/shOrd*100:0)} ของออเดอร์`);
+  set('v-sh-new', fn(shNew)); set('s-sh-new', `${fp(shOrd>0?shNew/shOrd*100:0)} à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹`);
+  set('v-sh-old', fn(sum(SH_OLD))); set('s-sh-old', `${fp(shOrd>0?sum(SH_OLD)/shOrd*100:0)} à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹`);
   document.getElementById('sh-live-section').style.display = (!isRange && s===3) ? '' : 'none';
   document.getElementById('sh-live-note').style.display    = (!isRange && s===3) ? 'none' : '';
 
-  // ── TIKTOK ──
-  set('lbl-tk', `🎵 ยอดรายเดือน TikTok Shop — ${MN} 2569`);
+  // ââ TIKTOK ââ
+  set('lbl-tk', `ðµ à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ TikTok Shop â ${MN} 2569`);
   const tkRd = delta(TK_REV,s); set('v-tk-rev',f(tkRev)); set('s-tk-rev',tkRd.t); cls('s-tk-rev',tkRd.c);
-  set('v-tk-afi', f(tkAfi)); set('s-tk-afi', `${fp(tkAfiPct)} ของยอดขาย`);
+  set('v-tk-afi', f(tkAfi)); set('s-tk-afi', `${fp(tkAfiPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
   set('v-tk-net', f(tkNet));
-  set('v-tk-ads', f(tkAds)); set('s-tk-ads', `${fp(tkAdsPct)} ของยอดขาย`);
-  set('v-tk-adsspend', f(tkAdsSpend)); set('s-tk-adsspend', `${fp(tkAdsSpendPct)} ของยอดขาย`);
-  set('v-tk-feecomm',  f(tkFeeComm));  set('s-tk-feecomm',  `${fp(tkFeeCommPct)} ของยอดขาย`);
-  set('v-tk-totalcost', f(tkTotCost)); set('s-tk-totalcost', `= ${fp(tkTotCostPct)} ของยอดขาย`);
-  setH('sub-tk-totalcost', `Ads+GMV ${f(tkAdsSpend)}<br>+ ค่าธรรมเนียม+Afi ${f(tkFeeComm)}`);
+  set('v-tk-ads', f(tkAds)); set('s-tk-ads', `${fp(tkAdsPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  set('v-tk-adsspend', f(tkAdsSpend)); set('s-tk-adsspend', `${fp(tkAdsSpendPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  set('v-tk-feecomm',  f(tkFeeComm));  set('s-tk-feecomm',  `${fp(tkFeeCommPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  set('v-tk-totalcost', f(tkTotCost)); set('s-tk-totalcost', `= ${fp(tkTotCostPct)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  setH('sub-tk-totalcost', `Ads+GMV ${f(tkAdsSpend)}<br>+ à¸à¹à¸²à¸à¸£à¸£à¸¡à¹à¸à¸µà¸¢à¸¡+Afi ${f(tkFeeComm)}`);
   set('v-tk-live', f(tkLive));
   const tkOd = delta(TK_ORD,s); set('v-tk-ord',fn(tkOrd)); set('s-tk-ord',tkOd.t); cls('s-tk-ord',tkOd.c);
   set('v-tk-cancel', fn(tkCC)); set('s-tk-cancel', `${fp(tkCancelPct)} cancel rate`); cls('s-tk-cancel','dn');
-  set('v-tk-new', fn(tkNew)); set('s-tk-new', `${fp(tkOrd>0?tkNew/tkOrd*100:0)} ของออเดอร์`);
+  set('v-tk-new', fn(tkNew)); set('s-tk-new', `${fp(tkOrd>0?tkNew/tkOrd*100:0)} à¸à¸­à¸à¸­à¸­à¹à¸à¸­à¸£à¹`);
 
-  // ── LAZADA ──
-  set('lbl-lz', `💙 ยอดรายเดือน Lazada — ${MN} 2569`);
+  // ââ LAZADA ââ
+  set('lbl-lz', `ð à¸¢à¸­à¸à¸£à¸²à¸¢à¹à¸à¸·à¸­à¸ Lazada â ${MN} 2569`);
   const lzRd = delta(LZ_REV,s); set('v-lz-rev',f(lzRev)); set('s-lz-rev',lzRd.t); cls('s-lz-rev',lzRd.c);
   const lzOd = delta(LZ_ORD,s); set('v-lz-ord',fn(lzOrd)); set('s-lz-ord',lzOd.t); cls('s-lz-ord',lzOd.c);
   set('v-lz-cancel', fn(lzCC)); set('s-lz-cancel', `${fp(lzCancelPct)} cancel rate`); cls('s-lz-cancel','dn');
-  set('v-lz-ads', f(lzAds)); set('s-lz-ads', `${fp(lzRev>0?lzAds/lzRev*100:0)} ของยอดขาย`);
-  set('v-lz-fee', f(lzFee)); set('s-lz-fee', `${fp(lzRev>0?lzFee/lzRev*100:0)} ของยอดขาย`);
+  set('v-lz-ads', f(lzAds)); set('s-lz-ads', `${fp(lzRev>0?lzAds/lzRev*100:0)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
+  set('v-lz-fee', f(lzFee)); set('s-lz-fee', `${fp(lzRev>0?lzFee/lzRev*100:0)} à¸à¸­à¸à¸¢à¸­à¸à¸à¸²à¸¢`);
   set('v-lz-coupon', f(lzCoupon));
   set('v-lz-cost-pct', fp(lzCostPct));
   if (lzNew>0) {
     set('v-lz-new-old', `${fn(lzNew)} / ${fn(lzOld)}`);
-    set('s-lz-new-old', `${fp(lzOrd>0?lzNew/lzOrd*100:0)} ลูกค้าใหม่`);
+    set('s-lz-new-old', `${fp(lzOrd>0?lzNew/lzOrd*100:0)} à¸¥à¸¹à¸à¸à¹à¸²à¹à¸«à¸¡à¹`);
   } else {
-    set('v-lz-new-old','—'); set('s-lz-new-old','ไม่มีข้อมูลเดือนนี้');
+    set('v-lz-new-old','â'); set('s-lz-new-old','à¹à¸¡à¹à¸¡à¸µà¸à¹à¸­à¸¡à¸¹à¸¥à¹à¸à¸·à¸­à¸à¸à¸µà¹');
   }
 
-  // ── HIGHLIGHT CHARTS ──
+  // ââ HIGHLIGHT CHARTS ââ
   const inR = i => i>=s && i<=e;
   const hl = (arr, base, alpha='cc', dim='33') => arr.map((_,i) => inR(i) ? base+alpha : base+dim);
   const hlRgba = (r,g,b,full,faded) => Array.from({length:5},(_,i)=>inR(i)?`rgba(${r},${g},${b},${full})`:`rgba(${r},${g},${b},${faded})`);
@@ -1476,7 +1476,7 @@ function setMonthRange(s, e) {
   charts['lz_cost'].update();
 }
 
-// Init — show May (index 4)
+// Init â show May (index 4)
 setMonthRange(0, 4);
 </script>
 </body>
