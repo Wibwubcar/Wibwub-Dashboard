@@ -93,6 +93,52 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 .af-mpc-apply{padding:8px 22px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:none;background:#1A5CDB;color:#0F0F0F;}
 .af-mpc-apply:hover{background:#EA6C10;}
 .af-mpc-cancel{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer;border:1px solid rgba(255,255,255,.1);background:transparent;color:#6B7280;}
+
+/* ─── TAB NAVIGATION ─── */
+.tab-nav{display:flex;gap:4px;margin-bottom:14px;background:#fff;border-radius:10px;padding:6px;border:0.5px solid #e8e8e8;}
+.tab-btn{flex:1;padding:8px 16px;border-radius:7px;border:none;font-size:12px;font-weight:500;cursor:pointer;color:#6B7280;background:transparent;transition:all .15s;letter-spacing:.3px;}
+.tab-btn.active{background:#1A5CDB;color:#fff;}
+.tab-btn:hover:not(.active){background:#EEF3FD;color:#1A5CDB;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* ─── KOL ROI PAGE ─── */
+.kol-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.kol-kc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(26,92,219,.14);}
+.kol-kl{font-size:10px;color:#6B7280;margin:0 0 4px;letter-spacing:.5px;text-transform:uppercase;}
+.kol-kv{font-size:20px;font-weight:500;color:#1A5CDB;margin:0;}
+.kol-ks{font-size:10px;color:#374151;margin:3px 0 0;}
+
+.kol-charts-row{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:14px;}
+.kol-cc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e8e8e8;}
+.kol-ct{font-size:10px;font-weight:500;color:#6B7280;margin:0 0 10px;letter-spacing:.5px;text-transform:uppercase;}
+
+.kol-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
+.kol-card{background:#fff;border-radius:10px;border:0.5px solid #e8e8e8;border-top-width:3px;padding:14px;cursor:pointer;transition:box-shadow .15s;}
+.kol-card:hover{box-shadow:0 4px 16px rgba(26,92,219,.1);}
+.kol-card.selected{box-shadow:0 0 0 2px #1A5CDB;}
+.kol-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.kol-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;line-height:1.4;}
+.kol-scenario-tag{font-size:10px;padding:3px 8px;border-radius:5px;text-align:center;margin-bottom:10px;line-height:1.4;}
+.kol-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
+.kol-rl{font-size:11px;color:#6B7280;}
+.kol-rv{font-size:11px;font-weight:500;color:#0F0F0F;}
+.kol-roi-big{font-size:22px;font-weight:500;margin-top:6px;padding-top:6px;border-top:0.5px solid #f0f0f0;}
+
+.kol-detail{background:#fff;border-radius:12px;border:0.5px solid #e8e8e8;padding:20px;margin-bottom:14px;display:none;}
+.kol-detail.open{display:block;}
+.kol-detail-header{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+.kol-detail-meta{flex:1;}
+.kol-detail-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:16px;}
+.kol-detail-kc{background:#F8F9FB;border-radius:8px;padding:10px 12px;}
+.kol-detail-charts{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.kol-detail-cc{background:#F8F9FB;border-radius:8px;padding:12px;}
+.kol-insight{border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6;margin-bottom:12px;}
+.kol-tip{border-radius:8px;padding:8px 12px;font-size:11px;line-height:1.5;border-left:3px solid #1A5CDB;background:#EEF3FD;color:#1A5CDB;}
+.kol-hist-table{width:100%;border-collapse:collapse;font-size:11px;}
+.kol-hist-table th{text-align:left;padding:5px 8px;color:#6B7280;border-bottom:1px solid #e8e8e8;font-weight:500;}
+.kol-hist-table td{padding:6px 8px;border-bottom:0.5px solid #f5f5f5;color:#374151;}
+.kol-hist-table td:first-child{color:#0F0F0F;font-weight:500;}
 </style>
 </head>
 <body>
@@ -105,6 +151,13 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
   <div class="wperiod">พฤศจิกายน 2568 — พฤษภาคม 2569<br><span style="color:#1A5CDB;font-size:11px">Net GMV Dashboard</span></div>
 </div>
 
+
+<!-- TAB NAVIGATION -->
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabAffiliate" onclick="switchTab('affiliate')">📊 Affiliate Performance</button>
+  <button class="tab-btn" id="tabKol" onclick="switchTab('kol')">🎯 KOL ROI</button>
+</div>
+<div id="panelAffiliate" class="tab-panel active">
 <!-- Month Range Picker -->
 <div class="af-mbar">
   <span class="af-mbar-label">📅 ช่วงเวลา:</span>
@@ -574,5 +627,346 @@ function afApplyRange(s,e){
 // Init – show current year (มค.69–พค.69)
 afApplyRange(2,6);
 </script>
+
+<!-- KOL ROI PANEL -->
+<div id="panelKol" class="tab-panel">
+
+<div class="kol-kpi-grid" id="kolKpiGrid">
+  <div class="kol-kc"><p class="kol-kl">ต้นทุน KOL รวม</p><p class="kol-kv" id="kk-spend">฿417K</p><p class="kol-ks">ม.ค.–พ.ค. 2569</p></div>
+  <div class="kol-kc"><p class="kol-kl">Affiliate GMV จาก KOL ที่จ่าย</p><p class="kol-kv" id="kk-gmv">฿1.04M</p><p class="kol-ks">เฉพาะที่มี affiliate link</p></div>
+  <div class="kol-kc"><p class="kol-kl">Blended ROI</p><p class="kol-kv" id="kk-roi" style="color:#059669;">2.49×</p><p class="kol-ks">GMV ÷ ค่าจ้าง</p></div>
+  <div class="kol-kc"><p class="kol-kl">KOL ที่จ่ายแล้ว</p><p class="kol-kv" id="kk-paid">13 คน</p><p class="kol-ks">paid + seeding + bonus</p></div>
+  <div class="kol-kc"><p class="kol-kl">Hidden Gem (ROI &gt; 5×)</p><p class="kol-kv" id="kk-gem" style="color:#D97706;">4 คน</p><p class="kol-ks">ต้นทุนต่ำ ยอดดีมาก</p></div>
+</div>
+
+<div class="kol-charts-row">
+  <div class="kol-cc">
+    <p class="kol-ct">ต้นทุน KOL vs Affiliate GMV แยก Tier</p>
+    <div style="display:flex;gap:12px;margin-bottom:8px;flex-wrap:wrap;">
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B7280;"><span style="width:9px;height:9px;border-radius:2px;background:#1A5CDB;"></span>ต้นทุน KOL</span>
+      <span style="display:flex;align-items:center;gap:4px;font-size:10px;color:#6B7280;"><span style="width:9px;height:9px;border-radius:2px;background:#10B981;"></span>Affiliate GMV (ที่ track ได้)</span>
+    </div>
+    <div style="position:relative;height:200px;"><canvas id="kolTierChart" role="img" aria-label="KOL spend vs GMV by tier">Tier comparison chart</canvas></div>
+  </div>
+  <div class="kol-cc">
+    <p class="kol-ct">ROI แยก Tier</p>
+    <div style="position:relative;height:200px;"><canvas id="kolRoiDonut" role="img" aria-label="ROI distribution by tier">ROI donut chart</canvas></div>
+  </div>
+</div>
+
+<p class="sec-label" style="margin-bottom:10px;">KOL รายคน — คลิกเพื่อดู detail</p>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="kolFilterBar">
+  <button class="sb a" id="kf-all" onclick="kolFilter('all')">ทั้งหมด</button>
+  <button class="sb" id="kf-mega" onclick="kolFilter('mega')">🔵 Mega</button>
+  <button class="sb" id="kf-mid" onclick="kolFilter('mid')">🟢 Mid</button>
+  <button class="sb" id="kf-seeding" onclick="kolFilter('seeding')">🟡 Seeding</button>
+  <button class="sb" id="kf-bonus" onclick="kolFilter('bonus')">🟣 Affiliate Bonus</button>
+  <button class="sb" id="kf-organic" onclick="kolFilter('organic')">⚪ Organic only</button>
+</div>
+<div id="kolCardGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;"></div>
+
+<div class="kol-detail" id="kolDetail">
+  <div class="kol-detail-header">
+    <div id="kd-avatar" class="kol-avatar" style="width:48px;height:48px;font-size:15px;"></div>
+    <div class="kol-detail-meta">
+      <p id="kd-name" style="font-size:16px;font-weight:500;margin:0 0 5px;color:#0F0F0F;"></p>
+      <div id="kd-badges" style="display:flex;gap:6px;flex-wrap:wrap;"></div>
+    </div>
+    <button onclick="closeKolDetail()" style="padding:6px 14px;border-radius:7px;border:0.5px solid #e8e8e8;background:transparent;font-size:12px;cursor:pointer;color:#6B7280;">✕ ปิด</button>
+  </div>
+  <div id="kd-insight" class="kol-insight"></div>
+  <div id="kd-tip" class="kol-tip" style="margin-bottom:12px;"></div>
+  <div class="kol-detail-kpis" id="kd-kpis"></div>
+  <div class="kol-detail-charts" id="kd-charts-row">
+    <div class="kol-detail-cc">
+      <p style="font-size:10px;font-weight:500;color:#6B7280;margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px;">GMV รายเดือน</p>
+      <div style="position:relative;height:150px;"><canvas id="kd-bar" role="img" aria-label="monthly GMV"></canvas></div>
+    </div>
+    <div class="kol-detail-cc">
+      <p style="font-size:10px;font-weight:500;color:#6B7280;margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px;">สัดส่วน Spend vs GMV</p>
+      <div style="position:relative;height:150px;"><canvas id="kd-donut" role="img" aria-label="spend vs gmv donut"></canvas></div>
+    </div>
+    <div class="kol-detail-cc">
+      <p style="font-size:10px;font-weight:500;color:#6B7280;margin:0 0 8px;text-transform:uppercase;letter-spacing:.5px;">ประวัติ Campaign</p>
+      <div id="kd-hist" style="font-size:11px;"></div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end panelKol -->
+
+
+<script>
+// ─── TAB SWITCHER ───
+function switchTab(tab){
+  ['affiliate','kol'].forEach(t=>{
+    document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
+  });
+  if(tab==='kol' && !kolChartsInit) initKolCharts();
+}
+
+// ─── KOL DATA ───
+// Months: 0=พย.68, 1=ธค.68, 2=มค.69, 3=กพ.69, 4=มีนา.69, 5=เมษา.69, 6=พค.69
+// mn[] = monthly GMV from Affiliate raw[] (indexed same as dashboard)
+// spend = total cash paid (from Payment KOL sheet)
+// spendMo = [mo_idx, amount] breakdown
+const KOLS = [
+  // Mega — paid content, high spend
+  {id:'mushinyiwz', tier:'mega', tierLabel:'Mega',
+   spend:130000, spendMo:[[2,130000]],
+   mn:[null,null,15490,20382,9265,1341,1379],
+   scenario:1,
+   insight:'จ่ายค่าจ้าง ฿130K ม.ค. ยอดขาย affiliate ติดตามมาต่อเนื่อง 5 เดือน — ROI ต่ำกว่าที่คาด เพราะ content ช่วยสร้าง awareness มากกว่า direct conversion',
+   tip:'ใช้สำหรับ brand building — ไม่ควรวัดแค่ affiliate GMV อย่างเดียว'},
+  {id:'nickynachat', tier:'mega', tierLabel:'Mega',
+   spend:124800, spendMo:[[6,124800]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'จ่าย ฿124,800 พ.ค. แต่ยังไม่มี affiliate link ที่ track ได้ — เพิ่งเริ่ม campaign',
+   tip:'ติด affiliate link ให้ครบ และ track ยอดหลัง clip ขึ้น 7/14/30 วัน'},
+  {id:'djpetjah', tier:'mid', tierLabel:'Mid',
+   spend:150800, spendMo:[[6,150800]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'ค่าจ้างสูงสุดใน sheet ฿150,800 พ.ค. ยังรอผล — เป็น campaign ใหม่สุด',
+   tip:'วัด GMV ที่ได้หลัง 30 วัน เปรียบกับ mushinyiwz ที่ tier ใกล้กัน'},
+  // Mid — paid + affiliate
+  {id:'numtonn', tier:'mid', tierLabel:'Mid',
+   spend:23280, spendMo:[[3,8730],[5,14550]],
+   mn:[null,null,2297,21832,5030,10405,1454],
+   scenario:1,
+   insight:'จ่าย 2 รอบ กพ.+เม.ย. ยอด affiliate ดีมาก โดยเฉพาะ กพ. ที่จ่ายแล้วยอดพุ่ง ฿21K — ROI สูง',
+   tip:'KOL ที่ cost-effective ที่สุดใน mid-tier ควร re-engage ทุก 2 เดือน'},
+  {id:'papajate', tier:'mid', tierLabel:'Mid',
+   spend:12000, spendMo:[[4,12000]],
+   mn:[0,null,null,8105,10417,8300,3576],
+   scenario:1,
+   insight:'จ่าย ฿12,000 มี.ค. affiliate ยอดดีตั้งแต่ก่อนจ่ายด้วย — audience เชื่อมั่นในตัว KOL',
+   tip:'มีฐาน organic อยู่แล้ว การจ่ายค่าจ้างช่วย boost ยอดเพิ่มอีก ~40%'},
+  // Seeding / Micro — ต้นทุนต่ำ ROI สูง
+  {id:'ralph.detailing8', tier:'seeding', tierLabel:'Micro',
+   spend:7000, spendMo:[[4,7000]],
+   mn:[null,null,null,null,null,34241,59764],
+   scenario:4,
+   insight:'ลงทุน ฿7,000 มี.ค. ยอด affiliate พุ่ง เม.ย.–พ.ค. รวม ฿94K — ROI 13× เป็น hidden gem ของโปรแกรม',
+   tip:'เพิ่ม budget เป็น ฿15-20K แล้ว ROI ยังน่าจะดีมาก เพราะมี loyal audience'},
+  // Affiliate Bonus — ไม่เคยจ่าย content แต่ขายดีมาก
+  {id:'rita.fe_', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:5000, spendMo:[[5,5000]],
+   mn:[null,null,null,null,null,229874,142582],
+   scenario:3,
+   insight:'จ่ายแค่ bonus ฿5,000 เม.ย. แต่ GMV รวม ฿372K — top affiliate ของทั้งโปรแกรม ROI สูงมาก',
+   tip:'Exclusive deal หรือ higher commission tier จะช่วย retain ไว้ในโปรแกรม'},
+  {id:'jarkkystory', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:2000, spendMo:[[5,2000]],
+   mn:[null,null,null,null,null,73812,65848],
+   scenario:3,
+   insight:'Bonus ฿2,000 เม.ย. ยอด affiliate ฿139K ใน 2 เดือน — ROI 70× เป็น super-efficient creator',
+   tip:'เพิ่ม commission rate หรือ give exclusive product access เพื่อรักษาความสม่ำเสมอ'},
+  {id:'noonjourneyyy', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:4000, spendMo:[[5,4000]],
+   mn:[null,null,null,null,null,75430,59057],
+   scenario:3,
+   insight:'ได้ bonus ฿4,000 + seeding เล็กน้อย ยอด affiliate ฿134K ต่อเนื่อง — ROI 33× consistent performer',
+   tip:'ลอง seeding สินค้าใหม่ (Interior Wipes, Wibwubwool) เพื่อ expand product range'},
+  {id:'muchmai_mumi', tier:'bonus', tierLabel:'Aff. Bonus',
+   spend:2000, spendMo:[[5,2000]],
+   mn:[null,null,null,null,null,64892,53826],
+   scenario:3,
+   insight:'Bonus ฿2,000 เม.ย. ยอด ฿118K — ROI 59× อยู่ใน top 5 affiliate ทั้งที่ไม่เคยได้ paid campaign',
+   tip:'Consider paid campaign ฿15-20K เพื่อดูว่า ROI จะยังดีไหมถ้าลงทุนมากขึ้น'},
+  // Organic only — ไม่เคยจ่ายเลย
+  {id:'phanuwatinsri', tier:'organic', tierLabel:'Organic',
+   spend:0, spendMo:[],
+   mn:[null,null,null,null,null,57283,38428],
+   scenario:5,
+   insight:'ไม่เคยได้รับค่าจ้างหรือ bonus เลย แต่ affiliate GMV ฿95K — pure organic creator',
+   tip:'เชิญเข้าร่วม affiliate bonus tier เพื่อ reward และ retain'},
+  {id:'pailong05', tier:'organic', tierLabel:'Organic',
+   spend:0, spendMo:[],
+   mn:[null,null,null,null,null,58120,41369],
+   scenario:5,
+   insight:'GMV ฿99K โดยไม่ต้องจ่ายอะไร — น่าจะชอบสินค้าจริงๆ',
+   tip:'Seed สินค้าใหม่ + ชวนเข้า bonus program — ต้นทุนน้อยมาก upside สูง'},
+  // Paid แต่ยอดหาย
+  {id:'poppyme.6', tier:'seeding', tierLabel:'Seeding',
+   spend:2200, spendMo:[[4,2200]],
+   mn:[null,null,null,null,13386,10912,3363],
+   scenario:6,
+   insight:'ยอดดี มี.ค.–เม.ย. แต่พ.ค. ตกฮวบ ฿3K — content ไม่ evergreen หรือ audience เบื่อแล้ว',
+   tip:'ก่อนต่อสัญญา ขอ content ใหม่ที่ต่างออกไป และ check engagement rate ก่อน'},
+];
+
+const TIER_META = {
+  mega:   {bg:'#EEF1FE', fg:'#3730A3', border:'#6366F1'},
+  mid:    {bg:'#ECFDF5', fg:'#065F46', border:'#10B981'},
+  seeding:{bg:'#FFFBEB', fg:'#92400E', border:'#F59E0B'},
+  bonus:  {bg:'#FDF4FF', fg:'#6B21A8', border:'#A855F7'},
+  organic:{bg:'#F0F9FF', fg:'#0C4A6E', border:'#38BDF8'},
+};
+
+const SCENARIO_META = {
+  1: {label:'จ่าย + ยอดดี',      bg:'#ECFDF5', fg:'#065F46'},
+  2: {label:'จ่าย รอผล',         bg:'#FEF3C7', fg:'#92400E'},
+  3: {label:'ยอดดี / ต้นทุนต่ำ',  bg:'#EEF1FE', fg:'#3730A3'},
+  4: {label:'Hidden Gem',         bg:'#FFFBEB', fg:'#B45309'},
+  5: {label:'Organic สมบูรณ์',    bg:'#F0F9FF', fg:'#0C4A6E'},
+  6: {label:'ยอดหายหลัง Campaign',bg:'#FFF1F2', fg:'#9F1239'},
+};
+
+const MO_LABELS = ['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
+
+function kolGMV(k){ return (k.mn||[]).reduce((s,v)=>s+(v||0),0); }
+function kolROI(k){ const g=kolGMV(k); return k.spend===0?null:(g/k.spend); }
+function fmtV(v){ if(v==null)return'—'; if(v>=1e6)return'฿'+(v/1e6).toFixed(2)+'M'; if(v>=1e3)return'฿'+(v/1e3).toFixed(0)+'K'; return'฿'+Math.round(v); }
+function roiColor(r){ if(r===null)return'#1A5CDB'; if(r>=5)return'#D97706'; if(r>=2)return'#059669'; if(r>=1)return'#6B7280'; return'#DC2626'; }
+function initials(s){ return s.replace(/[^a-zA-Z0-9ก-ฮ]/g,'').slice(0,2).toUpperCase(); }
+
+let kolFilter_cur='all';
+let kolChartsInit=false;
+let kdBar=null, kdDonut=null;
+
+function kolFilter(f){
+  kolFilter_cur=f;
+  document.querySelectorAll('#kolFilterBar .sb').forEach(b=>b.classList.remove('a'));
+  document.getElementById('kf-'+f)?.classList.add('a');
+  renderKolGrid();
+}
+
+function renderKolGrid(){
+  const list = kolFilter_cur==='all' ? KOLS : KOLS.filter(k=>k.tier===kolFilter_cur);
+  const grid = document.getElementById('kolCardGrid');
+  grid.innerHTML = list.map(k=>{
+    const tm = TIER_META[k.tier]||TIER_META.organic;
+    const sm = SCENARIO_META[k.scenario]||SCENARIO_META[1];
+    const gmv = kolGMV(k);
+    const roi = kolROI(k);
+    const roiStr = roi===null ? '∞' : (roi>=100 ? Math.round(roi)+'×' : roi.toFixed(1)+'×');
+    return `<div class="kol-card" style="border-top-color:${tm.border};" onclick="openKolDetail('${k.id}')">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+        <div class="kol-avatar" style="background:${tm.bg};color:${tm.fg};">${initials(k.id)}</div>
+        <div style="min-width:0;flex:1;">
+          <p style="font-size:11px;font-weight:500;margin:0;color:#0F0F0F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@${k.id}</p>
+          <span class="kol-badge" style="background:${tm.bg};color:${tm.fg};">${k.tierLabel}</span>
+        </div>
+      </div>
+      <div class="kol-scenario-tag" style="background:${sm.bg};color:${sm.fg};">${sm.label}</div>
+      <div class="kol-row"><span class="kol-rl">ค่าจ้าง</span><span class="kol-rv">${k.spend===0?'—':fmtV(k.spend)}</span></div>
+      <div class="kol-row"><span class="kol-rl">Aff. GMV</span><span class="kol-rv">${gmv===0?'฿0':fmtV(gmv)}</span></div>
+      <div class="kol-roi-big" style="color:${roiColor(roi)};">${roiStr} ROI</div>
+    </div>`;
+  }).join('');
+  // update col count
+  const cols = Math.min(list.length, 5);
+  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+}
+
+function openKolDetail(id){
+  const k = KOLS.find(x=>x.id===id);
+  if(!k)return;
+  const tm = TIER_META[k.tier]||TIER_META.organic;
+  const sm = SCENARIO_META[k.scenario]||SCENARIO_META[1];
+  const gmv = kolGMV(k);
+  const roi = kolROI(k);
+  const roiStr = roi===null?'∞':(roi>=100?Math.round(roi)+'×':roi.toFixed(1)+'×');
+  const comm = Math.round(gmv*0.075);
+  const netProfit = gmv - k.spend - comm;
+
+  const av = document.getElementById('kd-avatar');
+  av.textContent=initials(k.id); av.style.background=tm.bg; av.style.color=tm.fg;
+  document.getElementById('kd-name').textContent='@'+k.id;
+  document.getElementById('kd-badges').innerHTML=`
+    <span class="kol-badge" style="background:${tm.bg};color:${tm.fg};">${k.tierLabel}</span>
+    <span class="kol-badge" style="background:${sm.bg};color:${sm.fg};">${sm.label}</span>`;
+
+  document.getElementById('kd-insight').style.cssText=`background:${sm.bg};color:${sm.fg};border-radius:8px;padding:10px 14px;font-size:12px;line-height:1.6;margin-bottom:10px;`;
+  document.getElementById('kd-insight').innerHTML='<b>วิเคราะห์:</b> '+k.insight;
+  document.getElementById('kd-tip').textContent='💡 '+k.tip;
+
+  document.getElementById('kd-kpis').innerHTML=[
+    {l:'ค่าจ้าง KOL', v:k.spend===0?'฿0':fmtV(k.spend), s:'cash ที่จ่ายไป'},
+    {l:'Affiliate GMV', v:fmtV(gmv), s:'ยอดขายผ่าน link'},
+    {l:'ROI', v:roiStr, s:'GMV ÷ ค่าจ้าง', c:roiColor(roi)},
+    {l:'Commission (~7.5%)', v:fmtV(comm), s:'ต้นทุน commission'},
+    {l:'Net Profit', v:fmtV(netProfit), s:'GMV − ค่าจ้าง − comm', c:netProfit>=0?'#059669':'#DC2626'},
+  ].map(x=>`<div class="kol-detail-kc"><p style="font-size:10px;color:#6B7280;margin:0 0 4px;text-transform:uppercase;letter-spacing:.4px;">${x.l}</p><p style="font-size:18px;font-weight:500;margin:0;color:${x.c||'#1A5CDB'};">${x.v}</p><p style="font-size:10px;color:#374151;margin:2px 0 0;">${x.s}</p></div>`).join('');
+
+  // Bar chart
+  if(kdBar)kdBar.destroy();
+  const moData = (k.mn||[]).map(v=>v||0);
+  kdBar = new Chart(document.getElementById('kd-bar'),{
+    type:'bar',
+    data:{labels:MO_LABELS, datasets:[{data:moData, backgroundColor:moData.map((_,i)=>i===moData.length-1?'#1A5CDB':'rgba(26,92,219,0.45)'), borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:9},autoSkip:false,maxRotation:35}},y:{ticks:{font:{size:9},callback:v=>v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v}}}}
+  });
+
+  // Donut
+  if(kdDonut)kdDonut.destroy();
+  const hasSpend = k.spend>0;
+  kdDonut = new Chart(document.getElementById('kd-donut'),{
+    type:'doughnut',
+    data:{
+      labels:hasSpend?['ค่าจ้าง','Commission','Net Profit']:['Commission','Net Profit'],
+      datasets:[{data:hasSpend?[k.spend,comm,Math.max(netProfit,0)]:[comm,Math.max(netProfit,0)],
+        backgroundColor:['#6366F1','#F59E0B','#10B981'], borderWidth:0, hoverOffset:4}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8}}},cutout:'60%'}
+  });
+
+  // Campaign history
+  const histRows = (k.spendMo||[]).map(([mo,amt])=>
+    `<div style="display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid #f0f0f0;"><span>${MO_LABELS[mo]}</span><span style="font-weight:500;color:#1A5CDB;">${fmtV(amt)}</span><span style="color:#10B981;">จ่ายแล้ว</span></div>`
+  ).join('');
+  document.getElementById('kd-hist').innerHTML = histRows||'<p style="color:#6B7280;font-size:11px;">ไม่มีประวัติการจ่ายเงิน</p>';
+
+  const detail = document.getElementById('kolDetail');
+  detail.classList.add('open');
+  detail.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function closeKolDetail(){
+  document.getElementById('kolDetail').classList.remove('open');
+}
+
+function initKolCharts(){
+  kolChartsInit=true;
+  renderKolGrid();
+
+  // Tier bar chart
+  const tiers=['mega','mid','seeding','bonus','organic'];
+  const tierLabels=['Mega','Mid','Seeding/Micro','Aff. Bonus','Organic'];
+  const spendByTier = tiers.map(t=>KOLS.filter(k=>k.tier===t).reduce((s,k)=>s+k.spend,0));
+  const gmvByTier = tiers.map(t=>KOLS.filter(k=>k.tier===t).reduce((s,k)=>s+kolGMV(k),0));
+  new Chart(document.getElementById('kolTierChart'),{
+    type:'bar',
+    data:{labels:tierLabels,datasets:[
+      {label:'ต้นทุน KOL',data:spendByTier,backgroundColor:'#6366F1'},
+      {label:'Affiliate GMV',data:gmvByTier,backgroundColor:'#10B981'},
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{font:{size:10},autoSkip:false}},y:{ticks:{font:{size:9},callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}
+  });
+
+  // ROI donut
+  const roiByTier = tiers.map(t=>{
+    const kl=KOLS.filter(k=>k.tier===t&&k.spend>0);
+    if(!kl.length)return null;
+    const sp=kl.reduce((s,k)=>s+k.spend,0);
+    const gm=kl.reduce((s,k)=>s+kolGMV(k),0);
+    return sp>0?+(gm/sp).toFixed(1):null;
+  });
+  const donutData = tiers.map((t,i)=>roiByTier[i]).filter(v=>v!==null);
+  const donutLabels = tiers.filter((_,i)=>roiByTier[i]!==null).map((t,i)=>tierLabels[tiers.indexOf(t)]+' '+roiByTier[tiers.indexOf(t)]+'×');
+  new Chart(document.getElementById('kolRoiDonut'),{
+    type:'doughnut',
+    data:{labels:donutLabels,datasets:[{data:donutData,backgroundColor:['#6366F1','#10B981','#F59E0B','#A855F7','#38BDF8'],borderWidth:0,hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8}}},cutout:'60%'}
+  });
+}
+</script>
+
 </body>
 </html>
