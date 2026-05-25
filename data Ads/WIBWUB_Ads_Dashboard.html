@@ -175,6 +175,17 @@
   .ads-backdrop.open{display:block;}
   .period-summary-txt{font-size:11px;color:var(--muted);}
 
+
+/* ── TikTok Sub-tabs ─────────────────────────────────────────────── */
+.tk-subtabs{display:flex;gap:0;background:#0d0d0d;border:1px solid var(--border);border-radius:10px;padding:4px;margin-bottom:20px;margin-top:4px}
+.tk-subtab{flex:1;padding:9px 12px;cursor:pointer;font-size:12px;font-weight:600;color:var(--muted);border-radius:7px;text-align:center;transition:all .2s}
+.tk-subtab:hover{color:var(--white)}
+.tk-subtab.active{color:#2DD4BF;background:rgba(45,212,191,.12)}
+.tk-view{display:none}
+.tk-view.active{display:block}
+.live-bar-wrap{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:20px}
+.biz-note{background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.2);border-radius:8px;padding:10px 14px;font-size:12px;color:#f59e0b;margin-bottom:16px}
+.tk-ov-table td:first-child{font-weight:600}.tk-ov-table tr:last-child{border-top:1px solid var(--border);color:var(--white)}
 </style>
 </head>
 <body>
@@ -366,48 +377,126 @@
 
 <!-- ═══════════════════════════════════════ TIKTOK ════════════════ -->
 <div id="tab-tiktok" class="view">
-  <div class="section-hdr" style="margin-top:8px">
-    <h2>🎵 TikTok Ads</h2>
-    <span class="pill">12 Campaigns</span>
-  </div>
-  <div class="kpi-grid">
-    <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value" id="tk-kpi-spend">฿286,047</div><div class="kpi-sub">24 วัน (1–24 พ.ค.)</div></div>
-    <div class="kpi-card green"><div class="kpi-label">Revenue</div><div class="kpi-value" id="tk-kpi-rev">฿692,177</div><div class="kpi-sub">ยอดขายรวม</div></div>
-    <div class="kpi-card orange"><div class="kpi-label">ROAS</div><div class="kpi-value" id="tk-kpi-roas">4.90x</div><div class="kpi-sub">Revenue / Spend</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">CTR</div><div class="kpi-value" id="tk-kpi-ctr">3.62%</div><div class="kpi-sub">สูงกว่า Shopee</div></div>
-    <div class="kpi-card yellow"><div class="kpi-label">Conversion Rate</div><div class="kpi-value" id="tk-kpi-cvr">9.25%</div><div class="kpi-sub">Orders / Clicks</div></div>
-    <div class="kpi-card green"><div class="kpi-label">CPA</div><div class="kpi-value" id="tk-kpi-cpa">฿40.37</div><div class="kpi-sub">ต่ำกว่า Shopee 🏆</div></div>
-    <div class="kpi-card blue"><div class="kpi-label">Orders</div><div class="kpi-value" id="tk-kpi-orders">3,501</div><div class="kpi-sub">คำสั่งซื้อ</div></div>
-    <div class="kpi-card tiktok"><div class="kpi-label">Impressions</div><div class="kpi-value" id="tk-kpi-imp">1.05M</div><div class="kpi-sub">การแสดงผล</div></div>
+
+  <!-- Sub-tabs -->
+  <div class="tk-subtabs">
+    <div class="tk-subtab active" onclick="showTkTab('overview',this)">📊 รวมทั้งหมด</div>
+    <div class="tk-subtab" onclick="showTkTab('gmvlive',this)">📺 GMV Live</div>
+    <div class="tk-subtab" onclick="showTkTab('gmvmax',this)">🎬 GMV Max</div>
+    <div class="tk-subtab" onclick="showTkTab('bizads',this)">📢 Business Ads</div>
   </div>
 
-  <div class="top-grid">
-    <div class="top-card">
-      <div class="top-card-header best">🏆 Top 5 ดีที่สุด — ROAS สูงสุด</div>
-      <div id="tiktok-top5-best"></div>
+  <!-- ── Overview ─────────────────────────────────────────────────────── -->
+  <div id="tk-tab-overview" class="tk-view active">
+    <div class="kpi-grid">
+      <div class="kpi-card tiktok"><div class="kpi-label">Total Spend</div><div class="kpi-value">฿319,797</div><div class="kpi-sub">GMV Max + Live + Business</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Revenue (Ads-attr.)</div><div class="kpi-value">฿1,265,280</div><div class="kpi-sub">GMV Max + Live</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">Orders รวม</div><div class="kpi-value">6,491</div><div class="kpi-sub">GMV Max + Live</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">Blended ROAS</div><div class="kpi-value">3.96x</div><div class="kpi-sub">Revenue / Total Spend</div></div>
     </div>
-    <div class="top-card">
-      <div class="top-card-header worst">⚠️ Bottom 5 แย่ที่สุด — ROAS ต่ำสุด</div>
-      <div id="tiktok-top5-worst"></div>
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Spend by Type — พ.ค. 2569</div>
+        <div class="chart-wrap"><canvas id="tk-spend-donut"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Revenue by Type — พ.ค. 2569</div>
+        <div class="chart-wrap"><canvas id="tk-rev-donut"></canvas></div>
+      </div>
+    </div>
+    <div class="section-hdr"><h2>สรุปแต่ละประเภท Ads</h2></div>
+    <div class="table-wrap">
+      <table class="tk-ov-table">
+        <thead><tr><th>ประเภท</th><th>Spend (฿)</th><th>Revenue (฿)</th><th>Orders</th><th>ROAS</th><th>หมายเหตุ</th></tr></thead>
+        <tbody>
+          <tr><td>🎬 GMV Max</td><td>235,761</td><td>1,177,906</td><td>6,255</td><td>5.00x</td><td>Product / Video campaigns</td></tr>
+          <tr><td>📺 GMV Live</td><td>18,986</td><td>87,374</td><td>236</td><td>4.60x</td><td>Live Shopping Ads</td></tr>
+          <tr><td>📢 Business Ads</td><td>65,050</td><td>—</td><td>—</td><td>—</td><td>Brand Awareness / Reach</td></tr>
+          <tr><td>🧮 รวม</td><td>319,797</td><td>1,265,280</td><td>6,491</td><td>3.96x</td><td></td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <div class="section-hdr"><h2>📋 TikTok Campaigns ทั้งหมด</h2><span style="font-size:11px;color:var(--muted)">กดหัวตารางเพื่อเรียงลำดับ</span></div>
-  <div class="table-wrap">
-    <table id="tiktok-all-table">
-      <thead><tr>
-        <th>#</th>
-        <th class="sortable" data-col="name" onclick="sortTable('tiktok','name')">Campaign</th>
-        <th class="sortable" data-col="spend" onclick="sortTable('tiktok','spend')">Spend (฿)</th>
-        <th class="sortable" data-col="revenue" onclick="sortTable('tiktok','revenue')">Revenue (฿)</th>
-        <th class="sortable" data-col="roas" onclick="sortTable('tiktok','roas')">ROAS</th>
-        <th class="sortable" data-col="ctr" onclick="sortTable('tiktok','ctr')">CTR</th>
-        <th class="sortable" data-col="cvr" onclick="sortTable('tiktok','cvr')">CVR</th>
-        <th class="sortable" data-col="cpa" onclick="sortTable('tiktok','cpa')">CPA (฿)</th>
-      </tr></thead>
-      <tbody id="tiktok-all-body"></tbody>
-    </table>
+  <!-- ── GMV Live ──────────────────────────────────────────────────────── -->
+  <div id="tk-tab-gmvlive" class="tk-view">
+    <div class="section-hdr" style="margin-top:4px"><h2>📺 GMV Live — พ.ค. 2569</h2><span class="pill">1–25 พ.ค. · 10 sessions</span></div>
+    <div class="kpi-grid">
+      <div class="kpi-card tiktok"><div class="kpi-label">Live Ads Spend</div><div class="kpi-value">฿18,986</div><div class="kpi-sub">1–25 พ.ค.</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Revenue จาก Live</div><div class="kpi-value">฿87,374</div><div class="kpi-sub">Ads-attributed</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">ROI</div><div class="kpi-value">4.60x</div><div class="kpi-sub">Revenue / Spend</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">Orders</div><div class="kpi-value">236</div><div class="kpi-sub">คำสั่งซื้อ</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">Live Views</div><div class="kpi-value">14,622</div><div class="kpi-sub">ยอดการดู</div></div>
+      <div class="kpi-card green"><div class="kpi-label">CPA</div><div class="kpi-value">฿80</div><div class="kpi-sub">ต้นทุน/คำสั่งซื้อ</div></div>
+    </div>
+    <div class="live-bar-wrap">
+      <div class="chart-title">Ads Spend vs Revenue — แต่ละ Live Session</div>
+      <div class="chart-wrap" style="height:300px"><canvas id="tk-live-compare"></canvas></div>
+    </div>
+    <div class="section-hdr"><h2>รายละเอียดแต่ละ Session</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Campaign</th><th>Spend (฿)</th><th>Revenue (฿)</th><th>Orders</th><th>ROI</th><th>Views</th></tr></thead>
+        <tbody id="tk-live-body"></tbody>
+      </table>
+    </div>
   </div>
+
+  <!-- ── GMV Max ───────────────────────────────────────────────────────── -->
+  <div id="tk-tab-gmvmax" class="tk-view">
+    <div class="section-hdr" style="margin-top:4px"><h2>🎬 GMV Max — Product Campaigns</h2><span class="pill">11 Campaigns</span></div>
+    <div class="kpi-grid">
+      <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value" id="tk-kpi-spend">฿286,047</div><div class="kpi-sub">24 วัน (1–24 พ.ค.)</div></div>
+      <div class="kpi-card green"><div class="kpi-label">Revenue</div><div class="kpi-value" id="tk-kpi-rev">฿692,177</div><div class="kpi-sub">Ads-attributed</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">ROAS</div><div class="kpi-value" id="tk-kpi-roas">4.90x</div><div class="kpi-sub">Revenue / Spend</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">CTR</div><div class="kpi-value" id="tk-kpi-ctr">3.62%</div><div class="kpi-sub">Click-through rate</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">CVR</div><div class="kpi-value" id="tk-kpi-cvr">9.25%</div><div class="kpi-sub">Orders / Clicks</div></div>
+      <div class="kpi-card green"><div class="kpi-label">CPA</div><div class="kpi-value" id="tk-kpi-cpa">฿40.37</div><div class="kpi-sub">ต่ำกว่า Shopee 🏆</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">Orders</div><div class="kpi-value" id="tk-kpi-orders">3,501</div><div class="kpi-sub">คำสั่งซื้อ</div></div>
+      <div class="kpi-card tiktok"><div class="kpi-label">Impressions</div><div class="kpi-value" id="tk-kpi-imp">1.05M</div><div class="kpi-sub">การแสดงผล</div></div>
+    </div>
+    <div class="top-grid">
+      <div class="top-card"><div class="top-card-header best">🏆 Top 5 — ROAS สูงสุด</div><div id="tiktok-top5-best"></div></div>
+      <div class="top-card"><div class="top-card-header worst">⚠️ Bottom 5 — ROAS ต่ำสุด</div><div id="tiktok-top5-worst"></div></div>
+    </div>
+    <div class="section-hdr"><h2>📋 GMV Max Campaigns ทั้งหมด</h2><span style="font-size:11px;color:var(--muted)">กดหัวตารางเพื่อเรียงลำดับ</span></div>
+    <div class="table-wrap">
+      <table id="tiktok-all-table">
+        <thead><tr>
+          <th>#</th>
+          <th class="sortable" data-col="name" onclick="sortTable('tiktok','name')">Campaign</th>
+          <th class="sortable" data-col="spend" onclick="sortTable('tiktok','spend')">Spend (฿)</th>
+          <th class="sortable" data-col="revenue" onclick="sortTable('tiktok','revenue')">Revenue (฿)</th>
+          <th class="sortable" data-col="roas" onclick="sortTable('tiktok','roas')">ROAS</th>
+          <th class="sortable" data-col="ctr" onclick="sortTable('tiktok','ctr')">CTR</th>
+          <th class="sortable" data-col="cvr" onclick="sortTable('tiktok','cvr')">CVR</th>
+          <th class="sortable" data-col="cpa" onclick="sortTable('tiktok','cpa')">CPA (฿)</th>
+        </tr></thead>
+        <tbody id="tiktok-all-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Business Ads ──────────────────────────────────────────────────── -->
+  <div id="tk-tab-bizads" class="tk-view">
+    <div class="section-hdr" style="margin-top:4px"><h2>📢 Business Ads — Brand Awareness</h2><span class="pill">8 Campaigns</span></div>
+    <div class="biz-note">⚠️ Business Ads เป็นแคมเปญ Brand Awareness / Reach — ไม่มี conversion tracking วัดผลด้วย Impressions / CPM / CTR</div>
+    <div class="kpi-grid">
+      <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value">฿65,050</div><div class="kpi-sub">1–25 พ.ค.</div></div>
+      <div class="kpi-card blue"><div class="kpi-label">Impressions</div><div class="kpi-value">1,727,038</div><div class="kpi-sub">การแสดงผลรวม</div></div>
+      <div class="kpi-card orange"><div class="kpi-label">Clicks</div><div class="kpi-value">18,818</div><div class="kpi-sub">คลิกรวม</div></div>
+      <div class="kpi-card green"><div class="kpi-label">CPM</div><div class="kpi-value">฿37.67</div><div class="kpi-sub">ต้นทุน/1,000 views</div></div>
+      <div class="kpi-card yellow"><div class="kpi-label">CTR</div><div class="kpi-value">1.09%</div><div class="kpi-sub">อัตราการคลิก</div></div>
+    </div>
+    <div class="section-hdr"><h2>📋 Business Campaigns</h2></div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>#</th><th>Campaign</th><th>Spend (฿)</th><th>Impressions</th><th>Clicks</th><th>CPM (฿)</th><th>CTR</th></tr></thead>
+        <tbody id="tk-biz-body"></tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <!-- ═══════════════════════════════════════ ADD DATA ═════════════ -->
@@ -1017,6 +1106,150 @@ function setPeriod(key, btn){
   renderDashboard();
 }
 
+
+// ── TikTok Breakdown Data (May 2026) ──────────────────────────────────
+const TK_BREAKDOWN = {
+  may: {
+    gmvLive: {
+      total:{spend:18986,orders:236,revenue:87374,views:14622,roi:4.60,cpa:80},
+      sessions:[
+        {name:"05.05.26/GMVLive ปาย",spend:4580,orders:64,revenue:22705,roi:4.96,views:3538},
+        {name:"05.05.26/GMVLive",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
+        {name:"07.06.26/GMVLive แอ้น",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715},
+        {name:"07.05.26/GMVLive แอ้น",spend:2456,orders:21,revenue:10003,roi:4.07,views:1544},
+        {name:"15 1.2",spend:616,orders:16,revenue:6073,roi:9.87,views:1799},
+        {name:"08.05.26/GMVLiveปายรอบสอง",spend:1000,orders:18,revenue:6054,roi:6.05,views:673},
+        {name:"08.05.26/GMVLive ปาย03",spend:1372,orders:11,revenue:4166,roi:3.04,views:799},
+        {name:"08.05.26/GMVLive ปาย04",spend:700,orders:9,revenue:3408,roi:4.87,views:725},
+        {name:"08.05.26/GMVLiveปาย",spend:1505,orders:8,revenue:2703,roi:1.80,views:773},
+        {name:"25.04.26/Live GMV New",spend:0,orders:1,revenue:643,roi:0,views:0}
+      ]
+    },
+    gmvMax: {
+      total:{spend:235761,orders:6255,revenue:1177906,imp:1927418,clicks:67678,roi:5.00,ctr:3.51,cvr:9.24,cpa:37.69},
+      campaigns:[
+        {name:"6.6 ห้ามปิด เปิดยาว",spend:65061,orders:2005,revenue:341901,roi:5.26,ctr:3.41,cvr:8.89,cpa:32.45},
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:59119,orders:2937,revenue:340485,roi:5.76,ctr:3.89,cvr:13.44,cpa:20.13},
+        {name:"Sugar",spend:23697,orders:321,revenue:126396,roi:5.33,ctr:4.03,cvr:7.51,cpa:73.82},
+        {name:"20.11.25/All",spend:20114,orders:276,revenue:104218,roi:5.18,ctr:2.91,cvr:3.06,cpa:72.88},
+        {name:"12.04.26/Interior",spend:15019,orders:129,revenue:53659,roi:3.57,ctr:2.69,cvr:6.15,cpa:116.42},
+        {name:"Cleaner",spend:13685,orders:268,revenue:53571,roi:3.91,ctr:4.11,cvr:7.68,cpa:51.06},
+        {name:"12.02.26/Refresh",spend:10596,orders:83,revenue:37101,roi:3.50,ctr:3.21,cvr:7.57,cpa:127.66},
+        {name:"16.04.26/XGlass-Spot",spend:9216,orders:102,revenue:44043,roi:4.78,ctr:3.70,cvr:7.66,cpa:90.35},
+        {name:"26.01.26/Mind",spend:7001,orders:45,revenue:21558,roi:3.08,ctr:3.02,cvr:7.40,cpa:155.57},
+        {name:"22.12.25/ไม้ปัด",spend:6882,orders:44,revenue:26628,roi:3.87,ctr:3.78,cvr:6.85,cpa:156.41},
+        {name:"12.04.26/Reflex",spend:5371,orders:45,revenue:28346,roi:5.28,ctr:3.86,cvr:6.50,cpa:119.36}
+      ]
+    },
+    bizAds: {
+      total:{spend:65050,imp:1727038,clicks:18818,cpm:37.67,ctr:1.09},
+      campaigns:[
+        {name:"ทั้งหมดจาก 87 ผลลัพธ์",spend:32525,imp:863519,clicks:9409,cpm:37.67,ctr:1.09},
+        {name:"23.04.26/CadsTopSaleCreator",spend:16581,imp:180122,clicks:5963,cpm:92.05,ctr:3.31},
+        {name:"27.04.26/CAdsCreator",spend:7379,imp:104395,clicks:3392,cpm:70.68,ctr:3.25},
+        {name:"Reach Nickynachat",spend:4397,imp:344238,clicks:0,cpm:12.77,ctr:0},
+        {name:"Nickynachat VIEW",spend:2500,imp:185492,clicks:0,cpm:13.48,ctr:0},
+        {name:"C-Ads Nicky",spend:1517,imp:43967,clicks:0,cpm:34.50,ctr:0},
+        {name:"C-Ads แคมเปญที่1",spend:77,imp:2383,clicks:24,cpm:32.49,ctr:1.01},
+        {name:"C-Ads แคมเปญที่2",spend:74,imp:2922,clicks:30,cpm:25.39,ctr:1.03}
+      ]
+    }
+  }
+};
+
+// ── TikTok Sub-tab switcher ────────────────────────────────────────────
+function showTkTab(key, el){
+  document.querySelectorAll('.tk-subtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tk-view').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tk-tab-'+key).classList.add('active');
+  if(key==='gmvlive') renderLiveChart();
+  if(key==='overview') renderTkDonutCharts();
+}
+
+// ── Live Sessions table ────────────────────────────────────────────────
+function renderLiveSessions(){
+  const d = TK_BREAKDOWN.may.gmvLive.sessions;
+  const body = document.getElementById('tk-live-body');
+  if(!body) return;
+  body.innerHTML = d.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td style="max-width:220px;word-break:break-word">${s.name}</td>
+    <td>${fmt(s.spend)}</td>
+    <td>${fmt(s.revenue)}</td>
+    <td>${s.orders}</td>
+    <td style="color:${s.roi>=4?'#4ade80':s.roi>=2?'#facc15':'#f87171'}">${s.roi.toFixed(2)}x</td>
+    <td>${fmt(s.views)}</td>
+  </tr>`).join('');
+}
+
+// ── Business Ads table ────────────────────────────────────────────────
+function renderBizTable(){
+  const d = TK_BREAKDOWN.may.bizAds.campaigns;
+  const body = document.getElementById('tk-biz-body');
+  if(!body) return;
+  body.innerHTML = d.map((c,i)=>`<tr>
+    <td>${i+1}</td>
+    <td style="max-width:220px;word-break:break-word">${c.name}</td>
+    <td>${fmt(c.spend)}</td>
+    <td>${fmt(c.imp)}</td>
+    <td>${fmt(c.clicks)}</td>
+    <td>${c.cpm.toFixed(2)}</td>
+    <td>${c.ctr.toFixed(2)}%</td>
+  </tr>`).join('');
+}
+
+// ── Live comparison bar chart ─────────────────────────────────────────
+let liveChart=null;
+function renderLiveChart(){
+  const ctx=document.getElementById('tk-live-compare');
+  if(!ctx) return;
+  const sessions=TK_BREAKDOWN.may.gmvLive.sessions.filter(s=>s.spend>0||s.revenue>0);
+  const labels=sessions.map(s=>s.name.length>20?s.name.slice(0,20)+'…':s.name);
+  if(liveChart) liveChart.destroy();
+  liveChart=new Chart(ctx,{
+    type:'bar',
+    data:{
+      labels,
+      datasets:[
+        {label:'Ads Spend (฿)',data:sessions.map(s=>s.spend),backgroundColor:'rgba(45,212,191,0.7)',borderRadius:5},
+        {label:'Revenue (฿)',data:sessions.map(s=>s.revenue),backgroundColor:'rgba(74,222,128,0.7)',borderRadius:5}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#ccc',font:{size:11}}},tooltip:{callbacks:{label:ctx=>'฿'+fmt(ctx.raw)}}},
+      scales:{
+        x:{ticks:{color:'#999',font:{size:10},maxRotation:35},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#999',callback:v=>'฿'+fmt(v)},grid:{color:'rgba(255,255,255,0.07)'}}
+      }
+    }
+  });
+}
+
+// ── TikTok Overview donut charts ──────────────────────────────────────
+let tkSpendChart=null, tkRevChart=null;
+function renderTkDonutCharts(){
+  const spendCtx=document.getElementById('tk-spend-donut');
+  const revCtx=document.getElementById('tk-rev-donut');
+  if(!spendCtx||!revCtx) return;
+  const colors=['rgba(45,212,191,0.8)','rgba(99,102,241,0.8)','rgba(245,158,11,0.8)'];
+  if(tkSpendChart) tkSpendChart.destroy();
+  tkSpendChart=new Chart(spendCtx,{type:'doughnut',data:{
+    labels:['GMV Max','Business Ads','GMV Live'],
+    datasets:[{data:[235761,65050,18986],backgroundColor:colors,borderWidth:1,borderColor:'#1a1a1a'}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{color:'#ccc',font:{size:11},padding:10}},
+      tooltip:{callbacks:{label:c=>`฿${fmt(c.raw)} (${(c.raw/319797*100).toFixed(1)}%)`}}}}});
+  if(tkRevChart) tkRevChart.destroy();
+  tkRevChart=new Chart(revCtx,{type:'doughnut',data:{
+    labels:['GMV Max','GMV Live','Business Ads'],
+    datasets:[{data:[1177906,87374,0],backgroundColor:colors,borderWidth:1,borderColor:'#1a1a1a'}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{color:'#ccc',font:{size:11},padding:10}},
+      tooltip:{callbacks:{label:c=>c.raw>0?`฿${fmt(c.raw)} (${(c.raw/1265280*100).toFixed(1)}%)`:'ไม่มีข้อมูล'}}}}});
+}
+
 // ── renderDashboard: re-render everything ──────────────────────────
 function renderDashboard(){
   const sh=getSH(), tk=getTK();
@@ -1030,6 +1263,9 @@ function renderDashboard(){
   buildAllTable('shopee-all-body', sh.all);
   buildAllTable('tiktok-all-body', tk.all);
   updateCharts(sh, tk);
+  renderLiveSessions();
+  renderBizTable();
+  renderTkDonutCharts();
 }
 
 // ── Init ───────────────────────────────────────────────────────────
