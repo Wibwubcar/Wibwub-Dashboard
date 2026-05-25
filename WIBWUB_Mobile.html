@@ -174,7 +174,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="mks-grid">
     <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿3.41M</div><div class="mks-sub">40 creators · 7 เดือน</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.73×</div><div class="mks-sub">Shopee+TikTok</div></div>
-    <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">48 คลิป</div><div class="mks-sub">มี.ค.–พ.ค. 2569</div></div>
+    <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">53 คลิป</div><div class="mks-sub">มี.ค.–พ.ค. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">130K</div><div class="mks-sub">+14K จาก ม.ค.</div></div>
   </div>
   <div class="card">
@@ -223,7 +223,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       </div>
     </div>
     <div id="s-plt-list"></div>
-    <div class="inote">* พ.ค. 2569 ข้อมูล 1–17 พ.ค. เท่านั้น</div>
+    <div class="inote">* พ.ค. 2569 ข้อมูล 1–24 พ.ค. เท่านั้น</div>
   </div>
 
   <!-- Products -->
@@ -265,7 +265,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
         <tbody id="mo-tb-lz"></tbody>
       </table></div>
     </div>
-    <div class="inote">* พ.ค. 2569 ข้อมูล 1–17 พ.ค. เท่านั้น ยังไม่ครบเดือน</div>
+    <div class="inote">* พ.ค. 2569 ข้อมูล 1–24 พ.ค. เท่านั้น ยังไม่ครบเดือน</div>
   </div>
 </div>
 
@@ -393,25 +393,25 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // ════════════════════════════════════════
 const M5=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
 const SH_REV=[4231653,4383214,4560321,5204395,4322412];
-const TK_REV=[1152567,1171209,1280967,1350397,1073249];
-const LZ_REV=[179084,120949,183370,110532,84597];
+const TK_REV=[1152567,1171209,1280967,1350397,1256524];
+const LZ_REV=[179084,120949,183370,110532,106167];
 const SH_ORD=[7532,6580,6873,8128,7050];
-const TK_ORD=[3204,3652,3934,5032,2808];
+const TK_ORD=[3204,3652,3934,5032,6271];
 const LZ_ORD=[236,176,255,161,54];
 const SH_CANCEL=[4.62,4.45,4.26,5.94,5.43];
-const TK_CANCEL=[9.64,8.32,8.39,9.70,9.0];
+const TK_CANCEL=[9.64,8.32,8.39,9.70,7.49];
 const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.5];
 const SH_ADS=[575400,559100,589300,795300,631800];
 const SH_FEE=[911498,944144,1046921,1225115,1109995];
-const TK_ADSSPEND=[218000,221000,243000,256169,169425];
-const TK_FEECOMM=[241000,247000,269000,294224,173912];
-const TK_AFI=[460976,550756,655259,724120,625436];
-const TK_NET=[456036,544073,642947,708730,365106];
+const TK_ADSSPEND=[218000,221000,243000,256169,286047];
+const TK_FEECOMM=[241000,247000,269000,294224,310921];
+const TK_AFI=[460976,550756,655259,724120,751249];
+const TK_NET=[456036,544073,642947,708730,739395];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.5];
-const LZ_COST_PCT=[22.67,24.61,24.36,24.86,24.49];
-const LZ_ADS=[5500,6200,8400,5710,3820];
-const TOTAL_REV=[8900000,7510000,7280000,7470000,5610258];
-const TOTAL_ORD=[14500,13800,13800,15500,12197];
+const LZ_COST_PCT=[22.67,24.61,24.36,24.86,24.77];
+const LZ_ADS=[5500,6200,8400,5710,5240];
+const TOTAL_REV=[8900000,7510000,7280000,7470000,5815103];
+const TOTAL_ORD=[14500,13800,13800,15500,15660];
 
 const CHANNELS=[
   {n:'Shopee',v:21668867,color:'#ee4d2d'},
@@ -472,22 +472,21 @@ const CREATORS=[
 ]
 
 const ALL_PRODUCTS=[
-  {n:"Wool Duster ไม้ปัดขนแกะ", v:4678688, q:7302},
-  {n:"Sugar (500ml+Spray)", v:3075477, q:10554},
-  {n:"Interior (500ml+Spray)", v:2414517, q:7052},
-  {n:"Refresh (500ml+หัวโฟม)", v:1363694, q:3752},
-  {n:"Interior Wipes", v:1278079, q:17684},
-  {n:"Perfect", v:1269872, q:8524},
-  {n:"Refresh Wipes", v:1203437, q:15735},
-  {n:"Reflex (250ml+Spray)", v:1107459, q:2938},
-  {n:"Spot (500ml)", v:1043956, q:2808},
+  {n:"Wool Duster ไม้ปัดขนแกะ", v:4712606, q:7356},
+  {n:"Sugar (500ml+Spray)", v:3115250, q:10683},
+  {n:"Interior (500ml+Spray)", v:2459344, q:7180},
+  {n:"Refresh (500ml+หัวโฟม)", v:1387388, q:3820},
+  {n:"Interior Wipes", v:1325205, q:18309},
+  {n:"Refresh Wipes", v:1292089, q:16853},
+  {n:"Perfect", v:1290246, q:8653},
+  {n:"Reflex (250ml+Spray)", v:1120753, q:2973},
+  {n:"Spot (500ml)", v:1088102, q:2927},
   {n:"Sugar (3L+ขวดสเปรย์)", v:959766, q:836},
-  {n:"Tire & Trim Gel (500ml)", v:936200, q:2142},
-  {n:"Mind (500ml+Spray)", v:922471, q:2290},
-  {n:"Martini", v:860483, q:7042},
-  {n:"Quartz Shampoo (1L)", v:808769, q:3528},
-  {n:"Monster", v:615134, q:834},
-
+  {n:"Tire & Trim Gel (500ml)", v:949647, q:2171},
+  {n:"Mind (500ml+Spray)", v:931931, q:2314},
+  {n:"Martini", v:879621, q:7192},
+  {n:"Quartz Shampoo (1L)", v:824797, q:3594},
+  {n:"Monster", v:627864, q:852},
 ];
 
 const ALL_POSTS=[
@@ -539,6 +538,12 @@ const ALL_POSTS=[
   {lbl:'13(2)',m:5,pillar:'Review',c:'ทำความสะอาดห้องเครื่องใช้ APC Car Cleaner ฉีดแล้วเช็ดออกได้เลย',views:1493,eng:27,ret:20,watch:9.5,er:1.81,url:'https://www.tiktok.com/@wibwubcar/video/7639366337583746311'},
   {lbl:'14',m:5,pillar:'Lifestyle',c:'มาดูกันว่าแอดมิน wibwub เป็นสายไหนกัน',views:592,eng:15,ret:18,watch:14.7,er:2.53,url:'https://www.tiktok.com/@wibwubcar/video/7639732629201276167'},
   {lbl:'15',m:5,pillar:'Knowledge',c:'ทำความสะอาดกระจกภายในรถที่ติดฟิล์มกรองแสง',views:952,eng:21,ret:27,watch:18.3,er:2.21,url:'https://www.tiktok.com/@wibwubcar/video/7640111377654435079'},
+
+  {lbl:'18',m:5,pillar:'Knowledge',c:'ผ้าสำหรับรถมีหลายประเภท ให้ดีต้องไร้ขอบ เช็ดรถจะไม่ทำให้รอย',views:1251,eng:47,ret:20,watch:13.0,er:3.76,url:'https://www.tiktok.com/@wibwubcar/video/7641217132268735762'},
+  {lbl:'19',m:5,pillar:'Review',c:'เช็ดแล้วได้ผิวสัมผัสแมตต์แบบนี้เลย ฟีลลิ่งเหมือนรถออกใหม่',views:1040,eng:14,ret:13,watch:10.0,er:1.35,url:'https://www.tiktok.com/@wibwubcar/video/7641597742820625672'},
+  {lbl:'20',m:5,pillar:'Knowledge',c:'ถ้าอยากลบคราบน้ำแนะนำ spot clean นะครับ',views:1136,eng:28,ret:29,watch:14.4,er:2.46,url:'https://www.tiktok.com/@wibwubcar/video/7641956452105702664'},
+  {lbl:'21',m:5,pillar:'Lifestyle',c:'ปิดตาทายกลิ่น มาดูกันว่าแอดมินคนไหนเซียนที่สุด',views:360,eng:17,ret:16,watch:9.3,er:4.72,url:'https://www.tiktok.com/@wibwubcar/video/7642332908249976071'},
+  {lbl:'22',m:5,pillar:'Review',c:'ตัวนี้เป็น pH balanced ไม่กัดมือ ปลอดภัยแน่นอนครับ',views:525,eng:3,ret:0,watch:12.0,er:0.57,url:'https://www.tiktok.com/@wibwubcar/video/7642702488696638727'},
 ];
 
 // ════════════════════════════════════════
@@ -608,9 +613,9 @@ function initHome(){
 let sMo=0;
 function initSalesOv(){
   document.getElementById('s-ov-kpi').innerHTML=`
-    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–พ.ค.)</div><div class="kc-val">฿36.8M</div><div class="kc-sub">ทุก Platform</div></div>
-    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">69,797</div><div class="kc-sub">unique orders</div></div>
-    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿527</div><div class="kc-sub">ต่อออเดอร์</div></div>
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–พ.ค.)</div><div class="kc-val">฿37.0M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">73,260</div><div class="kc-sub">unique orders</div></div>
+    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿505</div><div class="kc-sub">ต่อออเดอร์</div></div>
     <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
   setSMo(0,document.querySelector('#s-mo-tabs .mtab'));
   // Rev bars
