@@ -441,7 +441,7 @@
   <div id="tk-tab-gmvmax" class="tk-view">
     <div class="section-hdr" style="margin-top:4px"><h2>🎬 GMV Max — Product Campaigns</h2><span class="pill">11 Campaigns</span></div>
     <div class="kpi-grid">
-      <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value" id="tk-kpi-spend">฿286,047</div><div class="kpi-sub">24 วัน (1–24 พ.ค.)</div></div>
+      <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value" id="tk-kpi-spend">฿235,761</div><div class="kpi-sub">GMV Max เท่านั้น</div></div>
       <div class="kpi-card green"><div class="kpi-label">Revenue</div><div class="kpi-value" id="tk-kpi-rev">฿692,177</div><div class="kpi-sub">Ads-attributed</div></div>
       <div class="kpi-card orange"><div class="kpi-label">ROAS</div><div class="kpi-value" id="tk-kpi-roas">4.90x</div><div class="kpi-sub">Revenue / Spend</div></div>
       <div class="kpi-card blue"><div class="kpi-label">CTR</div><div class="kpi-value" id="tk-kpi-ctr">3.62%</div><div class="kpi-sub">Click-through rate</div></div>
@@ -1025,14 +1025,17 @@ function renderKPIs(){
   set('sh-kpi-cpa','฿'+fmtD(sh.cpa));
   set('sh-kpi-orders',fmt(sh.orders));
   set('sh-kpi-imp',fmtM(sh.imp));
-  set('tk-kpi-spend','฿'+fmt(tk.spend));
-  set('tk-kpi-rev','฿'+fmt(tk.revenue));
-  set('tk-kpi-roas',fmtD(tk.roas)+'x');
-  set('tk-kpi-ctr',fmtD(tk.ctr)+'%');
-  set('tk-kpi-cvr',fmtD(tk.cvr)+'%');
-  set('tk-kpi-cpa','฿'+fmtD(tk.cpa));
-  set('tk-kpi-orders',fmt(tk.orders));
-  set('tk-kpi-imp',fmtM(tk.imp));
+  // GMV Max KPIs — use TK_BREAKDOWN (actual creative data xlsx), not DATA_PERIODS
+  const mx = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.total;
+  const fmtM2=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n);
+  set('tk-kpi-spend','฿'+fmt(mx.spend));
+  set('tk-kpi-rev','฿'+fmt(mx.revenue));
+  set('tk-kpi-roas',fmtD(mx.roi)+'x');
+  set('tk-kpi-ctr',fmtD(mx.ctr||0)+'%');
+  set('tk-kpi-cvr',fmtD(mx.cvr||0)+'%');
+  set('tk-kpi-cpa','฿'+fmtD(mx.cpa||0));
+  set('tk-kpi-orders',fmt(mx.orders));
+  set('tk-kpi-imp',fmtM2(mx.imp||0));
   const pb=document.getElementById('period-badge-txt');
   if(pb)pb.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
 }
@@ -1550,10 +1553,18 @@ function renderDashboard(){
   buildCmp('tiktok-cmp', tk, 'tiktok');
   buildTop5('shopee-top5-best', sh.top5, true);
   buildTop5('shopee-top5-worst', sh.worst5, false);
-  buildTop5('tiktok-top5-best', tk.top5, true);
-  buildTop5('tiktok-top5-worst', tk.worst5, false);
+  // GMV Max top5/worst5 from TK_BREAKDOWN (sorted by roi)
+  const mxAll = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.campaigns;
+  const mxSorted = [...mxAll].sort((a,b)=>b.roi-a.roi);
+  const mxTop5 = mxSorted.slice(0,5).map(c=>({...c,roas:c.roi}));
+  const mxWorst5 = [...mxSorted].reverse().slice(0,5).map(c=>({...c,roas:c.roi}));
+  buildTop5('tiktok-top5-best', mxTop5, true);
+  buildTop5('tiktok-top5-worst', mxWorst5, false);
   buildAllTable('shopee-all-body', sh.all);
-  buildAllTable('tiktok-all-body', tk.all);
+  // GMV Max table — build from TK_BREAKDOWN campaign list
+  const mxCamps = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.campaigns;
+  const mxRows = mxCamps.map(c=>({...c, roas:c.roi}));  // alias roi→roas for buildAllTable
+  buildAllTable('tiktok-all-body', mxRows);
   updateCharts(sh, tk);
   renderLiveSessions();
   renderBizTable();
