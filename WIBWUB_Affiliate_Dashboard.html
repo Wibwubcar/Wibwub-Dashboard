@@ -721,6 +721,10 @@ function switchTab(tab){
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
   });
   if(tab==='kol' && !kolChartsInit) initKolCharts();
+  if(tab==='budget'){
+    const mc = document.getElementById('budMonthlyChart');
+    if(mc && !mc._chartInit){ mc._chartInit=true; initBudgetCharts(); renderBudTable(); }
+  }
 }
 
 // ─── KOL DATA ───
@@ -1296,20 +1300,7 @@ function initBudgetCharts(){
   });
 }
 
-// Override switchTab to also init budget charts
-const _origSwitch=switchTab;
-function switchTab(tab){
-  _origSwitch(tab);
-  document.getElementById('panelBudget')?.classList.toggle('active',tab==='budget');
-  document.getElementById('tabBudget')?.classList.toggle('active',tab==='budget');
-  if(tab==='budget'){
-    if(!document.getElementById('budMonthlyChart')._chartInit){
-      document.getElementById('budMonthlyChart')._chartInit=true;
-      initBudgetCharts();
-      renderBudTable();
-    }
-  }
-}
+// Budget chart init handled in switchTab above
 </script>
 
 </body>
