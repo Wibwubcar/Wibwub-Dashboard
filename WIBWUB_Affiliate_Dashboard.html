@@ -16,6 +16,9 @@ body{background:#F8F9FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .wperiod{margin-left:auto;font-size:10px;color:#666;text-align:right;line-height:1.6}
 .kg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
 .kc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(26,92,219,.14)}
+.kc-val{font-size:20px;font-weight:700;margin-bottom:2px}
+.kc-label{font-size:11px;color:#6B7280}
+.card{background:#fff;border-radius:10px;border:1px solid rgba(26,92,219,.1)}
 .kl{font-size:10px;color:#6B7280;margin:0 0 4px;letter-spacing:.5px;text-transform:uppercase}
 .kv{font-size:22px;font-weight:500;color:#1A5CDB;margin:0}
 .ks{font-size:10px;color:#374151;margin:3px 0 0}
@@ -33,11 +36,11 @@ body{background:#F8F9FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .sb:hover:not(.a){background:#EEF3FD;color:#666}
 .tw{overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
 table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
-thead th{padding:7px 8px;font-size:10px;font-weight:500;color:#666;border-bottom:1px solid #e8e8e8;cursor:pointer;text-align:right;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:#F8F9FB}
+thead th{padding:7px 8px;font-size:10px;font-weight:500;color:#666;border-bottom:1px solid #e8e8e8;cursor:pointer;text-align:right;letter-spacing:.4px;text-transform:uppercase;white-space:nowraw;background:#F8F9FB}
 thead th:first-child{text-align:left}
 thead th.sa{color:#1A5CDB}
 thead th:hover{color:#666}
-td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#666}
+td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowraw;overflow:hidden;text-overflow:ellipsis;color:#666}
 td:first-child{text-align:left;font-weight:500;color:#0F0F0F}
 tbody tr:hover td{background:rgba(255,255,255,.025)}
 tbody tr:last-child td{border-bottom:none}
@@ -157,6 +160,7 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
   <button class="tab-btn active" id="tabAffiliate" onclick="switchTab('affiliate')">📊 Affiliate Performance</button>
   <button class="tab-btn" id="tabKol" onclick="switchTab('kol')">🎯 KOL ROI</button>
   <button class="tab-btn" id="tabBudget" onclick="switchTab('budget')">💰 ค่าใช้จ่ายรายเดือน</button>
+  <button class="tab-btn" id="tabRec" onclick="switchTab('rec')">💡 คำแนะนำ Top 10</button>
 </div>
 <div id="panelAffiliate" class="tab-panel active">
 <!-- Month Range Picker -->
@@ -360,7 +364,7 @@ const raw=[
   {n:"rawinreview2465",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
   {n:"matenatthapong",t:3609,ma:1,mn:[null,null,null,null,null,null,3609]},
   {n:"chayaanit_",t:3378,ma:1,mn:[null,null,null,null,null,null,3378]},
-  {n:"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
+  {nz"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
   {n:"suwit_deepal.khonkaen",t:2427,ma:1,mn:[null,null,null,null,null,null,2427]},
   {n:"aornor.kd",t:2378,ma:1,mn:[null,null,null,null,null,null,2378]},
   {n:"newpocofy07",t:2214,ma:1,mn:[null,null,null,null,null,null,2214]},
@@ -370,7 +374,7 @@ const raw=[
   {n:"taddy_n2",t:1723,ma:1,mn:[null,null,null,null,null,null,1723]},
   {n:"body.chaya9",t:1706,ma:1,mn:[null,null,null,null,null,null,1706]},
   {n:"frameck",t:1622,ma:1,mn:[null,null,null,null,null,null,1622]},
-  {n:"butter291",t:1581,ma:1,mn:[null,null,null,null,null,null,1581]},
+  {nz"butter291",t:1581,ma:1,mn:[null,null,null,null,null,null,1581]},
   {n:"rattanaphon.a",t:1529,ma:1,mn:[null,null,null,null,null,null,1529]}
 ];
 
@@ -427,7 +431,7 @@ function ss(k){
   if(k==='t'){
     sd=[...raw].sort((a,b)=>{
       const as=a.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
-      const bs=b.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
+      const bs=b.mn.slice(afRS,afRE+1).re$uce((x,y)=>x+y,0);
       return bs-as;
     });
   }else{
@@ -737,15 +741,16 @@ afApplyRange(2,6);
 <script>
 // ─── TAB SWITCHER ───
 function switchTab(tab){
-  ['affiliate','kol','budget'].forEach(t=>{
+  ['affiliate''kol','budget','rec'].forEach(t=>{
     document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
   });
-  if(tab==='kol' && !kolChartsInit) initKolCharts();
+  if(tab==='kol' && !'+olChartsInit) initKolCharts();
   if(tab==='budget'){
     const mc = document.getElementById('budMonthlyChart');
     if(mc && !mc._chartInit){ mc._chartInit=true; initBudgetCharts(); renderBudTable(); }
   }
+  if(tab==='rec') renderRec();
 }
 
 // ─── KOL DATA ───
@@ -997,7 +1002,7 @@ function openKolDetail(id){
     {l:'ROI', v:roiStr, s:'ง่า GMV ÷ ค่าจ้าง', c:roiColor(roi)},
     {l:'Commission (~7.5%)', v:fmtV(comm), s:'ต้นทุน commission'},
     {l:'Net Profit', v:fmtV(netProfit), s:'GMV − ค่าจ้าง − comm', c:netProfit>=0?'#059669':'#DC2626'},
-  ].map(x=>`<div class="kol-detail-kc"><p style="font-size:10px;color:#6B7280;margin:0 0 4px;text-transform:uppercase;letter-spacing:.4px;">${x.l}</p><p style="font-size:18px;font-weight:500;margin:0;color:${x.c||'#1A5CDB'};">${x.v}</p><p style="font-size:10px;color:#374151;margin:2px 0 0;">${x.s}</p></div>`).join('');
+  ].map(x=>`<div class="kol-detail-kc"><p style="font-size:10px;color:#6B7280;margin:0 0 4px;text-transform:uppercase;letter-spacing:.4px;">${x.l}</p><p style="font-size:18px;font-weight:500;margin:0;color:${x.c}|'#1A5CDB'};">${x.v}</p><p style="font-size:10px;color:#374151;margin:2px 0 0;">${x.s}</p></div>`).join('');
 
   // Bar chart
   if(kdBar)kdBar.destroy();
@@ -1322,7 +1327,94 @@ function initBudgetCharts(){
 }
 
 // Budget chart init handled in switchTab above
+
+// ─── RECOMMENDATIONS ───
+let recRendered = false;
+function renderRec(){
+  if(recRendered) return;
+  recRendered = true;
+  const REC=[
+    {rank:1,n:"fahareejun",score:88,avg:95205,last:161079,trend:549,
+     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"สร้างความสัมพันธ์ seed",sc:"#5F5E5A",sb:"#F1EFE8",
+     why:"avg ฿95K/เดือน เพิ่มขึ้นต่อเนื่อง — มี deal ที่น่าพิจารณาเป็นพิเศษ",
+     seed:"Commission + seeding สินค้าใหม่ พร้อม brief สำหรับ launch + ส่งสินค้าทดลองก่อน launch"},
+    {rank:2,n:"ralph.detailing8",score:72,avg:13863,last:16534,trend:33,
+     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
+     why:"GMV เติบโตต่อเนื่อง 7 เดือน ฿1.8K → ฿17K — น่าสนใจมาก",
+     seed:"Seed Reflex + Sugar — ส่งก่อน launch เพื่อ audience ที่คล้ายกัน seeding organic"},
+    {rank:3,n:"jaonnm",score:70,avg:14687,last:17400,trend:22,
+     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
+     why:"ยอดสูงสม่ำเสมอ ฿12–17K — เป็น anchor creator",
+     seed:"Seed Rain Season (ฝน + บำรุง) ก่อน content season boost"},
+    {rank:4,n:"phanuwatinsri",score:64,avg:14239,last:14134,trend:0,
+     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
+     why:"Reliable avg ฿14K — ไม่ขึ้นลง consistent performer",
+     seed:"Seed Interior + Mind set content angle ที่ช่วยเพิ่ม avg"},
+    {rank:5,n:"rita.fe_",score:55,avg:54387,last:32670,trend:-47,
+     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
+     why:"ยอดขาย #1 GMV รวม (฿381K) แต่ peak ฿75K → ฿33K",
+     seed:"Seed สินค้าหลัก (Wool Duster, Sugar 3L) + brief content"},
+    {rank:6,n:"noonjourneyyy",score:50,avg:35996,last:23158,trend:-16,
+     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
+     why:"avg ฿36K แต่ GMV ลดลงต่อเนื่อง — content fatigue",
+     seed:"Seed Spot Clean + Martini — creative freedom เพื่อ audience response"},
+    {rank:7,n:"pailong05",score:47,avg:40007,last:38087,trend:-43,
+     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
+     why:"avg ฿40K/เดือน ลดลง 3 เดือน peak ฿67K",
+     seed:"Seed Interior Wipes + Refresh Wipes — demo สด เน้น peak ช่วงฤดู"},
+    {rank:8,n:"muchmai_mumi",score:40,avg:18011,last:18433,trend:-28,
+     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
+     why:"peak ฿43K ลดลง stable ฿18K — ต้องกระตุ้น",
+     seed:"Seed Bundle set + discount code เพื่อ incentive audience"},
+    {rank:9,n:"jarkkystory",score:32,avg:20510,last:9125,trend:-62,
+     rec:"หยุดชั่วคราว",rc:"#A32D2D",rb:"#FCEBEB",sl:"Seed: กระตุ้นก่อนกลับมา",sc:"#854F0B",sb:"#FAEEDA",
+     why:"7 เดือน peak ฿31K ลดลง 3 เดือน → ฿9K",
+     seed:"Seed 1 product + 2 ชิ้น commission — ดู audience response ก่อน"},
+    {rank:10,n:"thekathaecx30",score:22,avg:13528,last:6832,trend:-70,
+     rec:"หยุดชั่วคราว",rc:"#A32D2D",rb:"#FCEBEB",sl:"สร้างความสัมพันธ์ seed",sc:"#5F5E5A",sb:"#F1EFE8",
+     why:"ยอดไม่สม่ำเสมอ ฿33K → ฿3K → ฿23K → ฿7K",
+     seed:"หยุด seed ชั่วคราว — รอ momentum กลับมาก่อน"},
+  ];
+  const fmtB=v=>v>=1e6?'฿'+(v/1e6).toFixed(1)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
+  const tt=t=>t>0?`<span style="color:#3B6D11;font-size:11px">↑+${t}%</span>`:`<span style="color:#A32D2D;font-size:11px">↓${t}%</span>`;
+  const recCounts = {g:0,w:0,s:0};
+  REC.forEach(d=>{ if(d.rc==='#3B6D11') recCounts.g++; else if(d.rc==='#854F0B') recCounts.w++; else recCounts.s++; });
+  document.getElementById('rec-list').innerHTML=
+    `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
+      <div class="kc" style="border-left:3px solid #3B6D11;text-align:center"><div class="kc-val" style="color:#3B6D11">${recCounts.g}</div><div class="kc-label">เพิ่มงบ+seed</div></div>
+      <div class="kc" style="border-left:3px solid #854F0B;text-align:center"><div class="kc-val" style="color:#854F0B">${recCounts.w}</div><div class="kc-label">ระวัง+ดูแลใกล้ชิด</div></div>
+      <div class="kc" style="border-left:3px solid #A32D2D;text-align:center"><div class="kc-val" style="color:#A32D2D">${recCounts.s}</div><div class="kc-label">หยุดชั่วคราว</div></div>
+    </div>`+
+    REC.map(d=>`
+    <div class="card" style="padding:12px 14px;margin-bottom:10px;border-left:3px solid ${d.rc};border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
+        <div style="width:22px;height:22px;border-radius:50%;background:${d.rb};color:${d.rc};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.rank}</div>
+        <div style="font-size:14px;font-weight:600;flex:1">@${d.n}</div>
+        <div style="font-size:11px;padding:2px 8px;border-radius:10px;background:${d.rb};color:${d.rc};font-weight:600;white-space:nowrap">${d.rec}</div>
+      </div>
+      <div style="display:flex;gap:14px;margin-bottom:7px;flex-wrap:wrap">
+        <span style="font-size:12px;color:#6B7280">avg <b style="color:#0F0F0F">${fmtB(d.avg)}/เดือน</b></span>
+        <span style="font-size:12px;color:#6B7280">ล่าสุด <b style="color:#0F0F0F">${fmtB(d.last)}</b></span>
+        <span style="font-size:12px">${tt(d.trend)}</span>
+        <span style="font-size:12px;color:#6B7280">คะแนน <b style="color:${d.rc}">${d.score}</b></span>
+      </div>
+      <div style="font-size:12px;color:#6B7280;margin-bottom:8px;line-height:1.5">${d.why}</div>
+      <div style="background:#F9FAFB;border-radius:8px;padding:8px 10px;display:flex;align-items:flex-start;gap:8px">
+        <span style="font-size:11px;padding:2px 7px;border-radius:10px;background:${d.sb};color:${d.sc};font-weight:600;flex-shrink:0;white-space:nowrap">${d.sl}</span>
+        <span style="font-size:12px;color:#6B7280;line-height:1.5">${d.seed}</span>
+      </div>
+    </div>`).join('');
+}
 </script>
+
+<!-- PANEL: คำแนะนำ Top 10 -->
+<div id="panelRec" class="tab-panel">
+  <div style="padding:16px 0 8px">
+    <div style="font-size:16px;font-weight:700;color:#0F0F0F;margin-bottom:4px">💡 คำแนะนำ Seeding Strategy — Top 10 Creators</div>
+    <div style="font-size:12px;color:#6B7280;margin-bottom:16px">วิเคราะห์จาก avg GMV, trend 3 เดือนล่าสุด และความสม่ำเสมอของยอดขาย</div>
+    <div id="rec-list"></div>
+  </div>
+</div><!-- end panelRec -->
 
 </body>
 </html>
