@@ -156,6 +156,7 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 <div class="tab-nav">
   <button class="tab-btn active" id="tabAffiliate" onclick="switchTab('affiliate')">📊 Affiliate Performance</button>
   <button class="tab-btn" id="tabKol" onclick="switchTab('kol')">🎯 KOL ROI</button>
+  <button class="tab-btn" id="tabBudget" onclick="switchTab('budget')">💰 ค่าใช้จ่ายรายเดือน</button>
 </div>
 <div id="panelAffiliate" class="tab-panel active">
 <!-- Month Range Picker -->
@@ -715,7 +716,7 @@ afApplyRange(2,6);
 <script>
 // ─── TAB SWITCHER ───
 function switchTab(tab){
-  ['affiliate','kol'].forEach(t=>{
+  ['affiliate','kol','budget'].forEach(t=>{
     document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
   });
@@ -805,6 +806,71 @@ const KOLS = [
    scenario:5,
    insight:'GMV ฿99K โดยไม่ต้องจ่ายอะไร — น่าจะชอบสินค้าจริงๆ',
    tip:'Seed สินค้าใหม่ + ชวนเข้า bonus program — ต้นทุนน้อยมาก upside สูง'},
+,
+  // ── Mega — Apr 2026 ──
+  {id:'pepperchacha', tier:'mega', tierLabel:'Mega',
+   spend:80000, spendMo:[[5,80000]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'Mega creator เม.ย. ค่าจ้าง ฿80K — เป็น campaign ที่รับผิดชอบโดย บจก.ราชรี ยังไม่มี affiliate link track',
+   tip:'ติด affiliate link + วัด GMV หลัง clip 14/30 วัน เพื่อ benchmark กับ mushinyiwz'},
+  // ── Mid ──
+  {id:'taddy_n2', tier:'mid', tierLabel:'Mid',
+   spend:33000, spendMo:[[4,33000]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'จ่าย ฿33K มีนา ค่าจ้างสูงสุดใน mid-tier เดือนมีนา ยังไม่มี affiliate data',
+   tip:'วัด performance หลัง 30 วัน เปรียบกับ numtonn ที่จ่ายน้อยกว่าแต่ ROI ดีกว่า'},
+  {id:'namehouse19', tier:'mid', tierLabel:'Mid',
+   spend:17460, spendMo:[[4,17460]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿17.5K มีนา ยังรอดู performance',
+   tip:'ติด affiliate ก่อน re-engage'},
+  {id:'first.8888', tier:'mid', tierLabel:'Mid',
+   spend:4850, spendMo:[[3,4850]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿4.85K กพ. mid-tier ขนาดเล็ก',
+   tip:'ลอง seeding ก่อน ถ้า organic ดีค่อย paid'},
+  {id:'rumphaphak_', tier:'mid', tierLabel:'Mid',
+   spend:3000, spendMo:[[3,3000]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿3K กพ. ยังไม่มี affiliate',
+   tip:'เล็กน้อย — ลอง affiliate bonus แทน paid'},
+  {id:'kun_pnk', tier:'mid', tierLabel:'Mid',
+   spend:2000, spendMo:[[4,2000]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿2K มีนา',
+   tip:'ติด affiliate link'},
+  {id:'jacklkk1', tier:'mid', tierLabel:'Mid',
+   spend:1200, spendMo:[[4,1200]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿1.2K มีนา',
+   tip:'ติด affiliate'},
+  // ── Micro ──
+  {id:'Ployaugust', tier:'seeding', tierLabel:'Micro',
+   spend:7280, spendMo:[[4,7280]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿7.3K มีนา micro creator',
+   tip:'วัด engagement + affiliate conversion'},
+  {id:'may.primaya', tier:'mid', tierLabel:'Mid',
+   spend:57200, spendMo:[[0,57200]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'Mid creator สูงสุดเดือน พ.ย. 68 ฿57.2K — campaign แรกๆ ของ WIBWUB',
+   tip:'เปรียบกับ ROI จาก mushinyiwz เพื่อดูว่า mid vs mega tier คุ้มไหม'},
+  {id:'mmchy', tier:'seeding', tierLabel:'Micro',
+   spend:1940, spendMo:[[4,1940]],
+   mn:[null,null,null,null,null,null,null],
+   scenario:2,
+   insight:'฿1.94K มีนา',
+   tip:'ติด affiliate'},
+
   // Paid แต่ยอดหาย
   {id:'poppyme.6', tier:'seeding', tierLabel:'Seeding',
    spend:2200, spendMo:[[4,2200]],
@@ -982,6 +1048,267 @@ function initKolCharts(){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8}}},cutout:'60%'}
   });
+}
+</script>
+
+
+<!-- BUDGET PANEL -->
+<div id="panelBudget" class="tab-panel">
+
+<div class="kol-kpi-grid" style="grid-template-columns:repeat(5,1fr);">
+  <div class="kol-kc"><p class="kol-kl">รวมค่าจ้าง KOL ทั้งหมด</p><p class="kol-kv" id="bud-total">฿1.04M</p><p class="kol-ks">พ.ย. 68 – พ.ค. 69</p></div>
+  <div class="kol-kc"><p class="kol-kl">เดือนที่ใช้สูงสุด</p><p class="kol-kv" id="bud-peak" style="color:#D97706;">พค.69</p><p class="kol-ks">฿315,600</p></div>
+  <div class="kol-kc"><p class="kol-kl">เฉลี่ยต่อเดือน</p><p class="kol-kv" id="bud-avg">฿148K</p><p class="kol-ks">7 เดือนที่ผ่านมา</p></div>
+  <div class="kol-kc"><p class="kol-kl">Pending (รอจ่าย)</p><p class="kol-kv" id="bud-pending" style="color:#9F1239;">฿351K</p><p class="kol-ks">Djpetjah + Nickynachat มิ.ย.</p></div>
+  <div class="kol-kc"><p class="kol-kl">จำนวน Campaign</p><p class="kol-kv" id="bud-camps">14</p><p class="kol-ks">ทั้งหมดตั้งแต่ พ.ย. 68</p></div>
+</div>
+
+<div class="kol-charts-row" style="margin-bottom:14px;">
+  <div class="kol-cc" style="flex:2;">
+    <p class="kol-ct">ค่าใช้จ่าย KOL รายเดือน (฿)</p>
+    <div style="position:relative;height:220px;"><canvas id="budMonthlyChart"></canvas></div>
+  </div>
+  <div class="kol-cc" style="flex:1;">
+    <p class="kol-ct">สัดส่วนค่าใช้จ่ายแยก Tier</p>
+    <div style="position:relative;height:220px;"><canvas id="budTierDonut"></canvas></div>
+  </div>
+</div>
+
+<div class="kol-cc" style="margin-bottom:14px;">
+  <p class="kol-ct">ค่าใช้จ่ายแยก Tier รายเดือน (Stacked)</p>
+  <div style="position:relative;height:200px;"><canvas id="budStackedChart"></canvas></div>
+</div>
+
+<!-- Month selector + detail table -->
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
+  <p class="sec-label" style="margin:0;">รายละเอียดการจ้าง:</p>
+  <div id="budMonthFilter" style="display:flex;gap:5px;flex-wrap:wrap;">
+    <button class="sb a" id="bm-all" onclick="budFilter('all')">ทั้งหมด</button>
+    <button class="sb" id="bm-0" onclick="budFilter(0)">พย.68</button>
+    <button class="sb" id="bm-1" onclick="budFilter(1)">ธค.68</button>
+    <button class="sb" id="bm-2" onclick="budFilter(2)">มค.69</button>
+    <button class="sb" id="bm-3" onclick="budFilter(3)">กพ.69</button>
+    <button class="sb" id="bm-4" onclick="budFilter(4)">มีนา.69</button>
+    <button class="sb" id="bm-5" onclick="budFilter(5)">เมษา.69</button>
+    <button class="sb" id="bm-6" onclick="budFilter(6)">พค.69</button>
+    <button class="sb" id="bm-7" onclick="budFilter(7)">มิ.ย.69</button>
+  </div>
+</div>
+
+<div style="overflow-x:auto;">
+<table id="budTable" style="width:100%;border-collapse:collapse;font-size:12px;">
+  <thead>
+    <tr style="background:#F8F9FB;border-bottom:1.5px solid #E5E7EB;">
+      <th style="padding:8px 10px;text-align:left;color:#6B7280;font-weight:500;white-space:nowrap;">เดือน</th>
+      <th style="padding:8px 10px;text-align:left;color:#6B7280;font-weight:500;">รายการ / KOL</th>
+      <th style="padding:8px 10px;text-align:left;color:#6B7280;font-weight:500;">Tier</th>
+      <th style="padding:8px 10px;text-align:left;color:#6B7280;font-weight:500;">Campaign</th>
+      <th style="padding:8px 10px;text-align:right;color:#6B7280;font-weight:500;">จำนวน (฿)</th>
+      <th style="padding:8px 10px;text-align:center;color:#6B7280;font-weight:500;">สถานะ</th>
+    </tr>
+  </thead>
+  <tbody id="budTableBody"></tbody>
+</table>
+</div>
+
+<div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid #E5E7EB;">
+  <p style="font-size:10px;color:#6B7280;" id="budRowCount"></p>
+  <p style="font-size:13px;font-weight:500;color:#0F0F0F;" id="budRowTotal"></p>
+</div>
+
+</div><!-- end panelBudget -->
+
+<script>
+// ─── BUDGET DATA ───
+const BUD_LABELS = ['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิ.ย.69'];
+const BUD_TOTAL_ARR = [139590,16565,186000,81050,96900,205050,315600,200800];
+const BUD_PAID_ARR  = [139590,16565,186000,81050,96900,205050,164800,0]; // djpetjah pending
+const BUD_TIERS = {
+  mega:   [0,0,130000,0,0,80000,124800,200800],
+  mid:    [57200,0,0,17000,66200,14550,150800,0],
+  micro:  [66370,14140,0,1050,18354,2000,0,0],
+  nano:   [9700,2425,0,0,0,0,0,0],
+  seeding:[6320,0,56000,63000,12346,94500,40000,0],
+  bonus:  [0,0,0,0,0,14000,0,0],
+};
+
+const ALL_PAYMENTS = [
+  // ── พย.68 (Nov 2025) ──
+  {mo:0,kol:'may.primaya',tier:'mid',campaign:'Campaign NOV 2025',amount:57200,status:'done'},
+  {mo:0,kol:'taetae8379',tier:'micro',campaign:'Campaign NOV 2025',amount:11640,status:'done'},
+  {mo:0,kol:'mommy.boo',tier:'micro',campaign:'Campaign NOV 2025',amount:11640,status:'done'},
+  {mo:0,kol:'mild.melody08',tier:'micro',campaign:'Campaign NOV 2025',amount:9700,status:'done'},
+  {mo:0,kol:'sonsonyeahh',tier:'micro',campaign:'Campaign NOV 2025',amount:8000,status:'done'},
+  {mo:0,kol:'aomzansoojee',tier:'micro',campaign:'Campaign NOV 2025',amount:6000,status:'done'},
+  {mo:0,kol:'fb_pungpond',tier:'micro',campaign:'Campaign NOV 2025',amount:4850,status:'done'},
+  {mo:0,kol:'janine4joy',tier:'micro',campaign:'Campaign NOV 2025',amount:3395,status:'done'},
+  {mo:0,kol:'nunejourneycar',tier:'micro',campaign:'Campaign NOV 2025',amount:2910,status:'done'},
+  {mo:0,kol:'nongahappyman1',tier:'micro',campaign:'Campaign NOV 2025',amount:2910,status:'done'},
+  {mo:0,kol:'japann.story',tier:'micro',campaign:'Campaign NOV 2025',amount:2900,status:'done'},
+  {mo:0,kol:'nukunplan',tier:'micro',campaign:'Campaign NOV 2025',amount:2425,status:'done'},
+  {mo:0,kol:'_mmchyy',tier:'nano',campaign:'Campaign NOV 2025',amount:1940,status:'done'},
+  {mo:0,kol:'justanothersunday',tier:'nano',campaign:'Campaign NOV 2025',amount:1940,status:'done'},
+  {mo:0,kol:'matung19',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
+  {mo:0,kol:'aynanahc_',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
+  {mo:0,kol:'introvert_husband_lemon8',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
+  {mo:0,kol:'Waratchaya T.',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
+  {mo:0,kol:'gookgigg_giggz',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'ki.natthaphon',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'saiparn_toyotarayong',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'fffffbai',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'thekataecx30',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'noynoy.studio',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'prpray1',tier:'seeding',campaign:'Campaign NOV 2025',amount:500,status:'done'},
+  // ── ธค.68 (Dec 2025) ──
+  {mo:1,kol:'x1.xiv',tier:'micro',campaign:'Campaign Dec 2025',amount:8245,status:'done'},
+  {mo:1,kol:'janepim_',tier:'micro',campaign:'Campaign Dec 2025',amount:3395,status:'done'},
+  {mo:1,kol:'peelthewheel',tier:'micro',campaign:'Campaign Dec 2025',amount:2500,status:'done'},
+  {mo:1,kol:'peanutbuder1',tier:'seeding',campaign:'Campaign Dec 2025',amount:1455,status:'done'},
+  {mo:1,kol:'medsaieieiii',tier:'seeding',campaign:'Campaign Dec 2025',amount:970,status:'done'},
+  // ── มค.69 (Jan 2026) ──
+  {mo:2,kol:'mushinyiwz',tier:'mega',campaign:'Campaign Jan 2026',amount:130000,status:'done'},
+  {mo:2,kol:'Seeding 200 creators',tier:'seeding',campaign:'Seeding 200 Jan 2026',amount:56000,status:'done'},
+  // ── กพ.69 (Feb 2026) ──
+  {mo:3,kol:'numtonn',tier:'mid',campaign:'Campaign Feb 2026',amount:8730,status:'done'},
+  {mo:3,kol:'first.8888',tier:'mid',campaign:'Campaign Feb 2026',amount:4850,status:'done'},
+  {mo:3,kol:'rumphaphak_',tier:'mid',campaign:'Campaign Feb 2026',amount:3000,status:'done'},
+  {mo:3,kol:'noonjourney',tier:'micro',campaign:'Campaign Feb 2026',amount:1050,status:'done'},
+  {mo:3,kol:'Seeding 50 x ยิว (45 creators)',tier:'seeding',campaign:'Seeding 50 x ยิว Feb',amount:22500,status:'done'},
+  {mo:3,kol:'Seeding เพิ่มเติม (ม.ค.-ก.พ.)',tier:'seeding',campaign:'Seeding 200 Jan 2026',amount:40500,status:'done'},
+  // ── มีนา.69 (Mar 2026) ──
+  {mo:4,kol:'taddy_n2',tier:'mid',campaign:'Campaign March 2026',amount:33000,status:'done'},
+  {mo:4,kol:'namehouse19',tier:'mid',campaign:'Campaign March 2026',amount:17460,status:'done'},
+  {mo:4,kol:'papajate',tier:'mid',campaign:'Campaign March 2026',amount:12000,status:'done'},
+  {mo:4,kol:'kun_pnk',tier:'mid',campaign:'Campaign March 2026',amount:2000,status:'done'},
+  {mo:4,kol:'jacklkk1',tier:'mid',campaign:'Campaign March 2026',amount:1200,status:'done'},
+  {mo:4,kol:'Ployaugust',tier:'micro',campaign:'Campaign March 2026',amount:7280,status:'done'},
+  {mo:4,kol:'ralph.detailing8',tier:'micro',campaign:'Campaign March 2026',amount:7000,status:'done'},
+  {mo:4,kol:'Poppyme',tier:'micro',campaign:'Campaign March 2026',amount:2134,status:'done'},
+  {mo:4,kol:'mmchy',tier:'micro',campaign:'Campaign March 2026',amount:1940,status:'done'},
+  {mo:4,kol:'Seeding 50 x Poppy (Mar)',tier:'seeding',campaign:'Seeding 50 x Poppy Mar-Apr',amount:9000,status:'done'},
+  {mo:4,kol:'Seeding เพิ่มเติม มีนา',tier:'seeding',campaign:'Seeding Interior',amount:3346,status:'done'},
+  // ── เมษา.69 (Apr 2026) ──
+  {mo:5,kol:'pepperchacha',tier:'mega',campaign:'Campaign April 2026',amount:80000,status:'done'},
+  {mo:5,kol:'numtonn',tier:'mid',campaign:'Campaign April 2026',amount:14550,status:'done'},
+  {mo:5,kol:'noonjourneyyy (seeding x4)',tier:'micro',campaign:'Campaign April 2026',amount:2000,status:'done'},
+  {mo:5,kol:'rita.fe_',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:5000,status:'done'},
+  {mo:5,kol:'muchmai_mumi',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:2000,status:'done'},
+  {mo:5,kol:'noonjourneyyy',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:2000,status:'done'},
+  {mo:5,kol:'jarkkystory',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:2000,status:'done'},
+  {mo:5,kol:'jaonnm',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:1000,status:'done'},
+  {mo:5,kol:'ralph.detailing8',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:1000,status:'done'},
+  {mo:5,kol:'phanuwatinsri',tier:'bonus',campaign:'Bonus Affiliate Apr 2026',amount:1000,status:'done'},
+  {mo:5,kol:'Seeding 200 Interior (Apr)',tier:'seeding',campaign:'Seeding 200 Interior Apr-May',amount:74000,status:'done'},
+  {mo:5,kol:'Seeding 50 x Poppy (Apr)',tier:'seeding',campaign:'Seeding 50 x Poppy Mar-Apr',amount:15500,status:'done'},
+  {mo:5,kol:'Seeding เพิ่มเติม เม.ย.',tier:'seeding',campaign:'Various Apr campaigns',amount:5000,status:'done'},
+  // ── พค.69 (May 2026) ──
+  {mo:6,kol:'nickynachat',tier:'mega',campaign:'Campaign May 2026',amount:124800,status:'done'},
+  {mo:6,kol:'djpetjah',tier:'mid',campaign:'Campaign May 2026',amount:150800,status:'pending'},
+  {mo:6,kol:'บจก.ราชรี (agency fee)',tier:'seeding',campaign:'Seeding May 2026',amount:52000,status:'done'},
+  {mo:6,kol:'Seeding Interior (May)',tier:'seeding',campaign:'Seeding 200 Interior May',amount:40000,status:'done'},
+  // ── มิ.ย.69 (Jun 2026 - pending) ──
+  {mo:7,kol:'nickynachat (คลิปที่ 2-3)',tier:'mega',campaign:'Campaign June 2026',amount:200800,status:'pending'},
+];
+
+// ── Budget rendering ──
+let budCurrentFilter='all';
+let budMonthChart=null, budStackedChart=null, budTierDonut=null;
+
+function budFilter(f){
+  budCurrentFilter=f;
+  document.querySelectorAll('#budMonthFilter .sb').forEach(b=>b.classList.remove('a'));
+  const el=document.getElementById(f==='all'?'bm-all':'bm-'+f);
+  if(el)el.classList.add('a');
+  renderBudTable();
+}
+
+function tierBadge(t){
+  const MAP={mega:'#3730A3',mid:'#065F46',micro:'#92400E',nano:'#4B5563',seeding:'#92400E',bonus:'#6B21A8'};
+  const BG={mega:'#EEF1FE',mid:'#ECFDF5',micro:'#FFFBEB',nano:'#F3F4F6',seeding:'#FFFBEB',bonus:'#FDF4FF'};
+  const L={mega:'Mega',mid:'Mid',micro:'Micro',nano:'Nano',seeding:'Seeding',bonus:'Bonus'};
+  const c=MAP[t]||'#374151',bg=BG[t]||'#F3F4F6',l=L[t]||t;
+  return `<span style="font-size:10px;padding:2px 7px;border-radius:20px;background:${bg};color:${c};">${l}</span>`;
+}
+
+function renderBudTable(){
+  const list=budCurrentFilter==='all'?ALL_PAYMENTS:ALL_PAYMENTS.filter(p=>p.mo===budCurrentFilter);
+  const tbody=document.getElementById('budTableBody');
+  tbody.innerHTML=list.map(p=>{
+    const moLabel=BUD_LABELS[p.mo]||'';
+    const amt=p.amount.toLocaleString('th-TH');
+    const statusBadge=p.status==='done'
+      ? '<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:#ECFDF5;color:#065F46;">✓ จ่ายแล้ว</span>'
+      : '<span style="font-size:10px;padding:2px 8px;border-radius:20px;background:#FEF3C7;color:#92400E;">⏳ รอจ่าย</span>';
+    return `<tr style="border-bottom:0.5px solid #F3F4F6;transition:background .15s;" onmouseover="this.style.background='#F8F9FB'" onmouseout="this.style.background=''">
+      <td style="padding:8px 10px;white-space:nowrap;font-size:11px;color:#6B7280;">${moLabel}</td>
+      <td style="padding:8px 10px;font-weight:500;color:#0F0F0F;">@${p.kol}</td>
+      <td style="padding:8px 10px;">${tierBadge(p.tier)}</td>
+      <td style="padding:8px 10px;font-size:11px;color:#6B7280;">${p.campaign}</td>
+      <td style="padding:8px 10px;text-align:right;font-weight:500;color:${p.status==='pending'?'#9F1239':'#0F0F0F'};">฿${amt}</td>
+      <td style="padding:8px 10px;text-align:center;">${statusBadge}</td>
+    </tr>`;
+  }).join('');
+  const total=list.reduce((s,p)=>s+p.amount,0);
+  document.getElementById('budRowCount').textContent=`แสดง ${list.length} รายการ`;
+  document.getElementById('budRowTotal').textContent=`รวม ฿${total.toLocaleString('th-TH')}`;
+}
+
+function initBudgetCharts(){
+  // Monthly bar chart
+  if(budMonthChart)budMonthChart.destroy();
+  budMonthChart=new Chart(document.getElementById('budMonthlyChart'),{
+    type:'bar',
+    data:{
+      labels:BUD_LABELS,
+      datasets:[
+        {label:'จ่ายแล้ว',data:BUD_PAID_ARR,backgroundColor:'#1A5CDB',borderRadius:4},
+        {label:'รอจ่าย',data:[0,0,0,0,0,0,150800,200800],backgroundColor:'rgba(159,18,57,0.35)',borderRadius:4},
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:10},boxWidth:10}}},
+      scales:{x:{stacked:true,ticks:{font:{size:10}}},y:{stacked:true,ticks:{font:{size:9},callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}
+  });
+
+  // Stacked tier breakdown
+  if(budStackedChart)budStackedChart.destroy();
+  const TIER_COLORS={mega:'#6366F1',mid:'#10B981',micro:'#F59E0B',nano:'#94A3B8',seeding:'#FB923C',bonus:'#A855F7'};
+  const TIER_LABELS={mega:'Mega',mid:'Mid',micro:'Micro',nano:'Nano',seeding:'Seeding',bonus:'Bonus'};
+  const stDs=Object.entries(BUD_TIERS).map(([k,d])=>({label:TIER_LABELS[k],data:d,backgroundColor:TIER_COLORS[k]||'#888',borderRadius:2}));
+  budStackedChart=new Chart(document.getElementById('budStackedChart'),{
+    type:'bar',data:{labels:BUD_LABELS,datasets:stDs},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'top',labels:{font:{size:9},boxWidth:8}}},
+      scales:{x:{stacked:true,ticks:{font:{size:10}}},y:{stacked:true,ticks:{font:{size:9},callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}
+  });
+
+  // Tier donut (all time)
+  if(budTierDonut)budTierDonut.destroy();
+  const tierTotals=Object.entries(BUD_TIERS).map(([k,d])=>({k,v:d.reduce((s,x)=>s+x,0)})).filter(x=>x.v>0);
+  budTierDonut=new Chart(document.getElementById('budTierDonut'),{
+    type:'doughnut',
+    data:{
+      labels:tierTotals.map(x=>TIER_LABELS[x.k]),
+      datasets:[{data:tierTotals.map(x=>x.v),backgroundColor:tierTotals.map(x=>TIER_COLORS[x.k]),borderWidth:0,hoverOffset:4}]
+    },
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:9},boxWidth:8}}},cutout:'60%'}
+  });
+}
+
+// Override switchTab to also init budget charts
+const _origSwitch=switchTab;
+function switchTab(tab){
+  _origSwitch(tab);
+  document.getElementById('panelBudget')?.classList.toggle('active',tab==='budget');
+  document.getElementById('tabBudget')?.classList.toggle('active',tab==='budget');
+  if(tab==='budget'){
+    if(!document.getElementById('budMonthlyChart')._chartInit){
+      document.getElementById('budMonthlyChart')._chartInit=true;
+      initBudgetCharts();
+      renderBudTable();
+    }
+  }
 }
 </script>
 
