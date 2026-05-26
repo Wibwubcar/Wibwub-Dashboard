@@ -364,7 +364,7 @@ const raw=[
   {n:"rawinreview2465",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
   {n:"matenatthapong",t:3609,ma:1,mn:[null,null,null,null,null,null,3609]},
   {n:"chayaanit_",t:3378,ma:1,mn:[null,null,null,null,null,null,3378]},
-  {nz"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
+  {n:"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
   {n:"suwit_deepal.khonkaen",t:2427,ma:1,mn:[null,null,null,null,null,null,2427]},
   {n:"aornor.kd",t:2378,ma:1,mn:[null,null,null,null,null,null,2378]},
   {n:"newpocofy07",t:2214,ma:1,mn:[null,null,null,null,null,null,2214]},
@@ -374,7 +374,7 @@ const raw=[
   {n:"taddy_n2",t:1723,ma:1,mn:[null,null,null,null,null,null,1723]},
   {n:"body.chaya9",t:1706,ma:1,mn:[null,null,null,null,null,null,1706]},
   {n:"frameck",t:1622,ma:1,mn:[null,null,null,null,null,null,1622]},
-  {nz"butter291",t:1581,ma:1,mn:[null,null,null,null,null,null,1581]},
+  {n:"butter291",t:1581,ma:1,mn:[null,null,null,null,null,null,1581]},
   {n:"rattanaphon.a",t:1529,ma:1,mn:[null,null,null,null,null,null,1529]}
 ];
 
@@ -1332,85 +1332,132 @@ let recRendered = false;
 function renderRec(){
   if(recRendered) return;
   recRendered = true;
-  const REC=[
-    {rank:1,n:"fahareejun",score:88,avg:95205,last:161079,trend:549,
-     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"สร้างความสัมพันธ์ seed",sc:"#5F5E5A",sb:"#F1EFE8",
-     why:"avg ฿95K/เดือน เพิ่มขึ้นต่อเนื่อง — มี deal ที่น่าพิจารณาเป็นพิเศษ",
-     seed:"Commission + seeding สินค้าใหม่ พร้อม brief สำหรับ launch + ส่งสินค้าทดลองก่อน launch"},
-    {rank:2,n:"ralph.detailing8",score:72,avg:13863,last:16534,trend:33,
-     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"GMV เติบโตต่อเนื่อง 7 เดือน ฿1.8K → ฿17K — น่าสนใจมาก",
-     seed:"Seed Reflex + Sugar — ส่งก่อน launch เพื่อ audience ที่คล้ายกัน seeding organic"},
-    {rank:3,n:"jaonnm",score:70,avg:14687,last:17400,trend:22,
-     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
-     why:"ยอดสูงสม่ำเสมอ ฿12–17K — เป็น anchor creator",
-     seed:"Seed Rain Season (ฝน + บำรุง) ก่อน content season boost"},
-    {rank:4,n:"phanuwatinsri",score:64,avg:14239,last:14134,trend:0,
-     rec:"เพิ่มงบ+seed",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
-     why:"Reliable avg ฿14K — ไม่ขึ้นลง consistent performer",
-     seed:"Seed Interior + Mind set content angle ที่ช่วยเพิ่ม avg"},
-    {rank:5,n:"rita.fe_",score:55,avg:54387,last:32670,trend:-47,
-     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"ยอดขาย #1 GMV รวม (฿381K) แต่ peak ฿75K → ฿33K",
-     seed:"Seed สินค้าหลัก (Wool Duster, Sugar 3L) + brief content"},
-    {rank:6,n:"noonjourneyyy",score:50,avg:35996,last:23158,trend:-16,
-     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"avg ฿36K แต่ GMV ลดลงต่อเนื่อง — content fatigue",
-     seed:"Seed Spot Clean + Martini — creative freedom เพื่อ audience response"},
-    {rank:7,n:"pailong05",score:47,avg:40007,last:38087,trend:-43,
-     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"avg ฿40K/เดือน ลดลง 3 เดือน peak ฿67K",
-     seed:"Seed Interior Wipes + Refresh Wipes — demo สด เน้น peak ช่วงฤดู"},
-    {rank:8,n:"muchmai_mumi",score:40,avg:18011,last:18433,trend:-28,
-     rec:"ระวัง+ดูแลใกล้ชิด",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สร้างความสัมพันธ์",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"peak ฿43K ลดลง stable ฿18K — ต้องกระตุ้น",
-     seed:"Seed Bundle set + discount code เพื่อ incentive audience"},
-    {rank:9,n:"jarkkystory",score:32,avg:20510,last:9125,trend:-62,
-     rec:"หยุดชั่วคราว",rc:"#A32D2D",rb:"#FCEBEB",sl:"Seed: กระตุ้นก่อนกลับมา",sc:"#854F0B",sb:"#FAEEDA",
-     why:"7 เดือน peak ฿31K ลดลง 3 เดือน → ฿9K",
-     seed:"Seed 1 product + 2 ชิ้น commission — ดู audience response ก่อน"},
-    {rank:10,n:"thekathaecx30",score:22,avg:13528,last:6832,trend:-70,
-     rec:"หยุดชั่วคราว",rc:"#A32D2D",rb:"#FCEBEB",sl:"สร้างความสัมพันธ์ seed",sc:"#5F5E5A",sb:"#F1EFE8",
-     why:"ยอดไม่สม่ำเสมอ ฿33K → ฿3K → ฿23K → ฿7K",
-     seed:"หยุด seed ชั่วคราว — รอ momentum กลับมาก่อน"},
-  ];
-  const fmtB=v=>v>=1e6?'฿'+(v/1e6).toFixed(1)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
-  const tt=t=>t>0?`<span style="color:#3B6D11;font-size:11px">↑+${t}%</span>`:`<span style="color:#A32D2D;font-size:11px">↓${t}%</span>`;
-  const recCounts = {g:0,w:0,s:0};
-  REC.forEach(d=>{ if(d.rc==='#3B6D11') recCounts.g++; else if(d.rc==='#854F0B') recCounts.w++; else recCounts.s++; });
-  document.getElementById('rec-list').innerHTML=
-    `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
-      <div class="kc" style="border-left:3px solid #3B6D11;text-align:center"><div class="kc-val" style="color:#3B6D11">${recCounts.g}</div><div class="kc-label">เพิ่มงบ+seed</div></div>
-      <div class="kc" style="border-left:3px solid #854F0B;text-align:center"><div class="kc-val" style="color:#854F0B">${recCounts.w}</div><div class="kc-label">ระวัง+ดูแลใกล้ชิด</div></div>
-      <div class="kc" style="border-left:3px solid #A32D2D;text-align:center"><div class="kc-val" style="color:#A32D2D">${recCounts.s}</div><div class="kc-label">หยุดชั่วคราว</div></div>
-    </div>`+
-    REC.map(d=>`
-    <div class="card" style="padding:12px 14px;margin-bottom:10px;border-left:3px solid ${d.rc};border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
-        <div style="width:22px;height:22px;border-radius:50%;background:${d.rb};color:${d.rc};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.rank}</div>
-        <div style="font-size:14px;font-weight:600;flex:1">@${d.n}</div>
-        <div style="font-size:11px;padding:2px 8px;border-radius:10px;background:${d.rb};color:${d.rc};font-weight:600;white-space:nowrap">${d.rec}</div>
+
+  const COMM=0.07, GM=0.40, SEED=500, NET=GM-COMM;
+  const BEP=Math.round(SEED/NET);
+  const fb=v=>v>=1e6?'฿'+(v/1e6).toFixed(1)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
+  const fr=r=>r>=100?Math.round(r)+'×':r.toFixed(1)+'×';
+
+  // Compute stats from raw[] automatically
+  const S=raw.filter(r=>r.n).map(r=>{
+    const last=r.mn[6]??0;
+    const prev=r.mn[5]??r.mn[4]??null;
+    const tr=prev!=null&&prev>0?Math.round((last-prev)/prev*100):null;
+    const vals=r.mn.filter(v=>v!=null&&v>0);
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    const roi=(last*NET)/SEED;
+    return{n:r.n,ma:r.ma,last,avg,tr,roi,tier:roi>=10?1:roi>=3?2:roi>=1?3:4};
+  }).filter(s=>s.last>=500).sort((a,b)=>b.roi-a.roi).slice(0,20);
+
+  const maxG=S[0].last;
+  const totG=S.reduce((s,c)=>s+c.last,0);
+  const pROI=((totG*NET)/(S.length*SEED)).toFixed(1);
+
+  const TC=['','#2D6A4F','#1A5CDB','#B45309'];
+  const TB=['','#F0F9F4','#EEF3FD','#FFF8EC'];
+  const TL=['','🚀 เพิ่มงบทันที — ROI &gt; 10×','✅ จ้างต่อ — ROI 3–10×','⚠️ ระวัง — ROI 1–3×'];
+  const TR=['','ให้ seeding สินค้าใหม่ + bonus program + ติดต่อโดยตรง','รักษาความสัมพันธ์ seed + brief content เป็นประจำ','กระตุ้นด้วย exclusive deal ก่อนตัดสินใจหยุด'];
+
+  let html=`
+  <div style="background:linear-gradient(135deg,#1A5CDB 0%,#0E3A8C 100%);border-radius:12px;padding:14px 16px;margin-bottom:12px;color:#fff">
+    <div style="font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;opacity:.6;margin-bottom:10px">สมมติฐาน — จุดคุ้มทุน (Break-Even)</div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px">
+      <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;text-align:center;min-width:70px">
+        <div style="font-size:8px;opacity:.6;margin-bottom:2px">ค่าจ้าง/คน/เดือน</div>
+        <div style="font-size:19px;font-weight:800;line-height:1">฿500</div>
       </div>
-      <div style="display:flex;gap:14px;margin-bottom:7px;flex-wrap:wrap">
-        <span style="font-size:12px;color:#6B7280">avg <b style="color:#0F0F0F">${fmtB(d.avg)}/เดือน</b></span>
-        <span style="font-size:12px;color:#6B7280">ล่าสุด <b style="color:#0F0F0F">${fmtB(d.last)}</b></span>
-        <span style="font-size:12px">${tt(d.trend)}</span>
-        <span style="font-size:12px;color:#6B7280">คะแนน <b style="color:${d.rc}">${d.score}</b></span>
+      <div style="font-size:20px;opacity:.35;font-weight:300">÷</div>
+      <div style="background:rgba(255,255,255,.12);border-radius:8px;padding:7px 10px;text-align:center;min-width:70px">
+        <div style="font-size:8px;opacity:.6;margin-bottom:2px">Net Margin</div>
+        <div style="font-size:19px;font-weight:800;line-height:1">33%</div>
+        <div style="font-size:8px;opacity:.4">(40% GM − 7% COM)</div>
       </div>
-      <div style="font-size:12px;color:#6B7280;margin-bottom:8px;line-height:1.5">${d.why}</div>
-      <div style="background:#F9FAFB;border-radius:8px;padding:8px 10px;display:flex;align-items:flex-start;gap:8px">
-        <span style="font-size:11px;padding:2px 7px;border-radius:10px;background:${d.sb};color:${d.sc};font-weight:600;flex-shrink:0;white-space:nowrap">${d.sl}</span>
-        <span style="font-size:12px;color:#6B7280;line-height:1.5">${d.seed}</span>
+      <div style="font-size:20px;opacity:.35;font-weight:300">=</div>
+      <div style="flex:1;min-width:100px;background:rgba(255,255,255,.2);border:1.5px solid rgba(255,255,255,.4);border-radius:10px;padding:9px 14px;text-align:center">
+        <div style="font-size:8px;opacity:.75;margin-bottom:3px">จุดคุ้มทุน GMV/เดือน</div>
+        <div style="font-size:26px;font-weight:900;line-height:1">${fb(BEP)}</div>
+        <div style="font-size:8px;opacity:.5;margin-top:2px">ต่ำกว่านี้ = ขาดทุน</div>
       </div>
-    </div>`).join('');
+    </div>
+    <div style="font-size:9px;opacity:.5;border-top:1px solid rgba(255,255,255,.15);padding-top:8px;line-height:1.7">
+      ฿500 ÷ (40% − 7%) = ฿${BEP.toLocaleString()}/เดือน · สมมติ Gross Margin 40%, Commission 7%
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:16px">
+    <div class="kc" style="text-align:center;border-top:3px solid #1A5CDB;padding:12px 10px">
+      <div class="kc-val" style="font-size:19px;color:#1A5CDB">${fb(totG)}</div>
+      <div class="kc-label">GMV รวม Top 20</div>
+      <div style="font-size:9px;color:#9CA3AF;margin-top:2px">พค.69</div>
+    </div>
+    <div class="kc" style="text-align:center;border-top:3px solid #6B7280;padding:12px 10px">
+      <div class="kc-val" style="font-size:19px;color:#374151">${fb(S.length*SEED)}</div>
+      <div class="kc-label">ต้นทุน Seeding</div>
+      <div style="font-size:9px;color:#9CA3AF;margin-top:2px">${S.length} คน × ฿500</div>
+    </div>
+    <div class="kc" style="text-align:center;border-top:3px solid #2D6A4F;padding:12px 10px">
+      <div class="kc-val" style="font-size:19px;color:#2D6A4F">${pROI}×</div>
+      <div class="kc-label">Portfolio ROI</div>
+      <div style="font-size:9px;color:#9CA3AF;margin-top:2px">คืนทุน ${pROI} เท่า</div>
+    </div>
+  </div>`;
+
+  [1,2,3].forEach(t=>{
+    const g=S.filter(c=>c.tier===t);
+    if(!g.length)return;
+    html+=`
+    <div style="display:flex;align-items:center;gap:8px;margin:16px 0 6px">
+      <div style="font-size:12px;font-weight:700;color:${TC[t]};flex:1">${TL[t]}</div>
+      <div style="font-size:10px;background:${TB[t]};color:${TC[t]};padding:2px 10px;border-radius:10px;font-weight:700">${g.length} คน</div>
+    </div>
+    <div style="font-size:10px;color:#9CA3AF;background:#F9FAFB;border-left:3px solid ${TC[t]};border-radius:0 6px 6px 0;padding:6px 10px;margin-bottom:10px">${TR[t]}</div>`;
+
+    g.forEach(c=>{
+      const rank=S.indexOf(c)+1;
+      const barW=Math.min(100,Math.round(c.last/maxG*100));
+      const tH=c.tr!=null
+        ?(c.tr>=0
+          ?`<span style="background:#F0F9F4;color:#2D6A4F;font-weight:700;font-size:10px;padding:2px 6px;border-radius:5px">↑+${c.tr}%</span>`
+          :`<span style="background:#FEF2F2;color:#DC2626;font-weight:700;font-size:10px;padding:2px 6px;border-radius:5px">↓${Math.abs(c.tr)}%</span>`)
+        :`<span style="background:#F3F4F6;color:#9CA3AF;font-size:10px;padding:2px 6px;border-radius:5px">ใหม่</span>`;
+
+      html+=`
+      <div style="background:#fff;border:1px solid #E5E7EB;border-left:3px solid ${TC[t]};border-radius:10px;padding:11px 13px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.04)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+          <div style="width:22px;height:22px;border-radius:50%;background:${TB[t]};color:${TC[t]};font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${rank}</div>
+          <div style="flex:1;font-size:13px;font-weight:700;color:#111827">@${c.n}</div>
+          <div style="text-align:right;line-height:1.1">
+            <div style="font-size:23px;font-weight:900;color:${TC[t]}">${fr(c.roi)}</div>
+            <div style="font-size:8px;color:#9CA3AF;text-align:right">ROI</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:9px;flex-wrap:wrap">
+          <div style="font-size:11px;color:#6B7280">พค. <b style="font-size:14px;color:#111827">${fb(c.last)}</b></div>
+          <div style="width:1px;height:12px;background:#E5E7EB"></div>
+          <div style="font-size:11px;color:#6B7280">avg <b style="color:#374151">${fb(c.avg)}</b></div>
+          <div style="width:1px;height:12px;background:#E5E7EB"></div>
+          ${tH}
+          <div style="font-size:9px;color:#C4C9D4;margin-left:auto">${c.ma} เดือน</div>
+        </div>
+        <div style="background:#F3F4F6;border-radius:4px;height:5px;overflow:hidden;margin-bottom:3px">
+          <div style="width:${barW}%;height:100%;background:${TC[t]};border-radius:4px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:8px;color:#C4C9D4">
+          <span>GMV เทียบกับ #1 (${fb(maxG)})</span><span>${barW}%</span>
+        </div>
+      </div>`;
+    });
+  });
+
+  document.getElementById('rec-list').innerHTML=html;
 }
 </script>
 
-<!-- PANEL: คำแนะนำ Top 10 -->
+<!-- PANEL: คำแนะนำ Top 20 -->
 <div id="panelRec" class="tab-panel">
   <div style="padding:16px 0 8px">
-    <div style="font-size:16px;font-weight:700;color:#0F0F0F;margin-bottom:4px">💡 คำแนะนำ Seeding Strategy — Top 10 Creators</div>
-    <div style="font-size:12px;color:#6B7280;margin-bottom:16px">วิเคราะห์จาก avg GMV, trend 3 เดือนล่าสุด และความสม่ำเสมอของยอดขาย</div>
+    <div style="font-size:16px;font-weight:700;color:#0F0F0F;margin-bottom:3px">📊 จุดคุ้มทุน & ควรจ้างใครต่อ?</div>
+    <div style="font-size:12px;color:#6B7280;margin-bottom:14px">คำนวณ ROI ต่อต้นทุน ฿500/คน — เรียงจากคุ้มค่ามากที่สุด (พค.69)</div>
     <div id="rec-list"></div>
   </div>
 </div><!-- end panelRec -->
