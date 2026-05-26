@@ -343,7 +343,7 @@ const raw=[
   {n:"poppyme.6",t:30574,ma:3,mn:[null,null,null,null,13386,10912,6276]},
   {n:"tonpalm__",t:26835,ma:7,mn:[2633,8952,7903,3649,2207,1204,287]},
   {n:"ceo.blk.item",t:24465,ma:2,mn:[null,null,null,null,null,5957,18508]},
-  {nz"ctl.mkzk",t:23233,ma:7,mn:[4475,2581,4004,4141,3178,3555,1299]},
+  {n:"ctl.mkzk",t:23233,ma:7,mn:[4475,2581,4004,4141,3178,3555,1299]},
   {n:"japann.story",t:19952,ma:7,mn:[2539,2709,5143,2947,1163,3518,1933]},
   {n:"joakrw",t:18958,ma:7,mn:[4100,648,1293,3460,2922,1290,5245]},
   {n:"manutsananpibanwo",t:18550,ma:6,mn:[237,4973,6602,1284,4354,1100,null]},
@@ -406,7 +406,10 @@ function rt(){
   const sl=sd.slice(0,cnt);
   document.getElementById('tb').innerHTML=sl.map((r,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
-    return`<tr><td title="${r.n}"><span class="rk ${rc}">${i+1}</span>${r.n}</td>${r.mn.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tx">${fmtT(r.t)}</td><td class="mx">${r.ma}/7</td></tr>`;
+    const nMo=afRE-afRS+1;
+    const rangeTotal=r.mn.slice(afRS,afRE+1).reduce((a,b)=>a+b,0);
+    const rangeMa=nMo>0?Math.max(...r.mn.slice(afRS,afRE+1)):0;
+    return`<tr><td title="${r.n}"><span class="rk ${rc}">${i+1}</span>${r.n}</td>${r.mn.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tx">${fmtT(rangeTotal)}</td><td class="mx">${rangeMa}/${nMo}</td></tr>`;
   }).join('');
   document.getElementById('pi').textContent=`แสดง ${Math.min(cnt,sd.length)} จาก ${sd.length} creators`;
   document.getElementById('smb').style.display=cnt>=sd.length?'none':'block';
@@ -421,7 +424,15 @@ function rt(){
 }
 function ss(k){
   cur=k;cnt=20;
-  sd=k==='t'?[...raw].sort((a,b)=>b.t-a.t):[...raw].sort((a,b)=>(b.mn[k]??-1)-(a.mn[k]??-1));
+  if(k==='t'){
+    sd=[...raw].sort((a,b)=>{
+      const as=a.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
+      const bs=b.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
+      return bs-as;
+    });
+  }else{
+    sd=[...raw].sort((a,b)=>(b.mn[k]??-1)-(a.mn[k]??-1));
+  }
   document.querySelectorAll('.sb').forEach(b=>b.classList.remove('a'));
   document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sa'));
   const bid=k==='t'?'bt':'b'+k;
@@ -456,7 +467,7 @@ const AF_DOW=['อา','จ','อ','พ','พฤ','ศ','ส'];
 function afParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
 function afFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
 function afFmtThai(s){const d=afParseDate(s);return d.getDate()+' '+AF_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
-function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(c)+' – '+afFmtThai(e);}
+function afRangeLabel(s,e){return s===e?afFmtThai(s):afFmtThai(s)+' – '+afFmtThai(e);}
 
 function afRangeToMonths(s,e){
   const sd=afParseDate(s),ed=afParseDate(e);
@@ -574,7 +585,17 @@ function afClosePicker(){
   document.getElementById('afBackdrop').classList.remove('open');
   afCalStep=0;
 }
-function afRefreshUI(){}
+function afRefreshUI(s,e){
+  // Re-sort by range total when current sort is 't', then re-render table
+  if(cur==='t'){
+    sd=[...raw].sort((a,b)=>{
+      const as=a.mn.slice(s,e+1).reduce((x,y)=>x+y,0);
+      const bs=b.mn.slice(s,e+1).reduce((x,y)=>x+y,0);
+      return bs-as;
+    });
+  }
+  rt();
+}
 
 function afApplyRange(s,e){
   afRS=s;afRE=e;
@@ -596,7 +617,7 @@ function afApplyRange(s,e){
   for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
 
   // Format
-  const fv=v=>v>=1000000?'฿'+(v/1000000)00).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
+  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
   document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
   document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
   document.getElementById('af-kpi-net').textContent=fv(netSum);
