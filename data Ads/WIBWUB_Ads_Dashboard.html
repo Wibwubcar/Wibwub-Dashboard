@@ -307,23 +307,22 @@
   <!-- Charts -->
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-title">📊 ROAS — Shopee vs TikTok (แยก Ads)</div>
+      <div class="chart-title">📈 Revenue รายเดือน — Shopee vs TikTok</div>
       <div class="chart-wrap"><canvas id="chartROAS"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">💰 Spend vs Revenue (Platform)</div>
+      <div class="chart-title">💸 Spend รายเดือน — Shopee vs TikTok</div>
       <div class="chart-wrap"><canvas id="chartSpendRev"></canvas></div>
     </div>
   </div>
 
-  <!-- CTR / CVR chart -->
   <div class="charts-grid">
     <div class="chart-card">
-      <div class="chart-title">👁️ CTR & Conversion Rate เปรียบเทียบ</div>
+      <div class="chart-title">⚡ ROAS รายเดือน — Shopee vs TikTok</div>
       <div class="chart-wrap"><canvas id="chartCTRCVR"></canvas></div>
     </div>
     <div class="chart-card">
-      <div class="chart-title">🛒 คำสั่งซื้อ & CPA ตาม Platform</div>
+      <div class="chart-title">🛒 Orders รายเดือน — Shopee vs TikTok</div>
       <div class="chart-wrap"><canvas id="chartOrderCPA"></canvas></div>
     </div>
   </div>
@@ -858,76 +857,84 @@ function updateCharts(sh, tk){
 }
 
 function initCharts(){
-  // Destroy existing charts first — must pass canvas element (not string ID) for Chart.js 4
   ['chartROAS','chartSpendRev','chartCTRCVR','chartOrderCPA'].forEach(id=>{
     const canvas = document.getElementById(id);
     if (!canvas) return;
     const existing = Chart.getChart(canvas);
     if (existing) existing.destroy();
   });
-  const sh=getSH(), tk=getTK();
-// ROAS bar chart - all ads/campaigns
-  const sLabels = getSH().all.map(a=>a.name.substring(0,20)+'…');
-  const sRoas   = getSH().all.map(a=>a.roas);
-  const tLabels = getTK().all.map(a=>a.name.substring(0,22)+'…');
-  const tRoas   = getTK().all.map(a=>a.roas);
 
+  const months = ['jan','feb','mar','apr','may'];
+  const mLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+  const shRevArr   = months.map(m => DATA_PERIODS[m].shopee.revenue);
+  const tkRevArr   = months.map(m => DATA_PERIODS[m].tiktok.revenue);
+  const shSpendArr = months.map(m => DATA_PERIODS[m].shopee.spend);
+  const tkSpendArr = months.map(m => DATA_PERIODS[m].tiktok.spend);
+  const shROASArr  = months.map(m => DATA_PERIODS[m].shopee.roas);
+  const tkROASArr  = months.map(m => DATA_PERIODS[m].tiktok.roas);
+  const shOrdArr   = months.map(m => DATA_PERIODS[m].shopee.orders);
+  const tkOrdArr   = months.map(m => DATA_PERIODS[m].tiktok.orders);
+
+  const shColor = '#EE4D2D', tkColor = '#2DD4CF';
+  const shBg = 'rgba(238,77,45,.15)', tkBg = 'rgba(45,212,191,.12)';
+
+  // Revenue Trend (line)
   new Chart(document.getElementById('chartROAS'),{
-    type:'bar',
+    type:'line',
     data:{
-      labels:['Shopee','TikTok'],
-      datasets:[{
-        label:'ROAS เฉลี่ย',
-        data:[getSH().roas, getTK().roas],
-        backgroundColor:['rgba(238,77,45,.7)','rgba(45,212,191,.7)'],
-        borderColor:['#EE4D2D','#2DD4CF'],borderWidth:2,borderRadius:6,
-      }]
+      labels:mLabels,
+      datasets:[
+        {label:'Shopee Revenue',data:shRevArr,borderColor:shColor,backgroundColor:shBg,fill:true,tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+        {label:'TikTok Revenue',data:tkRevArr,borderColor:tkColor,backgroundColor:tkBg,fill:true,tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+      ]
     },
-    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},
-      scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,suggestedMax:8}}}
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>'฿'+ctx.parsed.y.toLocaleString('th-TH')}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}
   });
 
-  // Spend vs Revenue grouped
+  // Spend Trend (bar)
   new Chart(document.getElementById('chartSpendRev'),{
     type:'bar',
     data:{
-      labels:['🛍️ Shopee','🎵 TikTok'],
+      labels:mLabels,
       datasets:[
-        {label:'Spend (฿)',data:[getSH().spend,getTK().spend],backgroundColor:'rgba(239,68,68,.6)',borderColor:'#EF4444',borderWidth:2,borderRadius:4},
-        {label:'Revenue (฿)',data:[getSH().revenue,getTK().revenue],backgroundColor:'rgba(16,185,129,.6)',borderColor:'#10B981',borderWidth:2,borderRadius:4},
+        {label:'Shopee Spend',data:shSpendArr,backgroundColor:'rgba(238,77,45,.7)',borderColor:shColor,borderWidth:2,borderRadius:4},
+        {label:'TikTok Spend',data:tkSpendArr,backgroundColor:'rgba(45,212,191,.7)',borderColor:tkColor,borderWidth:2,borderRadius:4},
       ]
     },
-    options:{...chartDefaults}
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>'฿'+ctx.parsed.y.toLocaleString('th-TH')}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>'฿'+(v/1e3).toFixed(0)+'K'}}}}
   });
 
-  // CTR CVR
+  // ROAS Trend (line)
   new Chart(document.getElementById('chartCTRCVR'),{
-    type:'radar',
+    type:'line',
     data:{
-      labels:['CTR %','CVR %','ROAS (×1)','CPA inverse','Orders (÷100)'],
+      labels:mLabels,
       datasets:[
-        {label:'Shopee',data:[getSH().ctr, getSH().cvr, getSH().roas, 10-Math.min(9.9,getSH().cpa/100), getSH().orders/100],backgroundColor:'rgba(238,77,45,.15)',borderColor:'#EE4D2D',pointBackgroundColor:'#EE4D2D',borderWidth:2},
-        {label:'TikTok',data:[getTK().ctr, getTK().cvr, getTK().roas, 10-Math.min(9.9,getTK().cpa/100), getTK().orders/100],backgroundColor:'rgba(45,212,191,.1)',borderColor:'#2DD4CF',pointBackgroundColor:'#2DD4CF',borderWidth:2},
+        {label:'Shopee ROAS',data:shROASArr,borderColor:shColor,backgroundColor:'transparent',tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+        {label:'TikTok ROAS',data:tkROASArr,borderColor:tkColor,backgroundColor:'transparent',tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
       ]
     },
-    options:{plugins:{...chartDefaults.plugins},scales:{r:{ticks:{color:'#6B7280',backdropColor:'transparent'},grid:{color:'rgba(255,255,255,.08)'},pointLabels:{color:'#9CA3AF'}}}}
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>ctx.parsed.y.toFixed(2)+'x'}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,suggestedMin:3,suggestedMax:8,ticks:{color:'#6B7280',callback:v=>v+'x'}}}}
   });
 
-  // Orders & CPA
+  // Orders Trend (bar)
   new Chart(document.getElementById('chartOrderCPA'),{
     type:'bar',
     data:{
-      labels:['🛍️ Shopee','🎵 TikTok'],
+      labels:mLabels,
       datasets:[
-        {label:'Orders',data:[getSH().orders,getTK().orders],backgroundColor:'rgba(59,130,246,.6)',borderColor:'#3B82F6',borderWidth:2,borderRadius:4,yAxisID:'y'},
-        {label:'CPA (฿)',data:[getSH().cpa,getTK().cpa],backgroundColor:'rgba(249,115,22,.6)',borderColor:'#F97316',borderWidth:2,borderRadius:4,yAxisID:'y1',type:'line'},
+        {label:'Shopee Orders',data:shOrdArr,backgroundColor:'rgba(238,77,45,.7)',borderColor:shColor,borderWidth:2,borderRadius:4},
+        {label:'TikTok Orders',data:tkOrdArr,backgroundColor:'rgba(45,212,191,.7)',borderColor:tkColor,borderWidth:2,borderRadius:4},
       ]
     },
-    options:{...chartDefaults,scales:{
-      x:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.04)'}},
-      y:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.06)'},position:'left'},
-      y1:{ticks:{color:'#F97316'},grid:{display:false},position:'right'},
-    }}
+    options:{...chartDefaults,
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>v.toLocaleString('th-TH')}}}}
   });
 }
 
