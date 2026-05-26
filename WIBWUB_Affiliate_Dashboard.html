@@ -741,11 +741,11 @@ afApplyRange(2,6);
 <script>
 // ─── TAB SWITCHER ───
 function switchTab(tab){
-  ['affiliate''kol','budget','rec'].forEach(t=>{
+  ['affiliate','kol','budget','rec'].forEach(t=>{
     document.getElementById('panel'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
     document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('active', t===tab);
   });
-  if(tab==='kol' && !'+olChartsInit) initKolCharts();
+  if(tab==='kol' && !kolChartsInit) initKolCharts();
   if(tab==='budget'){
     const mc = document.getElementById('budMonthlyChart');
     if(mc && !mc._chartInit){ mc._chartInit=true; initBudgetCharts(); renderBudTable(); }
@@ -836,7 +836,6 @@ const KOLS = [
    scenario:5,
    insight:'GMV ฿99K โดยไม่ต้องจ่ายอะไร — น่าจะชอบสินค้าจริงๆ',
    tip:'Seed สินค้าใหม่ + ชวนเข้า bonus program — ต้นทุนน้อยมาก upside สูง'},
-,
   // ── Mega — Apr 2026 ──
   {id:'pepperchacha', tier:'mega', tierLabel:'Mega',
    spend:80000, spendMo:[[5,80000]],
@@ -1016,7 +1015,7 @@ function openKolDetail(id){
   });
 
   // Donut
-  kdDonut.destroy();
+  if(kdDonut) kdDonut.destroy();
   const hasSpend = k.spend>0;
   kdDonut = new Chart(document.getElementById('kd-donut'),{
     type:'doughnut',
