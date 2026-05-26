@@ -343,7 +343,7 @@ const raw=[
   {n:"poppyme.6",t:30574,ma:3,mn:[null,null,null,null,13386,10912,6276]},
   {n:"tonpalm__",t:26835,ma:7,mn:[2633,8952,7903,3649,2207,1204,287]},
   {n:"ceo.blk.item",t:24465,ma:2,mn:[null,null,null,null,null,5957,18508]},
-  {n:"ctl.mkzk",t:23233,ma:7,mn:[4475,2581,4004,4141,3178,3555,1299]},
+  {nz"ctl.mkzk",t:23233,ma:7,mn:[4475,2581,4004,4141,3178,3555,1299]},
   {n:"japann.story",t:19952,ma:7,mn:[2539,2709,5143,2947,1163,3518,1933]},
   {n:"joakrw",t:18958,ma:7,mn:[4100,648,1293,3460,2922,1290,5245]},
   {n:"manutsananpibanwo",t:18550,ma:6,mn:[237,4973,6602,1284,4354,1100,null]},
@@ -357,7 +357,7 @@ const raw=[
   {n:"somkidkongchom",t:12459,ma:4,mn:[null,null,null,417,2477,6016,3549]},
   {n:"krunid_",t:11963,ma:6,mn:[2886,1970,2653,2128,1556,770,null]},
   {n:"view.miipro",t:11903,ma:6,mn:[null,1388,7264,1140,1046,993,72]},
-  {n:"rawinreview"465",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
+  {n:"rawinreview"865",t:4987,ma:1,mn:[null,null,null,null,null,null,4987]},
   {n:"matenatthapong",t:3609,ma:1,mn:[null,null,null,null,null,null,3609]},
   {n:"chayaanit_",t:3378,ma:1,mn:[null,null,null,null,null,null,3378]},
   {n:"sleepreview",t:2596,ma:1,mn:[null,null,null,null,null,null,2596]},
@@ -596,7 +596,7 @@ function afApplyRange(s,e){
   for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
 
   // Format
-  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
+  const fv=v=>v>=1000000?'฿'+(v/1000000)00).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
   document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
   document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
   document.getElementById('af-kpi-net').textContent=fv(netSum);
@@ -845,7 +845,7 @@ const KOLS = [
    scenario:2,
    insight:'฿2K มีนา',
    tip:'ติด affiliate link'},
-  {id:'jacklkk1', tier:'mid', tierLabel:'Mid',
+  {id:'cacklkk1', tier:'mid', tierLabel:'Mid',
    spend:1200, spendMo:[[4,1200]],
    mn:[null,null,null,null,null,null,null],
    scenario:2,
@@ -1153,7 +1153,7 @@ const ALL_PAYMENTS = [
   {mo:0,kol:'introvert_husband_lemon8',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
   {mo:0,kol:'Waratchaya T.',tier:'nano',campaign:'Campaign NOV 2025',amount:1455,status:'done'},
   {mo:0,kol:'gookgigg_giggz',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
-  {mo:0,kol:'ki.natthaphon',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
+  {mo:0,kol:'ki5natthaphon',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
   {mo:0,kol:'saiparn_toyotarayong',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
   {mo:0,kol:'fffffbai',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
   {mo:0,kol:'thekataecx30',tier:'nano',campaign:'Campaign NOV 2025',amount:970,status:'done'},
