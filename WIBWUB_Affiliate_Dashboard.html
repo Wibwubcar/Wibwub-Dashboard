@@ -1016,7 +1016,7 @@ function openKolDetail(id){
   });
 
   // Donut
-  kdDonut.destroy();
+  if(kdDonut)kdDonut.destroy();
   const hasSpend = k.spend>0;
   kdDonut = new Chart(document.getElementById('kd-donut'),{
     type:'doughnut',
