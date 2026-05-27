@@ -165,6 +165,20 @@
     .info-note{background:#f8f9ff;border:1px dashed var(--border);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
     @media(max-width:900px){.cg-2,.cg-3,.kpi-grid-4,.kpi-grid-5,.plat-overview{grid-template-columns:1fr 1fr;}.kanban{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:640px){.sidebar{width:60px;}.sb-name,.sb-sub,.nav-item span,.nav-sec,.user-name,.user-role{display:none;}.main{margin-left:60px;}}
+    /* ── Modal & Toast ── */
+    .wib-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:9000;display:none;align-items:center;justify-content:center;}
+    .wib-overlay.open{display:flex;}
+    .wib-modal{background:#fff;border-radius:14px;padding:24px;width:500px;max-width:calc(100vw - 32px);max-height:88vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.25);}
+    .wib-modal-title{font-size:16px;font-weight:700;color:#0F0F0F;margin:0;}
+    .wib-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+    .wib-field{display:flex;flex-direction:column;gap:4px;}
+    .wib-field.full{grid-column:1/-1;}
+    .wib-field label{font-size:11px;color:#6B7280;font-weight:500;letter-spacing:.3px;}
+    .wib-field input{padding:8px 10px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;}
+    .wib-field input:focus{border-color:#1A5CDB;box-shadow:0 0 0 3px rgba(26,92,219,.12);}
+    .wib-modal-footer{display:flex;gap:8px;justify-content:flex-end;padding-top:14px;border-top:1px solid #f0f0f0;margin-top:4px;}
+    .wib-toast{position:fixed;bottom:24px;right:24px;background:#1A5CDB;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);opacity:0;transition:opacity .25s;pointer-events:none;}
+    .wib-toast.show{opacity:1;}
   </style>
 </head>
 <body>
@@ -204,8 +218,8 @@
     </div>
     <div class="tb-right">
       <div class="notif-btn">🔔<span class="ndot"></span></div>
-      <button class="btn btn-ghost">⬇ Export</button>
-      <button class="btn btn-primary">+ เพิ่มข้อมูล</button>
+      <button class="btn btn-ghost" onclick="doExport()">⬇ Export</button>
+      <button class="btn btn-primary" onclick="doAddData()">+ เพิ่มข้อมูล</button>
     </div>
   </header>
 
@@ -1049,7 +1063,9 @@ document.getElementById('pdate').textContent = new Date().toLocaleDateString('th
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
 const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks'};
 
+let currentPage = 'overview';
 function go(id, el) {
+  currentPage = id;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -1503,7 +1519,7 @@ function setMonthRange(s, e) {
   // ── HIGHLIGHT CHARTS ──
   const inR = i => i>=s && i<=e;
   const hl = (arr, base, alpha='cc', dim='33') => arr.map((_,i) => inR(i) ? base+alpha : base+dim);
-  const hlRgba = (r,g,b,full,faded) => Array.from({length:5},(_,i)=>inR(i)?`rgba(${r},${g},${b},${full})`:`rgba(${r},${g},${b},${faded})`);
+  const hlRgba = (r,g,b,full,faded) => Array.from({length:M5.length},(_,i)=>inR(i)?`rgba(${r},${g},${b},${full})`:`rgba(${r},${g},${b},${faded})`);
   const ptRadius = () => M5.map((_,i)=>inR(i)?7:3);
 
   charts['ov_rev'].data.datasets[0].backgroundColor = hl(SH_REV,SHOPEE,'ff','44');
@@ -1558,8 +1574,191 @@ function setMonthRange(s, e) {
   charts['lz_cost'].update();
 }
 
+// ── EXPORT ──
+function doExport(){
+  let rows=[],headers=[],filename='wibwub_export.csv';
+  const pg = currentPage;
+  if(['overview','sales'].includes(pg)){
+    filename='wibwub_sales_summary.csv';
+    headers=['เดือน','Shopee GMV','TikTok GMV','Lazada GMV','รวม GMV','Shopee Orders','TikTok Orders','Lazada Orders'];
+    M5.forEach((m,i)=>rows.push([m,SH_REV[i],TK_REV[i],LZ_REV[i],SH_REV[i]+TK_REV[i]+LZ_REV[i],SH_ORD[i],TK_ORD[i],LZ_ORD[i]]));
+  } else if(pg==='shopee'){
+    filename='wibwub_shopee.csv';
+    headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Ads Spend','ค่าธรรมเนียม','ลูกค้าใหม่','ลูกค้าเก่า'];
+    M5.forEach((m,i)=>rows.push([m,SH_REV[i],SH_ORD[i],SH_CANCEL_PCT[i],SH_ADS[i],SH_FEE[i],SH_NEW[i],SH_OLD[i]]));
+  } else if(pg==='tiktok'){
+    filename='wibwub_tiktok.csv';
+    headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Affiliate GMV','% Affiliate','ยอด Ads','ยอด Live','Ads Spend','ค่าธรรมเนียม+Comm'];
+    M5.forEach((m,i)=>rows.push([m,TK_REV[i],TK_ORD[i],TK_CANCEL_PCT[i],TK_AFI[i],TK_AFIPCT[i],TK_ADS[i],TK_LIVE[i],TK_ADSSPEND[i],TK_FEECOMM[i]]));
+  } else if(pg==='lazada'){
+    filename='wibwub_lazada.csv';
+    headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Ads Spend','ค่าธรรมเนียม','คูปอง','% ค่าใช้จ่าย'];
+    M5.forEach((m,i)=>rows.push([m,LZ_REV[i],LZ_ORD[i],LZ_CANCEL_PCT[i],LZ_ADS[i],LZ_FEE[i],LZ_COUPON[i],LZ_COST_PCT[i]]));
+  } else {
+    showToast('หน้านี้ไม่มีข้อมูลให้ export');
+    return;
+  }
+  const csv=[headers,...rows].map(r=>r.join(',')).join('\n');
+  const blob=new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=filename; a.click();
+  URL.revokeObjectURL(url);
+  showToast('Export สำเร็จ ✓  — ดาวน์โหลด '+filename);
+}
+
+// ── ADD DATA ──
+const ADD_CFG = {
+  overview:{
+    title:'+ เพิ่มข้อมูล — ภาพรวมทุก Platform',
+    fields:[
+      {id:'mo',label:'เดือน',type:'text',placeholder:'เช่น มิ.ย.',full:true},
+      {id:'sh_rev',label:'🧡 Shopee GMV (฿)',type:'number',placeholder:'0'},
+      {id:'sh_ord',label:'🧡 Shopee ออเดอร์',type:'number',placeholder:'0'},
+      {id:'tk_rev',label:'🎵 TikTok GMV (฿)',type:'number',placeholder:'0'},
+      {id:'tk_ord',label:'🎵 TikTok ออเดอร์',type:'number',placeholder:'0'},
+      {id:'lz_rev',label:'💙 Lazada GMV (฿)',type:'number',placeholder:'0'},
+      {id:'lz_ord',label:'💙 Lazada ออเดอร์',type:'number',placeholder:'0'},
+    ],
+    onSubmit:d=>{
+      M5.push(d.mo); MONTH_LABELS_FULL.push(d.mo+' 2569'); MONTH_LABELS_SHORT.push(d.mo);
+      SH_REV.push(+d.sh_rev||0); SH_ORD.push(+d.sh_ord||0); SH_CANCEL_PCT.push(0); SH_ADS.push(0); SH_FEE.push(0); SH_NEW.push(0); SH_OLD.push(0);
+      TK_REV.push(+d.tk_rev||0); TK_ORD.push(+d.tk_ord||0); TK_CANCEL_PCT.push(0); TK_AFI.push(0); TK_NET.push(0); TK_ADS.push(0); TK_LIVE.push(0); TK_AFIPCT.push(0); TK_NEW.push(0); TK_OLD.push(0); TK_ADSSPEND.push(0); TK_FEECOMM.push(0);
+      LZ_REV.push(+d.lz_rev||0); LZ_ORD.push(+d.lz_ord||0); LZ_CANCEL_PCT.push(0); LZ_ADS.push(0); LZ_FEE.push(0); LZ_COUPON.push(0); LZ_COST_PCT.push(0); LZ_NEW.push(0); LZ_OLD.push(0);
+    }
+  },
+  shopee:{
+    title:'+ เพิ่มข้อมูล Shopee',
+    fields:[
+      {id:'mo',label:'เดือน',type:'text',placeholder:'เช่น มิ.ย.',full:true},
+      {id:'sh_rev',label:'ยอดขาย (฿)',type:'number',placeholder:'0'},
+      {id:'sh_ord',label:'จำนวนออเดอร์',type:'number',placeholder:'0'},
+      {id:'sh_cancel',label:'% ยกเลิก',type:'number',placeholder:'0.0',step:'0.01'},
+      {id:'sh_ads',label:'Ads Spend (฿)',type:'number',placeholder:'0'},
+      {id:'sh_fee',label:'ค่าธรรมเนียม (฿)',type:'number',placeholder:'0'},
+      {id:'sh_new',label:'ลูกค้าใหม่',type:'number',placeholder:'0'},
+      {id:'sh_old',label:'ลูกค้าเก่า',type:'number',placeholder:'0'},
+    ],
+    onSubmit:d=>{
+      M5.push(d.mo); MONTH_LABELS_FULL.push(d.mo+' 2569'); MONTH_LABELS_SHORT.push(d.mo);
+      SH_REV.push(+d.sh_rev||0); SH_ORD.push(+d.sh_ord||0); SH_CANCEL_PCT.push(+d.sh_cancel||0); SH_ADS.push(+d.sh_ads||0); SH_FEE.push(+d.sh_fee||0); SH_NEW.push(+d.sh_new||0); SH_OLD.push(+d.sh_old||0);
+      TK_REV.push(0); TK_ORD.push(0); TK_CANCEL_PCT.push(0); TK_AFI.push(0); TK_NET.push(0); TK_ADS.push(0); TK_LIVE.push(0); TK_AFIPCT.push(0); TK_NEW.push(0); TK_OLD.push(0); TK_ADSSPEND.push(0); TK_FEECOMM.push(0);
+      LZ_REV.push(0); LZ_ORD.push(0); LZ_CANCEL_PCT.push(0); LZ_ADS.push(0); LZ_FEE.push(0); LZ_COUPON.push(0); LZ_COST_PCT.push(0); LZ_NEW.push(0); LZ_OLD.push(0);
+    }
+  },
+  tiktok:{
+    title:'+ เพิ่มข้อมูล TikTok Shop',
+    fields:[
+      {id:'mo',label:'เดือน',type:'text',placeholder:'เช่น มิ.ย.',full:true},
+      {id:'tk_rev',label:'ยอดขาย (฿)',type:'number',placeholder:'0'},
+      {id:'tk_ord',label:'จำนวนออเดอร์',type:'number',placeholder:'0'},
+      {id:'tk_cancel',label:'% ยกเลิก',type:'number',placeholder:'0.0',step:'0.01'},
+      {id:'tk_afi',label:'Affiliate GMV (฿)',type:'number',placeholder:'0'},
+      {id:'tk_afipct',label:'% Affiliate',type:'number',placeholder:'0.0',step:'0.01'},
+      {id:'tk_ads',label:'ยอดจาก Ads (฿)',type:'number',placeholder:'0'},
+      {id:'tk_live',label:'ยอด Live (฿)',type:'number',placeholder:'0'},
+      {id:'tk_adsspend',label:'Ads Spend (฿)',type:'number',placeholder:'0'},
+      {id:'tk_feecomm',label:'ค่าธรรมเนียม+Comm (฿)',type:'number',placeholder:'0'},
+    ],
+    onSubmit:d=>{
+      M5.push(d.mo); MONTH_LABELS_FULL.push(d.mo+' 2569'); MONTH_LABELS_SHORT.push(d.mo);
+      TK_REV.push(+d.tk_rev||0); TK_ORD.push(+d.tk_ord||0); TK_CANCEL_PCT.push(+d.tk_cancel||0);
+      TK_AFI.push(+d.tk_afi||0); TK_NET.push((+d.tk_rev||0)-(+d.tk_afi||0));
+      TK_AFIPCT.push(+d.tk_afipct||0); TK_ADS.push(+d.tk_ads||0); TK_LIVE.push(+d.tk_live||0);
+      TK_ADSSPEND.push(+d.tk_adsspend||0); TK_FEECOMM.push(+d.tk_feecomm||0); TK_NEW.push(0); TK_OLD.push(0);
+      SH_REV.push(0); SH_ORD.push(0); SH_CANCEL_PCT.push(0); SH_ADS.push(0); SH_FEE.push(0); SH_NEW.push(0); SH_OLD.push(0);
+      LZ_REV.push(0); LZ_ORD.push(0); LZ_CANCEL_PCT.push(0); LZ_ADS.push(0); LZ_FEE.push(0); LZ_COUPON.push(0); LZ_COST_PCT.push(0); LZ_NEW.push(0); LZ_OLD.push(0);
+    }
+  },
+  lazada:{
+    title:'+ เพิ่มข้อมูล Lazada',
+    fields:[
+      {id:'mo',label:'เดือน',type:'text',placeholder:'เช่น มิ.ย.',full:true},
+      {id:'lz_rev',label:'ยอดขาย (฿)',type:'number',placeholder:'0'},
+      {id:'lz_ord',label:'จำนวนออเดอร์',type:'number',placeholder:'0'},
+      {id:'lz_cancel',label:'% ยกเลิก',type:'number',placeholder:'0.0',step:'0.01'},
+      {id:'lz_ads',label:'Ads Spend (฿)',type:'number',placeholder:'0'},
+      {id:'lz_fee',label:'ค่าธรรมเนียม (฿)',type:'number',placeholder:'0'},
+      {id:'lz_coupon',label:'คูปอง (฿)',type:'number',placeholder:'0'},
+    ],
+    onSubmit:d=>{
+      M5.push(d.mo); MONTH_LABELS_FULL.push(d.mo+' 2569'); MONTH_LABELS_SHORT.push(d.mo);
+      LZ_REV.push(+d.lz_rev||0); LZ_ORD.push(+d.lz_ord||0); LZ_CANCEL_PCT.push(+d.lz_cancel||0);
+      LZ_ADS.push(+d.lz_ads||0); LZ_FEE.push(+d.lz_fee||0); LZ_COUPON.push(+d.lz_coupon||0);
+      const r=+d.lz_rev||0,a=+d.lz_ads||0,f=+d.lz_fee||0,c=+d.lz_coupon||0;
+      LZ_COST_PCT.push(r>0?(a+f+c)/r*100:0); LZ_NEW.push(0); LZ_OLD.push(0);
+      SH_REV.push(0); SH_ORD.push(0); SH_CANCEL_PCT.push(0); SH_ADS.push(0); SH_FEE.push(0); SH_NEW.push(0); SH_OLD.push(0);
+      TK_REV.push(0); TK_ORD.push(0); TK_CANCEL_PCT.push(0); TK_AFI.push(0); TK_NET.push(0); TK_ADS.push(0); TK_LIVE.push(0); TK_AFIPCT.push(0); TK_NEW.push(0); TK_OLD.push(0); TK_ADSSPEND.push(0); TK_FEECOMM.push(0);
+    }
+  },
+};
+ADD_CFG.sales = ADD_CFG.overview;
+
+let _wibSubmitFn=null;
+
+function doAddData(){
+  const cfg=ADD_CFG[currentPage];
+  if(!cfg){showToast('หน้านี้ไม่รองรับการเพิ่มข้อมูลในขณะนี้');return;}
+  _wibSubmitFn=cfg.onSubmit;
+  document.getElementById('wib-modal-title').textContent=cfg.title;
+  document.getElementById('wib-modal-body').innerHTML=
+    `<div class="wib-fgrid">${cfg.fields.map(f=>`<div class="wib-field${f.full?' full':''}"><label>${f.label}</label><input id="wf-${f.id}" type="${f.type}" placeholder="${f.placeholder||''}"${f.step?` step="${f.step}"`:''}></div>`).join('')}</div><p style="font-size:11px;color:#9CA3AF;margin:0;">ข้อมูลจะแสดงในหน้าจอนี้จนกว่าจะ refresh — บันทึกถาวรโดยแจ้ง Claude</p>`;
+  document.getElementById('wib-overlay').classList.add('open');
+  setTimeout(()=>{const f=document.querySelector('#wib-modal-body input');if(f)f.focus();},80);
+}
+
+function submitAddData(){
+  if(!_wibSubmitFn)return;
+  const inputs=document.querySelectorAll('#wib-modal-body input');
+  const data={};let ok=true;
+  inputs.forEach(inp=>{
+    const k=inp.id.replace('wf-','');
+    data[k]=inp.value.trim();
+    if(!inp.value.trim()){inp.style.borderColor='#DC2626';ok=false;}
+    else inp.style.borderColor='';
+  });
+  if(!ok){showToast('กรุณากรอกข้อมูลให้ครบ');return;}
+  _wibSubmitFn(data);
+  closeWibModal();
+  // update sl_line which setMonthRange doesn't explicitly call .update() on
+  if(charts['sl_line']){charts['sl_line'].update();}
+  setMonthRange(0,M5.length-1);
+  showToast(`เพิ่มข้อมูลเดือน ${data.mo} สำเร็จ ✓`);
+}
+
+function closeWibModal(){
+  document.getElementById('wib-overlay').classList.remove('open');
+  _wibSubmitFn=null;
+}
+
+let _toastTmr;
+function showToast(msg){
+  const t=document.getElementById('wib-toast');
+  t.textContent=msg; t.classList.add('show');
+  clearTimeout(_toastTmr);
+  _toastTmr=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
 // Init — show May (index 4)
 setMonthRange(0, 4);
 </script>
+
+<!-- ── MODAL ── -->
+<div class="wib-overlay" id="wib-overlay" onclick="if(event.target===this)closeWibModal()">
+  <div class="wib-modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
+      <h3 class="wib-modal-title" id="wib-modal-title"></h3>
+      <button onclick="closeWibModal()" style="background:none;border:none;font-size:20px;cursor:pointer;color:#9CA3AF;line-height:1;padding:2px 6px;">✕</button>
+    </div>
+    <div id="wib-modal-body"></div>
+    <div class="wib-modal-footer">
+      <button onclick="closeWibModal()" style="padding:8px 18px;border-radius:8px;border:1px solid #e0e0e0;background:#fff;cursor:pointer;font-size:13px;color:#374151;font-family:inherit;">ยกเลิก</button>
+      <button onclick="submitAddData()" style="padding:8px 22px;border-radius:8px;border:none;background:#1A5CDB;color:#fff;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit;">+ เพิ่มข้อมูล</button>
+    </div>
+  </div>
+</div>
+<!-- ── TOAST ── -->
+<div class="wib-toast" id="wib-toast"></div>
+
 </body>
 </html>
