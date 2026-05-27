@@ -276,16 +276,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="stab" onclick="mTab(1,this)">Affiliate</div>
     <div class="stab" onclick="mTab(2,this)">Ads</div>
     <div class="stab" onclick="mTab(3,this)">TikTok</div>
+    <div class="stab" onclick="mTab(4,this)">Social</div>
   </div>
 
   <!-- MK Overview -->
   <div class="sv active" id="m-sv-0">
-    <div class="kgrid">
-      <div class="kc"><div class="kc-lbl">Affiliate GMV รวม</div><div class="kc-val">฿3.41M</div><div class="kc-sub">40 creators · 7 เดือน</div></div>
-      <div class="kc"><div class="kc-lbl">Affiliate NET รวม</div><div class="kc-val">฿3.35M</div><div class="kc-sub">หลังหักค่าคอม</div></div>
-      <div class="kc"><div class="kc-lbl">Shopee ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">7.20×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
-      <div class="kc"><div class="kc-lbl">TikTok ROAS เฉลี่ย</div><div class="kc-val">5.07×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
-    </div>
+    <div class="kgrid" id="mk-ov-kpi"></div>
     <div class="card"><div class="sec-title">Affiliate GMV รายเดือน</div><div id="afi-bars"></div></div>
     <div class="card"><div class="sec-title">Ads ROAS รายเดือน เปรียบเทียบ</div><div id="roas-bars"></div></div>
     <div class="card">
@@ -335,10 +331,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       <div class="ap" id="ap-cb" onclick="switchAds('cb')">📊 รวม</div>
     </div>
     <div class="ads-pnl active" id="ads-sh">
-      <div class="kgrid">
-        <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val" style="color:var(--sh)">฿3.00M</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
-        <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">7.20×</div><div class="kc-sub">Rev/Spend</div></div>
-      </div>
+      <div class="kgrid" id="ads-sh-kpi"></div>
       <div class="card"><div class="sec-title">ROAS รายเดือน</div><div id="sh-roas-bars"></div></div>
       <div class="card">
         <div class="sec-title">Shopee Ads รายเดือน</div>
@@ -349,10 +342,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       </div>
     </div>
     <div class="ads-pnl" id="ads-tk">
-      <div class="kgrid">
-        <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val">฿1.11M</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
-        <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val">5.44×</div><div class="kc-sub">Rev/Spend</div></div>
-      </div>
+      <div class="kgrid" id="ads-tk-kpi"></div>
       <div class="card"><div class="sec-title">ROAS รายเดือน</div><div id="tk-roas-bars"></div></div>
       <div class="card">
         <div class="sec-title">TikTok Ads รายเดือน</div>
@@ -379,12 +369,19 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       <div class="mtabs" id="tt-mo-tabs">
         <div class="mtab active" onclick="setTT(3,this)">มี.ค. (16)</div>
         <div class="mtab" onclick="setTT(4,this)">เม.ย. (20)</div>
-        <div class="mtab" onclick="setTT(5,this)">พ.ค. (11)</div>
+        <div class="mtab" onclick="setTT(5,this)">พ.ค. (17)</div>
       </div>
     </div>
+    <div class="kgrid kgrid3" id="tt-fol-kpi" style="margin-bottom:0"></div>
     <div class="kgrid kgrid3" id="tt-kpi"></div>
     <div id="tt-clips"></div>
   </div>
+
+  <!-- Social -->
+  <div class="sv" id="m-sv-4">
+    <div id="social-content"></div>
+  </div>
+
 </div>
 
 </div><!-- /screen -->
@@ -436,6 +433,7 @@ const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.
 const AFI_GMV=[288701,347208,461048,550756,655259,724337,622640];
 const AFI_NET=[271930,342501,456481,544073,642947,708947,612387];
 const AFI_COMM=[39439,49419,64612,78138,82886,69235,65628];
+const TK_FOL=[116000,118000,122000,128000,130000];
 
 const CREATORS=[
   {n:"rita.fe_",t:380708,ma:7,mn:[13997,53544,71718,72098,75273,61408,32670]},
@@ -746,14 +744,14 @@ function renderProds(){
     </div>`).join('');
   document.getElementById('prod-more').style.display=prodShown>=ALL_PRODUCTS.length?'none':'block';
 }
-function showMoreProds(){prodShown=AFE_PRODUCTS.length;renderProds();}
+function showMoreProds(){prodShown=ALL_PRODUCTS.length;renderProds();}
 
 // ════════════════════════════════════════
 // MONTHLY TABLES
 // ════════════════════════════════════════
 function initMoTables(){
   document.getElementById('mo-tb-ov').innerHTML=M5.map((m,i)=>{
-    const rev=TOTAL_REV[i],ord=TAL_ORD[i],aov=Math.round(rev/ord);
+    const rev=TOTAL_REV[i],ord=TOTAL_ORD[i],aov=Math.round(rev/ord);
     const prev=i>0?TOTAL_REV[i-1]:null;
     const mo=prev?`<span style="${pctColor(rev,prev)}">${pct(rev,prev)}</span>`:'—';
     return`<tr${i===4?' class="hl"':''}><td>${m}${i===4?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
@@ -773,8 +771,21 @@ function initMoTables(){
 // MK OVERVIEW
 // ════════════════════════════════════════
 function initMkOv(){
+  const tg=AFI_GMV.reduce((a,b)=>a+b,0);
+  const tn=AFI_NET.reduce((a,b)=>a+b,0);
+  const shSpendTot=SH_ADS.reduce((a,b)=>a+b,0);
+  const shRevTot=SH_REV.reduce((a,b)=>a+b,0);
+  const tkSpendTot=TK_ADSSPEND.reduce((a,b)=>a+b,0);
+  const tkRevTot=TK_REV.reduce((a,b)=>a+b,0);
+  const shROAS=(shRevTot/shSpendTot).toFixed(2);
+  const tkROAS=(tkRevTot/tkSpendTot).toFixed(2);
+  document.getElementById('mk-ov-kpi').innerHTML=`
+    <div class="kc"><div class="kc-lbl">Affiliate GMV รวม</div><div class="kc-val">${fmtB(tg)}</div><div class="kc-sub">${CREATORS.length} creators · 7 เดือน</div></div>
+    <div class="kc"><div class="kc-lbl">Affiliate NET รวม</div><div class="kc-val">${fmtB(tn)}</div><div class="kc-sub">หลังหักค่าคอม</div></div>
+    <div class="kc"><div class="kc-lbl">Shopee ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">${shROAS}×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+    <div class="kc"><div class="kc-lbl">TikTok ROAS เฉลี่ย</div><div class="kc-val">${tkROAS}×</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>`;
   const maxG=Math.max(...AFI_GMV);
-  document.getElementById('afi-bars').innerHTML=AFIA_MONTHS.map((m,i)=>`
+  document.getElementById('afi-bars').innerHTML=AFI_MONTHS.map((m,i)=>`
     <div style="margin-bottom:7px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
         <span>${m}</span><span><b style="color:var(--bl)">${fmtB(AFI_GMV[i])}</b> <span style="font-size:10px;color:var(--muted)">NET ${fmtB(AFI_NET[i])}</span></span>
@@ -788,7 +799,7 @@ function initMkOv(){
     <div style="margin-bottom:8px">
       <div style="font-size:11px;font-weight:600;margin-bottom:3px">${m}</div>
       <div style="display:flex;gap:5px;align-items:center;margin-bottom:3px">
-        <|span style="font-size:10px;color:var(--sh);width:28px">SH</span>
+        <span style="font-size:10px;color:var(--sh);width:28px">SH</span>
         <div class="bar-bg" style="flex:1;margin:0"><div class="bar-fill" style="width:${Math.round(shR[i]/maxR*100)}%;background:var(--sh)"></div></div>
         <span style="font-size:11px;font-weight:700;color:var(--sh);width:34px;text-align:right">${shR[i]}×</span>
       </div>
@@ -818,7 +829,7 @@ function renderAfi(){
   if(afiKey==='t'){
     const tg=AFI_GMV.reduce((a,b)=>a+b,0),tn=AFI_NET.reduce((a,b)=>a+b,0);
     document.getElementById('afi-kpi').innerHTML=`
-      <div class="kc"><div class="kc-lbl">GMV รวม 7 เดือน</div><div class="kc-val">${fmtB(tg)}</div><div class="kc-sub">40 creators</div></div>
+      <div class="kc"><div class="kc-lbl">GMV รวม 7 เดือน</div><div class="kc-val">${fmtB(tg)}</div><div class="kc-sub">${CREATORS.length} creators</div></div>
       <div class="kc"><div class="kc-lbl">NET รวม 7 เดือน</div><div class="kc-val">${fmtB(tn)}</div><div class="kc-sub">หลังหักค่าคอม</div></div>`;
   } else {
     document.getElementById('afi-kpi').innerHTML=`
@@ -853,74 +864,68 @@ function switchAfiView(v){
 }
 function renderRec(){
   if(document.getElementById('rec-list').innerHTML) return;
-  const REC=[
-    {rank:1,n:"fahareejun",score:88,avg:95205,last:161079,trend:549,
-     rec:"ต่อสัญญา",rc:"#3B6D11",rb:"#EAF3DE",sl:"ไม่ต้อง seed",sc:"#5F5E5A",sb:"#F1EFE8",
-     why:"ดาวรุ่ง avg ฿95K/เดือน ยังขาขึ้น ล็อก deal ก่อนแบรนด์อื่นดึงตัว",
-     seed:"Commission ดีพออยู่แล้ว แต่ควรส่งตัวอย่าง launch ใหม่ก่อนใครเพื่อรักษาสัมพันธ์"},
-    {rank:2,n:"ralph.detailing8",score:72,avg:13863,last:16534,trend:33,
-     rec:"ต่อสัญญา",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: สินค้าใหม่",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"เติบโตสม่ำเสมอ 7 เดือน ฿1.8K → ฿17K ไม่มีสัญญาณลด",
-     seed:"ส่ง Reflex หรือ Sugar ขนาดใหม่ก่อน launch — audience เชื่อถือ เหมาะ seeding organic"},
-    {rank:3,n:"jaonnm",score:70,avg:14687,last:17400,trend:22,
-     rec:"ต่อสัญญา",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
-     why:"สม่ำเสมอสุดในทีม ฿12–17K ทุกเดือน เหมาะเป็น anchor creator",
-     seed:"ส่งชุด Rain Season (กระจก + เช็ดรถ) ตามหน้าฝน เพื่อ boost จากฐานที่มั่นคง"},
-    {rank:4,n:"phanuwatinsri",score:64,avg:14239,last:14134,trend:0,
-     rec:"ต่อสัญญา",rc:"#3B6D11",rb:"#EAF3DE",sl:"Seed: seasonal",sc:"#185FA5",sb:"#E6F1FB",
-     why:"Reliable ตลอด 7 เดือน avg ฿14K คงที่ คาดการณ์ได้ดีที่สุด",
-     seed:"ส่ง Interior + Mind set ช่วงหน้าฝน content angle ใหม่ช่วยดัน avg ขึ้น"},
-    {rank:5,n:"rita.fe_",score:55,avg:54387,last:32670,trend:-47,
-     rec:"ปรับกลยุทธ์",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สินค้าใหม่",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"ยังเป็น #1 GMV รวม (฿381K) แต่ลดจาก peak ฿75K → ฿33K",
-     seed:"ส่งสินค้าที่ยังไม่เคยรีวิว (Wool Duster, Sugar 3L) + brief content ใหม่"},
-    {rank:6,n:"noonjourneyyy",score:50,avg:35996,last:23158,trend:-16,
-     rec:"ปรับกลยุทธ์",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สินค้าใหม่",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"avg ฿36K ดี แต่เดือนล่าสุดหายครึ่ง อาจ content fatigue",
-     seed:"ส่ง Spot Clean หรือ Martini ให้ creative freedom — ดู audience response ก่อนตัดสินใจ"},
-    {rank:7,n:"pailong05",score:47,avg:40007,last:38087,trend:-43,
-     rec:"ปรับกลยุทธ์",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สินค้าใหม่",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"avg ฿40K/เดือนสูง แต่มีแค่ 3 เดือน peak ฿67K แล้วลด",
-     seed:"ส่ง Interior Wipes หรือ Refresh Wipes — demo ง่าย อาจดึง peak กลับมาได้"},
-    {rank:8,n:"muchmai_mumi",score:40,avg:18011,last:18433,trend:-28,
-     rec:"ปรับกลยุทธ์",rc:"#854F0B",rb:"#FAEEDA",sl:"Seed: สินค้าใหม่",sc:"#0F6E56",sb:"#E1F5EE",
-     why:"peak ฿43K เม.ย. ตอนนี้ stable ฿18K ถ้าไม่กลับมา ฿25K+ ควรลด",
-     seed:"ส่ง Bundle set พร้อม discount code พิเศษ เพิ่ม incentive ให้ audience"},
-    {rank:9,n:"jarkkystory",score:32,avg:20510,last:9125,trend:-62,
-     rec:"พิจารณาหยุด",rc:"#A32D2D",rb:"#FCEBEB",sl:"Seed: ลองครั้งสุดท้าย",sc:"#854F0B",sb:"#FAEEDA",
-     why:"7 เดือน peak ฿31K แต่ 3 เดือนหลังลดต่อเนื่อง → ฿9K",
-     seed:"ส่ง 1 product ภายใน 2 สัปดาห์ — ถ้ายอดไม่ถึง ฿15K ให้หยุด commission"},
-    {rank:10,n:"thekataecx30",score:22,avg:13528,last:6832,trend:-70,
-     rec:"พิจารณาหยุด",rc:"#A32D2D",rb:"#FCEBEB",sl:"ไม่ต้อง seed",sc:"#5F5E5A",sb:"#F1EFE8",
-     why:"ไม่สม่ำเสมอสุด ฿33K → ฿3K → ฿23K → ฿7K วางแผนไม่ได้",
-     seed:"ไม่แนะนำ seed เพิ่ม — ย้าย budget ไปเปิด creator ใหม่ที่มี momentum แทน"},
-  ];
-  const tt=t=>t>0?`<span style="color:#3B6D11;font-size:10px">↑+${t}%</span>`:`<span style="color:#A32D2D;font-size:10px">↓${t}%</span>`;
-  document.getElementById('rec-list').innerHTML=
-    `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px">
-      <div class="kc" style="border-left:3px solid #3B6D11;text-align:center"><div class="kc-val" style="color:#3B6D11">4</div><div class="kc-lbl">ต่อสัญญา</div></div>
-      <div class="kc" style="border-left:3px solid #854F0B;text-align:center"><div class="kc-val" style="color:#854F0B">4</div><div class="kc-lbl">ปรับกลยุทธ์</div></div>
-      <div class="kc" style="border-left:3px solid #A32D2D;text-align:center"><div class="kc-val" style="color:#A32D2D">2</div><div class="kc-lbl">พิจารณาหยุด</div></div>
-    </div>`+
-    REC.map(d=>`
-    <div class="card" style="padding:10px 12px;margin-bottom:10px;border-left:3px solid ${d.rc}">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
-        <div style="width:20px;height:20px;border-radius:50%;background:${d.rb};color:${d.rc};font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.rank}</div>
-        <div style="font-size:13px;font-weight:600;color:var(--text);flex:1">${d.n}</div>
-        <div style="font-size:10px;padding:2px 7px;border-radius:10px;background:${d.rb};color:${d.rc};font-weight:600;white-space:nowrap">${d.rec}</div>
+  const COMM=0.07,GM=0.40,SEED=500,NET=GM-COMM;
+  const BEP=Math.round(SEED/NET);
+  const fb=v=>v>=1e6?'฿'+(v/1e6).toFixed(1)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
+  const fr=r=>r>=100?Math.round(r)+'×':r.toFixed(1)+'×';
+  const S=CREATORS.filter(c=>c.n).map(c=>{
+    const last=c.mn[6]??0;
+    const prev=c.mn[5]??c.mn[4]??null;
+    const tr=prev!=null&&prev>0?Math.round((last-prev)/prev*100):null;
+    const vals=c.mn.filter(v=>v!=null&&v>0);
+    const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0;
+    const roi=(last*NET)/SEED;
+    return{n:c.n,ma:c.ma,last,avg,tr,roi,tier:roi>=10?1:roi>=3?2:roi>=1?3:4};
+  }).filter(s=>s.last>=500).sort((a,b)=>b.roi-a.roi).slice(0,20);
+  const tc={
+    1:{c:'#3B6D11',bg:'#EAF3DE',ic:'🚀',lbl:'เพิ่มงบทันที (>10×)'},
+    2:{c:'#1248b3',bg:'#EEF3FD',ic:'✅',lbl:'จ้างต่อ (3–10×)'},
+    3:{c:'#854F0B',bg:'#FAEEDA',ic:'⚠️',lbl:'ระวัง (1–3×)'},
+    4:{c:'#A32D2D',bg:'#FCEBEB',ic:'🛑',lbl:'พิจารณาหยุด (<1×)'},
+  };
+  let html=`
+    <div style="background:#EEF3FD;border-radius:12px;padding:11px 13px;margin-bottom:10px;border-left:3px solid var(--bl)">
+      <div style="font-size:11px;font-weight:700;color:var(--bl);margin-bottom:6px">สมมติฐาน Break-even</div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;text-align:center;font-size:10px">
+        <div><div style="font-weight:800;font-size:13px">40%</div><div style="color:var(--muted)">Gross Margin</div></div>
+        <div><div style="font-weight:800;font-size:13px">7%</div><div style="color:var(--muted)">Commission</div></div>
+        <div><div style="font-weight:800;font-size:13px">฿${BEP.toLocaleString()}</div><div style="color:var(--muted)">GMV threshold/เดือน</div></div>
       </div>
-      <div style="display:flex;gap:10px;margin-bottom:6px;flex-wrap:wrap">
-        <span style="font-size:11px;color:var(--muted)">avg <b style="color:var(--text)">${fmtB(d.avg)}/เดือน</b></span>
-        <span style="font-size:11px;color:var(--muted)">ล่าสุด <b style="color:var(--text)">${fmtB(d.last)}</b></span>
-        <span style="font-size:11px">${tt(d.trend)}</span>
-        <span style="font-size:11px;color:var(--muted)">คะแนน <b style="color:${d.rc}">${d.score}</b></span>
-      </div>
-      <div style="font-size:11px;color:var(--muted);margin-bottom:6px;line-height:1.5">${d.why}</div>
-      <div style="background:var(--bg2);border-radius:8px;padding:7px 9px;display:flex;align-items:flex-start;gap:6px">
-        <span style="font-size:10px;padding:2px 6px;border-radius:10px;background:${d.sb};color:${d.sc};font-weight:600;flex-shrink:0;white-space:nowrap">${d.sl}</span>
-        <span style="font-size:11px;color:var(--muted);line-height:1.5">${d.seed}</span>
-      </div>
-    </div>`).join('');
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:12px">
+      ${[1,2,3,4].map(t=>{const g=S.filter(s=>s.tier===t).length;return`
+        <div style="background:${tc[t].bg};border-radius:10px;padding:8px 4px;text-align:center">
+          <div style="font-size:15px">${tc[t].ic}</div>
+          <div style="font-size:15px;font-weight:800;color:${tc[t].c}">${g}</div>
+          <div style="font-size:9px;color:${tc[t].c};margin-top:1px;line-height:1.2">${t===1?'เพิ่มงบ':t===2?'จ้างต่อ':t===3?'ระวัง':'หยุด'}</div>
+        </div>`}).join('')}
+    </div>`;
+  [1,2,3,4].forEach(tier=>{
+    const group=S.filter(s=>s.tier===tier);
+    if(!group.length)return;
+    html+=`<div style="font-size:11px;font-weight:700;color:${tc[tier].c};padding:6px 2px 4px;display:flex;align-items:center;gap:5px">${tc[tier].ic} ${tc[tier].lbl}</div>`;
+    group.forEach(c=>{
+      const trTxt=c.tr!==null?(c.tr>=0?`<span style="color:#3B6D11">↑${c.tr}%</span>`:`<span style="color:#A32D2D">↓${Math.abs(c.tr)}%</span>`):'—';
+      html+=`
+        <div class="card" style="padding:10px 12px;margin-bottom:7px;border-left:3px solid ${tc[tier].c}">
+          <div style="display:flex;align-items:center;gap:6px;margin-bottom:5px">
+            <div style="font-size:12px;font-weight:700;flex:1">${c.n}</div>
+            <div style="font-size:10px;padding:2px 8px;border-radius:10px;background:${tc[tier].bg};color:${tc[tier].c};font-weight:700">${fr(c.roi)} ROI</div>
+          </div>
+          <div style="display:flex;gap:8px;font-size:10px;color:var(--muted);flex-wrap:wrap;margin-bottom:5px">
+            <span>ล่าสุด <b style="color:var(--txt)">${fb(c.last)}</b></span>
+            <span>เฉลี่ย <b style="color:var(--txt)">${fb(c.avg)}</b></span>
+            <span>${trTxt}</span>
+            <span>${c.ma} เดือน</span>
+          </div>
+          <div style="background:#F9FAFB;border-radius:8px;padding:5px 8px;font-size:10px;display:flex;justify-content:space-between">
+            <span style="color:var(--muted)">จ่ายไปแล้ว</span>
+            <span style="font-weight:600">฿${(c.ma*SEED).toLocaleString()} (${c.ma}×฿${SEED.toLocaleString()})</span>
+          </div>
+        </div>`;
+    });
+  });
+  document.getElementById('rec-list').innerHTML=html;
 }
 
 // ════════════════════════════════════════
@@ -935,6 +940,16 @@ function switchAds(p){
   document.getElementById('ads-'+p).classList.add('active');
 }
 function initAds(){
+  const shSpend=SH_ADS.reduce((a,b)=>a+b,0);
+  const shRevT=SH_REV.reduce((a,b)=>a+b,0);
+  const tkSpend=TK_ADSSPEND.reduce((a,b)=>a+b,0);
+  const tkRevT=TK_REV.reduce((a,b)=>a+b,0);
+  document.getElementById('ads-sh-kpi').innerHTML=`
+    <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val" style="color:var(--sh)">${fmtB(shSpend)}</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+    <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val" style="color:var(--sh)">${(shRevT/shSpend).toFixed(2)}×</div><div class="kc-sub">Rev/Spend</div></div>`;
+  document.getElementById('ads-tk-kpi').innerHTML=`
+    <div class="kc"><div class="kc-lbl">Spend รวม</div><div class="kc-val">${fmtB(tkSpend)}</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+    <div class="kc"><div class="kc-lbl">ROAS เฉลี่ย</div><div class="kc-val">${(tkRevT/tkSpend).toFixed(2)}×</div><div class="kc-sub">Rev/Spend</div></div>`;
   const shR=SH_REV.map((v,i)=>+(v/SH_ADS[i]).toFixed(2));
   const tkR=TK_REV.map((v,i)=>+(v/TK_ADSSPEND[i]).toFixed(2));
   const maxSh=Math.max(...shR),maxTk=Math.max(...tkR);
@@ -983,6 +998,13 @@ function setTT(mo,el){
   renderTT();
 }
 function renderTT(){
+  // Followers KPI (always static per current month)
+  const folCur=TK_FOL[4],folPrev=TK_FOL[3],folJan=TK_FOL[0];
+  const folMoM=folCur-folPrev,folTotal=folCur-folJan;
+  document.getElementById('tt-fol-kpi').innerHTML=`
+    <div class="kc" style="padding:9px"><div class="kc-lbl">Followers</div><div class="kc-val" style="font-size:15px">${fmtN(folCur)}</div><div class="kc-sub">ปัจจุบัน</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">MoM</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folMoM)}</div><div class="kc-sub">จาก เม.ย.</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">ม.ค.→พ.ค.</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folTotal)}</div><div class="kc-sub">5 เดือน</div></div>`;
   const posts=ALL_POSTS.filter(p=>p.m===ttMo);
   if(!posts.length)return;
   const totV=posts.reduce((a,p)=>a+p.views,0);
@@ -1016,6 +1038,54 @@ function renderTT(){
 }
 
 // ════════════════════════════════════════
+// SOCIAL TAB
+// ════════════════════════════════════════
+function initSocial(){
+  const maxF=Math.max(...TK_FOL);
+  const pillars={};
+  ALL_POSTS.forEach(p=>{pillars[p.pillar]=(pillars[p.pillar]||0)+1;});
+  const pillarList=Object.entries(pillars).sort((a,b)=>b[1]-a[1]);
+  const totPosts=ALL_POSTS.length;
+  const totViews=ALL_POSTS.reduce((a,p)=>a+p.views,0);
+  const avgER=(ALL_POSTS.reduce((a,p)=>a+p.er,0)/totPosts).toFixed(2);
+  document.getElementById('social-content').innerHTML=`
+    <div class="kgrid kgrid3" style="margin-bottom:10px">
+      <div class="kc" style="padding:9px"><div class="kc-lbl">TK Followers</div><div class="kc-val" style="font-size:15px">${fmtN(TK_FOL[4])}</div><div class="kc-sub">ปัจจุบัน</div></div>
+      <div class="kc" style="padding:9px"><div class="kc-lbl">เพิ่มขึ้น</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(TK_FOL[4]-TK_FOL[0])}</div><div class="kc-sub">ม.ค.–พ.ค.</div></div>
+      <div class="kc" style="padding:9px"><div class="kc-lbl">คลิปทั้งหมด</div><div class="kc-val" style="font-size:15px">${totPosts}</div><div class="kc-sub">มี.ค.–พ.ค.</div></div>
+    </div>
+    <div class="card">
+      <div class="sec-title">TikTok Followers รายเดือน</div>
+      ${M5.map((m,i)=>`
+        <div style="margin-bottom:7px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
+            <span style="font-weight:600">${m}</span>
+            <span style="font-weight:700;color:var(--bl)">${fmtN(TK_FOL[i])} ${i>0?`<span style="color:var(--green);font-size:10px">+${fmtN(TK_FOL[i]-TK_FOL[i-1])}</span>`:''}
+            </span>
+          </div>
+          <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TK_FOL[i]/maxF*100)}%;background:var(--tk)"></div></div>
+        </div>`).join('')}
+    </div>
+    <div class="card">
+      <div class="sec-title">Views & Engagement รวม</div>
+      <div class="kgrid" style="margin-bottom:0">
+        <div class="kc"><div class="kc-lbl">Views รวม</div><div class="kc-val">${fmtN(totViews)}</div><div class="kc-sub">${totPosts} คลิป</div></div>
+        <div class="kc"><div class="kc-lbl">ER% เฉลี่ย</div><div class="kc-val">${avgER}%</div><div class="kc-sub">เป้า 5%</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="sec-title">Content Pillar Breakdown</div>
+      ${pillarList.map(([p,n])=>`
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:7px">
+          <span class="cpill ${pillCls(p)}">${p}</span>
+          <div class="bar-bg" style="flex:1;margin:0;height:6px"><div class="bar-fill" style="width:${Math.round(n/totPosts*100)}%;background:var(--bl)"></div></div>
+          <span style="font-size:11px;font-weight:700;min-width:30px;text-align:right">${n} คลิป</span>
+        </div>`).join('')}
+    </div>
+    <div class="inote">Facebook & LINE OA channels contribute ฿5.77M + ฿244K revenue — data in web dashboard</div>`;
+}
+
+// ════════════════════════════════════════
 // HEADER DATE
 // ════════════════════════════════════════
 (function(){
@@ -1037,6 +1107,7 @@ initMkOv();
 renderAfi();
 initAds();
 renderTT();
+initSocial();
 </script>
 
 <script>
