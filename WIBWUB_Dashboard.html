@@ -117,7 +117,16 @@
     .stat-box{background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border);}
     .stat-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
     .stat-val{font-size:18px;font-weight:900;}
-    .plat-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+    .plat-overview{display:grid;grid-template-columns:repeat(6,1fr);gap:12px;margin-bottom:22px;}
+    .int-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px;}
+    .int-card{background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;}
+    .int-icon{width:38px;height:38px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+    .int-name{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.4px;color:#92400e;}
+    .int-val{font-size:18px;font-weight:900;color:#d97706;margin:2px 0;}
+    .int-sub{font-size:10px;color:#b45309;}
+    .int-total{background:#fef3c7;border:1.5px solid #f59e0b;border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:8px;}
+    .int-total-lbl{font-size:11px;font-weight:700;color:#78350f;text-transform:uppercase;letter-spacing:.5px;}
+    .int-total-val{font-size:22px;font-weight:900;color:#d97706;}
     .po-card{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:14px;}
     .po-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
     .po-name{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
@@ -163,7 +172,7 @@
     .task-meta{font-size:11px;color:var(--muted);margin-top:8px;display:flex;align-items:center;justify-content:space-between;}
     .task-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;}
     .info-note{background:#f8f9ff;border:1px dashed var(--border);border-radius:10px;padding:12px 16px;font-size:12px;color:var(--muted);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-    @media(max-width:900px){.cg-2,.cg-3,.kpi-grid-4,.kpi-grid-5,.plat-overview{grid-template-columns:1fr 1fr;}.kanban{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:900px){.cg-2,.cg-3,.kpi-grid-4,.kpi-grid-5,.plat-overview,.int-overview{grid-template-columns:1fr 1fr;}.kanban{grid-template-columns:repeat(2,1fr);}}
     @media(max-width:640px){.sidebar{width:60px;}.sb-name,.sb-sub,.nav-item span,.nav-sec,.user-name,.user-role{display:none;}.main{margin-left:60px;}}
     /* ── Modal & Toast ── */
     .wib-overlay{position:fixed;inset:0;background:rgba(0,0,0,.48);z-index:9000;display:none;align-items:center;justify-content:center;}
@@ -346,6 +355,49 @@
         </div>
       </div>
 
+      <div class="sec-label">⚠️ ยอดที่ไม่ใช่รายได้ (Internal) — ข้อมูลจาก Shipnity</div>
+      <div class="int-overview">
+        <div class="int-card">
+          <div class="int-icon">🔧</div>
+          <div style="flex:1">
+            <div class="int-name">Carcare</div>
+            <div class="int-val" id="v-int-care">฿92,509</div>
+            <div class="int-sub">บริการล้างรถ / Detailing</div>
+          </div>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">📦</div>
+          <div style="flex:1">
+            <div class="int-name">เบิกของ</div>
+            <div class="int-val" id="v-int-beuk">฿0</div>
+            <div class="int-sub">เบิกสต็อกภายใน</div>
+          </div>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">🎁</div>
+          <div style="flex:1">
+            <div class="int-name">สินค้าทำการตลาด</div>
+            <div class="int-val" id="v-int-mkt">฿490</div>
+            <div class="int-sub">ของแจก / KOL / Seed</div>
+          </div>
+        </div>
+        <div class="int-card">
+          <div class="int-icon">🏪</div>
+          <div style="flex:1">
+            <div class="int-name">POS หน้าร้าน</div>
+            <div class="int-val" id="v-int-pos">฿267</div>
+            <div class="int-sub">ขายหน้าร้าน / งาน Event</div>
+          </div>
+        </div>
+      </div>
+      <div class="int-total" style="margin-bottom:22px">
+        <div>
+          <div class="int-total-lbl">ยอดรวม Internal ทั้งหมด</div>
+          <div style="font-size:11px;color:#b45309;margin-top:2px">ไม่นับในยอดรายได้หลัก · ข้อมูลจาก Shipnity</div>
+        </div>
+        <div class="int-total-val" id="v-int-total">฿93,266</div>
+      </div>
+
       <div class="cg-2">
         <div class="chart-card">
           <div class="cc-title">ยอดขายรายเดือน แยก Platform</div>
@@ -424,6 +476,7 @@
           <div style="margin-top:10px;font-size:12px;display:flex;justify-content:space-between;color:var(--muted)"><span>% ค่าใช้จ่าย/ยอดขาย</span><span style="font-weight:800;color:var(--lazada)" id="v-sl-lz-cost">24.86%</span></div>
         </div>
       </div>
+
 
       <div class="cg-2">
         <div class="chart-card">
@@ -1100,6 +1153,10 @@ const LZ_REV  = [149904,101025,142454,89699,64076];
 const FB_REV  = [2161199,1347804,1072079,808343,515666];
 const LINE_REV= [291906,444290,407415,349987,275461];
 const WEB_REV = [115840,111853,102113,124709,107014];
+const CARE_REV= [84069,90135,70707,92509,98307];
+const MKT_REV = [580,0,0,490,17365];
+const BEUK_REV= [0,0,0,0,365];
+const POS_REV = [435,548,2277,267,590];
 const SH_ORD  = [7181,6280,6577,7644,4958];
 const TK_ORD  = [3123,3590,3978,4676,4303];
 const LZ_ORD  = [230,172,248,156,96];
@@ -1486,6 +1543,15 @@ function setMonthRange(s, e) {
   document.getElementById('pb-line').style.width = linePct.toFixed(1)+'%';
   document.getElementById('pb-lz').style.width = lzPct.toFixed(1)+'%';
   document.getElementById('pb-web').style.width = webPct.toFixed(1)+'%';
+
+  // ── INTERNAL CHANNELS ──
+  const careRev = sum(CARE_REV), mktRev = sum(MKT_REV), beukRev = sum(BEUK_REV), posRev = sum(POS_REV);
+  const intTotal = careRev + mktRev + beukRev + posRev;
+  set('v-int-care', f(careRev));
+  set('v-int-mkt',  f(mktRev));
+  set('v-int-beuk', f(beukRev));
+  set('v-int-pos',  f(posRev));
+  set('v-int-total', f(intTotal));
 
   charts['ov_pie'].data.datasets[0].data = [shRev, fbRev, tkRev, lineRev, webRev, lzRev];
   charts['ov_pie'].data.labels = [`Shopee ${fp(shPct)}`,`Facebook ${fp(fbPct)}`,`TikTok ${fp(tkPct)}`,`Line ${fp(linePct)}`,`Website ${fp(webPct)}`,`Lazada ${fp(lzPct)}`];
