@@ -107,26 +107,34 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 
 /* ─── KOL ROI PAGE ─── */
 .kol-kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
-.kol-kc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(26,92,219,.14);}
-.kol-kl{font-size:10px;color:#6B7280;margin:0 0 4px;letter-spacing:.5px;text-transform:uppercase;}
-.kol-kv{font-size:20px;font-weight:500;color:#1A5CDB;margin:0;}
-.kol-ks{font-size:10px;color:#374151;margin:3px 0 0;}
+.kol-kc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(26,92,219,.1);position:relative;overflow:hidden;}
+.kol-kc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--kc-accent,#1A5CDB);}
+.kol-kl{font-size:10px;color:#6B7280;margin:0 0 6px;letter-spacing:.5px;text-transform:uppercase;}
+.kol-kv{font-size:22px;font-weight:700;color:#0F0F0F;margin:0;letter-spacing:-.5px;}
+.kol-ks{font-size:10px;color:#9CA3AF;margin:4px 0 0;}
 
 .kol-charts-row{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:14px;}
 .kol-cc{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid #e8e8e8;}
-.kol-ct{font-size:10px;font-weight:500;color:#6B7280;margin:0 0 10px;letter-spacing:.5px;text-transform:uppercase;}
+.kol-ct{font-size:10px;font-weight:600;color:#6B7280;margin:0 0 10px;letter-spacing:.5px;text-transform:uppercase;}
 
-.kol-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;}
-.kol-card{background:#fff;border-radius:10px;border:0.5px solid #e8e8e8;border-top-width:3px;padding:14px;cursor:pointer;transition:box-shadow .15s;}
-.kol-card:hover{box-shadow:0 4px 16px rgba(26,92,219,.1);}
-.kol-card.selected{box-shadow:0 0 0 2px #1A5CDB;}
+/* ─── Creator List Table ─── */
+.kol-list-hdr{display:grid;grid-template-columns:22px 34px 1fr 104px 76px 76px 120px;gap:10px;padding:4px 14px 8px;color:#9CA3AF;font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;}
+.kol-list-row{display:grid;grid-template-columns:22px 34px 1fr 104px 76px 76px 120px;gap:10px;align-items:center;padding:10px 14px;background:#fff;border-radius:10px;margin-bottom:6px;cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.kol-list-row:hover{box-shadow:0 3px 14px rgba(26,92,219,.09);transform:translateY(-1px);}
+.kol-list-row.kol-active{box-shadow:0 0 0 2px #1A5CDB,0 3px 14px rgba(26,92,219,.12);background:#F5F8FF;}
 .kol-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0;}
+.kol-lav{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;}
 .kol-badge{display:inline-block;font-size:10px;padding:2px 8px;border-radius:10px;line-height:1.4;}
-.kol-scenario-tag{font-size:10px;padding:3px 8px;border-radius:5px;text-align:center;margin-bottom:10px;line-height:1.4;}
 .kol-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;}
 .kol-rl{font-size:11px;color:#6B7280;}
 .kol-rv{font-size:11px;font-weight:500;color:#0F0F0F;}
-.kol-roi-big{font-size:22px;font-weight:500;margin-top:6px;padding-top:6px;border-top:0.5px solid #f0f0f0;}
+.kol-lname{font-size:12px;font-weight:600;color:#0F0F0F;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.kol-lnum{text-align:right;}
+.kol-lnum-l{font-size:9px;color:#9CA3AF;margin-bottom:2px;text-transform:uppercase;letter-spacing:.3px;}
+.kol-lnum-v{font-size:12px;font-weight:600;color:#111827;}
+.kol-lroi{display:flex;align-items:center;gap:7px;}
+.kol-lroi-bar{flex:1;height:5px;background:#F3F4F6;border-radius:3px;overflow:hidden;}
+.kol-lroi-val{font-size:13px;font-weight:700;min-width:42px;text-align:right;white-space:nowrap;}
 
 .kol-detail{background:#fff;border-radius:12px;border:0.5px solid #e8e8e8;padding:20px;margin-bottom:14px;display:none;}
 .kol-detail.open{display:block;}
@@ -674,11 +682,11 @@ afApplyRange(2,6);
 <div id="panelKol" class="tab-panel">
 
 <div class="kol-kpi-grid" id="kolKpiGrid">
-  <div class="kol-kc"><p class="kol-kl">ต้นทุน KOL รวม</p><p class="kol-kv" id="kk-spend">฿417K</p><p class="kol-ks">ม.ค.–พ.ค. 2569</p></div>
-  <div class="kol-kc"><p class="kol-kl">Affiliate GMV จาก KOL ที่จ่าย</p><p class="kol-kv" id="kk-gmv">฿1.04M</p><p class="kol-ks">เฉพาะที่มี affiliate link</p></div>
-  <div class="kol-kc"><p class="kol-kl">Blended ROI</p><p class="kol-kv" id="kk-roi" style="color:#059669;">2.49×</p><p class="kol-ks">GMV ÷ ค่าจ้าง</p></div>
-  <div class="kol-kc"><p class="kol-kl">KOL ที่จ่ายแล้ว</p><p class="kol-kv" id="kk-paid">13 คน</p><p class="kol-ks">paid + seeding + bonus</p></div>
-  <div class="kol-kc"><p class="kol-kl">Hidden Gem (ROI &gt; 5×)</p><p class="kol-kv" id="kk-gem" style="color:#D97706;">4 คน</p><p class="kol-ks">ต้นทุนต่ำ ยอดดีมาก</p></div>
+  <div class="kol-kc" style="--kc-accent:#6366F1;"><p class="kol-kl">ต้นทุน KOL รวม</p><p class="kol-kv" id="kk-spend" style="color:#6366F1;">฿417K</p><p class="kol-ks">ม.ค.–พ.ค. 2569</p></div>
+  <div class="kol-kc" style="--kc-accent:#10B981;"><p class="kol-kl">Affiliate GMV ที่ track ได้</p><p class="kol-kv" id="kk-gmv" style="color:#059669;">฿1.04M</p><p class="kol-ks">เฉพาะที่มี affiliate link</p></div>
+  <div class="kol-kc" style="--kc-accent:#059669;"><p class="kol-kl">Blended ROI</p><p class="kol-kv" id="kk-roi" style="color:#059669;">2.49×</p><p class="kol-ks">GMV ÷ ค่าจ้าง KOL</p></div>
+  <div class="kol-kc" style="--kc-accent:#1A5CDB;"><p class="kol-kl">KOL ที่จ่ายแล้ว</p><p class="kol-kv" id="kk-paid" style="color:#1A5CDB;">13 คน</p><p class="kol-ks">paid + seeding + bonus</p></div>
+  <div class="kol-kc" style="--kc-accent:#D97706;"><p class="kol-kl">Hidden Gem (ROI &gt; 5×)</p><p class="kol-kv" id="kk-gem" style="color:#D97706;">4 คน</p><p class="kol-ks">ต้นทุนต่ำ ยอดสูงมาก</p></div>
 </div>
 
 <div class="kol-charts-row">
@@ -696,16 +704,27 @@ afApplyRange(2,6);
   </div>
 </div>
 
-<p class="sec-label" style="margin-bottom:10px;">KOL รายคน — คลิกเพื่อดู detail</p>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+  <p class="sec-label" style="margin:0;">Creator รายคน</p>
+  <span style="font-size:10px;color:#9CA3AF;">เรียงตาม ROI · คลิกเพื่อดูรายละเอียด</span>
+</div>
 <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px;" id="kolFilterBar">
   <button class="sb a" id="kf-all" onclick="kolFilter('all')">ทั้งหมด</button>
-  <button class="sb" id="kf-mega" onclick="kolFilter('mega')">🔵 Mega</button>
-  <button class="sb" id="kf-mid" onclick="kolFilter('mid')">🟢 Mid</button>
-  <button class="sb" id="kf-seeding" onclick="kolFilter('seeding')">🟡 Seeding</button>
-  <button class="sb" id="kf-bonus" onclick="kolFilter('bonus')">🟣 Affiliate Bonus</button>
-  <button class="sb" id="kf-organic" onclick="kolFilter('organic')">⚪ Organic only</button>
+  <button class="sb" id="kf-mega" onclick="kolFilter('mega')" style="border-left:3px solid #6366F1;padding-left:9px;">Mega</button>
+  <button class="sb" id="kf-mid" onclick="kolFilter('mid')" style="border-left:3px solid #10B981;padding-left:9px;">Mid</button>
+  <button class="sb" id="kf-seeding" onclick="kolFilter('seeding')" style="border-left:3px solid #F59E0B;padding-left:9px;">Seeding</button>
+  <button class="sb" id="kf-bonus" onclick="kolFilter('bonus')" style="border-left:3px solid #A855F7;padding-left:9px;">Aff. Bonus</button>
+  <button class="sb" id="kf-organic" onclick="kolFilter('organic')" style="border-left:3px solid #38BDF8;padding-left:9px;">Organic</button>
 </div>
-<div id="kolCardGrid" style="display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px;"></div>
+<div class="kol-list-hdr">
+  <div></div><div></div>
+  <div>Creator</div>
+  <div style="text-align:center;">Status</div>
+  <div style="text-align:right;">ค่าจ้าง</div>
+  <div style="text-align:right;">Aff. GMV</div>
+  <div style="padding-left:4px;">ROI</div>
+</div>
+<div id="kolCardGrid" style="margin-bottom:14px;"></div>
 
 <div class="kol-detail" id="kolDetail">
   <div class="kol-detail-header">
@@ -947,30 +966,48 @@ function kolFilter(f){
 
 function renderKolGrid(){
   const list = kolFilter_cur==='all' ? KOLS : KOLS.filter(k=>k.tier===kolFilter_cur);
+  // Sort: ∞ (no spend) first, then by ROI high→low
+  const sorted = [...list].sort((a,b)=>{
+    const ra=kolROI(a), rb=kolROI(b);
+    if(ra===null&&rb===null) return 0;
+    if(ra===null) return -1;
+    if(rb===null) return 1;
+    return rb-ra;
+  });
+  const maxRoi = Math.max(...sorted.map(k=>{const r=kolROI(k);return r===null?0:r;}),1);
   const grid = document.getElementById('kolCardGrid');
-  grid.innerHTML = list.map(k=>{
+  grid.innerHTML = sorted.map((k,i)=>{
     const tm = TIER_META[k.tier]||TIER_META.organic;
     const sm = SCENARIO_META[k.scenario]||SCENARIO_META[1];
     const gmv = kolGMV(k);
     const roi = kolROI(k);
     const roiStr = roi===null ? '∞' : (roi>=100 ? Math.round(roi)+'×' : roi.toFixed(1)+'×');
-    return `<div class="kol-card" style="border-top-color:${tm.border};" onclick="openKolDetail('${k.id}')">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
-        <div class="kol-avatar" style="background:${tm.bg};color:${tm.fg};">${initials(k.id)}</div>
-        <div style="min-width:0;flex:1;">
-          <p style="font-size:11px;font-weight:500;margin:0;color:#0F0F0F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@${k.id}</p>
-          <span class="kol-badge" style="background:${tm.bg};color:${tm.fg};">${k.tierLabel}</span>
-        </div>
+    const rColor = roiColor(roi);
+    const roiPct = roi===null ? 100 : Math.min(Math.max((roi/maxRoi)*100, 4), 100);
+    return `<div class="kol-list-row" id="klr-${k.id}" style="border-left-color:${tm.border};" onclick="openKolDetail('${k.id}')">
+      <div style="text-align:center;font-size:11px;color:#C4C9D4;font-weight:700;">${i+1}</div>
+      <div class="kol-lav" style="background:${tm.bg};color:${tm.fg};">${initials(k.id)}</div>
+      <div style="min-width:0;">
+        <div class="kol-lname">@${k.id}</div>
+        <span class="kol-badge" style="background:${tm.bg};color:${tm.fg};">${k.tierLabel}</span>
       </div>
-      <div class="kol-scenario-tag" style="background:${sm.bg};color:${sm.fg};">${sm.label}</div>
-      <div class="kol-row"><span class="kol-rl">ค่าจ้าง</span><span class="kol-rv">${k.spend===0?'—':fmtV(k.spend)}</span></div>
-      <div class="kol-row"><span class="kol-rl">Aff. GMV</span><span class="kol-rv">${gmv===0?'฿0':fmtV(gmv)}</span></div>
-      <div class="kol-roi-big" style="color:${roiColor(roi)};">${roiStr} ROI</div>
+      <div style="text-align:center;">
+        <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:${sm.bg};color:${sm.fg};font-weight:500;display:inline-block;line-height:1.6;white-space:nowrap;">${sm.label}</span>
+      </div>
+      <div class="kol-lnum">
+        <div class="kol-lnum-l">ค่าจ้าง</div>
+        <div class="kol-lnum-v">${k.spend===0?'—':fmtV(k.spend)}</div>
+      </div>
+      <div class="kol-lnum">
+        <div class="kol-lnum-l">Aff. GMV</div>
+        <div class="kol-lnum-v" style="color:${gmv>0?'#059669':'#9CA3AF'};">${gmv===0?'—':fmtV(gmv)}</div>
+      </div>
+      <div class="kol-lroi">
+        <div class="kol-lroi-bar"><div style="width:${roiPct}%;height:100%;background:${rColor};border-radius:3px;transition:width .4s;"></div></div>
+        <div class="kol-lroi-val" style="color:${rColor};">${roiStr}</div>
+      </div>
     </div>`;
   }).join('');
-  // update col count
-  const cols = Math.min(list.length, 5);
-  grid.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
 }
 
 function openKolDetail(id){
@@ -1033,6 +1070,9 @@ function openKolDetail(id){
   ).join('');
   document.getElementById('kd-hist').innerHTML = histRows||'<p style="color:#6B7280;font-size:11px;">ไม่มีประวัติการจ่ายเงิน</p>';
 
+  document.querySelectorAll('.kol-list-row').forEach(r=>r.classList.remove('kol-active'));
+  const selRow = document.getElementById('klr-'+id);
+  if(selRow) selRow.classList.add('kol-active');
   const detail = document.getElementById('kolDetail');
   detail.classList.add('open');
   detail.scrollIntoView({behavior:'smooth',block:'start'});
@@ -1040,6 +1080,7 @@ function openKolDetail(id){
 
 function closeKolDetail(){
   document.getElementById('kolDetail').classList.remove('open');
+  document.querySelectorAll('.kol-list-row').forEach(r=>r.classList.remove('kol-active'));
 }
 
 function initKolCharts(){
