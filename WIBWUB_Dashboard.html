@@ -117,7 +117,7 @@
     .stat-box{background:var(--bg);border-radius:10px;padding:14px;border:1px solid var(--border);}
     .stat-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;}
     .stat-val{font-size:18px;font-weight:900;}
-    .plat-overview{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:22px;}
+    .plat-overview{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:22px;}
     .po-card{background:var(--card);border-radius:var(--r);padding:18px 20px;box-shadow:var(--shadow);border:1px solid var(--border);display:flex;align-items:center;gap:14px;}
     .po-icon{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
     .po-name{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);}
@@ -304,26 +304,8 @@
           <div style="flex:1">
             <div class="po-name">TikTok Shop</div>
             <div class="po-val" style="color:#111" id="v-po-tk">฿1,350,397</div>
-            <div class="po-chg up" id="s-po-tk">5,032 orders</div>
+            <div class="po-chg up" id="s-po-tk">5,032 orders · Live ฿145K</div>
             <div class="pb"><div class="pf" id="pb-tk" style="width:20.3%;background:#333"></div></div>
-          </div>
-        </div>
-        <div class="po-card">
-          <div class="po-icon" style="background:#e8f0fe">📘</div>
-          <div style="flex:1">
-            <div class="po-name">Facebook</div>
-            <div class="po-val" style="color:#1877f2" id="v-po-fb">฿808,343</div>
-            <div class="po-chg up" id="s-po-fb">ยอดขาย Facebook</div>
-            <div class="pb"><div class="pf" id="pb-fb" style="width:16.4%;background:#1877f2"></div></div>
-          </div>
-        </div>
-        <div class="po-card">
-          <div class="po-icon" style="background:#e6faf0">💚</div>
-          <div style="flex:1">
-            <div class="po-name">Line Shopping</div>
-            <div class="po-val" style="color:#06c755" id="v-po-line">฿349,987</div>
-            <div class="po-chg up" id="s-po-line">ยอดขาย Line</div>
-            <div class="pb"><div class="pf" id="pb-line" style="width:4.9%;background:#06c755"></div></div>
           </div>
         </div>
         <div class="po-card">
@@ -338,10 +320,10 @@
         <div class="po-card">
           <div class="po-icon" style="background:#fff1eb">🌐</div>
           <div style="flex:1">
-            <div class="po-name">Website / อื่นๆ</div>
-            <div class="po-val" style="color:#1A5CDB" id="v-po-web">฿124,709</div>
-            <div class="po-chg neutral" id="s-po-web">wibwubcar.com</div>
-            <div class="pb"><div class="pf" id="pb-web" style="width:3.4%;background:#1A5CDB"></div></div>
+            <div class="po-name">MyShop</div>
+            <div class="po-val" style="color:#1A5CDB">—</div>
+            <div class="po-chg neutral">wibwubcar.com</div>
+            <div class="pb"><div class="pf" style="width:0%;background:#1A5CDB"></div></div>
           </div>
         </div>
       </div>
@@ -831,7 +813,7 @@
       <!-- Detailed Sales Dashboard iframe -->
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <iframe
-          src="Data Shipnity/Sales_Dashboard.html?v=3"
+          src="Data Shipnity/Sales_Dashboard.html?v=4"
           style="width:100%;height:900px;border:none;display:block"
           title="Sales Detail Dashboard"
         ></iframe>
@@ -1097,9 +1079,6 @@ const M5 = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
 const SH_REV  = [4976365,4302680,4132050,4560380,2880549];
 const TK_REV  = [1126854,1190015,1261981,1263766,911577];
 const LZ_REV  = [149904,101025,142454,89699,64076];
-const FB_REV  = [2161199,1347804,1072079,808343,515666];
-const LINE_REV= [291906,444290,407415,349987,275461];
-const WEB_REV = [115840,111853,102113,124709,107014];
 const SH_ORD  = [7181,6280,6577,7644,4958];
 const TK_ORD  = [3123,3590,3978,4676,4303];
 const LZ_ORD  = [230,172,248,156,96];
@@ -1141,14 +1120,11 @@ function barColors(base, selIdx, totalBars) {
 // ── INIT CHARTS ──
 charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_REV,backgroundColor:SH_REV.map((_,i)=>i===4?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
-  {label:'TikTok',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===4?'#333':'#33333344'),borderRadius:3,stack:'s'},
-  {label:'Facebook',data:FB_REV,backgroundColor:FB_REV.map((_,i)=>i===4?'#1877f2':'#1877f244'),borderRadius:3,stack:'s'},
-  {label:'Line',data:LINE_REV,backgroundColor:LINE_REV.map((_,i)=>i===4?'#06c755':'#06c75544'),borderRadius:3,stack:'s'},
+  {label:'TikTok',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===4?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
   {label:'Lazada',data:LZ_REV,backgroundColor:LZ_REV.map((_,i)=>i===4?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
-  {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===4?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
-charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 57.9%','Facebook 16.4%','TikTok 16.0%','Line 4.9%','Website 3.4%','Lazada 1.5%'],datasets:[{data:[20852024,5905091,5754193,1769059,1219179,547158],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
+charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 78.1%','TikTok 20.3%','Lazada 1.6%'],datasets:[{data:[5204395,1350397,110532],backgroundColor:[SHOPEE,TIKTOK,LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===4?6:3),pointBackgroundColor:SHOPEE},
@@ -1436,8 +1412,7 @@ function setMonthRange(s, e) {
   const lzNew  = sum(LZ_NEW),  lzOld  = sum(LZ_OLD);
   const lzCostPct = lzRev>0 ? (lzAds+lzFee+lzCoupon)/lzRev*100 : 0;
 
-  const fbRev  = sum(FB_REV),  lineRev = sum(LINE_REV), webRev = sum(WEB_REV);
-  const totRev = shRev + tkRev + lzRev + fbRev + lineRev + webRev;
+  const totRev = shRev + tkRev + lzRev;
   const totOrd = shOrd + tkOrd + lzOrd;
   const totNew = shNew + tkNew + lzNew;
   const totCan = shCC + tkCC + lzCC;
@@ -1453,7 +1428,7 @@ function setMonthRange(s, e) {
   const tkFeeCommPct   = tkRev>0 ? tkFeeComm/tkRev*100 : 0;
   const tkAdsPct       = tkRev>0 ? tkAds/tkRev*100 : 0;
   const tkAfiPct       = tkRev>0 ? tkAfi/tkRev*100 : 0;
-  const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]);
+  const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]);
   const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]);
 
   // Month summary bar
@@ -1469,31 +1444,21 @@ function setMonthRange(s, e) {
   set('v-ov-cancel', fn(totCan));
   set('s-ov-cancel', `${fp(totCan/totOrd*100)} cancel rate`); cls('s-ov-cancel','dn');
 
-  const fbPct   = totRev>0 ? fbRev/totRev*100 : 0;
-  const linePct = totRev>0 ? lineRev/totRev*100 : 0;
-  const webPct  = totRev>0 ? webRev/totRev*100 : 0;
-
   set('lbl-ov-plat', `🛍 ยอดขายแยก Platform — ${MN} 2569`);
   set('v-po-sh', f(shRev)); set('s-po-sh', `${fn(shOrd)} orders · Ads ${fk(shAds)}`);
   set('v-po-tk', f(tkRev)); set('s-po-tk', `${fn(tkOrd)} orders · Live ${fk(tkLive)}`);
-  set('v-po-fb', f(fbRev)); set('s-po-fb', `${fp(fbPct)} ของยอดรวม`);
-  set('v-po-line', f(lineRev)); set('s-po-line', `${fp(linePct)} ของยอดรวม`);
   set('v-po-lz', f(lzRev)); set('s-po-lz', `${fn(lzOrd)} orders · Ads ${fk(lzAds)}`);
-  set('v-po-web', f(webRev)); set('s-po-web', `${fp(webPct)} ของยอดรวม`);
   document.getElementById('pb-sh').style.width = shPct.toFixed(1)+'%';
   document.getElementById('pb-tk').style.width = tkPct.toFixed(1)+'%';
-  document.getElementById('pb-fb').style.width = fbPct.toFixed(1)+'%';
-  document.getElementById('pb-line').style.width = linePct.toFixed(1)+'%';
   document.getElementById('pb-lz').style.width = lzPct.toFixed(1)+'%';
-  document.getElementById('pb-web').style.width = webPct.toFixed(1)+'%';
 
-  charts['ov_pie'].data.datasets[0].data = [shRev, fbRev, tkRev, lineRev, webRev, lzRev];
-  charts['ov_pie'].data.labels = [`Shopee ${fp(shPct)}`,`Facebook ${fp(fbPct)}`,`TikTok ${fp(tkPct)}`,`Line ${fp(linePct)}`,`Website ${fp(webPct)}`,`Lazada ${fp(lzPct)}`];
+  charts['ov_pie'].data.datasets[0].data = [shRev, tkRev, lzRev];
+  charts['ov_pie'].data.labels = [`Shopee ${fp(shPct)}`,`TikTok ${fp(tkPct)}`,`Lazada ${fp(lzPct)}`];
   charts['ov_pie'].update();
   charts['ov_cust'].data.datasets[0].data = [shNew, sum(SH_OLD), tkNew, sum(TK_OLD), lzNew>0?lzNew:0];
   charts['ov_cust'].update();
   set('cc-cust-sub', `${MN} 2569 รวมทุก Platform`);
-  set('cc-pie-sub', `Shopee ${fp(shPct)} · FB ${fp(fbPct)} · TikTok ${fp(tkPct)} · Line ${fp(linePct)}`);
+  set('cc-pie-sub', `Shopee ${fp(shPct)} · TikTok ${fp(tkPct)} · Lazada ${fp(lzPct)}`);
 
   // ── SALES ──
   set('lbl-sl', `📊 สรุปยอดขาย ${MN} 2569 — ทุก Platform`);
@@ -1558,11 +1523,8 @@ function setMonthRange(s, e) {
   const ptRadius = () => M5.map((_,i)=>inR(i)?7:3);
 
   charts['ov_rev'].data.datasets[0].backgroundColor = hl(SH_REV,SHOPEE,'ff','44');
-  charts['ov_rev'].data.datasets[1].backgroundColor = hl(TK_REV,'#333','ff','44');
-  charts['ov_rev'].data.datasets[2].backgroundColor = hl(FB_REV,'#1877f2','ff','44');
-  charts['ov_rev'].data.datasets[3].backgroundColor = hl(LINE_REV,'#06c755','ff','44');
-  charts['ov_rev'].data.datasets[4].backgroundColor = hl(LZ_REV,LAZADA,'ff','44');
-  charts['ov_rev'].data.datasets[5].backgroundColor = hl(WEB_REV,'#1A5CDB','ff','44');
+  charts['ov_rev'].data.datasets[1].backgroundColor = hl(TK_REV,TIKTOK,'ff','44');
+  charts['ov_rev'].data.datasets[2].backgroundColor = hl(LZ_REV,LAZADA,'ff','44');
   charts['ov_rev'].update();
   charts['ov_cancel'].data.datasets[0].backgroundColor = hl(SH_CANCEL_PCT,SHOPEE,'cc','44');
   charts['ov_cancel'].data.datasets[1].backgroundColor = hl(TK_CANCEL_PCT,TIKTOK+'c','cc','44');
