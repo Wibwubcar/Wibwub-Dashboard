@@ -1084,13 +1084,24 @@ function initKolCharts(){
 <!-- BUDGET PANEL -->
 <div id="panelBudget" class="tab-panel">
 
-<div class="kol-kpi-grid" style="grid-template-columns:repeat(5,1fr);">
-  <div class="kol-kc"><p class="kol-kl">รวมค่าจ้าง KOL ทั้งหมด</p><p class="kol-kv" id="bud-total">฿1.04M</p><p class="kol-ks">พ.ย. 68 – พ.ค. 69</p></div>
-  <div class="kol-kc"><p class="kol-kl">เดือนที่ใช้สูงสุด</p><p class="kol-kv" id="bud-peak" style="color:#D97706;">พค.69</p><p class="kol-ks">฿315,600</p></div>
-  <div class="kol-kc"><p class="kol-kl">เฉลี่ยต่อเดือน</p><p class="kol-kv" id="bud-avg">฿148K</p><p class="kol-ks">7 เดือนที่ผ่านมา</p></div>
-  <div class="kol-kc"><p class="kol-kl">Pending (รอจ่าย)</p><p class="kol-kv" id="bud-pending" style="color:#9F1239;">฿351K</p><p class="kol-ks">Djpetjah + Nickynachat มิ.ย.</p></div>
-  <div class="kol-kc"><p class="kol-kl">จำนวน Campaign</p><p class="kol-kv" id="bud-camps">14</p><p class="kol-ks">ทั้งหมดตั้งแต่ พ.ย. 68</p></div>
+<!-- Month selector (top) -->
+<div style="background:#F8F9FB;border:1px solid #E5E7EB;border-radius:10px;padding:10px 14px;margin-bottom:12px">
+  <div style="font-size:9px;font-weight:700;color:#9CA3AF;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px">เลือกดูรายเดือน</div>
+  <div style="display:flex;gap:5px;flex-wrap:wrap" id="budMonthFilter">
+    <button class="sb a" id="bm-all" onclick="budFilter('all')">ทั้งหมด</button>
+    <button class="sb" id="bm-0" onclick="budFilter(0)">พย.68</button>
+    <button class="sb" id="bm-1" onclick="budFilter(1)">ธค.68</button>
+    <button class="sb" id="bm-2" onclick="budFilter(2)">มค.69</button>
+    <button class="sb" id="bm-3" onclick="budFilter(3)">กพ.69</button>
+    <button class="sb" id="bm-4" onclick="budFilter(4)">มีนา.69</button>
+    <button class="sb" id="bm-5" onclick="budFilter(5)">เมษา.69</button>
+    <button class="sb" id="bm-6" onclick="budFilter(6)">พค.69</button>
+    <button class="sb" id="bm-7" onclick="budFilter(7)">มิ.ย.69</button>
+  </div>
 </div>
+
+<!-- Dynamic KPI area -->
+<div id="bud-kpi-area" style="margin-bottom:12px"></div>
 
 <div class="kol-charts-row" style="margin-bottom:14px;">
   <div class="kol-cc" style="flex:2;">
@@ -1108,21 +1119,7 @@ function initKolCharts(){
   <div style="position:relative;height:200px;"><canvas id="budStackedChart"></canvas></div>
 </div>
 
-<!-- Month selector + detail table -->
-<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-  <p class="sec-label" style="margin:0;">รายละเอียดการจ้าง:</p>
-  <div id="budMonthFilter" style="display:flex;gap:5px;flex-wrap:wrap;">
-    <button class="sb a" id="bm-all" onclick="budFilter('all')">ทั้งหมด</button>
-    <button class="sb" id="bm-0" onclick="budFilter(0)">พย.68</button>
-    <button class="sb" id="bm-1" onclick="budFilter(1)">ธค.68</button>
-    <button class="sb" id="bm-2" onclick="budFilter(2)">มค.69</button>
-    <button class="sb" id="bm-3" onclick="budFilter(3)">กพ.69</button>
-    <button class="sb" id="bm-4" onclick="budFilter(4)">มีนา.69</button>
-    <button class="sb" id="bm-5" onclick="budFilter(5)">เมษา.69</button>
-    <button class="sb" id="bm-6" onclick="budFilter(6)">พค.69</button>
-    <button class="sb" id="bm-7" onclick="budFilter(7)">มิ.ย.69</button>
-  </div>
-</div>
+<p class="sec-label" style="margin-bottom:10px">รายละเอียดการจ้าง</p>
 
 <div style="overflow-x:auto;">
 <table id="budTable" style="width:100%;border-collapse:collapse;font-size:12px;">
@@ -1242,6 +1239,51 @@ const ALL_PAYMENTS = [
 // ── Budget rendering ──
 let budCurrentFilter='all';
 let budMonthChart=null, budStackedChart=null, budTierDonut=null;
+const TIER_NAME={mega:'Mega',mid:'Mid-tier',micro:'Micro',nano:'Nano',seeding:'Seeding',bonus:'Bonus'};
+
+function renderBudKPIs(f){
+  const fb=v=>v>=1e6?'฿'+(v/1e6).toFixed(2)+'M':v>=1000?'฿'+Math.round(v/1000)+'K':'฿'+v;
+  let html='';
+  if(f==='all'){
+    const total=BUD_TOTAL_ARR.reduce((s,v)=>s+v,0);
+    const paid=BUD_PAID_ARR.reduce((s,v)=>s+v,0);
+    const pending=total-paid;
+    const avg=Math.round(total/BUD_LABELS.length);
+    const peakIdx=BUD_TOTAL_ARR.reduce((im,v,i,a)=>v>a[im]?i:im,0);
+    html=`<div class="kol-kpi-grid" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kol-kc"><p class="kol-kl">รวมค่าจ้าง KOL</p><p class="kol-kv">${fb(total)}</p><p class="kol-ks">พ.ย.68 – มิ.ย.69</p></div>
+      <div class="kol-kc"><p class="kol-kl">เดือนที่ใช้สูงสุด</p><p class="kol-kv" style="color:#D97706">${BUD_LABELS[peakIdx]}</p><p class="kol-ks">${fb(BUD_TOTAL_ARR[peakIdx])}</p></div>
+      <div class="kol-kc"><p class="kol-kl">เฉลี่ยต่อเดือน</p><p class="kol-kv">${fb(avg)}</p><p class="kol-ks">${BUD_LABELS.length} เดือน</p></div>
+      <div class="kol-kc"><p class="kol-kl">จ่ายแล้ว</p><p class="kol-kv" style="color:#065F46">${fb(paid)}</p><p class="kol-ks">${Math.round(paid/total*100)}% ของทั้งหมด</p></div>
+      <div class="kol-kc"><p class="kol-kl">รอจ่าย</p><p class="kol-kv" style="color:#9F1239">${fb(pending)}</p><p class="kol-ks">Pending</p></div>
+    </div>`;
+  } else {
+    const m=f;
+    const thisTotal=BUD_TOTAL_ARR[m]||0;
+    const thisPaid=BUD_PAID_ARR[m]||0;
+    const thisPending=thisTotal-thisPaid;
+    const prev=m>0?BUD_TOTAL_ARR[m-1]:null;
+    const diff=prev!=null?thisTotal-prev:null;
+    const diffPct=prev?Math.round(diff/prev*100):null;
+    const diffHtml=diffPct!=null
+      ?(diffPct>=0
+        ?`<span style="color:#DC2626;font-weight:800">↑+${diffPct}%</span>`
+        :`<span style="color:#065F46;font-weight:800">↓${Math.abs(diffPct)}%</span>`)
+      :'<span style="color:#9CA3AF;font-size:13px">ไม่มีเดือนก่อน</span>';
+    const topTier=Object.entries(BUD_TIERS)
+      .map(([k,v])=>({k,v:v[m]||0}))
+      .filter(x=>x.v>0).sort((a,b)=>b.v-a.v)[0];
+    const rows=ALL_PAYMENTS.filter(p=>p.mo===m);
+    html=`<div class="kol-kpi-grid" style="grid-template-columns:repeat(5,1fr)">
+      <div class="kol-kc"><p class="kol-kl">ค่าใช้จ่าย ${BUD_LABELS[m]}</p><p class="kol-kv">${fb(thisTotal)}</p><p class="kol-ks">${rows.length} รายการ</p></div>
+      <div class="kol-kc"><p class="kol-kl">vs เดือนก่อน</p><p class="kol-kv" style="font-size:20px">${diffHtml}</p><p class="kol-ks">${prev!=null?fb(prev)+' ('+BUD_LABELS[m-1]+')':'—'}</p></div>
+      <div class="kol-kc"><p class="kol-kl">จ่ายแล้ว</p><p class="kol-kv" style="color:#065F46">${fb(thisPaid)}</p><p class="kol-ks">${thisTotal>0?Math.round(thisPaid/thisTotal*100):0}%</p></div>
+      <div class="kol-kc"><p class="kol-kl">รอจ่าย</p><p class="kol-kv" style="color:${thisPending>0?'#9F1239':'#374151'}">${fb(thisPending)}</p><p class="kol-ks">${thisPending>0?'Pending':'ชำระครบ ✓'}</p></div>
+      <div class="kol-kc"><p class="kol-kl">หมวดใหญ่สุด</p><p class="kol-kv" style="color:#1A5CDB;font-size:16px">${topTier?TIER_NAME[topTier.k]:'—'}</p><p class="kol-ks">${topTier?fb(topTier.v):'—'}</p></div>
+    </div>`;
+  }
+  document.getElementById('bud-kpi-area').innerHTML=html;
+}
 
 function budFilter(f){
   budCurrentFilter=f;
@@ -1280,6 +1322,7 @@ function renderBudTable(){
   const total=list.reduce((s,p)=>s+p.amount,0);
   document.getElementById('budRowCount').textContent=`แสดง ${list.length} รายการ`;
   document.getElementById('budRowTotal').textContent=`รวม ฿${total.toLocaleString('th-TH')}`;
+  renderBudKPIs(budCurrentFilter);
 }
 
 function initBudgetCharts(){
