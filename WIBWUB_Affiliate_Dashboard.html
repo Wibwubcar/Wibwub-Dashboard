@@ -1542,6 +1542,14 @@ function renderRec(){
   const tt=t=>t>0?`<span style="color:#3B6D11;font-size:11px">↑+${t}%</span>`:`<span style="color:#A32D2D;font-size:11px">↓${t}%</span>`;
   const recCounts = {g:0,w:0,s:0};
   REC.forEach(d=>{ if(d.rc==='#3B6D11') recCounts.g++; else if(d.rc==='#854F0B') recCounts.w++; else recCounts.s++; });
+  const catMap={'#3B6D11':'grow','#854F0B':'watch','#A32D2D':'pause'};
+  document.getElementById('rec-filters').innerHTML=
+    `<div style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:14px">
+      <button onclick="filterRec('all')" data-cat="all" class="rec-fb active" style="padding:5px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:#1A5CDB;color:#fff">ทั้งหมด (${REC.length})</button>
+      <button onclick="filterRec('grow')" data-cat="grow" class="rec-fb" style="padding:5px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:#EAF3DE;color:#3B6D11">เพิ่มงบ+seed (${recCounts.g})</button>
+      <button onclick="filterRec('watch')" data-cat="watch" class="rec-fb" style="padding:5px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:#FAEEDA;color:#854F0B">ระวัง+ใกล้ชิด (${recCounts.w})</button>
+      <button onclick="filterRec('pause')" data-cat="pause" class="rec-fb" style="padding:5px 14px;border-radius:20px;border:none;font-size:12px;font-weight:600;cursor:pointer;background:#FCEBEB;color:#A32D2D">หยุดชั่วคราว (${recCounts.s})</button>
+    </div>`;
   document.getElementById('rec-list').innerHTML=
     `<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:16px">
       <div class="kc" style="border-left:3px solid #3B6D11;text-align:center"><div class="kc-val" style="color:#3B6D11">${recCounts.g}</div><div class="kc-label">เพิ่มงบ+seed</div></div>
@@ -1549,7 +1557,7 @@ function renderRec(){
       <div class="kc" style="border-left:3px solid #A32D2D;text-align:center"><div class="kc-val" style="color:#A32D2D">${recCounts.s}</div><div class="kc-label">หยุดชั่วคราว</div></div>
     </div>`+
     REC.map(d=>`
-    <div class="card" style="padding:12px 14px;margin-bottom:10px;border-left:3px solid ${d.rc};border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
+    <div class="card rec-card" data-cat="${catMap[d.rc]}" style="padding:12px 14px;margin-bottom:10px;border-left:3px solid ${d.rc};border-radius:10px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.06)">
       <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px">
         <div style="width:22px;height:22px;border-radius:50%;background:${d.rb};color:${d.rc};font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0">${d.rank}</div>
         <div style="font-size:14px;font-weight:600;flex:1">@${d.n}</div>
@@ -1574,6 +1582,18 @@ function renderRec(){
       </div>
     </div>`).join('');
 }
+function filterRec(cat){
+  document.querySelectorAll('#rec-list .rec-card').forEach(el=>{
+    el.style.display=(cat==='all'||el.dataset.cat===cat)?'':'none';
+  });
+  document.querySelectorAll('#rec-filters .rec-fb').forEach(b=>{
+    const on=b.dataset.cat===cat;
+    if(b.dataset.cat==='all'){b.style.background=on?'#1A5CDB':'#F3F4F6';b.style.color=on?'#fff':'#374151';}
+    else if(b.dataset.cat==='grow'){b.style.background=on?'#3B6D11':'#EAF3DE';b.style.color=on?'#fff':'#3B6D11';}
+    else if(b.dataset.cat==='watch'){b.style.background=on?'#854F0B':'#FAEEDA';b.style.color=on?'#fff':'#854F0B';}
+    else{b.style.background=on?'#A32D2D':'#FCEBEB';b.style.color=on?'#fff':'#A32D2D';}
+  });
+}
 </script>
 
 <!-- PANEL: คำแนะนำ Top 10 -->
@@ -1581,6 +1601,7 @@ function renderRec(){
   <div style="padding:16px 0 8px">
     <div style="font-size:16px;font-weight:700;color:#0F0F0F;margin-bottom:4px">💡 คำแนะนำ Seeding Strategy — Top 10 Creators</div>
     <div style="font-size:12px;color:#6B7280;margin-bottom:16px">วิเคราะห์จาก avg GMV, trend 3 เดือนล่าสุด และความสม่ำเสมอของยอดขาย</div>
+    <div id="rec-filters"></div>
     <div id="rec-list"></div>
   </div>
 </div><!-- end panelRec -->
