@@ -976,7 +976,7 @@ const KOLS = [
    spend:150800, spendMo:[[6,150800]],
    mn:[null,null,null,null,null,null,null],
    scenario:2,
-   insight:'ค่าจ้างสูงสุดใน sheet ฿150,800 พ.ค. ยังรอผล — เป็น campaign ใหม่สุด',
+   insight:'ค่าจ้าง ฿150,800 พ.ค. จ่ายแล้ว — รอดู GMV affiliate ที่ได้หลัง 30 วัน',
    tip:'วัด GMV ที่ได้หลัง 30 วัน เปรียบกับ mushinyiwz ที่ tier ใกล้กัน'},
   // Mid — paid + affiliate
   {id:'numtonn', tier:'mid', tierLabel:'Mid',
@@ -1379,7 +1379,7 @@ function initKolCharts(){
 // ─── BUDGET DATA ───
 const BUD_LABELS = ['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิ.ย.69'];
 const BUD_TOTAL_ARR = [139590,16565,186000,81050,96900,205050,315600,200800];
-const BUD_PAID_ARR  = [139590,16565,186000,81050,96900,205050,164800,0]; // djpetjah pending
+const BUD_PAID_ARR  = [139590,16565,186000,81050,96900,205050,315600,0];
 const BUD_TIERS = {
   mega:   [0,0,130000,0,0,80000,124800,200800],
   mid:    [57200,0,0,17000,66200,14550,150800,0],
@@ -1460,7 +1460,7 @@ const ALL_PAYMENTS = [
   {mo:5,kol:'Seeding เพิ่มเติม เม.ย.',tier:'seeding',campaign:'Various Apr campaigns',amount:5000,status:'done'},
   // ── พค.69 (May 2026) ──
   {mo:6,kol:'nickynachat',tier:'mega',campaign:'Campaign May 2026',amount:124800,status:'done'},
-  {mo:6,kol:'djpetjah',tier:'mid',campaign:'Campaign May 2026',amount:150800,status:'pending'},
+  {mo:6,kol:'djpetjah',tier:'mid',campaign:'Campaign May 2026',amount:150800,status:'done'},
   {mo:6,kol:'บจก.ราชรี (agency fee)',tier:'seeding',campaign:'Seeding May 2026',amount:52000,status:'done'},
   {mo:6,kol:'Seeding Interior (May)',tier:'seeding',campaign:'Seeding 200 Interior May',amount:40000,status:'done'},
   // ── มิ.ย.69 (Jun 2026 - pending) ──
