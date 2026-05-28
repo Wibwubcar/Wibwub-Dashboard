@@ -641,7 +641,7 @@ function sm(){cnt+=20;rt();}
 const bKeys=['t',0,1,2,3,4,5,6];
 const bLabels=["ทั้งหมด", "พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
 const bIds=['bt','b0','b1','b2','b3','b4','b5','b6'];
-document.getElementById('sr').innerHTML=bKeys.map((k,i)=>`<button class="sb${k==='t'?' a':''}" id="${bIds[i]}" onclick="ss(${JSON.stringify(k)})">${bLabels[i]}</button>`).join('');
+document.getElementById('sr').innerHTML=bKeys.map((k,i)=>`<button class="sb${k==='t'?' a':''}" id="${bIds[i]}" onclick="ss(${k==='t'?"'t'":k})">${bLabels[i]}</button>`).join('');
 rt();
 
 // ── AFFILIATE DUAL-CALENDAR PICKER ──
