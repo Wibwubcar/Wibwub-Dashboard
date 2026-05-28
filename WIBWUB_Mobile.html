@@ -160,7 +160,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="home-hero">
     <div class="hh-lbl">ยอดขายรวม ม.ค.–พ.ค. 2569</div>
     <div class="hh-val">฿36.0M</div>
-    <div class="hh-sub">64,036 unique orders · AOV ฿563</div>
+    <div class="hh-sub">67,928 unique orders · AOV ฿530</div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v">฿22.7M</div><div class="hhg-l">Shopee</div></div>
       <div class="hhg"><div class="hhg-v">฿6.21M</div><div class="hhg-l">TikTok</div></div>
@@ -413,7 +413,7 @@ const CARE_REV=[84069,90135,70707,92509,98307];
 const MKT_REV=[580,0,0,490,17365];
 const BEUK_REV=[0,0,0,0,365];
 const POS_REV=[435,548,2277,267,590];
-const SH_ORD=[7181,6280,6577,7644,6667];
+const SH_ORD=[7181,6280,6577,7644,7050];
 const TK_ORD=[3204,3652,3934,5032,6271];
 const LZ_ORD=[230,172,248,156,96];
 const SH_CANCEL=[4.62,4.45,4.26,5.94,5.43];
@@ -429,7 +429,7 @@ const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.5];
 const LZ_COST_PCT=[22.67,24.61,24.36,24.86,24.77];
 const LZ_ADS=[5760,5680,7220,5710,5240];
 const TOTAL_REV=[8132249, 7579319, 7606265, 7948363, 6583244];
-const TOTAL_ORD=[10615, 10104, 10759, 12832, 13034];
+const TOTAL_ORD=[10615, 10104, 10759, 12832, 13417];
 
 const CHANNELS=[
   {n:'Shopee',v:22701995,color:'#ee4d2d'},
@@ -661,16 +661,16 @@ const CREATORS=[
 
 // Per-month product revenue [null=no data | Mar | Apr | May] from web dashboard report
 const PROD_MO=[
-  {n:"Wool Duster ไม้ปัดขนแกะ",  mo:[null,null,376115,788587,981641]},
-  {n:"Sugar (500ml+Spray)",        mo:[null,null,415124,561482,606708]},
-  {n:"Interior (500ml+Spray)",     mo:[null,null,401333,523676,470790]},
+  {n:"Wool Duster ไม้ปัดขนแกะ",  mo:[null,null,981641,788587,376115]},
+  {n:"Sugar (500ml+Spray)",        mo:[null,null,606708,561482,415124]},
+  {n:"Interior (500ml+Spray)",     mo:[null,null,470790,523676,401333]},
   {n:"Refresh Wipes",              mo:[null,null,492336,269674,166974]},
-  {n:"Interior Wipes",             mo:[null,null,308787,332049,237744]},
-  {n:"Refresh (500ml+หัวโฟม)",     mo:[null,null,236662,306164,282205]},
-  {n:"Spot (500ml)",               mo:[null,null,313116,305741,116783]},
-  {n:"Perfect",                    mo:[null,null,174879,216089,234139]},
-  {n:"Reflex (250ml+Spray)",       mo:[null,null,129835,173243,229188]},
-  {n:"Tire & Trim Gel (500ml)",    mo:[null,null,147058,193075,158145]},
+  {n:"Interior Wipes",             mo:[null,null,237744,332049,308787]},
+  {n:"Refresh (500ml+หัวโฟม)",     mo:[null,null,282205,306164,236662]},
+  {n:"Spot (500ml)",               mo:[null,null,116783,305741,313116]},
+  {n:"Perfect",                    mo:[null,null,234139,216089,174879]},
+  {n:"Reflex (250ml+Spray)",       mo:[null,null,229188,173243,129835]},
+  {n:"Tire & Trim Gel (500ml)",    mo:[null,null,158145,193075,147058]},
 ];
 
 const ALL_POSTS=[
@@ -798,8 +798,8 @@ let sMo=0;
 function initSalesOv(){
   document.getElementById('s-ov-kpi').innerHTML=`
     <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–พ.ค.)</div><div class="kc-val">฿36.0M</div><div class="kc-sub">ทุก Platform</div></div>
-    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">64,036</div><div class="kc-sub">unique orders</div></div>
-    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿563</div><div class="kc-sub">ต่อออเดอร์</div></div>
+    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">67,928</div><div class="kc-sub">unique orders</div></div>
+    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿530</div><div class="kc-sub">ต่อออเดอร์</div></div>
     <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
   setSMo(0,document.querySelector('#s-mo-tabs .mtab'));
   // Rev bars
