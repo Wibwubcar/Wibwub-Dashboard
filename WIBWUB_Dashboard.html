@@ -1291,7 +1291,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.toLocaleString()} ออเดอร์`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[116,120,124,128,130],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
+  {label:'TikTok',data:[23.4,24.2,25.0,25.6,26.2],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
   {label:'Facebook',data:[58,59,61,63,64],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:4},
   {label:'Instagram',data:[35,36,37,38,39],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
