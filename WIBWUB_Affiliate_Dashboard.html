@@ -610,12 +610,16 @@ function rt(){
 function ss(k){
   cur=k;cnt=20;
   if(k==='t'){
+    // ทั้งหมด = sort by total AND show all 7 months
+    afRS=0;afRE=6;
     sd=[...raw].sort((a,b)=>{
-      const as=a.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
-      const bs=b.mn.slice(afRS,afRE+1).reduce((x,y)=>x+y,0);
+      const as=a.mn.reduce((x,y)=>x+(y||0),0);
+      const bs=b.mn.reduce((x,y)=>x+(y||0),0);
       return bs-as;
     });
   }else{
+    // Specific month = show only that month's column (single)
+    afRS=k;afRE=k;
     sd=[...raw].sort((a,b)=>(b.mn[k]??-1)-(a.mn[k]??-1));
   }
   document.querySelectorAll('.sb').forEach(b=>b.classList.remove('a'));
@@ -624,6 +628,10 @@ function ss(k){
   const thid=k==='t'?'ht':'h'+k;
   document.getElementById(bid)?.classList.add('a');
   document.getElementById(thid)?.classList.add('sa');
+  // Update header column visibility
+  document.querySelectorAll('#mt thead th').forEach((th,i)=>{
+    if(i>=1&&i<=7)th.style.display=(i-1>=afRS&&i-1<=afRE)?'':'none';
+  });
   rt();
 }
 function sm(){cnt+=20;rt();}
