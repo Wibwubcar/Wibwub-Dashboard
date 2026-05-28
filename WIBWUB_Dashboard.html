@@ -206,6 +206,10 @@
     /* Admin logout in sidebar footer */
     .sb-logout{width:100%;margin-top:8px;padding:8px 12px;background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);border-radius:7px;color:rgba(255,160,160,.9);font-size:12px;cursor:pointer;font-family:inherit;text-align:left;display:block;}
     .sb-logout:hover{background:rgba(255,80,80,.3);color:#fff;border-color:rgba(255,80,80,.6);}
+    .sb-chgpwd{width:100%;margin-top:5px;padding:7px 12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;color:rgba(255,255,255,.45);font-size:11px;cursor:pointer;font-family:inherit;text-align:left;}
+    .sb-chgpwd:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+    .au-reset-btn{padding:3px 8px;background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.3);border-radius:5px;color:#E65100;font-size:11px;cursor:pointer;white-space:nowrap;}
+    .au-reset-btn:hover{background:rgba(255,149,0,.2);}
     /* Admin panel section */
     .admin-form-card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
     .admin-form-card h3{font-size:14px;font-weight:800;margin-bottom:16px;}
@@ -296,6 +300,7 @@
         <div class="user-role" id="sbUserRole">กำลังโหลด...</div>
       </div>
     </div>
+    <button class="sb-chgpwd" onclick="showChangePwdModal()">🔑 เปลี่ยน password ของฉัน</button>
     <button class="sb-logout" id="sbLogout" onclick="doLogout()">🚪 ออกจากระบบ</button>
   </div>
 </aside>
@@ -2117,6 +2122,65 @@ async function adminCreateUser(){
   }
 }
 
+// ── เปลี่ยน Password ตัวเอง ──
+function showChangePwdModal(){
+  // reuse wib-overlay modal system
+  document.getElementById('wib-modal-title').textContent='🔑 เปลี่ยน Password';
+  document.getElementById('wib-modal-body').innerHTML=`
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Password ปัจจุบัน</label>
+        <input type="password" id="cpOld" placeholder="••••••••" style="width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">Password ใหม่ (อย่างน้อย 6 ตัว)</label>
+        <input type="password" id="cpNew" placeholder="••••••••" style="width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:600;color:#6B7280;display:block;margin-bottom:4px;">ยืนยัน Password ใหม่</label>
+        <input type="password" id="cpConfirm" placeholder="••••••••" style="width:100%;padding:9px 12px;border:1.5px solid #e5e7eb;border-radius:8px;font-size:13px;outline:none;box-sizing:border-box;">
+      </div>
+      <div id="cpMsg" style="font-size:12px;text-align:center;min-height:16px;"></div>
+    </div>`;
+  // swap footer button
+  const footer=document.querySelector('.wib-modal-footer button:last-child');
+  footer.textContent='เปลี่ยน Password';
+  footer.onclick=doChangePassword;
+  document.getElementById('wib-overlay').style.display='flex';
+}
+async function doChangePassword(){
+  const old=document.getElementById('cpOld').value;
+  const nw=document.getElementById('cpNew').value;
+  const cf=document.getElementById('cpConfirm').value;
+  const msg=document.getElementById('cpMsg');
+  if(!old||!nw||!cf){msg.style.color='#dc2626';msg.textContent='กรุณากรอกข้อมูลให้ครบ';return;}
+  if(nw.length<6){msg.style.color='#dc2626';msg.textContent='Password ใหม่ต้องมีอย่างน้อย 6 ตัวอักษร';return;}
+  if(nw!==cf){msg.style.color='#dc2626';msg.textContent='Password ใหม่ไม่ตรงกัน';return;}
+  try{
+    const user=auth.currentUser;
+    const cred=firebase.auth.EmailAuthProvider.credential(user.email,old);
+    await user.reauthenticateWithCredential(cred);
+    await user.updatePassword(nw);
+    msg.style.color='#16a34a';msg.textContent='เปลี่ยน password สำเร็จ ✓';
+    setTimeout(()=>closeWibModal(),1500);
+  }catch(e){
+    msg.style.color='#dc2626';
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')msg.textContent='Password ปัจจุบันไม่ถูกต้อง';
+    else if(e.code==='auth/weak-password')msg.textContent='Password ใหม่ไม่แข็งแรงพอ';
+    else msg.textContent='เกิดข้อผิดพลาด: '+e.message;
+  }
+}
+// ── Admin รีเซ็ต Password ──
+async function adminResetPassword(email){
+  if(!confirm('ส่ง email รีเซ็ต password ไปที่\n'+email+'\nใช่ไหม?')) return;
+  try{
+    await auth.sendPasswordResetEmail(email);
+    alert('ส่ง email รีเซ็ตไปที่ '+email+' แล้ว ✓\nให้ user เช็ค inbox (รวมถึงโฟลเดอร์ spam)');
+  }catch(e){
+    alert('เกิดข้อผิดพลาด: '+e.message);
+  }
+}
+
 async function loadAdminUsers(){
   if(window._userRole!=='admin') return;
   const listEl=document.getElementById('adminUserList');
@@ -2128,12 +2192,16 @@ async function loadAdminUsers(){
     listEl.innerHTML=snap.docs.map(doc=>{
       const d=doc.data();
       const ini=((d.name||d.email)||'?')[0].toUpperCase();
+      const esc=d.email.replace(/'/g,"\\'");
       return`<div class="au-row">
         <div class="au-av">${ini}</div>
         <div class="au-info">
           <div class="au-name">${d.name||'—'}</div>
           <div class="au-email">${d.email}</div>
-          <span class="role-badge rb-${d.role}">${ROLE_LABEL[d.role]||d.role}</span>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;">
+            <span class="role-badge rb-${d.role}">${ROLE_LABEL[d.role]||d.role}</span>
+            <button class="au-reset-btn" onclick="adminResetPassword('${esc}')">🔑 รีเซ็ต password</button>
+          </div>
         </div>
       </div>`;
     }).join('');

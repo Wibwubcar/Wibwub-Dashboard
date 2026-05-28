@@ -163,6 +163,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .af-msg{font-size:11px;margin-top:8px;min-height:16px;text-align:center;}
 .af-msg.ok{color:var(--green);}
 .af-msg.err{color:var(--red);}
+/* Change Password Modal */
+.cp-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:2000;display:none;align-items:center;justify-content:center;padding:20px;}
+.cp-overlay.show{display:flex;}
+.cp-box{background:#fff;border-radius:18px;padding:24px 20px;width:100%;max-width:340px;}
+.cp-title{font-size:15px;font-weight:800;margin-bottom:16px;}
+.cp-msg{font-size:11px;text-align:center;min-height:14px;margin-top:8px;}
+.cp-msg.ok{color:var(--green);}
+.cp-msg.err{color:var(--red);}
+.au-actions{display:flex;gap:6px;margin-top:6px;}
+.au-reset-btn{padding:4px 8px;background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.3);border-radius:6px;color:#E65100;font-size:10px;font-weight:600;cursor:pointer;}
+.au-reset-btn:active{background:rgba(255,149,0,.25);}
 .admin-sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
 .admin-ucard{background:#fff;border-radius:12px;padding:12px 14px;margin-bottom:8px;box-shadow:0 1px 4px rgba(0,0,0,.06);display:flex;align-items:center;gap:10px;}
 .admin-uav{width:36px;height:36px;border-radius:50%;background:var(--bll);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:var(--bl);flex-shrink:0;}
@@ -217,8 +228,31 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div>ม.ค. – พ.ค. 2569</div>
     <div id="hdrUser" style="display:none;text-align:right;margin-top:4px;">
       <span id="hdrUserName" class="hdr-user-name"></span>
+      <button onclick="showChangePasswordModal()" style="padding:2px 7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:5px;color:rgba(255,255,255,.8);font-size:10px;cursor:pointer;margin-right:4px;">🔑</button>
       <button class="hdr-logout" onclick="doLogout()">ออกจากระบบ</button>
     </div>
+  </div>
+</div>
+
+<!-- Change Password Modal -->
+<div class="cp-overlay" id="cpOverlay">
+  <div class="cp-box">
+    <div class="cp-title">🔑 เปลี่ยน Password</div>
+    <div class="af-field">
+      <label>Password ปัจจุบัน</label>
+      <input type="password" id="cpOld" placeholder="••••••••">
+    </div>
+    <div class="af-field">
+      <label>Password ใหม่ (อย่างน้อย 6 ตัว)</label>
+      <input type="password" id="cpNew" placeholder="••••••••">
+    </div>
+    <div class="af-field">
+      <label>ยืนยัน Password ใหม่</label>
+      <input type="password" id="cpConfirm" placeholder="••••••••">
+    </div>
+    <button class="af-btn" onclick="doChangePassword()">เปลี่ยน Password</button>
+    <div class="cp-msg" id="cpMsg"></div>
+    <button onclick="document.getElementById('cpOverlay').classList.remove('show')" style="width:100%;padding:10px;background:none;border:1px solid var(--border);border-radius:10px;font-size:13px;cursor:pointer;margin-top:8px;font-family:inherit;">ยกเลิก</button>
   </div>
 </div>
 
@@ -1594,6 +1628,49 @@ async function adminCreateUser(){
   }
 }
 
+// ── เปลี่ยน Password ตัวเอง ──
+function showChangePasswordModal(){
+  document.getElementById('cpOld').value='';
+  document.getElementById('cpNew').value='';
+  document.getElementById('cpConfirm').value='';
+  document.getElementById('cpMsg').textContent='';
+  document.getElementById('cpMsg').className='cp-msg';
+  document.getElementById('cpOverlay').classList.add('show');
+}
+async function doChangePassword(){
+  const old=document.getElementById('cpOld').value;
+  const nw=document.getElementById('cpNew').value;
+  const cf=document.getElementById('cpConfirm').value;
+  const msg=document.getElementById('cpMsg');
+  msg.className='cp-msg';
+  if(!old||!nw||!cf){msg.className='cp-msg err';msg.textContent='กรุณากรอกข้อมูลให้ครบ';return;}
+  if(nw.length<6){msg.className='cp-msg err';msg.textContent='Password ใหม่ต้องมีอย่างน้อย 6 ตัวอักษร';return;}
+  if(nw!==cf){msg.className='cp-msg err';msg.textContent='Password ใหม่ไม่ตรงกัน';return;}
+  try{
+    const user=auth.currentUser;
+    const cred=firebase.auth.EmailAuthProvider.credential(user.email,old);
+    await user.reauthenticateWithCredential(cred);
+    await user.updatePassword(nw);
+    msg.className='cp-msg ok';msg.textContent='เปลี่ยน password สำเร็จ ✓';
+    setTimeout(()=>document.getElementById('cpOverlay').classList.remove('show'),1500);
+  }catch(e){
+    msg.className='cp-msg err';
+    if(e.code==='auth/wrong-password'||e.code==='auth/invalid-credential')msg.textContent='Password ปัจจุบันไม่ถูกต้อง';
+    else if(e.code==='auth/weak-password')msg.textContent='Password ใหม่ไม่แข็งแรงพอ';
+    else msg.textContent='เกิดข้อผิดพลาด: '+e.message;
+  }
+}
+// ── Admin รีเซ็ต Password ──
+async function adminResetPassword(email){
+  if(!confirm('ส่ง email รีเซ็ต password ไปที่\n'+email+'\nใช่ไหม?')) return;
+  try{
+    await auth.sendPasswordResetEmail(email);
+    alert('ส่ง email รีเซ็ตไปที่ '+email+' แล้ว ✓\nให้ user เช็ค inbox (รวมถึงโฟลเดอร์ spam)');
+  }catch(e){
+    alert('เกิดข้อผิดพลาด: '+e.message);
+  }
+}
+
 async function loadAdminUsers(){
   if(window._userRole!=='admin') return;
   const listEl = document.getElementById('adminUserList');
@@ -1606,12 +1683,16 @@ async function loadAdminUsers(){
     listEl.innerHTML=snap.docs.map(doc=>{
       const d=doc.data();
       const ini=((d.name||d.email)||'?')[0].toUpperCase();
+      const esc=d.email.replace(/'/g,"\\'");
       return`<div class="admin-ucard">
         <div class="admin-uav">${ini}</div>
         <div class="admin-uinfo">
           <div class="admin-uname">${d.name||'—'}</div>
           <div class="admin-uemail">${d.email}</div>
-          <span class="role-badge rb-${d.role}">${roleLabel[d.role]||d.role}</span>
+          <div class="au-actions">
+            <span class="role-badge rb-${d.role}">${roleLabel[d.role]||d.role}</span>
+            <button class="au-reset-btn" onclick="adminResetPassword('${esc}')">🔑 รีเซ็ต password</button>
+          </div>
         </div>
       </div>`;
     }).join('');
