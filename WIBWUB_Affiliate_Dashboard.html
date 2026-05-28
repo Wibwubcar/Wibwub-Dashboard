@@ -1317,10 +1317,10 @@ function initKolCharts(){
 <div id="panelBudget" class="tab-panel">
 
 <div class="kol-kpi-grid" style="grid-template-columns:repeat(5,1fr);">
-  <div class="kol-kc"><p class="kol-kl">รวมค่าจ้าง KOL ทั้งหมด</p><p class="kol-kv" id="bud-total">฿1.04M</p><p class="kol-ks">พ.ย. 68 – พ.ค. 69</p></div>
-  <div class="kol-kc"><p class="kol-kl">เดือนที่ใช้สูงสุด</p><p class="kol-kv" id="bud-peak" style="color:#D97706;">พค.69</p><p class="kol-ks">฿315,600</p></div>
-  <div class="kol-kc"><p class="kol-kl">เฉลี่ยต่อเดือน</p><p class="kol-kv" id="bud-avg">฿148K</p><p class="kol-ks">7 เดือนที่ผ่านมา</p></div>
-  <div class="kol-kc"><p class="kol-kl">Pending (รอจ่าย)</p><p class="kol-kv" id="bud-pending" style="color:#9F1239;">฿351K</p><p class="kol-ks">Djpetjah + Nickynachat มิ.ย.</p></div>
+  <div class="kol-kc"><p class="kol-kl">รวมค่าจ้าง KOL ทั้งหมด</p><p class="kol-kv" id="bud-total">฿1.06M</p><p class="kol-ks">พ.ย. 68 – มิ.ย. 69</p></div>
+  <div class="kol-kc"><p class="kol-kl">เดือนที่ใช้สูงสุด</p><p class="kol-kv" id="bud-peak" style="color:#D97706;">พค.69</p><p class="kol-ks">฿323,600</p></div>
+  <div class="kol-kc"><p class="kol-kl">เฉลี่ยต่อเดือน</p><p class="kol-kv" id="bud-avg">฿132K</p><p class="kol-ks">8 เดือน</p></div>
+  <div class="kol-kc"><p class="kol-kl">Pending (รอจ่าย)</p><p class="kol-kv" id="bud-pending" style="color:#9F1239;">฿104.5K</p><p class="kol-ks">nut.na.kub + Nickynachat มิ.ย.</p></div>
   <div class="kol-kc"><p class="kol-kl">จำนวน Campaign</p><p class="kol-kv" id="bud-camps">14</p><p class="kol-ks">ทั้งหมดตั้งแต่ พ.ย. 68</p></div>
 </div>
 
@@ -1388,14 +1388,14 @@ function initKolCharts(){
 <script>
 // ─── BUDGET DATA ───
 const BUD_LABELS = ['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิ.ย.69'];
-const BUD_TOTAL_ARR = [139590,16565,186000,81050,96900,205050,315600,200800];
-const BUD_PAID_ARR  = [139590,16565,186000,81050,96900,205050,315600,0];
+const BUD_TOTAL_ARR = [139590,16565,135700,39130,93514,205050,323600,104000];
+const BUD_PAID_ARR  = [139590,16565,135700,39130,93514,205050,323100,0];
 const BUD_TIERS = {
-  mega:   [0,0,130000,0,0,80000,124800,200800],
-  mid:    [57200,0,0,17000,66200,14550,150800,0],
+  mega:   [0,0,135200,0,0,80000,124800,104000],
+  mid:    [57200,0,0,16580,65660,14550,150800,0],
   micro:  [66370,14140,0,1050,18354,2000,0,0],
   nano:   [9700,2425,0,0,0,0,0,0],
-  seeding:[6320,0,56000,63000,12346,94500,40000,0],
+  seeding:[6320,0,500,21500,9500,94500,48000,0],
   bonus:  [0,0,0,0,0,14000,0,0],
 };
 
@@ -1433,15 +1433,14 @@ const ALL_PAYMENTS = [
   {mo:1,kol:"peanutbuder1",tier:"seeding",campaign:"Campaign Dec 2025",amount:1455,status:"done"},
   {mo:1,kol:"medsaieieiii",tier:"seeding",campaign:"Campaign Dec 2025",amount:970,status:"done"},
   // ── มค.69 (Jan 2026) ──
-  {mo:2,kol:'mushinyiwz',tier:'mega',campaign:'Campaign Jan 2026',amount:130000,status:'done'},
-  {mo:2,kol:'Seeding 200 creators',tier:'seeding',campaign:'Seeding 200 Jan 2026',amount:56000,status:'done'},
+  {mo:2,kol:'mushinyiwz',tier:'mega',campaign:'Campaign Jan 2026',amount:135200,status:'done'},
+  {mo:2,kol:'Seeding Jan (1 creator)',tier:'seeding',campaign:'Seeding Jan 2026',amount:500,status:'done'},
   // ── กพ.69 (Feb 2026) ──
   {mo:3,kol:'numtonn',tier:'mid',campaign:'Campaign Feb 2026',amount:8730,status:'done'},
   {mo:3,kol:'first.8888',tier:'mid',campaign:'Campaign Feb 2026',amount:4850,status:'done'},
   {mo:3,kol:'rumphaphak_',tier:'mid',campaign:'Campaign Feb 2026',amount:3000,status:'done'},
   {mo:3,kol:'noonjourney',tier:'micro',campaign:'Campaign Feb 2026',amount:1050,status:'done'},
-  {mo:3,kol:'Seeding 50 x ยิว (45 creators)',tier:'seeding',campaign:'Seeding 50 x ยิว Feb',amount:22500,status:'done'},
-  {mo:3,kol:'Seeding เพิ่มเติม (ม.ค.-ก.พ.)',tier:'seeding',campaign:'Seeding 200 Jan 2026',amount:40500,status:'done'},
+  {mo:3,kol:'Seeding 50 x ยิว (45 creators)',tier:'seeding',campaign:'Seeding 50 x ยิว Feb',amount:21500,status:'done'},
   // ── มีนา.69 (Mar 2026) ──
   {mo:4,kol:'taddy_n2',tier:'mid',campaign:'Campaign March 2026',amount:33000,status:'done'},
   {mo:4,kol:'namehouse19',tier:'mid',campaign:'Campaign March 2026',amount:17460,status:'done'},
@@ -1453,7 +1452,7 @@ const ALL_PAYMENTS = [
   {mo:4,kol:'Poppyme',tier:'micro',campaign:'Campaign March 2026',amount:2134,status:'done'},
   {mo:4,kol:'mmchy',tier:'micro',campaign:'Campaign March 2026',amount:1940,status:'done'},
   {mo:4,kol:'Seeding 50 x Poppy (Mar)',tier:'seeding',campaign:'Seeding 50 x Poppy Mar-Apr',amount:9000,status:'done'},
-  {mo:4,kol:'Seeding เพิ่มเติม มีนา',tier:'seeding',campaign:'Seeding Interior',amount:3346,status:'done'},
+  {mo:4,kol:'thanawatcream',tier:'seeding',campaign:'Seeding Mar 2026',amount:500,status:'done'},
   // ── เมษา.69 (Apr 2026) ──
   {mo:5,kol:'pepperchacha',tier:'mega',campaign:'Campaign April 2026',amount:80000,status:'done'},
   {mo:5,kol:'numtonn',tier:'mid',campaign:'Campaign April 2026',amount:14550,status:'done'},
@@ -1471,10 +1470,10 @@ const ALL_PAYMENTS = [
   // ── พค.69 (May 2026) ──
   {mo:6,kol:'nickynachat',tier:'mega',campaign:'Campaign May 2026',amount:124800,status:'done'},
   {mo:6,kol:'djpetjah',tier:'mid',campaign:'Campaign May 2026',amount:150800,status:'done'},
-  {mo:6,kol:'บจก.ราชรี (agency fee)',tier:'seeding',campaign:'Seeding May 2026',amount:52000,status:'done'},
-  {mo:6,kol:'Seeding Interior (May)',tier:'seeding',campaign:'Seeding 200 Interior May',amount:40000,status:'done'},
+  {mo:6,kol:'Seeding Interior (May)',tier:'seeding',campaign:'Seeding 200 Interior May',amount:47500,status:'done'},
+  {mo:6,kol:'nut.na.kub',tier:'seeding',campaign:'Seeding May 2026',amount:500,status:'pending'},
   // ── มิ.ย.69 (Jun 2026 - pending) ──
-  {mo:7,kol:'nickynachat (คลิปที่ 2-3)',tier:'mega',campaign:'Campaign June 2026',amount:200800,status:'pending'},
+  {mo:7,kol:'nickynachat (คลิปที่ 2-3)',tier:'mega',campaign:'Campaign June 2026',amount:104000,status:'pending'},
 ];
 
 // ── Budget rendering ──
@@ -1581,7 +1580,7 @@ function initBudgetCharts(){
       labels:BUD_LABELS,
       datasets:[
         {label:'จ่ายแล้ว',data:BUD_PAID_ARR,backgroundColor:'#1A5CDB',borderRadius:4},
-        {label:'รอจ่าย',data:[0,0,0,0,0,0,150800,200800],backgroundColor:'rgba(159,18,57,0.35)',borderRadius:4},
+        {label:'รอจ่าย',data:[0,0,0,0,0,0,500,104000],backgroundColor:'rgba(159,18,57,0.35)',borderRadius:4},
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,
