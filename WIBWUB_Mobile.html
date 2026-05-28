@@ -162,9 +162,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="hh-val">฿36.0M</div>
     <div class="hh-sub">64,036 unique orders · AOV ฿563</div>
     <div class="hh-grid">
-      <div class="hhg"><div class="hhg-v">฿20.9M</div><div class="hhg-l">Shopee</div></div>
-      <div class="hhg"><div class="hhg-v">฿5.75M</div><div class="hhg-l">TikTok</div></div>
-      <div class="hhg"><div class="hhg-v">฿547K</div><div class="hhg-l">Lazada</div></div>
+      <div class="hhg"><div class="hhg-v">฿22.7M</div><div class="hhg-l">Shopee</div></div>
+      <div class="hhg"><div class="hhg-v">฿6.21M</div><div class="hhg-l">TikTok</div></div>
+      <div class="hhg"><div class="hhg-v">฿700K</div><div class="hhg-l">Lazada</div></div>
     </div>
   </div>
   <div class="card">
@@ -409,6 +409,10 @@ const LZ_REV=[179084,120949,183370,110532,106167];
 const FB_REV=[2161199,1347804,1072079,808343,515666];
 const LINE_REV=[291906,444290,407415,349987,275461];
 const WEB_REV=[115840,111853,102113,124709,107014];
+const CARE_REV=[84069,90135,70707,92509,98307];
+const MKT_REV=[580,0,0,490,17365];
+const BEUK_REV=[0,0,0,0,365];
+const POS_REV=[435,548,2277,267,590];
 const SH_ORD=[7181,6280,6577,7644,6667];
 const TK_ORD=[3204,3652,3934,5032,6271];
 const LZ_ORD=[230,172,248,156,96];
@@ -424,15 +428,15 @@ const TK_NET=[456036,544073,642947,708730,739395];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.5];
 const LZ_COST_PCT=[22.67,24.61,24.36,24.86,24.77];
 const LZ_ADS=[5760,5680,7220,5710,5240];
-const TOTAL_REV=[9072564,7594735,7213504,7368461,4798440];
-const TOTAL_ORD=[13940,12583,12855,14270,10388];
+const TOTAL_REV=[8132249, 7579319, 7606265, 7948363, 6583244];
+const TOTAL_ORD=[10615, 10104, 10759, 12832, 13034];
 
 const CHANNELS=[
-  {n:'Shopee',v:20852024,color:'#ee4d2d'},
+  {n:'Shopee',v:22701995,color:'#ee4d2d'},
   {n:'Facebook',v:5905091,color:'#1877f2'},
-  {n:'TikTok',v:5754193,color:'#111'},
+  {n:'TikTok',v:6211664,color:'#111'},
   {n:'Line Shopping',v:1769059,color:'#06c755'},
-  {n:'Lazada',v:547158,color:'#1b04a1'},
+  {n:'Lazada',v:700102,color:'#1b04a1'},
   {n:'Website/อื่นๆ',v:1219179,color:'#1A5CDB'},
 ];
 
@@ -885,6 +889,20 @@ function renderPlt(idx){
       <span>Cost%: <b>${LZ_COST_PCT[idx]}%</b></span>
       <span>Ads: <b>${fmtB(LZ_ADS[idx])}</b></span>
     </div>
+  </div>
+  <div style="margin-top:14px;padding:10px 12px;background:#fef3c7;border:1.5px solid #f59e0b;border-radius:10px;">
+    <div style="font-size:10px;font-weight:800;color:#78350f;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">⚠️ ยอดที่ไม่ใช่รายได้ (Internal) — Shipnity</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px;">
+      <div>🔧 Carcare<br><b>${fmtB(CARE_REV[idx])}</b></div>
+      <div>📦 เบิกของ<br><b>${fmtB(BEUK_REV[idx])}</b></div>
+      <div>🎁 สินค้าทำการตลาด<br><b>${fmtB(MKT_REV[idx])}</b></div>
+      <div>🏪 POS หน้าร้าน<br><b>${fmtB(POS_REV[idx])}</b></div>
+    </div>
+    <div style="margin-top:8px;padding-top:6px;border-top:1px solid #f59e0b;display:flex;justify-content:space-between;font-size:12px;">
+      <span style="font-weight:700;color:#78350f;">รวม Internal</span>
+      <span style="font-weight:900;color:#d97706;">${fmtB(CARE_REV[idx]+BEUK_REV[idx]+MKT_REV[idx]+POS_REV[idx])}</span>
+    </div>
+    <div style="font-size:9px;color:#b45309;margin-top:3px;">ไม่นับในยอดรายได้หลัก</div>
   </div>`;
 }
 
