@@ -916,7 +916,7 @@
 
       <!-- KPI row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">ยอดขายรวม 3 เดือน</div><div class="kpi-val">฿21.3M</div><div class="kpi-sub neutral">มี.ค. – พ.ค. 2569</div><div class="kpi-ico">💰</div></div>
+        <div class="kpi or"><div class="kpi-label">ยอดขายรวม 3 เดือน</div><div class="kpi-val">฿10.1M</div><div class="kpi-sub neutral">มี.ค. – พ.ค. 2569</div><div class="kpi-ico">💰</div></div>
         <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val">Wool Duster</div><div class="kpi-sub up">฿2.15M · 3,366 ชิ้น</div><div class="kpi-ico">🏆</div></div>
         <div class="kpi bl"><div class="kpi-label">จำนวนสินค้า (SKU)</div><div class="kpi-val">167 SKU</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity</div><div class="kpi-ico">📦</div></div>
         <div class="kpi yw"><div class="kpi-label">ออเดอร์รวม 3 เดือน</div><div class="kpi-val">~37K</div><div class="kpi-sub neutral">Shopee · TikTok · Lazada · อื่นๆ</div><div class="kpi-ico">🛒</div></div>
@@ -1274,7 +1274,7 @@ function go(id, el) {
 // ── RAW DATA (from spreadsheets) ──
 const M5 = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
 const SH_REV  = [4231653,4383214,4560321,5204395,4322412];
-const TK_REV  = [1152567,1171209,1280967,1350397,1256524];
+const TK_REV  = [1152567,1171209,1280967,1350397,1408332];
 const LZ_REV  = [179084,120949,183370,110532,106167];
 const FB_REV  = [2161199,1347804,1072079,808343,515666];
 const LINE_REV= [291906,444290,407415,349987,275461];
@@ -1398,7 +1398,7 @@ new Chart('pr_top10',{
     datasets:[
       {label:'มีนาคม', data:[981641,606708,470790,166974,237744,282205,116783,234139,229188,158145], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
       {label:'เมษายน', data:[788587,561482,523676,269674,332049,306164,305741,216089,173243,193075], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
-      {label:'พฤษภาคม', data:[376115,415124,401333,492336,308787,236662,313116,174879,129835,147058], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
+      {label:'พฤษภาคม', data:[372303,413580,399887,490446,307668,236272,311241,174231,129835,147058], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
     ]
   },
   options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}}}}
