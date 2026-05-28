@@ -28,34 +28,45 @@ body{background:#F8F9FB;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',
 .lr{display:flex;gap:12px;margin-bottom:7px;flex-wrap:wrap}
 .li{display:flex;align-items:center;gap:4px;font-size:10px;color:#6B7280}
 .ld{width:9px;height:9px;border-radius:2px;flex-shrink:0}
-.tc2{background:#fff;border-radius:10px;padding:14px 16px;border:1px solid rgba(255,255,255,.06)}
-.sec-label{font-size:10px;font-weight:500;color:#6B7280;letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px}
-.sr{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
-.sb{padding:4px 10px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:transparent;font-size:11px;color:#6B7280;cursor:pointer}
-.sb.a{background:rgba(26,92,219,.15);color:#1A5CDB;border-color:rgba(26,92,219,.4)}
-.sb:hover:not(.a){background:#EEF3FD;color:#666}
-.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0}
-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}
-thead th{padding:7px 8px;font-size:10px;font-weight:500;color:#666;border-bottom:1px solid #e8e8e8;cursor:pointer;text-align:right;letter-spacing:.4px;text-transform:uppercase;white-space:nowrap;background:#F8F9FB}
-thead th:first-child{text-align:left}
-thead th.sa{color:#1A5CDB}
-thead th:hover{color:#666}
-td{padding:6px 8px;border-bottom:1px solid rgba(255,255,255,.04);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#666}
-td:first-child{text-align:left;font-weight:500;color:#0F0F0F}
-tbody tr:hover td{background:rgba(255,255,255,.025)}
+.tc2{background:#fff;border-radius:14px;padding:20px 24px;border:1px solid #E5E7EB;box-shadow:0 1px 6px rgba(0,0,0,.05)}
+.sec-label{font-size:11px;font-weight:700;color:#374151;letter-spacing:.6px;text-transform:uppercase;margin-bottom:12px}
+.sr{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.sb{padding:5px 12px;border-radius:20px;border:1.5px solid #E5E7EB;background:#fff;font-size:11px;font-weight:600;color:#6B7280;cursor:pointer;transition:all .15s}
+.sb.a{background:#1A5CDB;color:#fff;border-color:#1A5CDB;box-shadow:0 2px 8px rgba(26,92,219,.3)}
+.sb:hover:not(.a){background:#F0F4FF;color:#1A5CDB;border-color:#C7D7F8}
+.tw{overflow-x:auto;-webkit-overflow-scrolling:touch;min-width:0;border-radius:10px;border:1px solid #F0F0F0}
+table#mt{width:100%;border-collapse:collapse;font-size:13px;table-layout:auto}
+thead th{padding:11px 14px;font-size:10px;font-weight:700;color:#9CA3AF;border-bottom:2px solid #F0F0F0;cursor:pointer;text-align:right;letter-spacing:.5px;text-transform:uppercase;white-space:nowrap;background:#FAFAFA;transition:color .15s}
+thead th:first-child{text-align:left;padding-left:16px;min-width:200px}
+thead th.sa{color:#1A5CDB;background:#EEF4FF}
+thead th.sa-col{background:#F5F8FF}
+thead th:hover{color:#1A5CDB}
+td{padding:10px 14px;border-bottom:1px solid #F5F5F5;text-align:right;white-space:nowrap;color:#6B7280;vertical-align:middle}
+td:first-child{text-align:left;padding-left:16px}
+td.sa-col{background:#FAFCFF}
+tbody tr{transition:background .1s}
+tbody tr:hover td{background:#F8FAFF!important}
+tbody tr:hover td.sa-col{background:#EEF4FF!important}
 tbody tr:last-child td{border-bottom:none}
-.hc{display:inline-block;border-radius:3px;padding:2px 6px;min-width:52px;text-align:right}
-.tx{color:#1A5CDB!important;font-weight:500!important}
-.mx{color:#374151!important;font-size:10px!important}
-.rk{display:inline-flex;align-items:center;justify-content:center;width:17px;height:17px;border-radius:50%;font-size:9px;font-weight:500;flex-shrink:0;margin-right:4px}
-.r1{background:rgba(26,92,219,.3);color:#1A5CDB}
-.r2{background:rgba(156,163,175,.15);color:#666}
-.r3{background:rgba(26,92,219,.12);color:#D97706}
-.rn{background:rgba(255,255,255,.05);color:#666}
-.pi{font-size:10px;color:#374151;margin-top:7px}
-.smb{width:100%;padding:7px;border-radius:8px;border:1px solid rgba(255,255,255,.07);background:transparent;font-size:12px;color:#666;cursor:pointer;margin-top:8px}
-.smb:hover{color:#6B7280;background:rgba(255,255,255,.03)}
-.div-sep{height:1px;background:rgba(255,255,255,.06);margin:14px 0}
+tbody tr.top3 td{background:#FFFDF0}
+tbody tr.top3:hover td{background:#FFF8DC!important}
+.hc{display:inline-flex;align-items:center;justify-content:flex-end;border-radius:6px;padding:3px 8px;min-width:58px;font-size:12px;font-weight:600;gap:3px}
+.hc-bar{display:block;height:3px;border-radius:2px;margin-top:2px;background:currentColor;opacity:.35}
+.cell-wrap{display:flex;flex-direction:column;align-items:flex-end;gap:1px}
+.tx{text-align:right}
+.tx .badge{display:inline-block;background:#1A5CDB;color:#fff;border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700}
+.mx{color:#9CA3AF!important;font-size:10px!important;text-align:center!important}
+.rk{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;font-size:10px;font-weight:700;flex-shrink:0;margin-right:8px}
+.r1{background:linear-gradient(135deg,#FFD700,#FFA500);color:#fff;box-shadow:0 1px 4px rgba(255,165,0,.4)}
+.r2{background:linear-gradient(135deg,#C0C0C0,#A8A8A8);color:#fff;box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.r3{background:linear-gradient(135deg,#CD7F32,#A0522D);color:#fff;box-shadow:0 1px 4px rgba(160,82,45,.3)}
+.rn{background:#F3F4F6;color:#9CA3AF;font-size:9px}
+.creator-name{font-size:13px;font-weight:600;color:#1F2937}
+.creator-at{font-size:10px;color:#9CA3AF;font-weight:400}
+.pi{font-size:11px;color:#6B7280;margin-top:12px;text-align:center}
+.smb{width:100%;padding:9px;border-radius:10px;border:1.5px solid #E5E7EB;background:#fff;font-size:12px;font-weight:600;color:#6B7280;cursor:pointer;margin-top:10px;transition:all .15s}
+.smb:hover{color:#1A5CDB;border-color:#1A5CDB;background:#F0F4FF}
+.div-sep{height:1px;background:#F0F0F0;margin:16px 0}
 footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-spacing:1px;text-transform:uppercase}
 
 /* MONTH RANGE PICKER – dark theme */
@@ -237,12 +248,6 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
   <div class="sr" id="sr"></div>
   <div class="tw">
     <table id="mt">
-      <colgroup>
-        <col style="width:140px">
-        <col style="width:78px"><col style="width:78px"><col style="width:78px"><col style="width:78px">
-        <col style="width:78px"><col style="width:78px"><col style="width:78px">
-        <col style="width:88px"><col style="width:38px">
-      </colgroup>
       <thead>
         <tr>
           <th onclick="ss('t')" style="text-align:left">Creator</th>
@@ -254,7 +259,7 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
           <th onclick="ss(5)" id="h5">เมษา.69</th>
           <th onclick="ss(6)" id="h6">พค.69*</th>
           <th onclick="ss('t')" id="ht" class="sa">Net รวม</th>
-          <th style="cursor:default">เดือน</th>
+          <th style="cursor:default;min-width:52px">เดือน</th>
         </tr>
       </thead>
       <tbody id="tb"></tbody>
@@ -554,27 +559,42 @@ function hc(v){
   if(r<0.65)return{bg:'rgba(26,92,219,0.45)',c:'#1A5CDB'};
   return{bg:'rgba(26,92,219,0.7)',c:'#FED7AA'};
 }
-function fmt(v){
-  if(v==null)return'<span style="color:#374151;font-size:10px">—</span>';
-  if(v===0)return'<span style="color:#374151;font-size:10px">0</span>';
+function fmt(v, isActive){
+  if(v==null)return`<span style="color:#D1D5DB;font-size:11px">—</span>`;
+  if(v===0)return`<span style="color:#D1D5DB;font-size:11px">฿0</span>`;
   const h=hc(v);
   const t=v>=1000?(v/1000).toFixed(1)+'K':v;
-  if(!h)return`<span style="color:#374151;font-size:10px">฿${t}</span>`;
-  return`<span class="hc" style="background:${h.bg};color:${h.c}">฿${t}</span>`;
+  const barW=Math.round((v/maxV)*100);
+  if(!h)return`<div class="cell-wrap"><span style="color:#9CA3AF;font-size:11px;font-weight:500">฿${t}</span>${isActive?`<span class="hc-bar" style="width:${barW}%;background:#D1D5DB"></span>`:''}  </div>`;
+  const barColor=isActive?h.c:'transparent';
+  return`<div class="cell-wrap"><span class="hc" style="background:${isActive?h.bg:'transparent'};color:${h.c}">฿${t}</span>${isActive?`<span class="hc-bar" style="width:${Math.max(barW,8)}%;background:${h.c}"></span>`:''}</div>`;
 }
 function fmtT(v){
   if(v>=1000000)return'฿'+(v/1000000).toFixed(2)+'M';
   if(v>=1000)return'฿'+(v/1000).toFixed(1)+'K';
   return'฿'+v;
 }
+const medalIcon=['🥇','🥈','🥉'];
 function rt(){
   const sl=sd.slice(0,cnt);
+  // Determine active single-month column (if filter is a number)
+  const activeMo=typeof cur==='number'?cur:-1;
   document.getElementById('tb').innerHTML=sl.map((r,i)=>{
     const rc=i===0?'r1':i===1?'r2':i===2?'r3':'rn';
+    const isTop3=i<3;
     const nMo=afRE-afRS+1;
-    const rangeTotal=r.mn.slice(afRS,afRE+1).reduce((a,b)=>a+b,0);
-    const rangeMa=nMo>0?Math.max(...r.mn.slice(afRS,afRE+1)):0;
-    return`<tr><td title="${r.n}"><span class="rk ${rc}">${i+1}</span>${r.n}</td>${r.mn.map(v=>`<td>${fmt(v)}</td>`).join('')}<td class="tx">${fmtT(rangeTotal)}</td><td class="mx">${rangeMa}/${nMo}</td></tr>`;
+    const rangeTotal=r.mn.slice(afRS,afRE+1).reduce((a,b)=>a+(b||0),0);
+    const activeMos=r.mn.slice(afRS,afRE+1).filter(v=>v!=null).length;
+    const rankLabel=i<3?`<span style="font-size:14px;margin-right:6px">${medalIcon[i]}</span>`:`<span class="rk ${rc}">${i+1}</span>`;
+    const nameCell=`<td title="@${r.n}" style="min-width:200px"><div style="display:flex;align-items:center">${rankLabel}<div><div class="creator-name">${r.n}</div><div class="creator-at">${activeMos}/${nMo} เดือนที่มียอด</div></div></div></td>`;
+    const moCells=r.mn.map((v,mi)=>{
+      const isAct=mi===activeMo||(activeMo===-1&&mi>=afRS&&mi<=afRE);
+      const saClass=isAct?' class="sa-col"':'';
+      return`<td${saClass}>${fmt(v,isAct)}</td>`;
+    }).join('');
+    const totalCell=`<td class="tx"><span class="badge">${fmtT(rangeTotal)}</span></td>`;
+    const moCell=`<td class="mx">${activeMos}/${nMo}</td>`;
+    return`<tr${isTop3?' class="top3"':''}>${nameCell}${moCells}${totalCell}${moCell}</tr>`;
   }).join('');
   document.getElementById('pi').textContent=`แสดง ${Math.min(cnt,sd.length)} จาก ${sd.length} creators`;
   document.getElementById('smb').style.display=cnt>=sd.length?'none':'block';
