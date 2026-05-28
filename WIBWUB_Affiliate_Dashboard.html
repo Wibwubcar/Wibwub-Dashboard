@@ -948,7 +948,7 @@ function switchTab(tab){
   if(tab==='kol' && !kolChartsInit) initKolCharts();
   if(tab==='budget'){
     const mc = document.getElementById('budMonthlyChart');
-    if(mc && !mc._chartInit){ mc._chartInit=true; initBudgetCharts(); renderBudTable(); }
+    if(mc && !mc._chartInit){ mc._chartInit=true; budInitDropdowns(); updateBudRangeLabel(); initBudgetCharts(); renderBudTable(); }
   }
   if(tab==='rec') renderRec();
 }
@@ -1330,19 +1330,25 @@ function initKolCharts(){
   <div style="position:relative;height:200px;"><canvas id="budStackedChart"></canvas></div>
 </div>
 
-<!-- Month selector + detail table -->
-<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px;">
-  <p class="sec-label" style="margin:0;">รายละเอียดการจ้าง:</p>
-  <div id="budMonthFilter" style="display:flex;gap:5px;flex-wrap:wrap;">
-    <button class="sb a" id="bm-all" onclick="budFilter('all')">ทั้งหมด</button>
-    <button class="sb" id="bm-0" onclick="budFilter(0)">พย.68</button>
-    <button class="sb" id="bm-1" onclick="budFilter(1)">ธค.68</button>
-    <button class="sb" id="bm-2" onclick="budFilter(2)">มค.69</button>
-    <button class="sb" id="bm-3" onclick="budFilter(3)">กพ.69</button>
-    <button class="sb" id="bm-4" onclick="budFilter(4)">มีนา.69</button>
-    <button class="sb" id="bm-5" onclick="budFilter(5)">เมษา.69</button>
-    <button class="sb" id="bm-6" onclick="budFilter(6)">พค.69</button>
-    <button class="sb" id="bm-7" onclick="budFilter(7)">มิ.ย.69</button>
+<!-- Month range selector + detail table -->
+<div style="margin-bottom:14px;">
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
+    <p class="sec-label" style="margin:0;">รายละเอียดการจ้าง:</p>
+    <div id="budMonthFilter" style="display:flex;gap:5px;flex-wrap:wrap;align-items:center;">
+      <button class="sb a" id="bm-all" onclick="budQuick('all')">ทั้งหมด</button>
+      <button class="sb" id="bm-3mo" onclick="budQuick('3mo')">3 เดือนล่าสุด</button>
+      <button class="sb" id="bm-paid" onclick="budQuick('paid')">จ่ายแล้ว</button>
+      <button class="sb" id="bm-pending" onclick="budQuick('pending')">รอจ่าย</button>
+    </div>
+  </div>
+  <!-- Range picker row -->
+  <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;background:#F8F9FB;border-radius:10px;padding:10px 14px;border:1px solid #E5E7EB;">
+    <span style="font-size:11px;color:#6B7280;font-weight:500;">📅 ช่วงเวลา:</span>
+    <span style="font-size:11px;color:#6B7280;">จาก</span>
+    <select id="budFrom" onchange="budRangeChange()" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #D1D5DB;background:#fff;color:#0F0F0F;cursor:pointer;font-weight:500;"></select>
+    <span style="font-size:11px;color:#6B7280;">ถึง</span>
+    <select id="budTo" onchange="budRangeChange()" style="font-size:12px;padding:5px 10px;border-radius:8px;border:1px solid #D1D5DB;background:#fff;color:#0F0F0F;cursor:pointer;font-weight:500;"></select>
+    <span id="budRangeLabel" style="font-size:11px;color:#1A5CDB;font-weight:600;margin-left:4px;"></span>
   </div>
 </div>
 
@@ -1462,15 +1468,55 @@ const ALL_PAYMENTS = [
 ];
 
 // ── Budget rendering ──
-let budCurrentFilter='all';
+let budRangeFrom=0, budRangeTo=BUD_LABELS.length-1;
+let budStatusFilter='all'; // 'all' | 'paid' | 'pending'
 let budMonthChart=null, budStackedChart=null, budTierDonut=null;
 
-function budFilter(f){
-  budCurrentFilter=f;
+function budInitDropdowns(){
+  const from=document.getElementById('budFrom');
+  const to=document.getElementById('budTo');
+  if(!from||!to)return;
+  from.innerHTML=BUD_LABELS.map((l,i)=>`<option value="${i}">${l}</option>`).join('');
+  to.innerHTML=BUD_LABELS.map((l,i)=>`<option value="${i}">${l}</option>`).join('');
+  from.value=0;
+  to.value=BUD_LABELS.length-1;
+}
+
+function budRangeChange(){
+  const f=parseInt(document.getElementById('budFrom').value);
+  const t=parseInt(document.getElementById('budTo').value);
+  if(f>t){document.getElementById('budTo').value=f; budRangeTo=f;}
+  else budRangeTo=t;
+  budRangeFrom=f;
+  budStatusFilter='all';
   document.querySelectorAll('#budMonthFilter .sb').forEach(b=>b.classList.remove('a'));
-  const el=document.getElementById(f==='all'?'bm-all':'bm-'+f);
-  if(el)el.classList.add('a');
+  updateBudRangeLabel();
   renderBudTable();
+}
+
+function budQuick(mode){
+  document.querySelectorAll('#budMonthFilter .sb').forEach(b=>b.classList.remove('a'));
+  const el=document.getElementById('bm-'+mode);
+  if(el)el.classList.add('a');
+  const last=BUD_LABELS.length-1;
+  if(mode==='all'){budRangeFrom=0;budRangeTo=last;budStatusFilter='all';}
+  else if(mode==='3mo'){budRangeFrom=Math.max(0,last-2);budRangeTo=last;budStatusFilter='all';}
+  else if(mode==='paid'){budRangeFrom=0;budRangeTo=last;budStatusFilter='paid';}
+  else if(mode==='pending'){budRangeFrom=0;budRangeTo=last;budStatusFilter='pending';}
+  const from=document.getElementById('budFrom');
+  const to=document.getElementById('budTo');
+  if(from)from.value=budRangeFrom;
+  if(to)to.value=budRangeTo;
+  updateBudRangeLabel();
+  renderBudTable();
+}
+
+function updateBudRangeLabel(){
+  const lbl=document.getElementById('budRangeLabel');
+  if(!lbl)return;
+  const rangeText=budRangeFrom===budRangeTo?BUD_LABELS[budRangeFrom]:BUD_LABELS[budRangeFrom]+' – '+BUD_LABELS[budRangeTo];
+  const statusText=budStatusFilter==='all'?'':(budStatusFilter==='paid'?' (จ่ายแล้ว)':' (รอจ่าย)');
+  lbl.textContent=rangeText+statusText;
 }
 
 function tierBadge(t){
@@ -1482,8 +1528,16 @@ function tierBadge(t){
 }
 
 function renderBudTable(){
-  const list=budCurrentFilter==='all'?ALL_PAYMENTS:ALL_PAYMENTS.filter(p=>p.mo===budCurrentFilter);
+  let list=ALL_PAYMENTS.filter(p=>p.mo>=budRangeFrom && p.mo<=budRangeTo);
+  if(budStatusFilter==='paid')list=list.filter(p=>p.status==='done');
+  else if(budStatusFilter==='pending')list=list.filter(p=>p.status==='pending');
   const tbody=document.getElementById('budTableBody');
+  if(list.length===0){
+    tbody.innerHTML=`<tr><td colspan="6" style="padding:24px;text-align:center;color:#9CA3AF;font-size:12px;">ไม่พบรายการในช่วงที่เลือก</td></tr>`;
+    document.getElementById('budRowCount').textContent='0 รายการ';
+    document.getElementById('budRowTotal').textContent='รวม ฿0';
+    return;
+  }
   tbody.innerHTML=list.map(p=>{
     const moLabel=BUD_LABELS[p.mo]||'';
     const amt=p.amount.toLocaleString('th-TH');
@@ -1500,8 +1554,12 @@ function renderBudTable(){
     </tr>`;
   }).join('');
   const total=list.reduce((s,p)=>s+p.amount,0);
+  const paid=list.filter(p=>p.status==='done').reduce((s,p)=>s+p.amount,0);
+  const pending=list.filter(p=>p.status==='pending').reduce((s,p)=>s+p.amount,0);
   document.getElementById('budRowCount').textContent=`แสดง ${list.length} รายการ`;
-  document.getElementById('budRowTotal').textContent=`รวม ฿${total.toLocaleString('th-TH')}`;
+  let totalHtml=`<span style="font-size:14px;font-weight:700;color:#0F0F0F;">รวม ฿${total.toLocaleString('th-TH')}</span>`;
+  if(pending>0) totalHtml+=`  <span style="font-size:11px;color:#065F46;margin-left:12px;">✓ จ่ายแล้ว ฿${paid.toLocaleString('th-TH')}</span><span style="font-size:11px;color:#9F1239;margin-left:8px;">⏳ รอจ่าย ฿${pending.toLocaleString('th-TH')}</span>`;
+  document.getElementById('budRowTotal').innerHTML=totalHtml;
 }
 
 function initBudgetCharts(){
