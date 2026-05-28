@@ -210,6 +210,8 @@
     .sb-chgpwd:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
     .au-reset-btn{padding:3px 8px;background:rgba(255,149,0,.1);border:1px solid rgba(255,149,0,.3);border-radius:5px;color:#E65100;font-size:11px;cursor:pointer;white-space:nowrap;}
     .au-reset-btn:hover{background:rgba(255,149,0,.2);}
+    .au-del-btn{padding:3px 8px;background:rgba(220,38,38,.07);border:1px solid rgba(220,38,38,.2);border-radius:5px;color:#dc2626;font-size:11px;cursor:pointer;white-space:nowrap;}
+    .au-del-btn:hover{background:rgba(220,38,38,.15);}
     /* Admin panel section */
     .admin-form-card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
     .admin-form-card h3{font-size:14px;font-weight:800;margin-bottom:16px;}
@@ -2012,11 +2014,18 @@ const ROLE_DEFAULT_PAGE = {admin:'overview',head_marketing:'overview',kol_team:'
 // ── Auth state ──
 auth.onAuthStateChanged(async user => {
   if(user){
-    let role='head_marketing', name=user.email;
+    let role=null, name=user.email;
     try{
       const snap=await db.collection('users').doc(user.uid).get();
-      if(snap.exists){ role=snap.data().role||role; name=snap.data().name||name; }
+      if(snap.exists){ role=snap.data().role||null; name=snap.data().name||name; }
     } catch(e){ console.warn('Firestore',e); }
+    // ถ้าไม่มี Firestore record = บัญชีถูกลบ → force logout
+    if(!role){
+      await auth.signOut();
+      const errEl=document.getElementById('loginError');
+      if(errEl){ errEl.textContent='บัญชีนี้ถูกลบออกจากระบบแล้ว กรุณาติดต่อ Admin'; errEl.style.display='block'; }
+      return;
+    }
     window._userRole=role; window._userName=name;
     document.getElementById('loginOverlay').style.display='none';
     document.getElementById('sbUserName').textContent=name;
@@ -2170,6 +2179,18 @@ async function doChangePassword(){
     else msg.textContent='เกิดข้อผิดพลาด: '+e.message;
   }
 }
+// ── Admin ลบ User ──
+async function adminDeleteUser(uid, name){
+  if(!confirm('ลบบัญชี "'+name+'" ออกจากระบบ?\n\nUser จะไม่สามารถ login ได้ทันที')) return;
+  try{
+    await db.collection('users').doc(uid).delete();
+    const card=document.getElementById('ucard-'+uid);
+    if(card){ card.style.opacity='0.35'; card.style.pointerEvents='none'; }
+    setTimeout(()=>loadAdminUsers(), 600);
+  }catch(e){
+    alert('เกิดข้อผิดพลาด: '+e.message);
+  }
+}
 // ── Admin รีเซ็ต Password ──
 async function adminResetPassword(email){
   if(!confirm('ส่ง email รีเซ็ต password ไปที่\n'+email+'\nใช่ไหม?')) return;
@@ -2193,7 +2214,9 @@ async function loadAdminUsers(){
       const d=doc.data();
       const ini=((d.name||d.email)||'?')[0].toUpperCase();
       const esc=d.email.replace(/'/g,"\\'");
-      return`<div class="au-row">
+      const escName=(d.name||d.email).replace(/'/g,"\\'");
+      const uid=doc.id;
+      return`<div class="au-row" id="ucard-${uid}">
         <div class="au-av">${ini}</div>
         <div class="au-info">
           <div class="au-name">${d.name||'—'}</div>
@@ -2201,6 +2224,7 @@ async function loadAdminUsers(){
           <div style="display:flex;align-items:center;gap:8px;margin-top:4px;flex-wrap:wrap;">
             <span class="role-badge rb-${d.role}">${ROLE_LABEL[d.role]||d.role}</span>
             <button class="au-reset-btn" onclick="adminResetPassword('${esc}')">🔑 รีเซ็ต password</button>
+            <button class="au-del-btn" onclick="adminDeleteUser('${uid}','${escName}')">🗑️ ลบบัญชี</button>
           </div>
         </div>
       </div>`;
