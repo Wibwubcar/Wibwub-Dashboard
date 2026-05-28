@@ -622,8 +622,8 @@ function ss(k){
     afRS=k;afRE=k;
     sd=[...raw].sort((a,b)=>(b.mn[k]??-1)-(a.mn[k]??-1));
   }
-  document.querySelectorAll('.sb').forEach(b=>b.classList.remove('a'));
-  document.querySelectorAll('thead th').forEach(t=>t.classList.remove('sa'));
+  document.querySelectorAll('#sr .sb').forEach(b=>b.classList.remove('a'));
+  document.querySelectorAll('#mt thead th').forEach(t=>t.classList.remove('sa'));
   const bid=k==='t'?'bt':'b'+k;
   const thid=k==='t'?'ht':'h'+k;
   document.getElementById(bid)?.classList.add('a');
@@ -633,6 +633,8 @@ function ss(k){
     if(i>=1&&i<=7)th.style.display=(i-1>=afRS&&i-1<=afRE)?'':'none';
   });
   rt();
+  afUpdateKPIs(afRS,afRE);
+  afUpdateCharts(afRS,afRE);
 }
 function sm(){cnt+=20;rt();}
 
@@ -790,6 +792,44 @@ function afRefreshUI(s,e){
   rt();
 }
 
+function afUpdateKPIs(s,e){
+  const n=e-s+1;
+  const gmvSum=gmvD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const netSum=netD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const commSum=commD.slice(s,e+1).reduce((a,b)=>a+b,0);
+  const refund=gmvSum-netSum;
+  const refundPct=gmvSum>0?(refund/gmvSum*100).toFixed(1):0;
+  const commPct=gmvSum>0?(commSum/gmvSum*100).toFixed(1):0;
+  let bestIdx=s,bestVal=netD[s];
+  for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
+  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
+  document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
+  document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
+  document.getElementById('af-kpi-net').textContent=fv(netSum);
+  document.getElementById('af-kpi-net-sub').textContent=`Refund rate ~${refundPct}%`;
+  document.getElementById('af-kpi-comm').textContent=fv(commSum);
+  document.getElementById('af-kpi-comm-sub').textContent=`avg ${commPct}% of GMV`;
+  document.getElementById('af-kpi-best').textContent=afML[bestIdx];
+  document.getElementById('af-kpi-best-sub').textContent=`฿${bestVal.toLocaleString()} net GMV`;
+  document.getElementById('afSummary').textContent=`รวม: ${fv(netSum)} net GMV · ${n} เดือน`;
+}
+function afUpdateCharts(s,e){
+  const inR=i=>i>=s&&i<=e;
+  const hlBg=i=>inR(i)?'rgba(26,92,219,0.65)':'rgba(26,92,219,0.2)';
+  const hlPt=i=>inR(i)?6:3;
+  const gc=Chart.getChart(document.getElementById('gc'));
+  if(gc){
+    gc.data.datasets[0].backgroundColor=Array.from({length:7},(_,i)=>hlBg(i));
+    gc.data.datasets[1].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    gc.data.datasets[2].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    gc.update();
+  }
+  const cc2c=Chart.getChart(document.getElementById('cc2'));
+  if(cc2c){
+    cc2c.data.datasets[0].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
+    cc2c.update();
+  }
+}
 function afApplyRange(s,e){
   afRS=s;afRE=e;
   afRefreshUI(s,e);
@@ -805,21 +845,7 @@ function afApplyRange(s,e){
   const refundPct=gmvSum>0?(refund/gmvSum*100).toFixed(1):0;
   const commPct=gmvSum>0?(commSum/gmvSum*100).toFixed(1):0;
 
-  // Best month in range
-  let bestIdx=s,bestVal=netD[s];
-  for(let i=s+1;i<=e;i++){if(netD[i]>bestVal){bestVal=netD[i];bestIdx=i;}}
-
-  // Format
-  const fv=v=>v>=1000000?'฿'+(v/1000000).toFixed(2)+'M':v>=1000?'฿'+(v/1000).toFixed(0)+'K':'฿'+v;
-  document.getElementById('af-kpi-gmv').textContent=fv(gmvSum);
-  document.getElementById('af-kpi-gmv-sub').textContent=`${n} เดือน รวมกัน`;
-  document.getElementById('af-kpi-net').textContent=fv(netSum);
-  document.getElementById('af-kpi-net-sub').textContent=`Refund rate ~${refundPct}%`;
-  document.getElementById('af-kpi-comm').textContent=fv(commSum);
-  document.getElementById('af-kpi-comm-sub').textContent=`avg ${commPct}% of GMV`;
-  document.getElementById('af-kpi-best').textContent=afML[bestIdx];
-  document.getElementById('af-kpi-best-sub').textContent=`฿${bestVal.toLocaleString()} net GMV`;
-  document.getElementById('afSummary').textContent=`รวม: ${fv(netSum)} net GMV · ${n} เดือน`;
+  afUpdateKPIs(s,e);
 
   // Show/hide table columns (columns 1..7 = months 0..6)
   const colEls=document.querySelectorAll('#mt colgroup col');
@@ -836,23 +862,7 @@ function afApplyRange(s,e){
   });
   if(colEls){colEls.forEach((c,i)=>{if(i>=1&&i<=7)c.style.visibility=(i-1>=s&&i-1<=e)?'':'collapse';});}
 
-  // Highlight chart
-  const inR=i=>i>=s&&i<=e;
-  const hlBg=i=>inR(i)?'rgba(26,92,219,0.65)':'rgba(26,92,219,0.2)';
-  const hlPt=i=>inR(i)?6:3;
-  // Update chart if it exists (Chart.js 4: getChart requires canvas element, not string ID)
-  const gc=Chart.getChart(document.getElementById('gc'));
-  if(gc){
-    gc.data.datasets[0].backgroundColor=Array.from({length:7},(_,i)=>hlBg(i));
-    gc.data.datasets[1].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
-    gc.data.datasets[2].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
-    gc.update();
-  }
-  const cc2c=Chart.getChart(document.getElementById('cc2'));
-  if(cc2c){
-    cc2c.data.datasets[0].pointRadius=Array.from({length:7},(_,i)=>hlPt(i));
-    cc2c.update();
-  }
+  afUpdateCharts(s,e);
 }
 
 // Init – show current year (มค.69–พค.69)
