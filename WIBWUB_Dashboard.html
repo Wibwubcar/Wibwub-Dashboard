@@ -188,34 +188,115 @@
     .wib-modal-footer{display:flex;gap:8px;justify-content:flex-end;padding-top:14px;border-top:1px solid #f0f0f0;margin-top:4px;}
     .wib-toast{position:fixed;bottom:24px;right:24px;background:#1A5CDB;color:#fff;padding:10px 20px;border-radius:10px;font-size:13px;font-weight:500;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);opacity:0;transition:opacity .25s;pointer-events:none;}
     .wib-toast.show{opacity:1;}
+    /* ─── AUTH / LOGIN OVERLAY ─── */
+    #loginOverlay{position:fixed;inset:0;background:#f0f2f7;z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;}
+    .login-wrap{display:flex;flex-direction:column;align-items:center;gap:24px;width:100%;max-width:420px;}
+    .login-logo-box{text-align:center;}
+    .login-card{background:#fff;border-radius:16px;padding:28px 28px 24px;width:100%;box-shadow:0 4px 28px rgba(0,0,0,.09);}
+    .login-card-title{font-size:18px;font-weight:800;color:#0F0F0F;margin-bottom:4px;}
+    .login-card-sub{font-size:12.5px;color:var(--muted);margin-bottom:22px;}
+    .lf{margin-bottom:14px;}
+    .lf label{font-size:11px;font-weight:700;color:var(--muted);display:block;margin-bottom:5px;letter-spacing:.3px;}
+    .lf input{width:100%;padding:10px 13px;border:1.5px solid var(--border);border-radius:8px;font-size:14px;outline:none;transition:border .15s;font-family:inherit;}
+    .lf input:focus{border-color:var(--blue);}
+    .login-submit{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit;transition:background .15s;}
+    .login-submit:hover{background:var(--orange2);}
+    .login-submit:disabled{opacity:.6;cursor:default;}
+    .login-err{font-size:12px;color:var(--red);margin-top:10px;text-align:center;min-height:16px;}
+    /* Admin logout in sidebar footer */
+    .sb-logout{width:100%;margin-top:8px;padding:7px 10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.1);border-radius:7px;color:rgba(255,255,255,.55);font-size:12px;cursor:pointer;font-family:inherit;text-align:left;display:none;}
+    .sb-logout:hover{background:rgba(255,255,255,.12);color:#fff;}
+    /* Admin panel section */
+    .admin-form-card{background:var(--card);border-radius:var(--r);padding:20px;box-shadow:var(--shadow);border:1px solid var(--border);margin-bottom:20px;}
+    .admin-form-card h3{font-size:14px;font-weight:800;margin-bottom:16px;}
+    .af2-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+    .af2-field{display:flex;flex-direction:column;gap:5px;}
+    .af2-field label{font-size:11px;font-weight:700;color:var(--muted);}
+    .af2-field input,.af2-field select{padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-size:13px;outline:none;font-family:inherit;background:#fff;transition:border .15s;}
+    .af2-field input:focus,.af2-field select:focus{border-color:var(--blue);}
+    .af2-field.full{grid-column:1/-1;}
+    .af2-submit{padding:10px 24px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;}
+    .af2-msg{font-size:12px;margin-left:12px;}
+    .af2-msg.ok{color:var(--green);}
+    .af2-msg.err{color:var(--red);}
+    .admin-users-card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--border);overflow:hidden;}
+    .au-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;}
+    .au-head h3{font-size:14px;font-weight:800;}
+    .au-row{display:flex;align-items:center;gap:14px;padding:14px 20px;border-bottom:1px solid var(--border);}
+    .au-row:last-child{border-bottom:none;}
+    .au-av{width:38px;height:38px;border-radius:50%;background:var(--orange-lt);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;color:var(--blue);flex-shrink:0;}
+    .au-info{flex:1;}
+    .au-name{font-size:13px;font-weight:700;}
+    .au-email{font-size:11px;color:var(--muted);}
+    .role-badge{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;margin-top:4px;}
+    .rb-admin{background:#fee2e2;color:#991b1b;}
+    .rb-head_marketing{background:#dbeafe;color:#1e40af;}
+    .rb-kol_team{background:#dcfce7;color:#166534;}
+    .rb-content_team{background:#fef3c7;color:#92400e;}
   </style>
+
+<!-- Firebase Compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
 </head>
 <body>
 
+<!-- ─── LOGIN OVERLAY ─── -->
+<div id="loginOverlay">
+  <div class="login-wrap">
+    <div class="login-logo-box">
+      <img src="logo-header.png" alt="WIBWUB" style="height:40px;">
+      <div style="font-size:11px;color:var(--muted);letter-spacing:3px;margin-top:8px;text-transform:uppercase;">Business Dashboard</div>
+    </div>
+    <div class="login-card">
+      <div class="login-card-title">เข้าสู่ระบบ</div>
+      <div class="login-card-sub">สำหรับทีมงาน WIBWUB เท่านั้น</div>
+      <div class="lf">
+        <label>อีเมล</label>
+        <input type="email" id="loginEmail" placeholder="email@example.com" autocomplete="email">
+      </div>
+      <div class="lf">
+        <label>รหัสผ่าน</label>
+        <input type="password" id="loginPass" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="login-submit" id="loginBtn" onclick="doLogin()">เข้าสู่ระบบ</button>
+      <div class="login-err" id="loginErr"></div>
+    </div>
+  </div>
+</div>
+
 <aside class="sidebar">
   <div class="sb-logo"><img src="logo-header.png" alt="WIBWUB" style="height:26px;filter:brightness(0)invert(1);display:block;"></div>
-  <nav style="flex:1;padding:12px 0;overflow-y:auto;">
-    <div class="nav-sec">ภาพรวม</div>
-    <div class="nav-item active" onclick="go('overview',this)"><span class="nav-icon">🏠</span><span>ภาพรวมธุรกิจ</span></div>
-    <div class="nav-sec">ยอดขาย</div>
-    <div class="nav-item" onclick="go('sales',this)"><span class="nav-icon">💰</span><span>ยอดขาย & รายได้</span></div>
-    <div class="nav-item" onclick="go('shopee',this)"><span class="nav-icon">🧡</span><span>Shopee</span></div>
-    <div class="nav-item" onclick="go('tiktok',this)"><span class="nav-icon">🎵</span><span>TikTok Shop</span></div>
-    <div class="nav-item" onclick="go('lazada',this)"><span class="nav-icon">💙</span><span>Lazada</span></div>
-    <div class="nav-sec">Marketing Team</div>
-    <div class="nav-item" onclick="go('products',this)"><span class="nav-icon">🏆</span><span>Top สินค้าขายดี</span></div>
-    <div class="nav-item" onclick="go('ads',this)"><span class="nav-icon">📢</span><span>Ads Dashboard</span></div>
-    <div class="nav-item" onclick="go('social',this)"><span class="nav-icon">📣</span><span>Social Media</span></div>
-    <div class="nav-item" onclick="go('affiliate',this)"><span class="nav-icon">🤝</span><span>Affiliate</span></div>
-    <div class="nav-sec">ทีม</div>
-    <div class="nav-item" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
-    <div class="nav-item" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
+  <nav id="sideNav" style="flex:1;padding:12px 0;overflow-y:auto;">
+    <div class="nav-sec" id="ns-overview">ภาพรวม</div>
+    <div class="nav-item active" data-sec="overview" onclick="go('overview',this)"><span class="nav-icon">🏠</span><span>ภาพรวมธุรกิจ</span></div>
+    <div class="nav-sec" id="ns-sales">ยอดขาย</div>
+    <div class="nav-item" data-sec="sales" onclick="go('sales',this)"><span class="nav-icon">💰</span><span>ยอดขาย & รายได้</span></div>
+    <div class="nav-item" data-sec="shopee" onclick="go('shopee',this)"><span class="nav-icon">🧡</span><span>Shopee</span></div>
+    <div class="nav-item" data-sec="tiktok" onclick="go('tiktok',this)"><span class="nav-icon">🎵</span><span>TikTok Shop</span></div>
+    <div class="nav-item" data-sec="lazada" onclick="go('lazada',this)"><span class="nav-icon">💙</span><span>Lazada</span></div>
+    <div class="nav-sec" id="ns-marketing">Marketing Team</div>
+    <div class="nav-item" data-sec="products" onclick="go('products',this)"><span class="nav-icon">🏆</span><span>Top สินค้าขายดี</span></div>
+    <div class="nav-item" data-sec="ads" onclick="go('ads',this)"><span class="nav-icon">📢</span><span>Ads Dashboard</span></div>
+    <div class="nav-item" data-sec="social" onclick="go('social',this)"><span class="nav-icon">📣</span><span>Social Media</span></div>
+    <div class="nav-item" data-sec="affiliate" onclick="go('affiliate',this)"><span class="nav-icon">🤝</span><span>Affiliate</span></div>
+    <div class="nav-sec" id="ns-team">ทีม</div>
+    <div class="nav-item" data-sec="hr" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
+    <div class="nav-item" data-sec="projects" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
+    <div class="nav-sec" id="ns-admin" style="display:none">Admin</div>
+    <div class="nav-item" data-sec="admin" id="nav-admin-item" onclick="go('admin',this)" style="display:none"><span class="nav-icon">⚙️</span><span>จัดการผู้ใช้</span></div>
   </nav>
   <div class="sb-footer">
     <div class="user-row">
-      <div class="user-av">W</div>
-      <div><div class="user-name">WIBWUB Admin</div><div class="user-role">Marketing Manager</div></div>
+      <div class="user-av" id="sbUserAv">W</div>
+      <div>
+        <div class="user-name" id="sbUserName">WIBWUB</div>
+        <div class="user-role" id="sbUserRole">กำลังโหลด...</div>
+      </div>
     </div>
+    <button class="sb-logout" id="sbLogout" onclick="doLogout()">🚪 ออกจากระบบ</button>
   </div>
 </aside>
 
@@ -1125,6 +1206,34 @@
       </div>
     </section>
 
+    <!-- ─── ADMIN SECTION ─── -->
+    <section id="admin" class="section">
+      <div class="admin-form-card">
+        <h3>➕ เพิ่มผู้ใช้ใหม่</h3>
+        <div class="af2-grid">
+          <div class="af2-field"><label>อีเมล</label><input type="email" id="newEmail" placeholder="email@example.com"></div>
+          <div class="af2-field"><label>รหัสผ่าน (อย่างน้อย 6 ตัว)</label><input type="password" id="newPass" placeholder="••••••••"></div>
+          <div class="af2-field"><label>ชื่อ</label><input type="text" id="newName" placeholder="ชื่อ-นามสกุล"></div>
+          <div class="af2-field">
+            <label>Role</label>
+            <select id="newRole">
+              <option value="head_marketing">Head Marketing — เข้าถึงทุก section</option>
+              <option value="kol_team">KOL Team — เฉพาะ Affiliate</option>
+              <option value="content_team">Content Team — เฉพาะ Social Media</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;">
+          <button class="af2-submit" onclick="adminCreateUser()">สร้างบัญชี</button>
+          <span class="af2-msg" id="createMsg"></span>
+        </div>
+      </div>
+      <div class="admin-users-card">
+        <div class="au-head"><h3>รายชื่อผู้ใช้ทั้งหมด</h3></div>
+        <div id="adminUserList"><div style="padding:24px;text-align:center;color:var(--muted);">กำลังโหลด...</div></div>
+      </div>
+    </section>
+
   </div>
 </div>
 
@@ -1132,10 +1241,19 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks'};
+const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',admin:'⚙️ จัดการผู้ใช้'};
 
 let currentPage = 'overview';
 function go(id, el) {
+  const role = window._userRole || '';
+  const ROLE_SECTIONS = {
+    admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','admin'],
+    head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
+    kol_team:       ['affiliate'],
+    content_team:   ['social'],
+  };
+  const allowed = ROLE_SECTIONS[role] || ROLE_SECTIONS['head_marketing'];
+  if (!allowed.includes(id)) return;
   currentPage = id;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
@@ -1143,6 +1261,7 @@ function go(id, el) {
   el.classList.add('active');
   document.getElementById('ptitle').textContent = TITLES[id] || id;
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
+  if (id === 'admin') loadAdminUsers();
 }
 
 // ── RAW DATA (from spreadsheets) ──
@@ -1845,6 +1964,183 @@ function showToast(msg){
 
 // Init — show May (index 4)
 setMonthRange(0, 4);
+</script>
+
+<script>
+// ════════════════════════════════════════
+// FIREBASE CONFIG
+// กรอก config จาก Firebase Console → Project Settings → Your apps
+// ════════════════════════════════════════
+const firebaseConfig = {
+  apiKey:            "AIzaSyCaOE_1ILOr_Q-wlRR5vEu71-LG4ekVdLk",
+  authDomain:        "wibwubcar-e2cbc.firebaseapp.com",
+  projectId:         "wibwubcar-e2cbc",
+  storageBucket:     "wibwubcar-e2cbc.firebasestorage.app",
+  messagingSenderId: "568499433889",
+  appId:             "1:568499433889:web:7cbc86f3f14d5034b4dbe0",
+  measurementId:     "G-VVCK1TDH2K"
+};
+
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
+
+// Secondary Firebase app — admin สร้าง user โดยไม่ logout ตัวเอง
+let _secApp = null, _secAuth = null;
+function getSecAuth(){
+  if(!_secApp){ _secApp=firebase.initializeApp(firebaseConfig,'secondary'); _secAuth=_secApp.auth(); }
+  return _secAuth;
+}
+
+window._userRole = null;
+window._userName = null;
+
+const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
+const ROLE_SECTIONS_MAP = {
+  admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','admin'],
+  head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
+  kol_team:       ['affiliate'],
+  content_team:   ['social'],
+};
+const ROLE_DEFAULT_PAGE = {admin:'overview',head_marketing:'overview',kol_team:'affiliate',content_team:'social'};
+
+// ── Auth state ──
+auth.onAuthStateChanged(async user => {
+  if(user){
+    let role='head_marketing', name=user.email;
+    try{
+      const snap=await db.collection('users').doc(user.uid).get();
+      if(snap.exists){ role=snap.data().role||role; name=snap.data().name||name; }
+    } catch(e){ console.warn('Firestore',e); }
+    window._userRole=role; window._userName=name;
+    document.getElementById('loginOverlay').style.display='none';
+    document.getElementById('sbUserName').textContent=name;
+    document.getElementById('sbUserRole').textContent=ROLE_LABEL[role]||role;
+    document.getElementById('sbUserAv').textContent=(name||'W')[0].toUpperCase();
+    document.getElementById('sbLogout').style.display='';
+    applyRoleNav(role);
+  } else {
+    window._userRole=null;
+    document.getElementById('loginOverlay').style.display='flex';
+    document.getElementById('sbLogout').style.display='none';
+    document.getElementById('sbUserRole').textContent='กำลังโหลด...';
+    resetNavVisibility();
+  }
+});
+
+function applyRoleNav(role){
+  resetNavVisibility();
+  const allowed=ROLE_SECTIONS_MAP[role]||ROLE_SECTIONS_MAP['head_marketing'];
+
+  // Show/hide each nav-item by data-sec
+  document.querySelectorAll('#sideNav .nav-item').forEach(el=>{
+    const sec=el.dataset.sec;
+    el.style.display=allowed.includes(sec)?'':'none';
+  });
+
+  // Show/hide admin nav group header
+  const adminSec=document.getElementById('ns-admin');
+  const adminItem=document.getElementById('nav-admin-item');
+  if(role==='admin'){ adminSec.style.display=''; adminItem.style.display=''; }
+  else { adminSec.style.display='none'; adminItem.style.display='none'; }
+
+  // Hide nav section headers that have no visible items
+  [['ns-overview',['overview']],['ns-sales',['sales','shopee','tiktok','lazada']],['ns-marketing',['products','ads','social','affiliate']],['ns-team',['hr','projects']]].forEach(([headId,secs])=>{
+    const hasVisible=secs.some(s=>allowed.includes(s));
+    const headEl=document.getElementById(headId);
+    if(headEl) headEl.style.display=hasVisible?'':'none';
+  });
+
+  // Navigate to default page for this role
+  const defaultPage=ROLE_DEFAULT_PAGE[role]||'overview';
+  const targetNavEl=document.querySelector(`[data-sec="${defaultPage}"]`);
+  if(targetNavEl) go(defaultPage, targetNavEl);
+}
+
+function resetNavVisibility(){
+  document.querySelectorAll('#sideNav .nav-item').forEach(el=>el.style.display='');
+  ['ns-overview','ns-sales','ns-marketing','ns-team'].forEach(id=>{ const el=document.getElementById(id); if(el) el.style.display=''; });
+  const adminSec=document.getElementById('ns-admin');
+  const adminItem=document.getElementById('nav-admin-item');
+  if(adminSec) adminSec.style.display='none';
+  if(adminItem) adminItem.style.display='none';
+}
+
+// ── Login / Logout ──
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginErr');
+  const btn=document.getElementById('loginBtn');
+  errEl.textContent='';
+  if(!email||!pass){ errEl.textContent='กรุณากรอกอีเมลและรหัสผ่าน'; return; }
+  btn.textContent='กำลังเข้าสู่ระบบ...'; btn.disabled=true;
+  auth.signInWithEmailAndPassword(email,pass)
+    .catch(err=>{
+      const msgs={'auth/user-not-found':'ไม่พบบัญชีนี้','auth/wrong-password':'รหัสผ่านไม่ถูกต้อง','auth/invalid-email':'รูปแบบอีเมลไม่ถูกต้อง','auth/invalid-credential':'อีเมลหรือรหัสผ่านไม่ถูกต้อง','auth/too-many-requests':'พยายามเข้าสู่ระบบมากเกินไป','auth/network-request-failed':'เชื่อมต่อเครือข่ายล้มเหลว'};
+      errEl.textContent=msgs[err.code]||('เกิดข้อผิดพลาด: '+err.message);
+    })
+    .finally(()=>{ btn.textContent='เข้าสู่ระบบ'; btn.disabled=false; });
+}
+document.getElementById('loginPass').addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(); });
+document.getElementById('loginEmail').addEventListener('keydown',e=>{ if(e.key==='Enter') document.getElementById('loginPass').focus(); });
+
+function doLogout(){
+  if(!confirm('ออกจากระบบ?')) return;
+  auth.signOut();
+}
+
+// ════════════════════════════════════════
+// ADMIN: Create + List Users
+// ════════════════════════════════════════
+async function adminCreateUser(){
+  const email=document.getElementById('newEmail').value.trim();
+  const pass=document.getElementById('newPass').value;
+  const name=document.getElementById('newName').value.trim();
+  const role=document.getElementById('newRole').value;
+  const msgEl=document.getElementById('createMsg');
+  msgEl.className='af2-msg'; msgEl.textContent='';
+  if(!email||!pass||!name){ msgEl.className='af2-msg err'; msgEl.textContent='กรุณากรอกให้ครบทุกช่อง'; return; }
+  if(pass.length<6){ msgEl.className='af2-msg err'; msgEl.textContent='รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร'; return; }
+  msgEl.textContent='กำลังสร้าง...';
+  try{
+    const secAuth=getSecAuth();
+    const cred=await secAuth.createUserWithEmailAndPassword(email,pass);
+    await db.collection('users').doc(cred.user.uid).set({ email,name,role, createdAt:firebase.firestore.FieldValue.serverTimestamp() });
+    await secAuth.signOut();
+    msgEl.className='af2-msg ok'; msgEl.textContent='✓ สร้างบัญชี '+email+' สำเร็จ';
+    document.getElementById('newEmail').value=''; document.getElementById('newPass').value=''; document.getElementById('newName').value='';
+    loadAdminUsers();
+  } catch(err){
+    const msgs={'auth/email-already-in-use':'อีเมลนี้มีผู้ใช้แล้ว','auth/invalid-email':'รูปแบบอีเมลไม่ถูกต้อง','auth/weak-password':'รหัสผ่านไม่ปลอดภัยพอ'};
+    msgEl.className='af2-msg err'; msgEl.textContent=msgs[err.code]||err.message;
+  }
+}
+
+async function loadAdminUsers(){
+  if(window._userRole!=='admin') return;
+  const listEl=document.getElementById('adminUserList');
+  if(!listEl) return;
+  listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted)">กำลังโหลด...</div>';
+  try{
+    const snap=await db.collection('users').orderBy('createdAt','asc').get();
+    if(snap.empty){ listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted)">ยังไม่มีผู้ใช้ในระบบ</div>'; return; }
+    listEl.innerHTML=snap.docs.map(doc=>{
+      const d=doc.data();
+      const ini=((d.name||d.email)||'?')[0].toUpperCase();
+      return`<div class="au-row">
+        <div class="au-av">${ini}</div>
+        <div class="au-info">
+          <div class="au-name">${d.name||'—'}</div>
+          <div class="au-email">${d.email}</div>
+          <span class="role-badge rb-${d.role}">${ROLE_LABEL[d.role]||d.role}</span>
+        </div>
+      </div>`;
+    }).join('');
+  } catch(e){
+    listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--red)">โหลดข้อมูลล้มเหลว</div>';
+  }
+}
 </script>
 
 <!-- ── MODAL ── -->
