@@ -1500,7 +1500,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
-db.settings({ experimentalForceLongPolling: true, merge: true });
+db.settings({ experimentalForceLongPolling: true, experimentalAutoDetectLongPolling: false });
 
 // Secondary Firebase app — ใช้สร้าง user ใหม่โดยไม่ logout admin
 let _secondaryApp  = null;
