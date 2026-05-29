@@ -2016,7 +2016,19 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
-const db   = firebase.firestore();
+const db   = firebase.firestore(); // kept for compat, but NOT used for queries
+
+// ── Firestore REST helpers (bypass WebChannel 400 error) ──
+const FS_BASE = 'https://firestore.googleapis.com/v1/projects/wibwubcar-e2cbc/databases/(default)/documents';
+async function _fsToken(){ const u=firebase.auth().currentUser; return u ? await u.getIdToken() : null; }
+function _fsFromVal(v){ if(v===undefined||v===null) return null; if(v.stringValue!==undefined) return v.stringValue; if(v.integerValue!==undefined) return Number(v.integerValue); if(v.doubleValue!==undefined) return Number(v.doubleValue); if(v.booleanValue!==undefined) return v.booleanValue; if(v.timestampValue!==undefined) return new Date(v.timestampValue); if(v.arrayValue) return (v.arrayValue.values||[]).map(_fsFromVal); if(v.mapValue) return _fsFieldsToObj(v.mapValue.fields||{}); return null; }
+function _fsFieldsToObj(fields){ const o={}; for(const [k,v] of Object.entries(fields||{})) o[k]=_fsFromVal(v); return o; }
+function _fsToVal(v){ if(v===null||v===undefined) return {nullValue:null}; if(Array.isArray(v)) return {arrayValue:{values:v.map(_fsToVal)}}; if(v instanceof Date) return {timestampValue:v.toISOString()}; if(typeof v==='boolean') return {booleanValue:v}; if(typeof v==='number') return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v}; if(typeof v==='object') return {mapValue:{fields:_fsObjToFields(v)}}; return {stringValue:String(v)}; }
+function _fsObjToFields(obj){ const f={}; for(const [k,v] of Object.entries(obj)) f[k]=_fsToVal(v); return f; }
+async function fsGet(col,id){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}/${id}`,{headers:{Authorization:'Bearer '+tok}}); if(r.status===404) return {exists:false,data:()=>({})}; if(!r.ok) throw new Error('fsGet '+r.status); const d=await r.json(); return {exists:true,data:()=>_fsFieldsToObj(d.fields||{})}; }
+async function fsSet(col,id,obj){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}/${id}`,{method:'PATCH',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({fields:_fsObjToFields(obj)})}); if(!r.ok) throw new Error('fsSet '+r.status+' '+(await r.text())); }
+async function fsDel(col,id){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+tok}}); if(!r.ok) throw new Error('fsDel '+r.status); }
+async function fsList(col){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}?pageSize=100`,{headers:{Authorization:'Bearer '+tok}}); if(!r.ok) throw new Error('fsList '+r.status); const d=await r.json(); return (d.documents||[]).map(doc=>({id:doc.name.split('/').pop(),data:()=>_fsFieldsToObj(doc.fields||{})})); }
 
 // Secondary Firebase app — admin สร้าง user โดยไม่ logout ตัวเอง
 let _secApp = null, _secAuth = null;
@@ -2044,7 +2056,7 @@ auth.onAuthStateChanged(async user => {
   if(user){
     let role=null, name=user.email;
     try{
-      const snap=await db.collection('users').doc(user.uid).get();
+      const snap=await fsGet('users', user.uid);
       if(snap.exists){ role=snap.data().role||null; name=snap.data().name||name; }
     } catch(e){ console.warn('Firestore',e); }
     // ถ้าไม่มี Firestore record = บัญชีถูกลบ → force logout
@@ -2149,7 +2161,7 @@ async function adminCreateUser(){
   try{
     const secAuth=getSecAuth();
     const cred=await secAuth.createUserWithEmailAndPassword(email,pass);
-    await db.collection('users').doc(cred.user.uid).set({ email,name,role, createdAt:firebase.firestore.FieldValue.serverTimestamp() });
+    await fsSet('users', cred.user.uid, { email, name, role, createdAt: new Date() });
     await secAuth.signOut();
     msgEl.className='af2-msg ok'; msgEl.textContent='✓ สร้างบัญชี '+email+' สำเร็จ';
     document.getElementById('newEmail').value=''; document.getElementById('newPass').value=''; document.getElementById('newName').value='';
@@ -2212,7 +2224,7 @@ async function doChangePassword(){
 async function adminDeleteUser(uid, name){
   if(!confirm('ลบบัญชี "'+name+'" ออกจากระบบ?\n\nUser จะไม่สามารถ login ได้ทันที')) return;
   try{
-    await db.collection('users').doc(uid).delete();
+    await fsDel('users', uid);
     const card=document.getElementById('ucard-'+uid);
     if(card){ card.style.opacity='0.35'; card.style.pointerEvents='none'; }
     setTimeout(()=>loadAdminUsers(), 600);
@@ -2245,7 +2257,7 @@ const PERM_SECTIONS = [
 
 async function loadRolePermissions(){
   try{
-    const snap=await db.collection('settings').doc('rolePermissions').get();
+    const snap=await fsGet('settings', 'rolePermissions');
     if(snap.exists){
       const data=snap.data();
       PERM_ROLES.forEach(r=>{ if(data[r]&&Array.isArray(data[r])) ROLE_SECTIONS_MAP[r]=data[r]; });
@@ -2291,7 +2303,7 @@ async function saveRolePermissions(){
     }));
   });
   try{
-    await db.collection('settings').doc('rolePermissions').set(perms);
+    await fsSet('settings', 'rolePermissions', perms);
     PERM_ROLES.forEach(r=>ROLE_SECTIONS_MAP[r]=perms[r]);
     msgEl.textContent='✓ บันทึกสิทธิ์สำเร็จ'; msgEl.style.color='#16a34a';
     // Re-apply nav for the current admin user (admin nav stays the same)
@@ -2308,9 +2320,10 @@ async function loadAdminUsers(){
   if(!listEl) return;
   listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted)">กำลังโหลด...</div>';
   try{
-    const snap=await db.collection('users').orderBy('createdAt','asc').get();
-    if(snap.empty){ listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted)">ยังไม่มีผู้ใช้ในระบบ</div>'; return; }
-    listEl.innerHTML=snap.docs.map(doc=>{
+    const docs=await fsList('users');
+    docs.sort((a,b)=>{ const da=a.data().createdAt, db2=b.data().createdAt; return ((da instanceof Date?da:new Date(0))-(db2 instanceof Date?db2:new Date(0))); });
+    if(!docs.length){ listEl.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted)">ยังไม่มีผู้ใช้ในระบบ</div>'; return; }
+    listEl.innerHTML=docs.map(doc=>{
       const d=doc.data();
       const ini=((d.name||d.email)||'?')[0].toUpperCase();
       const esc=d.email.replace(/'/g,"\\'");
