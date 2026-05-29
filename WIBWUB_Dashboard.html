@@ -239,6 +239,16 @@
     .rb-head_marketing{background:#dbeafe;color:#1e40af;}
     .rb-kol_team{background:#dcfce7;color:#166534;}
     .rb-content_team{background:#fef3c7;color:#92400e;}
+    /* Permissions matrix */
+    .perm-tbl{width:100%;border-collapse:collapse;font-size:12px;}
+    .perm-tbl th{padding:8px 12px;background:#f8f9fb;border:1px solid var(--border);font-weight:700;text-align:center;white-space:nowrap;position:sticky;top:0;}
+    .perm-tbl th:first-child{text-align:left;}
+    .perm-tbl td{padding:7px 12px;border:1px solid var(--border);text-align:center;vertical-align:middle;}
+    .perm-tbl td:first-child{text-align:left;white-space:nowrap;}
+    .perm-tbl tr:hover td{background:rgba(26,92,219,.03);}
+    .perm-tbl input[type=checkbox]{width:16px;height:16px;cursor:pointer;accent-color:var(--blue);}
+    .perm-grp td{background:#f0f4ff;font-weight:700;color:var(--blue);font-size:11px;text-transform:uppercase;letter-spacing:.5px;padding:6px 12px;}
+    .perm-lock{font-size:11px;color:var(--muted);padding:2px 6px;background:#f3f4f6;border-radius:4px;}
   </style>
 
 <!-- Firebase Compat SDK -->
@@ -1235,7 +1245,7 @@
           <div class="af2-field">
             <label>Role</label>
             <select id="newRole">
-              <option value="head_marketing">Head Marketing — เข้าถึงทุก section</option>
+              <option value="head_marketing">Head Marketing — ยอดขาย + การตลาด (ไม่รวม ทีม & Forecast)</option>
               <option value="kol_team">KOL Team — เฉพาะ Affiliate</option>
               <option value="content_team">Content Team — เฉพาะ Social Media</option>
             </select>
@@ -1249,6 +1259,17 @@
       <div class="admin-users-card">
         <div class="au-head"><h3>รายชื่อผู้ใช้ทั้งหมด</h3></div>
         <div id="adminUserList"><div style="padding:24px;text-align:center;color:var(--muted);">กำลังโหลด...</div></div>
+      </div>
+
+      <!-- PERMISSIONS MATRIX -->
+      <div class="admin-form-card" style="margin-top:20px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:10px;">
+          <h3 style="margin:0">🔐 จัดการสิทธิ์การเข้าถึง</h3>
+          <button onclick="saveRolePermissions()" class="af2-submit" style="margin:0;padding:8px 20px;font-size:13px">💾 บันทึกสิทธิ์</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-bottom:14px">เลือก section ที่แต่ละ Role สามารถเข้าถึงได้ · Admin มีสิทธิ์ทุกหน้าเสมอ · Forecast สำหรับ Admin เท่านั้น</p>
+        <div id="permsMatrix">กำลังโหลด...</div>
+        <div id="permsMsg" style="font-size:12px;text-align:right;margin-top:10px;min-height:16px;font-weight:600;"></div>
       </div>
     </section>
 
@@ -1264,13 +1285,7 @@ const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอด
 let currentPage = 'overview';
 function go(id, el) {
   const role = window._userRole || '';
-  const ROLE_SECTIONS = {
-    admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
-    head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
-    kol_team:       ['affiliate'],
-    content_team:   ['social'],
-  };
-  const allowed = ROLE_SECTIONS[role] || ROLE_SECTIONS['head_marketing'];
+  const allowed = ROLE_SECTIONS_MAP[role] || ROLE_SECTIONS_MAP['head_marketing'];
   if (!allowed.includes(id)) return;
   currentPage = id;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1279,7 +1294,7 @@ function go(id, el) {
   el.classList.add('active');
   document.getElementById('ptitle').textContent = TITLES[id] || id;
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
-  if (id === 'admin') loadAdminUsers();
+  if (id === 'admin') { loadAdminUsers(); renderPermissionsMatrix(); }
 }
 
 // ── RAW DATA (from spreadsheets) ──
@@ -2016,9 +2031,9 @@ window._userRole = null;
 window._userName = null;
 
 const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
-const ROLE_SECTIONS_MAP = {
+let ROLE_SECTIONS_MAP = {
   admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
-  head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
+  head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate'],
   kol_team:       ['affiliate'],
   content_team:   ['social'],
 };
@@ -2040,6 +2055,7 @@ auth.onAuthStateChanged(async user => {
       return;
     }
     window._userRole=role; window._userName=name;
+    await loadRolePermissions(); // โหลด custom permissions จาก Firestore ก่อน apply nav
     document.getElementById('loginOverlay').style.display='none';
     document.getElementById('sbUserName').textContent=name;
     document.getElementById('sbUserRole').textContent=ROLE_LABEL[role]||role;
@@ -2212,6 +2228,77 @@ async function adminResetPassword(email){
     alert('ส่ง email รีเซ็ตไปที่ '+email+' แล้ว ✓\nให้ user เช็ค inbox (รวมถึงโฟลเดอร์ spam)');
   }catch(e){
     alert('เกิดข้อผิดพลาด: '+e.message);
+  }
+}
+
+// ════════════════════════════════════════
+// PERMISSIONS MANAGEMENT
+// ════════════════════════════════════════
+const PERM_ROLES = ['head_marketing','kol_team','content_team'];
+const PERM_ROLE_LABELS = {head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
+const PERM_SECTIONS = [
+  {group:'📊 ภาพรวม',    items:[{id:'overview',label:'ภาพรวมธุรกิจ'}]},
+  {group:'💰 ยอดขาย',    items:[{id:'sales',label:'ยอดขายรวม'},{id:'shopee',label:'🧡 Shopee'},{id:'tiktok',label:'🎵 TikTok'},{id:'lazada',label:'💙 Lazada'}]},
+  {group:'📣 การตลาด',   items:[{id:'products',label:'🏆 Top สินค้า'},{id:'ads',label:'📢 Ads'},{id:'social',label:'Social Media'},{id:'affiliate',label:'🤝 Affiliate'}]},
+  {group:'👥 ทีม',       items:[{id:'hr',label:'HR & พนักงาน'},{id:'projects',label:'Projects & Tasks'}]},
+];
+
+async function loadRolePermissions(){
+  try{
+    const snap=await db.collection('settings').doc('rolePermissions').get();
+    if(snap.exists){
+      const data=snap.data();
+      PERM_ROLES.forEach(r=>{ if(data[r]&&Array.isArray(data[r])) ROLE_SECTIONS_MAP[r]=data[r]; });
+    }
+  }catch(e){ console.warn('loadRolePermissions:',e); }
+}
+
+function renderPermissionsMatrix(){
+  const el=document.getElementById('permsMatrix');
+  if(!el) return;
+  let html='<div style="overflow-x:auto"><table class="perm-tbl"><thead><tr><th>Section</th>';
+  PERM_ROLES.forEach(r=>html+=`<th><span class="role-badge rb-${r}" style="font-size:11px">${PERM_ROLE_LABELS[r]}</span></th>`);
+  html+='<th>Admin</th></tr></thead><tbody>';
+  PERM_SECTIONS.forEach(grp=>{
+    html+=`<tr class="perm-grp"><td colspan="${PERM_ROLES.length+2}">${grp.group}</td></tr>`;
+    grp.items.forEach(sec=>{
+      html+=`<tr><td style="padding-left:20px">${sec.label}</td>`;
+      PERM_ROLES.forEach(r=>{
+        const checked=(ROLE_SECTIONS_MAP[r]||[]).includes(sec.id)?'checked':'';
+        html+=`<td><input type="checkbox" id="perm-${r}-${sec.id}" ${checked}></td>`;
+      });
+      html+=`<td><span class="perm-lock">✓ เสมอ</span></td></tr>`;
+    });
+  });
+  // Forecast row (admin only, not configurable)
+  html+=`<tr class="perm-grp"><td colspan="${PERM_ROLES.length+2}">📦 Forecast</td></tr>`;
+  html+=`<tr><td style="padding-left:20px">📦 Stock Forecast</td>`;
+  PERM_ROLES.forEach(()=>html+=`<td><span class="perm-lock">Admin only</span></td>`);
+  html+=`<td><span class="perm-lock">✓ เสมอ</span></td></tr>`;
+  html+='</tbody></table></div>';
+  el.innerHTML=html;
+}
+
+async function saveRolePermissions(){
+  const msgEl=document.getElementById('permsMsg');
+  msgEl.textContent='กำลังบันทึก...'; msgEl.style.color='#6b7280';
+  const perms={};
+  PERM_ROLES.forEach(role=>{
+    perms[role]=[];
+    PERM_SECTIONS.forEach(grp=>grp.items.forEach(sec=>{
+      const cb=document.getElementById(`perm-${role}-${sec.id}`);
+      if(cb&&cb.checked) perms[role].push(sec.id);
+    }));
+  });
+  try{
+    await db.collection('settings').doc('rolePermissions').set(perms);
+    PERM_ROLES.forEach(r=>ROLE_SECTIONS_MAP[r]=perms[r]);
+    msgEl.textContent='✓ บันทึกสิทธิ์สำเร็จ'; msgEl.style.color='#16a34a';
+    // Re-apply nav for the current admin user (admin nav stays the same)
+    applyRoleNav(window._userRole);
+    setTimeout(()=>{ msgEl.textContent=''; },3000);
+  }catch(e){
+    msgEl.textContent='เกิดข้อผิดพลาด: '+e.message; msgEl.style.color='#dc2626';
   }
 }
 
