@@ -241,6 +241,8 @@
     .rb-head_marketing{background:#dbeafe;color:#1e40af;}
     .rb-kol_team{background:#dcfce7;color:#166534;}
     .rb-content_team{background:#fef3c7;color:#92400e;}
+    .rb-hr_team{background:#ede9fe;color:#6d28d9;}
+    .rb-procurement{background:#fce7f3;color:#be185d;}
     /* Permissions matrix */
     .perm-tbl{width:100%;border-collapse:collapse;font-size:12px;}
     .perm-tbl th{padding:8px 12px;background:#f8f9fb;border:1px solid var(--border);font-weight:700;text-align:center;white-space:nowrap;position:sticky;top:0;}
@@ -1242,6 +1244,8 @@
               <option value="head_marketing">Head Marketing — ยอดขาย + การตลาด (ไม่รวม ทีม & Forecast)</option>
               <option value="kol_team">KOL Team — เฉพาะ Affiliate</option>
               <option value="content_team">Content Team — เฉพาะ Social Media</option>
+              <option value="hr_team">HR Team — เฉพาะ HR & พนักงาน</option>
+              <option value="procurement">จัดซื้อ — เฉพาะ Forecast</option>
             </select>
           </div>
         </div>
@@ -2024,14 +2028,16 @@ function getSecAuth(){
 window._userRole = null;
 window._userName = null;
 
-const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
+const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team',hr_team:'HR Team',procurement:'จัดซื้อ'};
 let ROLE_SECTIONS_MAP = {
   admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
   head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate'],
   kol_team:       ['affiliate'],
   content_team:   ['social'],
+  hr_team:        ['hr'],
+  procurement:    ['procurement'],
 };
-const ROLE_DEFAULT_PAGE = {admin:'overview',head_marketing:'overview',kol_team:'affiliate',content_team:'social'};
+const ROLE_DEFAULT_PAGE = {admin:'overview',head_marketing:'overview',kol_team:'affiliate',content_team:'social',hr_team:'hr',procurement:'procurement'};
 
 // ── Auth state ──
 auth.onAuthStateChanged(async user => {
@@ -2228,13 +2234,13 @@ async function adminResetPassword(email){
 // ════════════════════════════════════════
 // PERMISSIONS MANAGEMENT
 // ════════════════════════════════════════
-const PERM_ROLES = ['head_marketing','kol_team','content_team'];
-const PERM_ROLE_LABELS = {head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
+const PERM_ROLES = ['head_marketing','kol_team','content_team','hr_team','procurement'];
+const PERM_ROLE_LABELS = {head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team',hr_team:'HR Team',procurement:'จัดซื้อ'};
 const PERM_SECTIONS = [
   {group:'📊 ภาพรวม',    items:[{id:'overview',label:'ภาพรวมธุรกิจ'}]},
   {group:'💰 ยอดขาย',    items:[{id:'sales',label:'ยอดขายรวม'},{id:'shopee',label:'🧡 Shopee'},{id:'tiktok',label:'🎵 TikTok'},{id:'lazada',label:'💙 Lazada'}]},
   {group:'📣 การตลาด',   items:[{id:'products',label:'🏆 Top สินค้า'},{id:'ads',label:'📢 Ads'},{id:'social',label:'Social Media'},{id:'affiliate',label:'🤝 Affiliate'}]},
-  {group:'👥 ทีม',       items:[{id:'hr',label:'HR & พนักงาน'},{id:'projects',label:'Projects & Tasks'}]},
+  {group:'👥 ทีม',       items:[{id:'hr',label:'HR & พนักงาน'},{id:'projects',label:'Projects & Tasks'},{id:'procurement',label:'📦 Forecast / จัดซื้อ'}]},
 ];
 
 async function loadRolePermissions(){
@@ -2264,9 +2270,9 @@ function renderPermissionsMatrix(){
       html+=`<td><span class="perm-lock">✓ เสมอ</span></td></tr>`;
     });
   });
-  // Forecast row (admin only, not configurable)
-  html+=`<tr class="perm-grp"><td colspan="${PERM_ROLES.length+2}">📦 Forecast</td></tr>`;
-  html+=`<tr><td style="padding-left:20px">📦 Stock Forecast</td>`;
+  // Admin row (always locked)
+  html+=`<tr class="perm-grp"><td colspan="${PERM_ROLES.length+2}">⚙️ Admin</td></tr>`;
+  html+=`<tr><td style="padding-left:20px">⚙️ จัดการผู้ใช้ (Admin)</td>`;
   PERM_ROLES.forEach(()=>html+=`<td><span class="perm-lock">Admin only</span></td>`);
   html+=`<td><span class="perm-lock">✓ เสมอ</span></td></tr>`;
   html+='</tbody></table></div>';

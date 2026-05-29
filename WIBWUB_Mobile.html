@@ -187,6 +187,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .rb-head_marketing{background:#dbeafe;color:#1e40af;}
 .rb-kol_team{background:#dcfce7;color:#166534;}
 .rb-content_team{background:#fef3c7;color:#92400e;}
+.rb-hr_team{background:#ede9fe;color:#6d28d9;}
+.rb-procurement{background:#fce7f3;color:#be185d;}
 </style>
 
 <!-- Firebase Compat SDK -->
@@ -516,6 +518,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
         <option value="head_marketing">Head Marketing — ยอดขาย + การตลาด</option>
         <option value="kol_team">KOL Team (เฉพาะ Affiliate)</option>
         <option value="content_team">Content Team (เฉพาะ Social Media)</option>
+        <option value="hr_team">HR Team (เฉพาะ HR & พนักงาน)</option>
+        <option value="procurement">จัดซื้อ (เฉพาะ Forecast)</option>
       </select>
     </div>
     <button class="af-btn" onclick="adminCreateUser()">สร้างบัญชี</button>
@@ -940,6 +944,8 @@ function nav(p){
     head_marketing:['home','sales','mk','hr'],
     kol_team:      ['mk'],
     content_team:  ['mk'],
+    hr_team:       ['hr'],
+    procurement:   ['procurement'],
   }[role]||['home','sales','mk'];
   if(!allowed.includes(p))return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -1576,6 +1582,18 @@ function applyRole(role){
     document.querySelectorAll('[id^="m-sv-"]').forEach(v=>v.classList.remove('active'));
     document.getElementById('m-sv-3').classList.add('active');
     renderTT();
+  } else if(role === 'hr_team'){
+    navHome.style.display        = 'none';
+    navSales.style.display       = 'none';
+    navMk.style.display          = 'none';
+    navHr.style.display          = '';
+    nav('hr');
+  } else if(role === 'procurement'){
+    navHome.style.display        = 'none';
+    navSales.style.display       = 'none';
+    navMk.style.display          = 'none';
+    navProcurement.style.display = '';
+    nav('procurement');
   }
 }
 
@@ -1730,7 +1748,7 @@ async function loadAdminUsers(){
   listEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">กำลังโหลด...</div>';
   try{
     const snap = await db.collection('users').orderBy('createdAt','asc').get();
-    const roleLabel={admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
+    const roleLabel={admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team',hr_team:'HR Team',procurement:'จัดซื้อ'};
     if(snap.empty){ listEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:13px;">ยังไม่มีผู้ใช้ในระบบ</div>'; return; }
     listEl.innerHTML=snap.docs.map(doc=>{
       const d=doc.data();
