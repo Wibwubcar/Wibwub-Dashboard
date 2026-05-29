@@ -536,12 +536,23 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </iframe>
 </div>
 
+<!-- ─── HR ─── -->
+<div class="page" id="pg-hr">
+  <iframe
+    src="WIBWUB_HR_Dashboard.html"
+    id="hr-mobile-iframe"
+    style="width:100%;height:calc(100vh - 116px);border:none;display:block;"
+    title="HR & พนักงาน">
+  </iframe>
+</div>
+
 </div><!-- /screen -->
 
 <div class="bnav">
   <div class="ni active" id="nav-home" onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
   <div class="ni" id="nav-sales" onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
   <div class="ni" id="nav-mk" onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
+  <div class="ni" id="nav-hr" onclick="nav('hr')" style="display:none"><div class="ni-ic">👥</div><div class="ni-lb">HR</div></div>
   <div class="ni" id="nav-procurement" onclick="nav('procurement')" style="display:none"><div class="ni-ic">📦</div><div class="ni-lb">Forecast</div></div>
   <div class="ni" id="nav-admin" onclick="nav('admin')" style="display:none"><div class="ni-ic">⚙️</div><div class="ni-lb">Admin</div></div>
 </div>
@@ -925,10 +936,10 @@ function bar(val,max,color,label,right){
 function nav(p){
   const role=window._userRole||'';
   const allowed={
-    admin:        ['home','sales','mk','procurement','admin'],
-    head_marketing:['home','sales','mk'],
-    kol_team:     ['mk'],
-    content_team: ['mk'],
+    admin:         ['home','sales','mk','hr','procurement','admin'],
+    head_marketing:['home','sales','mk','hr'],
+    kol_team:      ['mk'],
+    content_team:  ['mk'],
   }[role]||['home','sales','mk'];
   if(!allowed.includes(p))return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
@@ -1536,13 +1547,16 @@ function applyRole(role){
   const navMk          = document.getElementById('nav-mk');
   const navAdmin       = document.getElementById('nav-admin');
   const navProcurement = document.getElementById('nav-procurement');
+  const navHr          = document.getElementById('nav-hr');
   const mkTabs         = document.getElementById('mk-tabs');
 
   if(role === 'admin'){
     navAdmin.style.display       = '';   // show Admin tab
     navProcurement.style.display = '';   // show Procurement tab (admin only)
+    navHr.style.display          = '';   // show HR tab
     nav('home');
   } else if(role === 'head_marketing'){
+    navHr.style.display = '';           // head_marketing เห็น HR
     nav('home');
   } else if(role === 'kol_team'){
     navHome.style.display  = 'none';
@@ -1574,6 +1588,8 @@ function resetNavVisibility(){
   if(navAdmin) navAdmin.style.display='none';
   const navProc=document.getElementById('nav-procurement');
   if(navProc) navProc.style.display='none';
+  const navHr=document.getElementById('nav-hr');
+  if(navHr) navHr.style.display='none';
   const mkTabs=document.getElementById('mk-tabs');
   if(mkTabs) mkTabs.style.display='';
 }
