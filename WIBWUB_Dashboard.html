@@ -2017,7 +2017,7 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
-db.settings({ experimentalForceLongPolling: true, experimentalAutoDetectLongPolling: false });
+db.settings({ experimentalForceLongPolling: true, experimentalAutoDetectLongPolling: false, merge: true });
 
 // Secondary Firebase app — admin สร้าง user โดยไม่ logout ตัวเอง
 let _secApp = null, _secAuth = null;
