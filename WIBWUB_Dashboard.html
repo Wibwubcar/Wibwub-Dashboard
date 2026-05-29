@@ -291,6 +291,7 @@
     <div class="nav-sec" id="ns-team">ทีม</div>
     <div class="nav-item" data-sec="hr" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
     <div class="nav-item" data-sec="projects" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
+    <div class="nav-item" data-sec="procurement" id="nav-procurement-item" onclick="go('procurement',this)" style="display:none"><span class="nav-icon">📦</span><span>Procurement</span></div>
     <div class="nav-sec" id="ns-admin" style="display:none">Admin</div>
     <div class="nav-item" data-sec="admin" id="nav-admin-item" onclick="go('admin',this)" style="display:none"><span class="nav-icon">⚙️</span><span>จัดการผู้ใช้</span></div>
   </nav>
@@ -411,7 +412,7 @@
             <div class="po-name">Facebook</div>
             <div class="po-val" style="color:#1877f2" id="v-po-fb">฿808,343</div>
             <div class="po-chg up" id="s-po-fb">ยอดขาย Facebook</div>
-            <div class="pb"><div class="pf" id="pb-fb" style="width:16.4%;background:#1877f2"></div></div>
+            <div class="pb"><div class="pf" id="pb-fb" style="width:15.5%;background:#1877f2"></div></div>
           </div>
         </div>
         <div class="po-card">
@@ -1213,6 +1214,16 @@
       </div>
     </section>
 
+    <!-- ─── PROCUREMENT SECTION ─── -->
+    <section id="procurement" class="section" style="padding:0;margin:-26px;">
+      <iframe
+        src="Procurement_Dashboard.html"
+        id="procurement-iframe"
+        style="width:100%;height:calc(100vh - 64px);border:none;display:block;"
+        title="Procurement Forecast Dashboard">
+      </iframe>
+    </section>
+
     <!-- ─── ADMIN SECTION ─── -->
     <section id="admin" class="section">
       <div class="admin-form-card">
@@ -1248,13 +1259,13 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',admin:'⚙️ จัดการผู้ใช้'};
+const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Procurement Forecast',admin:'⚙️ จัดการผู้ใช้'};
 
 let currentPage = 'overview';
 function go(id, el) {
   const role = window._userRole || '';
   const ROLE_SECTIONS = {
-    admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','admin'],
+    admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
     head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
     kol_team:       ['affiliate'],
     content_team:   ['social'],
@@ -1331,7 +1342,7 @@ charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
   {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===4?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
-charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 57.9%','Facebook 16.4%','TikTok 16.0%','Line 4.9%','Website 3.4%','Lazada 1.5%'],datasets:[{data:[20852024,5905091,5754193,1769059,1219179,547158],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
+charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 59.7%','Facebook 15.5%','TikTok 16.7%','Line 4.7%','Website 1.5%','Lazada 1.8%'],datasets:[{data:[22701995,5905091,6363472,1769059,561529,700102],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===4?6:3),pointBackgroundColor:SHOPEE},
@@ -1417,7 +1428,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.toLocaleString()} ออเดอร์`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.4,24.2,25.0,25.6,26.2],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.152],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
   {label:'Facebook',data:[58,59,61,63,64],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:4},
   {label:'Instagram',data:[35,36,37,38,39],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
@@ -1425,7 +1436,7 @@ new Chart('soc_eng',{type:'doughnut',data:{labels:['TikTok','Facebook','Instagra
 
 // ── DUAL-CALENDAR DATE PICKER ──
 const MP_DATE_MIN = '2026-01-01';
-const MP_DATE_MAX = '2026-05-24';
+const MP_DATE_MAX = '2026-05-28';
 const MP_MONTH_BOUNDS = [
   {s:'2026-01-01',e:'2026-01-31'},{s:'2026-02-01',e:'2026-02-28'},
   {s:'2026-03-01',e:'2026-03-31'},{s:'2026-04-01',e:'2026-04-30'},
@@ -1769,6 +1780,8 @@ function setMonthRange(s, e) {
   charts['sl_orders'].data.datasets[1].backgroundColor = hl(TK_ORD,TIKTOK,'ff','44');
   charts['sl_orders'].data.datasets[2].backgroundColor = hl(LZ_ORD,LAZADA,'ff','44');
   charts['sl_orders'].update();
+  charts['sl_line'].data.datasets.forEach(d=>d.pointRadius=ptRadius());
+  charts['sl_line'].update();
 
   charts['sh_line'].data.datasets[0].pointRadius = ptRadius();
   charts['sh_line'].update();
@@ -2004,7 +2017,7 @@ window._userName = null;
 
 const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team'};
 const ROLE_SECTIONS_MAP = {
-  admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','admin'],
+  admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
   head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects'],
   kol_team:       ['affiliate'],
   content_team:   ['social'],
@@ -2059,7 +2072,7 @@ function applyRoleNav(role){
   else { adminSec.style.display='none'; adminItem.style.display='none'; }
 
   // Hide nav section headers that have no visible items
-  [['ns-overview',['overview']],['ns-sales',['sales','shopee','tiktok','lazada']],['ns-marketing',['products','ads','social','affiliate']],['ns-team',['hr','projects']]].forEach(([headId,secs])=>{
+  [['ns-overview',['overview']],['ns-sales',['sales','shopee','tiktok','lazada']],['ns-marketing',['products','ads','social','affiliate']],['ns-team',['hr','projects','procurement']]].forEach(([headId,secs])=>{
     const hasVisible=secs.some(s=>allowed.includes(s));
     const headEl=document.getElementById(headId);
     if(headEl) headEl.style.display=hasVisible?'':'none';

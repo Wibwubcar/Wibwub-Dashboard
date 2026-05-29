@@ -264,8 +264,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 <div class="page active" id="pg-home">
   <div class="home-hero">
     <div class="hh-lbl">ยอดขายรวม ม.ค.–พ.ค. 2569</div>
-    <div class="hh-val">฿37.6M</div>
-    <div class="hh-sub">67,858 unique orders · AOV ฿554</div>
+    <div class="hh-val">฿38.0M</div>
+    <div class="hh-sub">67,858 unique orders · AOV ฿560</div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v">฿22.7M</div><div class="hhg-l">Shopee</div></div>
       <div class="hhg"><div class="hhg-v">฿6.36M</div><div class="hhg-l">TikTok</div></div>
@@ -278,7 +278,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </div>
   <div class="mks-grid">
     <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿3.85M</div><div class="mks-sub">209 creators · 7 เดือน</div></div>
-    <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.61×</div><div class="mks-sub">Shopee+TikTok</div></div>
+    <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.64×</div><div class="mks-sub">Shopee+TikTok</div></div>
     <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">53 คลิป</div><div class="mks-sub">มี.ค.–พ.ค. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">26.2K</div><div class="mks-sub">+2.7K จาก ม.ค.</div></div>
   </div>
@@ -527,12 +527,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </div>
 </div>
 
+<!-- ═══ PROCUREMENT PAGE ═══ -->
+<div class="page" id="pg-procurement">
+  <iframe
+    src="Procurement_Dashboard.html"
+    style="width:100%;height:calc(100vh - 116px);border:none;display:block;"
+    title="Procurement Forecast">
+  </iframe>
+</div>
+
 </div><!-- /screen -->
 
 <div class="bnav">
   <div class="ni active" id="nav-home" onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
   <div class="ni" id="nav-sales" onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
   <div class="ni" id="nav-mk" onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
+  <div class="ni" id="nav-procurement" onclick="nav('procurement')" style="display:none"><div class="ni-ic">📦</div><div class="ni-lb">Procurement</div></div>
   <div class="ni" id="nav-admin" onclick="nav('admin')" style="display:none"><div class="ni-ic">⚙️</div><div class="ni-lb">Admin</div></div>
 </div>
 </div>
@@ -576,7 +586,7 @@ const CHANNELS=[
   {n:'TikTok',v:6363472,color:'#111'},
   {n:'Line Shopping',v:1769059,color:'#06c755'},
   {n:'Lazada',v:700102,color:'#1b04a1'},
-  {n:'Website/อื่นๆ',v:1219179,color:'#1A5CDB'},
+  {n:'Website/อื่นๆ',v:561529,color:'#1A5CDB'},
 ];
 
 const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
@@ -915,7 +925,7 @@ function bar(val,max,color,label,right){
 function nav(p){
   const role=window._userRole||'';
   const allowed={
-    admin:        ['home','sales','mk','admin'],
+    admin:        ['home','sales','mk','procurement','admin'],
     head_marketing:['home','sales','mk'],
     kol_team:     ['mk'],
     content_team: ['mk'],
@@ -1521,14 +1531,16 @@ auth.onAuthStateChanged(async user => {
 // ── Apply role: show/hide nav tabs ──
 function applyRole(role){
   resetNavVisibility();
-  const navHome  = document.getElementById('nav-home');
-  const navSales = document.getElementById('nav-sales');
-  const navMk    = document.getElementById('nav-mk');
-  const navAdmin = document.getElementById('nav-admin');
-  const mkTabs   = document.getElementById('mk-tabs');
+  const navHome        = document.getElementById('nav-home');
+  const navSales       = document.getElementById('nav-sales');
+  const navMk          = document.getElementById('nav-mk');
+  const navAdmin       = document.getElementById('nav-admin');
+  const navProcurement = document.getElementById('nav-procurement');
+  const mkTabs         = document.getElementById('mk-tabs');
 
   if(role === 'admin'){
-    navAdmin.style.display = '';   // show Admin tab
+    navAdmin.style.display       = '';   // show Admin tab
+    navProcurement.style.display = '';   // show Procurement tab (admin only)
     nav('home');
   } else if(role === 'head_marketing'){
     nav('home');
@@ -1560,6 +1572,8 @@ function resetNavVisibility(){
   });
   const navAdmin=document.getElementById('nav-admin');
   if(navAdmin) navAdmin.style.display='none';
+  const navProc=document.getElementById('nav-procurement');
+  if(navProc) navProc.style.display='none';
   const mkTabs=document.getElementById('mk-tabs');
   if(mkTabs) mkTabs.style.display='';
 }

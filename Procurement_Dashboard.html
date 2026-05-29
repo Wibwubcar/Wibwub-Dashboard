@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB — Procurement Forecast</title>
+<style>
+:root{--bg:#0d0d0d;--sf:#181818;--sf2:#222;--bd:#2e2e2e;--tx:#f0f0f0;--sub:#888;--bl:#4a9eff;--rd:#ff4d4d;--yl:#ffaa00;--gn:#00c97a;--rd-bg:rgba(255,77,77,.12);--yl-bg:rgba(255,170,0,.10);--gn-bg:rgba(0,201,122,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.logo{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--bl)}.logo span{color:var(--tx)}
+.pt{font-size:13px;color:var(--sub);margin-top:2px}
+.hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.6}
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
+.kc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.kc.rd{border-color:var(--rd);background:var(--rd-bg)}.kc.yl{border-color:var(--yl);background:var(--yl-bg)}.kc.gn{border-color:var(--gn);background:var(--gn-bg)}.kc.bl{border-color:var(--bl);background:rgba(74,158,255,.08)}
+.kl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
+.kv{font-size:28px;font-weight:700;line-height:1}
+.kc.rd .kv{color:var(--rd)}.kc.yl .kv{color:var(--yl)}.kc.gn .kv{color:var(--gn)}.kc.bl .kv{color:var(--bl)}
+.ks{font-size:11px;color:var(--sub);margin-top:3px}
+/* Controls */
+.ctrls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
+.fb{background:var(--sf2);border:1px solid var(--bd);color:var(--sub);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .15s}
+.fb:hover,.fb.act{background:var(--bl);border-color:var(--bl);color:#fff}
+.fb.frd.act{background:var(--rd);border-color:var(--rd)}
+.fb.fyl.act{background:var(--yl);border-color:var(--yl);color:#111}
+.fb.fgn.act{background:var(--gn);border-color:var(--gn);color:#111}
+.srch{flex:1;min-width:180px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx);border-radius:20px;padding:6px 14px;font-size:12px;outline:none}
+.srch:focus{border-color:var(--bl)}
+.srt-sel{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
+/* Table */
+.tbl-wrap{overflow-x:auto;background:var(--sf);border:1px solid var(--bd);border-radius:12px}
+table{width:100%;border-collapse:collapse}
+thead th{font-size:11px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:10px 12px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap;cursor:pointer;user-select:none}
+thead th:hover{color:var(--tx)}
+thead th.num{text-align:right}
+.sort-icon{margin-left:4px;opacity:.4}
+.sort-active{color:var(--bl)!important}.sort-active .sort-icon{opacity:1}
+tbody tr{border-bottom:1px solid var(--bd);transition:background .1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:rgba(255,255,255,.03)}
+tbody td{padding:11px 12px;font-size:13px}
+tbody td.num{text-align:right}
+/* Status pill */
+.pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.pill.red{background:var(--rd-bg);color:var(--rd);border:1px solid rgba(255,77,77,.3)}
+.pill.yellow{background:var(--yl-bg);color:var(--yl);border:1px solid rgba(255,170,0,.3)}
+.pill.green{background:var(--gn-bg);color:var(--gn);border:1px solid rgba(0,201,122,.25)}
+.pill.oos{background:rgba(255,77,77,.2);color:#ff6b6b;border:1px solid rgba(255,77,77,.4)}
+.pill.nodata{background:rgba(136,136,136,.1);color:var(--sub);border:1px solid rgba(136,136,136,.2)}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.red .dot{background:var(--rd)}.yellow .dot{background:var(--yl)}.green .dot{background:var(--gn)}.oos .dot{background:#ff6b6b}
+/* Bar */
+.bw{width:80px;background:var(--sf2);border-radius:3px;height:5px;display:inline-block;vertical-align:middle}
+.bf{height:100%;border-radius:3px;max-width:100%}
+.bf.red{background:var(--rd)}.bf.yellow{background:var(--yl)}.bf.green{background:var(--gn)}
+/* Days */
+.dn{font-size:14px;font-weight:700}.dn.red{color:var(--rd)}.dn.yellow{color:var(--yl)}.dn.green{color:var(--gn)}
+.du{font-size:11px;color:var(--sub)}
+/* Prod */
+.pn{font-weight:600;font-size:13px}
+.ps{font-size:11px;color:var(--sub);margin-top:1px}
+/* Reorder */
+.rbadge{font-size:11px;background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--bl);border-radius:4px;padding:2px 7px;white-space:nowrap}
+/* Cat tag */
+.ctag{font-size:10px;background:var(--sf2);border:1px solid var(--bd);color:var(--sub);border-radius:4px;padding:1px 6px;white-space:nowrap}
+/* summary */
+.sum-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;font-size:12px;color:var(--sub)}
+.note{font-size:11px;color:var(--sub);margin-top:16px;padding:12px 16px;border-top:1px solid var(--bd);line-height:1.8}
+/* empty */
+.empty{text-align:center;padding:40px;color:var(--sub);font-size:14px}
+@media(max-width:700px){.krow{grid-template-columns:repeat(2,1fr)}.bw{width:50px}}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div>
+    <div class="logo">WIB<span>WUB</span></div>
+    <div class="pt">📦 Procurement Forecast Dashboard</div>
+  </div>
+  <div class="hr">อัปเดต: 29 พ.ค. 2569<br>ข้อมูลขาย: ม.ค.–พ.ค. 2569 (5 เดือน)</div>
+</div>
+
+<div class="krow">
+  <div class="kc rd"><div class="kl">🔴 วิกฤต ≤20 วัน</div><div class="kv" id="cnt-rd">—</div><div class="ks">สั่งซื้อทันที</div></div>
+  <div class="kc yl"><div class="kl">🟡 เฝ้าระวัง 21–45 วัน</div><div class="kv" id="cnt-yl">—</div><div class="ks">วางแผนใน 1–2 สัปดาห์</div></div>
+  <div class="kc gn"><div class="kl">🟢 ปกติ &gt;45 วัน</div><div class="kv" id="cnt-gn">—</div><div class="ks">สต๊อกเพียงพอ</div></div>
+  <div class="kc rd" style="border-color:#ff6b6b"><div class="kl">⬛ หมดสต๊อก</div><div class="kv" id="cnt-oos" style="color:#ff6b6b">—</div><div class="ks">ไม่มีสินค้า</div></div>
+  <div class="kc bl"><div class="kl">📊 ทั้งหมด</div><div class="kv" id="cnt-all">—</div><div class="ks">SKU ที่ติดตาม</div></div>
+</div>
+
+<div class="ctrls">
+  <button class="fb act" onclick="setFilter('all',this)">ทั้งหมด</button>
+  <button class="fb frd" onclick="setFilter('red',this)">🔴 วิกฤต</button>
+  <button class="fb fyl" onclick="setFilter('yellow',this)">🟡 เฝ้าระวัง</button>
+  <button class="fb fgn" onclick="setFilter('green',this)">🟢 ปกติ</button>
+  <button class="fb" onclick="setFilter('oos',this)" style="border-color:#ff6b6b55">⬛ หมดสต๊อก</button>
+  <input class="srch" id="search" placeholder="🔍 ค้นหาสินค้า / SKU..." oninput="renderTable()">
+  <select class="srt-sel" id="sort-sel" onchange="renderTable()">
+    <option value="days">เรียงตาม: วันคงเหลือ</option>
+    <option value="burn">เรียงตาม: Burn Rate</option>
+    <option value="avail">เรียงตาม: สต๊อกคงเหลือ</option>
+    <option value="name">เรียงตาม: ชื่อสินค้า</option>
+  </select>
+</div>
+
+<div class="tbl-wrap">
+<table>
+<thead>
+  <tr>
+    <th>สินค้า</th>
+    <th>สถานะ</th>
+    <th class="num" onclick="setSortCol('days')">วันคงเหลือ <span class="sort-icon" id="srt-days">▼</span></th>
+    <th>คาดหมดสต๊อก</th>
+    <th class="num" onclick="setSortCol('avail')">สต๊อกพร้อมขาย <span class="sort-icon" id="srt-avail">▼</span></th>
+    <th class="num" onclick="setSortCol('burn')">Burn/เดือน <span class="sort-icon" id="srt-burn">▼</span></th>
+    <th>สัดส่วน (3 เดือน)</th>
+    <th>แนะนำสั่งซื้อ</th>
+  </tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+<div class="note" id="table-note"></div>
+</div>
+
+<script>
+const PRODUCTS = [{"sku": "EWIP000001", "name": "Interior wipes", "price": 79, "avail": 3585, "burn": 3537, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "ผ้าเช็ด/Wipes"}, {"sku": "EWIP000002", "name": "Refresh wipes", "price": 79, "avail": 14, "burn": 3147, "days": 0, "stockout": "2026-05-29", "status": "red", "cat": "ผ้าเช็ด/Wipes"}, {"sku": "TPER000002", "name": "Perfect", "price": 170, "avail": 198, "burn": 1705, "days": 3, "stockout": "2026-06-01", "status": "red", "cat": "ผ้า Towel"}, {"sku": "TMTN000004", "name": "Martini", "price": 120, "avail": 1015, "burn": 1408, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "ผ้า Towel"}, {"sku": "TPOL000003", "name": "Polisher", "price": 120, "avail": 93, "burn": 602, "days": 5, "stockout": "2026-06-03", "status": "red", "cat": "ผ้า Towel"}, {"sku": "TMGA000006", "name": "Margarita", "price": 150, "avail": 184, "burn": 534, "days": 10, "stockout": "2026-06-08", "status": "red", "cat": "ผ้า Towel"}, {"sku": "TSPD000001", "name": "Superdry doubleside", "price": 450, "avail": 236, "burn": 301, "days": 24, "stockout": "2026-06-22", "status": "yellow", "cat": "ผ้า Towel"}, {"sku": "TMON000005", "name": "Monster", "price": 750, "avail": 180, "burn": 167, "days": 32, "stockout": "2026-06-30", "status": "yellow", "cat": "ผ้า Towel"}, {"sku": "TMTN010004", "name": "Martini 10 ผืน", "price": 1000, "avail": 15, "burn": 3, "days": 150, "stockout": "2026-10-26", "status": "green", "cat": "ผ้า Towel"}, {"sku": "TPOL010003", "name": "Polisher 10 ผืน", "price": 800, "avail": 11, "burn": 6, "days": 55, "stockout": "2026-07-23", "status": "green", "cat": "ผ้า Towel"}, {"sku": "TPER010002", "name": "Perfect 10 ผืน", "price": 1200, "avail": 3, "burn": 2, "days": 45, "stockout": "2026-07-13", "status": "yellow", "cat": "ผ้า Towel"}, {"sku": "TMGA010006", "name": "Margarita 10 ผืน", "price": 1100, "avail": 2, "burn": 3, "days": 20, "stockout": "2026-06-18", "status": "red", "cat": "ผ้า Towel"}, {"sku": "SSUG010024", "name": "Sugar 500ml", "price": 290, "avail": 365, "burn": 2111, "days": 5, "stockout": "2026-06-03", "status": "red", "cat": "น้ำยา Sugar"}, {"sku": "SSUG030024", "name": "Sugar 3L", "price": 1050, "avail": 25, "burn": 167, "days": 4, "stockout": "2026-06-02", "status": "red", "cat": "น้ำยา Sugar"}, {"sku": "SSUG050024", "name": "Sugar 5L", "price": 1650, "avail": 17, "burn": 36, "days": 14, "stockout": "2026-06-12", "status": "red", "cat": "น้ำยา Sugar"}, {"sku": "SQSH000005", "name": "Quartz 1L", "price": 195, "avail": 346, "burn": 706, "days": 15, "stockout": "2026-06-13", "status": "red", "cat": "น้ำยา Quartz Shampoo"}, {"sku": "SQSH030005", "name": "Quartz 3L", "price": 490, "avail": 140, "burn": 162, "days": 26, "stockout": "2026-06-24", "status": "yellow", "cat": "น้ำยา Quartz Shampoo"}, {"sku": "SQSH050005", "name": "Quartz 5L", "price": 790, "avail": 93, "burn": 90, "days": 31, "stockout": "2026-06-29", "status": "yellow", "cat": "น้ำยา Quartz Shampoo"}, {"sku": "SQSH200005", "name": "Quartz 25L", "price": 2700, "avail": 4, "burn": 2, "days": 60, "stockout": "2026-07-28", "status": "green", "cat": "น้ำยา Quartz Shampoo"}, {"sku": "SRFX000003", "name": "Reflex 250ml", "price": 395, "avail": 300, "burn": 588, "days": 15, "stockout": "2026-06-13", "status": "red", "cat": "น้ำยา Reflex"}, {"sku": "SRFX110003", "name": "Reflex 500ml", "price": 620, "avail": 309, "burn": 175, "days": 53, "stockout": "2026-07-21", "status": "green", "cat": "น้ำยา Reflex"}, {"sku": "SRFX030003", "name": "Reflex 3L", "price": 2300, "avail": 2, "burn": 9, "days": 7, "stockout": "2026-06-05", "status": "red", "cat": "น้ำยา Reflex"}, {"sku": "SRFX010003", "name": "Reflex 1L", "price": 1250, "avail": 0, "burn": 29, "days": 0, "stockout": "2026-05-29", "status": "oos", "cat": "น้ำยา Reflex"}, {"sku": "SGFS000020", "name": "Graphene", "price": 490, "avail": 421, "burn": 166, "days": 76, "stockout": "2026-08-13", "status": "green", "cat": "น้ำยาเคลือบ"}, {"sku": "SDIA000034", "name": "Anna nano diamond", "price": 1790, "avail": 111, "burn": 18, "days": 185, "stockout": "2026-11-30", "status": "green", "cat": "น้ำยาเคลือบ"}, {"sku": "SPNX000014", "name": "Phoenix 250ml", "price": 590, "avail": 66, "burn": 11, "days": 180, "stockout": "2026-11-25", "status": "green", "cat": "น้ำยาเคลือบ"}, {"sku": "SPNX010014", "name": "Phoenix 1L", "price": 1990, "avail": 2, "burn": 0, "days": null, "stockout": null, "status": "nodata", "cat": "น้ำยาเคลือบ"}, {"sku": "SJUL000018", "name": "Julia", "price": 1090, "avail": 32, "burn": 44, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "น้ำยาเคลือบเซรามิค"}, {"sku": "SBCH000030", "name": "Beach 250ml", "price": 295, "avail": 220, "burn": 56, "days": 118, "stockout": "2026-09-24", "status": "green", "cat": "น้ำยา Beach"}, {"sku": "SBCH010031", "name": "Beach 500ml", "price": 490, "avail": 119, "burn": 118, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Beach"}, {"sku": "SBCH030032", "name": "Beach 3L", "price": 1950, "avail": 11, "burn": 5, "days": 66, "stockout": "2026-08-03", "status": "green", "cat": "น้ำยา Beach"}, {"sku": "SBCH050033", "name": "Beach 5L", "price": 3000, "avail": 7, "burn": 4, "days": 52, "stockout": "2026-07-20", "status": "green", "cat": "น้ำยา Beach"}, {"sku": "SGFS010020", "name": "Ella", "price": 1290, "avail": 50, "burn": 16, "days": 94, "stockout": "2026-08-31", "status": "green", "cat": "น้ำยาเคลือบ"}, {"sku": "SINT010001", "name": "Interior 500ml", "price": 390, "avail": 275, "burn": 1410, "days": 6, "stockout": "2026-06-04", "status": "red", "cat": "น้ำยา Interior"}, {"sku": "SINT030001", "name": "Interior 3L", "price": 950, "avail": 22, "burn": 51, "days": 13, "stockout": "2026-06-11", "status": "red", "cat": "น้ำยา Interior"}, {"sku": "SINT050001", "name": "Interior 5L", "price": 1500, "avail": 11, "burn": 11, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Interior"}, {"sku": "SRFT010006", "name": "Refresh 500ml", "price": 390, "avail": 305, "burn": 750, "days": 12, "stockout": "2026-06-10", "status": "red", "cat": "น้ำยา Refresh"}, {"sku": "SRFR030006", "name": "Refresh 3L", "price": 1650, "avail": 16, "burn": 14, "days": 34, "stockout": "2026-07-02", "status": "yellow", "cat": "น้ำยา Refresh"}, {"sku": "SRFR050006", "name": "Refresh 5L", "price": 2600, "avail": 5, "burn": 1, "days": 150, "stockout": "2026-10-26", "status": "green", "cat": "น้ำยา Refresh"}, {"sku": "SMIN010019", "name": "Mind 500ml", "price": 390, "avail": 203, "burn": 458, "days": 13, "stockout": "2026-06-11", "status": "red", "cat": "น้ำยา Mind"}, {"sku": "SMIN030019", "name": "Mind 3L", "price": 1250, "avail": 24, "burn": 78, "days": 9, "stockout": "2026-06-07", "status": "red", "cat": "น้ำยา Mind"}, {"sku": "SMIN050019", "name": "Mind 5L", "price": 2000, "avail": 3, "burn": 4, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "น้ำยา Mind"}, {"sku": "SCNR010033", "name": "Cleaner", "price": 0, "avail": 487, "burn": 427, "days": 34, "stockout": "2026-07-02", "status": "yellow", "cat": "น้ำยาทำความสะอาด"}, {"sku": "SXGL000012", "name": "Xglass 100ml", "price": 375, "avail": 416, "burn": 301, "days": 41, "stockout": "2026-07-09", "status": "yellow", "cat": "น้ำยา Xglass"}, {"sku": "SXGL010012", "name": "Xglass 1L", "price": 890, "avail": 13, "burn": 13, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Xglass"}, {"sku": "SUVP000002", "name": "UV protect 100ml", "price": 190, "avail": 294, "burn": 269, "days": 33, "stockout": "2026-07-01", "status": "yellow", "cat": "น้ำยา UV protect"}, {"sku": "SUVP010002", "name": "UV protect 1L", "price": 990, "avail": 24, "burn": 10, "days": 72, "stockout": "2026-08-09", "status": "green", "cat": "น้ำยา UV protect"}, {"sku": "SPRP010011", "name": "Paint prep 500ml", "price": 190, "avail": 106, "burn": 267, "days": 12, "stockout": "2026-06-10", "status": "red", "cat": "น้ำยา Paint prep"}, {"sku": "SPRP030011", "name": "Paint prep 3L", "price": 590, "avail": 10, "burn": 11, "days": 27, "stockout": "2026-06-25", "status": "yellow", "cat": "น้ำยา Paint prep"}, {"sku": "SPRP050011", "name": "Paint prep 5L", "price": 950, "avail": 4, "burn": 2, "days": 60, "stockout": "2026-07-28", "status": "green", "cat": "น้ำยา Paint prep"}, {"sku": "SREC010032", "name": "Recove 500ml", "price": 490, "avail": 85, "burn": 221, "days": 12, "stockout": "2026-06-10", "status": "red", "cat": "น้ำยา Recove"}, {"sku": "SVIS000026", "name": "Visible 500ml", "price": 250, "avail": 99, "burn": 350, "days": 8, "stockout": "2026-06-06", "status": "red", "cat": "น้ำยา Visible"}, {"sku": "SVIS030026", "name": "Visible 3L", "price": 850, "avail": 12, "burn": 16, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "น้ำยา Visible"}, {"sku": "SVIS050026", "name": "Visible 5L", "price": 1250, "avail": 4, "burn": 5, "days": 24, "stockout": "2026-06-22", "status": "yellow", "cat": "น้ำยา Visible"}, {"sku": "SPOT010013", "name": "Spot 500ml", "price": 378, "avail": 357, "burn": 562, "days": 19, "stockout": "2026-06-17", "status": "red", "cat": "น้ำยา Spot"}, {"sku": "SPOT030013", "name": "Spot 3L", "price": 1350, "avail": 14, "burn": 10, "days": 42, "stockout": "2026-07-10", "status": "yellow", "cat": "น้ำยา Spot"}, {"sku": "SPOT050013", "name": "Spot 5L", "price": 2300, "avail": 4, "burn": 1, "days": 120, "stockout": "2026-09-26", "status": "green", "cat": "น้ำยา Spot"}, {"sku": "SBRW000029", "name": "Brown 500ml", "price": 350, "avail": 24, "burn": 170, "days": 4, "stockout": "2026-06-02", "status": "red", "cat": "น้ำยา Brown"}, {"sku": "SBUG000028", "name": "Bugbug 500ml", "price": 245, "avail": 173, "burn": 174, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Bugbug"}, {"sku": "SBUG030028", "name": "Bugbug 3L", "price": 750, "avail": 12, "burn": 6, "days": 60, "stockout": "2026-07-28", "status": "green", "cat": "น้ำยา Bugbug"}, {"sku": "SBUG050028", "name": "Bugbug 5L", "price": 1050, "avail": 3, "burn": 3, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Bugbug"}, {"sku": "SAPC010007", "name": "APC 500ml", "price": 290, "avail": 86, "burn": 119, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "น้ำยา APC"}, {"sku": "SAPC030007", "name": "APC 3L", "price": 850, "avail": 16, "burn": 6, "days": 80, "stockout": "2026-08-17", "status": "green", "cat": "น้ำยา APC"}, {"sku": "SAPC050007", "name": "APC 5L", "price": 1300, "avail": 4, "burn": 4, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา APC"}, {"sku": "SBYK010031", "name": "Banyakart 500ml", "price": 365, "avail": 97, "burn": 178, "days": 16, "stockout": "2026-06-14", "status": "red", "cat": "น้ำยา Banyakart"}, {"sku": "SDPN000016", "name": "Deep clean 1L", "price": 350, "avail": 58, "burn": 129, "days": 13, "stockout": "2026-06-11", "status": "red", "cat": "น้ำยา Deep clean"}, {"sku": "SDPN030016", "name": "Deep clean 3L", "price": 750, "avail": 25, "burn": 32, "days": 23, "stockout": "2026-06-21", "status": "yellow", "cat": "น้ำยา Deep clean"}, {"sku": "SDPN050016", "name": "Deep clean 5L", "price": 1250, "avail": 5, "burn": 18, "days": 8, "stockout": "2026-06-06", "status": "red", "cat": "น้ำยา Deep clean"}, {"sku": "STRM010004", "name": "Tire&trim 500ml", "price": 420, "avail": 369, "burn": 428, "days": 26, "stockout": "2026-06-24", "status": "yellow", "cat": "น้ำยา Tire&trim"}, {"sku": "STRM030004", "name": "Tire&trim 3L", "price": 1790, "avail": 14, "burn": 10, "days": 42, "stockout": "2026-07-10", "status": "yellow", "cat": "น้ำยา Tire&trim"}, {"sku": "STRM050004", "name": "Tire&trim 5L", "price": 2750, "avail": 5, "burn": 4, "days": 38, "stockout": "2026-07-06", "status": "yellow", "cat": "น้ำยา Tire&trim"}, {"sku": "STCL000027", "name": "Tire clean 500ml", "price": 350, "avail": 105, "burn": 92, "days": 34, "stockout": "2026-07-02", "status": "yellow", "cat": "น้ำยา Tire clean"}, {"sku": "STCL030027", "name": "Tire clean 3L", "price": 1500, "avail": 6, "burn": 8, "days": 22, "stockout": "2026-06-20", "status": "yellow", "cat": "น้ำยา Tire clean"}, {"sku": "STCL050027", "name": "Tire clean 5L", "price": 1950, "avail": 1, "burn": 1, "days": 30, "stockout": "2026-06-28", "status": "yellow", "cat": "น้ำยา Tire clean"}, {"sku": "SWTL010008", "name": "Waterless 500ml", "price": 370, "avail": 116, "burn": 165, "days": 21, "stockout": "2026-06-19", "status": "yellow", "cat": "น้ำยา Waterless"}, {"sku": "SWTL030008", "name": "Waterless 3L", "price": 1470, "avail": 7, "burn": 1, "days": 210, "stockout": "2026-12-25", "status": "green", "cat": "น้ำยา Waterless"}, {"sku": "SWTL050008", "name": "Waterless 5L", "price": 2150, "avail": 3, "burn": 1, "days": 90, "stockout": "2026-08-27", "status": "green", "cat": "น้ำยา Waterless"}, {"sku": "STER000025", "name": "Terrain 500ml", "price": 245, "avail": 118, "burn": 74, "days": 48, "stockout": "2026-07-16", "status": "green", "cat": "น้ำยา Terrain"}, {"sku": "STER030025", "name": "Terrain 3L", "price": 1150, "avail": 2, "burn": 14, "days": 4, "stockout": "2026-06-02", "status": "red", "cat": "น้ำยา Terrain"}, {"sku": "STER050025", "name": "Terrain 5L", "price": 1800, "avail": 7, "burn": 2, "days": 105, "stockout": "2026-09-11", "status": "green", "cat": "น้ำยา Terrain"}, {"sku": "SMCW010017", "name": "Microfiber wash 500ml", "price": 220, "avail": 139, "burn": 154, "days": 27, "stockout": "2026-06-25", "status": "yellow", "cat": "น้ำยาซักผ้า"}, {"sku": "SMCW030017", "name": "Microfiber wash 3L", "price": 750, "avail": 23, "burn": 17, "days": 41, "stockout": "2026-07-09", "status": "yellow", "cat": "น้ำยาซักผ้า"}, {"sku": "SMCW050017", "name": "Microfiber wash 5L", "price": 1350, "avail": 5, "burn": 1, "days": 150, "stockout": "2026-10-26", "status": "green", "cat": "น้ำยาซักผ้า"}, {"sku": "SSTL010009", "name": "Steel 500ml", "price": 450, "avail": 68, "burn": 71, "days": 29, "stockout": "2026-06-27", "status": "yellow", "cat": "น้ำยา Steel"}, {"sku": "SSTL030009", "name": "Steel 3L", "price": 2500, "avail": 4, "burn": 0, "days": null, "stockout": null, "status": "nodata", "cat": "น้ำยา Steel"}, {"sku": "SSTL050009", "name": "Steel 5L", "price": 3800, "avail": 4, "burn": 0, "days": null, "stockout": null, "status": "nodata", "cat": "น้ำยา Steel"}, {"sku": "BULT000003", "name": "Ultra soft brush", "price": 150, "avail": 762, "burn": 201, "days": 114, "stockout": "2026-09-20", "status": "green", "cat": "แปรง Detailing"}, {"sku": "BSYN000004", "name": "Synthetic brush", "price": 175, "avail": 428, "burn": 182, "days": 71, "stockout": "2026-08-08", "status": "green", "cat": "แปรง Detailing"}, {"sku": "BBLU000010", "name": "Blue stiff brush", "price": 120, "avail": 678, "burn": 184, "days": 111, "stockout": "2026-09-17", "status": "green", "cat": "แปรง Detailing"}, {"sku": "BWHE000007", "name": "Wheel brush", "price": 450, "avail": 633, "burn": 37, "days": 513, "stockout": "2027-10-24", "status": "green", "cat": "แปรง"}, {"sku": "BWHE000011", "name": "Flex wheelbrush", "price": 270, "avail": 303, "burn": 87, "days": 104, "stockout": "2026-09-10", "status": "green", "cat": "แปรง"}, {"sku": "BFRT000008", "name": "Front wheel brush", "price": 250, "avail": 84, "burn": 108, "days": 23, "stockout": "2026-06-21", "status": "yellow", "cat": "แปรง"}, {"sku": "BHOR000002", "name": "Horse hair brush", "price": 250, "avail": 222, "burn": 314, "days": 21, "stockout": "2026-06-19", "status": "yellow", "cat": "แปรง"}, {"sku": "BTIR000006", "name": "Tire brush", "price": 150, "avail": 38, "burn": 136, "days": 8, "stockout": "2026-06-06", "status": "red", "cat": "แปรง"}, {"sku": "BLIM010003", "name": "Strip wheel brush", "price": 350, "avail": 75, "burn": 9, "days": 250, "stockout": "2027-02-03", "status": "green", "cat": "แปรง"}, {"sku": "BWLD000001", "name": "Wool duster", "price": 690, "avail": 404, "burn": 1460, "days": 8, "stockout": "2026-06-06", "status": "red", "cat": "ถุงมือ/Mitt"}, {"sku": "BWLD000002", "name": "Wool duster (เกรดB)", "price": 390, "avail": 61, "burn": 95, "days": 19, "stockout": "2026-06-17", "status": "red", "cat": "ถุงมือ/Mitt"}, {"sku": "EWLM000002", "name": "Wool wash mitt", "price": 490, "avail": 426, "burn": 181, "days": 71, "stockout": "2026-08-08", "status": "green", "cat": "ถุงมือ/Mitt"}, {"sku": "EMIU000010", "name": "Premium mitt", "price": 390, "avail": 327, "burn": 136, "days": 72, "stockout": "2026-08-09", "status": "green", "cat": "ถุงมือ/Mitt"}, {"sku": "ECLY000006", "name": "Claymitt", "price": 420, "avail": 298, "burn": 52, "days": 172, "stockout": "2026-11-17", "status": "green", "cat": "ถุงมือ/Mitt"}, {"sku": "ETIR000001", "name": "Tire applicator", "price": 45, "avail": 109, "burn": 511, "days": 6, "stockout": "2026-06-04", "status": "red", "cat": "Applicator"}, {"sku": "EMCA000004", "name": "Microfiber applicator", "price": 150, "avail": 390, "burn": 282, "days": 41, "stockout": "2026-07-09", "status": "yellow", "cat": "Applicator"}, {"sku": "ESUE000005", "name": "Suede applicator", "price": 45, "avail": 89, "burn": 65, "days": 41, "stockout": "2026-07-09", "status": "yellow", "cat": "Applicator"}, {"sku": "ESUE010005", "name": "Suede Towels", "price": 250, "avail": 38, "burn": 28, "days": 41, "stockout": "2026-07-09", "status": "yellow", "cat": "Applicator"}, {"sku": "ESCR000001", "name": "Scrubber", "price": 75, "avail": 653, "burn": 143, "days": 137, "stockout": "2026-10-13", "status": "green", "cat": "Applicator"}, {"sku": "RBOX000001", "name": "Coating block", "price": 55, "avail": 810, "burn": 35, "days": 694, "stockout": "2028-04-22", "status": "green", "cat": "Applicator"}, {"sku": "ESEC000009", "name": "Secondary container", "price": 175, "avail": 245, "burn": 79, "days": 93, "stockout": "2026-08-30", "status": "green", "cat": "อุปกรณ์"}, {"sku": "EBUC000002", "name": "Rinse bucket", "price": 0, "avail": 59, "burn": 10, "days": 177, "stockout": "2026-11-22", "status": "green", "cat": "อุปกรณ์"}, {"sku": "EBUC020001", "name": "Side bucket", "price": 390, "avail": 166, "burn": 15, "days": 332, "stockout": "2027-04-26", "status": "green", "cat": "อุปกรณ์"}, {"sku": "EPOR000003", "name": "Portable bucket", "price": 150, "avail": 84, "burn": 16, "days": 158, "stockout": "2026-11-03", "status": "green", "cat": "อุปกรณ์"}, {"sku": "ECOV000007", "name": "Tire cover", "price": 490, "avail": 2, "burn": 9, "days": 7, "stockout": "2026-06-05", "status": "red", "cat": "อุปกรณ์"}];
+
+const TODAY = new Date('2026-05-29');
+const TH_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return `${d.getDate()} ${TH_MONTHS[d.getMonth()]} ${d.getFullYear()-543+2543}`;
+}
+function fmtNum(n) { return n.toLocaleString(); }
+
+function pillHtml(st) {
+  const labels = {red:'🔴 วิกฤต', yellow:'🟡 เฝ้าระวัง', green:'🟢 ปกติ', oos:'⬛ หมดสต๊อก', nodata:'— ไม่มีข้อมูล'};
+  return `<span class="pill ${st}"><span class="dot"></span>${labels[st]||st}</span>`;
+}
+
+function barHtml(avail, burn, st) {
+  if (!burn) return '—';
+  const pct = Math.min(100, Math.round((avail / (burn * 3)) * 100));
+  return `<div class="bw"><div class="bf ${st}" style="width:${pct}%"></div></div> <span style="font-size:11px;color:var(--sub)">${pct}%</span>`;
+}
+
+function daysHtml(p) {
+  if (p.status === 'oos') return '<span style="color:#ff6b6b;font-size:12px">หมดแล้ว</span>';
+  if (!p.days && p.days !== 0) return '<span style="color:var(--sub);font-size:12px">—</span>';
+  const disp = p.days > 365 ? '365+' : p.days;
+  return `<span class="dn ${p.status}">${disp}</span><span class="du"> วัน</span>`;
+}
+
+function reorderHtml(p) {
+  if (p.status === 'nodata' || !p.burn) return '—';
+  if (p.status === 'oos') return `<span class="rbadge">สั่ง ${Math.ceil(p.burn * 2)} ชิ้น</span>`;
+  if (!p.days && p.days !== 0) return '—';
+  if (p.days <= 7)  return `<span class="rbadge" style="background:rgba(255,77,77,.2);color:var(--rd);border-color:var(--rd)">🚨 สั่งด่วน ${Math.ceil(p.burn * 2)} ชิ้น</span>`;
+  if (p.days <= 14) return `<span class="rbadge" style="background:rgba(255,77,77,.15);color:var(--rd);border-color:var(--rd)">⚡ สั่ง ${Math.ceil(p.burn * 1.5)} ชิ้น</span>`;
+  if (p.days <= 20) return `<span class="rbadge">สั่ง ${Math.ceil(p.burn)} ชิ้น</span>`;
+  if (p.days <= 45) return `<span style="font-size:12px;color:var(--sub)">วางแผน ~${Math.ceil(p.burn)} ชิ้น</span>`;
+  return '<span style="font-size:12px;color:var(--sub)">ยังไม่ต้องสั่ง</span>';
+}
+
+let currentFilter = 'all';
+let currentSort = 'days';
+
+function setFilter(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('.fb').forEach(b => b.classList.remove('act'));
+  btn.classList.add('act');
+  renderTable();
+}
+
+function setSortCol(col) {
+  currentSort = col;
+  document.getElementById('sort-sel').value = col;
+  renderTable();
+}
+
+function getFiltered() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  const sort = document.getElementById('sort-sel').value;
+  currentSort = sort;
+
+  let arr = [...PRODUCTS];
+
+  if (currentFilter !== 'all') {
+    arr = arr.filter(p => p.status === currentFilter);
+  }
+  if (q) {
+    arr = arr.filter(p => p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.cat.toLowerCase().includes(q));
+  }
+
+  // Sort
+  arr.sort((a, b) => {
+    if (sort === 'days') {
+      // OOS & nodata last
+      const da = (a.status === 'oos') ? -1 : (a.days ?? 9999);
+      const db = (b.status === 'oos') ? -1 : (b.days ?? 9999);
+      if (a.status === 'oos' && b.status !== 'oos') return -1;
+      if (b.status === 'oos' && a.status !== 'oos') return 1;
+      if (a.status === 'nodata' && b.status !== 'nodata') return 1;
+      if (b.status === 'nodata' && a.status !== 'nodata') return -1;
+      return da - db;
+    }
+    if (sort === 'burn') return b.burn - a.burn;
+    if (sort === 'avail') return b.avail - a.avail;
+    if (sort === 'name') return a.name.localeCompare(b.name, 'th');
+    return 0;
+  });
+
+  return arr;
+}
+
+function renderTable() {
+  const arr = getFiltered();
+  const tbody = document.getElementById('tbody');
+
+  // KPI counts from full data
+  const crd = PRODUCTS.filter(p => p.status === 'red').length;
+  const cyl = PRODUCTS.filter(p => p.status === 'yellow').length;
+  const cgn = PRODUCTS.filter(p => p.status === 'green').length;
+  const coos = PRODUCTS.filter(p => p.status === 'oos').length;
+  document.getElementById('cnt-rd').textContent = crd;
+  document.getElementById('cnt-yl').textContent = cyl;
+  document.getElementById('cnt-gn').textContent = cgn;
+  document.getElementById('cnt-oos').textContent = coos;
+  document.getElementById('cnt-all').textContent = PRODUCTS.length;
+
+  if (!arr.length) {
+    tbody.innerHTML = '<tr><td colspan="8" class="empty">ไม่พบสินค้าที่ตรงกัน</td></tr>';
+    document.getElementById('table-note').textContent = '';
+    return;
+  }
+
+  let rows = '';
+  arr.forEach(p => {
+    const priceTxt = p.price > 0 ? `฿${p.price.toLocaleString()}` : '—';
+    rows += `<tr data-status="${p.status}">
+      <td>
+        <div class="pn">${p.name}</div>
+        <div style="display:flex;gap:4px;margin-top:3px;flex-wrap:wrap">
+          <span class="ps">${p.sku}</span>
+          <span class="ctag">${p.cat}</span>
+        </div>
+      </td>
+      <td>${pillHtml(p.status)}</td>
+      <td class="num">${daysHtml(p)}</td>
+      <td><span style="font-size:12px;${p.status==='red'?'color:var(--rd);font-weight:600':p.status==='yellow'?'color:var(--yl)':''}">${p.status==='oos'?'หมดแล้ว':fmtDate(p.stockout)}</span></td>
+      <td class="num">${fmtNum(p.avail)}</td>
+      <td class="num">${p.burn ? fmtNum(p.burn) : '—'}</td>
+      <td>${barHtml(p.avail, p.burn, p.status==='red'?'red':p.status==='yellow'?'yellow':'green')}</td>
+      <td>${reorderHtml(p)}</td>
+    </tr>`;
+  });
+
+  tbody.innerHTML = rows;
+
+  const noteEl = document.getElementById('table-note');
+  noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn Rate = ค่าเฉลี่ยยอดขาย ม.ค.–พ.ค. 2569 (Shopee + TikTok + Lazada) &nbsp;|&nbsp; วันคงเหลือ = สต๊อกพร้อมขาย ÷ Burn Rate × 30`;
+}
+
+renderTable();
+</script>
+</body>
+</html>
