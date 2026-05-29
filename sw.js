@@ -1,5 +1,5 @@
 // WIBWUB Service Worker — auto-update on new version
-const CACHE = 'wibwub-v64';
+const CACHE = 'wibwub-v65';
 const FILES = [
   '/Wibwub-Dashboard/WIBWUB_Mobile.html',
   '/Wibwub-Dashboard/manifest.json',
@@ -9,7 +9,7 @@ const FILES = [
   '/Wibwub-Dashboard/logo-header.png',
 ];
 
-// Install: cache all files, activate immediately (don't wait)
+// Install: cache all files, activate immediately
 self.addEventListener('install', e => {
   self.skipWaiting();
   e.waitUntil(
@@ -17,7 +17,7 @@ self.addEventListener('install', e => {
   );
 });
 
-// Activate: delete old caches, take control of all open pages now
+// Activate: delete old caches, take control now
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys()
@@ -28,13 +28,29 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch: network first Ã¢ÂÂ if offline fallback to cache
+// Fetch: network first, cache fallback
+// IMPORTANT: skip Firebase / Google API requests (POST + streaming — cannot cache)
 self.addEventListener('fetch', e => {
+  const url = e.request.url;
+
+  // Skip non-GET and all Firebase/Google domains
+  if (
+    e.request.method !== 'GET' ||
+    url.includes('firebaseio.com') ||
+    url.includes('googleapis.com') ||
+    url.includes('firebaseapp.com') ||
+    url.includes('gstatic.com') ||
+    url.includes('firebase') ||
+    url.includes('identitytoolkit')
+  ) return; // let browser handle directly, no service worker interference
+
   e.respondWith(
     fetch(e.request)
       .then(res => {
-        const clone = res.clone();
-        caches.open(CACHE).then(c => c.put(e.request, clone));
+        if (res && res.status === 200 && res.type !== 'opaque') {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
         return res;
       })
       .catch(() => caches.match(e.request))
