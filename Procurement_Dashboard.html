@@ -3,9 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WIBWUB — Procurement Forecast</title>
+<title>WIBWUB — Stock Forecast</title>
 <style>
-:root{--bg:#0d0d0d;--sf:#181818;--sf2:#222;--bd:#2e2e2e;--tx:#f0f0f0;--sub:#888;--bl:#4a9eff;--rd:#ff4d4d;--yl:#ffaa00;--gn:#00c97a;--rd-bg:rgba(255,77,77,.12);--yl-bg:rgba(255,170,0,.10);--gn-bg:rgba(0,201,122,.08)}
+:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;--bl:#1A5CDB;--rd:#ef4444;--yl:#f59e0b;--gn:#22c55e;--rd-bg:rgba(239,68,68,.08);--yl-bg:rgba(245,158,11,.08);--gn-bg:rgba(34,197,94,.08)}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
 .hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px}
@@ -14,46 +14,46 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.6}
 /* KPI */
 .krow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px}
-.kc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
-.kc.rd{border-color:var(--rd);background:var(--rd-bg)}.kc.yl{border-color:var(--yl);background:var(--yl-bg)}.kc.gn{border-color:var(--gn);background:var(--gn-bg)}.kc.bl{border-color:var(--bl);background:rgba(74,158,255,.08)}
+.kc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.kc.rd{border-color:var(--rd);background:var(--rd-bg)}.kc.yl{border-color:var(--yl);background:var(--yl-bg)}.kc.gn{border-color:var(--gn);background:var(--gn-bg)}.kc.bl{border-color:var(--bl);background:rgba(26,92,219,.06)}
 .kl{font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.8px;margin-bottom:5px}
 .kv{font-size:28px;font-weight:700;line-height:1}
 .kc.rd .kv{color:var(--rd)}.kc.yl .kv{color:var(--yl)}.kc.gn .kv{color:var(--gn)}.kc.bl .kv{color:var(--bl)}
 .ks{font-size:11px;color:var(--sub);margin-top:3px}
 /* Controls */
 .ctrls{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;align-items:center}
-.fb{background:var(--sf2);border:1px solid var(--bd);color:var(--sub);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .15s}
+.fb{background:var(--sf);border:1px solid var(--bd);color:var(--sub);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;transition:all .15s}
 .fb:hover,.fb.act{background:var(--bl);border-color:var(--bl);color:#fff}
 .fb.frd.act{background:var(--rd);border-color:var(--rd)}
 .fb.fyl.act{background:var(--yl);border-color:var(--yl);color:#111}
-.fb.fgn.act{background:var(--gn);border-color:var(--gn);color:#111}
-.srch{flex:1;min-width:180px;background:var(--sf2);border:1px solid var(--bd);color:var(--tx);border-radius:20px;padding:6px 14px;font-size:12px;outline:none}
+.fb.fgn.act{background:var(--gn);border-color:var(--gn);color:#fff}
+.srch{flex:1;min-width:180px;background:var(--sf);border:1px solid var(--bd);color:var(--tx);border-radius:20px;padding:6px 14px;font-size:12px;outline:none}
 .srch:focus{border-color:var(--bl)}
-.srt-sel{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
+.srt-sel{background:var(--sf);border:1px solid var(--bd);color:var(--tx);border-radius:8px;padding:5px 10px;font-size:12px;cursor:pointer}
 /* Table */
-.tbl-wrap{overflow-x:auto;background:var(--sf);border:1px solid var(--bd);border-radius:12px}
+.tbl-wrap{overflow-x:auto;background:var(--sf);border:1px solid var(--bd);border-radius:12px;box-shadow:0 2px 12px rgba(0,0,0,.06)}
 table{width:100%;border-collapse:collapse}
-thead th{font-size:11px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:10px 12px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap;cursor:pointer;user-select:none}
+thead th{font-size:11px;color:var(--sub);font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:10px 12px;border-bottom:1px solid var(--bd);text-align:left;white-space:nowrap;cursor:pointer;user-select:none;background:var(--bg)}
 thead th:hover{color:var(--tx)}
 thead th.num{text-align:right}
 .sort-icon{margin-left:4px;opacity:.4}
 .sort-active{color:var(--bl)!important}.sort-active .sort-icon{opacity:1}
 tbody tr{border-bottom:1px solid var(--bd);transition:background .1s}
 tbody tr:last-child{border-bottom:none}
-tbody tr:hover{background:rgba(255,255,255,.03)}
+tbody tr:hover{background:rgba(0,0,0,.025)}
 tbody td{padding:11px 12px;font-size:13px}
 tbody td.num{text-align:right}
 /* Status pill */
 .pill{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
-.pill.red{background:var(--rd-bg);color:var(--rd);border:1px solid rgba(255,77,77,.3)}
-.pill.yellow{background:var(--yl-bg);color:var(--yl);border:1px solid rgba(255,170,0,.3)}
-.pill.green{background:var(--gn-bg);color:var(--gn);border:1px solid rgba(0,201,122,.25)}
-.pill.oos{background:rgba(255,77,77,.2);color:#ff6b6b;border:1px solid rgba(255,77,77,.4)}
-.pill.nodata{background:rgba(136,136,136,.1);color:var(--sub);border:1px solid rgba(136,136,136,.2)}
+.pill.red{background:var(--rd-bg);color:var(--rd);border:1px solid rgba(239,68,68,.25)}
+.pill.yellow{background:var(--yl-bg);color:var(--yl);border:1px solid rgba(245,158,11,.25)}
+.pill.green{background:var(--gn-bg);color:var(--gn);border:1px solid rgba(34,197,94,.25)}
+.pill.oos{background:rgba(239,68,68,.12);color:var(--rd);border:1px solid rgba(239,68,68,.3)}
+.pill.nodata{background:rgba(153,153,153,.1);color:var(--sub);border:1px solid rgba(153,153,153,.2)}
 .dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.red .dot{background:var(--rd)}.yellow .dot{background:var(--yl)}.green .dot{background:var(--gn)}.oos .dot{background:#ff6b6b}
+.red .dot{background:var(--rd)}.yellow .dot{background:var(--yl)}.green .dot{background:var(--gn)}.oos .dot{background:var(--rd)}
 /* Bar */
-.bw{width:80px;background:var(--sf2);border-radius:3px;height:5px;display:inline-block;vertical-align:middle}
+.bw{width:80px;background:var(--bd);border-radius:3px;height:5px;display:inline-block;vertical-align:middle}
 .bf{height:100%;border-radius:3px;max-width:100%}
 .bf.red{background:var(--rd)}.bf.yellow{background:var(--yl)}.bf.green{background:var(--gn)}
 /* Days */
@@ -63,7 +63,7 @@ tbody td.num{text-align:right}
 .pn{font-weight:600;font-size:13px}
 .ps{font-size:11px;color:var(--sub);margin-top:1px}
 /* Reorder */
-.rbadge{font-size:11px;background:rgba(74,158,255,.15);border:1px solid rgba(74,158,255,.3);color:var(--bl);border-radius:4px;padding:2px 7px;white-space:nowrap}
+.rbadge{font-size:11px;background:rgba(26,92,219,.10);border:1px solid rgba(26,92,219,.25);color:var(--bl);border-radius:4px;padding:2px 7px;white-space:nowrap}
 /* Cat tag */
 .ctag{font-size:10px;background:var(--sf2);border:1px solid var(--bd);color:var(--sub);border-radius:4px;padding:1px 6px;white-space:nowrap}
 /* summary */
@@ -78,7 +78,7 @@ tbody td.num{text-align:right}
 <div class="hdr">
   <div>
     <div class="logo">WIB<span>WUB</span></div>
-    <div class="pt">📦 Procurement Forecast Dashboard</div>
+    <div class="pt">📦 Stock Forecast Dashboard</div>
   </div>
   <div class="hr">อัปเดต: 29 พ.ค. 2569<br>ข้อมูลขาย: ม.ค.–พ.ค. 2569 (5 เดือน)</div>
 </div>
@@ -87,7 +87,7 @@ tbody td.num{text-align:right}
   <div class="kc rd"><div class="kl">🔴 วิกฤต ≤20 วัน</div><div class="kv" id="cnt-rd">—</div><div class="ks">สั่งซื้อทันที</div></div>
   <div class="kc yl"><div class="kl">🟡 เฝ้าระวัง 21–45 วัน</div><div class="kv" id="cnt-yl">—</div><div class="ks">วางแผนใน 1–2 สัปดาห์</div></div>
   <div class="kc gn"><div class="kl">🟢 ปกติ &gt;45 วัน</div><div class="kv" id="cnt-gn">—</div><div class="ks">สต๊อกเพียงพอ</div></div>
-  <div class="kc rd" style="border-color:#ff6b6b"><div class="kl">⬛ หมดสต๊อก</div><div class="kv" id="cnt-oos" style="color:#ff6b6b">—</div><div class="ks">ไม่มีสินค้า</div></div>
+  <div class="kc rd" style="border-color:var(--rd)"><div class="kl">⬛ หมดสต๊อก</div><div class="kv" id="cnt-oos" style="color:var(--rd)">—</div><div class="ks">ไม่มีสินค้า</div></div>
   <div class="kc bl"><div class="kl">📊 ทั้งหมด</div><div class="kv" id="cnt-all">—</div><div class="ks">SKU ที่ติดตาม</div></div>
 </div>
 
@@ -150,7 +150,7 @@ function barHtml(avail, burn, st) {
 }
 
 function daysHtml(p) {
-  if (p.status === 'oos') return '<span style="color:#ff6b6b;font-size:12px">หมดแล้ว</span>';
+  if (p.status === 'oos') return '<span style="color:var(--rd);font-size:12px">หมดแล้ว</span>';
   if (!p.days && p.days !== 0) return '<span style="color:var(--sub);font-size:12px">—</span>';
   const disp = p.days > 365 ? '365+' : p.days;
   return `<span class="dn ${p.status}">${disp}</span><span class="du"> วัน</span>`;
@@ -160,8 +160,8 @@ function reorderHtml(p) {
   if (p.status === 'nodata' || !p.burn) return '—';
   if (p.status === 'oos') return `<span class="rbadge">สั่ง ${Math.ceil(p.burn * 2)} ชิ้น</span>`;
   if (!p.days && p.days !== 0) return '—';
-  if (p.days <= 7)  return `<span class="rbadge" style="background:rgba(255,77,77,.2);color:var(--rd);border-color:var(--rd)">🚨 สั่งด่วน ${Math.ceil(p.burn * 2)} ชิ้น</span>`;
-  if (p.days <= 14) return `<span class="rbadge" style="background:rgba(255,77,77,.15);color:var(--rd);border-color:var(--rd)">⚡ สั่ง ${Math.ceil(p.burn * 1.5)} ชิ้น</span>`;
+  if (p.days <= 7)  return `<span class="rbadge" style="background:rgba(239,68,68,.12);color:var(--rd);border-color:var(--rd)">🚨 สั่งด่วน ${Math.ceil(p.burn * 2)} ชิ้น</span>`;
+  if (p.days <= 14) return `<span class="rbadge" style="background:rgba(239,68,68,.08);color:var(--rd);border-color:var(--rd)">⚡ สั่ง ${Math.ceil(p.burn * 1.5)} ชิ้น</span>`;
   if (p.days <= 20) return `<span class="rbadge">สั่ง ${Math.ceil(p.burn)} ชิ้น</span>`;
   if (p.days <= 45) return `<span style="font-size:12px;color:var(--sub)">วางแผน ~${Math.ceil(p.burn)} ชิ้น</span>`;
   return '<span style="font-size:12px;color:var(--sub)">ยังไม่ต้องสั่ง</span>';

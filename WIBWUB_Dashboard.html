@@ -291,7 +291,7 @@
     <div class="nav-sec" id="ns-team">ทีม</div>
     <div class="nav-item" data-sec="hr" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
     <div class="nav-item" data-sec="projects" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
-    <div class="nav-item" data-sec="procurement" id="nav-procurement-item" onclick="go('procurement',this)" style="display:none"><span class="nav-icon">📦</span><span>Procurement</span></div>
+    <div class="nav-item" data-sec="procurement" id="nav-procurement-item" onclick="go('procurement',this)" style="display:none"><span class="nav-icon">📦</span><span>Forecast</span></div>
     <div class="nav-sec" id="ns-admin" style="display:none">Admin</div>
     <div class="nav-item" data-sec="admin" id="nav-admin-item" onclick="go('admin',this)" style="display:none"><span class="nav-icon">⚙️</span><span>จัดการผู้ใช้</span></div>
   </nav>
@@ -1259,7 +1259,7 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Procurement Forecast',admin:'⚙️ จัดการผู้ใช้'};
+const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',admin:'⚙️ จัดการผู้ใช้'};
 
 let currentPage = 'overview';
 function go(id, el) {
