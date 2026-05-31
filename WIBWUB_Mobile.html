@@ -776,6 +776,17 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       <button class="hrd-ctrl-btn" onclick="hrdTestLineNotify()" style="font-size:12px">🧪 ทดสอบ</button>
       <span id="hrd-notify-msg" style="font-size:11px;margin-left:8px;"></span>
     </div>
+    <div class="hrd-card" style="margin-top:10px">
+      <div class="hrd-card-title">📊 Google Sheets (Data checkin)</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7">บันทึกข้อมูลเช็คอิน/ใบลาลง Google Sheet อัตโนมัติ — ใช้ไฟล์ WIBWUB_Checkin_GAS.js ใน Drive</p>
+      <div class="hrd-cfg-row">
+        <div class="hrd-cfg-label">GAS Sheets URL</div>
+        <input class="hrd-cfg-input" id="hrd-sheets-url" placeholder="https://script.google.com/macros/s/…/exec" oninput="hrdSaveSheetsUrl()">
+        <button class="hrd-cfg-save-btn" onclick="hrdSaveSheetsUrl()">บันทึก</button>
+      </div>
+      <button class="hrd-ctrl-btn" onclick="hrdTestSheets()" style="font-size:12px">🧪 ทดสอบ Sheets</button>
+      <span id="hrd-sheets-msg" style="font-size:11px;margin-left:8px;"></span>
+    </div>
   </div>
 </div>
 
@@ -1751,6 +1762,16 @@ async function fsQuery(col,filters=[],orderBy=null,limit=200){ const tok=await _
 // HR SYSTEM
 // ════════════════════════════════════════
 let _hrClockTimer=null, _hrTodayDoc=null, _hrGPS=null, _hrInitialized=false;
+let _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||'';
+
+async function sendToSheets(type, data){
+  const url = _sheetsGasUrl;
+  if(!url) return;
+  try{
+    await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({type,data}),mode:'cors'});
+  }catch(e){ console.warn('Sheets sync:',e.message); }
+}
 
 function initHR(){
   if(_hrClockTimer) clearInterval(_hrClockTimer);
@@ -1846,6 +1867,7 @@ async function doHRCheckIn(user){
       check_in_lat:_hrGPS?_hrGPS.lat:null,check_in_lng:_hrGPS?_hrGPS.lng:null,
       check_out:null,check_out_lat:null,check_out_lng:null,status:late?'late':'present',work_hours:0};
     await fsSet('attendance',`${user.uid}_${today}`,doc);
+    sendToSheets('attendance', doc);   // sync → Google Sheets
     _hrTodayDoc=doc; renderHRTodayCard(doc); loadHRHistory();
     if(late) alert(`⚠️ เช็คอินสำเร็จ\nเวลา ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} (มาสาย)`);
   }catch(e){alert('เช็คอินไม่สำเร็จ: '+e.message); btn.disabled=false;}
@@ -1861,6 +1883,7 @@ async function doHRCheckOut(user){
     const upd={..._hrTodayDoc,check_out:now.toISOString(),
       check_out_lat:_hrGPS?_hrGPS.lat:null,check_out_lng:_hrGPS?_hrGPS.lng:null,work_hours:hrs};
     await fsSet('attendance',`${user.uid}_${today}`,upd);
+    sendToSheets('attendance', upd);   // sync → Google Sheets
     _hrTodayDoc=upd; renderHRTodayCard(upd); loadHRHistory();
   }catch(e){alert('เช็คเอาท์ไม่สำเร็จ: '+e.message); btn.disabled=false;}
 }
@@ -1888,10 +1911,12 @@ async function submitLeaveRequest(){
   btn.textContent='กำลังส่ง...'; btn.disabled=true;
   const days=Math.ceil((new Date(end)-new Date(start))/86400000)+1;
   try{
-    await fsAdd('leave_requests',{uid:user.uid,name:window._userName||user.email,
+    const leaveData={uid:user.uid,name:window._userName||user.email,
       email:user.email,dept:window._userRole||'',type,start_date:start,end_date:end,
       days,reason,status:'pending',created_at:new Date().toISOString(),
-      approved_by:null,approved_at:null,admin_note:null});
+      approved_by:null,approved_at:null,admin_note:null};
+    await fsAdd('leave_requests', leaveData);
+    sendToSheets('leave_request', leaveData);  // sync → Google Sheets
     msgEl.textContent='✅ ส่งคำร้องเรียบร้อย — HR จะแจ้งผลกลับมา'; msgEl.className='hr-msg ok';
     document.getElementById('hr-reason').value='';
     setTimeout(()=>{msgEl.textContent='';},5000);
@@ -1947,6 +1972,9 @@ function initHRDash(){
     const el = document.getElementById('hrd-gas-url');
     _hrdGasUrl = localStorage.getItem('wibwub_gas_url')||'';
     if(el) el.value = _hrdGasUrl;
+    const elSheets = document.getElementById('hrd-sheets-url');
+    _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||'';
+    if(elSheets) elSheets.value = _sheetsGasUrl;
     hrdSetTodayDate();
     hrdSetCurrentWeek();
     hrdLoadPendingLeave();
@@ -2070,7 +2098,9 @@ async function hrdApproveLeave(id,name,type,btn){
     const doc=await fsGet('leave_requests',id);
     const data=doc.data();
     const user=firebase.auth().currentUser;
-    await fsSet('leave_requests',id,{...data,status:'approved',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:note});
+    const approvedData={...data,status:'approved',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:note};
+    await fsSet('leave_requests',id,approvedData);
+    sendToSheets('leave_update', approvedData);  // sync → Google Sheets
     await hrdSendLine(`[WIBWUB HR] ✅ อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${hrdFmtDateRange(data.start_date,data.end_date,data.days)}\nอนุมัติโดย: ${window._userName||user?.email}${note?'\nหมายเหตุ: '+note:''}`);
     hrdLoadPendingLeave();hrdLoadLeaveHistory();
   }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.nextElementSibling.disabled=false;}
@@ -2084,7 +2114,9 @@ async function hrdRejectLeave(id,name,type,btn){
     const doc=await fsGet('leave_requests',id);
     const data=doc.data();
     const user=firebase.auth().currentUser;
-    await fsSet('leave_requests',id,{...data,status:'rejected',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:reason||''});
+    const rejectedData={...data,status:'rejected',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:reason||''};
+    await fsSet('leave_requests',id,rejectedData);
+    sendToSheets('leave_update', rejectedData);  // sync → Google Sheets
     await hrdSendLine(`[WIBWUB HR] ❌ ไม่อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${hrdFmtDateRange(data.start_date,data.end_date,data.days)}\nเหตุผล: ${reason||'—'}`);
     hrdLoadPendingLeave();hrdLoadLeaveHistory();
   }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.previousElementSibling.disabled=false;}
@@ -2156,6 +2188,23 @@ async function hrdLoadTimesheet(){
 function hrdSaveGASUrl(){
   _hrdGasUrl=document.getElementById('hrd-gas-url')?.value?.trim()||'';
   localStorage.setItem('wibwub_gas_url',_hrdGasUrl);
+}
+function hrdSaveSheetsUrl(){
+  _sheetsGasUrl=document.getElementById('hrd-sheets-url')?.value?.trim()||'';
+  localStorage.setItem('wibwub_sheets_url',_sheetsGasUrl);
+  const el=document.getElementById('hrd-sheets-msg');
+  if(el){el.textContent='✓ บันทึกแล้ว';el.style.color='#16a34a';setTimeout(()=>el.textContent='',2000);}
+}
+async function hrdTestSheets(){
+  hrdSaveSheetsUrl();
+  const el=document.getElementById('hrd-sheets-msg');
+  if(!_sheetsGasUrl){if(el){el.textContent='กรุณาใส่ URL';el.style.color='var(--red)';}return;}
+  if(el){el.textContent='กำลังทดสอบ...';el.style.color='var(--muted)';}
+  try{
+    const r=await fetch(_sheetsGasUrl+'?test=1',{mode:'cors'});
+    const d=await r.json();
+    if(el){el.textContent=d.ok?'✅ เชื่อมต่อสำเร็จ':'❌ '+d.error;el.style.color=d.ok?'#16a34a':'var(--red)';}
+  }catch(e){if(el){el.textContent='❌ เชื่อมต่อไม่ได้';el.style.color='var(--red)';}}
 }
 async function hrdSendLine(msg){
   if(!_hrdGasUrl) return;
