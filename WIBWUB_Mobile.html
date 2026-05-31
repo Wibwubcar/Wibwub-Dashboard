@@ -203,6 +203,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .hr-btn-in{background:#fff;color:var(--bl);}
 .hr-btn-out{background:rgba(255,255,255,.2);color:#fff;border:2px solid rgba(255,255,255,.5);}
 .hr-btn-done{background:rgba(255,255,255,.1);color:rgba(255,255,255,.45);cursor:default;border:2px solid rgba(255,255,255,.2);}
+/* ── Camera Modal ── */
+#cam-modal{position:fixed;inset:0;z-index:9999;background:#000;flex-direction:column;align-items:stretch;}
+#cam-video{width:100%;flex:1;object-fit:cover;display:block;transform:scaleX(-1);}
+#cam-header{padding:14px 16px;color:#fff;font-size:15px;font-weight:700;background:rgba(0,0,0,.6);text-align:center;flex-shrink:0;}
+#cam-capture-bar{padding:16px 20px 28px;display:flex;justify-content:space-around;align-items:center;background:#000;flex-shrink:0;}
+.cam-shutter{width:68px;height:68px;border-radius:50%;border:4px solid #fff;background:rgba(255,255,255,.9);font-size:0;position:relative;}
+.cam-shutter::after{content:'';position:absolute;inset:6px;border-radius:50%;background:#fff;}
+.cam-cancel-btn{padding:10px 18px;border-radius:10px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:13px;cursor:pointer;}
+#cam-preview-wrap{display:none;position:absolute;inset:0;background:#000;flex-direction:column;}
+#cam-img{width:100%;flex:1;object-fit:cover;display:block;}
+.cam-confirm-bar{padding:16px 20px 28px;display:flex;gap:12px;background:#000;flex-shrink:0;}
+.cam-retake-btn{flex:1;padding:14px;border-radius:12px;border:none;background:rgba(255,255,255,.15);color:#fff;font-size:14px;font-weight:700;cursor:pointer;}
+.cam-ok-btn{flex:1;padding:14px;border-radius:12px;border:none;background:#1A5CDB;color:#fff;font-size:14px;font-weight:700;cursor:pointer;}
+.cam-photo-thumb{width:34px;height:34px;border-radius:50%;object-fit:cover;cursor:pointer;vertical-align:middle;}
+.cam-photo-in{border:2px solid #22c55e;}
+.cam-photo-out{border:2px solid #f59e0b;}
 .hr-gps-txt{font-size:10px;opacity:.55;margin-top:8px;min-height:14px;}
 .hr-leave-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .hr-leave-hd{font-size:13px;font-weight:700;color:var(--txt);display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
@@ -1851,11 +1867,11 @@ function renderHRTodayCard(d){
 
 async function hrAction(){
   const user=firebase.auth().currentUser; if(!user){alert('กรุณาเข้าสู่ระบบก่อน');return;}
-  if(!_hrTodayDoc) await doHRCheckIn(user);
-  else if(!_hrTodayDoc.check_out) await doHRCheckOut(user);
+  if(!_hrTodayDoc) openCamera('checkin');
+  else if(!_hrTodayDoc.check_out) openCamera('checkout');
 }
 
-async function doHRCheckIn(user){
+async function doHRCheckIn(user, photo=''){
   const btn=document.getElementById('hr-action-btn');
   btn.textContent='กำลังเช็คอิน...'; btn.disabled=true;
   try{
@@ -1866,15 +1882,17 @@ async function doHRCheckIn(user){
     const doc={uid:user.uid,name:window._userName||user.email,email:user.email,
       dept:window._userRole||'',date:today,check_in:now.toISOString(),
       check_in_lat:_hrGPS?_hrGPS.lat:null,check_in_lng:_hrGPS?_hrGPS.lng:null,
-      check_out:null,check_out_lat:null,check_out_lng:null,status:late?'late':'present',work_hours:0};
+      check_out:null,check_out_lat:null,check_out_lng:null,status:late?'late':'present',work_hours:0,
+      photo_in:photo||''};
     await fsSet('attendance',`${user.uid}_${today}`,doc);
-    sendToSheets('attendance', doc);   // sync → Google Sheets
+    // sync to Sheets (exclude base64 photo to keep payload small)
+    sendToSheets('attendance', {...doc, photo_in: photo?'[photo]':''});
     _hrTodayDoc=doc; renderHRTodayCard(doc); loadHRHistory();
     if(late) alert(`⚠️ เช็คอินสำเร็จ\nเวลา ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} (มาสาย)`);
   }catch(e){alert('เช็คอินไม่สำเร็จ: '+e.message); btn.disabled=false;}
 }
 
-async function doHRCheckOut(user){
+async function doHRCheckOut(user, photo=''){
   const btn=document.getElementById('hr-action-btn');
   btn.textContent='กำลังเช็คเอาท์...'; btn.disabled=true;
   try{
@@ -1882,12 +1900,76 @@ async function doHRCheckOut(user){
     const inD=_hrTodayDoc.check_in instanceof Date?_hrTodayDoc.check_in:new Date(_hrTodayDoc.check_in);
     const hrs=Math.round((now-inD)/36000)/100;
     const upd={..._hrTodayDoc,check_out:now.toISOString(),
-      check_out_lat:_hrGPS?_hrGPS.lat:null,check_out_lng:_hrGPS?_hrGPS.lng:null,work_hours:hrs};
+      check_out_lat:_hrGPS?_hrGPS.lat:null,check_out_lng:_hrGPS?_hrGPS.lng:null,work_hours:hrs,
+      photo_out:photo||''};
     await fsSet('attendance',`${user.uid}_${today}`,upd);
-    sendToSheets('attendance', upd);   // sync → Google Sheets
+    // sync to Sheets (exclude base64 photos)
+    sendToSheets('attendance', {...upd, photo_in:upd.photo_in?'[photo]':'', photo_out:photo?'[photo]':''});
     _hrTodayDoc=upd; renderHRTodayCard(upd); loadHRHistory();
   }catch(e){alert('เช็คเอาท์ไม่สำเร็จ: '+e.message); btn.disabled=false;}
 }
+
+// ── Camera ──────────────────────────────────────────────────────
+let _camStream=null, _camAction=null, _camPhoto=null;
+
+async function openCamera(action){
+  _camAction=action; _camPhoto=null;
+  const modal=document.getElementById('cam-modal');
+  const header=document.getElementById('cam-header');
+  const video=document.getElementById('cam-video');
+  header.textContent=action==='checkin'?'📸 ถ่ายรูปเพื่อเช็คอิน':'📸 ถ่ายรูปเพื่อเช็คเอาท์';
+  // reset preview
+  document.getElementById('cam-preview-wrap').style.display='none';
+  document.getElementById('cam-capture-bar').style.display='flex';
+  try{
+    _camStream=await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:'user',width:{ideal:640},height:{ideal:640}},audio:false
+    });
+    video.srcObject=_camStream;
+    modal.style.display='flex';
+  }catch(e){
+    alert('ไม่สามารถเปิดกล้องได้\nกรุณาอนุญาตการเข้าถึงกล้องในเบราว์เซอร์\n\n'+e.message);
+  }
+}
+
+function camCapture(){
+  const video=document.getElementById('cam-video');
+  const canvas=document.getElementById('cam-canvas');
+  const img=document.getElementById('cam-img');
+  const preview=document.getElementById('cam-preview-wrap');
+  // Capture square crop, 320×320, mirrored (selfie style)
+  const size=Math.min(video.videoWidth||640, video.videoHeight||640);
+  const sx=(video.videoWidth-size)/2, sy=(video.videoHeight-size)/2;
+  canvas.width=320; canvas.height=320;
+  const ctx=canvas.getContext('2d');
+  ctx.translate(320,0); ctx.scale(-1,1); // mirror
+  ctx.drawImage(video, sx, sy, size, size, 0, 0, 320, 320);
+  _camPhoto=canvas.toDataURL('image/jpeg', 0.55);
+  img.src=_camPhoto;
+  document.getElementById('cam-capture-bar').style.display='none';
+  preview.style.display='flex';
+}
+
+function camRetake(){
+  _camPhoto=null;
+  document.getElementById('cam-preview-wrap').style.display='none';
+  document.getElementById('cam-capture-bar').style.display='flex';
+}
+
+async function camConfirm(){
+  const photo=_camPhoto;
+  camClose();
+  const user=firebase.auth().currentUser;
+  if(!user){alert('กรุณาเข้าสู่ระบบก่อน');return;}
+  if(_camAction==='checkin') await doHRCheckIn(user, photo||'');
+  else await doHRCheckOut(user, photo||'');
+}
+
+function camClose(){
+  if(_camStream){_camStream.getTracks().forEach(t=>t.stop()); _camStream=null;}
+  document.getElementById('cam-modal').style.display='none';
+}
+// ────────────────────────────────────────────────────────────────
 
 function toggleHRLeave(){
   const body=document.getElementById('hr-leave-body');
@@ -2036,9 +2118,20 @@ function hrdRenderTodayTable(docs,container){
     const st=d.check_out?'checked-out':d.status||'present';
     const badge={'checked-out':'<span class="hrd-badge hb-ok">เสร็จ</span>','late':'<span class="hrd-badge hb-warn">สาย</span>','present':'<span class="hrd-badge hb-ok" style="background:#dbeafe;color:#1e40af">งาน</span>'}[st]||'';
     const loc=d.check_in_lat?`${Number(d.check_in_lat).toFixed(4)},${Number(d.check_in_lng).toFixed(4)}`:'—';
-    return `<tr><td><strong>${d.name||d.email||'—'}</strong><br><span style="font-size:10px;color:var(--muted)">${d.email||''}</span></td><td>${d.dept||'—'}</td><td style="font-weight:600">${inT}</td><td>${outT}</td><td style="text-align:center">${hrs!==null?hrs+' ชม.':'—'}</td><td>${badge}</td><td style="font-size:9px;color:var(--muted)">${loc}</td></tr>`;
+    const pIn=d.photo_in?`<img src="${d.photo_in}" class="cam-photo-thumb cam-photo-in" onclick="hrdViewPhoto(this.src,'เข้างาน ${inT}')" title="รูปเข้างาน">`:`<span style="color:var(--muted);font-size:11px">—</span>`;
+    const pOut=d.photo_out?`<img src="${d.photo_out}" class="cam-photo-thumb cam-photo-out" onclick="hrdViewPhoto(this.src,'ออกงาน ${outT}')" title="รูปออกงาน">`:`<span style="color:var(--muted);font-size:11px">—</span>`;
+    return `<tr><td><strong>${d.name||d.email||'—'}</strong><br><span style="font-size:10px;color:var(--muted)">${d.email||''}</span></td><td>${d.dept||'—'}</td><td style="font-weight:600">${inT}</td><td>${outT}</td><td style="text-align:center">${hrs!==null?hrs+' ชม.':'—'}</td><td>${badge}</td><td style="text-align:center">${pIn}</td><td style="text-align:center">${pOut}</td><td style="font-size:9px;color:var(--muted)">${loc}</td></tr>`;
   }).join('');
-  container.innerHTML=`<div class="hrd-tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th>ชั่วโมง</th><th>สถานะ</th><th>GPS</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  container.innerHTML=`<div class="hrd-tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th>ชั่วโมง</th><th>สถานะ</th><th>📷 เข้า</th><th>📷 ออก</th><th>GPS</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+function hrdViewPhoto(src, label){
+  // Show full-size photo in a simple overlay
+  const ov=document.createElement('div');
+  ov.style.cssText='position:fixed;inset:0;z-index:10000;background:rgba(0,0,0,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;';
+  ov.innerHTML=`<div style="color:#fff;font-size:13px;margin-bottom:12px;font-weight:600;">${label}</div><img src="${src}" style="max-width:90vw;max-height:75vh;border-radius:12px;object-fit:contain;"><div style="color:rgba(255,255,255,.5);font-size:11px;margin-top:14px;">แตะเพื่อปิด</div>`;
+  ov.onclick=()=>document.body.removeChild(ov);
+  document.body.appendChild(ov);
 }
 
 // ── Leave ──────────────────────────────
@@ -2516,5 +2609,25 @@ if('serviceWorker' in navigator){
   });
 }
 </script>
+
+<!-- ─── Camera Modal ─── -->
+<div id="cam-modal" style="display:none;">
+  <div id="cam-header">📸 ถ่ายรูป</div>
+  <video id="cam-video" autoplay playsinline muted></video>
+  <canvas id="cam-canvas" style="display:none;"></canvas>
+  <div id="cam-capture-bar">
+    <button class="cam-cancel-btn" onclick="camClose()">ยกเลิก</button>
+    <button class="cam-shutter" onclick="camCapture()" aria-label="ถ่ายรูป"></button>
+    <div style="width:72px;"></div>
+  </div>
+  <!-- Preview overlay -->
+  <div id="cam-preview-wrap" style="display:none;position:absolute;inset:0;background:#000;display:none;flex-direction:column;">
+    <img id="cam-img" alt="preview" style="width:100%;flex:1;object-fit:cover;display:block;">
+    <div class="cam-confirm-bar">
+      <button class="cam-retake-btn" onclick="camRetake()">🔄 ถ่ายใหม่</button>
+      <button class="cam-ok-btn" onclick="camConfirm()">✅ ยืนยัน</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
