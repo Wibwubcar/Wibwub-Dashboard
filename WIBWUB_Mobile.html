@@ -229,6 +229,58 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .hb-pending{background:#ede9fe;color:#5b21b6;}
 .hb-approved{background:#dcfce7;color:#166534;}
 .hb-rejected{background:#fee2e2;color:#991b1b;}
+
+/* ─── HR DASHBOARD (embedded) ─── */
+.hrd-tabs{display:flex;border-bottom:1.5px solid var(--border);background:#fff;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:10;}
+.hrd-tab{padding:10px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;margin-bottom:-1.5px;}
+.hrd-tab.active{color:var(--bl);border-bottom-color:var(--bl);}
+.hrd-sec{display:none;padding:12px 14px 80px;}.hrd-sec.active{display:block;}
+.hrd-kpi-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.hrd-kpi{background:#fff;border:1px solid var(--border);border-radius:10px;padding:11px 12px;}
+.hrd-kl{font-size:10px;color:var(--muted);margin-bottom:4px;}
+.hrd-kv{font-size:22px;font-weight:800;color:var(--txt);line-height:1;}
+.hrd-ks{font-size:10px;color:var(--muted);margin-top:2px;}
+.hrd-kv.ok{color:#16a34a}.hrd-kv.warn{color:#d97706}.hrd-kv.danger{color:#dc2626}.hrd-kv.blue{color:var(--bl)}
+.hrd-card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:10px;}
+.hrd-card-title{font-size:12px;font-weight:700;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
+.hrd-ctrl-row{display:flex;align-items:center;gap:8px;margin-bottom:10px;flex-wrap:wrap;}
+.hrd-ctrl-label{font-size:11px;font-weight:600;color:var(--muted);}
+.hrd-ctrl-input{padding:6px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;background:#fff;color:var(--txt);outline:none;font-family:inherit;-webkit-appearance:none;}
+.hrd-ctrl-input:focus{border-color:var(--bl);}
+.hrd-ctrl-btn{padding:6px 12px;background:var(--bll);color:var(--bl);border:1px solid rgba(26,92,219,.2);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;}
+.hrd-reload-btn{margin-left:auto;padding:5px 12px;background:#fff;color:var(--bl);border:1.5px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;}
+.hrd-tbl-wrap{overflow-x:auto;border-radius:8px;border:1px solid var(--border);background:#fff;margin-top:4px;}
+.hrd-tbl-wrap table{width:100%;border-collapse:collapse;font-size:11px;}
+.hrd-tbl-wrap th{background:#f8f9fb;color:var(--muted);font-weight:600;padding:7px 10px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;}
+.hrd-tbl-wrap td{padding:7px 10px;border-bottom:.5px solid #f0f0f0;color:var(--txt);vertical-align:middle;}
+.hrd-tbl-wrap tr:last-child td{border-bottom:none;}
+.hrd-tbl-wrap tr:hover td{background:#fafbff;}
+.hrd-badge{display:inline-flex;align-items:center;font-size:10px;font-weight:600;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.hb-ok{background:#dcfce7;color:#16a34a;}.hb-warn{background:#fef3c7;color:#92400e;}
+.hb-approved{background:#dcfce7;color:#16a34a;}.hb-rejected{background:#fee2e2;color:#dc2626;}.hb-pend{background:#ede9fe;color:#6d28d9;}
+.hrd-btn-approve{padding:4px 12px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;margin-right:4px;}
+.hrd-btn-reject{padding:4px 12px;background:#ef4444;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;}
+.hrd-btn-approve:disabled,.hrd-btn-reject:disabled{opacity:.4;cursor:default;}
+.hrd-leave-item{padding:11px 14px;border-bottom:.5px solid #f0f0f0;}
+.hrd-leave-item:last-child{border-bottom:none;}
+.hrd-empty{text-align:center;padding:28px 16px;color:var(--muted);font-size:12px;}
+.hrd-spin{display:inline-block;width:14px;height:14px;border:2px solid rgba(26,92,219,.2);border-top-color:var(--bl);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.hrd-loading{text-align:center;padding:24px;color:var(--muted);font-size:12px;}
+.hrd-ts-grid{display:grid;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;overflow-x:auto;}
+.hrd-ts-cell{padding:6px 8px;font-size:10px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);background:#fff;}
+.hrd-ts-hdr{background:#f8f9fb;font-weight:600;color:var(--muted);}
+.hrd-ts-name{font-weight:600;color:var(--txt);background:#fafbff;}
+.hrd-ts-ok{background:rgba(34,197,94,.07);color:#166534;font-weight:600;}
+.hrd-ts-late{background:rgba(245,158,11,.07);color:#92400e;font-weight:600;}
+.hrd-ts-absent{background:#fff;text-align:center;color:var(--muted);}
+.hrd-cfg-row{background:var(--bll);border:1px solid rgba(26,92,219,.15);border-radius:8px;padding:9px 12px;margin-bottom:10px;}
+.hrd-cfg-label{font-size:11px;font-weight:600;color:var(--bl);margin-bottom:6px;}
+.hrd-cfg-input{width:100%;padding:7px 10px;border:1.5px solid rgba(26,92,219,.25);border-radius:6px;font-size:11px;outline:none;background:#fff;font-family:inherit;-webkit-appearance:none;}
+.hrd-cfg-input:focus{border-color:var(--bl);}
+.hrd-cfg-save-btn{margin-top:6px;padding:6px 14px;background:var(--bl);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;}
+.hrd-week-label{font-size:12px;font-weight:600;color:var(--muted);margin-bottom:10px;}
+.hrd-notice{background:#fef3c7;border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:9px 12px;font-size:11px;color:#92400e;margin-top:8px;}
 </style>
 
 <!-- Firebase Compat SDK -->
@@ -580,8 +632,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </iframe>
 </div>
 
-<!-- ─── HR ─── -->
-<div class="page" id="pg-hr">
+<!-- ─── เข้า-ออกงาน (พนักงาน) ─── -->
+<div class="page" id="pg-attendance">
   <div class="hr-page">
 
     <!-- ── Check-in Card ── -->
@@ -650,14 +702,92 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </div>
 </div>
 
+<!-- ─── HR DASHBOARD (admin) ─── -->
+<div class="page" id="pg-hr">
+  <!-- sub-tabs -->
+  <div class="hrd-tabs">
+    <div class="hrd-tab active" id="hrd-tab-today"     onclick="goHRTab('today')">📋 วันนี้</div>
+    <div class="hrd-tab"        id="hrd-tab-leave"     onclick="goHRTab('leave')">📝 ใบลา <span id="hrd-leave-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px;margin-left:2px"></span></div>
+    <div class="hrd-tab"        id="hrd-tab-timesheet" onclick="goHRTab('timesheet')">🗓️ ตารางเวลา</div>
+    <div class="hrd-tab"        id="hrd-tab-settings"  onclick="goHRTab('settings')">⚙️ ตั้งค่า</div>
+  </div>
+
+  <!-- TODAY -->
+  <div class="hrd-sec active" id="hrd-sec-today">
+    <div class="hrd-kpi-row">
+      <div class="hrd-kpi"><div class="hrd-kl">เข้างานวันนี้</div><div class="hrd-kv blue" id="hrd-kpi-present">—</div><div class="hrd-ks">คน</div></div>
+      <div class="hrd-kpi"><div class="hrd-kl">มาสาย</div><div class="hrd-kv warn" id="hrd-kpi-late">—</div><div class="hrd-ks">คน</div></div>
+      <div class="hrd-kpi"><div class="hrd-kl">เช็คเอาท์แล้ว</div><div class="hrd-kv ok" id="hrd-kpi-out">—</div><div class="hrd-ks">คน</div></div>
+      <div class="hrd-kpi"><div class="hrd-kl">ชั่วโมงเฉลี่ย</div><div class="hrd-kv ok" id="hrd-kpi-hrs">—</div><div class="hrd-ks">ชม./คน</div></div>
+    </div>
+    <div class="hrd-ctrl-row">
+      <span class="hrd-ctrl-label">วันที่</span>
+      <input type="date" class="hrd-ctrl-input" id="hrd-today-date" onchange="hrdLoadToday()">
+      <button class="hrd-ctrl-btn" onclick="hrdSetTodayDate()">วันนี้</button>
+      <button class="hrd-reload-btn" onclick="hrdLoadToday()">↻</button>
+    </div>
+    <div id="hrd-today-tbl"><div class="hrd-loading"><span class="hrd-spin"></span> กำลังโหลด...</div></div>
+  </div>
+
+  <!-- LEAVE -->
+  <div class="hrd-sec" id="hrd-sec-leave">
+    <div class="hrd-card">
+      <div class="hrd-card-title">⏳ รอการพิจารณา <span style="background:var(--bll);color:var(--bl);border-radius:20px;font-size:10px;padding:2px 7px;font-weight:600" id="hrd-pending-count">0</span></div>
+      <div id="hrd-pending-list"><div class="hrd-loading"><span class="hrd-spin"></span></div></div>
+    </div>
+    <div class="hrd-card">
+      <div class="hrd-card-title">📋 ประวัติใบลา</div>
+      <div class="hrd-ctrl-row" style="margin-bottom:8px">
+        <select class="hrd-ctrl-input" id="hrd-lv-filter" onchange="hrdLoadLeaveHistory()">
+          <option value="">ทั้งหมด</option>
+          <option value="approved">อนุมัติ</option>
+          <option value="rejected">ไม่อนุมัติ</option>
+        </select>
+        <button class="hrd-reload-btn" onclick="hrdLoadPendingLeave();hrdLoadLeaveHistory()">↻</button>
+      </div>
+      <div id="hrd-history-list"><div class="hrd-loading"><span class="hrd-spin"></span></div></div>
+    </div>
+  </div>
+
+  <!-- TIMESHEET -->
+  <div class="hrd-sec" id="hrd-sec-timesheet">
+    <div class="hrd-ctrl-row">
+      <span class="hrd-ctrl-label">สัปดาห์เริ่ม (จ.)</span>
+      <input type="date" class="hrd-ctrl-input" id="hrd-ts-week" onchange="hrdLoadTimesheet()">
+      <button class="hrd-ctrl-btn" onclick="hrdSetCurrentWeek()">สัปดาห์นี้</button>
+      <button class="hrd-ctrl-btn" onclick="hrdOffsetWeek(-1)">◀</button>
+      <button class="hrd-ctrl-btn" onclick="hrdOffsetWeek(1)">▶</button>
+    </div>
+    <div class="hrd-week-label" id="hrd-week-label"></div>
+    <div id="hrd-timesheet"><div class="hrd-loading"><span class="hrd-spin"></span></div></div>
+    <div class="hrd-notice">📌 แสดงจากการเช็คอิน/เอาท์ผ่าน Mobile App</div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="hrd-sec" id="hrd-sec-settings">
+    <div class="hrd-card">
+      <div class="hrd-card-title">🔔 Line Notify</div>
+      <p style="font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.7">เชื่อมต่อ Line Notify ผ่าน Google Apps Script เพื่อแจ้งเตือนเมื่ออนุมัติ/ปฏิเสธใบลา</p>
+      <div class="hrd-cfg-row">
+        <div class="hrd-cfg-label">GAS Proxy URL</div>
+        <input class="hrd-cfg-input" id="hrd-gas-url" placeholder="https://script.google.com/macros/s/…/exec" oninput="hrdSaveGASUrl()">
+        <button class="hrd-cfg-save-btn" onclick="hrdSaveGASUrl()">บันทึก</button>
+      </div>
+      <button class="hrd-ctrl-btn" onclick="hrdTestLineNotify()" style="font-size:12px">🧪 ทดสอบ</button>
+      <span id="hrd-notify-msg" style="font-size:11px;margin-left:8px;"></span>
+    </div>
+  </div>
+</div>
+
 </div><!-- /screen -->
 
 <div class="bnav">
-  <div class="ni active" id="nav-home" onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
-  <div class="ni" id="nav-sales" onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
-  <div class="ni" id="nav-mk" onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
-  <div class="ni" id="nav-hr" onclick="nav('hr')"><div class="ni-ic">👥</div><div class="ni-lb">HR</div></div>
-  <div class="ni" id="nav-procurement" onclick="nav('procurement')" style="display:none"><div class="ni-ic">📦</div><div class="ni-lb">Forecast</div></div>
+  <div class="ni active" id="nav-home"       onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
+  <div class="ni"        id="nav-sales"      onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
+  <div class="ni"        id="nav-mk"         onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
+  <div class="ni"        id="nav-attendance" onclick="nav('attendance')" style="display:none"><div class="ni-ic">🕐</div><div class="ni-lb">เข้า-ออกงาน</div></div>
+  <div class="ni"        id="nav-hr"         onclick="nav('hr')" style="display:none"><div class="ni-ic">👥</div><div class="ni-lb">HR</div></div>
+  <div class="ni"        id="nav-procurement" onclick="nav('procurement')" style="display:none"><div class="ni-ic">📦</div><div class="ni-lb">Forecast</div></div>
   <div class="ni" id="nav-admin" onclick="nav('admin')" style="display:none"><div class="ni-ic">⚙️</div><div class="ni-lb">Admin</div></div>
 </div>
 </div>
@@ -1040,13 +1170,13 @@ function bar(val,max,color,label,right){
 function nav(p){
   const role=window._userRole||'';
   const allowed={
-    admin:         ['home','sales','mk','hr','procurement','admin'],
-    head_marketing:['home','sales','mk','hr'],
-    kol_team:      ['mk','hr'],
-    content_team:  ['mk','hr'],
-    hr_team:       ['hr'],
-    procurement:   ['procurement','hr'],
-  }[role]||['home','sales','mk','hr'];
+    admin:         ['home','sales','mk','attendance','hr','procurement','admin'],
+    head_marketing:['home','sales','mk','attendance'],
+    kol_team:      ['mk','attendance'],
+    content_team:  ['mk','attendance'],
+    hr_team:       ['attendance'],
+    procurement:   ['procurement','attendance'],
+  }[role]||['home','sales','mk','attendance'];
   if(!allowed.includes(p))return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
@@ -1055,7 +1185,8 @@ function nav(p){
   if(navEl)navEl.classList.add('active');
   document.getElementById('mainScreen').scrollTop=0;
   if(p==='admin') loadAdminUsers();
-  if(p==='hr') initHR();
+  if(p==='attendance') initHR();
+  if(p==='hr') initHRDash();
 }
 function sTab(i,el){switchSv('s',i,el,'sales-tabs');}
 function mTab(i,el){switchSv('m',i,el,'mk-tabs');}
@@ -1803,6 +1934,245 @@ async function loadHRHistory(){
   }catch(e){listEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--red);font-size:11px;">โหลดไม่สำเร็จ</div>';}
 }
 
+// ════════════════════════════════════════
+// HR DASHBOARD (admin embedded view)
+// ════════════════════════════════════════
+const HRD_ADMIN_ROLES = ['admin','hr_team','head_marketing'];
+let _hrdGasUrl = '';
+let _hrdInited = false;
+
+function initHRDash(){
+  if(!_hrdInited){
+    _hrdInited = true;
+    const el = document.getElementById('hrd-gas-url');
+    _hrdGasUrl = localStorage.getItem('wibwub_gas_url')||'';
+    if(el) el.value = _hrdGasUrl;
+    hrdSetTodayDate();
+    hrdSetCurrentWeek();
+    hrdLoadPendingLeave();
+    hrdLoadLeaveHistory();
+    hrdLoadTimesheet();
+  } else {
+    hrdLoadToday();
+    hrdLoadPendingLeave();
+  }
+}
+
+function goHRTab(t){
+  document.querySelectorAll('.hrd-tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.hrd-sec').forEach(el=>el.classList.remove('active'));
+  document.getElementById('hrd-tab-'+t)?.classList.add('active');
+  document.getElementById('hrd-sec-'+t)?.classList.add('active');
+}
+
+// ── Today ──────────────────────────────
+function hrdSetTodayDate(){
+  const el=document.getElementById('hrd-today-date');
+  if(el) el.value=new Date().toISOString().split('T')[0];
+  hrdLoadToday();
+}
+
+async function hrdLoadToday(){
+  const date=document.getElementById('hrd-today-date')?.value;
+  if(!date) return;
+  const wrap=document.getElementById('hrd-today-tbl');
+  wrap.innerHTML='<div class="hrd-loading"><span class="hrd-spin"></span> กำลังโหลด...</div>';
+  try{
+    const docs=await fsQuery('attendance',[{field:'date',value:date}],{field:'check_in',dir:'ASCENDING'});
+    hrdUpdateKPIs(docs);
+    hrdRenderTodayTable(docs,wrap);
+  }catch(e){wrap.innerHTML=`<div class="hrd-loading" style="color:var(--red)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+function hrdUpdateKPIs(docs){
+  let present=0,late=0,out=0,sumHrs=0,hCnt=0;
+  docs.forEach(doc=>{
+    const d=doc.data();
+    if(d.status==='present'||d.status==='late'){
+      present++; if(d.status==='late') late++;
+      if(d.check_out){out++;if(d.work_hours){sumHrs+=Number(d.work_hours);hCnt++;}}
+    }
+  });
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('hrd-kpi-present',present); set('hrd-kpi-late',late); set('hrd-kpi-out',out);
+  set('hrd-kpi-hrs',hCnt>0?(sumHrs/hCnt).toFixed(1):'—');
+}
+
+function hrdRenderTodayTable(docs,container){
+  if(!docs.length){container.innerHTML='<div class="hrd-empty">📭 ไม่มีข้อมูลเช็คอินวันนี้</div>';return;}
+  const rows=docs.map(doc=>{
+    const d=doc.data();
+    const inT=fmtT(d.check_in), outT=fmtT(d.check_out);
+    const hrs=d.check_out&&d.check_in?Math.round((new Date(d.check_out)-new Date(d.check_in))/360000)/10:null;
+    const st=d.check_out?'checked-out':d.status||'present';
+    const badge={'checked-out':'<span class="hrd-badge hb-ok">เสร็จ</span>','late':'<span class="hrd-badge hb-warn">สาย</span>','present':'<span class="hrd-badge hb-ok" style="background:#dbeafe;color:#1e40af">งาน</span>'}[st]||'';
+    const loc=d.check_in_lat?`${Number(d.check_in_lat).toFixed(4)},${Number(d.check_in_lng).toFixed(4)}`:'—';
+    return `<tr><td><strong>${d.name||d.email||'—'}</strong><br><span style="font-size:10px;color:var(--muted)">${d.email||''}</span></td><td>${d.dept||'—'}</td><td style="font-weight:600">${inT}</td><td>${outT}</td><td style="text-align:center">${hrs!==null?hrs+' ชม.':'—'}</td><td>${badge}</td><td style="font-size:9px;color:var(--muted)">${loc}</td></tr>`;
+  }).join('');
+  container.innerHTML=`<div class="hrd-tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th>ชั่วโมง</th><th>สถานะ</th><th>GPS</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+}
+
+// ── Leave ──────────────────────────────
+async function hrdLoadPendingLeave(){
+  const el=document.getElementById('hrd-pending-list');
+  el.innerHTML='<div class="hrd-loading"><span class="hrd-spin"></span></div>';
+  try{
+    const docs=await fsQuery('leave_requests',[{field:'status',value:'pending'}],{field:'created_at',dir:'ASCENDING'},50);
+    const cnt=document.getElementById('hrd-pending-count');
+    if(cnt) cnt.textContent=docs.length;
+    const badge=document.getElementById('hrd-leave-badge');
+    if(badge){badge.textContent=docs.length;badge.style.display=docs.length>0?'':'none';}
+    if(!docs.length){el.innerHTML='<div class="hrd-empty">✅ ไม่มีคำร้องรอพิจารณา</div>';return;}
+    const isAdmin=HRD_ADMIN_ROLES.includes(window._userRole||'');
+    el.innerHTML=docs.map(doc=>{
+      const d=doc.data();
+      const typeIcon={ลาป่วย:'🤒',ลากิจ:'📋',ลาพักร้อน:'🏖️',ลาคลอด:'🍼',ลาบวช:'🙏',WFH:'🏠',อื่นๆ:'📌'}[d.type]||'📝';
+      const dr=hrdFmtDateRange(d.start_date,d.end_date,d.days);
+      const created=d.created_at?new Date(d.created_at instanceof Date?d.created_at:d.created_at).toLocaleDateString('th-TH'):'—';
+      const btns=isAdmin
+        ?`<div style="margin-top:8px;display:flex;gap:5px"><button class="hrd-btn-approve" onclick="hrdApproveLeave('${doc.id}','${(d.name||d.email||'').replace(/'/g,'&apos;')}','${d.type}',this)">✓ อนุมัติ</button><button class="hrd-btn-reject" onclick="hrdRejectLeave('${doc.id}','${(d.name||d.email||'').replace(/'/g,'&apos;')}','${d.type}',this)">✗ ปฏิเสธ</button></div>`
+        :`<div style="font-size:10px;color:var(--muted);margin-top:4px">รอ HR พิจารณา</div>`;
+      return `<div class="hrd-leave-item"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px"><div><div style="font-size:12px;font-weight:600">${typeIcon} ${d.type} — <span style="color:var(--bl)">${d.name||d.email||'—'}</span></div><div style="font-size:10px;color:var(--muted);margin-top:2px">${dr} • ยื่นเมื่อ ${created}</div><div style="font-size:11px;margin-top:5px;background:#f8f9fb;padding:5px 9px;border-radius:6px">${d.reason||'—'}</div>${btns}</div><span class="hrd-badge hb-pend">รอ</span></div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML=`<div class="hrd-loading" style="color:var(--red)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+async function hrdLoadLeaveHistory(){
+  const el=document.getElementById('hrd-history-list');
+  el.innerHTML='<div class="hrd-loading"><span class="hrd-spin"></span></div>';
+  const fs=document.getElementById('hrd-lv-filter')?.value||'';
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-60);
+  try{
+    let docs=await fsQuery('leave_requests',[],{field:'created_at',dir:'DESCENDING'},200);
+    docs=docs.filter(doc=>{
+      const d=doc.data();
+      if(d.status==='pending')return false;
+      if(fs&&d.status!==fs)return false;
+      return true;
+    });
+    if(!docs.length){el.innerHTML='<div class="hrd-empty">📋 ไม่มีประวัติใบลา</div>';return;}
+    const rows=docs.map(doc=>{
+      const d=doc.data();
+      const bc={approved:'hb-approved',rejected:'hb-rejected',pending:'hb-pend'}[d.status]||'hb-pend';
+      const sl={approved:'อนุมัติ',rejected:'ไม่อนุมัติ',pending:'รอ'}[d.status]||d.status;
+      const created=d.created_at?new Date(d.created_at instanceof Date?d.created_at:d.created_at).toLocaleDateString('th-TH'):'—';
+      return `<tr><td><strong>${d.name||d.email||'—'}</strong></td><td>${d.type||'—'}</td><td style="white-space:nowrap;font-size:10px">${hrdFmtDateRange(d.start_date,d.end_date,d.days)}</td><td style="font-size:10px;color:var(--muted);max-width:120px">${(d.reason||'').substring(0,35)}${(d.reason||'').length>35?'...':''}</td><td style="font-size:10px">${created}</td><td><span class="hrd-badge ${bc}">${sl}</span><br><span style="font-size:9px;color:var(--muted)">${d.approved_by||''}</span></td></tr>`;
+    }).join('');
+    el.innerHTML=`<div class="hrd-tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>เหตุผล</th><th>ยื่นเมื่อ</th><th>สถานะ</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }catch(e){el.innerHTML=`<div class="hrd-loading" style="color:var(--red)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+async function hrdApproveLeave(id,name,type,btn){
+  if(!confirm(`อนุมัติใบลา "${type}" ของ ${name}?`)) return;
+  btn.disabled=true;btn.nextElementSibling.disabled=true;
+  const note=prompt('หมายเหตุ (เว้นว่างได้):','')||'';
+  try{
+    const doc=await fsGet('leave_requests',id);
+    const data=doc.data();
+    const user=firebase.auth().currentUser;
+    await fsSet('leave_requests',id,{...data,status:'approved',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:note});
+    await hrdSendLine(`[WIBWUB HR] ✅ อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${hrdFmtDateRange(data.start_date,data.end_date,data.days)}\nอนุมัติโดย: ${window._userName||user?.email}${note?'\nหมายเหตุ: '+note:''}`);
+    hrdLoadPendingLeave();hrdLoadLeaveHistory();
+  }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.nextElementSibling.disabled=false;}
+}
+
+async function hrdRejectLeave(id,name,type,btn){
+  const reason=prompt(`เหตุผลที่ปฏิเสธ "${type}" ของ ${name}:`,'');
+  if(reason===null) return;
+  btn.disabled=true;btn.previousElementSibling.disabled=true;
+  try{
+    const doc=await fsGet('leave_requests',id);
+    const data=doc.data();
+    const user=firebase.auth().currentUser;
+    await fsSet('leave_requests',id,{...data,status:'rejected',approved_by:window._userName||user?.email,approved_at:new Date().toISOString(),admin_note:reason||''});
+    await hrdSendLine(`[WIBWUB HR] ❌ ไม่อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${hrdFmtDateRange(data.start_date,data.end_date,data.days)}\nเหตุผล: ${reason||'—'}`);
+    hrdLoadPendingLeave();hrdLoadLeaveHistory();
+  }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.previousElementSibling.disabled=false;}
+}
+
+function hrdFmtDateRange(s,e,days){
+  const fmt=v=>v?v.replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2'):'—';
+  return s===e?`${fmt(s)} (${days||1}วัน)`:`${fmt(s)}–${fmt(e)} (${days||1}วัน)`;
+}
+
+// ── Timesheet ──────────────────────────
+function hrdSetCurrentWeek(){
+  const d=new Date(),day=d.getDay(),diff=d.getDate()-day+(day===0?-6:1);
+  const mon=new Date(d.setDate(diff));
+  const el=document.getElementById('hrd-ts-week');
+  if(el) el.value=mon.toISOString().split('T')[0];
+  hrdLoadTimesheet();
+}
+function hrdOffsetWeek(delta){
+  const el=document.getElementById('hrd-ts-week');
+  if(!el?.value) return;
+  const d=new Date(el.value);d.setDate(d.getDate()+delta*7);
+  el.value=d.toISOString().split('T')[0];hrdLoadTimesheet();
+}
+
+async function hrdLoadTimesheet(){
+  const startStr=document.getElementById('hrd-ts-week')?.value;
+  if(!startStr) return;
+  const container=document.getElementById('hrd-timesheet');
+  container.innerHTML='<div class="hrd-loading"><span class="hrd-spin"></span> กำลังโหลด...</div>';
+  const startDate=new Date(startStr);
+  const thDay=['จ.','อ.','พ.','พฤ.','ศ.'];
+  const thMo=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const days=[];
+  for(let i=0;i<5;i++){const d=new Date(startDate);d.setDate(d.getDate()+i);days.push({str:d.toISOString().split('T')[0],lbl:`${thDay[i]} ${d.getDate()}/${d.getMonth()+1}`});}
+  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+4);
+  const fmtD=d=>`${d.getDate()} ${thMo[d.getMonth()]} ${d.getFullYear()+543}`;
+  const lbl=document.getElementById('hrd-week-label');
+  if(lbl) lbl.textContent=`สัปดาห์ ${fmtD(startDate)} – ${fmtD(endDate)}`;
+  try{
+    const allDocs=await Promise.all(days.map(day=>fsQuery('attendance',[{field:'date',value:day.str}],{field:'name',dir:'ASCENDING'})));
+    const empMap={};
+    allDocs.forEach((docs,di)=>{
+      docs.forEach(doc=>{
+        const d=doc.data();const uid=d.uid||d.email;
+        if(!empMap[uid])empMap[uid]={name:d.name||d.email||'—',dept:d.dept||'',days:{}};
+        empMap[uid].days[days[di].str]=d;
+      });
+    });
+    const emps=Object.values(empMap).sort((a,b)=>(a.dept+a.name).localeCompare(b.dept+b.name,'th'));
+    if(!emps.length){container.innerHTML='<div class="hrd-empty">📭 ไม่มีข้อมูลในสัปดาห์นี้</div>';return;}
+    const hdrCells=`<div class="hrd-ts-cell hrd-ts-hdr" style="font-weight:700">พนักงาน</div>`+days.map(d=>`<div class="hrd-ts-cell hrd-ts-hdr" style="text-align:center">${d.lbl}</div>`).join('');
+    const rows=emps.map(emp=>{
+      const nc=`<div class="hrd-ts-cell hrd-ts-name"><div style="font-size:11px;font-weight:600">${emp.name}</div><div style="font-size:9px;color:var(--muted)">${emp.dept}</div></div>`;
+      const dc=days.map(day=>{
+        const rec=emp.days[day.str];
+        if(!rec) return`<div class="hrd-ts-cell hrd-ts-absent" style="font-size:10px">—</div>`;
+        const inT=fmtT(rec.check_in),outT=fmtT(rec.check_out);
+        const cls=rec.status==='late'?'hrd-ts-late':'hrd-ts-ok';
+        return`<div class="hrd-ts-cell ${cls}" style="text-align:center"><div style="font-weight:700;font-size:11px">${inT}</div><div style="font-size:10px;opacity:.65">${outT}</div>${rec.status==='late'?'<div style="font-size:9px;color:#d97706">⚠สาย</div>':''}</div>`;
+      }).join('');
+      return nc+dc;
+    }).join('');
+    container.innerHTML=`<div class="hrd-ts-grid" style="grid-template-columns:120px repeat(5,1fr)">${hdrCells}${rows}</div>`;
+  }catch(e){container.innerHTML=`<div class="hrd-loading" style="color:var(--red)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+// ── Line Notify ────────────────────────
+function hrdSaveGASUrl(){
+  _hrdGasUrl=document.getElementById('hrd-gas-url')?.value?.trim()||'';
+  localStorage.setItem('wibwub_gas_url',_hrdGasUrl);
+}
+async function hrdSendLine(msg){
+  if(!_hrdGasUrl) return;
+  try{await fetch(_hrdGasUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'\n'+msg}),mode:'cors'});}
+  catch(e){console.warn('Line Notify:',e);}
+}
+async function hrdTestLineNotify(){
+  hrdSaveGASUrl();
+  const el=document.getElementById('hrd-notify-msg');
+  if(!_hrdGasUrl){if(el){el.textContent='กรุณาใส่ GAS Proxy URL';el.style.color='var(--red)';}return;}
+  if(el){el.textContent='กำลังส่ง...';el.style.color='var(--muted)';}
+  try{
+    await hrdSendLine('[WIBWUB HR] 🧪 ทดสอบระบบแจ้งเตือน — ใช้งานได้ปกติ ✅');
+    if(el){el.textContent='✅ ส่งสำเร็จ!';el.style.color='#16a34a';}
+  }catch(e){if(el){el.textContent='❌ '+e.message;el.style.color='var(--red)';}}
+}
+
 // Secondary Firebase app — ใช้สร้าง user ใหม่โดยไม่ logout admin
 let _secondaryApp  = null;
 let _secondaryAuth = null;
@@ -1858,13 +2228,15 @@ function applyRole(role){
   const navHr          = document.getElementById('nav-hr');
   const mkTabs         = document.getElementById('mk-tabs');
 
-  // HR tab: admin only (ทดสอบกับ admin ก่อน)
+  // เข้า-ออกงาน: เปิดให้ทุกคน | HR Dashboard: admin เท่านั้น
+  const navAttendance = document.getElementById('nav-attendance');
+  if(navAttendance) navAttendance.style.display = '';
   navHr.style.display = 'none';
 
   if(role === 'admin'){
     navAdmin.style.display       = '';
     navProcurement.style.display = '';
-    navHr.style.display          = '';   // admin เห็น HR tab
+    navHr.style.display          = '';   // admin เห็น HR Dashboard
     nav('home');
   } else if(role === 'head_marketing'){
     nav('home');
@@ -1888,7 +2260,7 @@ function applyRole(role){
     navHome.style.display  = 'none';
     navSales.style.display = 'none';
     navMk.style.display    = 'none';
-    nav('home');  // พักไว้ก่อน รอให้ admin ทดสอบผ่านแล้วค่อยเปิด
+    nav('attendance');
   } else if(role === 'procurement'){
     navHome.style.display        = 'none';
     navSales.style.display       = 'none';
@@ -1899,11 +2271,11 @@ function applyRole(role){
 }
 
 function resetNavVisibility(){
-  ['nav-home','nav-sales','nav-mk'].forEach(id=>{
+  ['nav-home','nav-sales','nav-mk','nav-attendance'].forEach(id=>{
     const el=document.getElementById(id);
     if(el) el.style.display='';
   });
-  // HR tab: ซ่อนไว้ก่อน — เปิดเฉพาะ admin ใน applyRoleUI
+  // HR Dashboard: admin เท่านั้น
   const navHrReset=document.getElementById('nav-hr');
   if(navHrReset) navHrReset.style.display='none';
   const navAdmin=document.getElementById('nav-admin');
