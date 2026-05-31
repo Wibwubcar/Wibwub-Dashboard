@@ -1762,7 +1762,8 @@ async function fsQuery(col,filters=[],orderBy=null,limit=200){ const tok=await _
 // HR SYSTEM
 // ════════════════════════════════════════
 let _hrClockTimer=null, _hrTodayDoc=null, _hrGPS=null, _hrInitialized=false;
-let _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||'';
+const _GAS_SHEETS_DEFAULT = 'https://script.google.com/macros/s/AKfycbz3YukxpkvaKBFkVL2JDe8_fEoZaMV6it9PwrUpka23isdxxpPxn8z9J9bbCZ9xWKiuQg/exec';
+let _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||_GAS_SHEETS_DEFAULT;
 
 async function sendToSheets(type, data){
   const url = _sheetsGasUrl;
@@ -1973,7 +1974,7 @@ function initHRDash(){
     _hrdGasUrl = localStorage.getItem('wibwub_gas_url')||'';
     if(el) el.value = _hrdGasUrl;
     const elSheets = document.getElementById('hrd-sheets-url');
-    _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||'';
+    _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||_GAS_SHEETS_DEFAULT;
     if(elSheets) elSheets.value = _sheetsGasUrl;
     hrdSetTodayDate();
     hrdSetCurrentWeek();
