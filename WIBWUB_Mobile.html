@@ -189,6 +189,46 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .rb-content_team{background:#fef3c7;color:#92400e;}
 .rb-hr_team{background:#ede9fe;color:#6d28d9;}
 .rb-procurement{background:#fce7f3;color:#be185d;}
+/* ─── HR CHECK-IN ─── */
+.hr-page{padding-bottom:8px;}
+.hr-checkin-card{background:linear-gradient(135deg,var(--bl) 0%,var(--bl2) 100%);border-radius:16px;padding:18px 16px 16px;margin-bottom:10px;color:#fff;text-align:center;}
+.hr-clock{font-size:38px;font-weight:900;letter-spacing:1px;font-variant-numeric:tabular-nums;margin:4px 0 6px;}
+.hr-date-lbl{font-size:11px;opacity:.65;margin-bottom:4px;}
+.hr-status-pill{display:inline-block;padding:4px 14px;border-radius:20px;font-size:11px;font-weight:700;background:rgba(255,255,255,.2);margin-bottom:12px;}
+.hr-time-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;}
+.hr-time-box{background:rgba(255,255,255,.15);border-radius:10px;padding:8px 12px;text-align:center;}
+.hr-time-label{font-size:9px;opacity:.7;margin-bottom:2px;text-transform:uppercase;letter-spacing:.5px;}
+.hr-time-val{font-size:16px;font-weight:800;}
+.hr-btn{width:100%;padding:13px;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;-webkit-appearance:none;}
+.hr-btn-in{background:#fff;color:var(--bl);}
+.hr-btn-out{background:rgba(255,255,255,.2);color:#fff;border:2px solid rgba(255,255,255,.5);}
+.hr-btn-done{background:rgba(255,255,255,.1);color:rgba(255,255,255,.45);cursor:default;border:2px solid rgba(255,255,255,.2);}
+.hr-gps-txt{font-size:10px;opacity:.55;margin-top:8px;min-height:14px;}
+.hr-leave-card{background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
+.hr-leave-hd{font-size:13px;font-weight:700;color:var(--txt);display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.hr-leave-body{padding-top:12px;border-top:1px solid #f0f0f0;margin-top:12px;}
+.hr-field{margin-bottom:10px;}
+.hr-field label{font-size:11px;font-weight:600;color:var(--muted);display:block;margin-bottom:4px;}
+.hr-field select,.hr-field input,.hr-field textarea{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:10px;font-size:13px;outline:none;background:#fff;-webkit-appearance:none;font-family:inherit;color:var(--txt);}
+.hr-field textarea{resize:none;height:68px;}
+.hr-field input:focus,.hr-field select:focus,.hr-field textarea:focus{border-color:var(--bl);}
+.hr-date-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.hr-submit-btn{width:100%;padding:11px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;margin-top:4px;-webkit-appearance:none;}
+.hr-msg{font-size:11px;text-align:center;margin-top:8px;min-height:14px;}
+.hr-msg.ok{color:var(--green);}
+.hr-msg.err{color:var(--red);}
+.hr-hist-card{background:#fff;border-radius:12px;padding:10px 12px;margin-bottom:7px;box-shadow:0 1px 3px rgba(0,0,0,.05);display:flex;align-items:center;gap:10px;}
+.hr-hist-date{font-size:10px;font-weight:700;color:var(--muted);min-width:52px;line-height:1.4;}
+.hr-hist-body{flex:1;min-width:0;}
+.hr-hist-type{font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hr-hist-sub{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.hr-hist-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;flex-shrink:0;white-space:nowrap;}
+.hb-present{background:#dcfce7;color:#166534;}
+.hb-late{background:#fef3c7;color:#92400e;}
+.hb-checked-out{background:#dbeafe;color:#1e40af;}
+.hb-pending{background:#ede9fe;color:#5b21b6;}
+.hb-approved{background:#dcfce7;color:#166534;}
+.hb-rejected{background:#fee2e2;color:#991b1b;}
 </style>
 
 <!-- Firebase Compat SDK -->
@@ -542,12 +582,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 
 <!-- ─── HR ─── -->
 <div class="page" id="pg-hr">
-  <iframe
-    src="WIBWUB_HR_Dashboard.html"
-    id="hr-mobile-iframe"
-    style="width:100%;height:calc(100vh - 116px);border:none;display:block;"
-    title="HR & พนักงาน">
-  </iframe>
+  <div class="hr-page">
+
+    <!-- ── Check-in Card ── -->
+    <div class="hr-checkin-card">
+      <div class="hr-date-lbl" id="hr-date-lbl">—</div>
+      <div class="hr-clock" id="hr-clock">--:--:--</div>
+      <div><span class="hr-status-pill" id="hr-status-pill">ยังไม่ได้เช็คอิน</span></div>
+      <div class="hr-time-row">
+        <div class="hr-time-box">
+          <div class="hr-time-label">เข้างาน</div>
+          <div class="hr-time-val" id="hr-in-val">—</div>
+        </div>
+        <div class="hr-time-box">
+          <div class="hr-time-label">ออกงาน</div>
+          <div class="hr-time-val" id="hr-out-val">—</div>
+        </div>
+      </div>
+      <button class="hr-btn hr-btn-in" id="hr-action-btn" onclick="hrAction()">📍 เช็คอิน</button>
+      <div class="hr-gps-txt" id="hr-gps-txt">กำลังตรวจสอบตำแหน่ง...</div>
+    </div>
+
+    <!-- ── Leave Request ── -->
+    <div class="hr-leave-card">
+      <div class="hr-leave-hd" onclick="toggleHRLeave()">
+        <span>📝 ยื่นคำร้อง / ใบลา</span>
+        <span id="hr-leave-arrow" style="font-size:12px;color:var(--muted);">▼</span>
+      </div>
+      <div class="hr-leave-body" id="hr-leave-body" style="display:none;">
+        <div class="hr-field">
+          <label>ประเภทการลา</label>
+          <select id="hr-type">
+            <option value="ลาป่วย">🤒 ลาป่วย</option>
+            <option value="ลากิจ">📋 ลากิจ</option>
+            <option value="ลาพักร้อน">🏖️ ลาพักร้อน</option>
+            <option value="ลาคลอด">🍼 ลาคลอด</option>
+            <option value="ลาบวช">🙏 ลาบวช</option>
+            <option value="WFH">🏠 WFH (ทำงานจากบ้าน)</option>
+            <option value="อื่นๆ">📌 อื่นๆ</option>
+          </select>
+        </div>
+        <div class="hr-date-row">
+          <div class="hr-field">
+            <label>วันที่เริ่มต้น</label>
+            <input type="date" id="hr-start-date">
+          </div>
+          <div class="hr-field">
+            <label>วันที่สิ้นสุด</label>
+            <input type="date" id="hr-end-date">
+          </div>
+        </div>
+        <div class="hr-field">
+          <label>เหตุผล</label>
+          <textarea id="hr-reason" placeholder="ระบุเหตุผล..."></textarea>
+        </div>
+        <button class="hr-submit-btn" onclick="submitLeaveRequest()">ส่งคำร้อง</button>
+        <div class="hr-msg" id="hr-leave-msg"></div>
+      </div>
+    </div>
+
+    <!-- ── History ── -->
+    <div class="sec-title" style="padding:0 2px;margin-bottom:8px;">ประวัติล่าสุด</div>
+    <div id="hr-history-list">
+      <div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">กำลังโหลด...</div>
+    </div>
+
+  </div>
 </div>
 
 </div><!-- /screen -->
@@ -556,7 +656,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="ni active" id="nav-home" onclick="nav('home')"><div class="ni-ic">🏠</div><div class="ni-lb">หน้าหลัก</div></div>
   <div class="ni" id="nav-sales" onclick="nav('sales')"><div class="ni-ic">📊</div><div class="ni-lb">Sales</div></div>
   <div class="ni" id="nav-mk" onclick="nav('mk')"><div class="ni-ic">📣</div><div class="ni-lb">Marketing</div></div>
-  <div class="ni" id="nav-hr" onclick="nav('hr')" style="display:none"><div class="ni-ic">👥</div><div class="ni-lb">HR</div></div>
+  <div class="ni" id="nav-hr" onclick="nav('hr')"><div class="ni-ic">👥</div><div class="ni-lb">HR</div></div>
   <div class="ni" id="nav-procurement" onclick="nav('procurement')" style="display:none"><div class="ni-ic">📦</div><div class="ni-lb">Forecast</div></div>
   <div class="ni" id="nav-admin" onclick="nav('admin')" style="display:none"><div class="ni-ic">⚙️</div><div class="ni-lb">Admin</div></div>
 </div>
@@ -942,11 +1042,11 @@ function nav(p){
   const allowed={
     admin:         ['home','sales','mk','hr','procurement','admin'],
     head_marketing:['home','sales','mk','hr'],
-    kol_team:      ['mk'],
-    content_team:  ['mk'],
+    kol_team:      ['mk','hr'],
+    content_team:  ['mk','hr'],
     hr_team:       ['hr'],
-    procurement:   ['procurement'],
-  }[role]||['home','sales','mk'];
+    procurement:   ['procurement','hr'],
+  }[role]||['home','sales','mk','hr'];
   if(!allowed.includes(p))return;
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
@@ -955,6 +1055,7 @@ function nav(p){
   if(navEl)navEl.classList.add('active');
   document.getElementById('mainScreen').scrollTop=0;
   if(p==='admin') loadAdminUsers();
+  if(p==='hr') initHR();
 }
 function sTab(i,el){switchSv('s',i,el,'sales-tabs');}
 function mTab(i,el){switchSv('m',i,el,'mk-tabs');}
@@ -1512,6 +1613,195 @@ async function fsGet(col,id){ const tok=await _fsToken(); const r=await fetch(`$
 async function fsSet(col,id,obj){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}/${id}`,{method:'PATCH',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({fields:_fsObjToFields(obj)})}); if(!r.ok) throw new Error('fsSet '+r.status+' '+(await r.text())); }
 async function fsDel(col,id){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}/${id}`,{method:'DELETE',headers:{Authorization:'Bearer '+tok}}); if(!r.ok) throw new Error('fsDel '+r.status); }
 async function fsList(col){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}?pageSize=100`,{headers:{Authorization:'Bearer '+tok}}); if(!r.ok) throw new Error('fsList '+r.status); const d=await r.json(); return (d.documents||[]).map(doc=>({id:doc.name.split('/').pop(),data:()=>_fsFieldsToObj(doc.fields||{})})); }
+async function fsAdd(col,obj){ const tok=await _fsToken(); const r=await fetch(`${FS_BASE}/${col}`,{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({fields:_fsObjToFields(obj)})}); if(!r.ok) throw new Error('fsAdd '+r.status+' '+(await r.text())); const d=await r.json(); return d.name.split('/').pop(); }
+async function fsQuery(col,filters=[],orderBy=null,limit=200){ const tok=await _fsToken(); if(!tok) return []; const sq={from:[{collectionId:col}],limit:limit}; if(filters.length===1){sq.where={fieldFilter:{field:{fieldPath:filters[0].field},op:filters[0].op||'EQUAL',value:_fsToVal(filters[0].value)}};} else if(filters.length>1){sq.where={compositeFilter:{op:'AND',filters:filters.map(f=>({fieldFilter:{field:{fieldPath:f.field},op:f.op||'EQUAL',value:_fsToVal(f.value)}}))}};} if(orderBy){sq.orderBy=[{field:{fieldPath:orderBy.field},direction:orderBy.dir||'ASCENDING'}];} const r=await fetch(`${FS_BASE}:runQuery`,{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({structuredQuery:sq})}); if(!r.ok) throw new Error('fsQuery '+r.status); const arr=await r.json(); return arr.filter(item=>item.document).map(item=>({id:item.document.name.split('/').pop(),data:()=>_fsFieldsToObj(item.document.fields||{})})); }
+
+// ════════════════════════════════════════
+// HR SYSTEM
+// ════════════════════════════════════════
+let _hrClockTimer=null, _hrTodayDoc=null, _hrGPS=null, _hrInitialized=false;
+
+function initHR(){
+  if(_hrClockTimer) clearInterval(_hrClockTimer);
+  updateHRClock();
+  _hrClockTimer=setInterval(updateHRClock,1000);
+  loadHRToday();
+  loadHRHistory();
+  const today=new Date().toISOString().split('T')[0];
+  const s=document.getElementById('hr-start-date');
+  const e=document.getElementById('hr-end-date');
+  if(s&&!s.value) s.value=today;
+  if(e&&!e.value) e.value=today;
+  getHRGeolocation();
+}
+
+function updateHRClock(){
+  const now=new Date();
+  const el=document.getElementById('hr-clock');
+  if(el) el.textContent=now.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const lbl=document.getElementById('hr-date-lbl');
+  if(lbl){
+    const days=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
+    const months=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+    lbl.textContent=`วัน${days[now.getDay()]} ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()+543}`;
+  }
+}
+
+function getHRGeolocation(){
+  const gpsEl=document.getElementById('hr-gps-txt');
+  if(!navigator.geolocation){if(gpsEl)gpsEl.textContent='GPS ไม่รองรับบนอุปกรณ์นี้';return;}
+  if(gpsEl)gpsEl.textContent='กำลังรับตำแหน่ง GPS...';
+  navigator.geolocation.getCurrentPosition(
+    pos=>{_hrGPS={lat:pos.coords.latitude,lng:pos.coords.longitude,acc:Math.round(pos.coords.accuracy)};if(gpsEl)gpsEl.textContent=`📍 ${_hrGPS.lat.toFixed(5)}, ${_hrGPS.lng.toFixed(5)} (±${_hrGPS.acc}m)`;},
+    err=>{_hrGPS=null;if(gpsEl)gpsEl.textContent='ไม่สามารถรับ GPS ได้';},
+    {enableHighAccuracy:true,timeout:10000,maximumAge:60000}
+  );
+}
+
+async function loadHRToday(){
+  const user=firebase.auth().currentUser; if(!user) return;
+  const today=new Date().toISOString().split('T')[0];
+  try{
+    const doc=await fsGet('attendance',`${user.uid}_${today}`);
+    _hrTodayDoc=doc.exists?doc.data():null;
+    renderHRTodayCard(_hrTodayDoc);
+  }catch(e){console.error('loadHRToday',e);}
+}
+
+function fmtT(v){
+  if(!v) return '—';
+  try{const d=v instanceof Date?v:new Date(v);return d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false});}
+  catch{return String(v).substring(11,16)||'—';}
+}
+
+function renderHRTodayCard(d){
+  const btn=document.getElementById('hr-action-btn');
+  const pill=document.getElementById('hr-status-pill');
+  const inV=document.getElementById('hr-in-val');
+  const outV=document.getElementById('hr-out-val');
+  if(!btn) return;
+  if(!d){
+    btn.className='hr-btn hr-btn-in'; btn.textContent='📍 เช็คอิน'; btn.disabled=false;
+    if(pill){pill.textContent='ยังไม่ได้เช็คอิน'; pill.style.background='rgba(255,255,255,.2)';}
+    if(inV)inV.textContent='—'; if(outV)outV.textContent='—';
+  } else if(!d.check_out){
+    if(inV)inV.textContent=fmtT(d.check_in); if(outV)outV.textContent='—';
+    const late=d.status==='late';
+    if(pill){pill.textContent=late?'⚠️ มาสาย':'✅ เช็คอินแล้ว'; pill.style.background=late?'rgba(245,158,11,.4)':'rgba(16,185,129,.35)';}
+    btn.className='hr-btn hr-btn-out'; btn.textContent='🚪 เช็คเอาท์'; btn.disabled=false;
+  } else {
+    if(inV)inV.textContent=fmtT(d.check_in); if(outV)outV.textContent=fmtT(d.check_out);
+    if(pill){pill.textContent='✅ เสร็จสิ้น'; pill.style.background='rgba(16,185,129,.35)';}
+    btn.className='hr-btn hr-btn-done'; btn.textContent='เช็คเอาท์แล้ว'; btn.disabled=true;
+  }
+}
+
+async function hrAction(){
+  const user=firebase.auth().currentUser; if(!user){alert('กรุณาเข้าสู่ระบบก่อน');return;}
+  if(!_hrTodayDoc) await doHRCheckIn(user);
+  else if(!_hrTodayDoc.check_out) await doHRCheckOut(user);
+}
+
+async function doHRCheckIn(user){
+  const btn=document.getElementById('hr-action-btn');
+  btn.textContent='กำลังเช็คอิน...'; btn.disabled=true;
+  try{
+    const now=new Date();
+    const today=now.toISOString().split('T')[0];
+    const h=now.getHours(), m=now.getMinutes();
+    const late=(h>8)||(h===8&&m>0);
+    const doc={uid:user.uid,name:window._userName||user.email,email:user.email,
+      dept:window._userRole||'',date:today,check_in:now.toISOString(),
+      check_in_lat:_hrGPS?_hrGPS.lat:null,check_in_lng:_hrGPS?_hrGPS.lng:null,
+      check_out:null,check_out_lat:null,check_out_lng:null,status:late?'late':'present',work_hours:0};
+    await fsSet('attendance',`${user.uid}_${today}`,doc);
+    _hrTodayDoc=doc; renderHRTodayCard(doc); loadHRHistory();
+    if(late) alert(`⚠️ เช็คอินสำเร็จ\nเวลา ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} (มาสาย)`);
+  }catch(e){alert('เช็คอินไม่สำเร็จ: '+e.message); btn.disabled=false;}
+}
+
+async function doHRCheckOut(user){
+  const btn=document.getElementById('hr-action-btn');
+  btn.textContent='กำลังเช็คเอาท์...'; btn.disabled=true;
+  try{
+    const now=new Date(); const today=now.toISOString().split('T')[0];
+    const inD=_hrTodayDoc.check_in instanceof Date?_hrTodayDoc.check_in:new Date(_hrTodayDoc.check_in);
+    const hrs=Math.round((now-inD)/36000)/100;
+    const upd={..._hrTodayDoc,check_out:now.toISOString(),
+      check_out_lat:_hrGPS?_hrGPS.lat:null,check_out_lng:_hrGPS?_hrGPS.lng:null,work_hours:hrs};
+    await fsSet('attendance',`${user.uid}_${today}`,upd);
+    _hrTodayDoc=upd; renderHRTodayCard(upd); loadHRHistory();
+  }catch(e){alert('เช็คเอาท์ไม่สำเร็จ: '+e.message); btn.disabled=false;}
+}
+
+function toggleHRLeave(){
+  const body=document.getElementById('hr-leave-body');
+  const arrow=document.getElementById('hr-leave-arrow');
+  if(!body) return;
+  const open=body.style.display!=='none';
+  body.style.display=open?'none':'block';
+  if(arrow) arrow.textContent=open?'▼':'▲';
+}
+
+async function submitLeaveRequest(){
+  const user=firebase.auth().currentUser; if(!user){alert('กรุณาเข้าสู่ระบบก่อน');return;}
+  const type=document.getElementById('hr-type').value;
+  const start=document.getElementById('hr-start-date').value;
+  const end=document.getElementById('hr-end-date').value;
+  const reason=document.getElementById('hr-reason').value.trim();
+  const msgEl=document.getElementById('hr-leave-msg');
+  if(!start||!end){msgEl.textContent='กรุณาเลือกวันที่';msgEl.className='hr-msg err';return;}
+  if(end<start){msgEl.textContent='วันสิ้นสุดต้องหลังวันเริ่มต้น';msgEl.className='hr-msg err';return;}
+  if(!reason){msgEl.textContent='กรุณาระบุเหตุผล';msgEl.className='hr-msg err';return;}
+  const btn=document.querySelector('.hr-submit-btn');
+  btn.textContent='กำลังส่ง...'; btn.disabled=true;
+  const days=Math.ceil((new Date(end)-new Date(start))/86400000)+1;
+  try{
+    await fsAdd('leave_requests',{uid:user.uid,name:window._userName||user.email,
+      email:user.email,dept:window._userRole||'',type,start_date:start,end_date:end,
+      days,reason,status:'pending',created_at:new Date().toISOString(),
+      approved_by:null,approved_at:null,admin_note:null});
+    msgEl.textContent='✅ ส่งคำร้องเรียบร้อย — HR จะแจ้งผลกลับมา'; msgEl.className='hr-msg ok';
+    document.getElementById('hr-reason').value='';
+    setTimeout(()=>{msgEl.textContent='';},5000);
+    loadHRHistory();
+  }catch(e){msgEl.textContent='เกิดข้อผิดพลาด: '+e.message;msgEl.className='hr-msg err';}
+  finally{btn.textContent='ส่งคำร้อง';btn.disabled=false;}
+}
+
+async function loadHRHistory(){
+  const user=firebase.auth().currentUser; if(!user) return;
+  const listEl=document.getElementById('hr-history-list'); if(!listEl) return;
+  try{
+    const [attDocs,lvDocs]=await Promise.all([
+      fsQuery('attendance',[{field:'uid',value:user.uid}],{field:'date',dir:'DESCENDING'},10),
+      fsQuery('leave_requests',[{field:'uid',value:user.uid}],{field:'created_at',dir:'DESCENDING'},5)
+    ]);
+    const items=[];
+    attDocs.forEach(doc=>{const d=doc.data();items.push({k:d.date+'Z',type:'att',d});});
+    lvDocs.forEach(doc=>{const d=doc.data();items.push({k:(d.start_date||'')+'A',type:'lv',d,id:doc.id});});
+    items.sort((a,b)=>b.k.localeCompare(a.k));
+    if(!items.length){listEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--muted);font-size:12px;">ยังไม่มีประวัติ</div>';return;}
+    listEl.innerHTML=items.slice(0,15).map(item=>{
+      if(item.type==='att'){
+        const d=item.d;
+        const inT=fmtT(d.check_in), outT=d.check_out?fmtT(d.check_out):'—';
+        const st=d.check_out?'checked-out':d.status||'present';
+        const stLbl={present:'มาปกติ',late:'มาสาย','checked-out':'เสร็จสิ้น'}[st]||st;
+        const bc={present:'hb-present',late:'hb-late','checked-out':'hb-checked-out'}[st]||'hb-present';
+        const dateStr=(d.date||'').replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2');
+        return `<div class="hr-hist-card"><div class="hr-hist-date">${dateStr}</div><div class="hr-hist-body"><div class="hr-hist-type">🕐 เข้า ${inT} — ออก ${outT}</div><div class="hr-hist-sub">${d.check_out?(d.work_hours||0)+' ชม.':''}</div></div><span class="hr-hist-badge ${bc}">${stLbl}</span></div>`;
+      } else {
+        const d=item.d;
+        const bc={pending:'hb-pending',approved:'hb-approved',rejected:'hb-rejected'}[d.status]||'hb-pending';
+        const stLbl={pending:'รอพิจารณา',approved:'อนุมัติ',rejected:'ไม่อนุมัติ'}[d.status]||d.status;
+        const dateStr=(d.start_date||'').replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2');
+        const reasonShort=(d.reason||'').substring(0,28)+((d.reason||'').length>28?'...':'');
+        return `<div class="hr-hist-card"><div class="hr-hist-date">${dateStr}</div><div class="hr-hist-body"><div class="hr-hist-type">📝 ${d.type}</div><div class="hr-hist-sub">${d.days}วัน • ${reasonShort}</div></div><span class="hr-hist-badge ${bc}">${stLbl}</span></div>`;
+      }
+    }).join('');
+  }catch(e){listEl.innerHTML='<div style="text-align:center;padding:20px;color:var(--red);font-size:11px;">โหลดไม่สำเร็จ</div>';}
+}
 
 // Secondary Firebase app — ใช้สร้าง user ใหม่โดยไม่ logout admin
 let _secondaryApp  = null;
@@ -1568,38 +1858,37 @@ function applyRole(role){
   const navHr          = document.getElementById('nav-hr');
   const mkTabs         = document.getElementById('mk-tabs');
 
+  // HR tab: admin only (ทดสอบกับ admin ก่อน)
+  navHr.style.display = 'none';
+
   if(role === 'admin'){
-    navAdmin.style.display       = '';   // show Admin tab
-    navProcurement.style.display = '';   // show Procurement tab (admin only)
-    navHr.style.display          = '';   // show HR tab
+    navAdmin.style.display       = '';
+    navProcurement.style.display = '';
+    navHr.style.display          = '';   // admin เห็น HR tab
     nav('home');
   } else if(role === 'head_marketing'){
-    navHr.style.display = '';           // head_marketing เห็น HR
     nav('home');
   } else if(role === 'kol_team'){
     navHome.style.display  = 'none';
     navSales.style.display = 'none';
-    mkTabs.style.display   = 'none'; // hide sub-tab bar (only Affiliate visible)
+    mkTabs.style.display   = 'none';
     nav('mk');
-    // Activate Affiliate sub-view directly
     document.querySelectorAll('[id^="m-sv-"]').forEach(v=>v.classList.remove('active'));
     document.getElementById('m-sv-1').classList.add('active');
     renderAfi();
   } else if(role === 'content_team'){
     navHome.style.display  = 'none';
     navSales.style.display = 'none';
-    mkTabs.style.display   = 'none'; // hide sub-tab bar (only Social Media visible)
+    mkTabs.style.display   = 'none';
     nav('mk');
-    // Activate Social Media sub-view directly
     document.querySelectorAll('[id^="m-sv-"]').forEach(v=>v.classList.remove('active'));
     document.getElementById('m-sv-3').classList.add('active');
     renderTT();
   } else if(role === 'hr_team'){
-    navHome.style.display        = 'none';
-    navSales.style.display       = 'none';
-    navMk.style.display          = 'none';
-    navHr.style.display          = '';
-    nav('hr');
+    navHome.style.display  = 'none';
+    navSales.style.display = 'none';
+    navMk.style.display    = 'none';
+    nav('home');  // พักไว้ก่อน รอให้ admin ทดสอบผ่านแล้วค่อยเปิด
   } else if(role === 'procurement'){
     navHome.style.display        = 'none';
     navSales.style.display       = 'none';
@@ -1614,12 +1903,13 @@ function resetNavVisibility(){
     const el=document.getElementById(id);
     if(el) el.style.display='';
   });
+  // HR tab: ซ่อนไว้ก่อน — เปิดเฉพาะ admin ใน applyRoleUI
+  const navHrReset=document.getElementById('nav-hr');
+  if(navHrReset) navHrReset.style.display='none';
   const navAdmin=document.getElementById('nav-admin');
   if(navAdmin) navAdmin.style.display='none';
   const navProc=document.getElementById('nav-procurement');
   if(navProc) navProc.style.display='none';
-  const navHr=document.getElementById('nav-hr');
-  if(navHr) navHr.style.display='none';
   const mkTabs=document.getElementById('mk-tabs');
   if(mkTabs) mkTabs.style.display='';
 }
