@@ -141,6 +141,8 @@ tr:hover td{background:#fafbff}
         <input type="date" class="ctrl-input" id="today-date" onchange="loadToday()">
         <button class="ctrl-btn" onclick="setTodayDate()">วันนี้</button>
         <button class="reload-btn" onclick="loadToday()">↻ รีโหลด</button>
+        <button class="ctrl-btn" id="quick-notify-btn" onclick="triggerCheckoutNotify()" style="margin-left:auto;background:#fff7ed;color:#c2410c;border-color:rgba(194,65,12,.25)" title="ส่ง Line แจ้งเตือนคนที่ยังไม่ Check out ทันที">🔔 แจ้งเตือน Check out</button>
+        <span id="quick-notify-status" style="font-size:11px;min-height:14px"></span>
       </div>
       <div class="tbl-wrap" id="today-tbl-wrap">
         <div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>
@@ -202,6 +204,31 @@ tr:hover td{background:#fafbff}
           <span id="notify-test-msg" style="font-size:12px;min-height:16px"></span>
         </div>
       </div>
+      <!-- ⏰ Auto Checkout Notify -->
+      <div class="card">
+        <div class="card-title">⏰ แจ้งเตือนลืม Check out (Auto)</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.7">ระบบจะส่ง Line Notify อัตโนมัติเมื่อถึงเวลาที่กำหนด รายชื่อพนักงานที่ Check in แล้วยังไม่ Check out จะถูกส่งไปยัง HR Admin</p>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--tx)">
+            <input type="checkbox" id="checkout-notify-enabled" onchange="saveCheckoutNotifyConfig()" style="width:16px;height:16px;accent-color:var(--bl);cursor:pointer">
+            เปิดใช้งานการแจ้งเตือนอัตโนมัติ
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <label style="font-size:12px;font-weight:600;color:var(--sub)">เวลาที่แจ้งเตือน</label>
+          <input type="time" class="ctrl-input" id="checkout-notify-time" value="19:00" onchange="saveCheckoutNotifyConfig()" style="width:110px">
+          <span style="font-size:11px;color:var(--sub)">(ระบบตรวจสอบทุก 1 นาที — ต้องเปิดหน้านี้ไว้)</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="ctrl-btn" onclick="triggerCheckoutNotify()" id="auto-notify-btn">📤 ส่งแจ้งเตือนทันที</button>
+          <span id="checkout-notify-status" style="font-size:12px;min-height:16px"></span>
+        </div>
+        <div id="checkout-notify-last" style="font-size:11px;color:var(--muted);margin-top:10px"></div>
+        <div class="notice" style="margin-top:12px;font-size:11px">
+          💡 <strong>ต้องการให้ทำงานโดยไม่ต้องเปิดเบราว์เซอร์?</strong> ดู GAS Script เพิ่มเติมด้านล่าง — เพิ่มฟังก์ชัน <code style="background:#fff;padding:1px 5px;border-radius:4px;font-size:10px">checkMissingCheckouts()</code> และตั้ง Time-based Trigger ใน GAS
+        </div>
+      </div>
+
       <div class="card">
         <div class="card-title">📋 GAS Script ตัวอย่าง (วาง → Deploy → เอา URL)</div>
         <pre style="background:#f8f9fb;border:1px solid var(--bd);border-radius:8px;padding:14px;font-size:11px;overflow-x:auto;line-height:1.7;color:#1e293b;white-space:pre-wrap">function doPost(e) {
@@ -377,6 +404,93 @@ async function testLineNotify(){
   catch(e){el.textContent='❌ '+e.message;el.style.color='var(--rd)';}
 }
 
+// ══ CHECKOUT NOTIFY ══════════════════════════
+const _CN_KEY='wibwub_checkout_notify';
+
+function saveCheckoutNotifyConfig(){
+  const enabled=document.getElementById('checkout-notify-enabled')?.checked||false;
+  const time=document.getElementById('checkout-notify-time')?.value||'19:00';
+  localStorage.setItem(_CN_KEY,JSON.stringify({enabled,time}));
+  const st=document.getElementById('checkout-notify-status');
+  if(st){st.textContent=enabled?`✓ เปิดใช้งาน — แจ้งเตือนทุกวันเวลา ${time} น.`:'ปิดใช้งาน';st.style.color=enabled?'#16a34a':'var(--sub)';}
+}
+
+function loadCheckoutNotifyConfig(){
+  const cfg=JSON.parse(localStorage.getItem(_CN_KEY)||'{}');
+  const enabledEl=document.getElementById('checkout-notify-enabled');
+  const timeEl=document.getElementById('checkout-notify-time');
+  if(enabledEl)enabledEl.checked=cfg.enabled||false;
+  if(timeEl)timeEl.value=cfg.time||'19:00';
+  const st=document.getElementById('checkout-notify-status');
+  if(st&&cfg.enabled){st.textContent=`✓ เปิดใช้งาน — แจ้งเตือนทุกวันเวลา ${cfg.time||'19:00'} น.`;st.style.color='#16a34a';}
+  // Show last sent
+  const lastKey='wibwub_checkout_notify_last';
+  const last=localStorage.getItem(lastKey);
+  const lastEl=document.getElementById('checkout-notify-last');
+  if(lastEl&&last)lastEl.textContent=`📨 ส่งล่าสุด: ${last}`;
+}
+
+async function triggerCheckoutNotify(){
+  const btn=document.getElementById('quick-notify-btn');
+  const btn2=document.getElementById('auto-notify-btn');
+  const st=document.getElementById('quick-notify-status');
+  const st2=document.getElementById('checkout-notify-status');
+  if(!_gasUrl){
+    const msg='❌ กรุณาตั้งค่า GAS Proxy URL ก่อน';
+    if(st){st.textContent=msg;st.style.color='var(--rd)';}
+    if(st2){st2.textContent=msg;st2.style.color='var(--rd)';}
+    return;
+  }
+  if(!_user){if(st){st.textContent='❌ กรุณา Login ก่อน';st.style.color='var(--rd)';}return;}
+  [btn,btn2].forEach(b=>{if(b){b.textContent='⏳ กำลังตรวจสอบ...';b.disabled=true;}});
+  if(st){st.textContent='';st.style.color='var(--sub)';}
+  try{
+    const today=new Date().toISOString().split('T')[0];
+    const docs=await fsQuery('attendance',[{field:'date',value:today}]);
+    const missing=docs
+      .map(d=>d.data())
+      .filter(d=>d.check_in&&!d.check_out&&(d.status==='present'||d.status==='late'));
+    const thTime=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false});
+    let msg;
+    if(missing.length===0){
+      msg=`[WIBWUB HR] ✅ ไม่มีพนักงานลืม Check out\nพนักงานทุกคน Check out เรียบร้อยแล้ว\nเวลา: ${thTime} น.`;
+    }else{
+      const names=missing.map(d=>`• ${d.name||d.email||'ไม่ทราบชื่อ'}${d.dept?' ('+d.dept+')':''}`).join('\n');
+      msg=`[WIBWUB HR] ⚠️ ลืม Check out ${missing.length} คน\n${names}\n\nเวลา: ${thTime} น.`;
+    }
+    await sendLineNotify(msg);
+    const sentTime=`${today} ${thTime}`;
+    localStorage.setItem('wibwub_checkout_notify_last',sentTime);
+    const lastEl=document.getElementById('checkout-notify-last');
+    if(lastEl)lastEl.textContent=`📨 ส่งล่าสุด: ${sentTime}`;
+    const okMsg=missing.length===0?'✅ ส่งแล้ว — ทุกคน Check out แล้ว':`✅ ส่งแล้ว — พบ ${missing.length} คน`;
+    if(st){st.textContent=okMsg;st.style.color='#16a34a';}
+    if(st2){st2.textContent=okMsg;st2.style.color='#16a34a';}
+  }catch(e){
+    const errMsg='❌ ส่งไม่สำเร็จ: '+(e.message||'unknown');
+    if(st){st.textContent=errMsg;st.style.color='var(--rd)';}
+    if(st2){st2.textContent=errMsg;st2.style.color='var(--rd)';}
+  }finally{
+    [btn,btn2].forEach(b=>{if(b){b.textContent=b===btn?'🔔 แจ้งเตือน Check out':'📤 ส่งแจ้งเตือนทันที';b.disabled=false;}});
+  }
+}
+
+// Scheduled auto-notify: check every 60s if current time matches config
+setInterval(()=>{
+  const cfg=JSON.parse(localStorage.getItem(_CN_KEY)||'{}');
+  if(!cfg.enabled||!_gasUrl||!_user)return;
+  const now=new Date();
+  const hh=now.getHours().toString().padStart(2,'0');
+  const mm=now.getMinutes().toString().padStart(2,'0');
+  if(`${hh}:${mm}`!==cfg.time)return;
+  // Prevent duplicate send within same minute
+  const lastKey='wibwub_checkout_notify_last';
+  const last=localStorage.getItem(lastKey)||'';
+  const todayPrefix=now.toISOString().split('T')[0];
+  if(last.startsWith(todayPrefix+' '+cfg.time))return;
+  triggerCheckoutNotify();
+},60000);
+
 // ══ INIT ════════════════════════════════════
 function initApp(){
   const now=new Date();
@@ -386,6 +500,7 @@ function initApp(){
   document.getElementById('today-date').value=now.toISOString().split('T')[0];
   setCurrentWeek();
   loadGASUrl();
+  loadCheckoutNotifyConfig();
   loadToday();
   loadPendingLeave();
   loadLeaveHistory();
