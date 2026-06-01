@@ -261,22 +261,7 @@ function rangeLabel(start, end) {
   return `${fmtThaiDate(start)} - ${fmtThaiDate(end)}`;
 }
 
-// ----- RAW field normalisation (convert full-name format → compressed index format) -----
-(function(){
-  var chMap = new Map(), prMap = new Map();
-  RAW.lines.forEach(function(l){
-    if(!chMap.has(l.channel)) chMap.set(l.channel, chMap.size);
-    if(!prMap.has(l.name))    prMap.set(l.name,    prMap.size);
-  });
-  RAW.channels = Array.from(chMap.keys());
-  RAW.products = Array.from(prMap.keys());
-  RAW.lines.forEach(function(l){
-    l.c = chMap.get(l.channel);
-    l.p = prMap.get(l.name);
-    l.q = l.qty;
-    l.s = l.price * l.qty;
-  });
-})();
+// RAW.channels, RAW.products, and line fields {d,p,c,q,s,o} are pre-built in the data.
 
 // ----- state -----
 let currentRange = {start: RAW.date_min, end: RAW.date_max};
