@@ -23,6 +23,7 @@ python3 - "$FOLDER" "$AUTOPUSH_SCRIPT" << 'PYEOF'
 import sys
 folder, path = sys.argv[1], sys.argv[2]
 content = f"""#!/bin/bash
+export HOME="/Users/thanasablilutanon"
 FOLDER="{folder}"
 cd "$FOLDER"
 rm -f .git/index.lock .git/HEAD.lock
@@ -117,6 +118,8 @@ content = f"""<?xml version="1.0" encoding="UTF-8"?>
   <true/>
   <key>KeepAlive</key>
   <false/>
+  <key>WorkingDirectory</key>
+  <string>/Users/thanasablilutanon</string>
   <key>StandardOutPath</key>
   <string>/tmp/wibwub_autopush.log</string>
   <key>StandardErrorPath</key>
@@ -149,6 +152,8 @@ content = f"""<?xml version="1.0" encoding="UTF-8"?>
   <true/>
   <key>KeepAlive</key>
   <false/>
+  <key>WorkingDirectory</key>
+  <string>/Users/thanasablilutanon</string>
   <key>StandardOutPath</key>
   <string>/tmp/wibwub_watchdog.log</string>
   <key>StandardErrorPath</key>

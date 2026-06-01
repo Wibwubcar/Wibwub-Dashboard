@@ -12,9 +12,9 @@
  */
 
 // ── CONFIG ──────────────────────────────────────────────────────
-// ถ้าต้องการระบุ Spreadsheet ID ตรงๆ ให้ใส่ที่นี่
-// ถ้าเว้นว่าง ระบบจะสร้างไฟล์ใหม่ในโฟลเดอร์รูทของ Drive
-const SPREADSHEET_ID = ''; // ← ใส่ ID ของ Sheet ที่อยู่ใน Data checkin ถ้ามีแล้ว
+const SPREADSHEET_ID  = '';           // เว้นว่างไว้ — ระบบหาโฟลเดอร์ Data checkin ให้อัตโนมัติ
+const DRIVE_FOLDER_NAME = 'Data checkin';   // ชื่อโฟลเดอร์ใน Google Drive
+const SPREADSHEET_NAME  = 'WIBWUB_HR_Data'; // ชื่อไฟล์ Sheet ที่จะสร้าง
 
 const SHEET_NAMES = {
   attendance:    'เช็คอิน-เช็คเอาท์',
@@ -64,18 +64,34 @@ function doGet(e) {
 
 // ── HELPERS ──────────────────────────────────────────────────────
 function getOrCreateSpreadsheet() {
+  // 1) ถ้าระบุ ID ไว้ตรงๆ ใช้เลย
   if (SPREADSHEET_ID) {
     return SpreadsheetApp.openById(SPREADSHEET_ID);
   }
-  // หาไฟล์ชื่อ WIBWUB_HR_Data ใน Drive
-  const files = DriveApp.getFilesByName('WIBWUB_HR_Data');
+
+  // 2) หาโฟลเดอร์ "Data checkin" ใน Drive
+  const folders = DriveApp.getFoldersByName(DRIVE_FOLDER_NAME);
+  const folder  = folders.hasNext() ? folders.next() : DriveApp.getRootFolder();
+
+  // 3) ค้นหาไฟล์ WIBWUB_HR_Data ในโฟลเดอร์นั้น
+  const files = folder.getFilesByName(SPREADSHEET_NAME);
   if (files.hasNext()) {
     return SpreadsheetApp.openById(files.next().getId());
   }
-  // สร้างใหม่
-  const ss = SpreadsheetApp.create('WIBWUB_HR_Data');
-  ss.getActiveSheet().setName('README');
-  ss.getActiveSheet().getRange('A1').setValue('WIBWUB HR Data — สร้างโดยอัตโนมัติ');
+
+  // 4) สร้างไฟล์ใหม่ใน Drive Root ก่อน แล้วย้ายเข้าโฟลเดอร์
+  const ss        = SpreadsheetApp.create(SPREADSHEET_NAME);
+  const newFile   = DriveApp.getFileById(ss.getId());
+  folder.addFile(newFile);
+  DriveApp.getRootFolder().removeFile(newFile); // เอาออกจาก Root
+
+  // ลบ sheet เริ่มต้น แล้วใส่ README
+  const defaultSheet = ss.getActiveSheet();
+  defaultSheet.setName('README');
+  defaultSheet.getRange('A1').setValue('WIBWUB HR Data — สร้างโดยอัตโนมัติ');
+  defaultSheet.getRange('A2').setValue('📁 โฟลเดอร์: ' + DRIVE_FOLDER_NAME);
+  defaultSheet.getRange('A3').setValue('🔗 เชื่อมจาก WIBWUB Mobile App');
+
   return ss;
 }
 

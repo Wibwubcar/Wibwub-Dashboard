@@ -3,740 +3,547 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WIBWUB — HR & พนักงาน</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<title>WIBWUB — HR Dashboard</title>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif;background:#F8F9FB;color:#0F0F0F;font-size:14px}
-:root{--bg:#F8F9FB;--sf:#fff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#666;--bl:#1A5CDB;--rd:#ef4444;--yl:#f59e0b;--gn:#22c55e;--rd-bg:rgba(239,68,68,.08);--yl-bg:rgba(245,158,11,.08);--gn-bg:rgba(34,197,94,.08);--bl-bg:rgba(26,92,219,.08);--pu:#7c3aed;--pu-bg:rgba(124,58,237,.08)}
-
-.header{background:#fff;border-bottom:1px solid var(--bd);padding:12px 24px;display:flex;align-items:center;gap:14px;position:sticky;top:0;z-index:100}
-.logo{font-size:17px;font-weight:700;letter-spacing:-0.5px}.logo span{color:var(--bl)}
-.h-title{font-size:15px;font-weight:600;color:var(--tx)}
-.h-shift{background:#F0F4FF;color:var(--bl);font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;border:1px solid rgba(26,92,219,.2);margin-left:8px}
-.h-date{margin-left:auto;font-size:12px;color:var(--sub)}
-
-.nav{background:#fff;border-bottom:1px solid var(--bd);padding:0 24px;display:flex;gap:0}
-.nt{padding:11px 16px;font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;user-select:none}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Noto Sans Thai',sans-serif;background:#F0F4FF;color:#0F0F0F;font-size:14px}
+:root{--bg:#F0F4FF;--sf:#fff;--bd:#e4e8f0;--tx:#0F0F0F;--sub:#666;--muted:#999;
+  --bl:#1A5CDB;--bl2:#1248b3;--bll:#EEF3FD;--rd:#ef4444;--yl:#f59e0b;--gn:#22c55e;--pu:#7c3aed;
+  --rd-bg:rgba(239,68,68,.08);--yl-bg:rgba(245,158,11,.08);--gn-bg:rgba(34,197,94,.08);
+  --bl-bg:rgba(26,92,219,.08);--pu-bg:rgba(124,58,237,.08);}
+.header{background:var(--bl);padding:0 24px;display:flex;align-items:center;gap:14px;height:54px;position:sticky;top:0;z-index:100;flex-shrink:0;}
+.logo{font-size:16px;font-weight:900;color:#fff;letter-spacing:.5px}
+.logo span{opacity:.55;}
+.h-title{font-size:14px;font-weight:600;color:rgba(255,255,255,.85)}
+.h-date{margin-left:auto;font-size:12px;color:rgba(255,255,255,.6);font-weight:500}
+.h-user{font-size:11px;color:rgba(255,255,255,.6);margin-left:12px;}
+.nav{background:#fff;border-bottom:1px solid var(--bd);padding:0 24px;display:flex;gap:0;flex-shrink:0;}
+.nt{padding:11px 18px;font-size:13px;font-weight:500;color:var(--sub);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .15s;user-select:none}
 .nt.active{color:var(--bl);border-bottom-color:var(--bl)}
 .nt:hover:not(.active){color:var(--tx);background:#fafafa}
-
-.main{padding:20px 24px;max-width:1280px;margin:0 auto}
+.wrap{display:flex;flex-direction:column;height:100vh;}
+.main{flex:1;overflow-y:auto;padding:20px 24px;max-width:1400px;margin:0 auto;width:100%;}
 .sec{display:none}.sec.active{display:block}
-
-.kpi-row{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:18px}
-.kpi{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:13px 15px}
+.card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:16px 18px;margin-bottom:14px;}
+.card-title{font-size:13px;font-weight:700;color:var(--tx);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:14px}
+.kpi{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:13px 16px}
 .kl{font-size:11px;color:var(--sub);margin-bottom:5px}
-.kv{font-size:22px;font-weight:700;color:var(--tx);line-height:1}
+.kv{font-size:24px;font-weight:800;color:var(--tx);line-height:1}
 .ks{font-size:11px;color:var(--sub);margin-top:3px}
 .kv.ok{color:#16a34a}.kv.warn{color:#d97706}.kv.danger{color:#dc2626}.kv.blue{color:var(--bl)}
-
-.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-.cc{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:16px 18px}
-.ct{font-size:13px;font-weight:600;margin-bottom:12px;color:var(--tx)}
-
-.today-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:8px;margin-bottom:20px}
-.tc{background:#fff;border:1px solid var(--bd);border-radius:8px;padding:9px 12px;display:flex;align-items:center;gap:8px}
-.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.dot-ok{background:#22c55e}.dot-late{background:#f59e0b}.dot-sick{background:#ef4444}.dot-off{background:#d1d5db}
-.tn{font-size:12px;font-weight:500;color:var(--tx)}.tt{font-size:10px;color:var(--sub)}
-
-.sh{font-size:14px;font-weight:700;color:var(--tx);margin-bottom:12px;display:flex;align-items:center;gap:8px}
-.sb{font-size:11px;font-weight:500;background:var(--bl-bg);color:var(--bl);padding:2px 8px;border-radius:20px}
-
-.ts-ctrl{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.ts-hd{font-size:14px;font-weight:700;color:var(--tx)}
-.wb{background:#fff;border:1px solid var(--bd);border-radius:6px;padding:5px 12px;font-size:12px;cursor:pointer;color:var(--tx)}
-.wb:hover{background:var(--sf2)}
-.wl{font-size:13px;font-weight:500;color:var(--tx);min-width:200px;text-align:center}
-
-.legend{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:12px}
-.lg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--sub)}
-.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
-
-.ts-wrap{overflow-x:auto;background:#fff;border:1px solid var(--bd);border-radius:10px;margin-bottom:14px}
-table.ts{width:100%;border-collapse:collapse;font-size:12px;min-width:860px}
-table.ts th{background:#f9fafb;color:var(--sub);font-weight:600;padding:8px 10px;text-align:center;border-bottom:1px solid var(--bd);font-size:11px}
-table.ts th.nc{text-align:left;min-width:115px;position:sticky;left:0;background:#f9fafb;z-index:2}
-table.ts td{padding:7px 8px;text-align:center;border-bottom:0.5px solid #f0f0f0;vertical-align:middle}
-table.ts td.nc{text-align:left;background:#fff;position:sticky;left:0;border-right:1px solid #f0f0f0}
-table.ts tr:hover td{background:#f9fafb}table.ts tr:hover td.nc{background:#f9fafb}
-table.ts tfoot td{background:#f9fafb;font-weight:600;font-size:11px;border-top:1px solid var(--bd);padding:8px 10px;text-align:center}
-table.ts tfoot td.nc{text-align:left}
-
-.ci{font-size:12px;font-weight:600;color:var(--tx)}
-.co{font-size:11px;color:var(--sub)}
-.cot{font-size:10px;color:#16a34a;font-weight:700}
-.clate{font-size:10px;color:#d97706}
-.cell-late{background:var(--yl-bg)}
-.cell-sick{background:var(--rd-bg)}
-.cell-ot{background:var(--gn-bg)}
-.cell-off{background:#fafafa}
-.cell-lv{background:var(--pu-bg)}
-
-.badge{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap}
-.b-ok{background:var(--gn-bg);color:#16a34a;border:1px solid rgba(34,197,94,.3)}
-.b-late{background:var(--yl-bg);color:#d97706;border:1px solid rgba(245,158,11,.3)}
-.b-sick{background:var(--rd-bg);color:#dc2626;border:1px solid rgba(239,68,68,.3)}
-.b-off{background:#f0f0f0;color:var(--sub);border:1px solid var(--bd)}
-.b-lv{background:var(--pu-bg);color:var(--pu);border:1px solid rgba(124,58,237,.2)}
-.b-ot{background:var(--bl-bg);color:var(--bl);border:1px solid rgba(26,92,219,.2)}
-
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:18px}
-
-.ot-wrap,.lv-wrap{background:#fff;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
-table.ot,table.lv{width:100%;border-collapse:collapse;font-size:12px}
-table.ot th,table.lv th{background:#f9fafb;padding:9px 12px;text-align:left;font-size:11px;font-weight:600;color:var(--sub);border-bottom:1px solid var(--bd)}
-table.ot td,table.lv td{padding:9px 12px;border-bottom:0.5px solid #f0f0f0;color:var(--tx)}
-table.ot tr:hover td,table.lv tr:hover td{background:#f9fafb}
-
-.bar-bg{background:#f0f0f0;border-radius:4px;height:6px;overflow:hidden;min-width:60px}
-.bar-fill{height:6px;border-radius:4px;background:var(--bl)}
-.bar-fill.gn{background:#16a34a}
-.bar-fill.rd{background:#ef4444}
-
-.week-sum{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:14px 18px;margin-bottom:18px}
-.ws-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:10px}
-.ws-item{text-align:center}
-.ws-val{font-size:20px;font-weight:700;color:var(--bl)}
-.ws-lbl{font-size:11px;color:var(--sub)}
-
-.quota-bar-wrap{display:flex;align-items:center;gap:4px}
-.qb{height:5px;border-radius:3px}
-.qb-used{background:#ef4444}
-.qb-left{background:#e5e7eb}
-
-@media(max-width:800px){
-  .kpi-row{grid-template-columns:repeat(3,1fr)}
-  .charts-grid,.two-col,.three-col{grid-template-columns:1fr}
-  .main{padding:14px}
-  .nav{overflow-x:auto}
-}
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid var(--bd);background:#fff;}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:#f8f9fb;color:var(--sub);font-weight:600;padding:9px 12px;text-align:left;border-bottom:1px solid var(--bd);white-space:nowrap}
+td{padding:9px 12px;border-bottom:.5px solid #f0f0f0;color:var(--tx);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#fafbff}
+.td-r{text-align:right}.td-c{text-align:center}
+.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.b-present{background:var(--gn-bg);color:#16a34a;border:1px solid rgba(34,197,94,.25)}
+.b-late{background:var(--yl-bg);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.b-approved{background:var(--gn-bg);color:#16a34a;border:1px solid rgba(34,197,94,.25)}
+.b-rejected{background:var(--rd-bg);color:#dc2626;border:1px solid rgba(239,68,68,.25)}
+.b-pending{background:var(--yl-bg);color:#d97706;border:1px solid rgba(245,158,11,.25)}
+.btn-approve{padding:5px 14px;background:#16a34a;color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer;margin-right:5px}
+.btn-reject{padding:5px 14px;background:var(--rd);color:#fff;border:none;border-radius:7px;font-size:11px;font-weight:700;cursor:pointer}
+.btn-approve:hover{background:#15803d}.btn-reject:hover{background:#b91c1c}
+.btn-approve:disabled,.btn-reject:disabled{opacity:.4;cursor:default}
+.ctrl-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.ctrl-label{font-size:12px;font-weight:600;color:var(--sub)}
+.ctrl-input{padding:6px 12px;border:1.5px solid var(--bd);border-radius:8px;font-size:12px;background:#fff;color:var(--tx);outline:none;font-family:inherit}
+.ctrl-input:focus{border-color:var(--bl)}
+.ctrl-btn{padding:6px 14px;background:var(--bll);color:var(--bl);border:1px solid rgba(26,92,219,.2);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.ctrl-btn:hover{background:#dce8fb}
+.reload-btn{margin-left:auto;padding:6px 14px;background:#fff;color:var(--bl);border:1.5px solid var(--bd);border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+.reload-btn:hover{background:var(--bll)}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.spin{display:inline-block;width:16px;height:16px;border:2.5px solid rgba(26,92,219,.2);border-top-color:var(--bl);border-radius:50%;animation:sp .6s linear infinite;vertical-align:middle}
+@keyframes sp{to{transform:rotate(360deg)}}
+.loading-msg{text-align:center;padding:30px;color:var(--sub);font-size:13px}
+.empty-state{text-align:center;padding:32px 16px;color:var(--sub);font-size:13px;}
+.empty-ic{font-size:28px;margin-bottom:8px}
+.notice{background:var(--yl-bg);border:1px solid rgba(245,158,11,.3);border-radius:8px;padding:10px 14px;font-size:12px;color:#92400e;margin-bottom:14px}
+.ts-grid{display:grid;gap:0;border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.ts-cell{padding:7px 10px;font-size:11px;border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);background:#fff}
+.ts-hdr{background:#f8f9fb;font-weight:600;color:var(--sub)}
+.ts-name{font-weight:600;color:var(--tx);background:#fafbff}
+.ts-ok{background:rgba(34,197,94,.07);color:#166534;font-weight:600}
+.ts-late{background:rgba(245,158,11,.07);color:#92400e;font-weight:600}
+.ts-absent{background:#fff;text-align:center;font-size:11px;color:var(--muted)}
+.cfg-row{display:flex;align-items:center;gap:8px;background:var(--bll);border:1px solid rgba(26,92,219,.15);border-radius:8px;padding:9px 12px;margin-bottom:14px;flex-wrap:wrap}
+.cfg-label{font-size:11px;font-weight:600;color:var(--bl);flex-shrink:0}
+.cfg-input{flex:1;min-width:180px;padding:5px 10px;border:1.5px solid rgba(26,92,219,.25);border-radius:6px;font-size:11px;outline:none;background:#fff;font-family:inherit}
+.cfg-input:focus{border-color:var(--bl)}
+.cfg-save-btn{padding:5px 12px;background:var(--bl);color:#fff;border:none;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer}
+#authGate{position:fixed;inset:0;background:var(--bg);z-index:999;display:flex;align-items:center;justify-content:center;}
+.auth-card{background:#fff;border-radius:16px;padding:32px 28px;max-width:360px;width:90%;box-shadow:0 4px 24px rgba(0,0,0,.1);text-align:center;}
+.auth-logo{font-size:22px;font-weight:900;color:var(--bl);margin-bottom:8px;}
+.auth-sub{font-size:13px;color:var(--sub);margin-bottom:20px;line-height:1.5}
+.auth-field{margin-bottom:12px;text-align:left;}
+.auth-field label{font-size:11px;font-weight:600;color:var(--sub);display:block;margin-bottom:4px}
+.auth-field input{width:100%;padding:10px 14px;border:1.5px solid var(--bd);border-radius:10px;font-size:14px;outline:none;font-family:inherit}
+.auth-field input:focus{border-color:var(--bl)}
+.auth-btn{width:100%;padding:12px;background:var(--bl);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;margin-top:4px;font-family:inherit}
+.auth-err{font-size:12px;color:var(--rd);margin-top:8px;min-height:16px;}
+@media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}.main{padding:14px 12px}}
 </style>
 </head>
 <body>
-<div class="header">
-  <div class="logo">WIB<span>WUB</span></div>
-  <div class="h-title">HR & พนักงาน</div>
-  <span class="h-shift">&#128336; กะ 08:00 – 17:00</span>
-  <div class="h-date" id="hDate"></div>
-</div>
 
-<div class="nav">
-  <div class="nt active" id="tab-overview" onclick="go('overview')">&#128202; ภาพรวม</div>
-  <div class="nt" id="tab-timesheet" onclick="go('timesheet')">&#128197; ตารางเวลา</div>
-  <div class="nt" id="tab-ot" onclick="go('ot')">&#9200; OT</div>
-  <div class="nt" id="tab-leave" onclick="go('leave')">&#128203; ลางาน</div>
-</div>
-
-<div class="main">
-
-<!-- ── ภาพรวม ─────────────────────────────────────────── -->
-<div class="sec active" id="sec-overview">
-  <div id="kpiOv"></div>
-  <div class="sh">สถานะวันนี้ <span class="sb" id="todayBadge"></span></div>
-  <div class="today-grid" id="todayGrid"></div>
-  <div class="charts-grid">
-    <div class="cc">
-      <div class="ct">ชั่วโมงทำงาน — สัปดาห์ปัจจุบัน (แยกปกติ / OT)</div>
-      <div style="position:relative;height:210px"><canvas id="cWeek" role="img" aria-label="Work hours per day this week, split into normal and OT hours"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">OT สะสมเดือนพฤษภาคม 2569 (Top 10)</div>
-      <div style="position:relative;height:210px"><canvas id="cOTTop" role="img" aria-label="Top 10 employees by OT hours this month"></canvas></div>
-    </div>
-  </div>
-  <div class="cc" style="margin-bottom:18px">
-    <div class="ct">แนวโน้มการเข้างาน — พฤษภาคม 2569</div>
-    <div style="position:relative;height:170px"><canvas id="cTrend" role="img" aria-label="Daily attendance trend for May 2026"></canvas></div>
+<!-- Auth Gate -->
+<div id="authGate" style="display:none">
+  <div class="auth-card">
+    <div class="auth-logo">WIBWUB</div>
+    <div class="auth-sub">เข้าสู่ระบบเพื่อดู HR Dashboard<br>หรือเปิดผ่าน WIBWUB Web App</div>
+    <div class="auth-field"><label>อีเมล</label><input type="email" id="loginEmail" placeholder="email@example.com"></div>
+    <div class="auth-field"><label>รหัสผ่าน</label><input type="password" id="loginPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <button class="auth-btn" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="auth-err" id="loginErr"></div>
   </div>
 </div>
 
-<!-- ── ตารางเวลา ──────────────────────────────────────── -->
-<div class="sec" id="sec-timesheet">
-  <div class="ts-ctrl">
-    <span class="ts-hd">ตารางเวลา</span>
-    <button class="wb" onclick="prevW()">&#8592; ก่อนหน้า</button>
-    <span class="wl" id="wLabel"></span>
-    <button class="wb" onclick="nextW()">ถัดไป &#8594;</button>
-    <span style="font-size:11px;color:var(--sub);margin-left:4px">เวลามาตรฐาน: 08:00 – 17:00 | OT = ออกหลัง 17:00</span>
+<!-- App -->
+<div class="wrap" id="appWrap" style="display:none">
+  <div class="header">
+    <div class="logo">WIB<span>WUB</span></div>
+    <div class="h-title">👥 HR Dashboard</div>
+    <div class="h-date" id="hdrDate"></div>
+    <div class="h-user" id="hdrUser"></div>
   </div>
-  <div class="legend">
-    <span class="lg"><span class="ld" style="background:#f0fdf4;border:1px solid #22c55e"></span>เข้างานปกติ</span>
-    <span class="lg"><span class="ld" style="background:var(--yl-bg);border:1px solid #f59e0b"></span>มาสาย (&gt;08:00)</span>
-    <span class="lg"><span class="ld" style="background:var(--gn-bg);border:1px solid #16a34a"></span>มี OT (ออก&gt;17:00)</span>
-    <span class="lg"><span class="ld" style="background:var(--rd-bg);border:1px solid #ef4444"></span>ลาป่วย</span>
-    <span class="lg"><span class="ld" style="background:var(--pu-bg);border:1px solid #7c3aed"></span>ลากิจ</span>
-    <span class="lg"><span class="ld" style="background:#fafafa;border:1px solid var(--bd)"></span>หยุด</span>
+  <div class="nav">
+    <div class="nt active" id="nt-today"      onclick="goTab('today')">📋 วันนี้</div>
+    <div class="nt"        id="nt-leave"      onclick="goTab('leave')">📝 ใบลา&nbsp;<span id="leave-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px"></span></div>
+    <div class="nt"        id="nt-timesheet"  onclick="goTab('timesheet')">🗓️ ตารางเวลา</div>
+    <div class="nt"        id="nt-settings"   onclick="goTab('settings')">⚙️ ตั้งค่า</div>
   </div>
-  <div class="ts-wrap"><table class="ts" id="tsTable"></table></div>
-  <div class="week-sum" id="weekSum"></div>
-</div>
+  <div class="main">
 
-<!-- ── OT ─────────────────────────────────────────────── -->
-<div class="sec" id="sec-ot">
-  <div id="kpiOT"></div>
-  <div class="two-col">
-    <div>
-      <div class="sh">OT รายบุคคล — พฤษภาคม 2569</div>
-      <div class="ot-wrap"><table class="ot" id="otTable"></table></div>
-    </div>
-    <div class="cc">
-      <div class="ct">OT รายวัน — สัปดาห์ปัจจุบัน</div>
-      <div style="position:relative;height:310px"><canvas id="cOTDaily" role="img" aria-label="Daily OT hours this week per employee"></canvas></div>
-    </div>
-  </div>
-</div>
-
-<!-- ── ลางาน ─────────────────────────────────────────── -->
-<div class="sec" id="sec-leave">
-  <div id="kpiLV"></div>
-  <div class="two-col">
-    <div>
-      <div class="sh">สถิติการลา — พฤษภาคม 2569</div>
-      <div class="lv-wrap"><table class="lv" id="lvTable"></table></div>
-    </div>
-    <div>
-      <div class="cc" style="margin-bottom:14px">
-        <div class="ct">สัดส่วนการลาแยกประเภท</div>
-        <div style="position:relative;height:200px"><canvas id="cLvDonut" role="img" aria-label="Donut chart of leave types"></canvas></div>
-        <div id="lvLegend" style="display:flex;justify-content:center;gap:16px;margin-top:10px;flex-wrap:wrap"></div>
+    <!-- TODAY -->
+    <div class="sec active" id="sec-today">
+      <div class="kpi-row">
+        <div class="kpi"><div class="kl">เข้างานวันนี้</div><div class="kv blue" id="kpi-present">—</div><div class="ks">คน</div></div>
+        <div class="kpi"><div class="kl">มาสาย</div><div class="kv warn" id="kpi-late">—</div><div class="ks">คน</div></div>
+        <div class="kpi"><div class="kl">เช็คเอาท์แล้ว</div><div class="kv ok" id="kpi-out">—</div><div class="ks">คน</div></div>
+        <div class="kpi"><div class="kl">เฉลี่ยเวลาเข้างาน</div><div class="kv blue" id="kpi-avg">—</div><div class="ks">น.</div></div>
+        <div class="kpi"><div class="kl">ชั่วโมงเฉลี่ย</div><div class="kv ok" id="kpi-hrs">—</div><div class="ks">ชม./คน</div></div>
       </div>
-      <div class="cc">
-        <div class="ct">การลาป่วยต่อเดือน (สะสม 4 สัปดาห์)</div>
-        <div style="position:relative;height:160px"><canvas id="cSickBar" role="img" aria-label="Sick leave count per employee"></canvas></div>
+      <div class="ctrl-row">
+        <div class="ctrl-label">วันที่</div>
+        <input type="date" class="ctrl-input" id="today-date" onchange="loadToday()">
+        <button class="ctrl-btn" onclick="setTodayDate()">วันนี้</button>
+        <button class="reload-btn" onclick="loadToday()">↻ รีโหลด</button>
+      </div>
+      <div class="tbl-wrap" id="today-tbl-wrap">
+        <div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>
       </div>
     </div>
+
+    <!-- LEAVE -->
+    <div class="sec" id="sec-leave">
+      <div class="cfg-row" id="line-cfg-row" style="display:none">
+        <span class="cfg-label">🔔 Line Notify:</span>
+        <input class="cfg-input" id="gas-url-inline" placeholder="GAS Proxy URL" oninput="syncGASUrlInline()">
+        <button class="cfg-save-btn" onclick="syncGASUrlInline()">บันทึก</button>
+        <span id="gas-cfg-status" style="font-size:10px;color:var(--sub)"></span>
+      </div>
+      <div class="card">
+        <div class="card-title">⏳ รอการพิจารณา &nbsp;<span style="background:var(--bll);color:var(--bl);border-radius:20px;font-size:11px;padding:2px 8px;font-weight:600" id="pending-count">0</span></div>
+        <div id="pending-leave-list"><div class="loading-msg"><span class="spin"></span></div></div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 ประวัติใบลา</div>
+        <div class="ctrl-row" style="margin-bottom:10px">
+          <select class="ctrl-input" id="lv-filter-status" onchange="loadLeaveHistory()">
+            <option value="">ทั้งหมด (อนุมัติ/ปฏิเสธ)</option>
+            <option value="approved">อนุมัติ</option>
+            <option value="rejected">ไม่อนุมัติ</option>
+          </select>
+          <button class="reload-btn" onclick="loadPendingLeave();loadLeaveHistory()">↻ รีโหลด</button>
+        </div>
+        <div id="leave-history-list"><div class="loading-msg"><span class="spin"></span></div></div>
+      </div>
+    </div>
+
+    <!-- TIMESHEET -->
+    <div class="sec" id="sec-timesheet">
+      <div class="ctrl-row">
+        <div class="ctrl-label">สัปดาห์เริ่ม (จ.)</div>
+        <input type="date" class="ctrl-input" id="ts-week-start" onchange="loadTimesheet()">
+        <button class="ctrl-btn" onclick="setCurrentWeek()">สัปดาห์นี้</button>
+        <button class="ctrl-btn" onclick="offsetWeek(-1)">◀ ก่อนหน้า</button>
+        <button class="ctrl-btn" onclick="offsetWeek(1)">ถัดไป ▶</button>
+        <button class="reload-btn" onclick="loadTimesheet()">↻ รีโหลด</button>
+      </div>
+      <div id="ts-week-label" style="font-size:13px;font-weight:600;color:var(--sub);margin-bottom:12px"></div>
+      <div id="timesheet-container"><div class="loading-msg"><span class="spin"></span></div></div>
+      <div class="notice" style="margin-top:10px">📌 แสดงข้อมูลจากการเช็คอิน/เอาท์ผ่าน Mobile App — พนักงานที่ไม่ได้เช็คอินแสดงเป็น "—"</div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="sec" id="sec-settings">
+      <div class="card">
+        <div class="card-title">🔔 Line Notify (แจ้งเตือนการอนุมัติใบลา)</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.7">เชื่อมต่อ Line Notify ผ่าน Google Apps Script เพื่อส่งแจ้งเตือนเมื่ออนุมัติ/ปฏิเสธใบลา</p>
+        <div style="margin-bottom:10px">
+          <label style="font-size:11px;font-weight:600;color:var(--sub);display:block;margin-bottom:5px">GAS Proxy URL</label>
+          <input class="ctrl-input" id="gas-url-main" style="width:100%;max-width:600px" placeholder="https://script.google.com/macros/s/YOUR_ID/exec" oninput="syncGASUrlMain()">
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="ctrl-btn" onclick="testLineNotify()">🧪 ทดสอบการแจ้งเตือน</button>
+          <span id="notify-test-msg" style="font-size:12px;min-height:16px"></span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-title">📋 GAS Script ตัวอย่าง (วาง → Deploy → เอา URL)</div>
+        <pre style="background:#f8f9fb;border:1px solid var(--bd);border-radius:8px;padding:14px;font-size:11px;overflow-x:auto;line-height:1.7;color:#1e293b;white-space:pre-wrap">function doPost(e) {
+  try {
+    var body = JSON.parse(e.postData.contents);
+    var token = PropertiesService.getScriptProperties()
+                  .getProperty('LINE_NOTIFY_TOKEN');
+    if (!token) return reply({ok:false,error:'No token set'});
+    UrlFetchApp.fetch('https://notify-api.line.me/api/notify', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      payload: 'message=' + encodeURIComponent(body.message),
+      muteHttpExceptions: true
+    });
+    return reply({ok: true});
+  } catch(err) { return reply({ok:false,error:err.message}); }
+}
+function doGet(e){ return reply({ok:true,status:'WIBWUB HR Proxy OK'}); }
+function reply(o){ return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON); }
+/* Script Properties → LINE_NOTIFY_TOKEN = your_token */</pre>
+      </div>
+      <div class="card">
+        <div class="card-title">🔑 วิธีตั้งค่า Line Notify</div>
+        <ol style="font-size:12px;line-height:2.2;color:var(--sub);padding-left:18px">
+          <li>ไปที่ <strong>notify-bot.line.me</strong> → เลือกกลุ่ม HR → สร้าง Token</li>
+          <li>เปิด <strong>script.google.com</strong> → New Project → วาง code ด้านบน</li>
+          <li>Project Settings → Script Properties → เพิ่ม key: <code style="background:#f0f4ff;padding:1px 5px;border-radius:4px">LINE_NOTIFY_TOKEN</code> = token ที่ได้</li>
+          <li>Deploy → New Deployment → Web App → Execute as: Me → Access: Anyone → Deploy → Copy URL</li>
+          <li>วาง URL ในช่อง GAS Proxy URL แล้วกด "ทดสอบ"</li>
+        </ol>
+      </div>
+    </div>
+
   </div>
 </div>
-
-</div><!-- .main -->
 
 <script>
-// ═══════════════════════════════════════════════════════
-// CONSTANTS
-// ═══════════════════════════════════════════════════════
-const STD_IN  = 8 * 60;   // 08:00 in minutes
-const STD_OUT = 17 * 60;  // 17:00 in minutes
+// ══ CONFIG ══════════════════════════════════
+const FB_CFG = {
+  apiKey:'AIzaSyCaOE_1ILOr_Q-wlRR5vEu71-LG4ekVdLk',
+  authDomain:'wibwubcar-e2cbc.firebaseapp.com',
+  projectId:'wibwubcar-e2cbc',
+  storageBucket:'wibwubcar-e2cbc.firebasestorage.app',
+  messagingSenderId:'568499433889',
+  appId:'1:568499433889:web:7cbc86f3f14d5034b4dbe0'
+};
+const FS_BASE='https://firestore.googleapis.com/v1/projects/wibwubcar-e2cbc/databases/(default)/documents';
+const ADMIN_ROLES=['admin','hr_team','head_marketing'];
 
-const EMPS = [
-  {id:0, name:'อุบลรัตน์', dept:'Content', clr:'#3B82F6'},
-  {id:1, name:'นพฤทธิ์',   dept:'Content', clr:'#8B5CF6'},
-  {id:2, name:'ณัฐวุฒิ',   dept:'Ops',     clr:'#EC4899'},
-  {id:3, name:'ธนกร',      dept:'Sales',   clr:'#F59E0B'},
-  {id:4, name:'รุจจิรา',   dept:'Content', clr:'#10B981'},
-  {id:5, name:'พรสิกร',    dept:'Content', clr:'#0EA5E9'},
-  {id:6, name:'นพมาศ',     dept:'Ops',     clr:'#6366F1'},
-  {id:7, name:'บุญมี',     dept:'Ops',     clr:'#F97316'},
-  {id:8, name:'อัจฉรา',    dept:'Sales',   clr:'#14B8A6'},
-  {id:9, name:'กฤดอบุญ',   dept:'Ops',     clr:'#EF4444'},
-  {id:10,name:'พชรพร',     dept:'Content', clr:'#A855F7'},
-  {id:11,name:'ปลิฎาณ',    dept:'Sales',   clr:'#22C55E'},
-  {id:12,name:'พงศภัค',    dept:'Content', clr:'#06B6D4'},
-  {id:13,name:'พัชรวรรณ',  dept:'Sales',   clr:'#F59E0B'},
-  {id:14,name:'เจนจิรา',   dept:'Ops',     clr:'#84CC16'},
-  {id:15,name:'ฐานวีร์',   dept:'Content', clr:'#0EA5E9'},
-  {id:16,name:'อลงกรณ์',   dept:'Ops',     clr:'#EC4899'},
-  {id:17,name:'ปัทมพร',    dept:'Sales',   clr:'#8B5CF6'},
-  {id:18,name:'วรกานต์',   dept:'Content', clr:'#10B981'},
-  {id:19,name:'สนิชา',     dept:'Sales',   clr:'#F97316'},
-];
+// ══ FIREBASE ════════════════════════════════
+firebase.initializeApp(FB_CFG);
+const auth=firebase.auth();
+let _user=null, _role=null, _gasUrl='';
 
-// week labels & day labels
-const WEEKS = [
-  {lbl:'สัปดาห์ที่ 19 (4–8 พ.ค.)',    days:['จ 4/5','อ 5/5','พ 6/5','พฤ 7/5','ศ 8/5']},
-  {lbl:'สัปดาห์ที่ 20 (11–15 พ.ค.)',  days:['จ 11/5','อ 12/5','พ 13/5','พฤ 14/5','ศ 15/5']},
-  {lbl:'สัปดาห์ที่ 21 (18–22 พ.ค.)',  days:['จ 18/5','อ 19/5','พ 20/5','พฤ 21/5','ศ 22/5']},
-  {lbl:'สัปดาห์ที่ 22 (26–30 พ.ค.)',  days:['จ 26/5','อ 27/5','พ 28/5','พฤ 29/5','ศ 30/5']},
-];
-
-// Timesheet helpers
-function W(i,o){return{s:'ok',  i,o}}  // normal (may have OT if o>17:00)
-function LT(i,o){return{s:'late',i,o}} // late arrival
-function SK(){return{s:'sick', i:null,o:null}}
-function OF(){return{s:'off',  i:null,o:null}}
-function LV(){return{s:'lv',   i:null,o:null}}
-
-// TIMESHEET[emp][week][day]
-const TS = [
-  // 0 อุบลรัตน์
-  [[W('07:52','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:50','18:30'),W('07:55','17:00')],
-   [W('07:53','17:00'),W('07:55','17:00'),W('07:50','17:00'),W('07:55','19:00'),W('07:58','17:00')],
-   [W('07:52','17:00'),W('07:55','17:10'),W('07:50','17:00'),W('07:53','17:00'),OF()],
-   [W('07:55','17:00'),W('07:52','17:00'),W('07:53','17:00'),W('07:55','17:00'),W('07:50','18:00')]],
-  // 1 นพฤทธิ์
-  [[W('07:58','17:00'),W('07:55','17:00'),LT('08:15','17:00'),W('07:58','17:30'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:55','18:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','18:30'),W('07:55','17:00')]],
-  // 2 ณัฐวุฒิ — OT heavy
-  [[W('07:45','19:30'),W('07:45','18:00'),W('07:45','20:00'),W('07:45','19:00'),W('07:45','18:30')],
-   [W('07:45','20:00'),W('07:45','19:30'),W('07:45','18:00'),W('07:45','20:30'),W('07:45','19:00')],
-   [W('07:45','19:00'),W('07:45','18:30'),W('07:45','20:00'),W('07:45','19:30'),W('07:45','18:00')],
-   [W('07:45','19:30'),W('07:45','20:00'),W('07:45','19:00'),W('07:45','20:30'),W('07:45','19:00')]],
-  // 3 ธนกร — late pattern
-  [[LT('08:20','17:00'),W('07:55','17:00'),LT('08:35','17:00'),W('07:55','17:00'),W('07:55','17:00')],
-   [LT('08:10','17:00'),W('07:58','17:00'),W('07:55','17:00'),LT('08:25','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),LT('08:15','17:00'),W('07:58','17:00'),W('07:55','17:00'),LT('08:30','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),LT('08:20','17:00'),W('07:58','17:00'),W('07:55','17:00')]],
-  // 4 รุจจิรา
-  [[W('07:55','17:00'),W('07:58','17:20'),W('07:55','17:00'),W('07:55','17:00'),W('07:58','17:30')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:55','18:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:30'),W('07:55','17:00'),W('07:55','17:00'),OF()],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:55','18:30'),W('07:58','17:00')]],
-  // 5 พรสิกร — sick days
-  [[W('07:55','17:00'),W('07:58','17:00'),SK(),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [SK(),W('07:58','17:00'),W('07:55','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),SK(),W('07:58','17:00')]],
-  // 6 นพมาศ — OT moderate
-  [[W('07:52','17:00'),W('07:55','18:00'),W('07:52','17:00'),W('07:55','17:00'),W('07:52','19:00')],
-   [W('07:52','17:00'),W('07:55','17:30'),W('07:52','18:00'),W('07:55','17:00'),W('07:52','17:00')],
-   [W('07:52','17:00'),W('07:55','17:00'),W('07:52','17:00'),W('07:55','18:30'),OF()],
-   [W('07:52','17:00'),W('07:55','18:00'),W('07:52','17:00'),W('07:55','17:00'),W('07:52','19:30')]],
-  // 7 บุญมี
-  [[W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:58','17:00'),W('07:55','17:20'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:30')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')]],
-  // 8 อัจฉรา — off days
-  [[OF(),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),OF(),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),OF(),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),OF(),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')]],
-  // 9 กฤดอบุญ — OT heavy 2
-  [[W('07:50','19:00'),W('07:50','18:30'),W('07:50','20:00'),W('07:50','19:30'),W('07:50','18:00')],
-   [W('07:50','19:30'),W('07:50','20:00'),W('07:50','18:00'),W('07:50','19:00'),W('07:50','20:30')],
-   [W('07:50','18:00'),W('07:50','19:00'),W('07:50','20:00'),W('07:50','18:30'),W('07:50','19:00')],
-   [W('07:50','19:00'),W('07:50','20:30'),W('07:50','19:30'),W('07:50','20:00'),W('07:50','18:00')]],
-  // 10 พชรพร — sick + leave
-  [[SK(),SK(),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),SK(),W('07:55','17:00'),W('07:58','17:00')],
-   [SK(),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')]],
-  // 11 ปลิฎาณ
-  [[W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:30'),W('07:58','17:00'),OF()],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','18:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:20'),W('07:58','17:00'),W('07:55','17:00')]],
-  // 12 พงศภัค — some late
-  [[W('07:58','17:00'),W('07:55','17:00'),LT('08:10','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:58','18:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:30')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),LT('08:05','17:00'),W('07:55','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','18:00')]],
-  // 13 พัชรวรรณ — some late
-  [[W('07:55','17:00'),W('07:58','17:00'),LT('08:15','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:20'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),LT('08:08','17:00'),W('07:55','17:00'),W('07:58','17:00')]],
-  // 14 เจนจิรา — OT moderate
-  [[W('07:52','18:30'),W('07:55','17:00'),W('07:52','17:00'),W('07:55','19:00'),W('07:52','17:30')],
-   [W('07:52','17:00'),W('07:55','18:00'),W('07:52','17:00'),W('07:55','17:00'),W('07:52','19:30')],
-   [W('07:52','17:00'),W('07:55','17:30'),W('07:52','18:00'),W('07:55','17:00'),OF()],
-   [W('07:52','17:00'),W('07:55','17:00'),W('07:52','17:00'),W('07:55','18:00'),W('07:52','19:00')]],
-  // 15 ฐานวีร์
-  [[W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:30'),W('07:58','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:20'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:10'),W('07:58','17:00')]],
-  // 16 อลงกรณ์ — OT heaviest
-  [[W('07:48','20:00'),W('07:48','19:00'),W('07:48','18:00'),W('07:48','20:00'),W('07:48','19:00')],
-   [W('07:48','19:30'),W('07:48','18:30'),W('07:48','20:00'),W('07:48','19:00'),W('07:48','18:00')],
-   [W('07:48','20:00'),W('07:48','19:30'),W('07:48','18:00'),W('07:48','20:00'),W('07:48','19:00')],
-   [W('07:48','19:00'),W('07:48','20:00'),W('07:48','18:30'),W('07:48','19:30'),W('07:48','20:00')]],
-  // 17 ปัทมพร — off + leave
-  [[OF(),OF(),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),LV()],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [OF(),OF(),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')]],
-  // 18 วรกานต์ — some OT
-  [[W('07:55','17:30'),W('07:58','17:00'),W('07:55','18:00'),W('07:58','17:00'),W('07:55','17:30')],
-   [W('07:55','17:00'),W('07:58','18:30'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','18:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:30'),W('07:58','18:00'),W('07:55','17:00')],
-   [W('07:55','18:00'),W('07:58','17:00'),W('07:55','17:30'),W('07:58','17:00'),W('07:55','18:30')]],
-  // 19 สนิชา — sick + late
-  [[W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),SK(),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),LT('08:12','17:00'),W('07:55','17:00'),W('07:58','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00')],
-   [W('07:55','17:00'),W('07:58','17:00'),W('07:55','17:00'),SK(),W('07:58','17:00')]],
-];
-
-// ═══════════════════════════════════════════════════════
-// CALCULATION HELPERS
-// ═══════════════════════════════════════════════════════
-function toMin(t){if(!t)return null;const[h,m]=t.split(':').map(Number);return h*60+m;}
-function calcDay(d){
-  if(!d.i||!d.o)return{hrs:0,otMin:0,lateMin:0,worked:false};
-  const inM=toMin(d.i), outM=toMin(d.o);
-  const lateMin=Math.max(0,inM-STD_IN);
-  const otMin=Math.max(0,outM-STD_OUT);
-  const hrs=(outM-inM)/60;
-  return{hrs,otMin,lateMin,worked:true};
-}
-function empMonthStats(ei){
-  let totalHrs=0,otHrs=0,lateCnt=0,sickDays=0,offDays=0,lvDays=0,workDays=0;
-  for(let wi=0;wi<4;wi++)for(let di=0;di<5;di++){
-    const d=TS[ei][wi][di];
-    const c=calcDay(d);
-    if(d.s==='sick') sickDays++;
-    else if(d.s==='off') offDays++;
-    else if(d.s==='lv') lvDays++;
-    else{workDays++;totalHrs+=c.hrs;otHrs+=c.otMin/60;if(c.lateMin>0)lateCnt++;}
+auth.onAuthStateChanged(async u=>{
+  if(u){
+    _user=u;
+    try{
+      const tok=await u.getIdToken();
+      const r=await fetch(`${FS_BASE}/users/${u.uid}`,{headers:{Authorization:'Bearer '+tok}});
+      if(r.ok){const d=await r.json();_role=d.fields?.role?.stringValue||'';}
+    }catch(e){}
+    document.getElementById('authGate').style.display='none';
+    document.getElementById('appWrap').style.display='flex';
+    document.getElementById('hdrUser').textContent=u.displayName||u.email;
+    initApp();
+  }else{
+    document.getElementById('authGate').style.display='flex';
+    document.getElementById('appWrap').style.display='none';
   }
-  return{totalHrs,otHrs,lateCnt,sickDays,offDays,lvDays,workDays};
-}
+});
 
-// ═══════════════════════════════════════════════════════
-// DEPT helpers
-// ═══════════════════════════════════════════════════════
-function dBg(d){return{Content:'#EEF2FF',Ops:'#F0FDF4',Sales:'#FFF7ED'}[d]||'#f0f0f0';}
-function dClr(d){return{Content:'#4F46E5',Ops:'#16A34A',Sales:'#D97706'}[d]||'#666';}
-
-// ═══════════════════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════════════════
-function go(tab){
-  ['overview','timesheet','ot','leave'].forEach(t=>{
-    document.getElementById('sec-'+t).classList.toggle('active',t===tab);
-    document.getElementById('tab-'+t).classList.toggle('active',t===tab);
+function doLogin(){
+  const email=document.getElementById('loginEmail').value.trim();
+  const pass=document.getElementById('loginPass').value;
+  const errEl=document.getElementById('loginErr');
+  const btn=document.querySelector('.auth-btn');
+  errEl.textContent='';
+  if(!email||!pass){errEl.textContent='กรุณากรอกอีเมลและรหัสผ่าน';return;}
+  btn.textContent='กำลังเข้าสู่ระบบ...';btn.disabled=true;
+  auth.signInWithEmailAndPassword(email,pass).catch(e=>{
+    errEl.textContent={'auth/user-not-found':'ไม่พบบัญชีนี้','auth/wrong-password':'รหัสผ่านผิด','auth/invalid-credential':'อีเมลหรือรหัสผ่านผิด'}[e.code]||e.message;
+    btn.textContent='เข้าสู่ระบบ';btn.disabled=false;
   });
 }
 
-// ═══════════════════════════════════════════════════════
-// HEADER
-// ═══════════════════════════════════════════════════════
-function initHeader(){
-  document.getElementById('hDate').textContent='วันพฤหัสบดีที่ 29 พฤษภาคม 2569';
-  document.getElementById('todayBadge').textContent='29 พ.ค. 2569';
+// ══ FS HELPERS ══════════════════════════════
+async function _tok(){return _user?await _user.getIdToken():null;}
+function _fv(v){if(v===undefined||v===null)return null;if(v.stringValue!==undefined)return v.stringValue;if(v.integerValue!==undefined)return Number(v.integerValue);if(v.doubleValue!==undefined)return Number(v.doubleValue);if(v.booleanValue!==undefined)return v.booleanValue;if(v.timestampValue!==undefined)return new Date(v.timestampValue);if(v.arrayValue)return(v.arrayValue.values||[]).map(_fv);if(v.mapValue)return _fo(v.mapValue.fields||{});return null;}
+function _fo(f){const o={};for(const[k,v]of Object.entries(f||{}))o[k]=_fv(v);return o;}
+function _tv(v){if(v===null||v===undefined)return{nullValue:null};if(Array.isArray(v))return{arrayValue:{values:v.map(_tv)}};if(v instanceof Date)return{timestampValue:v.toISOString()};if(typeof v==='boolean')return{booleanValue:v};if(typeof v==='number')return Number.isInteger(v)?{integerValue:String(v)}:{doubleValue:v};if(typeof v==='object')return{mapValue:{fields:_tf(v)}};return{stringValue:String(v)};}
+function _tf(obj){const f={};for(const[k,v]of Object.entries(obj))f[k]=_tv(v);return f;}
+async function fsGet(col,id){const tok=await _tok();const r=await fetch(`${FS_BASE}/${col}/${id}`,{headers:{Authorization:'Bearer '+tok}});if(r.status===404)return{exists:false,data:()=>({})};if(!r.ok)throw new Error('fsGet '+r.status);const d=await r.json();return{exists:true,data:()=>_fo(d.fields||{})};}
+async function fsPatch(col,id,obj){const tok=await _tok();const r=await fetch(`${FS_BASE}/${col}/${id}`,{method:'PATCH',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({fields:_tf(obj)})});if(!r.ok)throw new Error('fsPatch '+r.status+' '+(await r.text()));}
+async function fsQuery(col,filters=[],orderBy=null,limit=300){
+  const tok=await _tok();if(!tok)return[];
+  const sq={from:[{collectionId:col}],limit};
+  if(filters.length===1){sq.where={fieldFilter:{field:{fieldPath:filters[0].field},op:filters[0].op||'EQUAL',value:_tv(filters[0].value)}};}
+  else if(filters.length>1){sq.where={compositeFilter:{op:'AND',filters:filters.map(f=>({fieldFilter:{field:{fieldPath:f.field},op:f.op||'EQUAL',value:_tv(f.value)}}))}};}
+  if(orderBy){sq.orderBy=[{field:{fieldPath:orderBy.field},direction:orderBy.dir||'ASCENDING'}];}
+  const r=await fetch(`${FS_BASE}:runQuery`,{method:'POST',headers:{Authorization:'Bearer '+tok,'Content-Type':'application/json'},body:JSON.stringify({structuredQuery:sq})});
+  if(!r.ok)throw new Error('fsQuery '+r.status);
+  const arr=await r.json();
+  return arr.filter(i=>i.document).map(i=>({id:i.document.name.split('/').pop(),data:()=>_fo(i.document.fields||{})}));
 }
 
-// ═══════════════════════════════════════════════════════
-// OVERVIEW
-// ═══════════════════════════════════════════════════════
-function initOverview(){
-  const WI=3, DI=3; // week 4, Thursday
-  let present=0,sick=0,absent=0,late=0,hasOT=0;
-  EMPS.forEach((_,ei)=>{
-    const d=TS[ei][WI][DI];
-    const c=calcDay(d);
-    if(d.s==='sick') sick++;
-    else if(d.s==='off'||d.s==='lv') absent++;
-    else{present++;if(c.lateMin>0)late++;if(c.otMin>0)hasOT++;}
-  });
-  let totOT=0;
-  EMPS.forEach((_,ei)=>{for(let di=0;di<5;di++)totOT+=calcDay(TS[ei][WI][di]).otMin/60;});
-
-  document.getElementById('kpiOv').innerHTML=`
-    <div class="kpi-row">
-      <div class="kpi"><div class="kl">พนักงานทั้งหมด</div><div class="kv blue">${EMPS.length}</div><div class="ks">คน</div></div>
-      <div class="kpi"><div class="kl">เข้างานวันนี้</div><div class="kv ok">${present}</div><div class="ks">${Math.round(present/EMPS.length*100)}% ของทีม</div></div>
-      <div class="kpi"><div class="kl">ลาป่วย / หยุด</div><div class="kv${sick>0?' danger':''}">${sick+absent}</div><div class="ks">ลาป่วย ${sick} · หยุด ${absent}</div></div>
-      <div class="kpi"><div class="kl">มาสายวันนี้</div><div class="kv${late>0?' warn':''}">${late}</div><div class="ks">เกิน 08:00 น.</div></div>
-      <div class="kpi"><div class="kl">มี OT วันนี้</div><div class="kv${hasOT>0?' ok':''}">${hasOT}</div><div class="ks">คน (ออกหลัง 17:00)</div></div>
-      <div class="kpi"><div class="kl">OT สัปดาห์นี้</div><div class="kv blue">${totOT.toFixed(1)}</div><div class="ks">ชั่วโมงรวม</div></div>
-    </div>`;
-
-  let tg='';
-  EMPS.forEach((emp,ei)=>{
-    const d=TS[ei][WI][DI];
-    const c=calcDay(d);
-    let dot='dot-ok',tm='';
-    if(d.s==='sick'){dot='dot-sick';tm='ลาป่วย';}
-    else if(d.s==='off'){dot='dot-off';tm='หยุด';}
-    else if(d.s==='lv'){dot='dot-off';tm='ลากิจ';}
-    else if(c.lateMin>0){dot='dot-late';tm=`${d.i} (สาย ${c.lateMin} น.)`;}
-    else{tm=d.i+'–'+d.o+(c.otMin>0?` OT+${(c.otMin/60).toFixed(1)}h`:'');}
-    tg+=`<div class="tc"><div class="dot ${dot}"></div><div><div class="tn">${emp.name}</div><div class="tt">${tm}</div></div></div>`;
-  });
-  document.getElementById('todayGrid').innerHTML=tg;
+// ══ LINE NOTIFY ═════════════════════════════
+function loadGASUrl(){
+  _gasUrl=localStorage.getItem('wibwub_gas_url')||'';
+  ['gas-url-inline','gas-url-main'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=_gasUrl;});
+  const row=document.getElementById('line-cfg-row');
+  if(row)row.style.display=_gasUrl?'flex':'none';
+}
+function syncGASUrlInline(){_gasUrl=document.getElementById('gas-url-inline')?.value?.trim()||'';localStorage.setItem('wibwub_gas_url',_gasUrl);if(document.getElementById('gas-url-main'))document.getElementById('gas-url-main').value=_gasUrl;document.getElementById('gas-cfg-status').textContent='✓';}
+function syncGASUrlMain(){_gasUrl=document.getElementById('gas-url-main')?.value?.trim()||'';localStorage.setItem('wibwub_gas_url',_gasUrl);if(document.getElementById('gas-url-inline'))document.getElementById('gas-url-inline').value=_gasUrl;}
+async function sendLineNotify(msg){
+  if(!_gasUrl)return;
+  try{await fetch(_gasUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'\n'+msg}),mode:'cors'});}
+  catch(e){console.warn('Line Notify:',e);}
+}
+async function testLineNotify(){
+  const el=document.getElementById('notify-test-msg');
+  _gasUrl=document.getElementById('gas-url-main')?.value?.trim()||'';
+  if(!_gasUrl){el.textContent='กรุณาใส่ GAS Proxy URL';el.style.color='var(--rd)';return;}
+  el.textContent='กำลังส่ง...';el.style.color='var(--sub)';
+  try{await sendLineNotify('[WIBWUB HR] 🧪 ทดสอบระบบแจ้งเตือน — ใช้งานได้ปกติ ✅');el.textContent='✅ ส่งสำเร็จ! เช็ค Line กลุ่ม HR';el.style.color='#16a34a';}
+  catch(e){el.textContent='❌ '+e.message;el.style.color='var(--rd)';}
 }
 
-// ═══════════════════════════════════════════════════════
-// OVERVIEW CHARTS
-// ═══════════════════════════════════════════════════════
-let ovCharts=[];
-function initOvCharts(){
-  ovCharts.forEach(c=>c.destroy());
-  ovCharts=[];
+// ══ INIT ════════════════════════════════════
+function initApp(){
+  const now=new Date();
+  const thDays=['อาทิตย์','จันทร์','อังคาร','พุธ','พฤหัส','ศุกร์','เสาร์'];
+  const thMo=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  document.getElementById('hdrDate').textContent=`วัน${thDays[now.getDay()]} ${now.getDate()} ${thMo[now.getMonth()]} ${now.getFullYear()+543}`;
+  document.getElementById('today-date').value=now.toISOString().split('T')[0];
+  setCurrentWeek();
+  loadGASUrl();
+  loadToday();
+  loadPendingLeave();
+  loadLeaveHistory();
+  loadTimesheet();
+}
 
-  // 1. Week hours (stacked normal+OT)
-  const WI=3;
-  const normH=[],otH=[];
-  for(let di=0;di<5;di++){
-    let n=0,o=0;
-    EMPS.forEach((_,ei)=>{
-      const c=calcDay(TS[ei][WI][di]);
-      if(c.worked){n+=c.hrs-c.otMin/60;o+=c.otMin/60;}
+function goTab(t){
+  document.querySelectorAll('.nt').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.sec').forEach(el=>el.classList.remove('active'));
+  document.getElementById('nt-'+t)?.classList.add('active');
+  document.getElementById('sec-'+t)?.classList.add('active');
+}
+
+// ══ TODAY ════════════════════════════════════
+async function loadToday(){
+  const date=document.getElementById('today-date').value;
+  if(!date)return;
+  const wrap=document.getElementById('today-tbl-wrap');
+  wrap.innerHTML='<div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>';
+  try{
+    const docs=await fsQuery('attendance',[{field:'date',value:date}],{field:'check_in',dir:'ASCENDING'});
+    updateKPIs(docs);
+    renderTodayTable(docs,wrap);
+  }catch(e){wrap.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+function setTodayDate(){document.getElementById('today-date').value=new Date().toISOString().split('T')[0];loadToday();}
+
+function fmtTime(v){
+  if(!v)return'—';
+  try{const d=v instanceof Date?v:new Date(v);return d.toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false});}
+  catch{return String(v).substring(11,16)||'—';}
+}
+
+function updateKPIs(docs){
+  let present=0,late=0,out=0,sumMin=0,cnt=0,sumHrs=0,hCnt=0;
+  docs.forEach(doc=>{
+    const d=doc.data();
+    if(d.status==='present'||d.status==='late'){
+      present++;
+      if(d.status==='late')late++;
+      if(d.check_out){out++;if(d.work_hours){sumHrs+=Number(d.work_hours);hCnt++;}}
+      if(d.check_in){try{const t=d.check_in instanceof Date?d.check_in:new Date(d.check_in);sumMin+=t.getHours()*60+t.getMinutes();cnt++;}catch{}}
+    }
+  });
+  document.getElementById('kpi-present').textContent=present;
+  document.getElementById('kpi-late').textContent=late;
+  document.getElementById('kpi-out').textContent=out;
+  const avgEl=document.getElementById('kpi-avg');
+  if(cnt>0){const a=Math.round(sumMin/cnt);avgEl.textContent=String(Math.floor(a/60)).padStart(2,'0')+':'+String(a%60).padStart(2,'0');}else avgEl.textContent='—';
+  document.getElementById('kpi-hrs').textContent=hCnt>0?(sumHrs/hCnt).toFixed(1):'—';
+}
+
+function renderTodayTable(docs,container){
+  if(!docs.length){container.innerHTML='<div class="empty-state"><div class="empty-ic">📭</div>ไม่มีข้อมูลการเช็คอินในวันนี้</div>';return;}
+  const rows=docs.map(doc=>{
+    const d=doc.data();
+    const inT=fmtTime(d.check_in),outT=fmtTime(d.check_out);
+    const hrs=d.check_out&&d.check_in?Math.round((new Date(d.check_out)-new Date(d.check_in))/360000)/10:null;
+    const st=d.check_out?'checked-out':d.status||'present';
+    const badgeMap={'checked-out':'<span class="badge b-approved">เสร็จสิ้น</span>','late':'<span class="badge b-late">มาสาย</span>','present':'<span class="badge b-present">กำลังทำงาน</span>'};
+    const badge=badgeMap[st]||badgeMap.present;
+    const loc=d.check_in_lat?`${Number(d.check_in_lat).toFixed(4)}, ${Number(d.check_in_lng).toFixed(4)}`:'—';
+    return `<tr><td><strong>${d.name||d.email||'—'}</strong><br><span style="font-size:10px;color:var(--sub)">${d.email||''}</span></td><td>${d.dept||'—'}</td><td style="font-weight:600;font-variant-numeric:tabular-nums">${inT}</td><td style="font-variant-numeric:tabular-nums">${outT}</td><td class="td-c">${hrs!==null?hrs+' ชม.':'—'}</td><td class="td-c">${badge}</td><td style="font-size:10px;color:var(--sub)">${loc}</td></tr>`;
+  }).join('');
+  container.innerHTML=`<table><thead><tr><th>พนักงาน</th><th>แผนก/Role</th><th>เข้างาน</th><th>ออกงาน</th><th class="td-c">ชั่วโมง</th><th class="td-c">สถานะ</th><th>GPS</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+// ══ LEAVE ════════════════════════════════════
+async function loadPendingLeave(){
+  const el=document.getElementById('pending-leave-list');
+  el.innerHTML='<div class="loading-msg"><span class="spin"></span></div>';
+  try{
+    const docs=await fsQuery('leave_requests',[{field:'status',value:'pending'}],{field:'created_at',dir:'ASCENDING'},50);
+    document.getElementById('pending-count').textContent=docs.length;
+    const badge=document.getElementById('leave-badge');
+    badge.textContent=docs.length;badge.style.display=docs.length>0?'':'none';
+    if(!docs.length){el.innerHTML='<div class="empty-state"><div class="empty-ic">✅</div>ไม่มีคำร้องที่รอพิจารณา</div>';return;}
+    const isAdmin=ADMIN_ROLES.includes(_role);
+    el.innerHTML=docs.map(doc=>{
+      const d=doc.data();
+      const typeIcon={ลาป่วย:'🤒',ลากิจ:'📋',ลาพักร้อน:'🏖️',ลาคลอด:'🍼',ลาบวช:'🙏',WFH:'🏠',อื่นๆ:'📌'}[d.type]||'📝';
+      const created=d.created_at?new Date(d.created_at instanceof Date?d.created_at:d.created_at).toLocaleDateString('th-TH'):'—';
+      const dr=fmtDateRange(d.start_date,d.end_date,d.days);
+      const btns=isAdmin?`<div style="margin-top:10px;display:flex;gap:6px"><button class="btn-approve" onclick="approveLeave('${doc.id}','${(d.name||d.email||'').replace(/'/g,'&apos;')}','${d.type}',this)">✓ อนุมัติ</button><button class="btn-reject" onclick="rejectLeave('${doc.id}','${(d.name||d.email||'').replace(/'/g,'&apos;')}','${d.type}',this)">✗ ปฏิเสธ</button></div>`:`<div style="font-size:11px;color:var(--sub);margin-top:6px">รอ HR พิจารณา</div>`;
+      return `<div style="padding:13px 16px;border-bottom:.5px solid #f0f0f0"><div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px"><div><div style="font-size:13px;font-weight:600">${typeIcon} ${d.type} — <span style="color:var(--bl)">${d.name||d.email||'—'}</span></div><div style="font-size:11px;color:var(--sub);margin-top:3px">${dr} • ยื่นเมื่อ ${created}</div><div style="font-size:11px;color:var(--tx);margin-top:6px;background:#f8f9fb;padding:6px 10px;border-radius:7px;max-width:500px">${d.reason||'—'}</div>${btns}</div><span class="badge b-pending">รอพิจารณา</span></div></div>`;
+    }).join('');
+  }catch(e){el.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+async function loadLeaveHistory(){
+  const el=document.getElementById('leave-history-list');
+  el.innerHTML='<div class="loading-msg"><span class="spin"></span></div>';
+  const fs=document.getElementById('lv-filter-status').value;
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-60);
+  const cutoffISO=cutoff.toISOString();
+  try{
+    let docs=await fsQuery('leave_requests',[],{field:'created_at',dir:'DESCENDING'},200);
+    docs=docs.filter(doc=>{
+      const d=doc.data();
+      if(d.status==='pending')return false;
+      const cr=d.created_at instanceof Date?d.created_at.toISOString():String(d.created_at||'');
+      if(cr<cutoffISO)return false;
+      if(fs&&d.status!==fs)return false;
+      return true;
     });
-    normH.push(+n.toFixed(1));otH.push(+o.toFixed(1));
+    if(!docs.length){el.innerHTML='<div class="empty-state"><div class="empty-ic">📋</div>ไม่มีประวัติใบลา</div>';return;}
+    const rows=docs.map(doc=>{
+      const d=doc.data();
+      const bc={'approved':'b-approved','rejected':'b-rejected','pending':'b-pending'}[d.status]||'b-pending';
+      const sl={'approved':'อนุมัติ','rejected':'ไม่อนุมัติ','pending':'รอพิจารณา'}[d.status]||d.status;
+      const created=d.created_at?new Date(d.created_at instanceof Date?d.created_at:d.created_at).toLocaleDateString('th-TH'):'—';
+      const note=d.admin_note?`<span style="color:var(--sub);font-size:10px"> (${d.admin_note})</span>`:'';
+      return `<tr><td><strong>${d.name||d.email||'—'}</strong></td><td>${d.type||'—'}</td><td style="white-space:nowrap">${fmtDateRange(d.start_date,d.end_date,d.days)}</td><td style="font-size:11px;color:var(--sub);max-width:200px">${(d.reason||'').substring(0,45)}${(d.reason||'').length>45?'...':''}</td><td style="font-size:11px">${created}</td><td><span class="badge ${bc}">${sl}</span>${note}<br><span style="font-size:10px;color:var(--muted)">${d.approved_by||''}</span></td></tr>`;
+    }).join('');
+    el.innerHTML=`<div class="tbl-wrap"><table><thead><tr><th>พนักงาน</th><th>ประเภท</th><th>วันที่</th><th>เหตุผล</th><th>ยื่นเมื่อ</th><th>สถานะ</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+  }catch(e){el.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+async function approveLeave(id,name,type,btn){
+  if(!confirm(`อนุมัติใบลา "${type}" ของ ${name}?`))return;
+  btn.disabled=true;btn.nextElementSibling.disabled=true;
+  const note=prompt('หมายเหตุ (เว้นว่างได้):','')||'';
+  try{
+    const doc=await fsGet('leave_requests',id);
+    const data=doc.data();
+    await fsPatch('leave_requests',id,{...data,status:'approved',approved_by:_user.displayName||_user.email,approved_at:new Date().toISOString(),admin_note:note});
+    await sendLineNotify(`[WIBWUB HR] ✅ อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${fmtDateRange(data.start_date,data.end_date,data.days)}\nอนุมัติโดย: ${_user.displayName||_user.email}${note?'\nหมายเหตุ: '+note:''}`);
+    loadPendingLeave();loadLeaveHistory();
+  }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.nextElementSibling.disabled=false;}
+}
+
+async function rejectLeave(id,name,type,btn){
+  const reason=prompt(`เหตุผลที่ปฏิเสธใบลา "${type}" ของ ${name}:`,'');
+  if(reason===null)return;
+  btn.disabled=true;btn.previousElementSibling.disabled=true;
+  try{
+    const doc=await fsGet('leave_requests',id);
+    const data=doc.data();
+    await fsPatch('leave_requests',id,{...data,status:'rejected',approved_by:_user.displayName||_user.email,approved_at:new Date().toISOString(),admin_note:reason||''});
+    await sendLineNotify(`[WIBWUB HR] ❌ ไม่อนุมัติใบลา\nพนักงาน: ${name}\nประเภท: ${type}\nวันที่: ${fmtDateRange(data.start_date,data.end_date,data.days)}\nเหตุผล: ${reason||'—'}`);
+    loadPendingLeave();loadLeaveHistory();
+  }catch(e){alert('เกิดข้อผิดพลาด: '+e.message);btn.disabled=false;btn.previousElementSibling.disabled=false;}
+}
+
+function fmtDateRange(s,e,days){
+  const fmt=v=>v?v.replace(/(\d{4})-(\d{2})-(\d{2})/,'$3/$2'):'—';
+  return s===e?`${fmt(s)} (${days||1}วัน)`:`${fmt(s)}–${fmt(e)} (${days||1}วัน)`;
+}
+
+// ══ TIMESHEET ════════════════════════════════
+function setCurrentWeek(){
+  const d=new Date(),day=d.getDay(),diff=d.getDate()-day+(day===0?-6:1);
+  const mon=new Date(d.setDate(diff));
+  document.getElementById('ts-week-start').value=mon.toISOString().split('T')[0];
+  if(document.getElementById('sec-timesheet')?.classList.contains('active'))loadTimesheet();
+}
+function offsetWeek(delta){
+  const el=document.getElementById('ts-week-start');
+  if(!el.value)return;
+  const d=new Date(el.value);d.setDate(d.getDate()+delta*7);
+  el.value=d.toISOString().split('T')[0];loadTimesheet();
+}
+
+async function loadTimesheet(){
+  const startStr=document.getElementById('ts-week-start').value;
+  if(!startStr)return;
+  const container=document.getElementById('timesheet-container');
+  container.innerHTML='<div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>';
+  const startDate=new Date(startStr);
+  const thDay=['จ.','อ.','พ.','พฤ.','ศ.'];
+  const days=[];
+  for(let i=0;i<5;i++){
+    const d=new Date(startDate);d.setDate(d.getDate()+i);
+    days.push({str:d.toISOString().split('T')[0],lbl:`${thDay[i]} ${d.getDate()}/${d.getMonth()+1}`});
   }
-  ovCharts.push(new Chart(document.getElementById('cWeek'),{
-    type:'bar',
-    data:{labels:WEEKS[WI].days,
-      datasets:[
-        {label:'ปกติ',data:normH,backgroundColor:'#3B82F666',borderColor:'#3B82F6',borderWidth:1,borderRadius:4,stack:'s'},
-        {label:'OT',data:otH,backgroundColor:'#22C55E88',borderColor:'#22C55E',borderWidth:1,borderRadius:4,stack:'s'},
-      ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{font:{size:11},boxWidth:12}}},
-      scales:{x:{stacked:true,ticks:{font:{size:11}}},y:{stacked:true,ticks:{font:{size:11}},title:{display:true,text:'ชม.',font:{size:11}}}}}
-  }));
-
-  // 2. OT top 10 horizontal
-  const oData=EMPS.map((e,ei)=>{
-    let t=0;for(let wi=0;wi<4;wi++)for(let di=0;di<5;di++)t+=calcDay(TS[ei][wi][di]).otMin/60;
-    return{name:e.name,ot:+t.toFixed(1)};
-  }).sort((a,b)=>b.ot-a.ot).slice(0,10);
-  ovCharts.push(new Chart(document.getElementById('cOTTop'),{
-    type:'bar',
-    data:{labels:oData.map(e=>e.name),datasets:[{label:'OT ชม.',data:oData.map(e=>e.ot),backgroundColor:'#1A5CDB88',borderColor:'#1A5CDB',borderWidth:1,borderRadius:4}]},
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:11}}}}}
-  }));
-
-  // 3. Attendance trend
-  const tDays=[],tPres=[],tLate=[],tSick=[];
-  [[0,['4','5','6','7','8']],[1,['11','12','13','14','15']],[2,['18','19','20','21','22']],[3,['26','27','28','29','30']]].forEach(([wi,dLbls])=>{
-    for(let di=0;di<5;di++){
-      let pr=0,la=0,sk=0;
-      EMPS.forEach((_,ei)=>{
-        const d=TS[ei][wi][di];const c=calcDay(d);
-        if(d.s==='sick') sk++;
-        else if(d.s==='off'||d.s==='lv'){}
-        else{pr++;if(c.lateMin>0)la++;}
+  const endDate=new Date(startDate);endDate.setDate(endDate.getDate()+4);
+  const thMo=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const fmtD=d=>`${d.getDate()} ${thMo[d.getMonth()]} ${d.getFullYear()+543}`;
+  document.getElementById('ts-week-label').textContent=`สัปดาห์ ${fmtD(startDate)} – ${fmtD(endDate)}`;
+  try{
+    const allDocs=await Promise.all(days.map(day=>fsQuery('attendance',[{field:'date',value:day.str}],{field:'name',dir:'ASCENDING'})));
+    const empMap={};
+    allDocs.forEach((docs,di)=>{
+      docs.forEach(doc=>{
+        const d=doc.data();const uid=d.uid||d.email;
+        if(!empMap[uid])empMap[uid]={name:d.name||d.email||'—',dept:d.dept||'',days:{}};
+        empMap[uid].days[days[di].str]=d;
       });
-      tDays.push(dLbls[di]);tPres.push(pr);tLate.push(la);tSick.push(sk);
-    }
-  });
-  ovCharts.push(new Chart(document.getElementById('cTrend'),{
-    type:'line',
-    data:{labels:tDays,datasets:[
-      {label:'เข้างาน',data:tPres,borderColor:'#3B82F6',backgroundColor:'#3B82F615',fill:true,tension:0.3,pointRadius:2},
-      {label:'มาสาย',data:tLate,borderColor:'#F59E0B',backgroundColor:'transparent',borderDash:[4,3],tension:0.3,pointRadius:2},
-      {label:'ลาป่วย',data:tSick,borderColor:'#EF4444',backgroundColor:'transparent',borderDash:[4,3],tension:0.3,pointRadius:2},
-    ]},
-    options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{labels:{font:{size:11},boxWidth:12}}},
-      scales:{x:{ticks:{font:{size:9}}},y:{min:0,max:22,ticks:{stepSize:5,font:{size:10}}}}}
-  }));
-}
-
-// ═══════════════════════════════════════════════════════
-// TIMESHEET
-// ═══════════════════════════════════════════════════════
-let curW=3;
-function prevW(){if(curW>0){curW--;renderTS();}}
-function nextW(){if(curW<3){curW++;renderTS();}}
-
-function renderTS(){
-  document.getElementById('wLabel').textContent=WEEKS[curW].lbl;
-  const days=WEEKS[curW].days;
-  let h=`<thead><tr><th class="nc">พนักงาน</th><th>แผนก</th>`;
-  days.forEach(d=>{h+=`<th>${d}<br><span style="font-weight:400;font-size:10px">เข้า / ออก</span></th>`;});
-  h+='<th>รวม ชม.</th><th>OT ชม.</th><th>สาย</th><th>สถานะ</th></tr></thead><tbody>';
-
-  let fTotH=[0,0,0,0,0],fTotOT=[0,0,0,0,0],fPres=[0,0,0,0,0];
-
-  EMPS.forEach((emp,ei)=>{
-    let totH=0,totOT=0,lateCnt=0,rowSt='ok';
-    h+=`<tr><td class="nc"><span style="font-weight:600">${emp.name}</span></td>`;
-    h+=`<td><span class="badge" style="background:${dBg(emp.dept)};color:${dClr(emp.dept)};border:1px solid ${dClr(emp.dept)}40">${emp.dept}</span></td>`;
-
-    days.forEach((_,di)=>{
-      const d=TS[ei][curW][di];const c=calcDay(d);
-      if(d.s==='sick'){
-        h+=`<td class="cell-sick"><div style="color:#dc2626;font-size:11px;font-weight:600">ลาป่วย</div></td>`;
-        rowSt='sick';
-      } else if(d.s==='off'){
-        h+=`<td class="cell-off"><div style="color:var(--sub);font-size:11px">หยุด</div></td>`;
-      } else if(d.s==='lv'){
-        h+=`<td class="cell-lv"><div style="color:var(--pu);font-size:11px;font-weight:600">ลากิจ</div></td>`;
-      } else {
-        const late=c.lateMin>0, hasOT=c.otMin>0;
-        const cellCls=late?'cell-late':hasOT?'cell-ot':'';
-        const inClr=late?'color:#d97706;font-weight:700':'color:var(--tx)';
-        const outClr=hasOT?'color:#16a34a;font-weight:600':'color:var(--sub)';
-        const otLbl=hasOT?`<div class="cot">+OT ${(c.otMin/60).toFixed(1)}h</div>`:'';
-        const lateLbl=late?`<div class="clate">สาย ${c.lateMin}น.</div>`:'';
-        h+=`<td class="${cellCls}" style="padding:5px 8px">
-          <div class="ci" style="${inClr}">${d.i}</div>
-          <div class="co" style="${outClr}">${d.o}</div>
-          ${otLbl}${lateLbl}
-        </td>`;
-        totH+=c.hrs; totOT+=c.otMin/60;
-        if(late) lateCnt++;
-        fTotH[di]+=c.hrs; fTotOT[di]+=c.otMin/60; fPres[di]++;
-        if(rowSt==='ok'&&late) rowSt='late';
-        if(c.otMin>0&&rowSt!=='sick'&&rowSt!=='late') rowSt='ot';
-      }
     });
-
-    const stBadge=rowSt==='sick'?`<span class="badge b-sick">ลาป่วย</span>`:
-                  rowSt==='late'?`<span class="badge b-late">สาย ${lateCnt}ครั้ง</span>`:
-                  rowSt==='ot'?`<span class="badge b-ot">OT ${totOT.toFixed(1)}h</span>`:
-                  `<span class="badge b-ok">ปกติ</span>`;
-    h+=`<td style="font-weight:600">${totH.toFixed(1)}</td>`;
-    h+=`<td style="color:${totOT>0?'#16a34a':'var(--sub)'};font-weight:${totOT>0?700:400}">${totOT>0?'+'+totOT.toFixed(1):'—'}</td>`;
-    h+=`<td style="color:${lateCnt>0?'#d97706':'var(--sub)'}">${lateCnt>0?lateCnt+'ครั้ง':'—'}</td>`;
-    h+=`<td>${stBadge}</td></tr>`;
-  });
-
-  // Footer totals row
-  h+='<tr style="background:#f9fafb"><td class="nc" style="font-weight:700;font-size:11px">รวมทีม</td><td></td>';
-  fPres.forEach((p,di)=>{
-    h+=`<td style="font-size:11px"><div style="color:var(--bl);font-weight:600">${p}คน</div><div style="color:var(--sub)">${fTotH[di].toFixed(0)}ชม.</div><div style="color:#16a34a">${fTotOT[di]>0?'OT '+fTotOT[di].toFixed(1):'—'}</div></td>`;
-  });
-  h+='<td></td><td></td><td></td><td></td></tr>';
-  h+='</tbody>';
-  document.getElementById('tsTable').innerHTML=h;
-
-  // Week summary
-  let wkH=0,wkOT=0,wkLate=0,wkSick=0,wkDays=0;
-  EMPS.forEach((_,ei)=>{
-    for(let di=0;di<5;di++){
-      const d=TS[ei][curW][di];const c=calcDay(d);
-      if(d.s==='sick') wkSick++;
-      else if(d.s!=='off'&&d.s!=='lv'){
-        wkDays++;wkH+=c.hrs;wkOT+=c.otMin/60;if(c.lateMin>0)wkLate++;
-      }
-    }
-  });
-  document.getElementById('weekSum').innerHTML=`
-    <div class="sh" style="margin-bottom:8px">สรุปสัปดาห์นี้</div>
-    <div class="ws-grid">
-      <div class="ws-item"><div class="ws-val">${wkDays}</div><div class="ws-lbl">วัน-คน เข้างาน</div></div>
-      <div class="ws-item"><div class="ws-val">${wkH.toFixed(0)}</div><div class="ws-lbl">ชั่วโมงทำงานรวม</div></div>
-      <div class="ws-item"><div class="ws-val" style="color:#16a34a">${wkOT.toFixed(1)}</div><div class="ws-lbl">ชม. OT รวม</div></div>
-      <div class="ws-item"><div class="ws-val" style="color:#d97706">${wkLate}</div><div class="ws-lbl">ครั้งที่มาสาย</div></div>
-      <div class="ws-item"><div class="ws-val" style="color:#dc2626">${wkSick}</div><div class="ws-lbl">วัน-คน ลาป่วย</div></div>
-    </div>`;
+    const emps=Object.values(empMap).sort((a,b)=>(a.dept+a.name).localeCompare(b.dept+b.name,'th'));
+    if(!emps.length){container.innerHTML='<div class="empty-state"><div class="empty-ic">📭</div>ไม่มีข้อมูลในสัปดาห์นี้</div>';return;}
+    const cols=1+5;
+    const hdrCells=`<div class="ts-cell ts-hdr" style="font-weight:700">พนักงาน</div>`+days.map(d=>`<div class="ts-cell ts-hdr" style="text-align:center">${d.lbl}</div>`).join('');
+    const rows=emps.map(emp=>{
+      const nameCell=`<div class="ts-cell ts-name"><div style="font-size:12px;font-weight:600">${emp.name}</div><div style="font-size:10px;color:var(--sub)">${emp.dept}</div></div>`;
+      const dayCells=days.map(day=>{
+        const rec=emp.days[day.str];
+        if(!rec)return`<div class="ts-cell ts-absent">—</div>`;
+        const inT=fmtTime(rec.check_in),outT=fmtTime(rec.check_out);
+        const cls=rec.status==='late'?'ts-late':'ts-ok';
+        return`<div class="ts-cell ${cls}" style="text-align:center"><div style="font-weight:700;font-size:11px">${inT}</div><div style="font-size:10px;opacity:.65">${outT}</div>${rec.status==='late'?'<div style="font-size:9px;color:#d97706">⚠ สาย</div>':''}</div>`;
+      }).join('');
+      return nameCell+dayCells;
+    }).join('');
+    container.innerHTML=`<div class="ts-grid" style="grid-template-columns:150px repeat(5,1fr)">${hdrCells}${rows}</div>`;
+  }catch(e){container.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
 }
-
-// ═══════════════════════════════════════════════════════
-// OT SECTION
-// ═══════════════════════════════════════════════════════
-let otChart=null;
-function initOT(){
-  const data=EMPS.map((e,ei)=>{
-    let tot=0;const wks=[];
-    for(let wi=0;wi<4;wi++){let w=0;for(let di=0;di<5;di++)w+=calcDay(TS[ei][wi][di]).otMin/60;wks.push(+w.toFixed(1));tot+=w;}
-    return{...e,tot:+tot.toFixed(1),wks};
-  }).sort((a,b)=>b.tot-a.tot);
-  const maxOT=data[0].tot||1;
-  const totalOT=+data.reduce((a,e)=>a+e.tot,0).toFixed(1);
-  const cntOT=data.filter(e=>e.tot>0).length;
-  const avgOT=+(totalOT/EMPS.length).toFixed(1);
-
-  document.getElementById('kpiOT').innerHTML=`
-    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kl">OT รวมเดือนนี้</div><div class="kv blue">${totalOT}</div><div class="ks">ชั่วโมง</div></div>
-      <div class="kpi"><div class="kl">คนที่ทำ OT</div><div class="kv ok">${cntOT}</div><div class="ks">จาก ${EMPS.length} คน</div></div>
-      <div class="kpi"><div class="kl">OT สูงสุด</div><div class="kv warn">${data[0].tot}h</div><div class="ks">${data[0].name}</div></div>
-      <div class="kpi"><div class="kl">เฉลี่ยต่อคน</div><div class="kv">${avgOT}</div><div class="ks">ชม./คน/เดือน</div></div>
-    </div>`;
-
-  let tb=`<thead><tr><th>พนักงาน</th><th>แผนก</th><th>ส.1</th><th>ส.2</th><th>ส.3</th><th>ส.4</th><th>รวม</th><th style="min-width:80px">แผนภาพ</th></tr></thead><tbody>`;
-  data.forEach(e=>{
-    const pct=Math.round((e.tot/maxOT)*100);
-    tb+=`<tr>
-      <td style="font-weight:600">${e.name}</td>
-      <td><span class="badge" style="background:${dBg(e.dept)};color:${dClr(e.dept)};border:1px solid ${dClr(e.dept)}40">${e.dept}</span></td>
-      ${e.wks.map(w=>`<td style="color:${w>0?'#16a34a':'var(--sub)'};font-weight:${w>0?600:400}">${w>0?'+'+w:'—'}</td>`).join('')}
-      <td style="font-weight:700;color:${e.tot>20?'#dc2626':e.tot>10?'#d97706':'var(--tx)'}">${e.tot}</td>
-      <td><div class="bar-bg"><div class="bar-fill gn" style="width:${pct}%"></div></div></td>
-    </tr>`;
-  });
-  tb+='</tbody>';
-  document.getElementById('otTable').innerHTML=tb;
-
-  // OT daily chart for week 4
-  const dayOT=[];
-  for(let di=0;di<5;di++){let t=0;EMPS.forEach((_,ei)=>t+=calcDay(TS[ei][3][di]).otMin/60);dayOT.push(+t.toFixed(1));}
-  if(otChart) otChart.destroy();
-  otChart=new Chart(document.getElementById('cOTDaily'),{
-    type:'bar',
-    data:{labels:WEEKS[3].days,datasets:[{label:'OT รวม (ชม.)',data:dayOT,backgroundColor:data.map((_,i)=>['#3B82F6','#8B5CF6','#EC4899','#10B981','#F59E0B'][i%5]+'88'),borderRadius:6,borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-      scales:{y:{title:{display:true,text:'ชม. OT รวมทีม',font:{size:11}},ticks:{font:{size:11}}},x:{ticks:{font:{size:11}}}}}
-  });
-}
-
-// ═══════════════════════════════════════════════════════
-// LEAVE SECTION
-// ═══════════════════════════════════════════════════════
-let lvCharts=[];
-function initLeave(){
-  lvCharts.forEach(c=>c.destroy());lvCharts=[];
-  const QUOTA_SICK=30,QUOTA_LV=6;
-  const eLeave=EMPS.map((e,ei)=>{
-    let sick=0,off=0,lv=0;
-    for(let wi=0;wi<4;wi++)for(let di=0;di<5;di++){
-      const d=TS[ei][wi][di];
-      if(d.s==='sick') sick++;else if(d.s==='off') off++;else if(d.s==='lv') lv++;
-    }
-    return{...e,sick,off,lv};
-  });
-  const totSick=eLeave.reduce((a,e)=>a+e.sick,0);
-  const totLv=eLeave.reduce((a,e)=>a+e.lv,0);
-  const totOff=eLeave.reduce((a,e)=>a+e.off,0);
-  const maxSick=Math.max(...eLeave.map(e=>e.sick))||1;
-
-  document.getElementById('kpiLV').innerHTML=`
-    <div class="kpi-row" style="grid-template-columns:repeat(4,1fr)">
-      <div class="kpi"><div class="kl">ลาป่วยรวม (เดือนนี้)</div><div class="kv danger">${totSick}</div><div class="ks">วัน-คน</div></div>
-      <div class="kpi"><div class="kl">ลากิจรวม (เดือนนี้)</div><div class="kv warn">${totLv}</div><div class="ks">วัน-คน</div></div>
-      <div class="kpi"><div class="kl">วันหยุดรวม</div><div class="kv">${totOff}</div><div class="ks">วัน-คน</div></div>
-      <div class="kpi"><div class="kl">ลาป่วยสูงสุด</div><div class="kv danger">${maxSick}</div><div class="ks">วัน (${eLeave.find(e=>e.sick===maxSick).name})</div></div>
-    </div>`;
-
-  let lvTb=`<thead><tr><th>พนักงาน</th><th>ลาป่วย</th><th>ลากิจ</th><th>หยุด</th><th>โควต้าลาป่วยคงเหลือ (จาก ${QUOTA_SICK} วัน/ปี)</th></tr></thead><tbody>`;
-  eLeave.sort((a,b)=>b.sick-a.sick).forEach(e=>{
-    const rem=QUOTA_SICK-e.sick;
-    const usedPct=Math.round((e.sick/QUOTA_SICK)*100);
-    lvTb+=`<tr>
-      <td style="font-weight:600">${e.name}<br><span style="font-size:10px;color:var(--sub)">${e.dept}</span></td>
-      <td style="color:${e.sick>2?'#dc2626':e.sick>0?'#d97706':'var(--sub)'};font-weight:${e.sick>0?600:400}">${e.sick>0?e.sick+' วัน':'—'}</td>
-      <td style="color:${e.lv>0?'var(--pu)':'var(--sub)'}">${e.lv>0?e.lv+' วัน':'—'}</td>
-      <td>${e.off>0?e.off+' วัน':'—'}</td>
-      <td>
-        <div style="font-size:11px;color:var(--sub);margin-bottom:4px">คงเหลือ ${rem} / ${QUOTA_SICK} วัน</div>
-        <div style="display:flex;height:6px;border-radius:3px;overflow:hidden;background:#e5e7eb">
-          <div style="width:${usedPct}%;background:#ef4444;transition:width .3s"></div>
-        </div>
-      </td>
-    </tr>`;
-  });
-  lvTb+='</tbody>';
-  document.getElementById('lvTable').innerHTML=lvTb;
-
-  // Donut
-  lvCharts.push(new Chart(document.getElementById('cLvDonut'),{
-    type:'doughnut',
-    data:{labels:['ลาป่วย','ลากิจ','หยุด'],
-      datasets:[{data:[totSick,totLv,totOff],backgroundColor:['#EF444488','#7C3AED88','#9CA3AF88'],borderColor:['#EF4444','#7C3AED','#9CA3AF'],borderWidth:2}]},
-    options:{responsive:true,maintainAspectRatio:false,cutout:'65%',plugins:{legend:{display:false}}}
-  }));
-  document.getElementById('lvLegend').innerHTML=[
-    {c:'#EF4444',l:`ลาป่วย ${totSick} วัน`},{c:'#7C3AED',l:`ลากิจ ${totLv} วัน`},{c:'#9CA3AF',l:`หยุด ${totOff} วัน`}
-  ].map(i=>`<span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:2px;background:${i.c};flex-shrink:0"></span>${i.l}</span>`).join('');
-
-  // Sick bar
-  const sickData=eLeave.filter(e=>e.sick>0).sort((a,b)=>b.sick-a.sick);
-  lvCharts.push(new Chart(document.getElementById('cSickBar'),{
-    type:'bar',
-    data:{labels:sickData.map(e=>e.name),datasets:[{label:'ลาป่วย (วัน)',data:sickData.map(e=>e.sick),backgroundColor:'#EF444488',borderColor:'#EF4444',borderWidth:1,borderRadius:4}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{ticks:{stepSize:1,font:{size:10}}},x:{ticks:{font:{size:11}}}}}
-  }));
-}
-
-// ═══════════════════════════════════════════════════════
-// BOOT
-// ═══════════════════════════════════════════════════════
-initHeader();
-initOverview();
-initOvCharts();
-renderTS();
-initOT();
-initLeave();
 </script>
 </body>
 </html>
