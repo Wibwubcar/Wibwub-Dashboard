@@ -500,20 +500,20 @@ function aggregate(start, end) {
   const real_sales = total_sales - internal_sales;
   const total_items  = lines.reduce((s,l) => s + l.q, 0);
   const skus         = new Set(lines.map(l => l.p)).size;
-  const total_orders   = lines.length;  // 1 line = 1 unique order
+  const total_orders   = new Set(lines.map(l => l.order_id)).size;
   const aov            = total_orders > 0 ? Math.round(total_sales / total_orders) : 0;
   const total_shipping = 0;
 
   // ── Channel breakdown (from lines) ───────────────────────────────
   const chMap = new Map();
   lines.forEach(l => {
-    const cur = chMap.get(l.c) || {orders: 0, sales: 0};
-    cur.orders += 1; cur.sales += l.s;  // +1 per order (not qty)
+    const cur = chMap.get(l.c) || {orderSet: new Set(), sales: 0};
+    cur.orderSet.add(l.order_id); cur.sales += l.s;
     chMap.set(l.c, cur);
   });
   const channels = [...chMap.entries()].map(([cidx, v]) => ({
-    ch: RAW.channels[cidx] || 'อื่นๆ', orders: v.orders, sales: v.sales,
-    aov: v.orders ? v.sales / v.orders : 0
+    ch: RAW.channels[cidx] || 'อื่นๆ', orders: v.orderSet.size, sales: v.sales,
+    aov: v.orderSet.size ? v.sales / v.orderSet.size : 0
   })).sort((a,b) => b.sales - a.sales);
 
   // ── Products (qty / sales / avg price) ───────────────────────────
