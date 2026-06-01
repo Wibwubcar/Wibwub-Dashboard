@@ -1297,9 +1297,9 @@ function go(id, el) {
 
 // ── RAW DATA (from spreadsheets) ──
 const M5 = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
-const SH_REV  = [4231653,4383214,4560321,5204395,4322412];
-const TK_REV  = [1152567,1171209,1280967,1350397,1408332];
-const LZ_REV  = [179084,120949,183370,110532,106167];
+const SH_REV  = [4231653,4383214,4560321,5204395,5581064];
+const TK_REV  = [1152567,1171209,1280967,1350397,1563644];
+const LZ_REV  = [179084,120949,183370,110532,129524];
 const FB_REV  = [2161199,1347804,1072079,808343,515666];
 const LINE_REV= [291906,444290,407415,349987,275461];
 const WEB_REV = [115840,111853,102113,124709,107014];
@@ -1307,31 +1307,31 @@ const CARE_REV= [84069,90135,70707,92509,98307];
 const MKT_REV = [580,0,0,490,17365];
 const BEUK_REV= [0,0,0,0,365];
 const POS_REV = [435,548,2277,267,590];
-const SH_ORD  = [7181,6280,6577,7644,7050];
-const TK_ORD  = [3204,3652,3934,5032,6271];
-const LZ_ORD  = [230,172,248,156,96];
-const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.43];
-const TK_CANCEL_PCT = [9.64,8.32,8.39,9.70,7.49];
-const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.5];
-const SH_ADS  = [575400,559100,589300,795300,631800];
-const SH_FEE  = [911498,944144,1046921,1225115,1109995];
-const SH_NEW  = [4453,3817,4050,4873,4295];
-const SH_OLD  = [1940,1869,1891,1985,1769];
-const TK_AFI  = [460976,550756,655259,724120,751249];
-const TK_NET  = [456036,544073,642947,708730,739395];
-const TK_ADS  = [897522,1035056,1204780,1299260,1265281];
-const TK_LIVE = [132807,177180,131689,144970,107567];
-const TK_AFIPCT = [39.6,46.5,50.2,52.5,58.84];
+const SH_ORD  = [7181,6280,6577,7644,9093];
+const TK_ORD  = [3204,3652,3934,5032,7543];
+const LZ_ORD  = [230,172,248,156,157];
+const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38];
+const TK_CANCEL_PCT = [9.64,8.32,8.39,9.7,7.69];
+const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.38];
+const SH_ADS  = [575400,559100,589300,795300,826300];
+const SH_FEE  = [911498,944144,1046921,1225115,1433217];
+const SH_NEW  = [4453,3817,4050,4873,5536];
+const SH_OLD  = [1940,1869,1891,1985,2186];
+const TK_AFI  = [460976,550756,655259,724120,913053];
+const TK_NET  = [456036,544073,642947,708730,899484];
+const TK_ADS  = [897522,1035056,1204780,1299260,1590290];
+const TK_LIVE = [132807,177180,131689,144970,153299];
+const TK_AFIPCT = [39.6,46.5,50.2,52.5,58.39];
 const TK_NEW  = [2046,2669,2984,3915,5023];
 const TK_OLD  = [468,548,541,632,625];
-const TK_ADSSPEND = [218000,221000,243000,256169,286047];
-const TK_FEECOMM  = [241000,247000,269000,294224,310921];
-const LZ_ADS  = [5760,5680,7220,5710,5240];
-const LZ_FEE  = [31627,21361,32384,19521,18750];
-const LZ_COUPON = [3210,2725,5070,2250,2310];
-const LZ_COST_PCT = [22.67,24.61,24.36,24.86,24.77];
-const LZ_NEW  = [157,0,163,108,0];
-const LZ_OLD  = [57,0,64,42,0];
+const TK_ADSSPEND = [218000,221000,243000,256169,357295];
+const TK_FEECOMM  = [241000,247000,269000,294224,402803];
+const LZ_ADS  = [5760,5680,7220,5710,6590];
+const LZ_FEE  = [31627,21361,32384,19521,22875];
+const LZ_COUPON = [3210,2725,5070,2250,2910];
+const LZ_COST_PCT = [22.67,24.61,24.36,24.86,24.99];
+const LZ_NEW  = [157,0,163,108,112];
+const LZ_OLD  = [57,0,64,42,32];
 
 // Chart.js defaults
 Chart.defaults.font.family = "'Segoe UI',system-ui,sans-serif";
@@ -1355,7 +1355,7 @@ charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
   {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===4?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
-charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 59.7%','Facebook 15.5%','TikTok 16.7%','Line 4.7%','Website 1.5%','Lazada 1.8%'],datasets:[{data:[22701995,5905091,6363472,1769059,561529,700102],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
+charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 60.7%','Facebook 15.0%','TikTok 16.5%','Line 4.5%','Website 1.4%','Lazada 1.8%'],datasets:[{data:[23960647,5905091,6518784,1769059,561529,723459],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===4?6:3),pointBackgroundColor:SHOPEE},
@@ -1369,7 +1369,7 @@ charts['ov_cancel'] = new Chart('ov_cancel',{type:'bar',data:{labels:M5,datasets
   {label:'Lazada',data:LZ_CANCEL_PCT,backgroundColor:LZ_CANCEL_PCT.map((_,i)=>i===4?LAZADA+'cc':LAZADA+'44'),borderRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 
-charts['ov_cust'] = new Chart('ov_cust',{type:'doughnut',data:{labels:['ใหม่ Shopee','เก่า Shopee','ใหม่ TikTok','เก่า TikTok','ใหม่ Lazada'],datasets:[{data:[4873,1985,3915,632,108],backgroundColor:['#ee4d2d','#ffaa7a','#444','#aaa','#1b04a1'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'55%'}});
+charts['ov_cust'] = new Chart('ov_cust',{type:'doughnut',data:{labels:['ใหม่ Shopee','เก่า Shopee','ใหม่ TikTok','เก่า TikTok','ใหม่ Lazada'],datasets:[{data:[5536,2186,5023,625,112],backgroundColor:['#ee4d2d','#ffaa7a','#444','#aaa','#1b04a1'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'55%'}});
 
 charts['sl_line'] = new Chart('sl_line',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_REV,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:4,borderWidth:2},
@@ -1418,11 +1418,11 @@ charts['lz_cost'] = new Chart('lz_cost',{type:'line',data:{labels:M5,datasets:[{
 new Chart('pr_top10',{
   type:'bar',
   data:{
-    labels:['Wool Duster','Sugar (500ml)','Interior (500ml)','Refresh Wipes','Interior Wipes','Refresh (500ml)','Spot (500ml)','Perfect','Reflex (250ml)','Tire & Trim Gel'],
+    labels:['Wool Duster','Interior (500ml)','Sugar (500ml)','Perfect','Martini','Interior Wipes','Refresh (500ml)','Refresh Wipes','Spot (500ml)','Quartz Shampoo'],
     datasets:[
-      {label:'มีนาคม', data:[981641,606708,470790,166974,237744,282205,116783,234139,229188,158145], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
-      {label:'เมษายน', data:[788587,561482,523676,269674,332049,306164,305741,216089,173243,193075], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
-      {label:'พฤษภาคม', data:[372303,413856,400619,490802,308002,236662,311631,174599,129835,147058], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
+      {label:'มีนาคม', data:[981641,470790,606708,234139,147407,237744,282205,166974,116783,149829], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
+      {label:'เมษายน', data:[788587,523676,561482,216089,147097,332049,306164,269674,305741,150665], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
+      {label:'พฤษภาคม', data:[749654,1275794,975337,1309884,1239064,860588,814287,961789,791061,762110], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
     ]
   },
   options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}}}}
