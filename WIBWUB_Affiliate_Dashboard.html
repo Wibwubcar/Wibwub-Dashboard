@@ -216,10 +216,10 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 </div>
 
 <div class="kg" id="afKpiRow">
-  <div class="kc"><p class="kl">GMV รวมทุกเดือน</p><p class="kv" id="af-kpi-gmv">฿2.78M</p><p class="ks" id="af-kpi-gmv-sub">5 เดือน รวมกัน</p></div>
-  <div class="kc"><p class="kl">Net GMV (หลังหักคืน)</p><p class="kv" id="af-kpi-net">฿2.73M</p><p class="ks" id="af-kpi-net-sub">Refund rate ~1.6%</p></div>
-  <div class="kc"><p class="kl">ค่าคอมมิชชั่นรวม</p><p class="kv" id="af-kpi-comm">฿335K</p><p class="ks" id="af-kpi-comm-sub">avg 12.1% of GMV</p></div>
-  <div class="kc"><p class="kl">เดือนยอดสูงสุด</p><p class="kv" id="af-kpi-best">เมษา.69</p><p class="ks" id="af-kpi-best-sub">฿708,947 net GMV</p></div>
+  <div class="kc"><p class="kl">GMV รวมทุกเดือน</p><p class="kv" id="af-kpi-gmv">฿3.96M</p><p class="ks" id="af-kpi-gmv-sub">7 เดือน รวมกัน</p></div>
+  <div class="kc"><p class="kl">Net GMV (หลังหักคืน)</p><p class="kv" id="af-kpi-net">฿3.88M</p><p class="ks" id="af-kpi-net-sub">Refund rate ~2.0%</p></div>
+  <div class="kc"><p class="kl">ค่าคอมมิชชั่นรวม</p><p class="kv" id="af-kpi-comm">฿486K</p><p class="ks" id="af-kpi-comm-sub">avg 12.3% of GMV</p></div>
+  <div class="kc"><p class="kl">เดือนยอดสูงสุด</p><p class="kv" id="af-kpi-best">พค.69</p><p class="ks" id="af-kpi-best-sub">฿919,900 net GMV</p></div>
 </div>
 
 <div class="cg">
@@ -274,10 +274,10 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
 </div>
 <script>
 const months=["พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
-const gmvD=[288702,347208,461048,550756,655259,724337,898316];
-const netD=[271930,342501,456481,544073,642947,703312,884747];
-const commD=[39439,49419,64612,78138,82886,69235,98682];
-const crD=[266,282,326,352,398,418,919];
+const gmvD=[288702,347208,461048,550756,655259,724337,934025];
+const netD=[271930,342501,456481,544073,642947,703312,919900];
+const commD=[39439,49419,64612,78138,82886,69235,102832];
+const crD=[266,282,326,352,398,418,948];
 const gridC='rgba(255,255,255,0.07)';
 const tickC='#4B5563';
 
@@ -333,52 +333,52 @@ new Chart(document.getElementById('gc'),{
 new Chart(document.getElementById('cc2'),{type:'line',data:{labels:months,datasets:[{label:'Creators',data:crD,borderColor:'#A78BFA',backgroundColor:'rgba(167,139,250,0.1)',borderWidth:2,pointRadius:5,pointBackgroundColor:'#A78BFA',fill:true,tension:0.3}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',callbacks:{label:c=>`${c.parsed.y.toLocaleString()} คน`}}},scales:{x:{ticks:{color:tickC,font:{size:10},autoSkip:false,maxRotation:0},grid:{color:gridC}},y:{ticks:{color:tickC,font:{size:10}},grid:{color:gridC}}}}});
 
 const raw=[
-  {n:"rita.fe_",t:392819,ma:7,mn:[14796,54474,72545,72993,77739,61408,38864]},
-  {n:"fahareejun",t:257315,ma:2,mn:[null,null,null,null,null,29331,227984]},
-  {n:"noonjourneyyy",t:154166,ma:4,mn:[null,null,null,41441,35421,44803,32501]},
-  {n:"pailong05",t:149425,ma:3,mn:[null,null,null,null,15035,67105,67285]},
-  {n:"jarkkystory",t:147483,ma:7,mn:[7350,21237,31167,20819,30903,23877,12130]},
-  {n:"muchmai_mumi",t:130754,ma:7,mn:[558,397,5796,43002,32705,26324,21972]},
-  {n:"phanuwatinsri",t:102868,ma:7,mn:[18313,8637,9019,10956,20766,18440,16737]},
-  {n:"ralph.detailing8",t:102218,ma:7,mn:[2083,7237,16427,14622,19175,21249,21425]},
-  {n:"thekataecx30",t:98941,ma:7,mn:[34551,3339,6362,12485,10088,22891,9225]},
-  {n:"_ijstagram",t:75367,ma:7,mn:[4331,6977,4183,10465,13942,21179,14290]},
-  {n:"evee.vespa",t:73420,ma:7,mn:[6275,14392,13337,12095,10592,8992,7737]},
-  {n:"melodylotto",t:73383,ma:7,mn:[8444,8691,11160,7484,13809,15426,8369]},
+  {n:"rita.fe_",t:394390,ma:7,mn:[14796,54474,72545,72993,77739,61408,40435]},
+  {n:"fahareejun",t:257588,ma:2,mn:[null,null,null,null,null,29331,228257]},
+  {n:"noonjourneyyy",t:157018,ma:4,mn:[null,null,null,41441,35421,44803,35353]},
+  {n:"pailong05",t:154167,ma:3,mn:[null,null,null,null,15035,67105,72027]},
+  {n:"jarkkystory",t:148382,ma:7,mn:[7350,21237,31167,20819,30903,23877,13029]},
+  {n:"muchmai_mumi",t:131654,ma:7,mn:[558,397,5796,43002,32705,26324,22872]},
+  {n:"phanuwatinsri",t:104341,ma:7,mn:[18313,8637,9019,10956,20766,18440,18210]},
+  {n:"ralph.detailing8",t:104931,ma:7,mn:[2083,7237,16427,14622,19175,21249,24138]},
+  {n:"thekataecx30",t:100352,ma:7,mn:[34551,3339,6362,12485,10088,22891,10636]},
+  {n:"_ijstagram",t:75853,ma:7,mn:[4331,6977,4183,10465,13942,21179,14776]},
+  {n:"evee.vespa",t:74280,ma:7,mn:[6275,14392,13337,12095,10592,8992,8597]},
+  {n:"melodylotto",t:73715,ma:7,mn:[8444,8691,11160,7484,13809,15426,8701]},
   {n:"jaonnm",t:71327,ma:5,mn:[13443,13185,12961,17400,14338,null,null]},
-  {n:"rrak_kk",t:71277,ma:7,mn:[11014,2483,5207,9853,14409,16644,11667]},
-  {n:"taaum234",t:60564,ma:7,mn:[24010,2761,2941,8807,13900,5533,2612]},
-  {n:"plearntumarai",t:57112,ma:4,mn:[null,null,null,6852,12638,19653,17969]},
-  {n:"orion_risingstar",t:55138,ma:4,mn:[null,null,null,8448,15588,14800,16302]},
-  {n:"nnhtr_",t:52315,ma:2,mn:[null,null,null,null,null,24292,28023]},
+  {n:"rrak_kk",t:72228,ma:7,mn:[11014,2483,5207,9853,14409,16644,12618]},
+  {n:"taaum234",t:60775,ma:7,mn:[24010,2761,2941,8807,13900,5533,2823]},
+  {n:"plearntumarai",t:57992,ma:4,mn:[null,null,null,6852,12638,19653,18849]},
+  {n:"orion_risingstar",t:57135,ma:4,mn:[null,null,null,8448,15588,14800,18299]},
+  {n:"nnhtr_",t:53355,ma:2,mn:[null,null,null,null,null,24292,29063]},
   {n:"mushinyiwz",t:49330,ma:5,mn:[null,null,15490,20745,9631,1341,2123]},
   {n:"numtonn",t:43937,ma:5,mn:[null,null,2297,21832,5412,10405,3991]},
   {n:"papajate",t:43841,ma:4,mn:[null,null,null,8105,10795,8300,16641]},
-  {n:"punch_chalita8",t:38691,ma:7,mn:[431,5065,10375,2940,6923,9383,3574]},
+  {n:"punch_chalita8",t:39070,ma:7,mn:[431,5065,10375,2940,6923,9383,3953]},
   {n:"rouey_sook",t:38099,ma:7,mn:[5946,8699,11963,2887,4313,2090,2201]},
   {n:"ploypimlaplus",t:34730,ma:7,mn:[1179,486,2563,3943,8397,10067,8095]},
   {n:"poppyme.6",t:33174,ma:3,mn:[null,null,null,null,13386,10912,8876]},
   {n:"ceo.blk.item",t:32718,ma:2,mn:[null,null,null,null,null,5957,26761]},
   {n:"phuengthitii",t:27751,ma:1,mn:[null,null,null,null,null,null,27751]},
   {n:"tonpalm__",t:27275,ma:7,mn:[2633,9392,7903,3649,2207,1204,287]},
-  {n:"ctl.mkzk",t:24654,ma:7,mn:[5219,2909,4004,4141,3178,3555,1648]},
+  {n:"ctl.mkzk",t:24825,ma:7,mn:[5219,2909,4004,4141,3178,3555,1819]},
   {n:"japann.story",t:20342,ma:7,mn:[2539,2709,5143,2947,1163,3518,2323]},
   {n:"joakrw",t:19671,ma:7,mn:[4490,648,1293,3460,2922,1290,5568]},
   {n:"manutsananpibanwo",t:18890,ma:6,mn:[237,4973,6942,1284,4354,1100,null]},
-  {n:"aoohphonhan",t:18177,ma:6,mn:[337,277,2958,null,6277,5878,2450]},
+  {n:"aoohphonhan",t:18771,ma:6,mn:[337,277,2958,null,6277,5878,3044]},
   {n:"duan4088",t:18108,ma:7,mn:[135,11352,6050,134,154,195,88]},
   {n:"rawinreview2465",t:18026,ma:3,mn:[null,null,null,null,2292,3724,12010]},
   {n:"calvyn.s",t:16872,ma:7,mn:[1320,1537,6621,2973,2830,1410,181]},
-  {n:"tangkwaky",t:16596,ma:6,mn:[null,1108,3806,3570,2810,3115,2187]},
+  {n:"tangkwaky",t:16682,ma:6,mn:[null,1108,3806,3570,2810,3115,2273]},
   {n:"teetathlimchuwong",t:15634,ma:5,mn:[null,null,390,7969,4294,1788,1193]},
   {n:"iceshop45_",t:15329,ma:7,mn:[2906,4581,2416,1472,2431,862,661]},
-  {n:"somkidkongchom",t:15098,ma:4,mn:[null,null,null,417,2477,6016,6188]},
+  {n:"somkidkongchom",t:15431,ma:4,mn:[null,null,null,417,2477,6016,6521]},
   {n:"krunid_",t:13635,ma:6,mn:[3986,2140,2653,2530,1556,770,null]},
   {n:"sleepreview",t:12078,ma:6,mn:[null,1470,2463,390,1500,3269,2986]},
   {n:"view.miipro",t:11903,ma:6,mn:[null,1388,7264,1140,1046,993,72]},
-  {n:"aornor.kd",t:11437,ma:5,mn:[null,null,1286,2328,1525,2260,4038]},
+  {n:"aornor.kd",t:12330,ma:5,mn:[null,null,1286,2328,1525,2260,4931]},
   {n:"pployaugust",t:11404,ma:7,mn:[3264,2753,1123,617,2241,774,632]},
-  {n:"eiwvanilla",t:11120,ma:7,mn:[1594,575,2158,2276,4031,409,77]},
+  {n:"eiwvanilla",t:11449,ma:7,mn:[1594,575,2158,2276,4031,409,406]},
   {n:"talk_shop",t:10618,ma:7,mn:[1037,3079,3598,1283,921,320,380]},
   {n:"frameck",t:10580,ma:6,mn:[638,1031,2392,null,1362,1865,3292]},
   {n:"yumifamily_review",t:9833,ma:7,mn:[2385,730,440,3912,750,685,931]},
@@ -392,10 +392,10 @@ const raw=[
   {n:"achichichira",t:8347,ma:6,mn:[1590,730,null,1470,1871,1941,745]},
   {n:"wanwipa1209",t:8340,ma:5,mn:[2002,3271,1641,1054,null,null,372]},
   {n:"nijujuucyuz",t:8153,ma:7,mn:[618,785,1194,2471,1526,147,1412]},
-  {n:"pkautocare168",t:8102,ma:6,mn:[null,1429,595,1075,3328,560,1115]},
+  {n:"pkautocare168",t:8279,ma:6,mn:[null,1429,595,1075,3328,560,1292]},
   {n:"bimmer330emsport",t:7919,ma:6,mn:[null,2476,1666,1516,777,1150,334]},
-  {n:"ting_indie",t:7740,ma:7,mn:[762,168,742,582,1847,2552,1087]},
-  {n:"james.khunphrom",t:7299,ma:7,mn:[693,158,490,758,780,495,3925]},
+  {n:"ting_indie",t:7930,ma:7,mn:[762,168,742,582,1847,2552,1277]},
+  {n:"james.khunphrom",t:7797,ma:7,mn:[693,158,490,758,780,495,4423]},
   {n:"masaaki_gengo",t:7248,ma:6,mn:[450,null,1918,2820,366,1344,350]},
   {n:"detailist.888",t:7036,ma:5,mn:[null,1370,1980,1880,1386,null,420]},
   {n:"king_tanakorn",t:6957,ma:4,mn:[2209,2255,2145,null,348,null,null]},
@@ -405,7 +405,7 @@ const raw=[
   {n:"revieweverthingjingleble",t:6510,ma:7,mn:[1405,2539,786,539,751,490,0]},
   {n:"dulfocus",t:6411,ma:5,mn:[null,null,438,1657,2093,1251,972]},
   {n:"m.lifemedia",t:6128,ma:4,mn:[null,null,null,760,3373,1351,644]},
-  {n:"matenatthapong",t:6046,ma:2,mn:[null,null,null,null,null,1046,5000]},
+  {n:"matenatthapong",t:6125,ma:2,mn:[null,null,null,null,null,1046,5079]},
   {n:"sauceshop7",t:6027,ma:6,mn:[490,3263,1237,490,178,369,null]},
   {n:"pongananbo",t:5987,ma:3,mn:[null,2549,1515,1923,null,null,null]},
   {n:"isuzu_ray",t:5973,ma:5,mn:[388,1344,980,1540,1721,null,null]},
@@ -418,9 +418,9 @@ const raw=[
   {n:"boonchoo123",t:5264,ma:6,mn:[null,375,1277,2949,598,65,0]},
   {n:"aut.atcharapan",t:5204,ma:5,mn:[1430,807,1180,null,609,1178,null]},
   {n:"win_04_1",t:5124,ma:3,mn:[null,null,null,null,1765,2820,539]},
-  {n:"mumdriving",t:5109,ma:6,mn:[null,594,396,750,1454,775,1140]},
+  {n:"mumdriving",t:5384,ma:6,mn:[null,594,396,750,1454,775,1415]},
   {n:"mynamebim",t:5066,ma:7,mn:[2226,680,1333,388,178,178,83]},
-  {n:"g_gggguy",t:4971,ma:5,mn:[381,null,911,null,1392,557,1730]},
+  {n:"g_gggguy",t:5544,ma:5,mn:[381,null,911,null,1392,557,2303]},
   {n:"honzo.zoto",t:4946,ma:5,mn:[null,null,811,2385,815,360,575]},
   {n:"fang.2779",t:4848,ma:5,mn:[null,826,1728,1636,658,null,0]},
   {n:"chayaanit_",t:4745,ma:2,mn:[null,null,null,null,1367,null,3378]},
@@ -429,7 +429,7 @@ const raw=[
   {n:"yuii24654",t:4210,ma:3,mn:[null,null,null,362,null,2226,1622]},
   {n:"cherryreviewbeautys",t:4079,ma:3,mn:[null,null,null,199,null,2235,1645]},
   {n:"amornyotklang",t:4076,ma:5,mn:[null,465,450,406,555,2200,null]},
-  {n:"maynonjareview",t:3902,ma:3,mn:[null,null,null,null,536,1156,2210]},
+  {n:"maynonjareview",t:3988,ma:3,mn:[null,null,null,null,536,1156,2296]},
   {n:"gaem.9619",t:3806,ma:3,mn:[null,null,null,null,1153,1336,1317]},
   {n:"fernnframe",t:3720,ma:7,mn:[971,182,396,181,1430,159,401]},
   {n:".brshop1",t:3664,ma:6,mn:[184,767,198,199,null,631,1685]},
@@ -440,13 +440,13 @@ const raw=[
   {n:"tuktareview6595",t:3581,ma:4,mn:[1766,529,null,null,661,625,null]},
   {n:"maimeee06",t:3573,ma:2,mn:[null,null,null,null,null,2949,624]},
   {n:"gravyreviews",t:3510,ma:4,mn:[590,2038,590,null,null,null,292]},
-  {n:"m.n00123",t:3461,ma:4,mn:[null,null,null,1398,817,1007,239]},
+  {n:"m.n00123",t:3547,ma:4,mn:[null,null,null,1398,817,1007,325]},
   {n:"nackpang_4994",t:3452,ma:6,mn:[866,386,175,536,371,1118,null]},
   {n:"supathanes",t:3449,ma:7,mn:[388,1150,289,310,490,421,401]},
-  {n:"drafreview",t:3448,ma:4,mn:[null,1155,1750,362,null,null,181]},
+  {n:"drafreview",t:3802,ma:4,mn:[null,1155,1750,362,null,null,535]},
   {n:"khun.tee",t:3429,ma:3,mn:[null,null,null,null,420,1814,1195]},
   {n:"saiinum.storry",t:3424,ma:1,mn:[null,null,null,null,null,null,3424]},
-  {n:"kratae_chadjan1401",t:3332,ma:7,mn:[578,741,528,470,353,350,312]},
+  {n:"kratae_chadjan1401",t:3625,ma:7,mn:[578,741,528,470,353,350,605]},
   {n:"jollyaloha.24961",t:3280,ma:4,mn:[2094,316,199,null,null,null,671]},
   {n:"mamutchalin",t:3261,ma:1,mn:[null,null,null,null,null,null,3261]},
   {n:"tiktokshop_affiliate_th",t:3256,ma:2,mn:[null,null,null,null,null,547,2709]},
@@ -463,7 +463,7 @@ const raw=[
   {n:"arsynfk1m",t:2916,ma:2,mn:[null,null,null,null,2475,441,null]},
   {n:"lung.kong",t:2818,ma:2,mn:[null,null,null,null,934,1884,null]},
   {n:"bee_be1592",t:2741,ma:3,mn:[null,null,null,1371,1370,null,0]},
-  {n:"baitongis",t:2735,ma:5,mn:[null,null,850,570,355,872,88]},
+  {n:"baitongis",t:3020,ma:5,mn:[null,null,850,570,355,872,373]},
   {n:"jomjam_4",t:2689,ma:7,mn:[672,389,416,750,79,294,89]},
   {n:"asas29804",t:2671,ma:4,mn:[null,null,null,927,1385,181,178]},
   {n:"namehouse19",t:2656,ma:3,mn:[null,null,null,null,1145,873,638]},
