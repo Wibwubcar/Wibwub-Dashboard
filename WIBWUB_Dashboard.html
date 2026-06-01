@@ -1280,6 +1280,31 @@ document.getElementById('pdate').textContent = new Date().toLocaleDateString('th
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
 const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',admin:'⚙️ จัดการผู้ใช้'};
 
+// ── HR iframe auth helper ──────────────────────────────────────────────────────
+// Sends current user's ID token to the HR iframe so it can authenticate
+// without relying on Firebase's nested-iframe session mechanism (often blocked)
+function _sendHRToken(user, role, name) {
+  if(!user) return;
+  user.getIdToken().then(tok => {
+    const f = document.getElementById('hr-iframe');
+    if(f && f.contentWindow) {
+      f.contentWindow.postMessage({
+        type:'WIBWUB_HR_AUTH', idToken:tok, uid:user.uid, role:role, name:name
+      }, window.location.origin);
+    }
+  }).catch(()=>{});
+}
+// Re-send on iframe load (covers case where iframe finishes loading after auth)
+document.addEventListener('DOMContentLoaded', ()=>{
+  const hrFrame = document.getElementById('hr-iframe');
+  if(hrFrame) {
+    hrFrame.addEventListener('load', ()=>{
+      const u = firebase.auth().currentUser;
+      if(u) _sendHRToken(u, window._userRole, window._userName);
+    });
+  }
+});
+
 let currentPage = 'overview';
 function go(id, el) {
   const role = window._userRole || '';
@@ -1293,6 +1318,11 @@ function go(id, el) {
   document.getElementById('ptitle').textContent = TITLES[id] || id;
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
   if (id === 'admin') { loadAdminUsers(); renderPermissionsMatrix(); }
+  // Re-send token when navigating to HR (iframe may have just become visible)
+  if (id === 'hr') {
+    const u = firebase.auth().currentUser;
+    if(u) _sendHRToken(u, window._userRole, window._userName);
+  }
 }
 
 // ── RAW DATA (from spreadsheets) ──
@@ -2074,6 +2104,8 @@ auth.onAuthStateChanged(async user => {
     document.getElementById('sbUserAv').textContent=(name||'W')[0].toUpperCase();
     document.getElementById('sbLogout').style.display='';
     applyRoleNav(role);
+    // Send token to HR iframe — fixes blank page when Firebase nested-iframe auth is blocked
+    _sendHRToken(user, role, name);
   } else {
     window._userRole=null;
     document.getElementById('loginOverlay').style.display='flex';

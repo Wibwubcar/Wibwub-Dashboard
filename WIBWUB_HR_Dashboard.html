@@ -93,6 +93,12 @@ tr:hover td{background:#fafbff}
 </head>
 <body>
 
+<!-- Loading overlay — shown while waiting for auth (prevents blank page in iframe) -->
+<div id="iframeLoader" style="position:fixed;inset:0;background:#F0F4FF;z-index:2000;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;">
+  <div style="width:32px;height:32px;border:3px solid rgba(26,92,219,.2);border-top-color:#1A5CDB;border-radius:50%;animation:sp .6s linear infinite"></div>
+  <div style="font-size:13px;color:#666;font-weight:500">กำลังโหลด HR Dashboard...</div>
+</div>
+
 <!-- Auth Gate -->
 <div id="authGate" style="display:none">
   <div class="auth-card">
@@ -248,6 +254,50 @@ const FB_CFG = {
 const FS_BASE='https://firestore.googleapis.com/v1/projects/wibwubcar-e2cbc/databases/(default)/documents';
 const ADMIN_ROLES=['admin','hr_team','head_marketing'];
 
+// ══ IFRAME AUTH STATE ════════════════════════
+// When loaded inside WIBWUB_Dashboard.html, parent sends ID token via postMessage
+// because Firebase's nested iframe auth mechanism can be blocked by browsers
+let _appInited=false;
+let _waitingForParent=true; // assume we may get a parent token
+const _loader=document.getElementById('iframeLoader');
+
+function _showApp(displayName){
+  if(_loader) _loader.style.display='none';
+  document.getElementById('authGate').style.display='none';
+  document.getElementById('appWrap').style.display='flex';
+  document.getElementById('hdrUser').textContent=displayName||'';
+  if(!_appInited){_appInited=true;initApp();}
+}
+function _showLogin(){
+  if(_loader) _loader.style.display='none';
+  document.getElementById('authGate').style.display='flex';
+  document.getElementById('appWrap').style.display='none';
+}
+
+// Listen for auth token from parent WIBWUB_Dashboard
+window.addEventListener('message',function(e){
+  if(!e.data||e.data.type!=='WIBWUB_HR_AUTH'||!e.data.idToken)return;
+  _waitingForParent=false;
+  // Build a mock user object using the parent's verified token
+  _user={
+    uid:e.data.uid,
+    displayName:e.data.name,
+    email:e.data.name,
+    getIdToken:()=>Promise.resolve(e.data.idToken)
+  };
+  _role=e.data.role;
+  _showApp(e.data.name);
+});
+
+// After 4s with no parent token, fall back to Firebase auth result
+setTimeout(()=>{
+  _waitingForParent=false;
+  if(!_appInited&&_loader&&_loader.style.display!=='none'){
+    // Firebase auth either resolved (but we missed it) or failed — show login
+    if(!_user) _showLogin();
+  }
+},4000);
+
 // ══ FIREBASE ════════════════════════════════
 firebase.initializeApp(FB_CFG);
 const auth=firebase.auth();
@@ -261,13 +311,12 @@ auth.onAuthStateChanged(async u=>{
       const r=await fetch(`${FS_BASE}/users/${u.uid}`,{headers:{Authorization:'Bearer '+tok}});
       if(r.ok){const d=await r.json();_role=d.fields?.role?.stringValue||'';}
     }catch(e){}
-    document.getElementById('authGate').style.display='none';
-    document.getElementById('appWrap').style.display='flex';
-    document.getElementById('hdrUser').textContent=u.displayName||u.email;
-    initApp();
+    _waitingForParent=false;
+    _showApp(u.displayName||u.email);
   }else{
-    document.getElementById('authGate').style.display='flex';
-    document.getElementById('appWrap').style.display='none';
+    // If we're still expecting a parent token, wait — don't flash login form yet
+    if(_waitingForParent)return;
+    _showLogin();
   }
 });
 
