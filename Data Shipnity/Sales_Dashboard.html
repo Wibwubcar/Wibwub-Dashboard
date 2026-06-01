@@ -274,7 +274,7 @@ function rangeLabel(start, end) {
     l.c = chMap.get(l.channel);
     l.p = prMap.get(l.name);
     l.q = l.qty;
-    l.s = l.revenue;
+    l.s = l.price * l.qty;
   });
 })();
 
