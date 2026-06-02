@@ -2067,7 +2067,7 @@ function initHRDash(){
   if(!_hrdInited){
     _hrdInited = true;
     const el = document.getElementById('hrd-gas-url');
-    _hrdGasUrl = localStorage.getItem('wibwub_gas_url')||'';
+    _hrdGasUrl = localStorage.getItem('wibwub_gas_url')||'https://script.google.com/macros/s/AKfycbz90-p1J94A03ltO38kpOrRw36JPDATXS-TQ4DjOW7hYgaBfFHjaVtJgqdJMYZlzoGN_w/exec';
     if(el) el.value = _hrdGasUrl;
     const elSheets = document.getElementById('hrd-sheets-url');
     _sheetsGasUrl = localStorage.getItem('wibwub_sheets_url')||_GAS_SHEETS_DEFAULT;

@@ -405,7 +405,7 @@ async function fsQuery(col,filters=[],orderBy=null,limit=300){
 
 // ══ LINE NOTIFY ═════════════════════════════
 function loadGASUrl(){
-  _gasUrl=localStorage.getItem('wibwub_gas_url')||'';
+  _gasUrl=localStorage.getItem('wibwub_gas_url')||'https://script.google.com/macros/s/AKfycbz90-p1J94A03ltO38kpOrRw36JPDATXS-TQ4DjOW7hYgaBfFHjaVtJgqdJMYZlzoGN_w/exec';
   ['gas-url-inline','gas-url-main'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=_gasUrl;});
   const row=document.getElementById('line-cfg-row');
   if(row)row.style.display=_gasUrl?'flex':'none';
