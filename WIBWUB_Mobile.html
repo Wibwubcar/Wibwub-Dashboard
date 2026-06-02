@@ -1896,6 +1896,13 @@ async function doHRCheckIn(user, photo=''){
     sendToSheets('attendance', {...doc, photo_in: photo?'[photo]':''});
     _hrTodayDoc=doc; renderHRTodayCard(doc); loadHRHistory();
     if(late) alert(`⚠️ เช็คอินสำเร็จ\nเวลา ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')} (มาสาย)`);
+    // 🔔 Line Notify → HR เมื่อพนักงานมาสาย
+    if(late && _hrdGasUrl){
+      const _empName=window._userName||user.email||'ไม่ทราบชื่อ';
+      const _dept=(window._userRole&&window._userRole!=='admin')?window._userRole:'';
+      const _ts=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+      hrdSendLine(`[WIBWUB HR] ⚠️ มาสาย\nพนักงาน: ${_empName}${_dept?' ('+_dept+')':''}\nCheck in: ${_ts} น.\nวันที่: ${today}`);
+    }
   }catch(e){alert('เช็คอินไม่สำเร็จ: '+e.message); btn.disabled=false;}
 }
 

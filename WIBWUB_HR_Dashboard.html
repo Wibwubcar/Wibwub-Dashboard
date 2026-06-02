@@ -229,6 +229,28 @@ tr:hover td{background:#fafbff}
         </div>
       </div>
 
+      <!-- 🌅 Morning Summary Notify -->
+      <div class="card">
+        <div class="card-title">🌅 สรุปการเข้างานตอนเช้า (Auto)</div>
+        <p style="font-size:12px;color:var(--sub);margin-bottom:14px;line-height:1.7">ระบบจะส่ง Line Notify สรุปรายชื่อพนักงานที่เช็คอินแล้ว/ยังไม่เช็คอิน และคนที่มาสาย ณ เวลาที่กำหนด</p>
+        <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;color:var(--tx)">
+            <input type="checkbox" id="morning-notify-enabled" onchange="saveMorningNotifyConfig()" style="width:16px;height:16px;accent-color:var(--bl);cursor:pointer">
+            เปิดใช้งานการแจ้งเตือนอัตโนมัติ
+          </label>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+          <label style="font-size:12px;font-weight:600;color:var(--sub)">เวลาที่ส่งสรุป</label>
+          <input type="time" class="ctrl-input" id="morning-notify-time" value="09:30" onchange="saveMorningNotifyConfig()" style="width:110px">
+          <span style="font-size:11px;color:var(--sub)">(ระบบตรวจสอบทุก 1 นาที — ต้องเปิดหน้านี้ไว้)</span>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <button class="ctrl-btn" onclick="triggerMorningSummary()" id="morning-notify-btn">📊 ส่งสรุปทันที</button>
+          <span id="morning-notify-status" style="font-size:12px;min-height:16px"></span>
+        </div>
+        <div id="morning-notify-last" style="font-size:11px;color:var(--muted);margin-top:10px"></div>
+      </div>
+
       <div class="card">
         <div class="card-title">📋 GAS Script ตัวอย่าง (วาง → Deploy → เอา URL)</div>
         <pre style="background:#f8f9fb;border:1px solid var(--bd);border-radius:8px;padding:14px;font-size:11px;overflow-x:auto;line-height:1.7;color:#1e293b;white-space:pre-wrap">function doPost(e) {
@@ -475,6 +497,72 @@ async function triggerCheckoutNotify(){
   }
 }
 
+// ══ MORNING SUMMARY NOTIFY ══════════════════════════
+const _MN_KEY='wibwub_morning_notify';
+
+function saveMorningNotifyConfig(){
+  const enabled=document.getElementById('morning-notify-enabled')?.checked||false;
+  const time=document.getElementById('morning-notify-time')?.value||'09:30';
+  localStorage.setItem(_MN_KEY,JSON.stringify({enabled,time}));
+  const st=document.getElementById('morning-notify-status');
+  if(st){st.textContent=enabled?`✓ เปิดใช้งาน — ส่งสรุปทุกวันเวลา ${time} น.`:'ปิดใช้งาน';st.style.color=enabled?'#16a34a':'var(--sub)';}
+}
+
+function loadMorningNotifyConfig(){
+  const cfg=JSON.parse(localStorage.getItem(_MN_KEY)||'{}');
+  const en=document.getElementById('morning-notify-enabled');
+  const ti=document.getElementById('morning-notify-time');
+  if(en)en.checked=cfg.enabled||false;
+  if(ti)ti.value=cfg.time||'09:30';
+  const st=document.getElementById('morning-notify-status');
+  if(st&&cfg.enabled){st.textContent=`✓ เปิดใช้งาน — ส่งสรุปทุกวันเวลา ${cfg.time||'09:30'} น.`;st.style.color='#16a34a';}
+  const last=localStorage.getItem('wibwub_morning_notify_last');
+  const lastEl=document.getElementById('morning-notify-last');
+  if(lastEl&&last)lastEl.textContent=`📨 ส่งล่าสุด: ${last}`;
+}
+
+async function triggerMorningSummary(){
+  const btn=document.getElementById('morning-notify-btn');
+  const st=document.getElementById('morning-notify-status');
+  if(!_gasUrl){if(st){st.textContent='❌ กรุณาตั้งค่า GAS Proxy URL ก่อน';st.style.color='var(--rd)';}return;}
+  if(!_user){if(st){st.textContent='❌ กรุณา Login ก่อน';st.style.color='var(--rd)';}return;}
+  if(btn){btn.textContent='⏳ กำลังดึงข้อมูล...';btn.disabled=true;}
+  if(st){st.textContent='';st.style.color='var(--sub)';}
+  try{
+    const today=new Date().toISOString().split('T')[0];
+    const thTime=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false});
+    const docs=await fsQuery('attendance',[{field:'date',value:today}]);
+    const records=docs.map(d=>d.data());
+    const present=records.filter(d=>d.check_in&&d.status==='present');
+    const late=records.filter(d=>d.check_in&&d.status==='late');
+    const checkedOut=records.filter(d=>d.check_out);
+    const totalIn=records.filter(d=>d.check_in).length;
+    let msg=`[WIBWUB HR] 📊 สรุปการเข้างาน\nวันที่: ${today} | เวลา: ${thTime} น.\n${'─'.repeat(28)}\n`;
+    msg+=`✅ เข้างานปกติ: ${present.length} คน\n`;
+    msg+=`⚠️ มาสาย: ${late.length} คน\n`;
+    msg+=`🚪 Check out แล้ว: ${checkedOut.length} คน\n`;
+    msg+=`📌 รวม Check in: ${totalIn} คน`;
+    if(late.length>0){
+      msg+='\n\n⚠️ รายชื่อมาสาย:\n';
+      msg+=late.map(d=>{
+        const t=d.check_in?new Date(d.check_in).toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false}):'—';
+        return`• ${d.name||d.email||'ไม่ทราบ'} (${t} น.)`;
+      }).join('\n');
+    }
+    await sendLineNotify(msg);
+    const sentTime=`${today} ${thTime}`;
+    localStorage.setItem('wibwub_morning_notify_last',sentTime);
+    const lastEl=document.getElementById('morning-notify-last');
+    if(lastEl)lastEl.textContent=`📨 ส่งล่าสุด: ${sentTime}`;
+    const okMsg=`✅ ส่งแล้ว — ${totalIn} คนเช็คอิน, สาย ${late.length} คน`;
+    if(st){st.textContent=okMsg;st.style.color='#16a34a';}
+  }catch(e){
+    if(st){st.textContent='❌ ส่งไม่สำเร็จ: '+(e.message||'unknown');st.style.color='var(--rd)';}
+  }finally{
+    if(btn){btn.textContent='📊 ส่งสรุปทันที';btn.disabled=false;}
+  }
+}
+
 // Scheduled auto-notify: check every 60s if current time matches config
 setInterval(()=>{
   const cfg=JSON.parse(localStorage.getItem(_CN_KEY)||'{}');
@@ -489,6 +577,21 @@ setInterval(()=>{
   const todayPrefix=now.toISOString().split('T')[0];
   if(last.startsWith(todayPrefix+' '+cfg.time))return;
   triggerCheckoutNotify();
+  },60000);
+
+// Scheduled morning summary: same 60s ticker
+setInterval(()=>{
+  const cfg=JSON.parse(localStorage.getItem(_MN_KEY)||'{}');
+  if(!cfg.enabled||!_gasUrl||!_user)return;
+  const now=new Date();
+  const hh=now.getHours().toString().padStart(2,'0');
+  const mm=now.getMinutes().toString().padStart(2,'0');
+  if(`${hh}:${mm}`!==cfg.time)return;
+  const lastKey='wibwub_morning_notify_last';
+  const last=localStorage.getItem(lastKey)||'';
+  const todayPrefix=now.toISOString().split('T')[0];
+  if(last.startsWith(todayPrefix+' '+cfg.time))return;
+  triggerMorningSummary();
 },60000);
 
 // ══ INIT ════════════════════════════════════
@@ -501,6 +604,7 @@ function initApp(){
   setCurrentWeek();
   loadGASUrl();
   loadCheckoutNotifyConfig();
+  loadMorningNotifyConfig();
   loadToday();
   loadPendingLeave();
   loadLeaveHistory();
