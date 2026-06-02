@@ -863,7 +863,7 @@ const CHANNELS=[
 
 const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
 const AFI_GMV=[0,0,0,0,655259,724337,934025];
-const AFI_NET=[0,0,0,0,642947,708947,919900];
+const AFI_NET=[0,0,0,0,642947,708947,920319];
 const AFI_COMM=[0,0,0,0,82886,69235,102832];
 const TK_FOL=[23404,24192,24967,25590,26152];
 
@@ -1080,37 +1080,37 @@ const CREATORS=[
 ];
 
 
-// Top 15 products cumulative ม.ค.+มี.ค.+เม.ย.+พ.ค. (updated 01.06.69 — พ.ค.ครบเดือน, ไม่มีข้อมูล ก.พ.)
+// Top 15 products cumulative ม.ค.+ก.พ.+มี.ค.+เม.ย.+พ.ค. (updated 02.06.69 — ครบ 5 เดือน)
 const ALL_PRODUCTS = [
-  {n:"Wool Duster ไม้ปัดขนแกะ",         v:4014965,  q:5873},
-  {n:"Sugar (500ml+Spray)",               v:2966305,  q:8518},
-  {n:"Interior (500ml+Spray)",            v:2838936,  q:6100},
-  {n:"Perfect",                           v:2130179,  q:6973},
-  {n:"Martini",                           v:1773158,  q:5890},
-  {n:"Refresh (500ml+หัวโฟม สีขาว)",      v:1696016,  q:3295},
-  {n:"Interior Wipes",                    v:1624341,  q:16013},
-  {n:"Refresh Wipes",                     v:1540144,  q:14565},
-  {n:"Spot (500ml)",                      v:1390818,  q:2654},
-  {n:"Quartz Shampoo (1L)",               v:1265734,  q:2985},
-  {n:"Tire&Trim Gel (500ml)",             v:1154506,  q:1769},
-  {n:"Reflex (250ml+Spray)",              v:1140680,  q:2229},
-  {n:"Polisher",                          v:997695,   q:2445},
-  {n:"Xglass (100ml)",                    v:970793,   q:1449},
-  {n:"Mind (500ml+Spray)",                v:951543,   q:1846},
+  {n:"Wool duster-ไม้ปัดขนแกะ",          v:4795539,  q:7487},
+  {n:"Sugar (500ml+Spray)",               v:3210831,  q:10984},
+  {n:"Interior (500ml+Spray)",            v:2542513,  q:7416},
+  {n:"Refresh (500ml+หัวโฟม สีขาว)",      v:1434165,  q:3954},
+  {n:"Interior Wipes",                    v:1376817,  q:19022},
+  {n:"Perfect",                           v:1323414,  q:8860},
+  {n:"Refresh Wipes",                     v:1261250,  q:16465},
+  {n:"Reflex (250ml+Spray)",              v:1136806,  q:3012},
+  {n:"Spot (500ml)",                      v:1126691,  q:3030},
+  {n:"Sugar (3L+Spray)",                  v:1002164,  q:869},
+  {n:"Tire&Trim Gel (500ml)",             v:981660,   q:2235},
+  {n:"Mind (500ml+Spray)",                v:951389,   q:2364},
+  {n:"Martini",                           v:899254,   q:7347},
+  {n:"Quartz Shampoo (1L)",               v:852058,   q:3696},
+  {n:"Monster",                           v:639850,   q:868},
 ];
 
-// Per-month product revenue [Jan|null(Feb)|Mar|Apr|May] — May from Top_Product_1-31 May 26.xlsx
+// Per-month product revenue [Jan|Feb|Mar|Apr|May] — ข้อมูลครบ 5 เดือนจาก Shipnity (updated 02.06.69)
 const PROD_MO=[
-  {n:"Wool Duster ไม้ปัดขนแกะ",  mo:[1495083,null,981641,788587,749654]},
-  {n:"Interior (500ml+Spray)",     mo:[568676,null,470790,523676,1275794]},
-  {n:"Sugar (500ml+Spray)",        mo:[822778,null,606708,561482,975337]},
-  {n:"Perfect",                    mo:[370067,null,234139,216089,1309884]},
-  {n:"Martini",                    mo:[239590,null,147407,147097,1239064]},
-  {n:"Interior Wipes",             mo:[193960,null,237744,332049,860588]},
-  {n:"Refresh (500ml+หัวโฟม)",     mo:[293360,null,282205,306164,814287]},
-  {n:"Refresh Wipes",              mo:[141707,null,166974,269674,961789]},
-  {n:"Spot (500ml)",               mo:[177233,null,116783,305741,791061]},
-  {n:"Quartz Shampoo (1L)",        mo:[203130,null,149829,150665,762110]},
+  {n:"Wool duster-ไม้ปัดขนแกะ",   mo:[1495083,1041074,981641,788587,489154]},
+  {n:"Sugar (500ml+Spray)",        mo:[822778,670653,606708,561482,549210]},
+  {n:"Interior (500ml+Spray)",     mo:[568676,450756,470790,523676,528615]},
+  {n:"Refresh (500ml+หัวโฟม)",     mo:[293360,245303,282205,306164,307133]},
+  {n:"Interior Wipes",             mo:[193960,206324,237744,332049,406740]},
+  {n:"Perfect",                    mo:[370067,274978,234139,216089,228141]},
+  {n:"Refresh Wipes",              mo:[141707,134280,166974,269674,548615]},
+  {n:"Reflex (250ml+Spray)",       mo:[288877,286316,229188,173243,159182]},
+  {n:"Spot (500ml)",               mo:[177233,132568,116783,305741,394366]},
+  {n:"Sugar (3L+Spray)",           mo:[297428,201858,148678,176607,177593]},
 ];
 
 const ALL_POSTS=[
@@ -1371,7 +1371,7 @@ function renderPlt(idx){
 // PRODUCTS
 // ════════════════════════════════════════
 let prodShown=7,prodMoIdx=-1;
-const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.*'];
+const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
 function setProdMo(idx,el){
   prodMoIdx=idx;prodShown=7;
   document.querySelectorAll('#prod-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
