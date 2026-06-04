@@ -258,6 +258,7 @@ footer{text-align:center;padding:20px 0 0;font-size:10px;color:#374151;letter-sp
           <th onclick="ss(4)" id="h4">มีนา.69</th>
           <th onclick="ss(5)" id="h5">เมษา.69</th>
           <th onclick="ss(6)" id="h6">พค.69*</th>
+          <th onclick="ss(7)" id="h7">มิย.69*</th>
           <th onclick="ss('t')" id="ht" class="sa">Net รวม</th>
           <th style="cursor:default;min-width:52px">เดือน</th>
         </tr>
@@ -493,7 +494,7 @@ const raw=[
 
 const maxV=Math.max(...raw.flatMap(r=>r.mn.filter(v=>v!=null)));
 let cur='t',cnt=20,sd=[...raw];
-let afRS=2, afRE=6;
+let afRS=2, afRE=7;
 const afML=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69'];
 
 function hc(v){
@@ -558,7 +559,7 @@ function ss(k){
   cur=k;cnt=20;
   if(k==='t'){
     // ทั้งหมด = sort by total AND show all 7 months
-    afRS=0;afRE=6;
+    afRS=0;afRE=7;
     sd=[...raw].sort((a,b)=>{
       const as=a.mn.reduce((x,y)=>x+(y||0),0);
       const bs=b.mn.reduce((x,y)=>x+(y||0),0);
@@ -577,7 +578,7 @@ function ss(k){
   document.getElementById(thid)?.classList.add('sa');
   // Update header column visibility
   document.querySelectorAll('#mt thead th').forEach((th,i)=>{
-    if(i>=1&&i<=7)th.style.display=(i-1>=afRS&&i-1<=afRE)?'':'none';
+    if(i>=1&&i<=8)th.style.display=(i-1>=afRS&&i-1<=afRE)?'':'none';
   });
   rt();
   afUpdateKPIs(afRS,afRE);
@@ -585,20 +586,20 @@ function ss(k){
 }
 function sm(){cnt+=20;rt();}
 
-const bKeys=['t',0,1,2,3,4,5,6];
-const bLabels=["ทั้งหมด", "พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69"];
-const bIds=['bt','b0','b1','b2','b3','b4','b5','b6'];
+const bKeys=['t',0,1,2,3,4,5,6,7];
+const bLabels=["ทั้งหมด", "พย.68", "ธค.68", "มค.69", "กพ.69", "มีนา.69", "เมษา.69", "พค.69", "มิย.69"];
+const bIds=['bt','b0','b1','b2','b3','b4','b5','b6','b7'];
 document.getElementById('sr').innerHTML=bKeys.map((k,i)=>`<button class="sb${k==='t'?' a':''}" id="${bIds[i]}" onclick="ss(${k==='t'?"'t'":k})">${bLabels[i]}</button>`).join('');
 rt();
 
 // ── AFFILIATE DUAL-CALENDAR PICKER ──
 const AF_DATE_MIN = '2025-11-01';
-const AF_DATE_MAX = '2026-05-31';
+const AF_DATE_MAX = '2026-06-30';
 const AF_MONTH_BOUNDS = [
   {s:'2025-11-01',e:'2025-11-30'},{s:'2025-12-01',e:'2025-12-31'},
   {s:'2026-01-01',e:'2026-01-31'},{s:'2026-02-01',e:'2026-02-28'},
   {s:'2026-03-01',e:'2026-03-31'},{s:'2026-04-01',e:'2026-04-30'},
-  {s:'2026-05-01',e:'2026-05-31'}
+  {s:'2026-05-01',e:'2026-05-31'},{s:'2026-06-01',e:'2026-06-30'}
 ];
 let afDraftStart='2026-01-01', afDraftEnd=AF_DATE_MAX;
 let afCalStep=0;
