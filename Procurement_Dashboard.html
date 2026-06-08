@@ -80,7 +80,7 @@ tbody td.num{text-align:right}
     <div class="logo">WIB<span>WUB</span></div>
     <div class="pt">📦 Stock Forecast Dashboard</div>
   </div>
-  <div class="hr">อัปเดต: 8 มิ.ย. 2569<br>ข้อมูลขาย: ม.ค.–พ.ค. 2569 (5 เดือน)) 2569 (4 เดือน)</div>
+  <div class="hr">อัปเดต: 8 มิ.ย. 2569<br>ข้อมูลขาย: ม.ค.–พ.ค. 2569 (5 เดือน)</div>
 </div>
 
 <div class="krow">
@@ -101,7 +101,8 @@ tbody td.num{text-align:right}
   <select class="srt-sel" id="sort-sel" onchange="renderTable()">
     <option value="days">เรียงตาม: วันคงเหลือ</option>
     <option value="burn">เรียงตาม: Burn Rate</option>
-    <option value="avail">เรียงตาม: สต๊อกคงเหลือ</option>
+    <option value="stock">เรียงตาม: สต๊อก (คลังสินค้า)</option>
+    <option value="avail">เรียงตาม: คงเหลือ (พร้อมขาย)</option>
     <option value="name">เรียงตาม: ชื่อสินค้า</option>
   </select>
 </div>
@@ -114,7 +115,9 @@ tbody td.num{text-align:right}
     <th>สถานะ</th>
     <th class="num" onclick="setSortCol('days')">วันคงเหลือ <span class="sort-icon" id="srt-days">▼</span></th>
     <th>คาดหมดสต๊อก</th>
-    <th class="num" onclick="setSortCol('avail')">สต๊อกพร้อมขาย <span class="sort-icon" id="srt-avail">▼</span></th>
+    <th class="num" onclick="setSortCol('stock')">สต๊อก <span class="sort-icon" id="srt-stock">▼</span></th>
+    <th class="num">จอง</th>
+    <th class="num" onclick="setSortCol('avail')">คงเหลือ <span class="sort-icon" id="srt-avail">▼</span></th>
     <th class="num" onclick="setSortCol('burn')">Burn/เดือน <span class="sort-icon" id="srt-burn">▼</span></th>
     <th>สัดส่วน (3 เดือน)</th>
     <th>แนะนำสั่งซื้อ</th>
@@ -127,149 +130,149 @@ tbody td.num{text-align:right}
 
 <script>
 const PRODUCTS = [
-{"sku":"EBUC000001","name":"Wash bucket (น้ำเงิน)","price":0,"avail":0,"burn":17,"days":0,"stockout":"2026-06-08","status":"oos","cat":"อุปกรณ์"},
-{"sku":"SAPC250007","name":"APC-25L","price":2600,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Apc"},
-{"sku":"SBRW030029","name":"Brown-3L แถมขวดสเปรย์","price":1500,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Brown"},
-{"sku":"SBRW050029","name":"Brown-5L แถมขวดสเปรย์","price":2350,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Brown"},
-{"sku":"SDPN200016","name":"Deep clean-20L","price":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Deep clean"},
-{"sku":"SINT250001","name":"Interior-25L","price":3000,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Interior"},
-{"sku":"SPRP250011","name":"Paint prep-25L","price":2300,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Paint prep"},
-{"sku":"SQFM000015","name":"Quartz foam-400ml","price":285,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
-{"sku":"SQFM030015","name":"Quartz foam-3L","price":1750,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
-{"sku":"SQFM050015","name":"Quartz foam-5L","price":2600,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
-{"sku":"SRFR250006","name":"Refresh-25L","price":4500,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Refresh"},
-{"sku":"SRFX010003","name":"Reflex-1L แถมขวดสเปรย์","price":1250,"avail":0,"burn":29,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Reflex"},
-{"sku":"SSUG000024","name":"Sugar-400ml+Spray","price":290,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Sugar"},
-{"sku":"STAR000010","name":"Taar-400ml+Spray","price":350,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"สินค้า"},
-{"sku":"STAR030010","name":"Taar-3L","price":1500,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"สินค้า"},
-{"sku":"STES000000","name":"Mini detailing kit","price":150,"avail":0,"burn":39,"days":0,"stockout":"2026-06-08","status":"oos","cat":"สินค้า"},
-{"sku":"EWIP000002","name":"Refresh wipes","price":79,"avail":12,"burn":3307,"days":0,"stockout":"2026-06-08","status":"red","cat":"ผ้าเช็ด/Wipes"},
-{"sku":"SVIS000026","name":"Visible-500ml + หัวโฟมสีขาว","price":250,"avail":24,"burn":371,"days":1,"stockout":"2026-06-09","status":"red","cat":"น้ำยา Visible"},
-{"sku":"BWLD000001","name":"Wool duster-ไม้ปัดขนแกะ","price":690,"avail":146,"burn":1511,"days":2,"stockout":"2026-06-10","status":"red","cat":"ถุงมือ/Mitt"},
-{"sku":"SSUG010024","name":"Sugar-500ml+Spray","price":290,"avail":159,"burn":2222,"days":2,"stockout":"2026-06-10","status":"red","cat":"น้ำยา Sugar"},
-{"sku":"SXGL000012","name":"Xglass-100ml","price":375,"avail":44,"burn":348,"days":3,"stockout":"2026-06-11","status":"red","cat":"น้ำยา Xglass"},
-{"sku":"SINT010001","name":"Interior-500ml+Spray","price":390,"avail":222,"burn":1506,"days":4,"stockout":"2026-06-12","status":"red","cat":"น้ำยา Interior"},
-{"sku":"BHOR000002","name":"Horse hair brush-แปรงขนม้า","price":250,"avail":75,"burn":331,"days":6,"stockout":"2026-06-14","status":"red","cat":"แปรง"},
-{"sku":"ECOV000007","name":"Tire cover","price":490,"avail":2,"burn":9,"days":6,"stockout":"2026-06-14","status":"red","cat":"อุปกรณ์"},
-{"sku":"SJUL000018","name":"Julia","price":1090,"avail":11,"burn":48,"days":6,"stockout":"2026-06-14","status":"red","cat":"น้ำยาเคลือบเซรามิค"},
-{"sku":"SMIN010019","name":"Mind-500ml+Spray","price":390,"avail":111,"burn":477,"days":6,"stockout":"2026-06-14","status":"red","cat":"น้ำยา Mind"},
-{"sku":"SAPC010007","name":"APC-500ml+Spray","price":290,"avail":36,"burn":128,"days":8,"stockout":"2026-06-16","status":"red","cat":"น้ำยา APC"},
-{"sku":"SINT030001","name":"Interior-3L แถมขวดสเปรย์","price":950,"avail":16,"burn":55,"days":8,"stockout":"2026-06-16","status":"red","cat":"น้ำยา Interior"},
-{"sku":"TMTN000004","name":"Martini","price":120,"avail":403,"burn":1503,"days":8,"stockout":"2026-06-16","status":"red","cat":"ผ้า Towel"},
-{"sku":"EWIP000001","name":"Interior wipes","price":79,"avail":1241,"burn":3818,"days":9,"stockout":"2026-06-17","status":"red","cat":"ผ้าเช็ด/Wipes"},
-{"sku":"SQSH000005","name":"Quartz shampoo-1L","price":195,"avail":243,"burn":753,"days":9,"stockout":"2026-06-17","status":"red","cat":"น้ำยา Quartz Shampoo"},
-{"sku":"SQSH050005","name":"Quartz shampoo-5L","price":790,"avail":31,"burn":97,"days":9,"stockout":"2026-06-17","status":"red","cat":"น้ำยา Quartz Shampoo"},
-{"sku":"BFRT000008","name":"Front wheel brush","price":250,"avail":41,"burn":114,"days":10,"stockout":"2026-06-18","status":"red","cat":"แปรง"},
-{"sku":"EBAG000008","name":"กระเป๋า Detailing bag","price":890,"avail":1,"burn":3,"days":10,"stockout":"2026-06-18","status":"red","cat":"สินค้า"},
-{"sku":"SBUG050028","name":"Bugbug-5L แถมขวดสเปรย์","price":1050,"avail":1,"burn":3,"days":10,"stockout":"2026-06-18","status":"red","cat":"น้ำยา Bugbug"},
-{"sku":"SSUG030024","name":"Sugar-3L แถมขวดสเปรย์","price":1050,"avail":61,"burn":177,"days":10,"stockout":"2026-06-18","status":"red","cat":"น้ำยา Sugar"},
-{"sku":"SMIN030019","name":"Mind-3L แถมขวดสเปรย์","price":1250,"avail":30,"burn":81,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยา Mind"},
-{"sku":"SPOT010013","name":"Spot-500ml","price":378,"avail":232,"burn":615,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยา Spot"},
-{"sku":"SQSH030005","name":"Quartz shampoo-3L","price":490,"avail":64,"burn":174,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยา Quartz Shampoo"},
-{"sku":"SWTL010008","name":"Waterless-500ml","price":370,"avail":65,"burn":172,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยา Waterless"},
-{"sku":"SAPC050007","name":"APC-5L แถมขวดสเปรย์","price":1300,"avail":2,"burn":5,"days":12,"stockout":"2026-06-20","status":"red","cat":"น้ำยา APC"},
-{"sku":"TPER000002","name":"Perfect","price":170,"avail":793,"burn":1808,"days":13,"stockout":"2026-06-21","status":"red","cat":"ผ้า Towel"},
-{"sku":"BWLD000002","name":"(เกรดB) ไม้ปัดขนแกะ","price":390,"avail":48,"burn":97,"days":14,"stockout":"2026-06-22","status":"red","cat":"ถุงมือ/Mitt"},
-{"sku":"SRFT010006","name":"Refresh-500ml+หัวโฟม สีขาว","price":390,"avail":398,"burn":800,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Refresh"},
-{"sku":"SSTL010009","name":"Steel-500ml+Spray","price":450,"avail":37,"burn":76,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Steel"},
-{"sku":"STER030025","name":"Terrain-3L","price":1150,"avail":7,"burn":15,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Terrain"},
-{"sku":"SBCH010031","name":"Beach-500ml+Spray","price":490,"avail":66,"burn":128,"days":15,"stockout":"2026-06-23","status":"red","cat":"น้ำยา Beach"},
-{"sku":"SPRP010011","name":"Paint prep-500ml+Spray","price":190,"avail":144,"burn":283,"days":15,"stockout":"2026-06-23","status":"red","cat":"น้ำยา Paint prep"},
-{"sku":"STRM010004","name":"Tire&trim gel-500ml","price":420,"avail":232,"burn":451,"days":15,"stockout":"2026-06-23","status":"red","cat":"น้ำยา Tire&trim"},
-{"sku":"TPOL000003","name":"Polisher","price":120,"avail":339,"burn":637,"days":15,"stockout":"2026-06-23","status":"red","cat":"ผ้า Towel"},
-{"sku":"SMCW030017","name":"Microfiber wash-3L","price":750,"avail":10,"burn":18,"days":16,"stockout":"2026-06-24","status":"red","cat":"น้ำยาซักผ้า"},
-{"sku":"STCL000027","name":"Tire clean-500ml + หัวโฟมสีขาว","price":350,"avail":55,"burn":101,"days":16,"stockout":"2026-06-24","status":"red","cat":"น้ำยา Tire clean"},
-{"sku":"ESUE010005","name":"Suede Towels","price":250,"avail":18,"burn":30,"days":18,"stockout":"2026-06-26","status":"red","cat":"Applicator"},
-{"sku":"SINT050001","name":"Interior-5L แถมขวดสเปรย์","price":1500,"avail":8,"burn":13,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Interior"},
-{"sku":"SREC010032","name":"Recove-500ml","price":490,"avail":147,"burn":235,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Recove"},
-{"sku":"TMGA000006","name":"Margarita","price":150,"avail":344,"burn":561,"days":18,"stockout":"2026-06-26","status":"red","cat":"ผ้า Towel"},
-{"sku":"TMON000005","name":"Monster","price":750,"avail":112,"burn":177,"days":18,"stockout":"2026-06-26","status":"red","cat":"ผ้า Towel"},
-{"sku":"EMCA000004","name":"Microfiber applicator-ฟองน้ำผ้าไมโครไฟเบอร์","price":150,"avail":205,"burn":309,"days":19,"stockout":"2026-06-27","status":"red","cat":"Applicator"},
-{"sku":"SBUG000028","name":"Bugbug-500ml+Spray","price":245,"avail":116,"burn":183,"days":19,"stockout":"2026-06-27","status":"red","cat":"น้ำยา Bugbug"},
-{"sku":"SRFX000003","name":"Reflex-250ml+Spray","price":395,"avail":391,"burn":612,"days":19,"stockout":"2026-06-27","status":"red","cat":"น้ำยา Reflex"},
-{"sku":"SBRW000029","name":"Brown-500ml+Spray","price":350,"avail":119,"burn":177,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา Brown"},
-{"sku":"SCNR010033","name":"Cleaner","price":0,"avail":310,"burn":450,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยาทำความสะอาด"},
-{"sku":"SDPN050016","name":"Deep clean-5L","price":1250,"avail":13,"burn":19,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา Deep clean"},
-{"sku":"SUVP000002","name":"UV protect-100ml","price":190,"avail":194,"burn":287,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา UV protect"},
-{"sku":"TFRE000007","name":"ผ้าไมโครไฟเบอร์ (สีเหลือง)","price":0,"avail":310,"burn":449,"days":20,"stockout":"2026-06-28","status":"red","cat":"ผ้า Towel"},
-{"sku":"SBYK010031","name":"Banyakart-500ml","price":365,"avail":137,"burn":194,"days":21,"stockout":"2026-06-29","status":"yellow","cat":"น้ำยา Banyakart"},
-{"sku":"SRFR030006","name":"Refresh-3L แถมขวดสเปรย์","price":1650,"avail":10,"burn":14,"days":21,"stockout":"2026-06-29","status":"yellow","cat":"น้ำยา Refresh"},
-{"sku":"SVIS030026","name":"Visible-3L แถมขวดสเปรย์","price":850,"avail":12,"burn":16,"days":22,"stockout":"2026-06-30","status":"yellow","cat":"น้ำยา Visible"},
-{"sku":"FBOT000001","name":"ขวดสเปรย์ใส","price":0,"avail":100,"burn":124,"days":24,"stockout":"2026-07-02","status":"yellow","cat":"สินค้า"},
-{"sku":"STCL030027","name":"Tire clean-3L แถมขวดสเปรย์","price":1500,"avail":8,"burn":9,"days":26,"stockout":"2026-07-04","status":"yellow","cat":"น้ำยา Tire clean"},
-{"sku":"TSPD000001","name":"Superdry doubleside","price":450,"avail":291,"burn":324,"days":26,"stockout":"2026-07-04","status":"yellow","cat":"ผ้า Towel"},
-{"sku":"STRM030004","name":"Tire&trim gel-3L แถมขวด","price":1790,"avail":10,"burn":11,"days":27,"stockout":"2026-07-05","status":"yellow","cat":"น้ำยา Tire&trim"},
-{"sku":"ESUE000005","name":"Suede applicator","price":45,"avail":71,"burn":75,"days":28,"stockout":"2026-07-06","status":"yellow","cat":"Applicator"},
-{"sku":"SRFX110003","name":"Reflex-500ml+Spray","price":620,"avail":183,"burn":193,"days":28,"stockout":"2026-07-06","status":"yellow","cat":"น้ำยา Reflex"},
-{"sku":"SPRP030011","name":"Paint prep-3L แถมขวดสเปรย์","price":590,"avail":12,"burn":12,"days":30,"stockout":"2026-07-08","status":"yellow","cat":"น้ำยา Paint prep"},
-{"sku":"SXGL010012","name":"Xglass-1L แถมขวด","price":890,"avail":16,"burn":16,"days":30,"stockout":"2026-07-08","status":"yellow","cat":"น้ำยา Xglass"},
-{"sku":"STER000025","name":"Terrain-500ml","price":245,"avail":91,"burn":80,"days":34,"stockout":"2026-07-12","status":"yellow","cat":"น้ำยา Terrain"},
-{"sku":"TPOL010003","name":"Polisher 10 ผืน","price":800,"avail":7,"burn":6,"days":35,"stockout":"2026-07-13","status":"yellow","cat":"ผ้า Towel"},
-{"sku":"SMIN050019","name":"Mind-5L แถมขวดสเปรย์","price":2000,"avail":6,"burn":5,"days":36,"stockout":"2026-07-14","status":"yellow","cat":"น้ำยา Mind"},
-{"sku":"SSUG050024","name":"Sugar-5L แถมขวดสเปรย์","price":1650,"avail":47,"burn":38,"days":37,"stockout":"2026-07-15","status":"yellow","cat":"น้ำยา Sugar"},
-{"sku":"STRM050004","name":"Tire&trim gel-5L แถมขวด","price":2750,"avail":5,"burn":4,"days":37,"stockout":"2026-07-15","status":"yellow","cat":"น้ำยา Tire&trim"},
-{"sku":"SDPN000016","name":"Deep clean-1L","price":350,"avail":182,"burn":141,"days":38,"stockout":"2026-07-16","status":"yellow","cat":"น้ำยา Deep clean"},
-{"sku":"SBUG030028","name":"Bugbug-3L แถมขวดสเปรย์","price":750,"avail":8,"burn":6,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"น้ำยา Bugbug"},
-{"sku":"SVIS050026","name":"Visible-5L แถมขวดสเปรย์","price":1250,"avail":8,"burn":6,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"น้ำยา Visible"},
-{"sku":"TMGA010006","name":"Margarita 10 ผืน","price":1100,"avail":4,"burn":3,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"ผ้า Towel"},
-{"sku":"ETIR000001","name":"Tire applicator-ฟองน้ำทายาง","price":45,"avail":756,"burn":533,"days":42,"stockout":"2026-07-20","status":"yellow","cat":"Applicator"},
-{"sku":"SDPN030016","name":"Deep clean-3L","price":750,"avail":52,"burn":36,"days":43,"stockout":"2026-07-21","status":"yellow","cat":"น้ำยา Deep clean"},
-{"sku":"SRFX030003","name":"Reflex-3L แถมขวดสเปรย์","price":2300,"avail":16,"burn":11,"days":43,"stockout":"2026-07-21","status":"yellow","cat":"น้ำยา Reflex"},
-{"sku":"TPER010002","name":"Perfect 10 ผืน","price":1200,"avail":3,"burn":2,"days":45,"stockout":"2026-07-23","status":"yellow","cat":"ผ้า Towel"},
-{"sku":"SBCH030032","name":"Beach-3L แถมขวดสเปรย์","price":1950,"avail":8,"burn":5,"days":48,"stockout":"2026-07-26","status":"green","cat":"น้ำยา Beach"},
-{"sku":"SGFS000020","name":"Graphene","price":490,"avail":317,"burn":183,"days":51,"stockout":"2026-07-29","status":"green","cat":"น้ำยาเคลือบ"},
-{"sku":"SPOT030013","name":"Spot-3L แถมขวด","price":1350,"avail":19,"burn":11,"days":51,"stockout":"2026-07-29","status":"green","cat":"น้ำยา Spot"},
-{"sku":"SBCH050033","name":"Beach-5L แถมขวดสเปรย์","price":3000,"avail":7,"burn":4,"days":52,"stockout":"2026-07-30","status":"green","cat":"น้ำยา Beach"},
-{"sku":"EMIU000010","name":"Premium mitt-ถุงมือไมโครไฟเบอร์","price":390,"avail":262,"burn":146,"days":53,"stockout":"2026-07-31","status":"green","cat":"ถุงมือ/Mitt"},
-{"sku":"SMCW010017","name":"Microfiber wash-500ml","price":220,"avail":307,"burn":168,"days":54,"stockout":"2026-08-01","status":"green","cat":"น้ำยาซักผ้า"},
-{"sku":"BSYN000004","name":"Synthetic","price":175,"avail":355,"burn":190,"days":56,"stockout":"2026-08-03","status":"green","cat":"แปรง Detailing"},
-{"sku":"EWLM000002","name":"Wool wash mitt-ถุงมือขนแกะ","price":490,"avail":360,"burn":191,"days":56,"stockout":"2026-08-03","status":"green","cat":"ถุงมือ/Mitt"},
-{"sku":"SQSH200005","name":"Quartz shampoo-25L","price":2700,"avail":4,"burn":2,"days":60,"stockout":"2026-08-07","status":"green","cat":"น้ำยา Quartz Shampoo"},
-{"sku":"SUVP010002","name":"UV protect-1L แถมขวดสเปรย์","price":990,"avail":23,"burn":10,"days":69,"stockout":"2026-08-16","status":"green","cat":"น้ำยา UV protect"},
-{"sku":"SAPC030007","name":"APC-3L แถมขวดสเปรย์","price":850,"avail":14,"burn":6,"days":70,"stockout":"2026-08-17","status":"green","cat":"น้ำยา APC"},
-{"sku":"BTIR000006","name":"Tire brush-แปรงขัดยาง","price":150,"avail":353,"burn":147,"days":72,"stockout":"2026-08-19","status":"green","cat":"แปรง"},
-{"sku":"ESEC000009","name":"Secondary container","price":175,"avail":207,"burn":83,"days":74,"stockout":"2026-08-21","status":"green","cat":"อุปกรณ์"},
-{"sku":"SGFS010020","name":"Ella","price":1290,"avail":45,"burn":17,"days":79,"stockout":"2026-08-26","status":"green","cat":"น้ำยาเคลือบ"},
-{"sku":"BWHE000011","name":"Flex wheelbrush","price":270,"avail":265,"burn":92,"days":86,"stockout":"2026-09-02","status":"green","cat":"แปรง"},
-{"sku":"BBLU000010","name":"Blue stiff","price":120,"avail":623,"burn":209,"days":89,"stockout":"2026-09-05","status":"green","cat":"แปรง Detailing"},
-{"sku":"SMCW250017","name":"Microfiber wash-25L","price":2900,"avail":3,"burn":1,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา/Chemical"},
-{"sku":"SPRP050011","name":"Paint prep-5L แถมขวดสเปรย์","price":950,"avail":6,"burn":2,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา Paint prep"},
-{"sku":"SSTL030009","name":"Steel-3L แถมขวดสเปรย์","price":2500,"avail":3,"burn":1,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา Steel"},
-{"sku":"SWTL050008","name":"Waterless-5L แถมขวดสเปรย์ใส","price":2150,"avail":3,"burn":1,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา Waterless"},
-{"sku":"EBUC000002","name":"Rinse bucket (เทา)","price":0,"avail":52,"burn":17,"days":91,"stockout":"2026-09-07","status":"green","cat":"อุปกรณ์"},
-{"sku":"SBCH000030","name":"Beach-250ml+Spray","price":295,"avail":186,"burn":60,"days":93,"stockout":"2026-09-09","status":"green","cat":"น้ำยา Beach"},
-{"sku":"BULT000003","name":"Ultra soft","price":150,"avail":695,"burn":208,"days":100,"stockout":"2026-09-16","status":"green","cat":"แปรง Detailing"},
-{"sku":"STER050025","name":"Terrain-5L","price":1800,"avail":7,"burn":2,"days":105,"stockout":"2026-09-21","status":"green","cat":"น้ำยา Terrain"},
-{"sku":"ESCR000001","name":"Scrubber","price":75,"avail":601,"burn":152,"days":118,"stockout":"2026-10-04","status":"green","cat":"Applicator"},
-{"sku":"SPNX000014","name":"Phoenix-250ml+Spray","price":590,"avail":64,"burn":13,"days":147,"stockout":"2026-11-02","status":"green","cat":"น้ำยาเคลือบ"},
-{"sku":"SPOT050013","name":"Spot-5L แถมขวด","price":2300,"avail":5,"burn":1,"days":150,"stockout":"2026-11-05","status":"green","cat":"น้ำยา Spot"},
-{"sku":"SRFR050006","name":"Refresh-5L แถมขวดสเปรย์","price":2600,"avail":5,"burn":1,"days":150,"stockout":"2026-11-05","status":"green","cat":"น้ำยา Refresh"},
-{"sku":"TMTN010004","name":"Martini 10 ผืน","price":1000,"avail":15,"burn":3,"days":150,"stockout":"2026-11-05","status":"green","cat":"ผ้า Towel"},
-{"sku":"ECLY000006","name":"Claymitt","price":420,"avail":285,"burn":56,"days":152,"stockout":"2026-11-07","status":"green","cat":"ถุงมือ/Mitt"},
-{"sku":"EPOR000003","name":"Portable bucket (ถังพกพา)","price":150,"avail":83,"burn":16,"days":155,"stockout":"2026-11-10","status":"green","cat":"อุปกรณ์"},
-{"sku":"SDIA000034","name":"Anna nano diamond","price":1790,"avail":97,"burn":18,"days":161,"stockout":"2026-11-16","status":"green","cat":"น้ำยาเคลือบ"},
-{"sku":"SWTL030008","name":"Waterless-3L แถมขวดสเปรย์ใส","price":1470,"avail":6,"burn":1,"days":180,"stockout":"2026-12-05","status":"green","cat":"น้ำยา Waterless"},
-{"sku":"STCL050027","name":"Tire clean-5L แถมขวดสเปรย์","price":1950,"avail":7,"burn":1,"days":210,"stockout":"2027-01-04","status":"green","cat":"น้ำยา Tire clean"},
-{"sku":"BLIM010003","name":"Strip wheel brush","price":350,"avail":72,"burn":9,"days":240,"stockout":"2027-02-03","status":"green","cat":"แปรง"},
-{"sku":"SMCW050017","name":"Microfiber wash-5L","price":1350,"avail":8,"burn":1,"days":240,"stockout":"2027-02-03","status":"green","cat":"น้ำยาซักผ้า"},
-{"sku":"wibwubcapgreen","name":"หมวกสีเขียว","price":0,"avail":57,"burn":7,"days":244,"stockout":"2027-02-07","status":"green","cat":"สินค้า"},
-{"sku":"wibwubcapgrey","name":"หมวกสีเทา","price":0,"avail":59,"burn":7,"days":252,"stockout":"2027-02-15","status":"green","cat":"สินค้า"},
-{"sku":"EBUC020001","name":"Side bucket","price":390,"avail":162,"burn":15,"days":324,"stockout":"2027-04-28","status":"green","cat":"อุปกรณ์"},
-{"sku":"BWHE000007","name":"Wheel brush-แปรงขัดล้อ","price":450,"avail":599,"burn":40,"days":449,"stockout":"2027-08-31","status":"green","cat":"แปรง"},
-{"sku":"RBOX000001","name":"ฟองน้ำสำหรับลงน้ำยาเคลือบเซรามิก (Coating block)","price":55,"avail":783,"burn":37,"days":634,"stockout":"2028-03-03","status":"green","cat":"Applicator"},
-{"sku":"ECON000001-A","name":"Connector-A","price":1390,"avail":3,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"ECON000001-B","name":"Connector-B","price":1390,"avail":3,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"ECON000001-C","name":"Connector-C","price":1390,"avail":28,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"ECON000001-D","name":"Connector-D","price":1390,"avail":51,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"ECON000001-E","name":"Connector-E","price":1390,"avail":13,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"EFOM000001","name":"Foam cannon","price":0,"avail":543,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"EGEL000001","name":"Cleaning gel","price":0,"avail":312,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"SBNN000023","name":"Banana foam","price":250,"avail":23,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"SPKY000022","name":"Pinky foam","price":250,"avail":1,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"SPNX010014","name":"Phoenix-1L แถมขวดสเปรย์","price":1990,"avail":2,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"น้ำยาเคลือบ"},
-{"sku":"SSKY000021","name":"Sky foam","price":250,"avail":9,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
-{"sku":"SSTL050009","name":"Steel-5L แถมขวดสเปรย์","price":3800,"avail":4,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"น้ำยา Steel"},
-{"sku":"STAR050010","name":"Taar-5L","price":2300,"avail":1,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"}
+{"sku":"EBUC000001","name":"Wash bucket (น้ำเงิน)","price":0,"stock":0,"reserved":0,"avail":0,"burn":17,"days":0,"stockout":"2026-06-08","status":"oos","cat":"อุปกรณ์"},
+{"sku":"SAPC250007","name":"APC-25L","price":2600,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Apc"},
+{"sku":"SBRW030029","name":"Brown-3L แถมขวดสเปรย์","price":1500,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Brown"},
+{"sku":"SBRW050029","name":"Brown-5L แถมขวดสเปรย์","price":2350,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Brown"},
+{"sku":"SDPN200016","name":"Deep clean-20L","price":0,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Deep clean"},
+{"sku":"SINT250001","name":"Interior-25L","price":3000,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Interior"},
+{"sku":"SPRP250011","name":"Paint prep-25L","price":2300,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Paint prep"},
+{"sku":"SQFM000015","name":"Quartz foam-400ml","price":285,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
+{"sku":"SQFM030015","name":"Quartz foam-3L","price":1750,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
+{"sku":"SQFM050015","name":"Quartz foam-5L","price":2600,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Quartz"},
+{"sku":"SRFR250006","name":"Refresh-25L","price":4500,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Refresh"},
+{"sku":"SRFX010003","name":"Reflex-1L แถมขวดสเปรย์","price":1250,"stock":0,"reserved":0,"avail":0,"burn":29,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Reflex"},
+{"sku":"SSUG000024","name":"Sugar-400ml+Spray","price":290,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"น้ำยา Sugar"},
+{"sku":"STAR000010","name":"Taar-400ml+Spray","price":350,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"สินค้า"},
+{"sku":"STAR030010","name":"Taar-3L","price":1500,"stock":0,"reserved":0,"avail":0,"burn":0,"days":0,"stockout":"2026-06-08","status":"oos","cat":"สินค้า"},
+{"sku":"EWIP000002","name":"Refresh wipes","price":79,"stock":12,"reserved":0,"avail":12,"burn":3307,"days":0,"stockout":"2026-06-08","status":"red","cat":"ผ้าเช็ด/Wipes"},
+{"sku":"STES000000","name":"Mini detailing kit","price":150,"stock":1,"reserved":1,"avail":0,"burn":39,"days":0,"stockout":"2026-06-08","status":"red","cat":"สินค้า"},
+{"sku":"BWLD000001","name":"Wool duster-ไม้ปัดขนแกะ","price":690,"stock":199,"reserved":53,"avail":146,"burn":1511,"days":3,"stockout":"2026-06-11","status":"red","cat":"ถุงมือ/Mitt"},
+{"sku":"SSUG010024","name":"Sugar-500ml+Spray","price":290,"stock":370,"reserved":211,"avail":159,"burn":2222,"days":4,"stockout":"2026-06-12","status":"red","cat":"น้ำยา Sugar"},
+{"sku":"SVIS000026","name":"Visible-500ml + หัวโฟมสีขาว","price":250,"stock":69,"reserved":45,"avail":24,"burn":371,"days":5,"stockout":"2026-06-13","status":"red","cat":"น้ำยา Visible"},
+{"sku":"ECOV000007","name":"Tire cover","price":490,"stock":2,"reserved":0,"avail":2,"burn":9,"days":6,"stockout":"2026-06-14","status":"red","cat":"อุปกรณ์"},
+{"sku":"SINT010001","name":"Interior-500ml+Spray","price":390,"stock":361,"reserved":139,"avail":222,"burn":1506,"days":7,"stockout":"2026-06-15","status":"red","cat":"น้ำยา Interior"},
+{"sku":"SMIN010019","name":"Mind-500ml+Spray","price":390,"stock":133,"reserved":22,"avail":111,"burn":477,"days":8,"stockout":"2026-06-16","status":"red","cat":"น้ำยา Mind"},
+{"sku":"EBAG000008","name":"กระเป๋า Detailing bag","price":890,"stock":1,"reserved":0,"avail":1,"burn":3,"days":10,"stockout":"2026-06-18","status":"red","cat":"สินค้า"},
+{"sku":"BHOR000002","name":"Horse hair brush-แปรงขนม้า","price":250,"stock":124,"reserved":49,"avail":75,"burn":331,"days":11,"stockout":"2026-06-19","status":"red","cat":"แปรง"},
+{"sku":"SAPC010007","name":"APC-500ml+Spray","price":290,"stock":47,"reserved":11,"avail":36,"burn":128,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยา APC"},
+{"sku":"SJUL000018","name":"Julia","price":1090,"stock":19,"reserved":8,"avail":11,"burn":48,"days":11,"stockout":"2026-06-19","status":"red","cat":"น้ำยาเคลือบเซรามิค"},
+{"sku":"TMTN000004","name":"Martini","price":120,"stock":553,"reserved":150,"avail":403,"burn":1503,"days":11,"stockout":"2026-06-19","status":"red","cat":"ผ้า Towel"},
+{"sku":"SAPC050007","name":"APC-5L แถมขวดสเปรย์","price":1300,"stock":2,"reserved":0,"avail":2,"burn":5,"days":12,"stockout":"2026-06-20","status":"red","cat":"น้ำยา APC"},
+{"sku":"SXGL000012","name":"Xglass-100ml","price":375,"stock":141,"reserved":97,"avail":44,"burn":348,"days":12,"stockout":"2026-06-20","status":"red","cat":"น้ำยา Xglass"},
+{"sku":"BFRT000008","name":"Front wheel brush","price":250,"stock":53,"reserved":12,"avail":41,"burn":114,"days":13,"stockout":"2026-06-21","status":"red","cat":"แปรง"},
+{"sku":"SINT030001","name":"Interior-3L แถมขวดสเปรย์","price":950,"stock":25,"reserved":9,"avail":16,"burn":55,"days":13,"stockout":"2026-06-21","status":"red","cat":"น้ำยา Interior"},
+{"sku":"SQSH000005","name":"Quartz shampoo-1L","price":195,"stock":334,"reserved":91,"avail":243,"burn":753,"days":13,"stockout":"2026-06-21","status":"red","cat":"น้ำยา Quartz Shampoo"},
+{"sku":"EWIP000001","name":"Interior wipes","price":79,"stock":1906,"reserved":665,"avail":1241,"burn":3818,"days":14,"stockout":"2026-06-22","status":"red","cat":"ผ้าเช็ด/Wipes"},
+{"sku":"SMIN030019","name":"Mind-3L แถมขวดสเปรย์","price":1250,"stock":38,"reserved":8,"avail":30,"burn":81,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Mind"},
+{"sku":"SQSH050005","name":"Quartz shampoo-5L","price":790,"stock":47,"reserved":16,"avail":31,"burn":97,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Quartz Shampoo"},
+{"sku":"SSUG030024","name":"Sugar-3L แถมขวดสเปรย์","price":1050,"stock":84,"reserved":23,"avail":61,"burn":177,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Sugar"},
+{"sku":"SWTL010008","name":"Waterless-500ml","price":370,"stock":82,"reserved":17,"avail":65,"burn":172,"days":14,"stockout":"2026-06-22","status":"red","cat":"น้ำยา Waterless"},
+{"sku":"BWLD000002","name":"(เกรดB) ไม้ปัดขนแกะ","price":390,"stock":51,"reserved":3,"avail":48,"burn":97,"days":15,"stockout":"2026-06-23","status":"red","cat":"ถุงมือ/Mitt"},
+{"sku":"SQSH030005","name":"Quartz shampoo-3L","price":490,"stock":90,"reserved":26,"avail":64,"burn":174,"days":15,"stockout":"2026-06-23","status":"red","cat":"น้ำยา Quartz Shampoo"},
+{"sku":"TPER000002","name":"Perfect","price":170,"stock":939,"reserved":146,"avail":793,"burn":1808,"days":15,"stockout":"2026-06-23","status":"red","cat":"ผ้า Towel"},
+{"sku":"SPOT010013","name":"Spot-500ml","price":378,"stock":346,"reserved":114,"avail":232,"burn":615,"days":16,"stockout":"2026-06-24","status":"red","cat":"น้ำยา Spot"},
+{"sku":"SBCH010031","name":"Beach-500ml+Spray","price":490,"stock":79,"reserved":13,"avail":66,"burn":128,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Beach"},
+{"sku":"SPRP010011","name":"Paint prep-500ml+Spray","price":190,"stock":173,"reserved":29,"avail":144,"burn":283,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Paint prep"},
+{"sku":"SRFT010006","name":"Refresh-500ml+หัวโฟม สีขาว","price":390,"stock":491,"reserved":93,"avail":398,"burn":800,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Refresh"},
+{"sku":"SSTL010009","name":"Steel-500ml+Spray","price":450,"stock":48,"reserved":11,"avail":37,"burn":76,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Steel"},
+{"sku":"STRM010004","name":"Tire&trim gel-500ml","price":420,"stock":283,"reserved":51,"avail":232,"burn":451,"days":18,"stockout":"2026-06-26","status":"red","cat":"น้ำยา Tire&trim"},
+{"sku":"TPOL000003","name":"Polisher","price":120,"stock":414,"reserved":75,"avail":339,"burn":637,"days":19,"stockout":"2026-06-27","status":"red","cat":"ผ้า Towel"},
+{"sku":"SBUG050028","name":"Bugbug-5L แถมขวดสเปรย์","price":1050,"stock":2,"reserved":1,"avail":1,"burn":3,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา Bugbug"},
+{"sku":"SINT050001","name":"Interior-5L แถมขวดสเปรย์","price":1500,"stock":9,"reserved":1,"avail":8,"burn":13,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา Interior"},
+{"sku":"STER030025","name":"Terrain-3L","price":1150,"stock":10,"reserved":3,"avail":7,"burn":15,"days":20,"stockout":"2026-06-28","status":"red","cat":"น้ำยา Terrain"},
+{"sku":"SMCW030017","name":"Microfiber wash-3L","price":750,"stock":13,"reserved":3,"avail":10,"burn":18,"days":21,"stockout":"2026-06-29","status":"yellow","cat":"น้ำยาซักผ้า"},
+{"sku":"SRFX000003","name":"Reflex-250ml+Spray","price":395,"stock":438,"reserved":47,"avail":391,"burn":612,"days":21,"stockout":"2026-06-29","status":"yellow","cat":"น้ำยา Reflex"},
+{"sku":"TMGA000006","name":"Margarita","price":150,"stock":400,"reserved":56,"avail":344,"burn":561,"days":21,"stockout":"2026-06-29","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"ESUE010005","name":"Suede Towels","price":250,"stock":22,"reserved":4,"avail":18,"burn":30,"days":22,"stockout":"2026-06-30","status":"yellow","cat":"Applicator"},
+{"sku":"SBUG000028","name":"Bugbug-500ml+Spray","price":245,"stock":136,"reserved":20,"avail":116,"burn":183,"days":22,"stockout":"2026-06-30","status":"yellow","cat":"น้ำยา Bugbug"},
+{"sku":"SREC010032","name":"Recove-500ml","price":490,"stock":174,"reserved":27,"avail":147,"burn":235,"days":22,"stockout":"2026-06-30","status":"yellow","cat":"น้ำยา Recove"},
+{"sku":"STCL000027","name":"Tire clean-500ml + หัวโฟมสีขาว","price":350,"stock":77,"reserved":22,"avail":55,"burn":101,"days":22,"stockout":"2026-06-30","status":"yellow","cat":"น้ำยา Tire clean"},
+{"sku":"SBRW000029","name":"Brown-500ml+Spray","price":350,"stock":140,"reserved":21,"avail":119,"burn":177,"days":23,"stockout":"2026-07-01","status":"yellow","cat":"น้ำยา Brown"},
+{"sku":"SCNR010033","name":"Cleaner","price":0,"stock":348,"reserved":38,"avail":310,"burn":450,"days":23,"stockout":"2026-07-01","status":"yellow","cat":"น้ำยาทำความสะอาด"},
+{"sku":"SDPN050016","name":"Deep clean-5L","price":1250,"stock":15,"reserved":2,"avail":13,"burn":19,"days":23,"stockout":"2026-07-01","status":"yellow","cat":"น้ำยา Deep clean"},
+{"sku":"SUVP000002","name":"UV protect-100ml","price":190,"stock":221,"reserved":27,"avail":194,"burn":287,"days":23,"stockout":"2026-07-01","status":"yellow","cat":"น้ำยา UV protect"},
+{"sku":"TFRE000007","name":"ผ้าไมโครไฟเบอร์ (สีเหลือง)","price":0,"stock":348,"reserved":38,"avail":310,"burn":449,"days":23,"stockout":"2026-07-01","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"EMCA000004","name":"Microfiber applicator-ฟองน้ำผ้าไมโครไฟเบอร์","price":150,"stock":251,"reserved":46,"avail":205,"burn":309,"days":24,"stockout":"2026-07-02","status":"yellow","cat":"Applicator"},
+{"sku":"TMON000005","name":"Monster","price":750,"stock":144,"reserved":32,"avail":112,"burn":177,"days":24,"stockout":"2026-07-02","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"FBOT000001","name":"ขวดสเปรย์ใส","price":0,"stock":114,"reserved":14,"avail":100,"burn":124,"days":27,"stockout":"2026-07-05","status":"yellow","cat":"สินค้า"},
+{"sku":"SBYK010031","name":"Banyakart-500ml","price":365,"stock":175,"reserved":38,"avail":137,"burn":194,"days":27,"stockout":"2026-07-05","status":"yellow","cat":"น้ำยา Banyakart"},
+{"sku":"SRFR030006","name":"Refresh-3L แถมขวดสเปรย์","price":1650,"stock":13,"reserved":3,"avail":10,"burn":14,"days":27,"stockout":"2026-07-05","status":"yellow","cat":"น้ำยา Refresh"},
+{"sku":"SVIS030026","name":"Visible-3L แถมขวดสเปรย์","price":850,"stock":15,"reserved":3,"avail":12,"burn":16,"days":28,"stockout":"2026-07-06","status":"yellow","cat":"น้ำยา Visible"},
+{"sku":"STRM030004","name":"Tire&trim gel-3L แถมขวด","price":1790,"stock":11,"reserved":1,"avail":10,"burn":11,"days":30,"stockout":"2026-07-08","status":"yellow","cat":"น้ำยา Tire&trim"},
+{"sku":"TSPD000001","name":"Superdry doubleside","price":450,"stock":331,"reserved":40,"avail":291,"burn":324,"days":30,"stockout":"2026-07-08","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"ESUE000005","name":"Suede applicator","price":45,"stock":78,"reserved":7,"avail":71,"burn":75,"days":31,"stockout":"2026-07-09","status":"yellow","cat":"Applicator"},
+{"sku":"SPRP030011","name":"Paint prep-3L แถมขวดสเปรย์","price":590,"stock":13,"reserved":1,"avail":12,"burn":12,"days":32,"stockout":"2026-07-10","status":"yellow","cat":"น้ำยา Paint prep"},
+{"sku":"SRFX110003","name":"Reflex-500ml+Spray","price":620,"stock":228,"reserved":45,"avail":183,"burn":193,"days":35,"stockout":"2026-07-13","status":"yellow","cat":"น้ำยา Reflex"},
+{"sku":"TPOL010003","name":"Polisher 10 ผืน","price":800,"stock":7,"reserved":0,"avail":7,"burn":6,"days":35,"stockout":"2026-07-13","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"SMIN050019","name":"Mind-5L แถมขวดสเปรย์","price":2000,"stock":6,"reserved":0,"avail":6,"burn":5,"days":36,"stockout":"2026-07-14","status":"yellow","cat":"น้ำยา Mind"},
+{"sku":"STRM050004","name":"Tire&trim gel-5L แถมขวด","price":2750,"stock":5,"reserved":0,"avail":5,"burn":4,"days":37,"stockout":"2026-07-15","status":"yellow","cat":"น้ำยา Tire&trim"},
+{"sku":"SSUG050024","name":"Sugar-5L แถมขวดสเปรย์","price":1650,"stock":49,"reserved":2,"avail":47,"burn":38,"days":38,"stockout":"2026-07-16","status":"yellow","cat":"น้ำยา Sugar"},
+{"sku":"STER000025","name":"Terrain-500ml","price":245,"stock":102,"reserved":11,"avail":91,"burn":80,"days":38,"stockout":"2026-07-16","status":"yellow","cat":"น้ำยา Terrain"},
+{"sku":"SXGL010012","name":"Xglass-1L แถมขวด","price":890,"stock":21,"reserved":5,"avail":16,"burn":16,"days":39,"stockout":"2026-07-17","status":"yellow","cat":"น้ำยา Xglass"},
+{"sku":"STCL030027","name":"Tire clean-3L แถมขวดสเปรย์","price":1500,"stock":12,"reserved":4,"avail":8,"burn":9,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"น้ำยา Tire clean"},
+{"sku":"SVIS050026","name":"Visible-5L แถมขวดสเปรย์","price":1250,"stock":8,"reserved":0,"avail":8,"burn":6,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"น้ำยา Visible"},
+{"sku":"TMGA010006","name":"Margarita 10 ผืน","price":1100,"stock":4,"reserved":0,"avail":4,"burn":3,"days":40,"stockout":"2026-07-18","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"SDPN000016","name":"Deep clean-1L","price":350,"stock":196,"reserved":14,"avail":182,"burn":141,"days":41,"stockout":"2026-07-19","status":"yellow","cat":"น้ำยา Deep clean"},
+{"sku":"ETIR000001","name":"Tire applicator-ฟองน้ำทายาง","price":45,"stock":809,"reserved":53,"avail":756,"burn":533,"days":45,"stockout":"2026-07-23","status":"yellow","cat":"Applicator"},
+{"sku":"SBUG030028","name":"Bugbug-3L แถมขวดสเปรย์","price":750,"stock":9,"reserved":1,"avail":8,"burn":6,"days":45,"stockout":"2026-07-23","status":"yellow","cat":"น้ำยา Bugbug"},
+{"sku":"TPER010002","name":"Perfect 10 ผืน","price":1200,"stock":3,"reserved":0,"avail":3,"burn":2,"days":45,"stockout":"2026-07-23","status":"yellow","cat":"ผ้า Towel"},
+{"sku":"SRFX030003","name":"Reflex-3L แถมขวดสเปรย์","price":2300,"stock":17,"reserved":1,"avail":16,"burn":11,"days":46,"stockout":"2026-07-24","status":"green","cat":"น้ำยา Reflex"},
+{"sku":"SDPN030016","name":"Deep clean-3L","price":750,"stock":57,"reserved":5,"avail":52,"burn":36,"days":47,"stockout":"2026-07-25","status":"green","cat":"น้ำยา Deep clean"},
+{"sku":"SBCH050033","name":"Beach-5L แถมขวดสเปรย์","price":3000,"stock":7,"reserved":0,"avail":7,"burn":4,"days":52,"stockout":"2026-07-30","status":"green","cat":"น้ำยา Beach"},
+{"sku":"SBCH030032","name":"Beach-3L แถมขวดสเปรย์","price":1950,"stock":9,"reserved":1,"avail":8,"burn":5,"days":54,"stockout":"2026-08-01","status":"green","cat":"น้ำยา Beach"},
+{"sku":"SPOT030013","name":"Spot-3L แถมขวด","price":1350,"stock":20,"reserved":1,"avail":19,"burn":11,"days":54,"stockout":"2026-08-01","status":"green","cat":"น้ำยา Spot"},
+{"sku":"SGFS000020","name":"Graphene","price":490,"stock":337,"reserved":20,"avail":317,"burn":183,"days":55,"stockout":"2026-08-02","status":"green","cat":"น้ำยาเคลือบ"},
+{"sku":"EMIU000010","name":"Premium mitt-ถุงมือไมโครไฟเบอร์","price":390,"stock":285,"reserved":23,"avail":262,"burn":146,"days":58,"stockout":"2026-08-05","status":"green","cat":"ถุงมือ/Mitt"},
+{"sku":"BSYN000004","name":"Synthetic","price":175,"stock":374,"reserved":19,"avail":355,"burn":190,"days":59,"stockout":"2026-08-06","status":"green","cat":"แปรง Detailing"},
+{"sku":"EWLM000002","name":"Wool wash mitt-ถุงมือขนแกะ","price":490,"stock":378,"reserved":18,"avail":360,"burn":191,"days":59,"stockout":"2026-08-06","status":"green","cat":"ถุงมือ/Mitt"},
+{"sku":"SMCW010017","name":"Microfiber wash-500ml","price":220,"stock":334,"reserved":27,"avail":307,"burn":168,"days":59,"stockout":"2026-08-06","status":"green","cat":"น้ำยาซักผ้า"},
+{"sku":"SQSH200005","name":"Quartz shampoo-25L","price":2700,"stock":4,"reserved":0,"avail":4,"burn":2,"days":60,"stockout":"2026-08-07","status":"green","cat":"น้ำยา Quartz Shampoo"},
+{"sku":"SUVP010002","name":"UV protect-1L แถมขวดสเปรย์","price":990,"stock":23,"reserved":0,"avail":23,"burn":10,"days":69,"stockout":"2026-08-16","status":"green","cat":"น้ำยา UV protect"},
+{"sku":"SAPC030007","name":"APC-3L แถมขวดสเปรย์","price":850,"stock":15,"reserved":1,"avail":14,"burn":6,"days":75,"stockout":"2026-08-22","status":"green","cat":"น้ำยา APC"},
+{"sku":"ESEC000009","name":"Secondary container","price":175,"stock":215,"reserved":8,"avail":207,"burn":83,"days":77,"stockout":"2026-08-24","status":"green","cat":"อุปกรณ์"},
+{"sku":"BTIR000006","name":"Tire brush-แปรงขัดยาง","price":150,"stock":385,"reserved":32,"avail":353,"burn":147,"days":78,"stockout":"2026-08-25","status":"green","cat":"แปรง"},
+{"sku":"SGFS010020","name":"Ella","price":1290,"stock":45,"reserved":0,"avail":45,"burn":17,"days":79,"stockout":"2026-08-26","status":"green","cat":"น้ำยาเคลือบ"},
+{"sku":"BWHE000011","name":"Flex wheelbrush","price":270,"stock":274,"reserved":9,"avail":265,"burn":92,"days":89,"stockout":"2026-09-05","status":"green","cat":"แปรง"},
+{"sku":"SMCW250017","name":"Microfiber wash-25L","price":2900,"stock":3,"reserved":0,"avail":3,"burn":1,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา/Chemical"},
+{"sku":"SPRP050011","name":"Paint prep-5L แถมขวดสเปรย์","price":950,"stock":6,"reserved":0,"avail":6,"burn":2,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา Paint prep"},
+{"sku":"SWTL050008","name":"Waterless-5L แถมขวดสเปรย์ใส","price":2150,"stock":3,"reserved":0,"avail":3,"burn":1,"days":90,"stockout":"2026-09-06","status":"green","cat":"น้ำยา Waterless"},
+{"sku":"BBLU000010","name":"Blue stiff","price":120,"stock":637,"reserved":14,"avail":623,"burn":209,"days":91,"stockout":"2026-09-07","status":"green","cat":"แปรง Detailing"},
+{"sku":"EBUC000002","name":"Rinse bucket (เทา)","price":0,"stock":53,"reserved":1,"avail":52,"burn":17,"days":93,"stockout":"2026-09-09","status":"green","cat":"อุปกรณ์"},
+{"sku":"SBCH000030","name":"Beach-250ml+Spray","price":295,"stock":195,"reserved":9,"avail":186,"burn":60,"days":97,"stockout":"2026-09-13","status":"green","cat":"น้ำยา Beach"},
+{"sku":"BULT000003","name":"Ultra soft","price":150,"stock":715,"reserved":20,"avail":695,"burn":208,"days":103,"stockout":"2026-09-19","status":"green","cat":"แปรง Detailing"},
+{"sku":"STER050025","name":"Terrain-5L","price":1800,"stock":7,"reserved":0,"avail":7,"burn":2,"days":105,"stockout":"2026-09-21","status":"green","cat":"น้ำยา Terrain"},
+{"sku":"SSTL030009","name":"Steel-3L แถมขวดสเปรย์","price":2500,"stock":4,"reserved":1,"avail":3,"burn":1,"days":120,"stockout":"2026-10-06","status":"green","cat":"น้ำยา Steel"},
+{"sku":"ESCR000001","name":"Scrubber","price":75,"stock":621,"reserved":20,"avail":601,"burn":152,"days":122,"stockout":"2026-10-08","status":"green","cat":"Applicator"},
+{"sku":"SPNX000014","name":"Phoenix-250ml+Spray","price":590,"stock":64,"reserved":0,"avail":64,"burn":13,"days":147,"stockout":"2026-11-02","status":"green","cat":"น้ำยาเคลือบ"},
+{"sku":"SPOT050013","name":"Spot-5L แถมขวด","price":2300,"stock":5,"reserved":0,"avail":5,"burn":1,"days":150,"stockout":"2026-11-05","status":"green","cat":"น้ำยา Spot"},
+{"sku":"SRFR050006","name":"Refresh-5L แถมขวดสเปรย์","price":2600,"stock":5,"reserved":0,"avail":5,"burn":1,"days":150,"stockout":"2026-11-05","status":"green","cat":"น้ำยา Refresh"},
+{"sku":"TMTN010004","name":"Martini 10 ผืน","price":1000,"stock":15,"reserved":0,"avail":15,"burn":3,"days":150,"stockout":"2026-11-05","status":"green","cat":"ผ้า Towel"},
+{"sku":"ECLY000006","name":"Claymitt","price":420,"stock":287,"reserved":2,"avail":285,"burn":56,"days":153,"stockout":"2026-11-08","status":"green","cat":"ถุงมือ/Mitt"},
+{"sku":"EPOR000003","name":"Portable bucket (ถังพกพา)","price":150,"stock":83,"reserved":0,"avail":83,"burn":16,"days":155,"stockout":"2026-11-10","status":"green","cat":"อุปกรณ์"},
+{"sku":"SDIA000034","name":"Anna nano diamond","price":1790,"stock":97,"reserved":0,"avail":97,"burn":18,"days":161,"stockout":"2026-11-16","status":"green","cat":"น้ำยาเคลือบ"},
+{"sku":"SWTL030008","name":"Waterless-3L แถมขวดสเปรย์ใส","price":1470,"stock":6,"reserved":0,"avail":6,"burn":1,"days":180,"stockout":"2026-12-05","status":"green","cat":"น้ำยา Waterless"},
+{"sku":"STCL050027","name":"Tire clean-5L แถมขวดสเปรย์","price":1950,"stock":7,"reserved":0,"avail":7,"burn":1,"days":210,"stockout":"2027-01-04","status":"green","cat":"น้ำยา Tire clean"},
+{"sku":"BLIM010003","name":"Strip wheel brush","price":350,"stock":72,"reserved":0,"avail":72,"burn":9,"days":240,"stockout":"2027-02-03","status":"green","cat":"แปรง"},
+{"sku":"SMCW050017","name":"Microfiber wash-5L","price":1350,"stock":8,"reserved":0,"avail":8,"burn":1,"days":240,"stockout":"2027-02-03","status":"green","cat":"น้ำยาซักผ้า"},
+{"sku":"wibwubcapgreen","name":"หมวกสีเขียว","price":0,"stock":57,"reserved":0,"avail":57,"burn":7,"days":244,"stockout":"2027-02-07","status":"green","cat":"สินค้า"},
+{"sku":"wibwubcapgrey","name":"หมวกสีเทา","price":0,"stock":60,"reserved":1,"avail":59,"burn":7,"days":257,"stockout":"2027-02-20","status":"green","cat":"สินค้า"},
+{"sku":"EBUC020001","name":"Side bucket","price":390,"stock":162,"reserved":0,"avail":162,"burn":15,"days":324,"stockout":"2027-04-28","status":"green","cat":"อุปกรณ์"},
+{"sku":"BWHE000007","name":"Wheel brush-แปรงขัดล้อ","price":450,"stock":611,"reserved":12,"avail":599,"burn":40,"days":458,"stockout":"2027-09-09","status":"green","cat":"แปรง"},
+{"sku":"RBOX000001","name":"ฟองน้ำสำหรับลงน้ำยาเคลือบเซรามิก (Coating block)","price":55,"stock":790,"reserved":7,"avail":783,"burn":37,"days":640,"stockout":"2028-03-09","status":"green","cat":"Applicator"},
+{"sku":"ECON000001-A","name":"Connector-A","price":1390,"stock":3,"reserved":0,"avail":3,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"ECON000001-B","name":"Connector-B","price":1390,"stock":3,"reserved":0,"avail":3,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"ECON000001-C","name":"Connector-C","price":1390,"stock":28,"reserved":0,"avail":28,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"ECON000001-D","name":"Connector-D","price":1390,"stock":51,"reserved":0,"avail":51,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"ECON000001-E","name":"Connector-E","price":1390,"stock":13,"reserved":0,"avail":13,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"EFOM000001","name":"Foam cannon","price":0,"stock":545,"reserved":2,"avail":543,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"EGEL000001","name":"Cleaning gel","price":0,"stock":312,"reserved":0,"avail":312,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"SBNN000023","name":"Banana foam","price":250,"stock":23,"reserved":0,"avail":23,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"SPKY000022","name":"Pinky foam","price":250,"stock":1,"reserved":0,"avail":1,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"SPNX010014","name":"Phoenix-1L แถมขวดสเปรย์","price":1990,"stock":2,"reserved":0,"avail":2,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"น้ำยาเคลือบ"},
+{"sku":"SSKY000021","name":"Sky foam","price":250,"stock":9,"reserved":0,"avail":9,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"},
+{"sku":"SSTL050009","name":"Steel-5L แถมขวดสเปรย์","price":3800,"stock":4,"reserved":0,"avail":4,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"น้ำยา Steel"},
+{"sku":"STAR050010","name":"Taar-5L","price":2300,"stock":1,"reserved":0,"avail":1,"burn":0,"days":0,"stockout":"2026-06-08","status":"nodata","cat":"สินค้า"}
 ];
 
 const TODAY = new Date('2026-06-08');
@@ -287,9 +290,9 @@ function pillHtml(st) {
   return `<span class="pill ${st}"><span class="dot"></span>${labels[st]||st}</span>`;
 }
 
-function barHtml(avail, burn, st) {
+function barHtml(stock, burn, st) {
   if (!burn) return '—';
-  const pct = Math.min(100, Math.round((avail / (burn * 3)) * 100));
+  const pct = Math.min(100, Math.round((stock / (burn * 3)) * 100));
   return `<div class="bw"><div class="bf ${st}" style="width:${pct}%"></div></div> <span style="font-size:11px;color:var(--sub)">${pct}%</span>`;
 }
 
@@ -354,6 +357,7 @@ function getFiltered() {
       return da - db;
     }
     if (sort === 'burn') return b.burn - a.burn;
+    if (sort === 'stock') return b.stock - a.stock;
     if (sort === 'avail') return b.avail - a.avail;
     if (sort === 'name') return a.name.localeCompare(b.name, 'th');
     return 0;
@@ -378,7 +382,7 @@ function renderTable() {
   document.getElementById('cnt-all').textContent = PRODUCTS.length;
 
   if (!arr.length) {
-    tbody.innerHTML = '<tr><td colspan="8" class="empty">ไม่พบสินค้าที่ตรงกัน</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10" class="empty">ไม่พบสินค้าที่ตรงกัน</td></tr>';
     document.getElementById('table-note').textContent = '';
     return;
   }
@@ -397,9 +401,11 @@ function renderTable() {
       <td>${pillHtml(p.status)}</td>
       <td class="num">${daysHtml(p)}</td>
       <td><span style="font-size:12px;${p.status==='red'?'color:var(--rd);font-weight:600':p.status==='yellow'?'color:var(--yl)':''}">${p.status==='oos'?'หมดแล้ว':fmtDate(p.stockout)}</span></td>
-      <td class="num">${fmtNum(p.avail)}</td>
+      <td class="num">${fmtNum(p.stock)}</td>
+      <td class="num" style="color:var(--sub)">${p.reserved > 0 ? fmtNum(p.reserved) : '—'}</td>
+      <td class="num" style="font-weight:600">${fmtNum(p.avail)}</td>
       <td class="num">${p.burn ? fmtNum(p.burn) : '—'}</td>
-      <td>${barHtml(p.avail, p.burn, p.status==='red'?'red':p.status==='yellow'?'yellow':'green')}</td>
+      <td>${barHtml(p.stock, p.burn, p.status==='red'?'red':p.status==='yellow'?'yellow':'green')}</td>
       <td>${reorderHtml(p)}</td>
     </tr>`;
   });
@@ -407,7 +413,7 @@ function renderTable() {
   tbody.innerHTML = rows;
 
   const noteEl = document.getElementById('table-note');
-  noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn Rate = ค่าเฉลี่ยยอดขาย ม.ค.–พ.ค. 2569 (5 เดือน)&nbsp;|&nbsp; วันคงเหลือ = สต๊อกพร้อมขาย ÷ Burn Rate × 30`;
+  noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn Rate = ค่าเฉลี่ยยอดขาย ม.ค.–พ.ค. 2569 (5 เดือน)&nbsp;|&nbsp; วันคงเหลือ = สต๊อก (คลังสินค้า) ÷ Burn Rate × 30 · จอง = orders ที่รอจัดส่ง · คงเหลือ = สต๊อก − จอง`;
 }
 
 renderTable();
