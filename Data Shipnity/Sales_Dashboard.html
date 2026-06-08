@@ -383,7 +383,7 @@ function renderCal(mo, isLeft) {
       html += `<div class="cal-day out">${c.day}</div>`;
     } else {
       const ds = dateToStr(new Date(c.y, c.m, c.day));
-      const disabled = ds < RAW.date_min || ds > RAW.date_max;
+      const disabled = ds < RAW.date_min || ds > TODAY;
       const isStart = pickerDraft.start === ds;
       const isEnd = pickerDraft.end === ds;
       const inRange = pickerDraft.start && pickerDraft.end && ds >= pickerDraft.start && ds <= pickerDraft.end;
