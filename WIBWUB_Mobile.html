@@ -866,7 +866,8 @@ const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.
 const AFI_GMV=[0,0,0,0,655171,724241,951246,161166];
 const AFI_NET=[0,0,0,0,642865,708855,937291,154959];
 const AFI_COMM=[0,0,0,0,82699,69021,104785,0];
-const TK_FOL=[23404,24192,24967,25590,26339];
+const TK_FOL=[23404,24192,24967,25590,26339,26519];
+const FOL_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
 
 const CREATORS=[
   {n:"rita.fe_",t:395278,ma:8,mn:[14796,54474,72545,72993,75273,60628,41704,2865]},
@@ -1648,27 +1649,28 @@ function setTT(mo,el){
 }
 let smInited=false;
 function renderTT(){
-  const folCur=TK_FOL[4],folPrev=TK_FOL[3],folJan=TK_FOL[0];
+  const folLast=TK_FOL.length-1;
+  const folCur=TK_FOL[folLast],folPrev=TK_FOL[folLast-1],folJan=TK_FOL[0];
   const folMoM=folCur-folPrev,folTotal=folCur-folJan;
   document.getElementById('tt-fol-kpi').innerHTML=`
     <div class="kc" style="padding:9px"><div class="kc-lbl">TK Followers</div><div class="kc-val" style="font-size:15px">${fmtN(folCur)}</div><div class="kc-sub">ปัจจุบัน</div></div>
-    <div class="kc" style="padding:9px"><div class="kc-lbl">+เดือนนี้</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folMoM)}</div><div class="kc-sub">จาก เม.ย.</div></div>
-    <div class="kc" style="padding:9px"><div class="kc-lbl">ม.ค.→พ.ค.</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folTotal)}</div><div class="kc-sub">5 เดือน</div></div>`;
+    <div class="kc" style="padding:9px"><div class="kc-lbl">+เดือนนี้</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folMoM)}</div><div class="kc-sub">จาก ${FOL_M[folLast-1]}</div></div>
+    <div class="kc" style="padding:9px"><div class="kc-lbl">ม.ค.→${FOL_M[folLast]}</div><div class="kc-val" style="font-size:15px;color:var(--green)">+${fmtN(folTotal)}</div><div class="kc-sub">${TK_FOL.length} เดือน</div></div>`;
   if(!smInited){
     smInited=true;
     const maxF=Math.max(...TK_FOL);
     document.getElementById('sm-fol-chart').innerHTML=`
       <div class="card" style="margin-bottom:10px">
         <div class="sec-title">TikTok Followers รายเดือน</div>
-        ${M5.map((m,i)=>`
+        ${FOL_M.map((m,i)=>`
           <div style="margin-bottom:8px">
             <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-              <span style="font-weight:600">${m}</span>
+              <span style="font-weight:600">${m}${i===FOL_M.length-1?'<span style="font-size:10px;color:var(--muted)"> (บางส่วน)</span>':''}</span>
               <span style="font-weight:700;color:var(--bl)">${fmtN(TK_FOL[i])}
                 ${i>0?`<span style="color:var(--green);font-size:10px"> +${fmtN(TK_FOL[i]-TK_FOL[i-1])}</span>`:''}
               </span>
             </div>
-            <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TK_FOL[i]/maxF*100)}%;background:#111"></div></div>
+            <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TK_FOL[i]/maxF*100)}%;background:${i===FOL_M.length-1?'var(--bl)':'#111'}"></div></div>
           </div>`).join('')}
       </div>`;
     const pillars={};
