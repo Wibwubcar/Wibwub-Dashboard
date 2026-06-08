@@ -45,6 +45,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 .sec-title{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:10px;}
 .kgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
 .kgrid3{grid-template-columns:1fr 1fr 1fr;}
+.kgrid4{grid-template-columns:1fr 1fr 1fr 1fr;}
 .kc{background:var(--card);border-radius:12px;padding:11px 12px;box-shadow:0 1px 4px rgba(0,0,0,.06);}
 .kc-lbl{font-size:10px;color:var(--muted);margin-bottom:3px;font-weight:500;}
 .kc-val{font-size:17px;font-weight:800;color:var(--bl);line-height:1.1;}
@@ -389,7 +390,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="mks-grid">
     <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿2.49M</div><div class="mks-sub">2,893 creators · มิย.69</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.0×</div><div class="mks-sub">Shopee+TikTok</div></div>
-    <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">60 คลิป</div><div class="mks-sub">มี.ค.–พ.ค. 2569</div></div>
+    <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">64 คลิป</div><div class="mks-sub">มี.ค.–มิ.ย. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">26.5K</div><div class="mks-sub">+4.1K จาก ม.ค.</div></div>
   </div>
   <div class="card">
@@ -509,10 +510,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="card"><div class="sec-title">Ads ROAS รายเดือน เปรียบเทียบ</div><div id="roas-bars"></div></div>
     <div class="card">
       <div class="sec-title">TikTok Content Summary</div>
-      <div class="kgrid kgrid3">
+      <div class="kgrid kgrid4">
         <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป มี.ค.</div><div class="kc-val" style="font-size:15px">16</div><div class="kc-sub">43.9K views</div></div>
         <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป เม.ย.</div><div class="kc-val" style="font-size:15px">20</div><div class="kc-sub">40.4K views</div></div>
         <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป พ.ค.</div><div class="kc-val" style="font-size:15px">24</div><div class="kc-sub">48.1K views</div></div>
+        <div class="kc" style="padding:9px"><div class="kc-lbl">คลิป มิ.ย.*</div><div class="kc-val" style="font-size:15px">4</div><div class="kc-sub">5.9K views</div></div>
       </div>
     </div>
   </div>
@@ -596,7 +598,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       <div class="mtabs" id="tt-mo-tabs">
         <div class="mtab active" onclick="setTT(3,this)">มี.ค. (16)</div>
         <div class="mtab" onclick="setTT(4,this)">เม.ย. (20)</div>
-        <div class="mtab" onclick="setTT(5,this)">พ.ค. (17)</div>
+        <div class="mtab" onclick="setTT(5,this)">พ.ค. (24)</div>
+        <div class="mtab" onclick="setTT(6,this)">มิ.ย. (4)</div>
       </div>
     </div>
     <div class="kgrid kgrid3" id="tt-kpi"></div>
@@ -1178,6 +1181,10 @@ const ALL_POSTS=[
   {lbl:'26(2)',m:5,pillar:'Lifestyle',c:'ก็ปกติป้ะครับ',views:10184,eng:204,ret:53,watch:13.2,er:2.00,url:'https://www.tiktok.com/@wibwubcar/video/7644218791974800661'},
   {lbl:'27',m:5,pillar:'Review',c:'ทุเรียนกินได้ครับ แต่กลิ่นไม่ควรอยู่ในรถ BANYAKART ช่วยได้',views:1160,eng:19,ret:20,watch:5.6,er:1.64,url:'https://www.tiktok.com/@wibwubcar/video/7644555338385083656'},
   {lbl:'28',m:5,pillar:'Review',c:'รถใหม่ดูแลตั้งแต่ต้น เบาะรถก็สวยนุ่มไปได้อีกหลายปี',views:502,eng:8,ret:16,watch:6.3,er:1.59,url:'https://www.tiktok.com/@wibwubcar/video/7644871371809361160'},
+  {lbl:'1',m:6,pillar:'Sale',c:'ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน',views:751,eng:12,love:11,comment:0,share:1,save:0,ret:13,watch:24.55,er:1.60,url:'https://vt.tiktok.com/ZSQ1SVGgK/'},
+  {lbl:'2 (1)',m:6,pillar:'Review',c:'มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎',views:2258,eng:31,love:30,comment:0,share:1,save:0,ret:0,watch:0,er:1.37,url:'https://vt.tiktok.com/ZSQ1SqcPp/'},
+  {lbl:'2 (2)',m:6,pillar:'Lifestyle',c:'พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก',views:2128,eng:17,love:15,comment:0,share:1,save:1,ret:19,watch:15.32,er:0.80,url:'https://vt.tiktok.com/ZSQ1AL6Ur/'},
+  {lbl:'3',m:6,pillar:'Other',c:'กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ',views:789,eng:14,love:12,comment:0,share:2,save:0,ret:15,watch:8.97,er:1.77,url:'https://vt.tiktok.com/ZSQ1ShcAu/'},
 ];
 
 // ════════════════════════════════════════
@@ -1189,7 +1196,7 @@ const pct=(a,b)=>{if(!b)return'—';const p=(a-b)/b*100;return(p>=0?'↑':'↓')
 const pctColor=(a,b)=>a>=b?'color:var(--green)':'color:var(--red)';
 const rkStyle=i=>i===0?'background:#FEF3C7;color:#92400E':i===1?'background:#F3F4F6;color:#6B7280':i===2?'background:#EEF3FD;color:#1A5CDB':'background:#F9FAFB;color:#9CA3AF';
 const pillCls=p=>({Interview:'pi',Knowledge:'pt',Review:'pa',Awareness:'paw',Sale:'pc2',Lifestyle:'pp','Brand Expert':'pp',Other:'po'}[p]||'pp');
-const mColor={3:'#2878d0',4:'#c4406e',5:'#1b9664'};
+const mColor={3:'#2878d0',4:'#c4406e',5:'#1b9664',6:'#9333ea'};
 
 function bar(val,max,color,label,right){
   const w=max>0?Math.round(val/max*100):0;
@@ -1681,7 +1688,7 @@ function renderTT(){
     const avgER=(ALL_POSTS.reduce((a,p)=>a+p.er,0)/totP).toFixed(2);
     document.getElementById('sm-pillar').innerHTML=`
       <div class="card" style="margin-bottom:10px">
-        <div class="sec-title">Content Overview (มี.ค.–พ.ค.)</div>
+        <div class="sec-title">Content Overview (มี.ค.–มิ.ย.)</div>
         <div class="kgrid" style="margin-bottom:10px">
           <div class="kc"><div class="kc-lbl">Views รวม</div><div class="kc-val">${fmtN(totV)}</div><div class="kc-sub">${totP} คลิป</div></div>
           <div class="kc"><div class="kc-lbl">ER% เฉลี่ย</div><div class="kc-val">${avgER}%</div><div class="kc-sub">เป้า 5%</div></div>

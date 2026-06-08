@@ -21,6 +21,7 @@
   --mar:#2878d0;--mar-bg:#e8f2fc;--mar-dk:#1a4c88;
   --apr:#c4406e;--apr-bg:#fceef4;--apr-dk:#8a2050;
   --may:#1b9664;--may-bg:#ecf8f2;--may-dk:#125c3c;
+  --jun:#9333ea;--jun-bg:#f5eeff;--jun-dk:#6b21a8;
   --r:8px;--rl:13px;
   --font:'Noto Sans Thai','Sarabun',system-ui,sans-serif;
 }
@@ -41,6 +42,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);font-size:14px
 .mtab.mar.active{color:var(--mar);border-bottom-color:var(--mar)}
 .mtab.apr.active{color:var(--apr);border-bottom-color:var(--apr)}
 .mtab.may.active{color:var(--may);border-bottom-color:var(--may)}
+.mtab.jun.active{color:var(--jun);border-bottom-color:var(--jun)}
 .mpnl{display:none}.mpnl.active{display:block}
 
 /* Month header bar */
@@ -48,8 +50,9 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);font-size:14px
 .mhd.mar{background:var(--mar-bg);border:.5px solid #b0cbf0}
 .mhd.apr{background:var(--apr-bg);border:.5px solid #e8a8c2}
 .mhd.may{background:var(--may-bg);border:.5px solid #7fcaae}
+.mhd.jun{background:var(--jun-bg);border:.5px solid #c4a0e8}
 .mhd-title{font-size:20px;font-weight:700}
-.mar .mhd-title{color:var(--mar-dk)}.apr .mhd-title{color:var(--apr-dk)}.may .mhd-title{color:var(--may-dk)}
+.mar .mhd-title{color:var(--mar-dk)}.apr .mhd-title{color:var(--apr-dk)}.may .mhd-title{color:var(--may-dk)}.jun .mhd-title{color:var(--jun-dk)}
 .mhd-sub{font-size:12px;opacity:.7;margin-top:2px}
 
 /* KPI strip */
@@ -57,7 +60,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--t1);font-size:14px
 .kk{background:var(--sur);border-radius:var(--r);padding:.7rem .9rem;border:.5px solid var(--bd)}
 .kkl{font-size:9px;color:var(--t3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:3px}
 .kkv{font-size:20px;font-weight:700;line-height:1}
-.kkv.mar{color:var(--mar)}.kkv.apr{color:var(--apr)}.kkv.may{color:var(--may)}
+.kkv.mar{color:var(--mar)}.kkv.apr{color:var(--apr)}.kkv.may{color:var(--may)}.kkv.jun{color:var(--jun)}
 .kks{font-size:10px;color:var(--t3);margin-top:2px}
 
 /* Target row */
@@ -163,6 +166,7 @@ tr:hover td{background:#f9f8f4}
     <button class="mtab mar active" onclick="switchMonth('mar',this)">📅 มีนาคม 2026</button>
     <button class="mtab apr" onclick="switchMonth('apr',this)">📅 เมษายน 2026</button>
     <button class="mtab may" onclick="switchMonth('may',this)">📅 พฤษภาคม 2026</button>
+    <button class="mtab jun" onclick="switchMonth('jun',this)">📅 มิถุนายน 2026</button>
   </div>
 
   <!-- ========== MARCH ========== -->
@@ -1208,6 +1212,308 @@ tr:hover td{background:#f9f8f4}
       <tbody id="may-tb"></tbody>
     </table></div>
   </div>
+
+  <!-- ========== JUNE ========== -->
+  <div id="m-jun" class="mpnl">
+    <div class="mhd jun">
+      <div>
+        <div class="mhd-title">มิถุนายน 2026</div>
+        <div class="mhd-sub">1–3 มิถุนายน · 4 คลิป</div>
+      </div>
+    </div>
+
+    <div class="kstrip">
+      <div class="kk"><div class="kkl">Views รวม</div><div class="kkv jun">5,926</div><div class="kks">avg 1,482/คลิป</div></div>
+      <div class="kk"><div class="kkl">Engagement รวม</div><div class="kkv jun">74</div><div class="kks">avg 19/คลิป</div></div>
+      <div class="kk"><div class="kkl">5s Retention เฉลี่ย</div><div class="kkv jun">11.8%</div><div class="kks">สูงสุด 19%</div></div>
+      <div class="kk"><div class="kkl">Watch Time เฉลี่ย</div><div class="kkv jun">12.2%</div><div class="kks">สูงสุด 24.6%</div></div>
+      <div class="kk"><div class="kkl">Eng Rate เฉลี่ย</div><div class="kkv jun">1.39%</div><div class="kks">สูงสุด 1.77%</div></div>
+      <div class="kk"><div class="kkl">Save รวม</div><div class="kkv jun">1</div><div class="kks">❤ 68 💬 0 🔁 5</div></div>
+    </div>
+
+    <div class="tgt-row">
+      <div class="tgt">
+        <div class="tgt-info"><div class="tgt-name">5-Sec Retention</div><div class="tgt-sub">avg 11.8% · เป้า 40%</div><div class="pb-wrap"><div class="pb-fill" style="width:29%;background:var(--jun)"></div></div></div>
+        <span class="tgt-pill pill-miss">ต่ำกว่าเป้า</span>
+      </div>
+      <div class="tgt">
+        <div class="tgt-info"><div class="tgt-name">Avg. Watch Time</div><div class="tgt-sub">avg 12.2% · เป้า 20%</div><div class="pb-wrap"><div class="pb-fill" style="width:61%;background:var(--jun)"></div></div></div>
+        <span class="tgt-pill pill-miss">ต่ำกว่าเป้า</span>
+      </div>
+      <div class="tgt">
+        <div class="tgt-info"><div class="tgt-name">Engagement Rate</div><div class="tgt-sub">avg 1.39% · เป้า 5%</div><div class="pb-wrap"><div class="pb-fill" style="width:28%;background:var(--jun)"></div></div></div>
+        <span class="tgt-pill pill-miss">ต่ำกว่าเป้า</span>
+      </div>
+    </div>
+
+    <div class="sec">Pillar Breakdown — มิถุนายน</div>
+    <div class="pil-grid">
+      <div class="pil-card"><div class="pil-name">Review</div><div class="pil-cnt">1 คลิป</div><div class="pil-v">2,258</div><div class="pil-e">views · eng 31</div></div>
+      <div class="pil-card"><div class="pil-name">Lifestyle</div><div class="pil-cnt">1 คลิป</div><div class="pil-v">2,128</div><div class="pil-e">views · eng 17</div></div>
+      <div class="pil-card"><div class="pil-name">Other</div><div class="pil-cnt">1 คลิป</div><div class="pil-v">789</div><div class="pil-e">views · eng 14</div></div>
+      <div class="pil-card"><div class="pil-name">Sale</div><div class="pil-cnt">1 คลิป</div><div class="pil-v">751</div><div class="pil-e">views · eng 12</div></div>
+    </div>
+
+    <div class="cc">
+      <div class="ct">Views รายวัน — มิถุนายน<span class="ct-badge" style="background:var(--jun-bg);color:var(--jun-dk)">4 คลิป</span></div>
+      <div class="cw" style="height:200px"><canvas id="jun-views"></canvas></div>
+    </div>
+    <div class="g2">
+      <div class="cc" style="margin:0">
+        <div class="ct">5-Sec Retention % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 40%</span></div>
+        <div class="leg"><span class="li"><span class="lx" style="border-color:var(--red)"></span>เป้า 40%</span></div>
+        <div class="cw" style="height:200px"><canvas id="jun-ret"></canvas></div>
+      </div>
+      <div class="cc" style="margin:0">
+        <div class="ct">Avg. Watch Time % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 20%</span></div>
+        <div class="leg"><span class="li"><span class="lx" style="border-color:var(--pur)"></span>เป้า 20%</span></div>
+        <div class="cw" style="height:200px"><canvas id="jun-watch"></canvas></div>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="ct">Engagement Rate % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 5%</span></div>
+      <div class="leg"><span class="li"><span class="lx" style="border-color:var(--grn)"></span>เป้า 5%</span></div>
+      <div class="cw" style="height:200px"><canvas id="jun-er"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">Engagement รายวัน — มิถุนายน</div>
+      <div class="cw" style="height:180px"><canvas id="jun-eng"></canvas></div>
+    </div>
+
+    <div class="sec">Top 5 Content ยอดเยี่ยม — มิถุนายน</div>
+    <div class="stabs">
+  <button class="stab active" onclick="sst('jun','v',this)">🏆 ยอดวิวสูงสุด</button>
+  <button class="stab" onclick="sst('jun','r',this)">⏱ 5-Sec Retention สูงสุด</button>
+  <button class="stab" onclick="sst('jun','w',this)">👁 Avg. Watch Time สูงสุด</button>
+  <button class="stab" onclick="sst('jun','e',this)">💬 Engagement Rate สูงสุด</button>
+</div>
+    <div id="sp-v-jun" class="spnl active">
+<div class="t5i"><div class="rnk rk1">1</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SqcPp/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎 <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,258</span></span>
+      <span class="hi hi-v">👁 2,258 views</span>
+      <span class="chip">Ret <span class="cv">—</span></span>
+      <span class="chip">Watch <span class="cv">—</span></span>
+      <span class="chip">ER <span class="cv">1.37%</span></span>
+      <span class="pill pa">Review</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk2">2</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1AL6Ur/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,128</span></span>
+      <span class="hi hi-v">👁 2,128 views</span>
+      <span class="chip">Ret <span class="cv">19%</span></span>
+      <span class="chip">Watch <span class="cv">15.32%</span></span>
+      <span class="chip">ER <span class="cv">0.80%</span></span>
+      <span class="pill pp">Lifestyle</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk3">3</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1ShcAu/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">789</span></span>
+      <span class="hi hi-v">👁 789 views</span>
+      <span class="chip">Ret <span class="cv">15%</span></span>
+      <span class="chip">Watch <span class="cv">8.97%</span></span>
+      <span class="chip">ER <span class="cv">1.77%</span></span>
+      <span class="pill po">Other</span>
+      <span style="font-size:10px;color:var(--t3)">3 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk ">4</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SVGgK/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">751</span></span>
+      <span class="hi hi-v">👁 751 views</span>
+      <span class="chip">Ret <span class="cv">13%</span></span>
+      <span class="chip">Watch <span class="cv">24.55%</span></span>
+      <span class="chip">ER <span class="cv">1.60%</span></span>
+      <span class="pill pc2">Sale</span>
+      <span style="font-size:10px;color:var(--t3)">1 มิ.ย.</span>
+    </div></div></div>
+</div>
+    <div id="sp-r-jun" class="spnl ">
+<div class="t5i"><div class="rnk rk1">1</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1AL6Ur/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,128</span></span>
+      <span class="hi hi-r">⏱ 19%</span>
+      <span class="chip">Ret <span class="cv">19%</span></span>
+      <span class="chip">Watch <span class="cv">15.32%</span></span>
+      <span class="chip">ER <span class="cv">0.80%</span></span>
+      <span class="pill pp">Lifestyle</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk2">2</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1ShcAu/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">789</span></span>
+      <span class="hi hi-r">⏱ 15%</span>
+      <span class="chip">Ret <span class="cv">15%</span></span>
+      <span class="chip">Watch <span class="cv">8.97%</span></span>
+      <span class="chip">ER <span class="cv">1.77%</span></span>
+      <span class="pill po">Other</span>
+      <span style="font-size:10px;color:var(--t3)">3 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk3">3</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SVGgK/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">751</span></span>
+      <span class="hi hi-r">⏱ 13%</span>
+      <span class="chip">Ret <span class="cv">13%</span></span>
+      <span class="chip">Watch <span class="cv">24.55%</span></span>
+      <span class="chip">ER <span class="cv">1.60%</span></span>
+      <span class="pill pc2">Sale</span>
+      <span style="font-size:10px;color:var(--t3)">1 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk ">4</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SqcPp/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎 <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,258</span></span>
+      <span class="hi hi-r">⏱ —</span>
+      <span class="chip">Ret <span class="cv">—</span></span>
+      <span class="chip">Watch <span class="cv">—</span></span>
+      <span class="chip">ER <span class="cv">1.37%</span></span>
+      <span class="pill pa">Review</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+</div>
+    <div id="sp-w-jun" class="spnl ">
+<div class="t5i"><div class="rnk rk1">1</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SVGgK/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">751</span></span>
+      <span class="hi hi-w">👁 Watch 24.55% ⭐</span>
+      <span class="chip">Ret <span class="cv">13%</span></span>
+      <span class="chip">Watch <span class="cv">24.55%</span></span>
+      <span class="chip">ER <span class="cv">1.60%</span></span>
+      <span class="pill pc2">Sale</span>
+      <span style="font-size:10px;color:var(--t3)">1 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk2">2</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1AL6Ur/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,128</span></span>
+      <span class="hi hi-w">👁 Watch 15.32%</span>
+      <span class="chip">Ret <span class="cv">19%</span></span>
+      <span class="chip">Watch <span class="cv">15.32%</span></span>
+      <span class="chip">ER <span class="cv">0.80%</span></span>
+      <span class="pill pp">Lifestyle</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk3">3</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1ShcAu/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">789</span></span>
+      <span class="hi hi-w">👁 Watch 8.97%</span>
+      <span class="chip">Ret <span class="cv">15%</span></span>
+      <span class="chip">Watch <span class="cv">8.97%</span></span>
+      <span class="chip">ER <span class="cv">1.77%</span></span>
+      <span class="pill po">Other</span>
+      <span style="font-size:10px;color:var(--t3)">3 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk ">4</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SqcPp/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎 <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,258</span></span>
+      <span class="hi hi-w">👁 Watch —</span>
+      <span class="chip">Ret <span class="cv">—</span></span>
+      <span class="chip">Watch <span class="cv">—</span></span>
+      <span class="chip">ER <span class="cv">1.37%</span></span>
+      <span class="pill pa">Review</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+</div>
+    <div id="sp-e-jun" class="spnl ">
+<div class="t5i"><div class="rnk rk1">1</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1ShcAu/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">789</span></span>
+      <span class="hi hi-e">💬 ER 1.77%</span>
+      <span class="chip">Ret <span class="cv">15%</span></span>
+      <span class="chip">Watch <span class="cv">8.97%</span></span>
+      <span class="chip">ER <span class="cv">1.77%</span></span>
+      <span class="pill po">Other</span>
+      <span style="font-size:10px;color:var(--t3)">3 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk2">2</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SVGgK/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">751</span></span>
+      <span class="hi hi-e">💬 ER 1.60%</span>
+      <span class="chip">Ret <span class="cv">13%</span></span>
+      <span class="chip">Watch <span class="cv">24.55%</span></span>
+      <span class="chip">ER <span class="cv">1.60%</span></span>
+      <span class="pill pc2">Sale</span>
+      <span style="font-size:10px;color:var(--t3)">1 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk rk3">3</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1SqcPp/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎 <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,258</span></span>
+      <span class="hi hi-e">💬 ER 1.37%</span>
+      <span class="chip">Ret <span class="cv">—</span></span>
+      <span class="chip">Watch <span class="cv">—</span></span>
+      <span class="chip">ER <span class="cv">1.37%</span></span>
+      <span class="pill pa">Review</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+<div class="t5i"><div class="rnk ">4</div><div style="flex:1;min-width:0">
+    <a href="https://vt.tiktok.com/ZSQ1AL6Ur/" target="_blank" class="ti" style="display:block;color:inherit;text-decoration:none;cursor:pointer">พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก <span style="color:#999;font-size:10px">↗</span></a>
+    <div class="tm">
+      <span class="chip">👁 <span class="cv">2,128</span></span>
+      <span class="hi hi-e">💬 ER 0.80%</span>
+      <span class="chip">Ret <span class="cv">19%</span></span>
+      <span class="chip">Watch <span class="cv">15.32%</span></span>
+      <span class="chip">ER <span class="cv">0.80%</span></span>
+      <span class="pill pp">Lifestyle</span>
+      <span style="font-size:10px;color:var(--t3)">2 มิ.ย.</span>
+    </div></div></div>
+</div>
+
+    <div class="sec" style="margin-top:16px">วิเคราะห์และข้อเสนอแนะ Content เดือนถัดไป</div>
+    <div class="ins-box">🔍 <strong>Insight มิถุนายน (1–3 มิ.ย.):</strong> 4 คลิปช่วงต้นเดือน — Review "กระจกเคลือบหน้าฝนตก" นำ views สูงสุด (2,258) สะท้อน Seasonal relevance หน้าฝนยังดึง views ดี · Lifestyle content views รองมา (2,128) · clip 2 มิ.ย.ฝั่ง Review ข้อมูล ret/watch หาย (ควรกรอกให้ครบ) · Watch Time clip Sale 6.6 โดดเด่นที่สุด 24.55% แม้ views ต่ำสุด = content live-sale ยังดึง engaged audience</div>
+    <div class="reco-grid"><div class="reco-card">
+  <div class="reco-num">01</div>
+  <div style="margin-bottom:6px"><span class="pill pa">Review</span></div>
+  <div class="reco-ttl">เคลือบกระจกก่อนหน้าฝน: ทดสอบจริงกระหน่ำฝนหนัก</div>
+  <div class="reco-why">Review กระจกฝน 2/6 ทำ views สูงสุดเดือน — Seasonal "หน้าฝน" กำลัง relevance สูง ทดสอบสภาพจริงดึง engagement</div>
+</div><div class="reco-card">
+  <div class="reco-num">02</div>
+  <div style="margin-bottom:6px"><span class="pill pp">Lifestyle</span></div>
+  <div class="reco-ttl">5 พฤติกรรมคนรักรถที่คนทั่วไปไม่เข้าใจ — Part 2</div>
+  <div class="reco-why">Lifestyle "คนรักรถ" 2/6 views ดีมาก (2,128) — Series format + relatable พิสูจน์แล้วว่าดึง view และ share</div>
+</div><div class="reco-card">
+  <div class="reco-num">03</div>
+  <div style="margin-bottom:6px"><span class="pill pt">Knowledge</span></div>
+  <div class="reco-ttl">หน้าฝนมาแล้ว: ผ้าเช็ดรถแบบไหนไม่ทำให้รอย?</div>
+  <div class="reco-why">Knowledge + Seasonal — เดือนก่อน content ผ้าทำ ER 3.76% สูงสุดเดือน และ Save 13 — how-to + หน้าฝน คาดว่า Watch Time จะดี</div>
+</div><div class="reco-card">
+  <div class="reco-num">04</div>
+  <div style="margin-bottom:6px"><span class="pill po">Other</span></div>
+  <div class="reco-ttl">กลิ่นอับในรถ vs ฝุ่น: แก้ได้ครบด้วย 2 ตัวนี้</div>
+  <div class="reco-why">Other 3/6 ER สูงสุดเดือน (1.77%) — content "แก้ปัญหา 2 ใน 1" คาดว่า Save และ Share จะดีถ้า thumbnail ชัดขึ้น</div>
+</div><div class="reco-card">
+  <div class="reco-num">05</div>
+  <div style="margin-bottom:6px"><span class="pill pc2">Sale</span></div>
+  <div class="reco-ttl">กรอก Ret/Watch Time ครบทุกคลิป เพื่อ data ถูกต้อง</div>
+  <div class="reco-why">Clip 2/6 Review ข้อมูล 5s Retention และ Watch Time ยังว่างอยู่ — ควรกรอกให้ครบเพื่อ KPI เดือนถูกต้อง</div>
+</div></div>
+
+    <div class="sec">รายละเอียดคลิปทั้งหมด — มิถุนายน</div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>#</th><th>วันที่</th><th>Pillar</th><th>Content</th>
+        <th onclick="sortMonth('jun','views',this)">Views ↕</th>
+        <th>Eng</th><th>❤</th><th>💬</th><th>🔁</th><th>💾</th>
+        <th onclick="sortMonth('jun','ret',this)">5s Ret ↕</th>
+        <th onclick="sortMonth('jun','watch',this)">Watch% ↕</th>
+        <th onclick="sortMonth('jun','er',this)">ER% ↕</th>
+      </tr></thead>
+      <tbody id="jun-tb"></tbody>
+    </table></div>
+  </div>
 </div><!-- /wrap -->
 
 <script>
@@ -1275,12 +1581,12 @@ const ALL_POSTS = [
   {lbl:'27/5/26',day:0,month:0,pillar:'REVIEW / TESTIMINOAL',content:'REVIEW / TESTIMINOAL',views:1160,eng:2,love:14,comment:1,share:2,save:2,ret:20.0,watch:14.66,er:2.0,url:'#'},
   {lbl:'28/5/26',day:0,month:0,pillar:'REVIEW / TESTIMINOAL',content:'REVIEW / TESTIMINOAL',views:502,eng:2,love:5,comment:0,share:2,save:1,ret:16.0,watch:11.69,er:2.0,url:'#'},
   {lbl:'29/5/26',day:0,month:0,pillar:'LIFESTYLE&TRENDY',content:'LIFESTYLE&TRENDY',views:484,eng:3,love:15,comment:0,share:0,save:0,ret:15.0,watch:6.78,er:3.0,url:'#'},
-  {lbl:'1/6/26',day:0,month:0,pillar:'SALES',content:'SALES',views:751,eng:2,love:11,comment:0,share:1,save:0,ret:13.0,watch:24.55,er:2.0,url:'#'},
-  {lbl:'2/6/26',day:0,month:0,pillar:'REVIEW / TESTIMINOAL',content:'REVIEW / TESTIMINOAL',views:2258,eng:1,love:30,comment:0,share:1,save:0,ret:0.0,watch:0.0,er:1.0,url:'#'},
-  {lbl:'2/6/26',day:0,month:0,pillar:'LIFESTYLE&TRENDY',content:'LIFESTYLE&TRENDY',views:2128,eng:1,love:15,comment:0,share:1,save:1,ret:19.0,watch:15.32,er:1.0,url:'#'},
-  {lbl:'3/6/26',day:0,month:0,pillar:'',content:'',views:789,eng:2,love:12,comment:0,share:2,save:0,ret:15.0,watch:8.97,er:2.0,url:'#'}
+  {lbl:'1/6/26',day:1,month:6,pillar:'Sale',content:'ถ้าไม่อยากพลาดโปรเด็ดในไลฟ์ 6.6 นี้เจอกัน',views:751,eng:12,love:11,comment:0,share:1,save:0,ret:13.0,watch:24.55,er:1.60,url:'https://vt.tiktok.com/ZSQ1SVGgK/'},
+  {lbl:'2/6/26(1)',day:2,month:6,pillar:'Review',content:'มุมมองหลังเคลือบกระจก ตอนฝนตก วิสัยทัศน์ก็ยังชัด 😎',views:2258,eng:31,love:30,comment:0,share:1,save:0,ret:0.0,watch:0.0,er:1.37,url:'https://vt.tiktok.com/ZSQ1SqcPp/'},
+  {lbl:'2/6/26(2)',day:2,month:6,pillar:'Lifestyle',content:'พฤติกรรม คนรักรถ ที่คนอื่นมองว่าแปลก',views:2128,eng:17,love:15,comment:0,share:1,save:1,ret:19.0,watch:15.32,er:0.80,url:'https://vt.tiktok.com/ZSQ1AL6Ur/'},
+  {lbl:'3/6/26',day:3,month:6,pillar:'Other',content:'กลิ่นอับ ฝุ่นก็เยอะแค่ไหน สองตัวนี้เอาอยู่ครับ',views:789,eng:14,love:12,comment:0,share:2,save:0,ret:15.0,watch:8.97,er:1.77,url:'https://vt.tiktok.com/ZSQ1ShcAu/'}
 ];
-const MONTH_COLOR = {3:'#2878d0', 4:'#c4406e', 5:'#1b9664'};
+const MONTH_COLOR = {3:'#2878d0', 4:'#c4406e', 5:'#1b9664', 6:'#9333ea'};
 const pillCls = {Interview:'pi',Knowledge:'pt',Review:'pa',Awareness:'paw',Sale:'pc2',Lifestyle:'pp','Brand Expert':'pp',Other:'po'};
 
 function mPosts(m){ return ALL_POSTS.filter(p=>p.month===m); }
@@ -1298,7 +1604,7 @@ function mkBar(id, posts, key, color, yMax, pct, targetVal){
     options:{
       responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}, tooltip:{callbacks:{
-        title: ctx => posts[ctx[0].dataIndex].lbl+' '+(['','','','มี.ค.','เม.ย.','พ.ค.'][posts[0].month]),
+        title: ctx => posts[ctx[0].dataIndex].lbl+' '+(['','','','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'][posts[0].month]||''),
         afterTitle: ctx => posts[ctx[0].dataIndex].content.slice(0,55),
       }}},
       scales:{
@@ -1313,6 +1619,7 @@ function mkBar(id, posts, key, color, yMax, pct, targetVal){
 const marPosts = mPosts(3);
 const aprPosts = mPosts(4);
 const mayPosts = mPosts(5);
+const junPosts = mPosts(6);
 
 mkBar('mar-views', marPosts,'views','#2878d0', null, false);
 mkBar('mar-ret',   marPosts,'ret',  '#2878d0',  50, true, 40);
@@ -1331,6 +1638,12 @@ mkBar('may-ret',   mayPosts,'ret',  '#1b9664',  50, true, 40);
 mkBar('may-watch', mayPosts,'watch','#1b9664',  28, true, 20);
 mkBar('may-er',    mayPosts,'er',   '#1b9664',   6, true, 5);
 mkBar('may-eng',   mayPosts,'eng',  '#1b9664', null, false);
+
+mkBar('jun-views', junPosts,'views','#9333ea', null, false);
+mkBar('jun-ret',   junPosts,'ret',  '#9333ea',  50, true, 40);
+mkBar('jun-watch', junPosts,'watch','#9333ea',  28, true, 20);
+mkBar('jun-er',    junPosts,'er',   '#9333ea',   6, true, 5);
+mkBar('jun-eng',   junPosts,'eng',  '#9333ea', null, false);
 
 // Build tables
 function buildTable(tbId, posts){
@@ -1355,7 +1668,7 @@ function buildTable(tbId, posts){
 }
 
 // Sort state per month
-const sortState = {mar:{key:'views',asc:false}, apr:{key:'views',asc:false}, may:{key:'views',asc:false}};
+const sortState = {mar:{key:'views',asc:false}, apr:{key:'views',asc:false}, may:{key:'views',asc:false}, jun:{key:'views',asc:false}};
 
 function sortMonth(m, key, th){
   const s = sortState[m];
@@ -1363,13 +1676,15 @@ function sortMonth(m, key, th){
   document.querySelectorAll(`#m-${m} th`).forEach(t=>t.classList.remove('sorted'));
   th.classList.add('sorted');
   th.textContent = ({views:'Views',ret:'5s Ret',watch:'Watch%',er:'ER%'}[key])+(s.asc?' ↑':' ↓');
-  const sorted = [...mPosts(m==='mar'?3:m==='apr'?4:5)].sort((a,b)=>s.asc?a[s.key]-b[s.key]:b[s.key]-a[s.key]);
+  const mNum = {mar:3,apr:4,may:5,jun:6};
+  const sorted = [...mPosts(mNum[m]||5)].sort((a,b)=>s.asc?a[s.key]-b[s.key]:b[s.key]-a[s.key]);
   buildTable(m+'-tb', sorted);
 }
 
 buildTable('mar-tb', marPosts);
 buildTable('apr-tb', aprPosts);
 buildTable('may-tb', mayPosts);
+buildTable('jun-tb', junPosts);
 
 
 function sst(month, id, btn){
