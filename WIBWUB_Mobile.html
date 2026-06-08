@@ -338,7 +338,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   </div>
   <div class="hdr-right">
     <div id="hdrDate" class="hdr-date"></div>
-    <div>ม.ค. – พ.ค. 2569</div>
+    <div>ม.ค. – มิ.ย. 2569</div>
     <div id="hdrUser" style="display:none;text-align:right;margin-top:4px;">
       <span id="hdrUserName" class="hdr-user-name"></span>
       <button onclick="showChangePasswordModal()" style="padding:2px 7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:5px;color:rgba(255,255,255,.8);font-size:10px;cursor:pointer;margin-right:4px;">🔑</button>
@@ -374,8 +374,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 <!-- ─── HOME ─── -->
 <div class="page active" id="pg-home">
   <div class="home-hero">
-    <div class="hh-lbl">ยอดขายรวม ม.ค.–พ.ค. 2569</div>
-    <div class="hh-val">฿39.4M</div>
+    <div class="hh-lbl">ยอดขายรวม ม.ค.–มิ.ย. 2569</div>
+    <div class="hh-val">฿41.6M</div>
     <div class="hh-sub">71,234 unique orders · AOV ฿554</div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v">฿24.0M</div><div class="hhg-l">Shopee</div></div>
@@ -394,7 +394,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">26.5K</div><div class="mks-sub">+4.1K จาก ม.ค.</div></div>
   </div>
   <div class="card">
-    <div class="sec-title">สินค้าขายดีสุด (ม.ค.–พ.ค.)</div>
+    <div class="sec-title">สินค้าขายดีสุด (ม.ค.–มิ.ย.)</div>
     <div id="home-prods"></div>
   </div>
 </div>
@@ -827,41 +827,41 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // ════════════════════════════════════════
 // RAW DATA
 // ════════════════════════════════════════
-const M5=["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค."];
-const SH_REV=[4231653,4383214,4560321,5204395,5581064];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02];
-const LZ_REV=[179084,120948,183370,110531,129523];
-const FB_REV=[2161199,1347804,1072079,808343,515666];
-const LINE_REV=[291906,444290,407415,349987,275461];
-const WEB_REV=[115840,111853,102113,124709,107014];
+const M5=["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."];
+const SH_REV=[4231653,4383214,4560321,5204395,5581064,1787978];
+const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,329296];
+const LZ_REV=[179084,120948,183370,110531,129523,36520];
+const FB_REV=[2161199,1347804,1072079,808343,515666,0];
+const LINE_REV=[291906,444290,407415,349987,275461,0];
+const WEB_REV=[115840,111853,102113,124709,107014,0];
 const CARE_REV=[84069,90135,70707,92509,98307];
 const MKT_REV=[580,0,0,490,17365];
 const BEUK_REV=[0,0,0,0,365];
 const POS_REV=[435,548,2277,267,590];
-const SH_ORD=[7532,6580,6873,8128,9093];
-const TK_ORD=[3204,3652,3934,5032,7543];
-const LZ_ORD=[236,176,255,161,157];
-const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38];
-const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69];
-const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38];
-const SH_ADS=[575400,559100,589300,795300,826300];
-const SH_FEE=[911498,944144,1046921,1225115,1433217];
-const TK_ADSSPEND=[164956,202579,249294,256168,357295];
-const TK_FEECOMM=[271216,267255,270719,294223,402802];
-const TK_AFI=[460976,550756,655259,724120,913053];
+const SH_ORD=[7532,6580,6873,8128,9093,2708];
+const TK_ORD=[3204,3652,3934,5032,7543,1700];
+const LZ_ORD=[236,176,255,161,157,35];
+const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,4.32];
+const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,7.69];
+const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,20.38];
+const SH_ADS=[575400,559100,589300,795300,826300,228700];
+const SH_FEE=[911498,944144,1046921,1225115,1433217,478284];
+const TK_ADSSPEND=[164956,202579,249294,256168,357295,68055];
+const TK_FEECOMM=[271216,267255,270719,294223,402802,90250];
+const TK_AFI=[460976,550756,655259,724120,913053,99656];
 const TK_NET=[456036,544073,642947,708730,899484];
-const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38];
-const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0];
-const LZ_ADS=[5760,5680,7220,5710,6590];
-const TOTAL_REV=[8132249,7579319,7606265,7948363,8172373];
-const TOTAL_ORD=[10972,10408,11062,13321,16793];
+const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,20.38];
+const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,22.92];
+const LZ_ADS=[5760,5680,7220,5710,6590,1920];
+const TOTAL_REV=[8132249,7579319,7606265,7948363,8172373,2153794];
+const TOTAL_ORD=[10972,10408,11062,13321,16793,4443];
 
 const CHANNELS=[
-  {n:'Shopee',v:23960647,color:'#ee4d2d'},
+  {n:'Shopee',v:25748625,color:'#ee4d2d'},
   {n:'Facebook',v:5905091,color:'#1877f2'},
-  {n:'TikTok',v:6518784,color:'#111'},
+  {n:'TikTok',v:6848080,color:'#111'},
   {n:'Line Shopping',v:1769059,color:'#06c755'},
-  {n:'Lazada',v:723459,color:'#1b04a1'},
+  {n:'Lazada',v:759979,color:'#1b04a1'},
   {n:'Website/อื่นๆ',v:561529,color:'#1A5CDB'},
 ];
 
@@ -1268,7 +1268,7 @@ function initHome(){
 let sMo=0;
 function initSalesOv(){
   document.getElementById('s-ov-kpi').innerHTML=`
-    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–พ.ค.)</div><div class="kc-val">฿39.4M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–มิ.ย.)</div><div class="kc-val">฿41.6M</div><div class="kc-sub">ทุก Platform</div></div>
     <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">71,234</div><div class="kc-sub">unique orders</div></div>
     <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿554</div><div class="kc-sub">ต่อออเดอร์</div></div>
     <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
@@ -1278,9 +1278,9 @@ function initSalesOv(){
   document.getElementById('s-rev-bars').innerHTML=M5.map((m,i)=>`
     <div style="margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-        <span style="font-weight:600">${m}${i===4?' *':''}</span><span style="font-weight:700;color:var(--bl)">${fmtB(TOTAL_REV[i])}</span>
+        <span style="font-weight:600">${m}${i===5?' *':''}</span><span style="font-weight:700;color:var(--bl)">${fmtB(TOTAL_REV[i])}</span>
       </div>
-      <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TOTAL_REV[i]/maxR*100)}%;background:${i===4?'var(--green)':'var(--bl)'}"></div></div>
+      <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TOTAL_REV[i]/maxR*100)}%;background:${i===5?'var(--green)':'var(--bl)'}"></div></div>
       <div style="font-size:10px;color:var(--muted);margin-top:2px">SH ${fmtB(SH_REV[i])} · TK ${fmtB(TK_REV[i])} · LZ ${fmtB(LZ_REV[i])}</div>
     </div>`).join('');
   // Ord bars
@@ -1289,7 +1289,7 @@ function initSalesOv(){
     const tot=SH_ORD[i]+TK_ORD[i]+LZ_ORD[i];
     return`<div style="margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-        <span>${m}${i===4?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
+        <span>${m}${i===5?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
       </div>
       <div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;display:flex">
         <div style="width:${Math.round(SH_ORD[i]/maxO*100)}%;background:var(--sh)"></div>
@@ -1436,16 +1436,16 @@ function initMoTables(){
     const aov=Math.round(rev/ord);
     const prev=i>0?(SH_REV[i-1]+TK_REV[i-1]+LZ_REV[i-1]):null;
     const mo=prev?`<span style="${pctColor(rev,prev)}">${pct(rev,prev)}</span>`:'—';
-    return`<tr${i===4?' class="hl"':''}><td>${m}${i===4?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
+    return`<tr${i===5?' class="hl"':''}><td>${m}${i===5?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
   }).join('');
   document.getElementById('mo-tb-sh').innerHTML=M5.map((m,i)=>
-    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
+    `<tr${i===5?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-tk').innerHTML=M5.map((m,i)=>
-    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
+    `<tr${i===5?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-lz').innerHTML=M5.map((m,i)=>
-    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`
+    `<tr${i===5?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`
   ).join('');
 }
 
@@ -1565,7 +1565,7 @@ function renderAdsMo(){
   const tkMoM=i>0?`<span style="font-size:10px;${pctColor(TK_REV[i],TK_REV[i-1])}">${pct(TK_REV[i],TK_REV[i-1])}</span>`:'—';
   document.getElementById('ads-mo-detail').innerHTML=`
     <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">${m}${i===4?' *':''} — Ads Detail</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">${m}${i===5?' *':''} — Ads Detail</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div style="background:#fff4f2;border-radius:10px;padding:10px;border-left:3px solid var(--sh)">
           <div style="font-size:10px;font-weight:700;color:var(--sh);margin-bottom:6px">🧡 SHOPEE</div>
@@ -1619,7 +1619,7 @@ function initAds(){
       <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(SH_ADS[i])} → Rev ${fmtB(SH_REV[i])}</div>
     </div>`).join('');
   document.getElementById('sh-ads-tb').innerHTML=M5.map((m,i)=>
-    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_ADS[i])}</td><td>${fmtB(SH_FEE[i])}</td><td style="color:var(--sh)">${shR[i]}×</td></tr>`
+    `<tr${i===5?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_ADS[i])}</td><td>${fmtB(SH_FEE[i])}</td><td style="color:var(--sh)">${shR[i]}×</td></tr>`
   ).join('');
   document.getElementById('tk-roas-bars').innerHTML=M5.map((m,i)=>`
     <div style="margin-bottom:7px">
@@ -1630,7 +1630,7 @@ function initAds(){
       <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(TK_ADSSPEND[i])} → Rev ${fmtB(TK_REV[i])}</div>
     </div>`).join('');
   document.getElementById('tk-ads-tb').innerHTML=M5.map((m,i)=>
-    `<tr${i===4?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${fmtB(TK_FEECOMM[i])}</td><td>${tkR[i]}×</td></tr>`
+    `<tr${i===5?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${fmtB(TK_FEECOMM[i])}</td><td>${tkR[i]}×</td></tr>`
   ).join('');
   const combR=SH_REV.map((v,i)=>+((v+TK_REV[i])/(SH_ADS[i]+TK_ADSSPEND[i])).toFixed(2));
   const maxC=Math.max(...combR);
