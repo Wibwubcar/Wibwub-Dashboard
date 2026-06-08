@@ -1558,18 +1558,18 @@ new Chart('soc_eng',{type:'doughnut',data:{labels:['TikTok','Facebook','Instagra
 
 // ── DUAL-CALENDAR DATE PICKER ──
 const MP_DATE_MIN = '2026-01-01';
-const MP_DATE_MAX = '2026-05-31';
+const MP_DATE_MAX = '2026-06-07';
 const MP_MONTH_BOUNDS = [
   {s:'2026-01-01',e:'2026-01-31'},{s:'2026-02-01',e:'2026-02-28'},
   {s:'2026-03-01',e:'2026-03-31'},{s:'2026-04-01',e:'2026-04-30'},
-  {s:'2026-05-01',e:'2026-05-31'}
+  {s:'2026-05-01',e:'2026-05-31'},{s:'2026-06-01',e:'2026-06-07'}
 ];
-const MONTH_LABELS_FULL = ['ม.ค. 2569','ก.พ. 2569','มี.ค. 2569','เม.ย. 2569','พ.ค. 2569'];
-const MONTH_LABELS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
-let rangeStart = 0, rangeEnd = 4;
+const MONTH_LABELS_FULL = ['ม.ค. 2569','ก.พ. 2569','มี.ค. 2569','เม.ย. 2569','พ.ค. 2569','มิ.ย. 2569'];
+const MONTH_LABELS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
+let rangeStart = 0, rangeEnd = 5;
 let mpDraftStart = MP_DATE_MIN, mpDraftEnd = MP_DATE_MAX;
 let mpPickStep = 0;
-let mpCalLeft = {y:2026, m:0}, mpCalRight = {y:2026, m:1};
+let mpCalLeft = {y:2026, m:4}, mpCalRight = {y:2026, m:5};
 const MP_THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const MP_DOW = ['อา','จ','อ','พ','พฤ','ศ','ส'];
 
