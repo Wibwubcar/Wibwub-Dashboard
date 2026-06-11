@@ -893,7 +893,7 @@ function rt(){
   // Re-apply column visibility after re-rendering rows
   document.querySelectorAll('#mt tbody tr').forEach(row=>{
     const cells=row.querySelectorAll('td');
-    for(let i=0;i<7;i++){
+    for(let i=0;i<8;i++){
       const vis=i>=afRS&&i<=afRE;
       if(cells[i+1])cells[i+1].style.display=vis?'':'none';
     }
@@ -1144,7 +1144,7 @@ function afApplyRange(s,e){
   const thEls=document.querySelectorAll('#mt thead th');
   document.querySelectorAll('#mt tbody tr').forEach(row=>{
     const cells=row.querySelectorAll('td');
-    for(let i=0;i<7;i++){
+    for(let i=0;i<8;i++){
       const vis=i>=s&&i<=e;
       if(cells[i+1])cells[i+1].style.display=vis?'':'none';
     }
