@@ -1406,19 +1406,21 @@ function go(id, el) {
 
 // ── RAW DATA (from spreadsheets) ──
 const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."];
-const SH_REV  = [4231653,4383214,4560321,5204395,5581064,1787978];
-const TK_REV  = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,435833.54];
-const LZ_REV  = [179084,120948,183370,110531,129523,36520];
-const FB_REV  = [2161199,1347804,1072079,808343,515666,0];
-const LINE_REV= [291906,444290,407415,349987,275461,0];
-const WEB_REV = [115840,111853,102113,124709,107014,0];
+const SH_REV  = [5039207,4353236,4288295,4755535,5085245,2126469];
+const TK_REV  = [1119853,1174979,1282780,1322378,1590428,474776];
+const LZ_REV  = [146373,101397,148659,92226,104114,51213];
+const FB_REV  = [2152231,1328934,1061901,802047,980883,413040];
+const LINE_REV  = [350828,459158,418472,397898,374817,153907];
+const WEB_REV  = [4568,1760,11754,3060,4468,1355];
 const CARE_REV= [84069,90135,70707,92509,98307,0];
 const MKT_REV = [580,0,0,490,17365,0];
 const BEUK_REV= [0,0,0,0,365,0];
 const POS_REV = [435,548,2277,267,590,0];
-const SH_ORD  = [7532,6580,6873,8128,9093,2708];
-const TK_ORD  = [3204,3652,3934,5032,7543,1129];
-const LZ_ORD  = [236,176,255,161,157,32];
+const SH_ORD  = [7177,6276,6568,7639,8588,3418];
+const TK_ORD  = [3117,3587,3975,4670,7213,1495];
+const LZ_ORD  = [230,172,248,156,150,84];
+const FB_ORD  = [2987,2001,1575,1175,1479,649];
+const LINE_ORD= [325,466,345,381,343,152];
 const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,4.32];
 const TK_CANCEL_PCT = [9.64,8.32,8.39,9.7,7.69,8.86];
 const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.38,20.38];
@@ -1464,7 +1466,7 @@ charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
   {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===5?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
-charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 60.7%','Facebook 15.0%','TikTok 16.5%','Line 4.5%','Website 1.4%','Lazada 1.8%'],datasets:[{data:[23960647,5905091,6518784,1769059,561529,723459],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
+charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 60.8%','Facebook 16.0%','TikTok 16.5%','Line 5.1%','Lazada 1.5%','Website 0.1%'],datasets:[{data:[25647987,6739036,6965194,2155080,643982,26965],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===5?6:3),pointBackgroundColor:SHOPEE},
@@ -1770,7 +1772,7 @@ function setMonthRange(s, e) {
   const tkAdsPct       = tkRev>0 ? tkAds/tkRev*100 : 0;
   const tkAfiPct       = tkRev>0 ? tkAfi/tkRev*100 : 0;
   const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]);
-  const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]);
+  const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]);
 
   // Month summary bar
   set('monthSummary', `${isRange?'สะสม':''} ${MN} 2569: ${f(totRev)} · ${fn(totOrd)} orders`);

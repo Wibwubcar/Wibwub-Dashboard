@@ -828,19 +828,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // RAW DATA
 // ════════════════════════════════════════
 const M5=["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."];
-const SH_REV=[4231653,4383214,4560321,5204395,5581064,1787978];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,435833.54];
-const LZ_REV=[179084,120948,183370,110531,129523,36520];
-const FB_REV=[2161199,1347804,1072079,808343,515666,0];
-const LINE_REV=[291906,444290,407415,349987,275461,0];
-const WEB_REV=[115840,111853,102113,124709,107014,0];
+const SH_REV=[5039207,4353236,4288295,4755535,5085245,2126469];
+const TK_REV=[1119853,1174979,1282780,1322378,1590428,474776];
+const LZ_REV=[146373,101397,148659,92226,104114,51213];
+const FB_REV=[2152231,1328934,1061901,802047,980883,413040];
+const LINE_REV=[350828,459158,418472,397898,374817,153907];
+const WEB_REV=[4568,1760,11754,3060,4468,1355];
 const CARE_REV=[84069,90135,70707,92509,98307,0];
 const MKT_REV=[580,0,0,490,17365,0];
 const BEUK_REV=[0,0,0,0,365,0];
 const POS_REV=[435,548,2277,267,590,0];
-const SH_ORD=[7532,6580,6873,8128,9093,2708];
-const TK_ORD=[3204,3652,3934,5032,7543,1129];
-const LZ_ORD=[236,176,255,161,157,32];
+const SH_ORD=[7177,6276,6568,7639,8588,3418];
+const TK_ORD=[3117,3587,3975,4670,7213,1495];
+const LZ_ORD=[230,172,248,156,150,84];
+const FB_ORD=[2987,2001,1575,1175,1479,649];
+const LINE_ORD=[325,466,345,381,343,152];
 const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,4.32];
 const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.86];
 const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,20.38];
@@ -853,16 +855,16 @@ const TK_NET=[456036,544073,642947,708730,899484,228045];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,20.38];
 const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,22.92];
 const LZ_ADS=[5760,5680,7220,5710,6590,1920];
-const TOTAL_REV=[8132249,7579319,7606265,7948363,8172373,2260332];
-const TOTAL_ORD=[10972,10408,11062,13321,16793,3869];
+const TOTAL_REV=[8813060,7419464,7211861,7373144,8139955,3220760];
+const TOTAL_ORD=[13836,12502,12711,14021,17773,5798];
 
 const CHANNELS=[
-  {n:'Shopee',v:25748625,color:'#ee4d2d'},
-  {n:'Facebook',v:5905091,color:'#1877f2'},
-  {n:'TikTok',v:6954617,color:'#111'},
-  {n:'Line Shopping',v:1769059,color:'#06c755'},
-  {n:'Lazada',v:759979,color:'#1b04a1'},
-  {n:'Website/อื่นๆ',v:561529,color:'#1A5CDB'},
+  {n:'Shopee',v:25647987,color:'#ee4d2d'},
+  {n:'TikTok',v:6965194,color:'#111'},
+  {n:'Facebook',v:6739036,color:'#1877f2'},
+  {n:'Line Shopping',v:2155080,color:'#06c755'},
+  {n:'Lazada',v:643982,color:'#1b04a1'},
+  {n:'Website/อื่นๆ',v:26965,color:'#1A5CDB'},
 ];
 
 const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิย.69'];
@@ -1284,9 +1286,9 @@ function initSalesOv(){
       <div style="font-size:10px;color:var(--muted);margin-top:2px">SH ${fmtB(SH_REV[i])} · TK ${fmtB(TK_REV[i])} · LZ ${fmtB(LZ_REV[i])}</div>
     </div>`).join('');
   // Ord bars
-  const maxO=Math.max(...M5.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]));
+  const maxO=Math.max(...M5.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]));
   document.getElementById('s-ord-bars').innerHTML=M5.map((m,i)=>{
-    const tot=SH_ORD[i]+TK_ORD[i]+LZ_ORD[i];
+    const tot=SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i];
     return`<div style="margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
         <span>${m}${i===5?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
