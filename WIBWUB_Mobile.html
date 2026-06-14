@@ -388,7 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div id="home-ch"></div>
   </div>
   <div class="mks-grid">
-    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿2.53M</div><div class="mks-sub">183 creators · มิย.69</div></div>
+    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿2.60M</div><div class="mks-sub">231 creators · มิย.69</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.0×</div><div class="mks-sub">Shopee+TikTok</div></div>
     <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">64 คลิป</div><div class="mks-sub">มี.ค.–มิ.ย. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">26.5K</div><div class="mks-sub">+4.1K จาก ม.ค.</div></div>
@@ -868,9 +868,9 @@ const CHANNELS=[
 ];
 
 const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิย.69'];
-const AFI_GMV=[0,0,0,0,655171,724241,951246,233205];
-const AFI_NET=[0,0,0,0,642865,708855,937291,227702];
-const AFI_COMM=[0,0,0,0,82699,69021,104785,27060];
+const AFI_GMV=[0,0,0,0,655171,724241,951246,270326];
+const AFI_NET=[0,0,0,0,642865,708855,937291,264559];
+const AFI_COMM=[0,0,0,0,82699,69021,104785,32206];
 const TK_FOL=[23404,24192,24967,25590,26339,26519];
 const FOL_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
 
@@ -1206,35 +1206,35 @@ const CREATORS=[
 
 // Top 15 products cumulative ม.ค.–มิ.ย. (updated 04.06.69)
 const ALL_PRODUCTS = [
-  {n:'Wool duster-ไม้ปัดขนแกะ', v:4951012, q:7735},
-  {n:'Sugar (Sugar-500ml+Spray)', v:3478958, q:11842},
-  {n:'Interior (Interior-500ml+Spray)', v:2748363, q:8003},
-  {n:'Interior wipes', v:1570735, q:21679},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', v:1561307, q:4317},
-  {n:'Perfect', v:1407644, q:9395},
-  {n:'Spot (Spot-500ml)', v:1314504, q:3533},
-  {n:'Refresh wipes', v:1261924, q:16475},
-  {n:'Reflex (Reflex-250ml+Spray)', v:1213846, q:3205},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', v:1081867, q:933},
-  {n:'Tire&trim gel (Tire&trim gel-500ml)', v:1055928, q:2395},
-  {n:'Mind (Mind-500ml+Spray)', v:991192, q:2465},
-  {n:'Martini', v:982470, q:8000},
-  {n:'Quartz shampoo (Quartz shampoo-1L)', v:929729, q:4011},
-  {n:'Xglass (Xglass-100ml)', v:800033, q:2162}
+  {n:'Wool duster-ไม้ปัดขนแกะ', v:4975637, q:7774},
+  {n:'Sugar (Sugar-500ml+Spray)', v:3531250, q:12010},
+  {n:'Interior (Interior-500ml+Spray)', v:2777011, q:8085},
+  {n:'Interior wipes', v:1603036, q:22115},
+  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', v:1583711, q:4381},
+  {n:'Perfect', v:1420746, q:9479},
+  {n:'Spot (Spot-500ml)', v:1351162, q:3632},
+  {n:'Refresh wipes', v:1262123, q:16478},
+  {n:'Reflex (Reflex-250ml+Spray)', v:1227966, q:3241},
+  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', v:1095261, q:945},
+  {n:'Tire&trim gel (Tire&trim gel-500ml)', v:1069486, q:2424},
+  {n:'Mind (Mind-500ml+Spray)', v:998729, q:2485},
+  {n:'Martini', v:998317, q:8128},
+  {n:'Quartz shampoo (Quartz shampoo-1L)', v:940630, q:4056},
+  {n:'Xglass (Xglass-100ml)', v:831367, q:2247}
 ];
 
 // Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun]
 const PROD_MO=[
-  {n:'Wool duster-ไม้ปัดขนแกะ', mo:[1495083, 1041074, 981641, 788587, 489154, 155473]},
-  {n:'Sugar (Sugar-500ml+Spray)', mo:[822778, 670653, 606708, 561482, 549210, 268127]},
-  {n:'Interior (Interior-500ml+Spray)', mo:[568676, 450756, 470790, 523676, 528615, 205850]},
-  {n:'Interior wipes', mo:[193960, 206324, 237744, 332049, 406740, 193918]},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', mo:[293360, 245303, 282205, 306164, 307133, 127142]},
-  {n:'Perfect', mo:[370067, 274978, 234139, 216089, 228141, 84230]},
-  {n:'Spot (Spot-500ml)', mo:[177233, 132568, 116783, 305741, 394366, 187813]},
-  {n:'Refresh wipes', mo:[141707, 134280, 166974, 269674, 548615, 674]},
-  {n:'Reflex (Reflex-250ml+Spray)', mo:[288877, 286316, 229188, 173243, 159182, 77040]},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', mo:[297428, 201858, 148678, 176607, 177593, 79703]}
+  {n:'Wool duster-ไม้ปัดขนแกะ', mo:[1495083, 1041074, 981641, 788587, 489154, 180098]},
+  {n:'Sugar (Sugar-500ml+Spray)', mo:[822778, 670653, 606708, 561482, 549210, 320419]},
+  {n:'Interior (Interior-500ml+Spray)', mo:[568676, 450756, 470790, 523676, 528615, 234498]},
+  {n:'Interior wipes', mo:[193960, 206324, 237744, 332049, 406740, 226219]},
+  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', mo:[293360, 245303, 282205, 306164, 307133, 149546]},
+  {n:'Perfect', mo:[370067, 274978, 234139, 216089, 228141, 97332]},
+  {n:'Spot (Spot-500ml)', mo:[177233, 132568, 116783, 305741, 394366, 224471]},
+  {n:'Refresh wipes', mo:[141707, 134280, 166974, 269674, 548615, 873]},
+  {n:'Reflex (Reflex-250ml+Spray)', mo:[288877, 286316, 229188, 173243, 159182, 91160]},
+  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', mo:[297428, 201858, 148678, 176607, 177593, 93097]}
 ];
 
 const ALL_POSTS=[
