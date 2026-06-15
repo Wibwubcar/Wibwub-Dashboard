@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB — Premium Car Care (Light Concept)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF9F6;            /* warm off-white page */
+  --surface:#ffffff;
+  --surface-2:#F4F3EF;     /* subtle tint surface */
+  --ink:#0E1015;
+  --ink-2:#3A3D44;
+  --muted:#6B6F76;
+  --line:rgba(14,16,21,.08);
+  --line-2:rgba(14,16,21,.05);
+  --blue:#1E50E6;
+  --blue-d:#1740BE;
+  --blue-tint:#EEF3FF;
+  --gold:#9C7A3C;          /* champagne metallic accent, used sparingly */
+  --radius:18px;
+  --radius-sm:12px;
+  --radius-pill:100px;
+  --shadow-sm:0 1px 2px rgba(14,16,21,.04), 0 2px 6px rgba(14,16,21,.04);
+  --shadow:0 2px 6px rgba(14,16,21,.04), 0 18px 40px rgba(14,16,21,.07);
+  --shadow-lg:0 8px 24px rgba(14,16,21,.06), 0 30px 70px rgba(14,16,21,.10);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Outfit','Noto Sans Thai',sans-serif;
+  background:var(--bg);color:var(--ink);
+  line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;
+}
+/* soft ambient tints in background */
+body::before{
+  content:'';position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:
+    radial-gradient(900px 500px at 78% -8%, rgba(30,80,230,.07), transparent 60%),
+    radial-gradient(700px 500px at -10% 25%, rgba(156,122,60,.05), transparent 55%);
+}
+.wrap{max-width:1180px;margin:0 auto;padding:0 28px}
+.eyebrow{
+  font-size:12px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;
+  color:var(--blue);display:inline-flex;align-items:center;gap:8px;
+}
+.eyebrow::before{content:'';width:22px;height:1px;background:var(--blue);opacity:.6}
+h1,h2,h3{font-weight:700;letter-spacing:-.02em;line-height:1.12;color:var(--ink)}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;cursor:pointer;border:none;
+  font-family:inherit;font-size:15px;font-weight:600;padding:14px 26px;
+  border-radius:var(--radius-pill);transition:all .3s var(--ease);
+  text-decoration:none;
+}
+.btn-primary{background:var(--blue);color:#fff;box-shadow:0 8px 22px rgba(30,80,230,.28)}
+.btn-primary:hover{background:var(--blue-d);transform:translateY(-2px);box-shadow:0 12px 30px rgba(30,80,230,.34)}
+.btn-ghost{background:var(--surface);color:var(--ink);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.ico{width:18px;height:18px;stroke:currentColor;stroke-width:1.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+
+/* ───────── NAV ───────── */
+nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(250,249,246,.72);backdrop-filter:blur(18px) saturate(1.4);
+  -webkit-backdrop-filter:blur(18px) saturate(1.4);
+  border-bottom:1px solid var(--line-2);
+}
+.nav-in{max-width:1180px;margin:0 auto;padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:20px;letter-spacing:-.5px}
+.logo-mark{
+  width:38px;height:38px;border-radius:11px;background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:800;font-size:19px;
+  box-shadow:var(--shadow-sm);
+}
+.brand small{display:block;font-size:10px;font-weight:500;letter-spacing:2px;color:var(--muted);text-transform:uppercase}
+.nav-links{display:flex;gap:34px;align-items:center}
+.nav-links a{color:var(--ink-2);text-decoration:none;font-size:15px;font-weight:500;transition:color .2s}
+.nav-links a:hover{color:var(--blue)}
+.nav-cta{display:flex;align-items:center;gap:14px}
+.cart-ico{position:relative;width:42px;height:42px;border-radius:50%;background:var(--surface);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;box-shadow:var(--shadow-sm);transition:.25s}
+.cart-ico:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.cart-ico span{position:absolute;top:-4px;right:-4px;background:var(--blue);color:#fff;font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+@media(max-width:820px){.nav-links{display:none}}
+
+/* ───────── HERO ───────── */
+.hero{padding:84px 0 64px}
+.hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+.hero h1{font-size:clamp(38px,5.4vw,62px);margin:22px 0 20px}
+.hero h1 .accent{color:var(--blue)}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:480px;font-weight:400}
+.hero-cta{display:flex;gap:14px;margin-top:34px;flex-wrap:wrap}
+.hero-trust{display:flex;gap:30px;margin-top:42px;flex-wrap:wrap}
+.trust-item .n{font-size:26px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.trust-item .l{font-size:13px;color:var(--muted)}
+.trust-item .n .gold{color:var(--gold)}
+/* hero visual */
+.hero-visual{position:relative}
+.hero-card{
+  background:linear-gradient(165deg,#ffffff 0%,#F6F8FF 100%);
+  border:1px solid var(--line);border-radius:28px;padding:30px;
+  box-shadow:var(--shadow-lg);position:relative;overflow:hidden;
+}
+.hero-bottle{
+  height:300px;border-radius:20px;
+  background:linear-gradient(160deg,#1E50E6 0%,#143BB0 60%,#0E2E8F 100%);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;
+}
+.hero-bottle::after{content:'';position:absolute;inset:0;background:radial-gradient(380px 200px at 75% 10%,rgba(255,255,255,.28),transparent 60%)}
+.hero-bottle .b-word{color:#fff;font-weight:800;font-size:44px;letter-spacing:3px;opacity:.96;text-shadow:0 4px 24px rgba(0,0,0,.25)}
+.float-chip{
+  position:absolute;background:rgba(255,255,255,.92);backdrop-filter:blur(8px);
+  border:1px solid var(--line);border-radius:14px;padding:11px 15px;box-shadow:var(--shadow);
+  display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;
+}
+.float-chip .dot{width:9px;height:9px;border-radius:50%;background:#10B981}
+.fc-1{top:18px;right:-14px}
+.fc-2{bottom:24px;left:-18px}
+.fc-2 .star{color:var(--gold)}
+@media(max-width:860px){.hero-grid{grid-template-columns:1fr;gap:40px}.float-chip{display:none}}
+
+/* ───────── CATEGORY CHIPS ───────── */
+.cats{padding:14px 0 70px}
+.cat-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+.cat-chip{
+  display:flex;align-items:center;gap:11px;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius-pill);
+  padding:13px 24px;font-weight:600;font-size:15px;cursor:pointer;
+  box-shadow:var(--shadow-sm);transition:all .28s var(--ease);
+}
+.cat-chip:hover{transform:translateY(-3px);box-shadow:var(--shadow);border-color:rgba(30,80,230,.3)}
+.cat-chip .ci{width:34px;height:34px;border-radius:10px;background:var(--blue-tint);display:flex;align-items:center;justify-content:center;color:var(--blue)}
+
+/* ───────── SECTION HEAD ───────── */
+.section{padding:80px 0}
+.sec-head{text-align:center;max-width:620px;margin:0 auto 52px}
+.sec-head h2{font-size:clamp(28px,3.6vw,42px);margin:16px 0 14px}
+.sec-head p{color:var(--muted);font-size:16px}
+
+/* ───────── PRODUCTS ───────── */
+.prod-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+@media(max-width:980px){.prod-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.prod-grid{grid-template-columns:1fr}}
+.card{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  overflow:hidden;box-shadow:var(--shadow-sm);transition:all .32s var(--ease);
+  display:flex;flex-direction:column;
+}
+.card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg);border-color:rgba(30,80,230,.18)}
+.card-img{height:170px;position:relative;display:flex;align-items:center;justify-content:center}
+.ci-interior{background:linear-gradient(160deg,#EEF3FF,#DCE6FF)}
+.ci-exterior{background:linear-gradient(160deg,#F3F0EA,#E7E0D2)}
+.ci-coating{background:linear-gradient(160deg,#ECF7F3,#D6EFE6)}
+.card-img .pmark{font-weight:800;font-size:30px;color:rgba(14,16,21,.18);letter-spacing:2px}
+.badge{
+  position:absolute;top:12px;left:12px;font-size:11px;font-weight:700;letter-spacing:.5px;
+  padding:5px 11px;border-radius:var(--radius-pill);text-transform:uppercase;
+}
+.badge.best{background:var(--ink);color:#fff}
+.badge.pop{background:var(--blue-tint);color:var(--blue-d)}
+.badge.gold{background:#F6EEDD;color:var(--gold)}
+.card-body{padding:18px 18px 20px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card-cat{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
+.card-name{font-size:16px;font-weight:600;letter-spacing:-.01em;line-height:1.3}
+.card-name span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:3px;line-height:1.4}
+.card-foot{margin-top:auto;display:flex;align-items:center;justify-content:space-between;padding-top:10px}
+.price{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.price small{font-size:13px;font-weight:500;color:var(--muted)}
+.sold{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:4px}
+.add-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink);transition:.25s}
+.add-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue);transform:scale(1.05)}
+.center-cta{text-align:center;margin-top:48px}
+
+/* ───────── WHY / FEATURES ───────── */
+.feat-band{background:var(--surface);border-top:1px solid var(--line-2);border-bottom:1px solid var(--line-2)}
+.feat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px}
+@media(max-width:880px){.feat-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.feat-grid{grid-template-columns:1fr}}
+.feat{padding:6px}
+.feat .fi{width:54px;height:54px;border-radius:16px;background:var(--blue-tint);color:var(--blue);display:flex;align-items:center;justify-content:center;margin-bottom:18px}
+.feat .fi svg{width:26px;height:26px}
+.feat h3{font-size:18px;margin-bottom:8px}
+.feat p{font-size:14.5px;color:var(--muted)}
+
+/* ───────── STATS STRIP ───────── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center}
+@media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr);gap:34px}}
+.stat .n{font-size:clamp(30px,4vw,46px);font-weight:800;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.stat .n .gold{color:var(--gold)}
+.stat .l{font-size:14px;color:var(--muted);margin-top:4px}
+
+/* ───────── CTA ───────── */
+.cta-card{
+  background:linear-gradient(155deg,#13182A 0%,#1E2A52 55%,#1E50E6 130%);
+  border-radius:30px;padding:64px 56px;text-align:center;color:#fff;position:relative;overflow:hidden;
+  box-shadow:var(--shadow-lg);
+}
+.cta-card::after{content:'';position:absolute;inset:0;background:radial-gradient(600px 320px at 80% -10%,rgba(255,255,255,.14),transparent 60%)}
+.cta-card h2{color:#fff;font-size:clamp(28px,3.6vw,40px);position:relative;z-index:1}
+.cta-card p{color:rgba(255,255,255,.78);margin:16px auto 30px;max-width:480px;position:relative;z-index:1}
+.cta-card .btn-primary{background:#fff;color:var(--ink);box-shadow:0 10px 30px rgba(0,0,0,.25);position:relative;z-index:1}
+.cta-card .btn-primary:hover{background:#f0f3ff}
+
+/* ───────── FOOTER ───────── */
+footer{padding:56px 0 38px;border-top:1px solid var(--line)}
+.foot-grid{display:flex;justify-content:space-between;flex-wrap:wrap;gap:30px;align-items:flex-start}
+.foot-brand{max-width:280px}
+.foot-brand p{color:var(--muted);font-size:14px;margin-top:14px}
+.foot-cols{display:flex;gap:60px;flex-wrap:wrap}
+.foot-col h4{font-size:13px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:14px;font-weight:600}
+.foot-col a{display:block;color:var(--ink-2);text-decoration:none;font-size:14.5px;margin-bottom:9px;transition:color .2s}
+.foot-col a:hover{color:var(--blue)}
+.foot-bot{margin-top:40px;padding-top:22px;border-top:1px solid var(--line-2);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-size:13px;color:var(--muted)}
+.concept-flag{position:fixed;bottom:16px;left:16px;z-index:99;background:var(--ink);color:#fff;font-size:12px;font-weight:600;padding:8px 14px;border-radius:var(--radius-pill);box-shadow:var(--shadow);opacity:.92}
+</style>
+</head>
+<body>
+
+<div class="concept-flag">ตัวอย่างดีไซน์ · Light Premium Concept</div>
+
+<nav>
+  <div class="nav-in">
+    <div class="brand">
+      <div class="logo-mark">W</div>
+      <div>WIBWUB<small>Premium Car Care</small></div>
+    </div>
+    <div class="nav-links">
+      <a href="#">หน้าหลัก</a>
+      <a href="#products">สินค้า</a>
+      <a href="#why">เกี่ยวกับเรา</a>
+      <a href="#contact">ติดต่อ</a>
+    </div>
+    <div class="nav-cta">
+      <div class="cart-ico">
+        <svg class="ico" viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span>3</span>
+      </div>
+      <a href="#products" class="btn btn-primary" style="padding:11px 22px">ช้อปเลย</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">Interior · Exterior · Coating · Washing</span>
+      <h1>ดูแลรถให้สะอาด<br>ระดับ <span class="accent">ดีเทลลิ่งมือโปร</span></h1>
+      <p class="lead">ผลิตภัณฑ์ดูแลรถยนต์คุณภาพพรีเมียม สำหรับคนที่รักรถและต้องการดูแลรถอย่างถูกวิธี — คิดค้นและผลิตในไทย</p>
+      <div class="hero-cta">
+        <a href="#products" class="btn btn-primary">เลือกซื้อสินค้า
+          <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+        <a href="#why" class="btn btn-ghost">ทำไมต้องเลือกเรา</a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><div class="n">50,000<span class="gold">+</span></div><div class="l">ขวดส่งถึงมือลูกค้า</div></div>
+        <div class="trust-item"><div class="n">4.9<span class="gold">★</span></div><div class="l">คะแนนรีวิวเฉลี่ย</div></div>
+        <div class="trust-item"><div class="n">40<span class="gold">+</span></div><div class="l">สินค้าครบทุกการดูแล</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-card">
+        <div class="hero-bottle"><div class="b-word">WIBWUB</div></div>
+      </div>
+      <div class="float-chip fc-1"><span class="dot"></span>ผลิตในไทย · GMP</div>
+      <div class="float-chip fc-2"><span class="star">★★★★★</span> รีวิวจริงกว่า 8,000 คน</div>
+    </div>
+  </div>
+</header>
+
+<!-- CATEGORIES -->
+<section class="cats">
+  <div class="wrap cat-row">
+    <div class="cat-chip"><span class="ci"><svg class="ico" viewBox="0 0 24 24"><path d="M3 12l2-7h14l2 7M5 12h14v5H5zM7 17v2M17 17v2"/></svg></span>Interior</div>
+    <div class="cat-chip"><span class="ci"><svg class="ico" viewBox="0 0 24 24"><path d="M5 13l2-5h10l2 5M3 13h18v4H3zM7 17v2M17 17v2"/><circle cx="7" cy="15" r="1.2"/><circle cx="17" cy="15" r="1.2"/></svg></span>Exterior</div>
+    <div class="cat-chip"><span class="ci"><svg class="ico" viewBox="0 0 24 24"><path d="M12 3l7 4v6c0 4-3 6.5-7 8-4-1.5-7-4-7-8V7z"/><path d="M9 12l2 2 4-4"/></svg></span>Coating</div>
+    <div class="cat-chip"><span class="ci"><svg class="ico" viewBox="0 0 24 24"><path d="M8 3v6M12 3v6M16 3v6M6 9h12v3a6 6 0 0 1-12 0z"/></svg></span>Washing</div>
+  </div>
+</section>
+
+<!-- BEST SELLERS -->
+<section class="section" id="products" style="padding-top:20px">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" style="justify-content:center">Best Sellers</span>
+      <h2>สินค้าขายดี</h2>
+      <p>คัดสินค้าที่ลูกค้าซื้อซ้ำมากที่สุด ครบทั้งดูแลภายในและภายนอก</p>
+    </div>
+    <div class="prod-grid">
+
+      <div class="card">
+        <div class="card-img ci-interior"><span class="badge best">ขายดี</span><span class="pmark">SPRAY</span></div>
+        <div class="card-body">
+          <div class="card-cat">Interior</div>
+          <div class="card-name">Interior Spray<span>สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ</span></div>
+          <div class="card-foot">
+            <div class="price">฿390</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-interior"><span class="badge pop">ยอดนิยม</span><span class="pmark">VISIBLE</span></div>
+        <div class="card-body">
+          <div class="card-cat">Interior</div>
+          <div class="card-name">Visible V.2<span>น้ำยาทำความสะอาดกระจก ใสไร้คราบ</span></div>
+          <div class="card-foot">
+            <div class="price">฿250</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-exterior"><span class="badge gold">พรีเมียม</span><span class="pmark">SPOT</span></div>
+        <div class="card-body">
+          <div class="card-cat">Exterior</div>
+          <div class="card-name">Spot Clean<span>น้ำยาขจัดคราบน้ำฝังแน่นบนผิวรถ</span></div>
+          <div class="card-foot">
+            <div class="price">฿378</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-coating"><span class="badge pop">ยอดนิยม</span><span class="pmark">SUGAR</span></div>
+        <div class="card-body">
+          <div class="card-cat">Coating</div>
+          <div class="card-name">Sugar V.3 Spray Wax<span>สเปรย์เคลือบเงาเพิ่มความลื่นผิว</span></div>
+          <div class="card-foot">
+            <div class="price">฿290</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-interior"><span class="pmark">WIPES</span></div>
+        <div class="card-body">
+          <div class="card-cat">Interior</div>
+          <div class="card-name">Interior Wipes<span>ทิชชู่เปียกทำความสะอาดภายในรถ ผลิตในไทย</span></div>
+          <div class="card-foot">
+            <div class="price">฿190</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-exterior"><span class="pmark">MIND</span></div>
+        <div class="card-body">
+          <div class="card-cat">Exterior</div>
+          <div class="card-name">MIND Detailer<span>สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวระหว่างวัน</span></div>
+          <div class="card-foot">
+            <div class="price">฿350</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-exterior"><span class="badge gold">พรีเมียม</span><span class="pmark">TIRE</span></div>
+        <div class="card-body">
+          <div class="card-cat">Exterior</div>
+          <div class="card-name">Tire &amp; Trim Super Shine<span>เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค</span></div>
+          <div class="card-foot">
+            <div class="price">฿420</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-img ci-interior"><span class="pmark">LEATHER</span></div>
+        <div class="card-body">
+          <div class="card-cat">Interior</div>
+          <div class="card-name">Refresh Leather Cleaner<span>ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ</span></div>
+          <div class="card-foot">
+            <div class="price">฿390</div>
+            <div class="add-btn"><svg class="ico" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="center-cta">
+      <a href="#" class="btn btn-ghost">ดูสินค้าทั้งหมด 40+ รายการ
+        <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- WHY -->
+<section class="section feat-band" id="why">
+  <div class="wrap">
+    <div class="sec-head">
+      <span class="eyebrow" style="justify-content:center">Why WIBWUB</span>
+      <h2>ทำไมต้องเลือก WIBWUB</h2>
+      <p>มากกว่าน้ำยาทำความสะอาด คือมาตรฐานการดูแลรถที่คนรักรถวางใจ</p>
+    </div>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="fi"><svg class="ico" viewBox="0 0 24 24"><path d="M12 2l8 4v6c0 5-3.5 8-8 10-4.5-2-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>คุณภาพพรีเมียม</h3>
+        <p>สูตรเฉพาะที่คิดค้นและผลิตในไทย ผ่านการทดสอบกับรถจริงทุกผิว</p>
+      </div>
+      <div class="feat">
+        <div class="fi"><svg class="ico" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg></div>
+        <h3>ปลอดภัยกับทุกพื้นผิว</h3>
+        <p>อ่อนโยนกับเบาะ หนัง พลาสติก และสีรถ ใช้ได้ทั้งภายในและภายนอก</p>
+      </div>
+      <div class="feat">
+        <div class="fi"><svg class="ico" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7z"/></svg></div>
+        <h3>เห็นผลทันที</h3>
+        <p>เช็ดง่าย แห้งไว ไม่ทิ้งคราบ ประหยัดเวลาดีเทลลิ่งได้จริง</p>
+      </div>
+      <div class="feat">
+        <div class="fi"><svg class="ico" viewBox="0 0 24 24"><path d="M21 10c0 7-9 12-9 12s-9-5-9-12a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        <h3>ส่งไว ทั่วไทย</h3>
+        <p>พร้อมส่งจากคลังในไทย มีบริการเก็บเงินปลายทางและรีวิวจากลูกค้าจริง</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="section">
+  <div class="wrap stats">
+    <div class="stat"><div class="n">50K<span class="gold">+</span></div><div class="l">ขวดที่ขายแล้ว</div></div>
+    <div class="stat"><div class="n">8,000<span class="gold">+</span></div><div class="l">รีวิวจากลูกค้า</div></div>
+    <div class="stat"><div class="n">40<span class="gold">+</span></div><div class="l">สินค้าครบไลน์</div></div>
+    <div class="stat"><div class="n">4.9<span class="gold">★</span></div><div class="l">คะแนนเฉลี่ย</div></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section" id="contact" style="padding-top:10px">
+  <div class="wrap">
+    <div class="cta-card">
+      <h2>พร้อมให้รถคุณกลับมาเงางาม?</h2>
+      <p>เริ่มต้นชุดดูแลรถของคุณวันนี้ พร้อมคำแนะนำการใช้งานจากทีม WIBWUB</p>
+      <a href="#products" class="btn btn-primary">เลือกชุดดูแลรถ
+        <svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <div class="brand"><div class="logo-mark">W</div><div>WIBWUB<small>Premium Car Care</small></div></div>
+        <p>ผลิตภัณฑ์ดูแลรถยนต์คุณภาพพรีเมียม สำหรับคนที่รักรถ — wibwubcar.com</p>
+      </div>
+      <div class="foot-cols">
+        <div class="foot-col">
+          <h4>สินค้า</h4>
+          <a href="#">Interior</a><a href="#">Exterior</a><a href="#">Coating</a><a href="#">Washing</a>
+        </div>
+        <div class="foot-col">
+          <h4>บริษัท</h4>
+          <a href="#why">เกี่ยวกับเรา</a><a href="#">รีวิว</a><a href="#">มาตรฐาน</a>
+        </div>
+        <div class="foot-col">
+          <h4>ติดต่อ</h4>
+          <a href="#">LINE Official</a><a href="#">Facebook</a><a href="#">TikTok Shop</a>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bot">
+      <div>© 2025 WIBWUB. All rights reserved.</div>
+      <div>ตัวอย่างดีไซน์ Light Premium — สร้างเพื่อเปรียบเทียบสไตล์</div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

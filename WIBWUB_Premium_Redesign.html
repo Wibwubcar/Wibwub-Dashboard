@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB — Hyper Cleaning Car</title>
+<style>
+:root{--black:#0a0a0a;--white:#ffffff;--blue:#1848E3;--blue2:#0f35c0;--gray:#888;--light:#f5f5f5}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:var(--black);color:var(--white);overflow-x:hidden;cursor:none}
+
+/* CUSTOM CURSOR */
+.cursor{position:fixed;width:10px;height:10px;background:var(--blue);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s,width 0.3s,height 0.3s,background 0.3s;mix-blend-mode:difference}
+.cursor-ring{position:fixed;width:36px;height:36px;border:1px solid rgba(255,255,255,0.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform 0.15s ease-out,width 0.3s,height 0.3s,border-color 0.3s}
+.cursor.hover{width:6px;height:6px;background:#fff}
+.cursor-ring.hover{width:52px;height:52px;border-color:var(--blue)}
+
+/* PRELOADER */
+#preloader{position:fixed;inset:0;background:var(--black);z-index:10000;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 0.8s ease}
+#preloader.hide{opacity:0;pointer-events:none}
+.pl-logo{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease}
+.pl-logo.show{opacity:1;transform:translateY(0)}
+.pl-logo-txt{font-size:52px;font-weight:900;font-style:italic;letter-spacing:-2px;color:#fff}
+.pl-logo-txt span{color:var(--blue)}
+.pl-logo-bar{display:flex;align-items:center;gap:0;margin-top:6px}
+.pl-line{height:3px;background:var(--blue);transform:skewX(-12deg);width:0;transition:width 1s ease 0.3s}
+.pl-line.show{width:100px}
+.pl-sub{font-size:10px;font-weight:700;letter-spacing:4px;text-transform:uppercase;color:#ccc;margin-left:8px;opacity:0;transition:opacity 0.5s ease 0.6s}
+.pl-sub.show{opacity:1}
+.pl-progress{position:absolute;bottom:0;left:0;height:2px;background:var(--blue);width:0;transition:width 1.8s ease}
+.pl-progress.go{width:100%}
+.pl-count{position:absolute;bottom:24px;right:32px;font-size:11px;font-weight:700;color:#bbb;letter-spacing:2px;font-variant-numeric:tabular-nums}
+
+/* NAV */
+.nav{position:fixed;top:0;left:0;right:0;z-index:1000;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;transition:all 0.4s ease}
+.nav.scrolled{background:rgba(10,10,10,0.95);backdrop-filter:blur(10px);border-bottom:1px solid #1a1a1a}
+.nav-logo{display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.nl-txt{font-size:20px;font-weight:900;font-style:italic;letter-spacing:-0.5px;line-height:1}
+.nl-bar{display:flex;align-items:center;gap:5px}
+.nl-line{width:28px;height:2.5px;background:var(--blue);transform:skewX(-12deg)}
+.nl-sub{font-size:7.5px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#888}
+.nav-links{display:flex;gap:36px}
+.nav-links a{color:#aaa;text-decoration:none;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;transition:color 0.2s;position:relative}
+.nav-links a::after{content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;background:var(--blue);transition:width 0.3s}
+.nav-links a:hover{color:#fff}
+.nav-links a:hover::after{width:100%}
+.nav-right{display:flex;align-items:center;gap:20px}
+.nav-cart{background:none;border:none;color:#aaa;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:none;transition:color 0.2s}
+.nav-cart:hover{color:#fff}
+.nav-cta{background:var(--blue);color:#fff;border:none;padding:10px 22px;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:none;border-radius:2px;transition:background 0.2s}
+.nav-cta:hover{background:var(--blue2)}
+
+/* HERO */
+.hero{height:100vh;position:relative;display:flex;flex-direction:column;justify-content:flex-end;padding:0 48px 80px;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(135deg,#050505 0%,#0a0a0a 40%,#0f0f1a 100%)}
+.hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(24,72,227,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(24,72,227,0.06) 1px,transparent 1px);background-size:80px 80px;opacity:0}
+.hero-grid.show{opacity:1;transition:opacity 1s ease 0.5s}
+.hero-glow{position:absolute;right:-200px;top:50%;transform:translateY(-50%);width:700px;height:700px;background:radial-gradient(circle,rgba(24,72,227,0.15) 0%,transparent 70%);opacity:0;transition:opacity 1.5s ease 0.8s}
+.hero-glow.show{opacity:1}
+.hero-accent-line{position:absolute;right:120px;top:0;bottom:0;width:1px;background:linear-gradient(to bottom,transparent,rgba(24,72,227,0.3),transparent);opacity:0;transition:opacity 1s ease 1s}
+.hero-accent-line.show{opacity:1}
+.hero-content{position:relative;z-index:2}
+.hero-eyebrow{display:flex;align-items:center;gap:12px;margin-bottom:20px;opacity:0;transform:translateY(30px);transition:all 0.8s ease}
+.hero-eyebrow.show{opacity:1;transform:translateY(0)}
+.hero-dot{width:6px;height:6px;background:var(--blue);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.hero-eyebrow span{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue)}
+.hero h1{font-size:clamp(72px,9vw,120px);font-weight:900;font-style:italic;line-height:0.9;letter-spacing:-3px;overflow:hidden}
+.h1-line{display:block;transform:translateY(120%);transition:transform 0.9s cubic-bezier(0.16,1,0.3,1)}
+.h1-line.show{transform:translateY(0)}
+.h1-line:nth-child(2){transition-delay:0.1s}
+.h1-line:nth-child(3){transition-delay:0.2s}
+.blue-txt{color:var(--blue)}
+.outline-txt{-webkit-text-stroke:2px #333;color:transparent}
+.hero-bottom{display:flex;align-items:flex-end;justify-content:space-between;margin-top:32px;opacity:0;transform:translateY(20px);transition:all 0.8s ease 0.5s}
+.hero-bottom.show{opacity:1;transform:translateY(0)}
+.hero-tagline{font-size:14px;color:#ccc;line-height:1.7;max-width:320px}
+.hero-tagline strong{color:#fff}
+.hero-actions{display:flex;gap:14px;align-items:center}
+.btn-big{padding:15px 36px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:none;border-radius:2px;transition:all 0.25s}
+.btn-solid{background:var(--blue);color:#fff;border:none}
+.btn-solid:hover{background:var(--blue2)}
+.btn-ghost{background:none;color:#fff;border:1px solid #2a2a2a}
+.btn-ghost:hover{border-color:#fff}
+.hero-scroll{position:absolute;bottom:32px;right:48px;display:flex;flex-direction:column;align-items:center;gap:8px;opacity:0;transition:opacity 1s ease 1.5s}
+.hero-scroll.show{opacity:1}
+.scroll-line{width:1px;height:48px;background:linear-gradient(to bottom,transparent,var(--blue))}
+.scroll-line::after{content:'';display:block;width:1px;height:50%;background:var(--blue);animation:scrollDown 2s infinite}
+@keyframes scrollDown{from{transform:translateY(-100%)}to{transform:translateY(200%)}}
+.scroll-txt{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#ccc;writing-mode:vertical-rl;transform:rotate(180deg)}
+
+/* STRIPE */
+.stripe{overflow:hidden;border-top:1px solid #111;border-bottom:1px solid #111;background:#050505}
+.stripe-track{display:flex;gap:0;animation:marquee 18s linear infinite;width:max-content}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.stripe-item{padding:12px 32px;font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#bbb;white-space:nowrap}
+.stripe-item.blue{color:var(--blue)}
+.stripe-sep{color:#999;padding:12px 0;align-self:center;font-size:12px}
+
+/* SECTIONS BASE */
+.section{padding:120px 48px;opacity:0;transform:translateY(60px);transition:opacity 0.9s ease,transform 0.9s ease}
+.section.visible{opacity:1;transform:translateY(0)}
+.s-eyebrow{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.s-title{font-size:clamp(36px,5vw,60px);font-weight:900;font-style:italic;letter-spacing:-1.5px;line-height:1}
+.s-title .out{-webkit-text-stroke:1px #333;color:transparent}
+.s-divider{width:40px;height:2px;background:var(--blue);margin:24px 0;transform:skewX(-12deg)}
+
+/* INTRO REEL */
+.reel{background:var(--black);padding:0 48px 120px}
+.reel-inner{background:#111;border-radius:8px;overflow:hidden;position:relative;height:480px;display:flex;align-items:center;justify-content:center;border:1px solid #1a1a1a}
+.reel-overlay{position:absolute;inset:0;background:rgba(0,0,0,0.4);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.play-btn{width:80px;height:80px;border:2px solid rgba(255,255,255,0.3);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:none;transition:all 0.3s;font-size:24px}
+.play-btn:hover{border-color:#fff;background:rgba(255,255,255,0.1);transform:scale(1.1)}
+.reel-label{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5)}
+.reel-bg{position:absolute;inset:0;background:linear-gradient(135deg,#0a0a15,#050505);z-index:0}
+.reel-particles{position:absolute;inset:0;z-index:1;overflow:hidden}
+.particle{position:absolute;width:2px;height:2px;background:var(--blue);border-radius:50%;animation:float var(--d,4s) var(--delay,0s) infinite ease-in-out;opacity:0.6}
+@keyframes float{0%,100%{transform:translateY(0) scale(1);opacity:0.6}50%{transform:translateY(-40px) scale(1.5);opacity:1}}
+.reel-text{position:absolute;z-index:3;bottom:40px;left:40px;right:40px;display:flex;justify-content:space-between;align-items:flex-end}
+.rt-left h2{font-size:28px;font-weight:900;font-style:italic;color:#fff;letter-spacing:-0.5px}
+.rt-left p{font-size:12px;color:#ccc;margin-top:6px}
+.rt-right{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);text-align:right}
+
+/* BRAND STATEMENT */
+.statement{padding:120px 48px;background:#050505;text-align:center;overflow:hidden}
+.stat-big{font-size:clamp(40px,6vw,80px);font-weight:900;font-style:italic;line-height:1.05;letter-spacing:-2px;color:#fff}
+.stat-big .blue{color:var(--blue)}
+.stat-big .dim{color:#999}
+.stat-sub{font-size:14px;color:#ccc;margin-top:28px;letter-spacing:0.5px;line-height:1.7}
+
+/* PRODUCT GRID — EDITORIAL */
+.products-editorial{background:var(--black)}
+.pe-header{padding:80px 48px 40px;display:flex;align-items:flex-end;justify-content:space-between}
+.pe-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:#111}
+.pe-cell{background:var(--black);padding:48px 40px;position:relative;overflow:hidden;cursor:none;transition:background 0.4s}
+.pe-cell::before{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--blue);transform:scaleX(0);transition:transform 0.4s cubic-bezier(0.16,1,0.3,1)}
+.pe-cell:hover{background:#0d0d0d}
+.pe-cell:hover::before{transform:scaleX(1)}
+.pe-num{font-size:10px;font-weight:700;letter-spacing:2px;color:#aaa;margin-bottom:24px}
+.pe-cat{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--blue);margin-bottom:12px}
+.pe-name{font-size:22px;font-weight:700;color:#fff;line-height:1.25;margin-bottom:12px}
+.pe-desc{font-size:12px;color:#ccc;line-height:1.65;margin-bottom:24px}
+.pe-bottom{display:flex;align-items:center;justify-content:space-between}
+.pe-price{font-size:24px;font-weight:900;font-style:italic;color:#fff}
+.pe-price span{color:var(--blue)}
+.pe-link{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#bbb;transition:color 0.2s;display:flex;align-items:center;gap:8px}
+.pe-cell:hover .pe-link{color:var(--blue)}
+.pe-icon{position:absolute;right:32px;top:32px;font-size:48px;opacity:0.06;transition:opacity 0.4s,transform 0.4s}
+.pe-cell:hover .pe-icon{opacity:0.12;transform:scale(1.1) rotate(-5deg)}
+.pe-cell.featured{background:#040410;border:1px solid #1a1a2e}
+.pe-cell.featured .pe-price{color:var(--blue)}
+.pe-badge{display:inline-block;background:var(--blue);color:#fff;font-size:8px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:2px;margin-bottom:14px}
+.pe-view-all{grid-column:span 3;padding:40px;text-align:center;border-top:1px solid #111}
+
+/* BESTSELLER ROW */
+.bestseller{padding:80px 48px;background:#050505}
+.bs-row{display:flex;gap:16px;overflow-x:auto;padding-bottom:8px;scrollbar-width:none}
+.bs-row::-webkit-scrollbar{display:none}
+.bs-card{flex:0 0 280px;background:var(--black);border:1px solid #1a1a1a;border-radius:4px;overflow:hidden;transition:transform 0.3s,border-color 0.3s;cursor:none}
+.bs-card:hover{transform:translateY(-8px);border-color:#aaa}
+.bs-img{height:200px;background:#0d0d0d;display:flex;align-items:center;justify-content:center;font-size:72px;position:relative;overflow:hidden}
+.bs-img::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 60%,rgba(0,0,0,0.5))}
+.bs-info{padding:20px}
+.bs-code{font-size:9px;color:#bbb;letter-spacing:2px;font-weight:700;text-transform:uppercase;margin-bottom:6px}
+.bs-name{font-size:14px;font-weight:700;color:#fff;line-height:1.35;margin-bottom:16px}
+.bs-foot{display:flex;align-items:center;justify-content:space-between}
+.bs-price{font-size:18px;font-weight:900;color:var(--blue)}
+.bs-btn{background:none;border:1px solid #1a1a1a;color:#ccc;padding:8px 14px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;cursor:none;border-radius:2px;transition:all 0.2s}
+.bs-card:hover .bs-btn{border-color:var(--blue);color:var(--blue)}
+
+/* ABOUT / BRAND STORY */
+.about-story{display:grid;grid-template-columns:1fr 1fr;min-height:80vh}
+.as-left{background:var(--black);padding:80px 48px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #111}
+.as-right{background:#050505;padding:80px 48px;display:grid;grid-template-columns:1fr 1fr;gap:1px;background-color:#111;align-content:start}
+.ar-cell{background:#050505;padding:36px 32px}
+.ar-num{font-size:44px;font-weight:900;font-style:italic;color:#fff;line-height:1}
+.ar-num span{color:var(--blue)}
+.ar-label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#ccc;margin-top:8px}
+.ar-cell.accent{background:var(--blue)}
+.ar-cell.accent .ar-num{color:#fff}
+.ar-cell.accent .ar-label{color:rgba(255,255,255,0.5)}
+.ar-cell.wide{grid-column:span 2;border-top:1px solid #111}
+.about-body p{font-size:14px;color:#ccc;line-height:1.85;margin-bottom:16px}
+.about-body strong{color:#fff}
+.about-vals{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:32px}
+.av-item{padding:16px;border-left:2px solid var(--blue);background:#050505}
+.av-title{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#fff;margin-bottom:5px}
+.av-text{font-size:11px;color:#ccc;line-height:1.5}
+
+/* CTA BANNER */
+.cta-banner{padding:100px 48px;background:var(--blue);position:relative;overflow:hidden}
+.cta-banner::before{content:'';position:absolute;right:-100px;top:-100px;width:500px;height:500px;border:100px solid rgba(255,255,255,0.05);border-radius:50%}
+.cta-banner::after{content:'';position:absolute;right:100px;bottom:-150px;width:400px;height:400px;border:80px solid rgba(255,255,255,0.04);border-radius:50%}
+.cta-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:40px}
+.cta-text h2{font-size:clamp(36px,4vw,56px);font-weight:900;font-style:italic;color:#fff;letter-spacing:-1.5px;line-height:1}
+.cta-text p{font-size:14px;color:rgba(255,255,255,0.65);margin-top:14px;line-height:1.7}
+.btn-white{background:#fff;color:var(--blue);border:none;padding:16px 44px;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:none;border-radius:2px;flex-shrink:0;transition:all 0.2s}
+.btn-white:hover{background:var(--black);color:#fff}
+
+/* CATEGORIES VISUAL */
+.cat-visual{padding:80px 48px;background:var(--black)}
+.cv-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.cv-card{border:1px solid #111;padding:28px 14px;text-align:center;cursor:none;border-radius:4px;transition:all 0.3s;background:#050505}
+.cv-card:hover{background:#0a0a0a;border-color:var(--blue);transform:translateY(-4px)}
+.cv-icon{font-size:28px;margin-bottom:10px}
+.cv-name{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#ccc;transition:color 0.3s}
+.cv-card:hover .cv-name{color:#fff}
+.cv-count{font-size:9px;color:#aaa;margin-top:4px;transition:color 0.3s}
+.cv-card:hover .cv-count{color:var(--blue)}
+
+/* SOCIAL PROOF */
+.social-proof{padding:80px 48px;background:#050505;text-align:center}
+.sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:48px}
+.sp-card{background:var(--black);border:1px solid #111;border-radius:4px;padding:28px;text-align:left;transition:border-color 0.3s}
+.sp-card:hover{border-color:#aaa}
+.sp-stars{color:var(--blue);font-size:14px;margin-bottom:16px;letter-spacing:2px}
+.sp-text{font-size:13px;color:#aaa;line-height:1.75;margin-bottom:20px}
+.sp-author{display:flex;align-items:center;gap:12px}
+.sp-avatar{width:36px;height:36px;border-radius:50%;background:#111;display:flex;align-items:center;justify-content:center;font-size:14px;border:1px solid #1a1a1a}
+.sp-name{font-size:12px;font-weight:700;color:#fff}
+.sp-sub{font-size:10px;color:#bbb;margin-top:2px}
+
+/* FOOTER */
+footer{background:#030303;border-top:1px solid #111;padding:80px 48px 40px}
+.ft-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:64px;margin-bottom:64px}
+.ft-logo-wrap .nl-sub{font-size:7px}
+.ft-desc{font-size:12px;color:#bbb;line-height:1.8;margin:16px 0 24px;max-width:260px}
+.ft-address{font-size:11px;color:#aaa;line-height:1.8}
+.ft-col h5{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:#aaa;margin-bottom:20px}
+.ft-col a{display:block;font-size:12px;color:#aaa;text-decoration:none;margin-bottom:10px;transition:color 0.2s}
+.ft-col a:hover{color:var(--blue)}
+.ft-bank{background:#0a0a0a;border:1px solid #111;border-radius:4px;padding:18px}
+.ft-bank-name{font-size:9px;color:#bbb;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.ft-bank-num{font-size:16px;font-weight:700;color:#fff}
+.ft-bank-company{font-size:10px;color:#aaa;margin-top:4px}
+.ft-divider{height:1px;background:#0d0d0d;margin-bottom:32px}
+.ft-bottom{display:flex;align-items:center;justify-content:space-between}
+.ft-copy{font-size:11px;color:#999}
+.ft-socials{display:flex;gap:10px}
+.ft-soc{width:36px;height:36px;border:1px solid #111;border-radius:3px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:15px;transition:border-color 0.2s;text-decoration:none}
+.ft-soc:hover{border-color:var(--blue)}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(50px);transition:opacity 0.8s ease,transform 0.8s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal-delay-1{transition-delay:0.1s}
+.reveal-delay-2{transition-delay:0.2s}
+.reveal-delay-3{transition-delay:0.3s}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- PRELOADER -->
+<div id="preloader">
+  <div class="pl-logo" id="plLogo">
+    <div class="pl-logo-txt">WIB<span>W</span>UB</div>
+    <div class="pl-logo-bar">
+      <div class="pl-line" id="plLine"></div>
+      <div class="pl-sub" id="plSub">Hyper Cleaning Car</div>
+    </div>
+  </div>
+  <div class="pl-progress" id="plProgress"></div>
+  <div class="pl-count" id="plCount">000</div>
+</div>
+
+<!-- NAV -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo">
+    <div class="nl-txt">WIBWUB</div>
+    <div class="nl-bar">
+      <div class="nl-line"></div>
+      <div class="nl-sub">Hyper Cleaning Car</div>
+    </div>
+  </div>
+  <div class="nav-links">
+    <a href="#products">Product</a>
+    <a href="#about">About</a>
+    <a href="#blog">Blog</a>
+    <a href="#footer">Contact</a>
+  </div>
+  <div class="nav-right">
+    <button class="nav-cart">🛒 (0)</button>
+    <button class="nav-cta">Shop Now</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid" id="heroGrid"></div>
+  <div class="hero-glow" id="heroGlow"></div>
+  <div class="hero-accent-line" id="heroAccent"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow" id="heroEyebrow">
+      <div class="hero-dot"></div>
+      <span>Hyper Cleaning Car — Thai Brand Since 2020</span>
+    </div>
+    <h1>
+      <span class="h1-line" id="hl1">ENJOY</span>
+      <span class="h1-line blue-txt" id="hl2">YOUR</span>
+      <span class="h1-line outline-txt" id="hl3">DETAILING</span>
+    </h1>
+    <div class="hero-bottom" id="heroBottom">
+      <p class="hero-tagline">
+        ผลิตภัณฑ์ดูแลรถยนต์แบรนด์คนไทย<br>
+        <strong>คุณภาพระดับมืออาชีพ ราคาที่จับต้องได้</strong>
+      </p>
+      <div class="hero-actions">
+        <button class="btn-big btn-solid">Shop Now →</button>
+        <button class="btn-big btn-ghost">Our Story</button>
+      </div>
+    </div>
+  </div>
+  <div class="hero-scroll" id="heroScroll">
+    <span class="scroll-txt">Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- STRIPE TICKER -->
+<div class="stripe">
+  <div class="stripe-track">
+    <span class="stripe-item blue">Interior Care</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Exterior Detailing</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Ceramic Coating</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Washing Solution</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Microfiber Towels</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Accessories</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Promotion Sets</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Interior Care</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Exterior Detailing</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Ceramic Coating</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Washing Solution</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Microfiber Towels</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item blue">Accessories</span><span class="stripe-sep">✦</span>
+    <span class="stripe-item">Promotion Sets</span><span class="stripe-sep">✦</span>
+  </div>
+</div>
+
+<!-- BRAND REEL SECTION -->
+<div class="reel reveal" id="reelSection">
+  <div class="reel-inner">
+    <div class="reel-bg"></div>
+    <div class="reel-particles" id="particles"></div>
+    <div class="reel-overlay" style="z-index:2">
+      <div class="play-btn">▶</div>
+      <div class="reel-label">Brand Teaser — 2024</div>
+    </div>
+    <div class="reel-text" style="z-index:3">
+      <div class="rt-left">
+        <h2>WIBWUB × DETAILING</h2>
+        <p>ประสบการณ์ดูแลรถระดับมืออาชีพ</p>
+      </div>
+      <div class="rt-right">
+        <div>2024</div>
+        <div style="margin-top:4px">Collection</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BRAND STATEMENT -->
+<div class="statement reveal">
+  <div class="stat-big">
+    <span class="dim">เราสร้าง</span>ผลิตภัณฑ์<br>
+    <span class="blue">ที่คนรักรถ</span><br>
+    <span class="dim">รักจริงๆ</span>
+  </div>
+  <p class="stat-sub">ทุกสูตร ทุกผลิตภัณฑ์ ผ่านการทดสอบจริง โดยคนรักรถ เพื่อคนรักรถ</p>
+</div>
+
+<!-- CATEGORIES -->
+<div class="cat-visual reveal" id="products">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px">
+    <div>
+      <div class="s-eyebrow">Browse by category</div>
+      <div class="s-title">Shop <span class="out">by</span> <span style="color:var(--blue)">Type</span></div>
+    </div>
+    <span style="font-size:11px;color:#aaa">48 Products · 7 Categories</span>
+  </div>
+  <div class="cv-grid">
+    <div class="cv-card">
+      <div class="cv-icon">🪑</div>
+      <div class="cv-name">Interior</div>
+      <div class="cv-count">3 items</div>
+    </div>
+    <div class="cv-card">
+      <div class="cv-icon">🚗</div>
+      <div class="cv-name">Exterior</div>
+      <div class="cv-count">12 items</div>
+    </div>
+    <div class="cv-card">
+      <div class="cv-icon">💧</div>
+      <div class="cv-name">Coating</div>
+      <div class="cv-count">5 items</div>
+    </div>
+    <div class="cv-card">
+      <div class="cv-icon">🧴</div>
+      <div class="cv-name">Washing</div>
+      <div class="cv-count">1 item</div>
+    </div>
+    <div class="cv-card">
+      <div class="cv-icon">🧣</div>
+      <div class="cv-name">Towels</div>
+      <div class="cv-count">8 items</div>
+    </div>
+    <div class="cv-card">
+      <div class="cv-icon">🔧</div>
+      <div class="cv-name">Accessories</div>
+      <div class="cv-count">11 items</div>
+    </div>
+    <div class="cv-card" style="border-color:var(--blue);background:rgba(24,72,227,0.05)">
+      <div class="cv-icon">🎁</div>
+      <div class="cv-name" style="color:var(--blue)">Promo Set</div>
+      <div class="cv-count" style="color:var(--blue);opacity:0.6">Up to 26% off</div>
+    </div>
+  </div>
+</div>
+
+<!-- EDITORIAL PRODUCT GRID -->
+<div class="products-editorial reveal">
+  <div class="pe-header">
+    <div>
+      <div class="s-eyebrow">Handpicked</div>
+      <div class="s-title">Best <span style="color:var(--blue)">Sellers</span></div>
+    </div>
+    <a href="#" style="font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#bbb;text-decoration:none;transition:color 0.2s" onmouseover="this.style.color='var(--blue)'" onmouseout="this.style.color='#333'">View All Products →</a>
+  </div>
+  <div class="pe-grid">
+    <div class="pe-cell featured">
+      <div class="pe-badge">★ Best Seller</div>
+      <div class="pe-icon">💦</div>
+      <div class="pe-num">01</div>
+      <div class="pe-cat">Coating</div>
+      <div class="pe-name">WIBWUB Reflex<br>Ceramic Coating Spray</div>
+      <div class="pe-desc">สเปรย์เคลือบเซรามิค SiO2 ระดับมืออาชีพ ให้ความเงางามสูงสุด ใช้งานง่ายที่บ้าน ทนทานนาน</div>
+      <div class="pe-bottom">
+        <div class="pe-price">฿<span>395</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-cell">
+      <div class="pe-badge" style="background:#111;color:#888">Popular</div>
+      <div class="pe-icon">✨</div>
+      <div class="pe-num">02</div>
+      <div class="pe-cat">Coating</div>
+      <div class="pe-name">WIBWUB Sugar<br>Spray Wax</div>
+      <div class="pe-desc">Spray Wax สูตรคาร์นัวบาร์ เคลือบเงา ป้องกันสิ่งสกปรก ใช้ได้ทุกสีรถ ยอดขายสูงสุด 70 ชิ้น</div>
+      <div class="pe-bottom">
+        <div class="pe-price" style="color:#fff">฿<span style="color:var(--blue)">290</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-cell">
+      <div class="pe-badge" style="background:#111;color:#888">Top Rated</div>
+      <div class="pe-icon">🪣</div>
+      <div class="pe-num">03</div>
+      <div class="pe-cat">Towels</div>
+      <div class="pe-name">Wool Duster<br>ไม้ปัดฝุ่นขนแกะแท้</div>
+      <div class="pe-desc">ขนแกะแท้ 100% ปัดฝุ่นได้โดยไม่ทิ้งรอยขีดข่วน เหมาะกับสีรถทุกประเภท ขายแล้ว 82 ชิ้น</div>
+      <div class="pe-bottom">
+        <div class="pe-price" style="color:#fff">฿<span style="color:var(--blue)">690</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-cell">
+      <div class="pe-icon">🧹</div>
+      <div class="pe-num">04</div>
+      <div class="pe-cat">Accessories</div>
+      <div class="pe-name">Detailing Brush Set<br>(3 ชนิด)</div>
+      <div class="pe-desc">แปรง 3 แบบ ขนแตกต่างกันเหมาะกับงานต่างๆ เก็บรายละเอียดทุกซอกได้อย่างสะดวก</div>
+      <div class="pe-bottom">
+        <div class="pe-price" style="color:#fff">฿<span style="color:var(--blue)">375</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-cell">
+      <div class="pe-badge" style="background:rgba(24,72,227,0.1);color:var(--blue);border:1px solid rgba(24,72,227,0.3)">New</div>
+      <div class="pe-icon">🌟</div>
+      <div class="pe-num">05</div>
+      <div class="pe-cat">Coating</div>
+      <div class="pe-name">Graphene Sealant<br>เคลือบกราฟีน</div>
+      <div class="pe-desc">เคลือบสีกราฟีนทนนานสูงสุด 1 ปี กันน้ำ กันความร้อน ป้องกัน UV ระดับพรีเมี่ยม</div>
+      <div class="pe-bottom">
+        <div class="pe-price" style="color:#fff">฿<span style="color:var(--blue)">490</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-cell">
+      <div class="pe-icon">🔩</div>
+      <div class="pe-num">06</div>
+      <div class="pe-cat">Exterior</div>
+      <div class="pe-name">WIBWUB Steel<br>ขจัดผงเบรก</div>
+      <div class="pe-desc">ขจัดคราบผงเบรกบนล้อแม็กซ์ สีรถ และพื้นผิวต่างๆ ให้หลุดออกง่าย ไม่ต้องใช้แรงขัด</div>
+      <div class="pe-bottom">
+        <div class="pe-price" style="color:#fff">฿<span style="color:var(--blue)">420</span></div>
+        <div class="pe-link">Shop Now →</div>
+      </div>
+    </div>
+    <div class="pe-view-all">
+      <button style="background:none;border:1px solid #111;color:#bbb;padding:14px 48px;font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;cursor:none;border-radius:2px;transition:all 0.3s" onmouseover="this.style.borderColor='var(--blue)';this.style.color='var(--blue)'" onmouseout="this.style.borderColor='#111';this.style.color='#333'">
+        View All 48 Products →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SOCIAL PROOF -->
+<div class="social-proof reveal">
+  <div class="s-eyebrow" style="text-align:center">Customer Reviews</div>
+  <div class="s-title" style="text-align:center">People <span style="color:var(--blue)">Said</span></div>
+  <div class="sp-grid">
+    <div class="sp-card">
+      <div class="sp-stars">★★★★★</div>
+      <p class="sp-text">"ใช้ Reflex แล้วรถเงามาก เหมือนเพิ่งเคลือบ ราคาถูกกว่าร้านเคลือบแต่ผลลัพธ์ดีมาก แนะนำเลยครับ"</p>
+      <div class="sp-author">
+        <div class="sp-avatar">🧑</div>
+        <div>
+          <div class="sp-name">คุณธนกร ว.</div>
+          <div class="sp-sub">WIBWUB Reflex · Verified Purchase</div>
+        </div>
+      </div>
+    </div>
+    <div class="sp-card">
+      <div class="sp-stars">★★★★★</div>
+      <p class="sp-text">"Wool Duster ใช้ปัดฝุ่นทุกวันมาปีกว่าแล้วยังใช้ได้ดี ขนนุ่มมาก ไม่กลัวรอย สินค้าคุณภาพดีจริงๆ"</p>
+      <div class="sp-author">
+        <div class="sp-avatar">👩</div>
+        <div>
+          <div class="sp-name">คุณปาณิสา ก.</div>
+          <div class="sp-sub">Wool Duster · Verified Purchase</div>
+        </div>
+      </div>
+    </div>
+    <div class="sp-card">
+      <div class="sp-stars">★★★★★</div>
+      <p class="sp-text">"ซื้อมาหลายอย่างแล้ว ทุกตัวดีหมดเลย Sugar Wax ชอบมากเพราะใช้ง่าย เงาดีด้วย คุ้มราคามากครับ"</p>
+      <div class="sp-author">
+        <div class="sp-avatar">🧔</div>
+        <div>
+          <div class="sp-name">คุณวิรัตน์ ส.</div>
+          <div class="sp-sub">WIBWUB Sugar · Verified Purchase</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<div class="about-story reveal section" id="about" style="padding:0;opacity:1;transform:none">
+  <div class="as-left reveal">
+    <div class="s-eyebrow">Our Story</div>
+    <div class="s-title" style="margin-bottom:0">THAI<br><span style="color:var(--blue)">BRAND.</span><br><span class="out">PRO</span><br>QUALITY.</div>
+    <div class="s-divider"></div>
+    <div class="about-body">
+      <p>WIBWUB เริ่มจากคนที่ <strong>รักรถและชอบการดูแลรถ</strong> อย่างจริงจัง แต่ยังหาผลิตภัณฑ์ที่ตอบโจทย์และราคาเข้าถึงได้ไม่เจอ</p>
+      <p>เราจึงพัฒนาและนำเข้าผลิตภัณฑ์ detailing ที่ไม่เหมือนใคร <strong>คุณภาพเทียบเท่าแบรนด์ต่างประเทศ</strong> แต่ในราคาที่คนไทยจับต้องได้</p>
+    </div>
+    <div class="about-vals">
+      <div class="av-item">
+        <div class="av-title">Pro Formula</div>
+        <div class="av-text">pH-Balance ปลอดภัยต่อทุกพื้นผิว</div>
+      </div>
+      <div class="av-item">
+        <div class="av-title">Thai Brand</div>
+        <div class="av-text">คุณภาพนอกในราคาไทย</div>
+      </div>
+      <div class="av-item">
+        <div class="av-title">DIY Friendly</div>
+        <div class="av-text">ทำเองที่บ้านได้ง่าย</div>
+      </div>
+      <div class="av-item">
+        <div class="av-title">Full Range</div>
+        <div class="av-text">ครบทุก Step ดูแลรถ</div>
+      </div>
+    </div>
+  </div>
+  <div class="as-right">
+    <div class="ar-cell" style="background:#050505">
+      <div class="ar-num">48<span>+</span></div>
+      <div class="ar-label">Products</div>
+    </div>
+    <div class="ar-cell accent">
+      <div class="ar-num">600K</div>
+      <div class="ar-label">Visitors</div>
+    </div>
+    <div class="ar-cell" style="background:#050505">
+      <div class="ar-num"><span>#</span>1</div>
+      <div class="ar-label">Thai Detailing</div>
+    </div>
+    <div class="ar-cell" style="background:#050505">
+      <div class="ar-num">4<span>+</span></div>
+      <div class="ar-label">Years Active</div>
+    </div>
+    <div class="ar-cell wide" style="background:#030303;padding:32px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue)">Contact</div>
+      <div style="font-size:14px;color:#fff;font-weight:700">48/20 หมู่ 1 ท่าอิฐ ปากเกร็ด นนทบุรี</div>
+      <div style="font-size:12px;color:#bbb">Tel: 085-399-6569 · nextstepcarworld@outlook.com</div>
+    </div>
+  </div>
+</div>
+
+<!-- CTA BANNER -->
+<div class="cta-banner reveal">
+  <div class="cta-inner">
+    <div class="cta-text">
+      <h2>PROMOTION SETS<br>UP TO 26% OFF</h2>
+      <p>ชุดโปรโมชั่นพิเศษ ครบทุก Step ตั้งแต่ล้างจนเคลือบ<br>ประหยัดกว่าซื้อแยก และยังมีของแถมพิเศษ</p>
+    </div>
+    <button class="btn-white">Shop Promo Sets →</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="ft-top">
+    <div>
+      <div class="ft-logo-wrap">
+        <div class="nl-txt" style="font-size:22px">WIBWUB</div>
+        <div class="nl-bar">
+          <div class="nl-line"></div>
+          <div class="nl-sub">Hyper Cleaning Car</div>
+        </div>
+      </div>
+      <div class="ft-desc">ผลิตภัณฑ์ดูแลรถยนต์แบรนด์คนไทย คุณภาพระดับมืออาชีพ เพื่อทุกคนที่รักรถ</div>
+      <div class="ft-address">
+        บริษัท เน็กซ์สเต็ป คาร์ เวิลด์ จำกัด<br>
+        48/20 หมู่ 1 ตำบลท่าอิฐ อำเภอปากเกร็ด นนทบุรี 11120<br>
+        085-399-6569 · nextstepcarworld@outlook.com
+      </div>
+    </div>
+    <div class="ft-col">
+      <h5>Products</h5>
+      <a href="#">Interior</a>
+      <a href="#">Exterior</a>
+      <a href="#">Coating</a>
+      <a href="#">Washing Solution</a>
+      <a href="#">Towels</a>
+      <a href="#">Accessories</a>
+      <a href="#">Promotion Set</a>
+    </div>
+    <div class="ft-col">
+      <h5>Company</h5>
+      <a href="#">About Us</a>
+      <a href="#">Blog</a>
+      <a href="#">Contact Us</a>
+      <a href="#">Inform Payment</a>
+      <a href="#">Privacy Policy</a>
+      <a href="#">Term of Service</a>
+    </div>
+    <div class="ft-col">
+      <h5>Payment</h5>
+      <div class="ft-bank">
+        <div class="ft-bank-name">ธนาคารกสิกรไทย</div>
+        <div class="ft-bank-num">069-186-3581</div>
+        <div class="ft-bank-company">บจก. เน็กซ์สเต็ป คาร์ เวิลด์</div>
+      </div>
+      <a href="#" style="margin-top:12px">แจ้งชำระเงิน →</a>
+    </div>
+  </div>
+  <div class="ft-divider"></div>
+  <div class="ft-bottom">
+    <div class="ft-copy">© 2024 Next Step Car World Co., Ltd. All Rights Reserved.</div>
+    <div class="ft-socials">
+      <a href="https://www.facebook.com/WibwubHyperCleaningCar" class="ft-soc">📘</a>
+      <a href="https://www.instagram.com/wibwub.car" class="ft-soc">📷</a>
+      <a href="https://www.youtube.com/channel/UCsgRjhTybkI93g1ANSX13mw" class="ft-soc">▶️</a>
+      <a href="http://line.me/ti/p/@wibwubcars" class="ft-soc">💬</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// CURSOR
+const cursor=document.getElementById('cursor'),ring=document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px'});
+function animRing(){rx+=(mx-rx)*0.12;ry+=(my-ry)*0.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(animRing)}
+animRing();
+document.querySelectorAll('a,button,.pe-cell,.bs-card,.cv-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{cursor.classList.add('hover');ring.classList.add('hover')});
+  el.addEventListener('mouseleave',()=>{cursor.classList.remove('hover');ring.classList.remove('hover')});
+});
+
+// PRELOADER
+const loader=document.getElementById('preloader');
+const plLogo=document.getElementById('plLogo');
+const plLine=document.getElementById('plLine');
+const plSub=document.getElementById('plSub');
+const plProg=document.getElementById('plProgress');
+const plCount=document.getElementById('plCount');
+let count=0;
+setTimeout(()=>{plLogo.classList.add('show')},200);
+setTimeout(()=>{plLine.classList.add('show');plSub.classList.add('show')},400);
+setTimeout(()=>{plProg.classList.add('go')},500);
+const ticker=setInterval(()=>{
+  count=Math.min(count+Math.floor(Math.random()*8)+2,99);
+  plCount.textContent=String(count).padStart(3,'0');
+  if(count>=99){clearInterval(ticker);plCount.textContent='100'}
+},60);
+setTimeout(()=>{
+  loader.classList.add('hide');
+  setTimeout(()=>{
+    loader.style.display='none';
+    // Trigger hero animations
+    document.getElementById('heroGrid').classList.add('show');
+    document.getElementById('heroGlow').classList.add('show');
+    document.getElementById('heroAccent').classList.add('show');
+    setTimeout(()=>{document.getElementById('heroEyebrow').classList.add('show')},200);
+    setTimeout(()=>{
+      document.getElementById('hl1').classList.add('show');
+      setTimeout(()=>document.getElementById('hl2').classList.add('show'),120);
+      setTimeout(()=>document.getElementById('hl3').classList.add('show'),240);
+    },400);
+    setTimeout(()=>{document.getElementById('heroBottom').classList.add('show')},900);
+    setTimeout(()=>{document.getElementById('heroScroll').classList.add('show')},1400);
+  },800);
+},2400);
+
+// NAV SCROLL
+window.addEventListener('scroll',()=>{
+  document.getElementById('mainNav').classList.toggle('scrolled',window.scrollY>60);
+});
+
+// SCROLL REVEAL
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+
+// PARTICLES
+const pc=document.getElementById('particles');
+for(let i=0;i<24;i++){
+  const p=document.createElement('div');
+  p.className='particle';
+  p.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;--d:${3+Math.random()*4}s;--delay:${Math.random()*3}s;opacity:${0.3+Math.random()*0.7}`;
+  pc.appendChild(p);
+}
+</script>
+</body>
+</html>
