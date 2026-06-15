@@ -1204,37 +1204,43 @@ const CREATORS=[
 ];
 
 
-// Top 15 products cumulative ม.ค.–มิ.ย. (updated 04.06.69)
+// Top 15 products cumulative ม.ค.–มิ.ย. (updated 15.06.69)
+// v=ยอดขายจริง, q=จำนวนจริง, mk=งบการตลาด(ของแจก/ส่งInfluencer), mkq=จำนวนงบตลาด
 const ALL_PRODUCTS = [
-  {n:'Wool duster-ไม้ปัดขนแกะ', v:4982139, q:7785},
-  {n:'Sugar (Sugar-500ml+Spray)', v:3535826, q:12024},
-  {n:'Interior (Interior-500ml+Spray)', v:2781380, q:8098},
-  {n:'Interior wipes', v:1602947, q:22114},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', v:1588677, q:4396},
-  {n:'Perfect', v:1422358, q:9488},
-  {n:'Spot (Spot-500ml)', v:1356081, q:3645},
-  {n:'Refresh wipes', v:1262123, q:16478},
-  {n:'Reflex (Reflex-250ml+Spray)', v:1230118, q:3246},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', v:1098016, q:947},
-  {n:'Tire&trim gel (Tire&trim gel-500ml)', v:1071376, q:2428},
-  {n:'Mind (Mind-500ml+Spray)', v:1001149, q:2491},
-  {n:'Martini', v:1000337, q:8142},
-  {n:'Quartz shampoo (Quartz shampoo-1L)', v:944370, q:4072},
-  {n:'Xglass (Xglass-100ml)', v:835913, q:2259}
+  {n:'Wool duster-ไม้ปัดขนแกะ', v:4968501, q:7764, mk:11808, mkq:18},
+  {n:'Sugar (Sugar-500ml+Spray)', v:3490534, q:11861, mk:44028, mkq:159},
+  {n:'Interior (Interior-500ml+Spray)', v:2716539, q:7922, mk:63376, mkq:172},
+  {n:'Interior wipes', v:1595021, q:22012, mk:6952, mkq:88},
+  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', v:1574398, q:4359, mk:13982, mkq:36},
+  {n:'Perfect', v:1400968, q:9350, mk:20454, mkq:131},
+  {n:'Spot (Spot-500ml)', v:1350831, q:3631, mk:3402, mkq:9},
+  {n:'Refresh wipes', v:1250668, q:16333, mk:11455, mkq:145},
+  {n:'Reflex (Reflex-250ml+Spray)', v:1219455, q:3218, mk:10382, mkq:27},
+  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', v:1096966, q:946, mk:1050, mkq:1},
+  {n:'Tire&trim gel (Tire&trim gel-500ml)', v:1062097, q:2405, mk:8986, mkq:22},
+  {n:'Mind (Mind-500ml+Spray)', v:991899, q:2467, mk:8862, mkq:23},
+  {n:'Martini', v:987705, q:8029, mk:12204, mkq:109},
+  {n:'Quartz shampoo (Quartz shampoo-1L)', v:937878, q:4035, mk:5567, mkq:33},
+  {n:'Xglass (Xglass-100ml)', v:827401, q:2236, mk:8250, mkq:22},
 ];
 
-// Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun]
+// Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun] — ยอดขายจริงเท่านั้น
 const PROD_MO=[
-  {n:'Wool duster-ไม้ปัดขนแกะ', mo:[1495083, 1041074, 981641, 788587, 489154, 184770]},
-  {n:'Sugar (Sugar-500ml+Spray)', mo:[822778, 670653, 606708, 561482, 549210, 323731]},
-  {n:'Interior (Interior-500ml+Spray)', mo:[568676, 450756, 470790, 523676, 528615, 237402]},
-  {n:'Interior wipes', mo:[193960, 206324, 237744, 332049, 406740, 225156]},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', mo:[293360, 245303, 282205, 306164, 307133, 154215]},
-  {n:'Perfect', mo:[370067, 274978, 234139, 216089, 228141, 98008]},
-  {n:'Spot (Spot-500ml)', mo:[177233, 132568, 116783, 305741, 394366, 227542]},
-  {n:'Refresh wipes', mo:[141707, 134280, 166974, 269674, 548615, 873]},
-  {n:'Reflex (Reflex-250ml+Spray)', mo:[288877, 286316, 229188, 173243, 159182, 93031]},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', mo:[297428, 201858, 148678, 176607, 177593, 95852]}
+  {n:'Wool duster-ไม้ปัดขนแกะ', mo:[1490253, 1036856, 980261, 787207, 489154, 184770]},
+  {n:'Sugar (Sugar-500ml+Spray)', mo:[798408, 668317, 606142, 559190, 535588, 322889]},
+  {n:'Interior (Interior-500ml+Spray)', mo:[561506, 444164, 469230, 485096, 519483, 237060]},
+  {n:'Interior wipes', mo:[192775, 206008, 237349, 327704, 406187, 224998]},
+  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', mo:[289850, 244133, 276413, 304994, 305183, 153825]},
+  {n:'Perfect', mo:[367967, 271204, 232635, 207119, 224183, 97860]},
+  {n:'Spot (Spot-500ml)', mo:[174587, 132568, 116783, 305363, 394366, 227164]},
+  {n:'Refresh wipes', mo:[135071, 134043, 163182, 269200, 548299, 873]},
+  {n:'Reflex (Reflex-250ml+Spray)', mo:[283347, 284579, 228033, 172468, 159182, 91846]},
+  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', mo:[296378, 201858, 148678, 176607, 177593, 95852]},
+  {n:'Tire&trim gel (Tire&trim gel-500ml)', mo:[243624, 187832, 157305, 192235, 192518, 88583]},
+  {n:'Mind (Mind-500ml+Spray)', mo:[217794, 211291, 189753, 175404, 149383, 48274]},
+  {n:'Martini', mo:[234670, 174276, 146933, 146269, 185130, 100427]},
+  {n:'Quartz shampoo (Quartz shampoo-1L)', mo:[198726, 160746, 149488, 150470, 187256, 91192]},
+  {n:'Xglass (Xglass-100ml)', mo:[109063, 92029, 74534, 80599, 272514, 198662]},
 ];
 
 const ALL_POSTS=[
@@ -1512,9 +1518,12 @@ function renderProds(){
     document.getElementById('prod-title').textContent='Top สินค้าขายดี';
     document.getElementById('prod-sub').textContent='ม.ค.–มิ.ย. รวม';
     document.getElementById('prod-list').innerHTML=ALL_PRODUCTS.slice(0,prodShown).map((p,i)=>`
-      <div class="prod-row">
-        <div class="prk ${rkCls(i)}">${i+1}</div>
-        <div class="prod-name">${p.n}</div>
+      <div class="prod-row" style="flex-wrap:wrap;align-items:flex-start">
+        <div class="prk ${rkCls(i)}" style="margin-top:2px">${i+1}</div>
+        <div style="flex:1;min-width:0">
+          <div class="prod-name">${p.n}</div>
+          ${p.mk?`<div style="font-size:10px;color:var(--muted);margin-top:2px">🎯 งบตลาด ${fmtB(p.mk)} · ${p.mkq} ชิ้น</div>`:''}
+        </div>
         <div class="prod-right"><div class="prod-val">${fmtB(p.v)}</div><div class="prod-q">${p.q.toLocaleString()} pcs</div></div>
       </div>`).join('');
     document.getElementById('prod-more').style.display=prodShown>=ALL_PRODUCTS.length?'none':'block';
