@@ -93,9 +93,9 @@ tbody td.num{text-align:right}
 
 <div class="ctrls">
   <button class="fb act" onclick="setFilter('all',this)">ทั้งหมด</button>
-  <button class="fb frd" onclick="setFilter('red',this)">🔴 วิกฤต</button>
-  <button class="fb fyl" onclick="setFilter('yellow',this)">🟡 เฝ้าระวัง</button>
-  <button class="fb fgn" onclick="setFilter('green',this)">🟢 ปกติ</button>
+  <button class="fb frd" onclick="setFilter('critical',this)">🔴 วิกฤต</button>
+  <button class="fb fyl" onclick="setFilter('low',this)">🟡 เฝ้าระวัง</button>
+  <button class="fb fgn" onclick="setFilter('ok',this)">🟢 ปกติ</button>
   <button class="fb" onclick="setFilter('oos',this)" style="border-color:#ff6b6b55">⬛ หมดสต๊อก</button>
   <input class="srch" id="search" placeholder="🔍 ค้นหาสินค้า / SKU..." oninput="renderTable()">
   <select class="srt-sel" id="sort-sel" onchange="renderTable()">
@@ -227,9 +227,9 @@ function renderTable() {
   const tbody = document.getElementById('tbody');
 
   // KPI counts from full data
-  const crd = PRODUCTS.filter(p => p.status === 'red').length;
-  const cyl = PRODUCTS.filter(p => p.status === 'yellow').length;
-  const cgn = PRODUCTS.filter(p => p.status === 'green').length;
+  const crd = PRODUCTS.filter(p => p.status === 'critical').length;
+  const cyl = PRODUCTS.filter(p => p.status === 'low').length;
+  const cgn = PRODUCTS.filter(p => p.status === 'ok').length;
   const coos = PRODUCTS.filter(p => p.status === 'oos').length;
   document.getElementById('cnt-rd').textContent = crd;
   document.getElementById('cnt-yl').textContent = cyl;
