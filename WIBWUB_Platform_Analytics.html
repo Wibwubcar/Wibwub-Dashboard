@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WIBWUB Platform Analytics</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1117;color:#f0f2f8;font-family:system-ui,-apple-system,sans-serif;font-size:14px;min-height:100vh}
+a{color:inherit;text-decoration:none}
+
+/* Header */
+.hdr{background:linear-gradient(135deg,#1a1d27 0%,#0f1117 100%);border-bottom:1px solid #2a2d3a;padding:16px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.hdr-logo{font-size:22px;font-weight:800;letter-spacing:-0.5px;color:#3b82f6}
+.hdr-logo span{color:#f0f2f8}
+.hdr-sub{color:#8b92a8;font-size:12px;flex:1}
+.hdr-badge{background:#1e293b;border:1px solid #334155;color:#94a3b8;padding:4px 10px;border-radius:20px;font-size:11px}
+.hdr-badge.warn{background:#422006;border-color:#92400e;color:#fbbf24}
+
+/* Tabs */
+.tabs{display:flex;gap:0;background:#1a1d27;border-bottom:1px solid #2a2d3a;padding:0 24px}
+.tab-btn{padding:14px 20px;background:none;border:none;color:#8b92a8;font-size:14px;cursor:pointer;border-bottom:3px solid transparent;transition:.2s;font-family:inherit}
+.tab-btn.active{color:#3b82f6;border-bottom-color:#3b82f6;font-weight:600}
+.tab-btn:hover:not(.active){color:#f0f2f8}
+.tab-pane{display:none;padding:24px}
+.tab-pane.active{display:block}
+
+/* KPI Cards */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:768px){.kpi-row{grid-template-columns:repeat(2,1fr)}}
+.kpi-card{background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;padding:16px 20px}
+.kpi-label{color:#8b92a8;font-size:12px;margin-bottom:4px}
+.kpi-val{font-size:26px;font-weight:700;color:#f0f2f8;letter-spacing:-0.5px}
+.kpi-sub{color:#8b92a8;font-size:11px;margin-top:4px}
+.kpi-card.blue .kpi-val{color:#3b82f6}
+.kpi-card.green .kpi-val{color:#22c55e}
+.kpi-card.red .kpi-val{color:#ef4444}
+.kpi-card.yellow .kpi-val{color:#f59e0b}
+
+/* Sections */
+.section{background:#1a1d27;border:1px solid #2a2d3a;border-radius:12px;padding:20px;margin-bottom:20px}
+.sec-title{font-size:14px;font-weight:600;color:#f0f2f8;margin-bottom:4px}
+.sec-sub{font-size:12px;color:#8b92a8;margin-bottom:16px}
+.chart-wrap{position:relative;height:260px}
+
+/* 2-col grid */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:20px}
+@media(max-width:900px){.grid3{grid-template-columns:1fr}}
+
+/* Platform summary table */
+.plat-table{width:100%;border-collapse:collapse;font-size:13px}
+.plat-table th{color:#8b92a8;font-weight:500;text-align:left;padding:8px 12px;border-bottom:1px solid #2a2d3a}
+.plat-table td{padding:10px 12px;border-bottom:1px solid #1f2232}
+.plat-table tr:last-child td{border-bottom:none}
+.plat-dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:middle}
+.num-right{text-align:right;font-variant-numeric:tabular-nums}
+.pct-bar-wrap{width:80px;height:6px;background:#2a2d3a;border-radius:3px;display:inline-block;vertical-align:middle;margin-left:8px}
+.pct-bar{height:100%;border-radius:3px}
+
+/* Product filters */
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-btn{padding:6px 14px;border:1px solid #2a2d3a;background:#1f2232;color:#8b92a8;border-radius:20px;cursor:pointer;font-size:13px;transition:.15s;font-family:inherit}
+.filter-btn.active{background:#3b82f6;border-color:#3b82f6;color:#fff;font-weight:600}
+.filter-btn:hover:not(.active){border-color:#3b82f6;color:#f0f2f8}
+
+/* Product table */
+.prod-table{width:100%;border-collapse:collapse;font-size:13px}
+.prod-table th{color:#8b92a8;font-weight:500;padding:8px 10px;border-bottom:2px solid #2a2d3a;text-align:left;cursor:pointer;white-space:nowrap}
+.prod-table th:hover{color:#f0f2f8}
+.prod-table td{padding:9px 10px;border-bottom:1px solid #1f2232}
+.prod-table tr:last-child td{border-bottom:none}
+.prod-table tr:hover td{background:#1f2232}
+.rank{font-weight:700;color:#8b92a8;width:28px;text-align:center}
+.rank.top3{color:#f59e0b}
+.prod-name{font-weight:500;color:#f0f2f8}
+.prod-name.unk{color:#8b92a8;font-style:italic}
+.chip-sh{background:#3d1a10;color:#ee4d2d;padding:2px 7px;border-radius:4px;font-size:11px}
+.chip-tk{background:#0d3535;color:#69c9d0;padding:2px 7px;border-radius:4px;font-size:11px}
+.chip-lz{background:#0d1154;color:#4a6cf7;padding:2px 7px;border-radius:4px;font-size:11px}
+.chip-lms{background:#0d2d1a;color:#22c55e;padding:2px 7px;border-radius:4px;font-size:11px}
+.chip-oth{background:#1e1b2e;color:#a78bfa;padding:2px 7px;border-radius:4px;font-size:11px}
+.rev-bar-wrap{width:100px;height:6px;background:#2a2d3a;border-radius:3px;display:inline-block;vertical-align:middle;margin-right:8px}
+.rev-bar{height:100%;border-radius:3px;background:#3b82f6}
+.pct-label{color:#8b92a8;font-size:11px}
+.scroll-x{overflow-x:auto}
+
+/* Horizontal bar chart area */
+.hbar-chart-wrap{position:relative;height:420px}
+
+/* Footer */
+.footer{text-align:center;color:#4b5563;font-size:11px;padding:24px;margin-top:8px}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-logo">WIB<span>WUB</span></div>
+  <div>
+    <div style="font-size:16px;font-weight:700">Platform Sales Analytics</div>
+    <div class="hdr-sub">ข้อมูล ม.ค.–มิ.ย. 2569 &nbsp;|&nbsp; Shopee · TikTok · Lazada · Line My Shop · Other</div>
+  </div>
+  <div style="flex:1"></div>
+  <div class="hdr-badge">อัปเดต 17 มิ.ย. 2569</div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('overview',this)">📊 ภาพรวมธุรกิจ</button>
+  <button class="tab-btn" onclick="switchTab('products',this)">🏆 Top สินค้าขายดี</button>
+</div>
+
+<!-- ============================================================ TAB 1: OVERVIEW ============================================================ -->
+<div id="tab-overview" class="tab-pane active">
+
+  <!-- KPI Cards -->
+  <div class="kpi-row">
+    <div class="kpi-card blue">
+      <div class="kpi-label">ยอดขายรวม (YTD)</div>
+      <div class="kpi-val">฿27.6M</div>
+      <div class="kpi-sub">Shopee+TikTok+Lazada+LMS</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Orders รวม (YTD)</div>
+      <div class="kpi-val">71,381</div>
+      <div class="kpi-sub">สำเร็จ · ไม่รวมยกเลิก</div>
+    </div>
+    <div class="kpi-card red">
+      <div class="kpi-label">Cancel Rate เฉลี่ย</div>
+      <div class="kpi-val">10.2%</div>
+      <div class="kpi-sub">Shopee 10.7% · TK 9.2% · LZ 15.7% · LMS 0%</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">AOV เฉลี่ย</div>
+      <div class="kpi-val">฿351</div>
+      <div class="kpi-sub">Shopee 426 · TK 248 · LZ 388 · LMS 1,169</div>
+    </div>
+  </div>
+
+  <!-- Revenue Chart + Platform Table -->
+  <div class="section">
+    <div class="sec-title">ยอดขายรายเดือน แบ่งตาม Platform</div>
+    <div class="sec-sub">ยอดขายสุทธิ (THB) ม.ค.–มิ.ย. 2569</div>
+    <div class="chart-wrap"><canvas id="chartRev"></canvas></div>
+  </div>
+
+  <div class="section" style="margin-bottom:20px">
+    <div class="sec-title">สรุปยอดขาย Platform</div>
+    <div class="scroll-x">
+    <table class="plat-table">
+      <thead><tr>
+        <th>Platform</th>
+        <th class="num-right">ยอดขาย YTD</th>
+        <th class="num-right">Orders YTD</th>
+        <th class="num-right">สัดส่วน</th>
+        <th class="num-right">AOV เฉลี่ย</th>
+        <th class="num-right">Cancel Rate</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="plat-dot" style="background:#ee4d2d"></span>Shopee</td>
+          <td class="num-right">฿17,304,152</td>
+          <td class="num-right">40,766</td>
+          <td class="num-right">70.9%<div class="pct-bar-wrap"><div class="pct-bar" style="width:70.9%;background:#ee4d2d"></div></div></td>
+          <td class="num-right">฿426</td>
+          <td class="num-right" style="color:#f59e0b">10.7%</td>
+        </tr>
+        <tr>
+          <td><span class="plat-dot" style="background:#69c9d0"></span>TikTok</td>
+          <td class="num-right">฿6,440,614</td>
+          <td class="num-right">27,074</td>
+          <td class="num-right">26.4%<div class="pct-bar-wrap"><div class="pct-bar" style="width:26.4%;background:#69c9d0"></div></div></td>
+          <td class="num-right">฿248</td>
+          <td class="num-right" style="color:#22c55e">9.2%</td>
+        </tr>
+        <tr>
+          <td><span class="plat-dot" style="background:#4a6cf7"></span>Lazada</td>
+          <td class="num-right">฿669,220</td>
+          <td class="num-right">1,729</td>
+          <td class="num-right">2.7%<div class="pct-bar-wrap"><div class="pct-bar" style="width:2.7%;background:#4a6cf7"></div></div></td>
+          <td class="num-right">฿388</td>
+          <td class="num-right" style="color:#ef4444">15.7%</td>
+        </tr>
+          <tr>
+            <td><span class="plat-dot" style="background:#22c55e"></span>Line My Shop</td>
+            <td class="num-right">1,812</td>
+            <td class="num-right">฿2.11M</td>
+            <td class="num-right">-</td>
+            <td class="num-right">฿1,169</td>
+            <td class="num-right">0%</td>
+          </tr>
+        <tr style="background:#1f2a3a">
+          <td style="font-weight:700;color:#f0f2f8"><span class="plat-dot" style="background:#3b82f6"></span>รวมทั้งหมด</td>
+          <td class="num-right" style="font-weight:700">฿24,413,986</td>
+          <td class="num-right" style="font-weight:700">69,569</td>
+          <td class="num-right" style="font-weight:700">100%</td>
+          <td class="num-right" style="font-weight:700">฿351</td>
+          <td class="num-right" style="font-weight:700">10.2%</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <!-- Orders chart -->
+  <div class="section">
+    <div class="sec-title">จำนวน Orders รายเดือน</div>
+    <div class="sec-sub">Unique orders สำเร็จ (ไม่รวมยกเลิก)</div>
+    <div class="chart-wrap"><canvas id="chartOrd"></canvas></div>
+  </div>
+
+  <!-- Cancel Rate + AOV side by side -->
+  <div class="grid2">
+    <div class="section" style="margin-bottom:0">
+      <div class="sec-title">Cancel Rate รายเดือน (%)</div>
+      <div class="sec-sub">เส้นประแดง = เป้า 10%</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chartCxl"></canvas></div>
+    </div>
+    <div class="section" style="margin-bottom:0">
+      <div class="sec-title">AOV รายเดือน (฿)</div>
+      <div class="sec-sub">Average Order Value per platform</div>
+      <div class="chart-wrap" style="height:220px"><canvas id="chartAov"></canvas></div>
+    </div>
+  </div>
+
+  <!-- New vs Returning (3 mini charts) -->
+  <div class="section" style="margin-top:20px">
+    <div class="sec-title">ลูกค้าใหม่ vs ลูกค้าเดิม</div>
+    <div class="sec-sub">จำนวน buyers ต่อเดือน — ลูกค้าใหม่ = ซื้อครั้งแรกในช่วงข้อมูล</div>
+    <div class="grid3" style="margin-bottom:0">
+      <div>
+        <div style="text-align:center;color:#ee4d2d;font-size:12px;font-weight:600;margin-bottom:8px">Shopee</div>
+        <div class="chart-wrap" style="height:180px"><canvas id="chartNrSh"></canvas></div>
+      </div>
+      <div>
+        <div style="text-align:center;color:#69c9d0;font-size:12px;font-weight:600;margin-bottom:8px">TikTok</div>
+        <div class="chart-wrap" style="height:180px"><canvas id="chartNrTk"></canvas></div>
+      </div>
+      <div>
+        <div style="text-align:center;color:#4a6cf7;font-size:12px;font-weight:600;margin-bottom:8px">Lazada</div>
+        <div class="chart-wrap" style="height:180px"><canvas id="chartNrLz"></canvas></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================ TAB 2: TOP PRODUCTS ============================================================ -->
+<div id="tab-products" class="tab-pane">
+
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="filterProd('all',this)">🌐 ทั้งหมด</button>
+    <button class="filter-btn" onclick="filterProd('shopee',this)"><span style="color:#ee4d2d">●</span> Shopee</button>
+    <button class="filter-btn" onclick="filterProd('tiktok',this)"><span style="color:#69c9d0">●</span> TikTok</button>
+    <button class="filter-btn" onclick="filterProd('lazada',this)"><span style="color:#4a6cf7">●</span> Lazada</button>
+    <button class="filter-btn" onclick="filterProd('lms',this)"><span style="color:#22c55e">●</span> Line My Shop</button>
+    <button class="filter-btn" onclick="filterProd('other',this)"><span style="color:#a78bfa">●</span> Other</button>
+  </div>
+
+  <div class="section">
+    <div class="sec-title" id="prodChartTitle">Top 15 สินค้าขายดี — รวมทุก Platform (ม.ค.–มิ.ย. 2569)</div>
+    <div class="sec-sub">ยอดขายจากไฟล์ต้นทาง (THB gross) · Shopee <span style="color:#ee4d2d">■</span> TikTok <span style="color:#69c9d0">■</span> Lazada <span style="color:#4a6cf7">■</span> Line My Shop <span style="color:#22c55e">■</span> Other <span style="color:#a78bfa">■</span></div>
+    <div class="hbar-chart-wrap"><canvas id="chartProd"></canvas></div>
+  </div>
+
+  <div class="section">
+    <div class="sec-title" id="prodTableTitle">รายละเอียดสินค้าทั้งหมด</div>
+    <div class="scroll-x">
+    <table class="prod-table" id="prodTable">
+        <thead><tr>
+          <th class="rank">#</th>
+          <th onclick="sortProd('n')">ชื่อสินค้า ↕</th>
+          <th class="num-right" onclick="sortProd('t')" style="min-width:110px">รวม ↕</th>
+          <th class="num-right" onclick="sortProd('s')" style="min-width:90px"><span style="color:#ee4d2d">Shopee</span></th>
+          <th class="num-right" onclick="sortProd('k')" style="min-width:90px"><span style="color:#69c9d0">TikTok</span></th>
+          <th class="num-right" onclick="sortProd('l')" style="min-width:80px"><span style="color:#4a6cf7">Lazada</span></th>
+          <th class="num-right" onclick="sortProd('lms')" style="min-width:80px"><span style="color:#22c55e">LMS</span></th>
+          <th class="num-right" onclick="sortProd('oth')" style="min-width:70px"><span style="color:#a78bfa">Other</span></th>
+          <th class="num-right" style="min-width:60px">%</th>
+        </tr></thead>
+      <tbody id="prodTbody"></tbody>
+    </table>
+    </div>
+  </div>
+</div>
+
+<div class="footer">WIBWUB Platform Analytics · ข้อมูล ณ 17 มิ.ย. 2569 · Shopee · TikTok · Lazada · Line My Shop · Other (FB/LINE_OA/Carcare) — ม.ค.–มิ.ย. 2026</div>
+
+<script>
+// ===================== DATA =====================
+const MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
+const SH_REV = [3179125,2757812,2882341,3202414,3409122,1873338];
+const TK_REV = [1069223,1085294,1182570,1221056,1438434,444037];
+const LZ_REV = [150942,104875,152964,95120,106762,58557];
+const LMS_REV = [289886,441204,401837,348105,379012,250745];
+const SH_ORD = [7184,6287,6579,7645,8602,4469];
+const TK_ORD = [3639,4130,4420,5200,7850,1835];
+const LZ_ORD = [380,271,419,244,263,152];
+const LMS_ORD = [279,407,279,316,303,228];
+const SH_CXL = [9.8,9.9,9.9,11.3,11.4,11.6];
+const TK_CXL = [9.2,8.0,7.8,9.7,7.5,19.3];
+const LZ_CXL = [10.2,15.8,18.0,19.5,17.0,13.6];
+const LMS_CXL = [0,0,0,0,0,0];
+const SH_AOV = [443,439,438,419,396,419];
+const TK_AOV = [294,263,268,235,183,242];
+const LZ_AOV = [397,387,365,390,406,385];
+const LMS_AOV = [1039,1084,1440,1102,1251,1100];
+const SH_NEW = [7176,5570,5543,6313,6906,3362];
+const SH_RET = [0,715,1034,1332,1695,1107];
+const TK_NEW = [2960,3476,3882,4811,7672,1835];
+const TK_RET = [666,647,530,387,169,0];
+const LZ_NEW = [272,226,353,199,259,151];
+const LZ_RET = [108,45,57,44,4,0];
+const LMS_NEW = [236,318,210,214,200,147];
+const LMS_RET = [254,475,372,332,445,277];
+const TOTAL_REV = 27522789;
+
+const PRODUCTS = [
+  {sku:"BWLD000001",n:"ไม้ปัดฝุ่นขนแกะแท้ (WIBWUB Wool Duster)",t:4920382,s:3052068,k:416654,l:39477,lms:105434,oth:1306749},
+  {sku:"SSUG010024",n:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar)",t:4371977,s:2737017,k:612522,l:33253,lms:261310,oth:727875},
+  {sku:"SINT030001",n:"สเปรย์ทำความสะอาดภายในรถ ไม่เงา (WIBWUB Interior)",t:3989516,s:3195602,k:578065,l:41644,lms:147604,oth:26600},
+  {sku:"SQSH030005",n:"เซรามิคแชมพู + ผ้า + ถุงมือ (Quartz Shampoo Set)",t:2883072,s:2607315,k:17548,l:16652,lms:139637,oth:101920},
+  {sku:"SRFT010006",n:"ทิชชู่เปียกทำความสะอาดเบาะหนัง (WIBWUB Refresh)",t:2401380,s:1607508,k:539727,l:32666,lms:83059,oth:138420},
+  {sku:"SRFX000003",n:"สเปรย์เคลือบสี Ceramic Coating (WIBWUB Reflex)",t:2392229,s:1603632,k:160727,l:24776,lms:159824,oth:443269},
+  {sku:"EWIP000001",n:"ทิชชู่เปียกทำความสะอาดภายในรถ (WIBWUB Interior Wipe)",t:2015055,s:1585719,k:402955,l:5166,lms:9654,oth:11561},
+  {sku:"TMTN000004",n:"ผ้าเช็ดน้ำยาเคลือบสี (WIBWUB Martini)",t:1940492,s:1140355,k:533253,l:8979,lms:14472,oth:243432},
+  {sku:"SMIN010019",n:"สเปรย์เช็ดเก็บฝุ่นภายนอก (MIND Detailer)",t:1825331,s:1648184,k:97979,l:7191,lms:0,oth:71976},
+  {sku:"STRM010004",n:"เจลเคลือบพลาสติกและยาง กันน้ำ (WIBWUB Tire&Trim)",t:1810553,s:1472526,k:63619,l:14517,lms:75670,oth:184221},
+  {sku:"SPOT010013",n:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean)",t:1801816,s:1162440,k:217377,l:23944,lms:52835,oth:345219},
+  {sku:"SCNR010033",n:"น้ำยาฟื้นฟูผิวรถ (WIBWUB Cleaner Restore)",t:1620244,s:1163255,k:439861,l:0,lms:10000,oth:7128},
+  {sku:"TPER000002",n:"ผ้าไมโครไฟเบอร์ขนแกะ BOA ไร้ขอบ 500gsm (WIBWUB Perfect)",t:1484560,s:1032588,k:23855,l:10439,lms:22900,oth:394778},
+  {sku:"ETIR000001",n:"ฟองน้ำทายาง (WIBWUB Tire Applicator)",t:1404386,s:1372649,k:14047,l:967,lms:2655,oth:14067},
+  {sku:"SXGL000012",n:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield)",t:1356372,s:1007417,k:48176,l:10099,lms:32535,oth:258145},
+  {sku:"SVIS000026",n:"น้ำยาทำความสะอาดกระจก (WIBWUB Visible)",t:1267545,s:1069741,k:120197,l:10851,lms:27945,oth:38811},
+  {sku:"TMGA000006",n:"สเปรย์เช็ดเก็บฝุ่นภายนอก สูตรแกลเลอรี่ (Gallery Detailer)",t:1142224,s:998938,k:81196,l:12357,lms:13250,oth:36482},
+  {sku:"TMON000005",n:"ผ้าไมโครไฟเบอร์ซับน้ำขนาดเล็ก (WIBWUB Monster)",t:1083516,s:960132,k:26518,l:17894,lms:29420,oth:49552},
+  {sku:"SREC010032",n:"เซรั่มบำรุงเบาะหนัง (WIBWUB Recove Leather Serum)",t:986236,s:819609,k:30682,l:10667,lms:32192,oth:93085},
+  {sku:"TPOL000003",n:"ผ้าเช็ดเคลือบเซรามิคและแว็กซ์ (WIBWUB Polish Cloth)",t:951558,s:740466,k:82781,l:4035,lms:12960,oth:111316},
+  {sku:"SDPN030016",n:"แชมพูขจัดคราบฝังลึก (WIBWUB Deep Clean V.2)",t:864940,s:825848,k:5060,l:3083,lms:29448,oth:1500},
+  {sku:"SINT010001",n:"น้ำยาเช็ดฝุ่นเคลือบภายในรถ (WIBWUB Interior Coat)",t:850917,s:0,k:238443,l:36579,lms:0,oth:575894},
+  {sku:"EMIU000010",n:"ถุงมือล้างรถไมโครไฟเบอร์ Premium (Wash Mitt)",t:790786,s:718163,k:18759,l:5914,lms:16770,oth:31180},
+  {sku:"SBCH010031",n:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach Wet Coat)",t:778104,s:612712,k:32820,l:11481,lms:111156,oth:9934},
+  {sku:"SMCW010017",n:"น้ำยาซักผ้าไมโครไฟเบอร์ (WIBWUB Microfiber Wash)",t:766133,s:717245,k:16323,l:5373,lms:19983,oth:7209},
+  {sku:"SGFS000020",n:"น้ำยาเคลือบสีกราฟีน (WIBWUB Graphene Sealant)",t:694496,s:404300,k:36001,l:26168,lms:77820,oth:150206},
+  {sku:"SBYK010031",n:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB Banyakart)",t:690855,s:604826,k:26109,l:5922,lms:18358,oth:35639},
+  {sku:"TSPD000001",n:"ผ้าไมโครไฟเบอร์ซับน้ำขนาดเล็กพิเศษ (WIBWUB Speed Dry)",t:681500,s:535073,k:14750,l:5489,lms:20260,oth:105927},
+  {sku:"STCL000027",n:"น้ำยาทำความสะอาดยาง (WIBWUB Tire Clean)",t:589076,s:518023,k:23651,l:3871,lms:35480,oth:8050},
+  {sku:"EWIP000002",n:"ทิชชู่เปียกทำความสะอาดเบาะหนัง แพ็คใหญ่ (Refresh Wipes XL)",t:515168,s:0,k:491260,l:5562,lms:0,oth:18346},
+];
+
+// ===================== HELPERS =====================
+const C = {
+  sh:'#ee4d2d',tk:'#69c9d0',lz:'#4a6cf7',lms:'#22c55e',oth:'#a78bfa',
+  sh30:'rgba(238,77,45,0.25)',tk30:'rgba(105,201,208,0.25)',lz30:'rgba(74,108,247,0.25)',
+  lms30:'rgba(34,197,94,0.25)',oth30:'rgba(167,139,250,0.25)'
+};
+const chartDefaults = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:'#8b92a8',font:{size:12},boxWidth:12}}},
+  scales:{
+    x:{ticks:{color:'#8b92a8',font:{size:11}},grid:{color:'#1f2232'}},
+    y:{ticks:{color:'#8b92a8',font:{size:11}},grid:{color:'#1f2232'}}
+  }
+};
+function fmtNum(n){return n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':String(n)}
+function fmtBaht(n){return '฿'+n.toLocaleString()}
+
+// ===================== CHARTS =====================
+new Chart('chartRev',{type:'bar',data:{labels:MONTHS,datasets:[
+  {label:'Shopee',data:SH_REV,backgroundColor:C.sh30,borderColor:C.sh,borderWidth:2},
+  {label:'TikTok',data:TK_REV,backgroundColor:C.tk30,borderColor:C.tk,borderWidth:2},
+  {label:'Lazada',data:LZ_REV,backgroundColor:C.lz30,borderColor:C.lz,borderWidth:2},
+  {label:'Line My Shop',data:LMS_REV,backgroundColor:C.lms30,borderColor:C.lms,borderWidth:2},
+]},options:{...chartDefaults,scales:{x:{stacked:false,ticks:{color:'#8b92a8'},grid:{color:'#1f2232'}},y:{stacked:false,ticks:{color:'#8b92a8',callback:v=>fmtNum(v)},grid:{color:'#1f2232'}}},plugins:{...chartDefaults.plugins,tooltip:{callbacks:{label:ctx=>`${ctx.dataset.label}: ${fmtBaht(ctx.parsed.y)}`}}}}});
+
+new Chart('chartOrd',{type:'bar',data:{labels:MONTHS,datasets:[
+  {label:'Shopee',data:SH_ORD,backgroundColor:C.sh30,borderColor:C.sh,borderWidth:2},
+  {label:'TikTok',data:TK_ORD,backgroundColor:C.tk30,borderColor:C.tk,borderWidth:2},
+  {label:'Lazada',data:LZ_ORD,backgroundColor:C.lz30,borderColor:C.lz,borderWidth:2},
+  {label:'Line My Shop',data:LMS_ORD,backgroundColor:C.lms30,borderColor:C.lms,borderWidth:2},
+]},options:{...chartDefaults,scales:{x:{ticks:{color:'#8b92a8'},grid:{color:'#1f2232'}},y:{ticks:{color:'#8b92a8',callback:v=>fmtNum(v)},grid:{color:'#1f2232'}}}}});
+
+new Chart('chartCxl',{type:'line',data:{labels:MONTHS,datasets:[
+  {label:'Shopee',data:SH_CXL,borderColor:C.sh,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'TikTok',data:TK_CXL,borderColor:C.tk,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'Lazada',data:LZ_CXL,borderColor:C.lz,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'Line My Shop',data:LMS_CXL,borderColor:C.lms,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'เป้า 10%',data:[10,10,10,10,10,10],borderColor:'#ef4444',borderDash:[5,3],borderWidth:1,pointRadius:0,backgroundColor:'transparent'},
+]},options:{...chartDefaults,scales:{x:{ticks:{color:'#8b92a8',font:{size:11}},grid:{color:'#1f2232'}},y:{min:0,max:25,ticks:{color:'#8b92a8',font:{size:11},callback:v=>v+'%'},grid:{color:'#1f2232'}}}}});
+
+new Chart('chartAov',{type:'line',data:{labels:MONTHS,datasets:[
+  {label:'Shopee',data:SH_AOV,borderColor:C.sh,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'TikTok',data:TK_AOV,borderColor:C.tk,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'Lazada',data:LZ_AOV,borderColor:C.lz,backgroundColor:'transparent',pointRadius:4,tension:.3},
+  {label:'Line My Shop',data:LMS_AOV,borderColor:C.lms,backgroundColor:'transparent',pointRadius:4,tension:.3},
+]},options:{...chartDefaults,scales:{x:{ticks:{color:'#8b92a8',font:{size:11}},grid:{color:'#1f2232'}},y:{ticks:{color:'#8b92a8',font:{size:11},callback:v=>'฿'+v},grid:{color:'#1f2232'}}}}});
+
+function nrChart(id,newArr,retArr,col){
+  return new Chart(id,{type:'bar',data:{labels:MONTHS,datasets:[
+    {label:'ใหม่',data:newArr,backgroundColor:'rgba(59,130,246,0.7)',stack:'s'},
+    {label:'เดิม',data:retArr,backgroundColor:col||'rgba(34,197,94,0.7)',stack:'s'},
+  ]},options:{...chartDefaults,plugins:{legend:{labels:{color:'#8b92a8',font:{size:10},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:'#8b92a8',font:{size:10}},grid:{color:'#1f2232'}},y:{stacked:true,ticks:{color:'#8b92a8',font:{size:10},callback:v=>fmtNum(v)},grid:{color:'#1f2232'}}}}});
+}
+nrChart('chartNrSh',SH_NEW,SH_RET);
+nrChart('chartNrTk',TK_NEW,TK_RET);
+nrChart('chartNrLz',LZ_NEW,LZ_RET);
+
+// ===================== PRODUCT CHART =====================
+let currentFilter = 'all';
+let prodChart = null;
+let sortKey = 't', sortAsc = false;
+
+function getRevKey(p){
+  if(currentFilter==='shopee') return p.s;
+  if(currentFilter==='tiktok') return p.k;
+  if(currentFilter==='lazada') return p.l;
+  if(currentFilter==='lms') return p.lms;
+  if(currentFilter==='other') return p.oth;
+  return p.t;
+}
+
+function buildProdChart(){
+  const sorted = [...PRODUCTS].sort((a,b)=>getRevKey(b)-getRevKey(a)).slice(0,15);
+  const labels = sorted.map(p=>p.n.length>28?p.n.slice(0,28)+'…':p.n);
+  if(prodChart) prodChart.destroy();
+  const ctx = document.getElementById('chartProd');
+  if(currentFilter==='all'){
+    prodChart = new Chart(ctx,{type:'bar',data:{labels,datasets:[
+      {label:'Shopee',data:sorted.map(p=>p.s),backgroundColor:C.sh,borderRadius:3},
+      {label:'TikTok',data:sorted.map(p=>p.k),backgroundColor:C.tk,borderRadius:3},
+      {label:'Lazada',data:sorted.map(p=>p.l),backgroundColor:C.lz,borderRadius:3},
+      {label:'Line My Shop',data:sorted.map(p=>p.lms),backgroundColor:C.lms,borderRadius:3},
+      {label:'Other',data:sorted.map(p=>p.oth),backgroundColor:C.oth,borderRadius:3},
+    ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b92a8',font:{size:11},boxWidth:10}}},scales:{x:{stacked:true,ticks:{color:'#8b92a8',font:{size:11},callback:v=>fmtNum(v)},grid:{color:'#1f2232'}},y:{stacked:true,ticks:{color:'#f0f2f8',font:{size:11}},grid:{color:'#1f2232'}}}}});
+  } else {
+    const cols = {shopee:C.sh,tiktok:C.tk,lazada:C.lz,lms:C.lms,other:C.oth};
+    const lbls = {shopee:'Shopee',tiktok:'TikTok',lazada:'Lazada',lms:'Line My Shop',other:'Other'};
+    prodChart = new Chart(ctx,{type:'bar',data:{labels,datasets:[
+      {label:lbls[currentFilter],data:sorted.map(p=>getRevKey(p)),backgroundColor:cols[currentFilter],borderRadius:3},
+    ]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b92a8',font:{size:12},boxWidth:12}}},scales:{x:{ticks:{color:'#8b92a8',font:{size:11},callback:v=>fmtNum(v)},grid:{color:'#1f2232'}},y:{ticks:{color:'#f0f2f8',font:{size:12}},grid:{color:'#1f2232'}}}}});
+  }
+}
+
+function buildProdTable(){
+  const prods = [...PRODUCTS].sort((a,b)=>{
+    const av = sortKey==='n'?a.n:(a[sortKey]||0);
+    const bv = sortKey==='n'?b.n:(b[sortKey]||0);
+    if(sortKey==='n') return sortAsc?av.localeCompare(bv):bv.localeCompare(av);
+    return sortAsc?av-bv:bv-av;
+  });
+  const maxRev = Math.max(...prods.map(p=>getRevKey(p)))||1;
+  const tbody = document.getElementById('prodTbody');
+  let html = '';
+  let rank = 0;
+  prods.forEach(p=>{
+    const rv = getRevKey(p);
+    if(currentFilter!=='all' && rv===0) return;
+    rank++;
+    const pct = (rv/TOTAL_REV*100).toFixed(1);
+    const barW = Math.round(rv/maxRev*100);
+    html += `<tr>
+      <td class="rank${rank<=3?' top3':''}">${rank}</td>
+      <td class="prod-name" title="${p.sku}">${p.n}</td>
+      <td class="num-right"><div class="rev-bar-wrap"><div class="rev-bar" style="width:${barW}%"></div></div>฿${rv.toLocaleString()}</td>
+      <td class="num-right">${p.s?'<span class="chip-sh">฿'+fmtNum(p.s)+'</span>':'-'}</td>
+      <td class="num-right">${p.k?'<span class="chip-tk">฿'+fmtNum(p.k)+'</span>':'-'}</td>
+      <td class="num-right">${p.l?'<span class="chip-lz">฿'+fmtNum(p.l)+'</span>':'-'}</td>
+      <td class="num-right">${p.lms?'<span class="chip-lms">฿'+fmtNum(p.lms)+'</span>':'-'}</td>
+      <td class="num-right">${p.oth?'<span class="chip-oth">฿'+fmtNum(p.oth)+'</span>':'-'}</td>
+      <td class="num-right"><span class="pct-label">${pct}%</span></td>
+    </tr>`;
+  });
+  tbody.innerHTML = html;
+}
+
+function filterProd(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const titles = {all:'รวมทุก Platform',shopee:'Shopee',tiktok:'TikTok',lazada:'Lazada',lms:'Line My Shop',other:'Other (FB/LINE/ฯลฯ)'};
+  document.getElementById('prodChartTitle').textContent = `Top 15 สินค้าขายดี — ${titles[f]} (ม.ค.–มิ.ย. 2569)`;
+  document.getElementById('prodTableTitle').textContent = `รายละเอียดสินค้า — ${titles[f]}`;
+  buildProdChart();
+  buildProdTable();
+}
+
+function sortProd(key){
+  if(sortKey===key) sortAsc=!sortAsc; else {sortKey=key;sortAsc=false;}
+  buildProdTable();
+}
+
+function switchTab(id, btn){
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(id==='products' && !prodChart){
+    setTimeout(()=>{buildProdChart();buildProdTable();},50);
+  }
+}
+
+document.querySelectorAll('.tab-btn').forEach(b=>{
+  if(b.textContent.includes('สินค้า')){
+    b.addEventListener('click',()=>{
+      if(!prodChart) setTimeout(()=>{buildProdChart();buildProdTable();},100);
+    });
+  }
+});
+</script>
+</body>
+</html>

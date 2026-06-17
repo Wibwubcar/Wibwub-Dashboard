@@ -388,7 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div id="home-ch"></div>
   </div>
   <div class="mks-grid">
-    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿2.60M</div><div class="mks-sub">231 creators · มิย.69</div></div>
+    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿2.62M</div><div class="mks-sub">241 creators · มิย.69</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.6×</div><div class="mks-sub">Shopee+TikTok</div></div>
     <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">64 คลิป</div><div class="mks-sub">มี.ค.–มิ.ย. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">26.5K</div><div class="mks-sub">+4.1K จาก ม.ค.</div></div>
@@ -1207,42 +1207,40 @@ const CREATORS=[
 // Top 15 products cumulative ม.ค.–มิ.ย. (updated 15.06.69)
 // v=ยอดขายจริง, q=จำนวนจริง, mk=งบการตลาด(ของแจก/ส่งInfluencer), mkq=จำนวนงบตลาด
 const ALL_PRODUCTS = [
-  {n:'Wool duster-ไม้ปัดขนแกะ', v:4991382, q:7799, mk:11808, mkq:18},
-  {n:'Sugar (Sugar-500ml+Spray)', v:3563437, q:12114, mk:44028, mkq:159},
-  {n:'Interior (Interior-500ml+Spray)', v:2801455, q:8156, mk:63376, mkq:172},
-  {n:'Interior wipes', v:1602748, q:22111, mk:6952, mkq:88},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', v:1597881, q:4421, mk:13982, mkq:36},
-  {n:'Perfect', v:1433244, q:9556, mk:20454, mkq:131},
-  {n:'Spot (Spot-500ml)', v:1372420, q:3689, mk:3402, mkq:9},
-  {n:'Refresh wipes', v:1262123, q:16478, mk:11455, mkq:145},
-  {n:'Reflex (Reflex-250ml+Spray)', v:1240576, q:3273, mk:10382, mkq:27},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', v:1110789, q:958, mk:1050, mkq:1},
-  {n:'Tire&trim gel (Tire&trim gel-500ml)', v:1080804, q:2450, mk:8986, mkq:22},
-  {n:'Martini', v:1009685, q:8217, mk:12204, mkq:109},
-  {n:'Mind (Mind-500ml+Spray)', v:1003954, q:2498, mk:8862, mkq:23},
-  {n:'Quartz shampoo (Quartz shampoo-1L)', v:950279, q:4099, mk:5567, mkq:33},
-  {n:'Xglass (Xglass-100ml)', v:849979, q:2297, mk:8250, mkq:22},
+  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ',          v:4920382, q:7804,  mk:0, mkq:0},
+  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ',           v:4371977, q:12147, mk:0, mkq:0},
+  {n:'Interior สเปรย์ทำความสะอาดภายในรถ',      v:3989516, q:8172,  mk:0, mkq:0},
+  {n:'Quartz Shampoo เซทล้างรถ 3 ชิ้น',        v:2883072, q:0,     mk:0, mkq:0},
+  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง',      v:2401381, q:4435,  mk:0, mkq:0},
+  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี',  v:2392229, q:3279,  mk:0, mkq:0},
+  {n:'Interior Wipe ทิชชู่เปียกภายในรถ',       v:2015056, q:22096, mk:0, mkq:0},
+  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี',           v:1940493, q:8236,  mk:0, mkq:0},
+  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก',    v:1825331, q:2499,  mk:0, mkq:0},
+  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง',     v:1810554, q:2455,  mk:0, mkq:0},
+  {n:'Spot Clean น้ำยาขจัดคราบน้ำ',            v:1801816, q:3700,  mk:0, mkq:0},
+  {n:'Cleaner Restore น้ำยาฟื้นฟูสภาพรถ',     v:1620245, q:0,     mk:0, mkq:0},
+  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm',    v:1484561, q:9552,  mk:0, mkq:0},
+  {n:'Tire Applicator ฟองน้ำทายาง',            v:1404386, q:0,     mk:0, mkq:0},
+  {n:'X-Glass Shield น้ำยาเคลือบกระจก',        v:1356373, q:2302,  mk:0, mkq:0},
 ];
-
-// Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun] — ยอดขายจริงเท่านั้น
+// Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun] — รวมทุก platform (ม.ค.–มิ.ย.)
 const PROD_MO=[
-  {n:'Wool duster-ไม้ปัดขนแกะ', mo:[1490253, 1036856, 980261, 787207, 489154, 195843]},
-  {n:'Sugar (Sugar-500ml+Spray)', mo:[798408, 668317, 606142, 559190, 535588, 352606]},
-  {n:'Interior (Interior-500ml+Spray)', mo:[561506, 444164, 469230, 485096, 519483, 258942]},
-  {n:'Interior wipes', mo:[192775, 206008, 237349, 327704, 406187, 225931]},
-  {n:'Refresh (Refresh-500ml+หัวโฟม สีขาว)', mo:[289850, 244133, 276413, 304994, 305183, 163716]},
-  {n:'Perfect', mo:[367967, 271204, 232635, 207119, 224183, 109830]},
-  {n:'Spot (Spot-500ml)', mo:[174587, 132568, 116783, 305363, 394366, 245729]},
-  {n:'Refresh wipes', mo:[135071, 134043, 163182, 269200, 548299, 873]},
-  {n:'Reflex (Reflex-250ml+Spray)', mo:[283347, 284579, 228033, 172468, 159182, 103770]},
-  {n:'Sugar (Sugar-3L แถมขวดสเปรย์)', mo:[296378, 201858, 148678, 176607, 177593, 108625]},
-  {n:'Tire&trim gel (Tire&trim gel-500ml)', mo:[243624, 187832, 157305, 192235, 192518, 99144]},
-  {n:'Mind (Mind-500ml+Spray)', mo:[217794, 211291, 189753, 175404, 149383, 52565]},
-  {n:'Martini', mo:[234670, 174276, 146933, 146269, 185130, 110431]},
-  {n:'Quartz shampoo (Quartz shampoo-1L)', mo:[198726, 160746, 149488, 150470, 187256, 98221]},
-  {n:'Xglass (Xglass-100ml)', mo:[109063, 92029, 74534, 80599, 272514, 217490]},
+  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ',          mo:[1512034,1055603,1000470,773313,461815,117149]},
+  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ',           mo:[1095986,898286, 746904, 718289,652011,260502]},
+  {n:'Interior สเปรย์ทำความสะอาดภายในรถ',      mo:[749795, 694495, 746017, 786639,767409,245161]},
+  {n:'Quartz Shampoo เซทล้างรถ 3 ชิ้น',        mo:[592700, 492770, 518842, 554849,556258,167652]},
+  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง',      mo:[407118, 332732, 422177, 509321,619090,110943]},
+  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี',  mo:[478581, 473559, 489023, 406281,392812,151973]},
+  {n:'Interior Wipe ทิชชู่เปียกภายในรถ',       mo:[324521, 316205, 313230, 413064,498254,149782]},
+  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี',           mo:[455209, 371407, 290081, 308559,360427,154810]},
+  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก',    mo:[466622, 383907, 320462, 325689,264745,63906]},
+  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง',     mo:[422779, 352404, 299273, 314003,324061,98034]},
+  {n:'Spot Clean น้ำยาขจัดคราบน้ำ',            mo:[317763, 208141, 188528, 401528,485622,200234]},
+  {n:'Cleaner Restore น้ำยาฟื้นฟูสภาพรถ',     mo:[300134, 324945, 278717, 276682,323470,116297]},
+  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm',    mo:[360942, 257433, 246455, 265615,268140,85977]},
+  {n:'Tire Applicator ฟองน้ำทายาง',            mo:[349795, 272524, 219893, 261123,229121,71932]},
+  {n:'X-Glass Shield น้ำยาเคลือบกระจก',        mo:[238525, 178390, 168762, 180476,389828,200392]},
 ];
-
 const ALL_POSTS=[
   {lbl:'4',m:3,pillar:'Interview',c:'ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind',views:10000,eng:121,ret:23,watch:15.6,er:1.21,url:'https://www.tiktok.com/@wibwubcar/video/7613359372290247957'},
   {lbl:'5',m:3,pillar:'Interview',c:'ตอบกลับ @Natakorn ภายในรถโดนน้ำหอมหยดใส่แล้วเป็นรอยด่าง',views:1950,eng:17,ret:13,watch:10.3,er:0.87,url:'https://www.tiktok.com/@wibwubcar/video/7613758465680592149'},

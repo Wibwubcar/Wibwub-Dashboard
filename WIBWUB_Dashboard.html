@@ -1527,31 +1527,33 @@ charts['tk_cust'] = new Chart('tk_cust',{type:'bar',data:{labels:M5,datasets:[
 charts['lz_line'] = new Chart('lz_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:LZ_REV,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['lz_cost'] = new Chart('lz_cost',{type:'line',data:{labels:M5,datasets:[{label:'% ค่าใช้จ่าย',data:LZ_COST_PCT,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{min:18,max:28,ticks:{callback:v=>v+'%'}}}}});
 
-// ── Top 10 Products grouped bar (3 months) ──
+// ── Top 10 Products — 5 Platform Stacked (ม.ค.–มิ.ย.) ──
 new Chart('pr_top10',{
   type:'bar',
   data:{
-    labels:['Wool duster-ไม้ปัดขนแก', 'Sugar (500ml+Spray)', 'Interior (500ml+Spray)', 'Refresh wipes', 'Interior wipes', 'Refresh (500ml+หัวโฟม สีขาว)', 'Spot (500ml)', 'Perfect', 'Reflex (250ml+Spray)', 'Tire&trim gel (Tire&tr'],
+    labels:['Wool Duster','Sugar Spray Wax','Interior Spray','Quartz Shampoo Set','Refresh Wipes','Reflex Ceramic','Interior Wipe','Martini Cloth','Mind Detailer','Tire & Trim Gel'],
     datasets:[
-      {label:'มีนาคม', data:[981641, 606029, 470010, 166974, 237566, 282205, 116783, 230745, 229188, 158145], backgroundColor:'rgba(26,92,219,.75)', borderRadius:4},
-      {label:'เมษายน', data:[787332, 561482, 523676, 269674, 331960, 306164, 305741, 213728, 173243, 193075], backgroundColor:'rgba(59,130,246,.75)', borderRadius:4},
-      {label:'พฤษภาคม', data:[489154, 547924, 528615, 548615, 406651, 307133, 394366, 222804, 159182, 192518], backgroundColor:'rgba(34,197,94,.75)', borderRadius:4}
+      {label:'Shopee',      data:[3052068,2737017,3195602,2607315,1607508,1603632,1585719,1140355,1648184,1472526], backgroundColor:'rgba(238,77,45,.82)',  borderRadius:3, stack:'s'},
+      {label:'TikTok',      data:[416654, 612522, 578066, 17548,  539727, 160728, 402956, 533254, 97979,  63619],  backgroundColor:'rgba(30,30,30,.75)',   borderRadius:3, stack:'s'},
+      {label:'Lazada',      data:[39477,  33253,  41644,  16652,  32666,  24776,  5166,   8980,   7192,   14517],  backgroundColor:'rgba(27,4,161,.75)',   borderRadius:3, stack:'s'},
+      {label:'Line My Shop',data:[105434, 261310, 147604, 139637, 83059,  159824, 9654,   14472,  0,      75670],  backgroundColor:'rgba(34,197,94,.82)',  borderRadius:3, stack:'s'},
+      {label:'Other',       data:[1306749,727875, 26600,  101920, 138420, 443269, 11561,  243432, 71976,  184221], backgroundColor:'rgba(167,139,250,.82)',borderRadius:3, stack:'s'},
     ]
   },
-  options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}}}}
+  options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{stacked:true,ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}},y:{stacked:true}}}
 });
-// ── Channel doughnut ──
+// ── Channel Revenue doughnut ──
 new Chart('pr_channel',{
   type:'doughnut',
   data:{
-    labels:['Shopee','TikTok','Facebook','Line Shopping','Lazada','อื่นๆ'],
+    labels:['Shopee','TikTok','Other','Line My Shop','Lazada'],
     datasets:[{
-      data:[21880,15350,4036,1048,537,478],
-      backgroundColor:['#ee4d2d','#111111','#1877f2','#06c755','#1b04a1','#9ca3af'],
+      data:[44103960,6496221,8042959,2110789,672415],
+      backgroundColor:['#ee4d2d','#111111','#a78bfa','#22c55e','#1b04a1'],
       borderWidth:3,borderColor:'#fff'
     }]
   },
-  options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed.toLocaleString()} ออเดอร์`}}}}
+  options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(1)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
   {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.172,26.519],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
