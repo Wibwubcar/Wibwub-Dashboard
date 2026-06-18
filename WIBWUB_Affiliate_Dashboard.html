@@ -1046,9 +1046,12 @@ function setMonth(m, btn){
 
 // ══════════════════════════════════════════
 //  RENDER TABLES
-// Helper: monthly GMV for a single creator (derived from VIDEOS)
+/// Helper: monthly GMV for a single creator (from CREATOR_MONTHS)
 function cGMV(name){
-  return VIDEOS.filter(v=>v.creator===name).reduce((s,v)=>s+vGMV(v),0);
+  const monthIdx = {mar:0, apr:1, may:2, jun:3};
+  const idx = monthIdx[activeMonth];
+  if(idx === undefined) return 0;
+  return (CREATOR_MONTHS[name] || [0,0,0,0])[idx];
 }
 
 // Helper: GMV for a creator × product pair (derived from VIDEOS)
@@ -1061,12 +1064,10 @@ function cpGMV(creatorName, productName){
 function renderCreators(){
   const tbody = document.getElementById('creators-body');
   const isAll = activeMonth === 'all';
-  // Build display list
   let list;
   if(isAll){
     list = CREATORS.map(c=>({...c, dGMV:c.gmv}));
   } else {
-    // Derive per-month GMV from VIDEOS; filter creators with 0 GMV this month
     list = CREATORS.map(c=>({...c, dGMV:cGMV(c.name)})).filter(c=>c.dGMV>0);
   }
   list.sort((a,b)=>b.dGMV-a.dGMV);
@@ -1074,32 +1075,28 @@ function renderCreators(){
   const mLabel = {mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.'};
   tbody.innerHTML = list.map((c,i)=>{
     const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
-    const pct = Math.round((c.dGMV/maxGMV)*100);
-    // Monthly view: only GMV from VIDEOS available; totals shown as reference
-    const netCell = isAll
-      ? `<td data-val="${c.net}" style="color:var(--green)">${fmtK(c.net)}</td>`
-      : `<td data-val="${c.dGMV}" style="color:var(--green)">${fmtK(c.dGMV)}</td>`;
-    const retCell = isAll
-      ? `<td data-val="${c.returns}" style="color:${c.returns>0?'var(--red)':'var(--t3)'}">${c.returns>0?fmtK(c.returns):'-'}</td>`
-      : `<td data-val="0" style="color:var(--t3)">—</td>`;
-    const commCell = isAll
-      ? `<td data-val="${c.comm}" style="color:var(--amber)">${fmtK(c.comm)}</td>`
-      : `<td data-val="0" style="color:var(--t3)">—</td>`;
-    const ordCell = isAll
-      ? `<td data-val="${c.orders}">${c.orders}</td>`
-      : `<td data-val="0" style="color:var(--t3)">—</td>`;
-    const aovCell = isAll
-      ? `<td data-val="${Math.round(c.gmv/c.orders)}" style="color:var(--teal)">${fmtFull(Math.round(c.gmv/c.orders))}</td>`
-      : `<td data-val="0" style="color:var(--t3)">—</td>`;
-    const commRCell = isAll
-      ? `<td data-val="${c.comm_rate}" style="color:${c.comm_rate>14?'var(--red)':c.comm_rate>12?'var(--amber)':'var(--green)'}">${c.comm_rate}%</td>`
-      : `<td data-val="0" style="color:var(--t3)">—</td>`;
+    const dGMV = c.dGMV;
+    const pct = Math.round((dGMV/maxGMV)*100);
+    // For monthly view: estimate proportionally from totals
+    const ratio = c.gmv > 0 ? dGMV / c.gmv : 0;
+    const estRet    = isAll ? c.returns : Math.round(c.returns * ratio);
+    const estOrders = isAll ? c.orders  : Math.max(1, Math.round(c.orders * ratio));
+    const estComm   = isAll ? c.comm    : Math.round(dGMV * c.comm_rate / 100);
+    const estAOV    = isAll ? Math.round(c.gmv / Math.max(1,c.orders)) : Math.round(dGMV / estOrders);
+    const estNet    = dGMV - estRet;
+    const pfx       = isAll ? '' : '<span title="ประมาณการตามสัดส่วน" style="color:var(--t3);font-size:10px">~ </span>';
+    const retCell  = `<td data-val="${estRet}" style="color:${estRet>0?'var(--red)':'var(--t3)'}">${estRet>0?pfx+fmtK(estRet):'-'}</td>`;
+    const netCell  = `<td data-val="${estNet}" style="color:var(--green)">${pfx}${fmtK(estNet)}</td>`;
+    const commCell = `<td data-val="${estComm}" style="color:var(--amber)">${pfx}${fmtK(estComm)}</td>`;
+    const ordCell  = `<td data-val="${estOrders}">${pfx}${estOrders}</td>`;
+    const aovCell  = `<td data-val="${estAOV}" style="color:var(--teal)">${pfx}${fmtFull(estAOV)}</td>`;
+    const commRCell= `<td data-val="${c.comm_rate}" style="color:${c.comm_rate>14?'var(--red)':c.comm_rate>12?'var(--amber)':'var(--green)'}">${c.comm_rate}%</td>`;
     return `<tr>
       <td>${rnk}</td>
       <td><div class="creator-chip"><div class="creator-av">${getAv(c.name)}</div>${c.name}</div></td>
-      <td data-val="${c.dGMV}">
+      <td data-val="${dGMV}">
         <div class="gmv-bar">
-          <span>${fmtK(c.dGMV)}${isAll?'':' <span style="font-size:10px;color:var(--t3)">('+mLabel[activeMonth]+')</span>'}</span>
+          <span>${fmtK(dGMV)}${isAll?'':' <span style="font-size:10px;color:var(--t3)">('+mLabel[activeMonth]+')</span>'}</span>
           <div class="gmv-track"><div class="gmv-fill" style="width:${pct}%"></div></div>
         </div>
       </td>
