@@ -248,6 +248,17 @@ tr:hover td{background:rgba(59,130,246,.04)}
 </div>
 
 <!-- ════ OVERVIEW ════ -->
+<!-- ════ MONTH FILTER BAR ════ -->
+<div id="month-filter-bar" style="display:none">
+  <div class="mfbar">
+    <span class="mfbar-label">📅 แสดงข้อมูลเดือน</span>
+    <button class="mfbtn all active" onclick="setMonth('all',this)">รวม มี.ค.–มิ.ย.</button>
+    <button class="mfbtn mar" onclick="setMonth('mar',this)">มี.ค. 2569</button>
+    <button class="mfbtn apr" onclick="setMonth('apr',this)">เม.ย. 2569</button>
+    <button class="mfbtn may" onclick="setMonth('may',this)">พ.ค. 2569</button>
+    <button class="mfbtn jun" onclick="setMonth('jun',this)">มิ.ย. 2569</button>
+  </div>
+</div>
 <div id="tab-overview" class="panel active">
   <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มี.ค.–มิ.ย. 2026 · 203 active creators (GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
 
@@ -318,17 +329,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 </div>
 
 <!-- ════ PRODUCTS ════ -->
-<!-- ════ MONTH FILTER BAR ════ -->
-<div id="month-filter-bar" style="display:none">
-  <div class="mfbar">
-    <span class="mfbar-label">📅 แสดงข้อมูลเดือน</span>
-    <button class="mfbtn all active" onclick="setMonth('all',this)">รวม มี.ค.–มิ.ย.</button>
-    <button class="mfbtn mar" onclick="setMonth('mar',this)">มี.ค. 2569</button>
-    <button class="mfbtn apr" onclick="setMonth('apr',this)">เม.ย. 2569</button>
-    <button class="mfbtn may" onclick="setMonth('may',this)">พ.ค. 2569</button>
-    <button class="mfbtn jun" onclick="setMonth('jun',this)">มิ.ย. 2569</button>
-  </div>
-</div>
+
 <div id="tab-products" class="panel">
   <div class="kstrip">
     <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">3</div><div class="kks">ผ่าน 5 creators</div></div>
