@@ -332,10 +332,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <div id="tab-products" class="panel">
   <div class="kstrip">
-    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">3</div><div class="kks">ผ่าน 5 creators</div></div>
-    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue">ทิชซู่เปียก</div><div class="kks">฿29.8K · 249 units</div></div>
-    <div class="kk"><div class="kkl">Top Product (Units)</div><div class="kkv green">ทิชซู่เปียก</div><div class="kks">249 หน่วย</div></div>
-    <div class="kk"><div class="kkl">Best Price/Unit</div><div class="kkv amber">น้ำยาฟินฟู</div><div class="kks">฿195/unit</div></div>
+    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">7</div><div class="kks">ผ่าน 1,168 creators</div></div>
+    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue">Leather Wipes</div><div class="kks">฿553K · 5,041 หน่วย</div></div>
+    <div class="kk"><div class="kkl">Top Product (Units)</div><div class="kkv green">Leather Wipes</div><div class="kks">5,041 หน่วย</div></div>
+    <div class="kk"><div class="kkl">Best Price/Unit</div><div class="kkv amber">Refresh</div><div class="kks">฿406/หน่วย</div></div>
   </div>
 
   <div class="sec">ตารางสินค้า</div>
@@ -348,8 +348,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th onclick="sortTbl('tbl-products',2,this)">GMV รวม <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',3,this)">Units <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',4,this)">ราคา/หน่วย <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-products',5,this)">ครีเอเตอร์ <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-products',6,this)">วีดีโอ <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-products',5,this)">Returns <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-products',6,this)">Net GMV <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-products',7,this)">ครีเอเตอร์ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-16</div></th>
+          <th onclick="sortTbl('tbl-products',8,this)">วีดีโอ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-16</div></th>
           <th>% ของ Total GMV</th>
         </tr>
       </thead>
@@ -906,15 +908,14 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:553100,units:5041,monthly:{mar:25400,apr:134300,may:393400,jun:0}},
-  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,monthly:{mar:36100,apr:162600,may:168300,jun:97600}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,monthly:{mar:39000,apr:147300,may:119400,jun:97100}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,monthly:{mar:31900,apr:69400,may:67500,jun:51900}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,monthly:{mar:25800,apr:54500,may:59000,jun:26900}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,monthly:{mar:25400,apr:49600,may:40400,jun:18300}},
-  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,monthly:{mar:3700,apr:15900,may:10200,jun:5200}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:553100,units:5041,cr:0,vid:0,monthly:{mar:25400,apr:134300,may:393400,jun:0},ret:{mar:178,apr:1500,may:2900,jun:0}},
+  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:19,vid:75,monthly:{mar:36100,apr:162600,may:168300,jun:97600},ret:{mar:246,apr:2200,may:1100,jun:428}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:138,monthly:{mar:39000,apr:147300,may:119400,jun:97100},ret:{mar:732,apr:4200,may:3100,jun:2100}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:39,monthly:{mar:31900,apr:69400,may:67500,jun:51900},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:136,monthly:{mar:25800,apr:54500,may:59000,jun:26900},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:2,vid:19,monthly:{mar:25400,apr:49600,may:40400,jun:18300},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:6,monthly:{mar:3700,apr:15900,may:10200,jun:5200},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
-
 const VIDEOS = [
   {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'',gmv:257100,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:29200,may:227900,jun:0}},
   {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7617018768392260872',caption:'',gmv:116500,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:8900,apr:48400,may:49600,jun:9600}},
@@ -1023,6 +1024,12 @@ function sortTbl(tblId, colIdx, thEl){
 let activeMonth = 'all';
 function vGMV(v){ return activeMonth==='all'? v.gmv : (v.monthly[activeMonth]||0); }
 function pGMV(p){ return activeMonth==='all'? p.gmv : (p.monthly[activeMonth]||0); }
+function pRET(p){
+  if(!p.ret) return 0;
+  return activeMonth==='all'
+    ? Object.values(p.ret).reduce((s,v)=>s+v,0)
+    : (p.ret[activeMonth]||0);
+}
 function setMonth(m, btn){
   activeMonth = m;
   document.querySelectorAll('.mfbtn').forEach(b=>b.classList.remove('active'));
@@ -1108,26 +1115,32 @@ function renderProducts(){
   const maxGMV = sorted[0]?.dGMV||1;
   const totalD = allP.reduce((s,p)=>s+p.dGMV,0)||1;
   tbody.innerHTML = sorted.map((p,i)=>{
-    const ppu = Math.round(p.dGMV/p.units);
-    const pctTotal = ((p.dGMV/totalD)*100).toFixed(1);
-    const pct = Math.round((p.dGMV/maxGMV)*100);
-    const creatorsForProd = [...new Set(VIDEOS.filter(v=>v.product===p.name&&vGMV(v)>0).map(v=>v.creator))];
-    const vidCount = VIDEOS.filter(v=>v.product===p.name&&vGMV(v)>0).length;
+    const dGMV = p.dGMV;
     const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
+    const ppu = Math.round(dGMV/p.units);
+    const pctTotal = ((dGMV/totalD)*100).toFixed(1);
+    const sharePct = pctTotal;
+    const pct = Math.round((dGMV/maxGMV)*100);
+    const ret = pRET(p);
+    const netGMV = dGMV - ret;
+    const crHtml = p.cr ? `<span style="color:var(--blue);font-weight:600">${p.cr}</span>` : `<span style="color:var(--t3)">–</span>`;
+    const vidHtml = p.vid ? `<span style="color:var(--teal);font-weight:600">${p.vid}</span>` : `<span style="color:var(--t3)">–</span>`;
     return `<tr>
       <td>${rnk}</td>
-      <td style="max-width:220px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${p.name}</td>
-      <td data-val="${p.dGMV}">
+      <td><div style="font-size:13px;font-weight:600">${p.short}</div><div style="font-size:10px;color:var(--t3)">${p.name}</div></td>
+      <td data-val="${dGMV}">
         <div class="gmv-bar">
-          <span>${fmtK(p.dGMV)}</span>
-          <div class="gmv-track"><div class="gmv-fill" style="width:${pct}%;background:linear-gradient(90deg,var(--teal),var(--green))"></div></div>
+          <span>${fmtK(dGMV)}</span>
+          <div class="gmv-track"><div class="gmv-fill" style="width:${pct}%"></div></div>
         </div>
       </td>
-      <td data-val="${p.units}">${p.units} หน่วย</td>
-      <td data-val="${ppu}" style="color:var(--amber)">${ppu ? fmtFull(ppu) : '–'}</td>
-      <td data-val="${creatorsForProd.length}">${creatorsForProd.length} คน</td>
-      <td data-val="${vidCount}">${vidCount} คลิป</td>
-      <td><div style="display:flex;align-items:center;gap:6px"><div style="width:${Math.round(parseFloat(pctTotal))*2}px;height:6px;background:var(--blue);border-radius:3px"></div><span>${pctTotal}%</span></div></td>
+      <td data-val="${p.units}">${p.units.toLocaleString()} หน่วย</td>
+      <td data-val="${ppu}" style="color:var(--amber)">฿${fmtFull(ppu)}</td>
+      <td data-val="${ret}" style="color:${ret>0?'var(--red)':'var(--t3)'}">฿${fmtK(ret)}</td>
+      <td data-val="${netGMV}" style="color:var(--green)">฿${fmtK(netGMV)}</td>
+      <td data-val="${p.cr||0}">${crHtml}</td>
+      <td data-val="${p.vid||0}">${vidHtml}</td>
+      <td data-val="${sharePct}"><div class="mini-bar" style="--w:${sharePct}%">${sharePct}%</div></td>
     </tr>`;
   }).join('');
 }
