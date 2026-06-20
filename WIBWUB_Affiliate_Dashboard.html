@@ -467,10 +467,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <!-- ════ KOL ROI ════ -->
 <div id="tab-kolroi" class="panel">
   <div class="kol-kpi-row">
-    <div class="kol-kpi"><div class="kol-kpi-l">Total Spend</div><div class="kol-kpi-v" style="color:var(--red)">฿659K</div><div class="kol-kpi-s">ทุก tier รวมกัน</div></div>
-    <div class="kol-kpi"><div class="kol-kpi-l">Affiliate GMV (tracked)</div><div class="kol-kpi-v" style="color:var(--teal)">฿803K</div><div class="kol-kpi-s">KOLs ที่มี affiliate link</div></div>
-    <div class="kol-kpi"><div class="kol-kpi-l">Best ROI</div><div class="kol-kpi-v" style="color:var(--green)">45×</div><div class="kol-kpi-s">muchmai_mumi (Bonus)</div></div>
-    <div class="kol-kpi"><div class="kol-kpi-l">Organic Stars</div><div class="kol-kpi-v" style="color:var(--blue)">2</div><div class="kol-kpi-s">pailong05, fahareejun</div></div>
+    <div class="kol-kpi"><div class="kol-kpi-l">Total Spend</div><div class="kol-kpi-v" style="color:var(--red)">฿649K</div><div class="kol-kpi-s">ทุก tier รวมกัน</div></div>
+    <div class="kol-kpi"><div class="kol-kpi-l">Affiliate GMV (tracked)</div><div class="kol-kpi-v" style="color:var(--teal)">฿812K</div><div class="kol-kpi-s">KOLs ที่มี affiliate link</div></div>
+    <div class="kol-kpi"><div class="kol-kpi-l">Best ROI</div><div class="kol-kpi-v" style="color:var(--green)">46×</div><div class="kol-kpi-s">muchmai_mumi (Bonus)</div></div>
+    <div class="kol-kpi"><div class="kol-kpi-l">Organic Stars</div><div class="kol-kpi-v" style="color:var(--blue)">1</div><div class="kol-kpi-s">pailong05</div></div>
   </div>
   <div class="note" style="margin-bottom:12px">💡 ROI = Affiliate GMV ÷ Spend · Mega KOLs วัด brand awareness แยกต่างหาก · Organic = ไม่เคยจ่ายค่าจ้าง</div>
   <div class="kol-grid" id="kol-grid"></div>
@@ -756,10 +756,10 @@ const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
   {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:3,vid:19,monthly:{mar:25400,apr:134300,may:393400,jun:18294},ret:{mar:178,apr:1500,may:2900,jun:355}},
   {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:19,vid:75,monthly:{mar:36100,apr:162600,may:168300,jun:97634},ret:{mar:246,apr:2200,may:1100,jun:428}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:150,monthly:{mar:39000,apr:147300,may:119400,jun:97125},ret:{mar:732,apr:4200,may:3100,jun:2100}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:44,monthly:{mar:31900,apr:69400,may:67500,jun:51947},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:143,monthly:{mar:25800,apr:54500,may:59000,jun:26941},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:2,vid:19,monthly:{mar:25400,apr:49600,may:40400,jun:18294},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:157,monthly:{mar:39000,apr:147300,may:119400,jun:97125},ret:{mar:732,apr:4200,may:3100,jun:2100}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:46,monthly:{mar:31900,apr:69400,may:67500,jun:51947},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:148,monthly:{mar:25800,apr:54500,may:59000,jun:26941},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:20,monthly:{mar:25400,apr:49600,may:40400,jun:18294},ret:{mar:1200,apr:1400,may:355,jun:355}},
   {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:6,monthly:{mar:3700,apr:15900,may:10200,jun:5220},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
 const VIDEOS = [
@@ -1236,8 +1236,8 @@ const KOLS_DATA = [
   {n:"pailong05",      tier:"organic", tc:"#3b82f6", spend:0,      gmv:182430, insight:"ไม่เคยได้รับค่าจ้างเลย affiliate GMV ฿182K — pure organic top creator"},
   {n:"rita.fe_",       tier:"bonus",   tc:"#22c55e", spend:5000,   gmv:194461, insight:"Bonus ฿5K พ.ค. — affiliate GMV ฿194K ROI สูงมาก"},
   {n:"noonjourneyyy",  tier:"bonus",   tc:"#22c55e", spend:4000,   gmv:138995, insight:"Bonus ฿4K — GMV ฿139K ต่อเนื่อง 4 เดือน"},
-  {n:"muchmai_mumi",   tier:"bonus",   tc:"#22c55e", spend:2000,   gmv:90713,  insight:"Bonus ฿2K — GMV ฿90K · ROI 45× สูงสุดใน Bonus tier"},
-  {n:"jarkkystory",    tier:"bonus",   tc:"#22c55e", spend:2000,   gmv:8458,   insight:"Bonus ฿2K มิ.ย. — GMV เพิ่งเริ่ม ยังรอดูผล"},
+  {n:"muchmai_mumi",   tier:"bonus",   tc:"#22c55e", spend:2000,   gmv:92105,  insight:"Bonus ฿2K — GMV ฿92.1K · ROI 46.1× สูงสุดใน Bonus tier"},
+  {n:"jarkkystory",    tier:"bonus",   tc:"#22c55e", spend:2000,   gmv:77530,  insight:"Bonus ฿2K มิ.ย. — cumulative GMV ฿77.5K (มี.ค.–มิ.ย.) · ROI 38.8×"},
   {n:"mushinyiwz",     tier:"mega",    tc:"#ec4899", spend:130000, gmv:47557,  insight:"Mega ฿130K ม.ค. — affiliate GMV ต่ำกว่าคาด แต่ช่วย brand awareness สูง"},
   {n:"nickynachat",    tier:"mega",    tc:"#ec4899", spend:124800, gmv:0,      insight:"Mega ฿124.8K พ.ค. — ยังไม่มี affiliate link · วัดผลทาง awareness"},
   {n:"djpetjah",       tier:"mid",     tc:"#f59e0b", spend:150800, gmv:0,      insight:"Mid ฿150.8K พ.ค. — ยังไม่มี affiliate GMV บันทึก"},
@@ -1296,24 +1296,25 @@ function buildKolRoi(){
 // ══════════════════════════════════════════
 const T10_DATA = {
   grow:[
-    {rank:1,n:"fahareejun",  avg:128794,last:228257,trend:"📈 +678%",tag:"🚀 Priority",tagC:"#3b82f6",why:"ยอดพุ่งจาก ฿29K มี.ค. → ฿228K เม.ย. — Creator ที่โตเร็วที่สุดใน portfolio",action:"เพิ่มงบ Seed สินค้าใหม่ ลอง live stream"},
-    {rank:2,n:"nnhtr_",      avg:9452,  last:9452, trend:"📈 New",   tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. เดือนแรก ฿9.5K กับ 47 orders — อัตรา commission สูง 14.5%",action:"Seed สินค้าเพิ่ม ดูว่า content style ไหนดีที่สุด"},
-    {rank:3,n:"orion_risingstar",avg:9617,last:9617,trend:"📈 New",  tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. เดือนแรก ฿9.6K — 72 orders AOV ต่ำแต่ volume ดี",action:"Seed ทิชซู่เปียกเพิ่ม เหมาะ content รีวิว"},
-    {rank:4,n:"ralph.detailing8",avg:8475,last:8475,trend:"⬆ Stable",tag:"💎 Consistent",tagC:"#8b5cf6",why:"Content คุณภาพดี รถ-detailing niche ตรงกับสินค้า WIBWUB",action:"เพิ่ม seed น้ำยาเคลือบสี ลอง bundle"},
-    {rank:5,n:"phanuwatinsri",avg:7209, last:7209, trend:"📈 New",   tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. ฿7.2K — commission rate ต่ำ 7.7% แต่ฐาน orders ดี 37 คำสั่ง",action:"ติดตามใกล้ชิด ดู content type"},
-    {rank:6,n:"somkidkongchom",avg:6555,last:6555, trend:"📈 New",   tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. ฿6.6K commission rate สูง 14.1% — ศักยภาพดี",action:"Seed สินค้าเพิ่ม + bonus ถ้ายอดถึง ฿20K"},
+    {rank:1,n:".namoshop125", avg:32017,last:32017,trend:"📈 New",    tag:"🚀 Priority",tagC:"#3b82f6",why:"มิ.ย. เดือนแรก ฿32K — top creator ของเดือน · 84 orders · commission rate 12.6%",action:"Seed สินค้าหลายตัว ดู content style ที่ดีที่สุด ลอง bundle deal"},
+    {rank:2,n:"nnhtr_",       avg:10131,last:10131,trend:"📈 New",    tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. เดือนแรก ฿10.1K กับ 50 orders — commission rate สูง 14.5%",action:"Seed สินค้าเพิ่ม ดูว่า content style ไหนดีที่สุด"},
+    {rank:3,n:"orion_risingstar",avg:9617,last:9617,trend:"📈 New",   tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. เดือนแรก ฿9.6K — 72 orders AOV ต่ำแต่ volume ดี",action:"Seed ทิชซู่เปียกเพิ่ม เหมาะ content รีวิว"},
+    {rank:4,n:"ralph.detailing8",avg:19253,last:9609,trend:"📉 -63%", tag:"💎 Consistent",tagC:"#8b5cf6",why:"Cumulative ฿76K (มี.ค.–มิ.ย.) · content คุณภาพดี รถ-detailing niche ตรงกับ WIBWUB",action:"เพิ่ม seed น้ำยาเคลือบสี ลอง bundle"},
+    {rank:5,n:"phanuwatinsri", avg:16587,last:7605,trend:"📉 -61%",   tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. ฿7.6K — commission rate ต่ำ 7.7% แต่ฐาน orders ดี 39 คำสั่ง",action:"ติดตามใกล้ชิด ดู content type"},
+    {rank:6,n:"somkidkongchom",avg:7149,last:7149, trend:"📈 New",    tag:"🌱 Potential",tagC:"#14b8a6",why:"มิ.ย. ฿7.1K commission rate สูง 14.2% — ศักยภาพดี",action:"Seed สินค้าเพิ่ม + bonus ถ้ายอดถึง ฿20K"},
   ],
   watch:[
-    {rank:1,n:"rita.fe_",    avg:48615, last:13008,trend:"📉 -69%",  tag:"👀 Watch",tagC:"#f59e0b",why:"ยอดลดจาก ฿77K มี.ค. → ฿13K มิ.ย. — ต้องดูว่า trend กลับมาไหม",action:"คุยกับ creator เรื่อง content ใหม่ อาจให้ bonus"},
-    {rank:2,n:"pailong05",   avg:45596, last:26959,trend:"📉 -63%",  tag:"⚓ Anchor",tagC:"#3b82f6",why:"ยอดสูงสุด ฿73K พ.ค. ลงมา ฿27K มิ.ย. — ยังเป็น organic top creator",action:"รักษาความสัมพันธ์ อาจให้ exclusive deal"},
-    {rank:3,n:"noonjourneyyy",avg:34749,last:22406,trend:"📉 -39%",  tag:"⚓ Anchor",tagC:"#3b82f6",why:"Stable ฿35-44K แต่มิ.ย. ลงมา ฿22K — ยังดีอยู่ในระดับ top 3",action:"Bonus ฿4K ช่วย maintain — พิจารณาต่อ"},
-    {rank:4,n:"muchmai_mumi",avg:22651, last:8466, trend:"📉 -64%",  tag:"👀 Watch",tagC:"#f59e0b",why:"ยอด ฿32K มี.ค. ลงมาเหลือ ฿8K มิ.ย. — ต้องดูว่าเป็น seasonal หรือ trend",action:"ติดตามใกล้ชิด เปรียบเทียบ content quality"},
-    {rank:5,n:"papajate",    avg:13698, last:13698,trend:"⬆ Stable", tag:"📊 Mid",tagC:"#94a3b8",why:"มิ.ย. เดือนแรกกับ affiliate link — ฿13.7K เกินกว่า spend ฿12K แล้ว",action:"รอดู 2-3 เดือน ก่อนเพิ่มงบ"},
+    {rank:1,n:"rita.fe_",     avg:48671,last:13228,trend:"📉 -69%",   tag:"👀 Watch",tagC:"#f59e0b",why:"ยอดลดจาก ฿77K มี.ค. → ฿13K มิ.ย. — ต้องดูว่า trend กลับมาไหม",action:"คุยกับ creator เรื่อง content ใหม่ อาจให้ bonus"},
+    {rank:2,n:"pailong05",    avg:45695,last:27308,trend:"📉 -63%",   tag:"⚓ Anchor",tagC:"#3b82f6",why:"ยอดสูงสุด ฿73K พ.ค. ลงมา ฿27K มิ.ย. — ยังเป็น organic top creator",action:"รักษาความสัมพันธ์ อาจให้ exclusive deal"},
+    {rank:3,n:"noonjourneyyy",avg:34849,last:22802,trend:"📉 -37%",   tag:"⚓ Anchor",tagC:"#3b82f6",why:"Stable ฿35-44K แต่มิ.ย. ลงมา ฿22.8K — ยังดีอยู่ในระดับ top 3",action:"Bonus ฿4K ช่วย maintain — พิจารณาต่อ"},
+    {rank:4,n:"muchmai_mumi", avg:23026,last:9856, trend:"📉 -58%",   tag:"👀 Watch",tagC:"#f59e0b",why:"ยอด ฿32K มี.ค. ลงมาเหลือ ฿9.9K มิ.ย. — ต้องดูว่าเป็น seasonal หรือ trend",action:"ติดตามใกล้ชิด เปรียบเทียบ content quality"},
+    {rank:5,n:"papajate",     avg:12746,last:14914,trend:"📈 +11%",   tag:"📊 Mid",tagC:"#94a3b8",why:"มิ.ย. ฿14.9K สูงขึ้น — affiliate GMV เกิน spend ฿12K แล้ว · ROI 1.1×",action:"รอดู 2-3 เดือน ก่อนเพิ่มงบ"},
   ],
   pause:[
-    {rank:1,n:"jarkkystory",  avg:8458,last:8458, trend:"📈 New",    tag:"⏸ รอดูก่อน",tagC:"#475569",why:"มิ.ย. ฿8.5K เดือนแรก — Bonus ฿2K อาจเป็น one-time spike",action:"รอดูเดือนหน้า ก่อนตัดสินใจ seed เพิ่ม"},
-    {rank:2,n:"thekratae",    avg:6960, last:6960, trend:"⬆ Stable", tag:"⏸ รอดูก่อน",tagC:"#475569",why:"มิ.ย. ฿7K with ฿342 returns — conversion ดี แต่ฐานยังเล็ก",action:"รอดูสม่ำเสมอหรือไม่"},
-    {rank:3,n:"saiinum.storry",avg:8488,last:8488,trend:"📈 New",    tag:"⏸ รอดูก่อน",tagC:"#475569",why:"commission rate ต่ำมาก 6.6% — อาจเป็นสินค้า tier ต่ำ",action:"ตรวจสอบ commission structure"},
+    {rank:1,n:"fahareejun",   avg:64397,last:0,    trend:"📉 -100%",  tag:"⏸ หยุดชั่วคราว",tagC:"#dc2626",why:"มิ.ย. ยอด ฿0 หลังจาก ฿228K พ.ค. — อาจเป็น TikTok attribution recalculation หรือ creator หยุด post",action:"ตรวจสอบสาเหตุก่อน ยังไม่เพิ่มงบจนกว่ายอดจะกลับมา"},
+    {rank:2,n:"jarkkystory",  avg:19383,last:9062, trend:"📉 -34%",   tag:"⏸ รอดูก่อน",tagC:"#475569",why:"GMV ลดต่อเนื่อง ฿30.9K มี.ค. → ฿9K มิ.ย. · Bonus ฿2K ให้ มิ.ย. ยังรอผล",action:"รอดูเดือนหน้า ก่อนตัดสินใจ seed เพิ่ม"},
+    {rank:3,n:"thekratae",    avg:7304, last:7304, trend:"📈 New",    tag:"⏸ รอดูก่อน",tagC:"#475569",why:"มิ.ย. ฿7.3K with ฿343 returns — conversion ดี แต่ฐานยังเล็ก",action:"รอดูสม่ำเสมอหรือไม่"},
+    {rank:4,n:"saiinum.storry",avg:8489,last:8489,trend:"📈 New",    tag:"⏸ รอดูก่อน",tagC:"#475569",why:"commission rate ต่ำมาก 6.6% — อาจเป็นสินค้า tier ต่ำ",action:"ตรวจสอบ commission structure"},
   ]
 };
 
