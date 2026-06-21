@@ -10,7 +10,7 @@ from datetime import datetime, timedelta
 from pathlib import Path
 
 BASE = Path(__file__).parent
-SNAPSHOT = BASE / "Data Shipnity" / "stock_snapshot.json"
+SNAPSHOT = BASE / "Data Shipnity" / "Stock" / "stock_snapshot.json"
 DASHBOARD = BASE / "Procurement_Dashboard.html"
 
 # ─── อ่าน snapshot จาก Shipnity ─────────────────────────────────────────────
