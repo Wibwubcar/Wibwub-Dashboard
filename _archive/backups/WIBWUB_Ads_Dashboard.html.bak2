@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB Ads Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bg:#F8F9FB;--panel:#fff;--panel2:#F8F9FB;--border:#e8e8e8;
+    --orange:#1A5CDB;--orange-lt:#EEF3FD;--orange-md:#c5d5f5;
+    --white:#FFFFFF;--gray:#0F0F0F;--muted:#999;--dark:#0F0F0F;
+    --green:#16a34a;--red:#EF4444;--blue:#1A5CDB;--yellow:#d97706;
+    --shopee:#EE4D2D;--tiktok:#111111;
+  }
+  body{font-family:'Segoe UI',Arial,sans-serif;background:var(--bg);color:var(--dark);min-height:100vh}
+
+  /* ── Header ─────────────────────────────────────────────────────── */
+  .header{background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+  .logo{display:flex;align-items:center;gap:10px}
+  .logo-text{font-size:20px;font-weight:800;color:#0F0F0F}
+  .logo-text span{color:#1A5CDB}
+  .header-right{font-size:12px;color:var(--muted)}
+  .period-badge{background:#EEF3FD;color:#1A5CDB;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1px solid rgba(249,115,22,.3)}
+
+  /* ── Tabs ───────────────────────────────────────────────────────── */
+  .tabs{display:flex;gap:0;background:var(--panel);border-bottom:1px solid var(--border);padding:0 24px;overflow-x:auto}
+  .tab{padding:14px 20px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;white-space:nowrap;transition:all .2s}
+  .tab:hover{color:var(--white)}
+  .tab.active{color:#1A5CDB;border-bottom-color:#1A5CDB}
+
+  /* ── Main ───────────────────────────────────────────────────────── */
+  .main{padding:24px;max-width:1400px;margin:0 auto}
+
+  /* ── Section Header ─────────────────────────────────────────────── */
+  .section-hdr{display:flex;align-items:center;gap:8px;margin-bottom:16px;margin-top:8px}
+  .section-hdr h2{font-size:16px;font-weight:700;color:var(--white)}
+  .section-hdr .pill{background:#EEF3FD;color:#1A5CDB;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px}
+
+  /* ── KPI Cards ──────────────────────────────────────────────────── */
+  .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}
+  .kpi-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:16px;position:relative;overflow:hidden}
+  .kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+  .kpi-card.orange::before{background:var(--orange)}
+  .kpi-card.green::before{background:var(--green)}
+  .kpi-card.blue::before{background:var(--blue)}
+  .kpi-card.red::before{background:var(--red)}
+  .kpi-card.shopee::before{background:var(--shopee)}
+  .kpi-card.tiktok::before{background:var(--tiktok)}
+  .kpi-card.yellow::before{background:var(--yellow)}
+  .kpi-label{font-size:11px;color:var(--muted);margin-bottom:8px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+  .kpi-value{font-size:26px;font-weight:800;line-height:1}
+  .kpi-sub{font-size:11px;color:var(--muted);margin-top:6px}
+  .kpi-card.orange .kpi-value{color:#1A5CDB}
+  .kpi-card.green .kpi-value{color:var(--green)}
+  .kpi-card.blue .kpi-value{color:var(--blue)}
+  .kpi-card.red .kpi-value{color:var(--red)}
+  .kpi-card.shopee .kpi-value{color:var(--shopee)}
+  .kpi-card.tiktok .kpi-value{color:var(--tiktok)}
+  .kpi-card.yellow .kpi-value{color:var(--yellow)}
+
+  /* ── Charts ─────────────────────────────────────────────────────── */
+  .charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+  .chart-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:20px}
+  .chart-title{font-size:13px;font-weight:700;color:var(--white);margin-bottom:16px}
+  .chart-wrap{position:relative;height:240px}
+  @media(max-width:768px){.charts-grid{grid-template-columns:1fr}}
+
+  /* ── Compare Table ───────────────────────────────────────────────── */
+  .compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+  @media(max-width:900px){.compare-grid{grid-template-columns:1fr}}
+  .platform-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .platform-header{padding:14px 20px;display:flex;align-items:center;gap:10px;font-weight:700;font-size:14px}
+  .platform-header.shopee{background:rgba(238,77,45,.15);color:var(--shopee)}
+  .platform-header.tiktok{background:rgba(45,212,191,.1);color:var(--tiktok)}
+
+  /* ── Tables ─────────────────────────────────────────────────────── */
+  .table-wrap{overflow-x:auto;margin-bottom:24px}
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{background:#F8F9FB;color:var(--muted);font-weight:700;padding:10px 12px;text-align:left;border-bottom:1px solid var(--border);font-size:10px;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+  th.sortable{cursor:pointer;user-select:none;transition:color .15s,background .15s}
+  th.sortable:hover{color:var(--white);background:#181818}
+  th.sortable.sort-asc::after{content:' ▲';color:#1A5CDB;font-size:9px}
+  th.sortable.sort-desc::after{content:' ▼';color:#1A5CDB;font-size:9px}
+  th.sortable:not(.sort-asc):not(.sort-desc)::after{content:' ⇅';color:var(--border);font-size:9px}
+  td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.04);vertical-align:middle}
+  tr:hover td{background:rgba(255,255,255,.02)}
+  .ad-name{color:var(--gray);font-weight:500;max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .roas-badge{display:inline-block;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700}
+  .roas-high{background:rgba(16,185,129,.15);color:var(--green)}
+  .roas-mid{background:#EEF3FD;color:#1A5CDB}
+  .roas-low{background:rgba(239,68,68,.15);color:var(--red)}
+  .rank-badge{width:28px;height:28px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:800}
+  .rank-1{background:rgba(251,191,36,.2);color:#FBB F24}
+  .rank-good{background:rgba(16,185,129,.15);color:var(--green)}
+  .rank-bad{background:rgba(239,68,68,.15);color:var(--red)}
+
+  /* ── Top/Worst section ───────────────────────────────────────────── */
+  .top-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+  @media(max-width:900px){.top-grid{grid-template-columns:1fr}}
+  .top-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .top-card-header{padding:12px 16px;font-size:13px;font-weight:700}
+  .top-card-header.best{background:rgba(16,185,129,.1);color:var(--green);border-bottom:1px solid rgba(16,185,129,.2)}
+  .top-card-header.worst{background:rgba(239,68,68,.1);color:var(--red);border-bottom:1px solid rgba(239,68,68,.2)}
+  .top-row{display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .top-row:last-child{border-bottom:none}
+  .top-row:hover{background:rgba(255,255,255,.02)}
+  .top-name{flex:1;font-size:12px;color:var(--gray);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .top-roas{font-size:14px;font-weight:800}
+  .top-sub{font-size:10px;color:var(--muted)}
+
+  /* ── View toggle ─────────────────────────────────────────────────── */
+  .view{display:none}
+  .view.active{display:block}
+
+  /* ── Platform badge ──────────────────────────────────────────────── */
+  .badge-shopee{background:rgba(238,77,45,.2);color:var(--shopee);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+  .badge-tiktok{background:rgba(45,212,191,.15);color:var(--tiktok);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700}
+
+  /* ── Form ────────────────────────────────────────────────────────── */
+  .form-card{background:var(--panel);border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:20px}
+  .form-title{font-size:15px;font-weight:700;color:var(--white);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+  .form-group{display:flex;flex-direction:column;gap:6px}
+  .form-group label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .form-group input,.form-group select{background:var(--panel2);border:1px solid var(--border);border-radius:8px;padding:10px 12px;color:var(--white);font-size:13px;outline:none;transition:border-color .2s}
+  .form-group input:focus,.form-group select:focus{border-color:#1A5CDB}
+  .form-group input::placeholder{color:var(--muted)}
+  .btn-submit{background:var(--orange);color:#fff;border:none;border-radius:8px;padding:12px 28px;font-size:14px;font-weight:700;cursor:pointer;margin-top:16px;transition:opacity .2s}
+  .btn-submit:hover{opacity:.85}
+  .btn-clear{background:var(--panel2);color:var(--muted);border:1px solid var(--border);border-radius:8px;padding:12px 20px;font-size:13px;cursor:pointer;margin-top:16px;margin-left:8px}
+  .added-table{margin-top:20px}
+  .success-toast{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:var(--green);padding:10px 16px;border-radius:8px;font-size:13px;margin-top:12px;display:none}
+
+  /* ── Comparison rows ─────────────────────────────────────────────── */
+  .cmp-row{display:flex;align-items:center;padding:12px 20px;border-bottom:1px solid rgba(255,255,255,.04)}
+  .cmp-row:last-child{border-bottom:none}
+  .cmp-label{width:140px;font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;flex-shrink:0}
+  .cmp-bar-wrap{flex:1;display:flex;gap:8px;align-items:center}
+  .cmp-val{font-size:14px;font-weight:800;width:90px;text-align:right;flex-shrink:0}
+  .winner-crown{font-size:14px;flex-shrink:0}
+
+  /* ── Scrollbar ───────────────────────────────────────────────────── */
+  ::-webkit-scrollbar{width:6px;height:6px}
+  ::-webkit-scrollbar-track{background:var(--panel)}
+  ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+  ::-webkit-scrollbar-thumb:hover{background:var(--orange)}
+
+  .divider{height:1px;background:var(--border);margin:24px 0}
+
+  .stat-inline{display:inline-flex;gap:16px;flex-wrap:wrap;margin-bottom:8px}
+  .stat-inline span{font-size:12px;color:var(--muted)}
+  .stat-inline strong{color:var(--gray)}
+
+  /* ── Period Picker ────────────────────────────────────────────── */
+  .period-bar{display:flex;align-items:center;gap:10px;padding:10px 24px;background:var(--panel);border-bottom:1px solid var(--border);flex-wrap:wrap;position:sticky;top:60px;z-index:88;}
+  .period-bar-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
+  .ads-mpicker-wrap{position:relative;}
+  .ads-mrange-btn{display:inline-flex;align-items:center;gap:9px;padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--orange);color:#1A5CDB;background:rgba(255,107,43,.08);user-select:none;white-space:nowrap;transition:background .15s;}
+  .ads-mrange-btn:hover{background:rgba(255,107,43,.15);}
+  .ads-mrange-btn .caret{font-size:10px;transition:transform .2s;}
+  .ads-mrange-btn.open .caret{transform:rotate(180deg);}
+  .ads-mpicker-panel{position:absolute;top:calc(100% + 8px);left:0;background:var(--panel);border:1.5px solid var(--border);border-radius:16px;box-shadow:0 10px 36px rgba(0,0,0,.28);padding:16px 18px;z-index:300;min-width:280px;display:none;flex-direction:column;gap:8px;}
+  .ads-mpicker-panel.open{display:flex;}
+  .ads-mp-sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
+  .ads-period-btn{padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--gray);background:transparent;text-align:left;transition:all .15s;width:100%;display:flex;flex-direction:column;gap:2px;}
+  .ads-period-btn .pb-label{font-size:13px;font-weight:700;}
+  .ads-period-btn .pb-sub{font-size:10px;color:var(--muted);}
+  .ads-period-btn:hover{border-color:#1A5CDB;color:#1A5CDB;}
+  .ads-period-btn:hover .pb-sub{color:#1A5CDB;}
+  .ads-period-btn.active{background:#EEF3FD;color:#1A5CDB;border-color:#1A5CDB;}
+  .ads-period-btn.active .pb-sub{color:#1A5CDB;}
+  .ads-backdrop{position:fixed;inset:0;z-index:299;display:none;}
+  .ads-backdrop.open{display:block;}
+  .period-summary-txt{font-size:11px;color:var(--muted);}
+
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="logo"><img src="../logo-header.png" alt="WIBWUB" style="height:24px;display:block;"></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="period-badge"><span id="period-badge-txt">1 ม.ค. – 24 พ.ค. 2569</span></span>
+    <span style="font-size:11px;color:var(--muted)">ข้อมูลจริงจาก Shopee + TikTok</span>
+  </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('overview',event)">📊 ภาพรวม</div>
+  <div class="tab" onclick="showTab('shopee',event)">🛍️ Shopee</div>
+  <div class="tab" onclick="showTab('tiktok',event)">🎵 TikTok</div>
+  <div class="tab" onclick="showTab('adddata',event)">➕ เพิ่มข้อมูล</div>
+</div>
+
+<div class="period-bar">
+  <span class="period-bar-label">📅 ช่วงเวลา:</span>
+  <div class="ads-mpicker-wrap">
+    <div class="ads-mrange-btn" id="adsMRangeBtn" onclick="adsTogglePicker()">
+      <span id="adsPeriodLabel">ทั้งหมด (ม.ค. – 24 พ.ค. 2569)</span>
+      <span class="caret">▾</span>
+    </div>
+    <div class="ads-backdrop" id="adsBackdrop" onclick="adsClosePicker()"></div>
+    <div class="ads-mpicker-panel" id="adsMPickerPanel">
+      <div class="ads-mp-sec-label">เลือกช่วงเวลา</div>
+      <button class="ads-period-btn active" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
+        <span class="pb-label">ทั้งหมด</span>
+        <span class="pb-sub">ม.ค. – 24 พ.ค. 2569 · Shopee ฿18.21M · TikTok ฿5.44M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-jan" onclick="adsPickPeriod('jan',this)">
+        <span class="pb-label">มกราคม 2569</span>
+        <span class="pb-sub">01–31 ม.ค. · Shopee ฿3.61M · TikTok ฿898K</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-feb" onclick="adsPickPeriod('feb',this)">
+        <span class="pb-label">กุมภาพันธ์ 2569</span>
+        <span class="pb-sub">01–28 ก.พ. · Shopee ฿3.75M · TikTok ฿1.04M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-mar" onclick="adsPickPeriod('mar',this)">
+        <span class="pb-label">มีนาคม 2569</span>
+        <span class="pb-sub">01–31 มี.ค. · Shopee ฿3.62M · TikTok ฿1.13M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-apr" onclick="adsPickPeriod('apr',this)">
+        <span class="pb-label">เมษายน 2569</span>
+        <span class="pb-sub">01–30 เม.ย. · Shopee ฿4.34M · TikTok ฿1.28M</span>
+      </button>
+      <button class="ads-period-btn" id="adsPeriodBtn-may" onclick="adsPickPeriod('may',this)">
+        <span class="pb-label">พฤษภาคม 2569</span>
+        <span class="pb-sub">01–24 พ.ค. · Shopee ฿3.85M · TikTok ฿1.18M</span>
+      </button>
+    </div>
+  </div>
+  <span class="period-summary-txt" id="ads-period-summary"></span>
+</div>
+
+<div class="main">
+
+<!-- ═══════════════════════════════════════ OVERVIEW ══════════════ -->
+<div id="tab-overview" class="view active">
+
+  <!-- KPI Row: Blended -->
+  <div class="section-hdr" style="margin-top:8px">
+    <h2>รวมทั้ง 2 Platform</h2>
+    <span class="pill">Blended</span>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card orange">
+      <div class="kpi-label">Total Spend</div>
+      <div class="kpi-value" id="kpi-blend-spend">฿3,878,868</div>
+      <div class="kpi-sub">Shopee ฿2,889,415 + TikTok ฿989,453</div>
+    </div>
+    <div class="kpi-card green">
+      <div class="kpi-label">Total Revenue</div>
+      <div class="kpi-value" id="kpi-blend-rev">฿22,775,862</div>
+      <div class="kpi-sub">Shopee ฿17,652,641 + TikTok ฿5,123,221</div>
+    </div>
+    <div class="kpi-card orange">
+      <div class="kpi-label">Blended ROAS</div>
+      <div class="kpi-value" id="kpi-blend-roas">5.87x</div>
+      <div class="kpi-sub">Revenue / Spend รวม</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Orders</div>
+      <div class="kpi-value" id="kpi-blend-orders">60,456</div>
+      <div class="kpi-sub">Shopee 41,556 + TikTok 18,900</div>
+    </div>
+    <div class="kpi-card yellow">
+      <div class="kpi-label">Avg CPA</div>
+      <div class="kpi-value" id="kpi-blend-cpa">฿64.16</div>
+      <div class="kpi-sub">Total Spend / Total Orders</div>
+    </div>
+    <div class="kpi-card blue">
+      <div class="kpi-label">Total Impressions</div>
+      <div class="kpi-value" id="kpi-blend-imp">24.45M</div>
+      <div class="kpi-sub">Shopee 17.13M + TikTok 7.32M</div>
+    </div>
+  </div>
+
+  <!-- Platform Compare -->
+  <div class="section-hdr">
+    <h2>เปรียบเทียบแพลตฟอร์ม</h2>
+  </div>
+  <div class="compare-grid">
+    <div class="platform-card">
+      <div class="platform-header shopee">🛍️ Shopee Ads</div>
+      <div id="shopee-cmp"></div>
+    </div>
+    <div class="platform-card">
+      <div class="platform-header tiktok">🎵 TikTok Ads</div>
+      <div id="tiktok-cmp"></div>
+    </div>
+  </div>
+
+  <!-- Charts -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">📊 ROAS — Shopee vs TikTok (แยก Ads)</div>
+      <div class="chart-wrap"><canvas id="chartROAS"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">💰 Spend vs Revenue (Platform)</div>
+      <div class="chart-wrap"><canvas id="chartSpendRev"></canvas></div>
+    </div>
+  </div>
+
+  <!-- CTR / CVR chart -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">👁️ CTR & Conversion Rate เปรียบเทียบ</div>
+      <div class="chart-wrap"><canvas id="chartCTRCVR"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">🛒 คำสั่งซื้อ & CPA ตาม Platform</div>
+      <div class="chart-wrap"><canvas id="chartOrderCPA"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ SHOPEE ════════════════ -->
+<div id="tab-shopee" class="view">
+  <div class="section-hdr" style="margin-top:8px">
+    <h2>🛍️ Shopee Ads</h2>
+    <span class="pill">28 Ads</span>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card shopee"><div class="kpi-label">Spend</div><div class="kpi-value" id="sh-kpi-spend">฿370,391</div><div class="kpi-sub">14 วัน</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Revenue</div><div class="kpi-value" id="sh-kpi-rev">฿2,327,629</div><div class="kpi-sub">ยอดขายรวม</div></div>
+    <div class="kpi-card orange"><div class="kpi-label">ROAS</div><div class="kpi-value" id="sh-kpi-roas">6.28x</div><div class="kpi-sub">ดีกว่า TikTok</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">CTR</div><div class="kpi-value" id="sh-kpi-ctr">3.04%</div><div class="kpi-sub">Clicks / Impressions</div></div>
+    <div class="kpi-card yellow"><div class="kpi-label">Conversion Rate</div><div class="kpi-value" id="sh-kpi-cvr">7.07%</div><div class="kpi-sub">Orders / Clicks</div></div>
+    <div class="kpi-card red"><div class="kpi-label">CPA</div><div class="kpi-value" id="sh-kpi-cpa">฿66.44</div><div class="kpi-sub">Spend / Orders</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Orders</div><div class="kpi-value" id="sh-kpi-orders">5,575</div><div class="kpi-sub">คำสั่งซื้อ</div></div>
+    <div class="kpi-card orange"><div class="kpi-label">Impressions</div><div class="kpi-value" id="sh-kpi-imp">2.60M</div><div class="kpi-sub">การมองเห็น</div></div>
+  </div>
+
+  <div class="top-grid">
+    <div class="top-card">
+      <div class="top-card-header best">🏆 Top 5 ดีที่สุด — ROAS สูงสุด</div>
+      <div id="shopee-top5-best"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-card-header worst">⚠️ Bottom 5 แย่ที่สุด — ROAS ต่ำสุด</div>
+      <div id="shopee-top5-worst"></div>
+    </div>
+  </div>
+
+  <div class="section-hdr"><h2>📋 Shopee Ads ทั้งหมด</h2><span style="font-size:11px;color:var(--muted)">กดหัวตารางเพื่อเรียงลำดับ</span></div>
+  <div class="table-wrap">
+    <table id="shopee-all-table">
+      <thead><tr>
+        <th>#</th>
+        <th class="sortable" data-col="name" onclick="sortTable('shopee','name')">ชื่อ Ads</th>
+        <th class="sortable" data-col="spend" onclick="sortTable('shopee','spend')">Spend (฿)</th>
+        <th class="sortable" data-col="revenue" onclick="sortTable('shopee','revenue')">Revenue (฿)</th>
+        <th class="sortable" data-col="roas" onclick="sortTable('shopee','roas')">ROAS</th>
+        <th class="sortable" data-col="ctr" onclick="sortTable('shopee','ctr')">CTR</th>
+        <th class="sortable" data-col="cvr" onclick="sortTable('shopee','cvr')">CVR</th>
+        <th class="sortable" data-col="cpa" onclick="sortTable('shopee','cpa')">CPA (฿)</th>
+      </tr></thead>
+      <tbody id="shopee-all-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ TIKTOK ════════════════ -->
+<div id="tab-tiktok" class="view">
+  <div class="section-hdr" style="margin-top:8px">
+    <h2>🎵 TikTok Ads</h2>
+    <span class="pill">12 Campaigns</span>
+  </div>
+  <div class="kpi-grid">
+    <div class="kpi-card tiktok"><div class="kpi-label">Spend</div><div class="kpi-value" id="tk-kpi-spend">฿141,352</div><div class="kpi-sub">14 วัน</div></div>
+    <div class="kpi-card green"><div class="kpi-label">Revenue</div><div class="kpi-value" id="tk-kpi-rev">฿692,177</div><div class="kpi-sub">ยอดขายรวม</div></div>
+    <div class="kpi-card orange"><div class="kpi-label">ROAS</div><div class="kpi-value" id="tk-kpi-roas">4.90x</div><div class="kpi-sub">Revenue / Spend</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">CTR</div><div class="kpi-value" id="tk-kpi-ctr">3.62%</div><div class="kpi-sub">สูงกว่า Shopee</div></div>
+    <div class="kpi-card yellow"><div class="kpi-label">Conversion Rate</div><div class="kpi-value" id="tk-kpi-cvr">9.25%</div><div class="kpi-sub">Orders / Clicks</div></div>
+    <div class="kpi-card green"><div class="kpi-label">CPA</div><div class="kpi-value" id="tk-kpi-cpa">฿40.37</div><div class="kpi-sub">ต่ำกว่า Shopee 🏆</div></div>
+    <div class="kpi-card blue"><div class="kpi-label">Orders</div><div class="kpi-value" id="tk-kpi-orders">3,501</div><div class="kpi-sub">คำสั่งซื้อ</div></div>
+    <div class="kpi-card tiktok"><div class="kpi-label">Impressions</div><div class="kpi-value" id="tk-kpi-imp">1.05M</div><div class="kpi-sub">การแสดงผล</div></div>
+  </div>
+
+  <div class="top-grid">
+    <div class="top-card">
+      <div class="top-card-header best">🏆 Top 5 ดีที่สุด — ROAS สูงสุด</div>
+      <div id="tiktok-top5-best"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-card-header worst">⚠️ Bottom 5 แย่ที่สุด — ROAS ต่ำสุด</div>
+      <div id="tiktok-top5-worst"></div>
+    </div>
+  </div>
+
+  <div class="section-hdr"><h2>📋 TikTok Campaigns ทั้งหมด</h2><span style="font-size:11px;color:var(--muted)">กดหัวตารางเพื่อเรียงลำดับ</span></div>
+  <div class="table-wrap">
+    <table id="tiktok-all-table">
+      <thead><tr>
+        <th>#</th>
+        <th class="sortable" data-col="name" onclick="sortTable('tiktok','name')">Campaign</th>
+        <th class="sortable" data-col="spend" onclick="sortTable('tiktok','spend')">Spend (฿)</th>
+        <th class="sortable" data-col="revenue" onclick="sortTable('tiktok','revenue')">Revenue (฿)</th>
+        <th class="sortable" data-col="roas" onclick="sortTable('tiktok','roas')">ROAS</th>
+        <th class="sortable" data-col="ctr" onclick="sortTable('tiktok','ctr')">CTR</th>
+        <th class="sortable" data-col="cvr" onclick="sortTable('tiktok','cvr')">CVR</th>
+        <th class="sortable" data-col="cpa" onclick="sortTable('tiktok','cpa')">CPA (฿)</th>
+      </tr></thead>
+      <tbody id="tiktok-all-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ ADD DATA ═════════════ -->
+<div id="tab-adddata" class="view">
+  <div class="section-hdr" style="margin-top:8px">
+    <h2>➕ เพิ่มข้อมูล Ads</h2>
+    <span class="pill">Manual Entry</span>
+  </div>
+
+  <div class="form-card">
+    <div class="form-title">📝 กรอกข้อมูลแคมเปญ / Ads ใหม่</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Platform</label>
+        <select id="f-platform">
+          <option value="Shopee">🛍️ Shopee</option>
+          <option value="TikTok">🎵 TikTok</option>
+          <option value="Meta">📘 Meta (Facebook/IG)</option>
+          <option value="Google">🔵 Google Ads</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ชื่อ Ads / Campaign</label>
+        <input id="f-name" type="text" placeholder="เช่น Sugar V3 - May 2569">
+      </div>
+      <div class="form-group">
+        <label>ช่วงเวลา</label>
+        <input id="f-period" type="text" placeholder="เช่น 01/05 - 14/05/2569">
+      </div>
+      <div class="form-group">
+        <label>Spend (฿)</label>
+        <input id="f-spend" type="number" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Revenue (฿)</label>
+        <input id="f-revenue" type="number" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Impressions</label>
+        <input id="f-imp" type="number" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Clicks</label>
+        <input id="f-clicks" type="number" placeholder="0" min="0">
+      </div>
+      <div class="form-group">
+        <label>Orders / คำสั่งซื้อ</label>
+        <input id="f-orders" type="number" placeholder="0" min="0">
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:8px">
+      <button class="btn-submit" onclick="addEntry()">➕ เพิ่มข้อมูล</button>
+      <button class="btn-clear" onclick="clearForm()">ล้างฟอร์ม</button>
+      <button class="btn-clear" onclick="exportCSV()" style="color:var(--green)">📥 Export CSV</button>
+    </div>
+    <div id="success-toast" class="success-toast">✅ เพิ่มข้อมูลสำเร็จแล้ว!</div>
+  </div>
+
+  <!-- Added entries table -->
+  <div class="form-card">
+    <div class="form-title">📋 ข้อมูลที่เพิ่มแล้ว</div>
+    <div class="table-wrap added-table">
+      <table>
+        <thead><tr>
+          <th>Platform</th><th>ชื่อ Ads</th><th>Period</th>
+          <th>Spend (฿)</th><th>Revenue (฿)</th><th>ROAS</th>
+          <th>CTR</th><th>CVR</th><th>CPA (฿)</th><th>ลบ</th>
+        </tr></thead>
+        <tbody id="added-body">
+          <tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">ยังไม่มีข้อมูล — กรอกฟอร์มด้านบนแล้วกด "เพิ่มข้อมูล"</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Import note -->
+  <div class="form-card" style="border-color:rgba(249,115,22,.3)">
+    <div class="form-title" style="color:#1A5CDB">💡 วิธีใช้งาน</div>
+    <div style="display:grid;gap:12px;font-size:13px;color:var(--muted)">
+      <div>📌 <strong style="color:var(--gray)">กรอกข้อมูลด้วยมือ</strong> — กรอก Spend, Revenue, Impressions, Clicks, Orders แล้วกดเพิ่ม ระบบจะคำนวณ ROAS / CTR / CVR / CPA ให้เอง</div>
+      <div>📌 <strong style="color:var(--gray)">Export CSV</strong> — กดปุ่ม "Export CSV" เพื่อดาวน์โหลดข้อมูลที่กรอกไว้ทั้งหมด</div>
+      <div>📌 <strong style="color:var(--gray)">รองรับหลาย Platform</strong> — Shopee, TikTok, Meta, Google Ads</div>
+      <div>📌 <strong style="color:var(--gray)">ข้อมูลอยู่ใน session</strong> — ปิด Browser แล้วเปิดใหม่ข้อมูลที่กรอกจะหาย ให้ Export ก่อน</div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /main -->
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+const DATA_PERIODS = {
+  jan: {shopee:{spend:575353,revenue:3609487,orders:8456,imp:2650523,clicks:73989,roas:6.27,ctr:2.79,cvr:11.43,cpa:68.04,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:18500,revenue:194472,orders:388,imp:87098,clicks:1954,roas:10.51,ctr:2.24,cvr:19.86,cpa:47.68},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9974,revenue:88040,orders:176,imp:29314,clicks:722,roas:8.83,ctr:2.46,cvr:24.38,cpa:56.67},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:56546,revenue:467654,orders:1319,imp:343386,clicks:6291,roas:8.27,ctr:1.83,cvr:20.97,cpa:42.87},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:12247,revenue:92729,orders:155,imp:58052,clicks:939,roas:7.57,ctr:1.62,cvr:16.51,cpa:79.01},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20529,revenue:143566,orders:338,imp:70180,clicks:1164,roas:6.99,ctr:1.66,cvr:29.04,cpa:60.74}],worst5:[{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:7919,revenue:20004,orders:75,imp:53748,clicks:931,roas:2.53,ctr:1.73,cvr:8.06,cpa:105.59},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:20751,revenue:90893,orders:216,imp:85362,clicks:1692,roas:4.38,ctr:1.98,cvr:12.77,cpa:96.07},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:27806,revenue:124727,orders:270,imp:96679,clicks:20660,roas:4.49,ctr:21.37,cvr:1.31,cpa:102.99},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:3100,revenue:14411,orders:86,imp:50800,clicks:603,roas:4.65,ctr:1.19,cvr:14.26,cpa:36.05},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:3100,revenue:14937,orders:86,imp:43085,clicks:630,roas:4.82,ctr:1.46,cvr:13.65,cpa:36.05}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:83293,revenue:533906,orders:920,imp:256158,clicks:5704,roas:6.41,ctr:2.23,cvr:16.13,cpa:90.54},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:56546,revenue:467654,orders:1319,imp:343386,clicks:6291,roas:8.27,ctr:1.83,cvr:20.97,cpa:42.87},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:47800,revenue:320477,orders:674,imp:211885,clicks:4397,roas:6.7,ctr:2.08,cvr:15.33,cpa:70.92},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:41856,revenue:220700,orders:580,imp:235116,clicks:3723,roas:5.27,ctr:1.58,cvr:15.58,cpa:72.17},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:39162,revenue:248585,orders:622,imp:188372,clicks:4302,roas:6.35,ctr:2.28,cvr:14.46,cpa:62.96},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:34300,revenue:170564,orders:417,imp:170165,clicks:4056,roas:4.97,ctr:2.38,cvr:10.28,cpa:82.25},{name:"Shop GMV Max",spend:28000,revenue:167684,orders:427,imp:178274,clicks:4396,roas:5.99,ctr:2.47,cvr:9.71,cpa:65.57},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:27806,revenue:124727,orders:270,imp:96679,clicks:20660,roas:4.49,ctr:21.37,cvr:1.31,cpa:102.99},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:21691,revenue:129235,orders:304,imp:108670,clicks:2295,roas:5.96,ctr:2.11,cvr:13.25,cpa:71.35},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:20751,revenue:90893,orders:216,imp:85362,clicks:1692,roas:4.38,ctr:1.98,cvr:12.77,cpa:96.07},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20529,revenue:143566,orders:338,imp:70180,clicks:1164,roas:6.99,ctr:1.66,cvr:29.04,cpa:60.74},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:18500,revenue:194472,orders:388,imp:87098,clicks:1954,roas:10.51,ctr:2.24,cvr:19.86,cpa:47.68},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:15800,revenue:94835,orders:243,imp:55062,clicks:1494,roas:6.0,ctr:2.71,cvr:16.27,cpa:65.02},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:15137,revenue:93983,orders:247,imp:57923,clicks:1206,roas:6.21,ctr:2.08,cvr:20.48,cpa:61.28},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:14499,revenue:88571,orders:194,imp:48303,clicks:1130,roas:6.11,ctr:2.34,cvr:17.17,cpa:74.74},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:13204,revenue:69659,orders:175,imp:64681,clicks:1836,roas:5.28,ctr:2.84,cvr:9.53,cpa:75.46},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:12315,revenue:68504,orders:173,imp:43658,clicks:1302,roas:5.56,ctr:2.98,cvr:13.29,cpa:71.19},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:12247,revenue:92729,orders:155,imp:58052,clicks:939,roas:7.57,ctr:1.62,cvr:16.51,cpa:79.01},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9974,revenue:88040,orders:176,imp:29314,clicks:722,roas:8.83,ctr:2.46,cvr:24.38,cpa:56.67},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:8833,revenue:44487,orders:120,imp:47730,clicks:844,roas:5.04,ctr:1.77,cvr:14.22,cpa:73.61},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:7919,revenue:20004,orders:75,imp:53748,clicks:931,roas:2.53,ctr:1.73,cvr:8.06,cpa:105.59},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:7900,revenue:43722,orders:81,imp:21483,clicks:580,roas:5.53,ctr:2.7,cvr:13.97,cpa:97.53},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:6200,revenue:37528,orders:112,imp:28520,clicks:721,roas:6.05,ctr:2.53,cvr:15.53,cpa:55.36},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:4884,revenue:25614,orders:58,imp:16819,clicks:417,roas:5.24,ctr:2.48,cvr:13.91,cpa:84.21},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:3100,revenue:14411,orders:86,imp:50800,clicks:603,roas:4.65,ctr:1.19,cvr:14.26,cpa:36.05},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:3100,revenue:14937,orders:86,imp:43085,clicks:630,roas:4.82,ctr:1.46,cvr:13.65,cpa:36.05}]},tiktok:{spend:150133,revenue:897521,orders:2614,imp:1323590,clicks:46354,roas:5.98,ctr:3.5,cvr:5.64,cpa:57.43,top5:[{name:"Sugar",spend:31579,revenue:210407,orders:626,imp:199595,clicks:6970,roas:6.66,ctr:3.49,cvr:8.98,cpa:50.45},{name:"26.01.26/Reflex",spend:1251,revenue:7752,orders:18,imp:6231,clicks:266,roas:6.2,ctr:4.27,cvr:6.77,cpa:69.5},{name:"20.11.25/All",spend:43005,revenue:265249,orders:909,imp:764447,clicks:25444,roas:6.17,ctr:3.33,cvr:3.57,cpa:47.31},{name:"Interior/reflex",spend:15972,revenue:97096,orders:218,imp:91327,clicks:2832,roas:6.08,ctr:3.1,cvr:7.7,cpa:73.27},{name:"22.12.25/ไม้ปัด",spend:26476,revenue:155719,orders:284,imp:67749,clicks:3598,roas:5.88,ctr:5.31,cvr:7.89,cpa:93.23}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.02.26/Refresh",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}],all:[{name:"20.11.25/All",spend:43005,revenue:265249,orders:909,imp:764447,clicks:25444,roas:6.17,ctr:3.33,cvr:3.57,cpa:47.31},{name:"Sugar",spend:31579,revenue:210407,orders:626,imp:199595,clicks:6970,roas:6.66,ctr:3.49,cvr:8.98,cpa:50.45},{name:"22.12.25/ไม้ปัด",spend:26476,revenue:155719,orders:284,imp:67749,clicks:3598,roas:5.88,ctr:5.31,cvr:7.89,cpa:93.23},{name:"Interior/reflex",spend:15972,revenue:97096,orders:218,imp:91327,clicks:2832,roas:6.08,ctr:3.1,cvr:7.7,cpa:73.27},{name:"18.11.25/Refresh",spend:11093,revenue:60094,orders:139,imp:30256,clicks:1424,roas:5.42,ctr:4.71,cvr:9.76,cpa:79.81},{name:"Cleaner",spend:9232,revenue:50664,orders:254,imp:104691,clicks:3677,roas:5.49,ctr:3.51,cvr:6.91,cpa:36.35},{name:"Spot",spend:7012,revenue:31786,orders:66,imp:23429,clicks:800,roas:4.53,ctr:3.41,cvr:8.25,cpa:106.25},{name:"09.08.25/Beach",spend:1977,revenue:5669,orders:12,imp:10025,clicks:371,roas:2.87,ctr:3.7,cvr:3.23,cpa:164.75},{name:"29.01.26/Interior wipe - refresh wipe",spend:1817,revenue:10084,orders:82,imp:23356,clicks:860,roas:5.55,ctr:3.68,cvr:9.53,cpa:22.16},{name:"26.01.26/Reflex",spend:1251,revenue:7752,orders:18,imp:6231,clicks:266,roas:6.2,ctr:4.27,cvr:6.77,cpa:69.5},{name:"26.01.26/Mind",spend:716,revenue:2996,orders:6,imp:2484,clicks:112,roas:4.18,ctr:4.51,cvr:5.36,cpa:119.45},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.02.26/Refresh",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  feb: {shopee:{spend:559144,revenue:3752124,orders:8904,imp:3258623,clicks:98587,roas:6.71,ctr:3.03,cvr:9.03,cpa:62.8,top5:[{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:5008,revenue:106125,orders:591,imp:331110,clicks:776,roas:21.19,ctr:0.23,cvr:76.16,cpa:8.47},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4165,revenue:60142,orders:329,imp:135551,clicks:687,roas:14.44,ctr:0.51,cvr:47.89,cpa:12.66},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:20297,revenue:195597,orders:286,imp:98028,clicks:2061,roas:9.64,ctr:2.1,cvr:13.88,cpa:70.97},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:9948,revenue:95823,orders:228,imp:40085,clicks:1145,roas:9.63,ctr:2.86,cvr:19.91,cpa:43.63},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:8300,revenue:79433,orders:141,imp:25525,clicks:578,roas:9.57,ctr:2.26,cvr:24.39,cpa:58.87}],worst5:[{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:15736,revenue:47080,orders:162,imp:94798,clicks:1634,roas:2.99,ctr:1.72,cvr:9.91,cpa:97.14},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:54063,revenue:258070,orders:663,imp:322143,clicks:4866,roas:4.77,ctr:1.51,cvr:13.63,cpa:81.54},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:25247,revenue:120761,orders:275,imp:121020,clicks:2288,roas:4.78,ctr:1.89,cvr:12.02,cpa:91.81},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:35487,revenue:176296,orders:414,imp:152049,clicks:45485,roas:4.97,ctr:29.91,cvr:0.91,cpa:85.72},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:22091,revenue:116335,orders:284,imp:131582,clicks:3047,roas:5.27,ctr:2.32,cvr:9.32,cpa:77.79}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:72753,revenue:515157,orders:868,imp:290186,clicks:5535,roas:7.08,ctr:1.91,cvr:15.68,cpa:83.82},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:54063,revenue:258070,orders:663,imp:322143,clicks:4866,roas:4.77,ctr:1.51,cvr:13.63,cpa:81.54},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:42545,revenue:349922,orders:992,imp:246599,clicks:4236,roas:8.22,ctr:1.72,cvr:23.42,cpa:42.89},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:37259,revenue:295042,orders:589,imp:212909,clicks:3359,roas:7.92,ctr:1.58,cvr:17.53,cpa:63.26},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:35487,revenue:176296,orders:414,imp:152049,clicks:45485,roas:4.97,ctr:29.91,cvr:0.91,cpa:85.72},{name:"Shop GMV Max",spend:33000,revenue:179345,orders:436,imp:240550,clicks:5393,roas:5.43,ctr:2.24,cvr:8.08,cpa:75.69},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27506,revenue:145261,orders:261,imp:112159,clicks:1660,roas:5.28,ctr:1.48,cvr:15.72,cpa:105.39},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:25247,revenue:120761,orders:275,imp:121020,clicks:2288,roas:4.78,ctr:1.89,cvr:12.02,cpa:91.81},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:22206,revenue:137267,orders:341,imp:107996,clicks:3033,roas:6.18,ctr:2.81,cvr:11.24,cpa:65.12},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:22091,revenue:116335,orders:284,imp:131582,clicks:3047,roas:5.27,ctr:2.32,cvr:9.32,cpa:77.79},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20793,revenue:157840,orders:357,imp:89948,clicks:2094,roas:7.59,ctr:2.33,cvr:17.05,cpa:58.25},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:20297,revenue:195597,orders:286,imp:98028,clicks:2061,roas:9.64,ctr:2.1,cvr:13.88,cpa:70.97},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:17774,revenue:111034,orders:256,imp:95021,clicks:1965,roas:6.25,ctr:2.07,cvr:13.03,cpa:69.43},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:15865,revenue:139576,orders:322,imp:85291,clicks:1522,roas:8.8,ctr:1.78,cvr:21.16,cpa:49.27},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:15736,revenue:47080,orders:162,imp:94798,clicks:1634,roas:2.99,ctr:1.72,cvr:9.91,cpa:97.14},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:12793,revenue:74928,orders:212,imp:52703,clicks:1395,roas:5.86,ctr:2.65,cvr:15.2,cpa:60.35},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:12462,revenue:72667,orders:152,imp:44690,clicks:987,roas:5.83,ctr:2.21,cvr:15.4,cpa:81.99},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:11134,revenue:71881,orders:184,imp:61375,clicks:1359,roas:6.46,ctr:2.21,cvr:13.54,cpa:60.51},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:9948,revenue:95823,orders:228,imp:40085,clicks:1145,roas:9.63,ctr:2.86,cvr:19.91,cpa:43.63},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:9646,revenue:66909,orders:158,imp:56830,clicks:816,roas:6.94,ctr:1.44,cvr:19.36,cpa:61.05},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:9536,revenue:71050,orders:166,imp:43198,clicks:1062,roas:7.45,ctr:2.46,cvr:15.63,cpa:57.45},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:8367,revenue:62442,orders:122,imp:38141,clicks:929,roas:7.46,ctr:2.44,cvr:13.13,cpa:68.59},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:8300,revenue:79433,orders:141,imp:25525,clicks:578,roas:9.57,ctr:2.26,cvr:24.39,cpa:58.87},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:5150,revenue:46130,orders:115,imp:29136,clicks:675,roas:8.96,ctr:2.32,cvr:17.04,cpa:44.79},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:5008,revenue:106125,orders:591,imp:331110,clicks:776,roas:21.19,ctr:0.23,cvr:76.16,cpa:8.47},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4165,revenue:60142,orders:329,imp:135551,clicks:687,roas:14.44,ctr:0.51,cvr:47.89,cpa:12.66}]},tiktok:{spend:190270,revenue:1035055,orders:3523,imp:1507768,clicks:44698,roas:5.44,ctr:2.96,cvr:7.88,cpa:54.01,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:12489,revenue:115019,orders:997,imp:170839,clicks:5650,roas:9.21,ctr:3.31,cvr:17.65,cpa:12.53},{name:"Cleaner",spend:14377,revenue:82333,orders:404,imp:127604,clicks:3568,roas:5.73,ctr:2.8,cvr:11.32,cpa:35.59},{name:"26.01.26/Reflex",spend:7528,revenue:42625,orders:95,imp:36990,clicks:1515,roas:5.66,ctr:4.1,cvr:6.27,cpa:79.25},{name:"26.01.26/Mind",spend:5856,revenue:30553,orders:60,imp:22139,clicks:833,roas:5.22,ctr:3.76,cvr:7.2,cpa:97.61},{name:"Sugar",spend:42983,revenue:220853,orders:672,imp:267743,clicks:7364,roas:5.14,ctr:2.75,cvr:9.13,cpa:63.96}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"Spot",spend:3635,revenue:13675,orders:32,imp:9983,clicks:349,roas:3.76,ctr:3.5,cvr:9.17,cpa:113.61}],all:[{name:"Sugar",spend:42983,revenue:220853,orders:672,imp:267743,clicks:7364,roas:5.14,ctr:2.75,cvr:9.13,cpa:63.96},{name:"20.11.25/All",spend:38008,revenue:192781,orders:501,imp:599092,clicks:17717,roas:5.07,ctr:2.96,cvr:2.83,cpa:75.86},{name:"22.12.25/ไม้ปัด",spend:28158,revenue:133792,orders:249,imp:98535,clicks:3527,roas:4.75,ctr:3.58,cvr:7.06,cpa:113.08},{name:"Interior/reflex",spend:17678,revenue:82258,orders:188,imp:116420,clicks:2443,roas:4.65,ctr:2.1,cvr:7.7,cpa:94.03},{name:"Cleaner",spend:14377,revenue:82333,orders:404,imp:127604,clicks:3568,roas:5.73,ctr:2.8,cvr:11.32,cpa:35.59},{name:"29.01.26/Interior wipe - refresh wipe",spend:12489,revenue:115019,orders:997,imp:170839,clicks:5650,roas:9.21,ctr:3.31,cvr:17.65,cpa:12.53},{name:"26.01.26/Reflex",spend:7528,revenue:42625,orders:95,imp:36990,clicks:1515,roas:5.66,ctr:4.1,cvr:6.27,cpa:79.25},{name:"18.11.25/Refresh",spend:6510,revenue:25197,orders:60,imp:18294,clicks:827,roas:3.87,ctr:4.52,cvr:7.26,cpa:108.51},{name:"12.02.26/Refresh",spend:6033,revenue:24457,orders:56,imp:40129,clicks:905,roas:4.05,ctr:2.26,cvr:6.19,cpa:107.74},{name:"26.01.26/Mind",spend:5856,revenue:30553,orders:60,imp:22139,clicks:833,roas:5.22,ctr:3.76,cvr:7.2,cpa:97.61},{name:"Spot",spend:3635,revenue:13675,orders:32,imp:9983,clicks:349,roas:3.76,ctr:3.5,cvr:9.17,cpa:113.61},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  mar: {shopee:{spend:589252,revenue:3624621,orders:8270,imp:3782507,clicks:88073,roas:6.15,ctr:2.33,cvr:9.39,cpa:71.25,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14683,revenue:164666,orders:224,imp:81799,clicks:1659,roas:11.21,ctr:2.03,cvr:13.5,cpa:65.55},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4766,revenue:46876,orders:237,imp:145108,clicks:987,roas:9.83,ctr:0.68,cvr:24.01,cpa:20.11},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:10426,revenue:92318,orders:452,imp:397414,clicks:2083,roas:8.85,ctr:0.52,cvr:21.7,cpa:23.07},{name:"Shop GMV Max",spend:37839,revenue:309164,orders:749,imp:373469,clicks:8617,roas:8.17,ctr:2.31,cvr:8.69,cpa:50.52},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:11620,revenue:83396,orders:187,imp:59678,clicks:1684,roas:7.18,ctr:2.82,cvr:11.1,cpa:62.14}],worst5:[{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:17814,revenue:73716,orders:169,imp:89630,clicks:1920,roas:4.14,ctr:2.14,cvr:8.8,cpa:105.41},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:9427,revenue:42694,orders:134,imp:48991,clicks:1034,roas:4.53,ctr:2.11,cvr:12.96,cpa:70.35},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27061,revenue:124013,orders:239,imp:133328,clicks:1978,roas:4.58,ctr:1.48,cvr:12.08,cpa:113.23},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10653,revenue:49608,orders:111,imp:60703,clicks:1355,roas:4.66,ctr:2.23,cvr:8.19,cpa:95.98},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:10603,revenue:51542,orders:89,imp:41363,clicks:877,roas:4.86,ctr:2.12,cvr:10.15,cpa:119.14}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:95881,revenue:546537,orders:875,imp:392480,clicks:6973,roas:5.7,ctr:1.78,cvr:12.55,cpa:109.58},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:55926,revenue:302125,orders:748,imp:353824,clicks:5221,roas:5.4,ctr:1.48,cvr:14.33,cpa:74.77},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:45361,revenue:293371,orders:811,imp:363733,clicks:6867,roas:6.47,ctr:1.89,cvr:11.81,cpa:55.93},{name:"Shop GMV Max",spend:37839,revenue:309164,orders:749,imp:373469,clicks:8617,roas:8.17,ctr:2.31,cvr:8.69,cpa:50.52},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:32574,revenue:201265,orders:417,imp:195351,clicks:3201,roas:6.18,ctr:1.64,cvr:13.03,cpa:78.12},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:31224,revenue:181093,orders:428,imp:82747,clicks:20462,roas:5.8,ctr:24.73,cvr:2.09,cpa:72.95},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:30019,revenue:193411,orders:504,imp:169308,clicks:5288,roas:6.44,ctr:3.12,cvr:9.53,cpa:59.56},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27061,revenue:124013,orders:239,imp:133328,clicks:1978,roas:4.58,ctr:1.48,cvr:12.08,cpa:113.23},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:23946,revenue:159748,orders:342,imp:134550,clicks:3570,roas:6.67,ctr:2.65,cvr:9.58,cpa:70.02},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:17814,revenue:73716,orders:169,imp:89630,clicks:1920,roas:4.14,ctr:2.14,cvr:8.8,cpa:105.41},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:17300,revenue:113612,orders:263,imp:104725,clicks:1902,roas:6.57,ctr:1.82,cvr:13.83,cpa:65.78},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:16679,revenue:84565,orders:174,imp:95740,clicks:2260,roas:5.07,ctr:2.36,cvr:7.7,cpa:95.86},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:15900,revenue:97085,orders:218,imp:102578,clicks:2092,roas:6.11,ctr:2.04,cvr:10.42,cpa:72.94},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14683,revenue:164666,orders:224,imp:81799,clicks:1659,roas:11.21,ctr:2.03,cvr:13.5,cpa:65.55},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:13915,revenue:78283,orders:203,imp:70805,clicks:1446,roas:5.63,ctr:2.04,cvr:14.04,cpa:68.55},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:13543,revenue:82296,orders:171,imp:78269,clicks:1514,roas:6.08,ctr:1.93,cvr:11.29,cpa:79.2},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:12306,revenue:70705,orders:146,imp:60258,clicks:1672,roas:5.75,ctr:2.77,cvr:8.73,cpa:84.29},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:11620,revenue:83396,orders:187,imp:59678,clicks:1684,roas:7.18,ctr:2.82,cvr:11.1,cpa:62.14},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10653,revenue:49608,orders:111,imp:60703,clicks:1355,roas:4.66,ctr:2.23,cvr:8.19,cpa:95.98},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:10603,revenue:51542,orders:89,imp:41363,clicks:877,roas:4.86,ctr:2.12,cvr:10.15,cpa:119.14},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:10426,revenue:92318,orders:452,imp:397414,clicks:2083,roas:8.85,ctr:0.52,cvr:21.7,cpa:23.07},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:10414,revenue:56803,orders:98,imp:46176,clicks:1056,roas:5.45,ctr:2.29,cvr:9.28,cpa:106.27},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9712,revenue:57665,orders:115,imp:46087,clicks:1091,roas:5.94,ctr:2.37,cvr:10.54,cpa:84.46},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:9648,revenue:68055,orders:166,imp:54393,clicks:1264,roas:7.05,ctr:2.32,cvr:13.13,cpa:58.12},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:9427,revenue:42694,orders:134,imp:48991,clicks:1034,roas:4.53,ctr:2.11,cvr:12.96,cpa:70.35},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4766,revenue:46876,orders:237,imp:145108,clicks:987,roas:9.83,ctr:0.68,cvr:24.01,cpa:20.11}]},tiktok:{spend:240851,revenue:1132888,orders:3844,imp:1616237,clicks:51133,roas:4.7,ctr:3.16,cvr:7.52,cpa:62.66,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:20871,revenue:180813,orders:1408,imp:260575,clicks:7504,roas:8.66,ctr:2.88,cvr:18.76,cpa:14.82},{name:"26.01.26/Reflex",spend:9685,revenue:48881,orders:84,imp:44982,clicks:1736,roas:5.05,ctr:3.86,cvr:4.84,cpa:115.3},{name:"22.12.25/ไม้ปัด",spend:31002,revenue:150650,orders:249,imp:105026,clicks:2865,roas:4.86,ctr:2.73,cvr:8.69,cpa:124.51},{name:"20.11.25/All",spend:42229,revenue:203392,orders:493,imp:489376,clicks:14892,roas:4.82,ctr:3.04,cvr:3.31,cpa:85.66},{name:"12.02.26/Refresh",spend:17674,revenue:78682,orders:180,imp:82842,clicks:2117,roas:4.45,ctr:2.56,cvr:8.5,cpa:98.19}],worst5:[{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"15.03.26/X-Glass",spend:1618,revenue:5384,orders:12,imp:4713,clicks:159,roas:3.33,ctr:3.37,cvr:7.55,cpa:134.91}],all:[{name:"Sugar",spend:50730,revenue:204674,orders:566,imp:288936,clicks:9858,roas:4.03,ctr:3.41,cvr:5.74,cpa:89.63},{name:"20.11.25/All",spend:42229,revenue:203392,orders:493,imp:489376,clicks:14892,roas:4.82,ctr:3.04,cvr:3.31,cpa:85.66},{name:"22.12.25/ไม้ปัด",spend:31002,revenue:150650,orders:249,imp:105026,clicks:2865,roas:4.86,ctr:2.73,cvr:8.69,cpa:124.51},{name:"Cleaner",spend:24750,revenue:102272,orders:499,imp:175439,clicks:6905,roas:4.13,ctr:3.94,cvr:7.23,cpa:49.6},{name:"Interior/reflex",spend:23137,revenue:87980,orders:196,imp:117736,clicks:3281,roas:3.8,ctr:2.79,cvr:5.97,cpa:118.05},{name:"29.01.26/Interior wipe - refresh wipe",spend:20871,revenue:180813,orders:1408,imp:260575,clicks:7504,roas:8.66,ctr:2.88,cvr:18.76,cpa:14.82},{name:"12.02.26/Refresh",spend:17674,revenue:78682,orders:180,imp:82842,clicks:2117,roas:4.45,ctr:2.56,cvr:8.5,cpa:98.19},{name:"26.01.26/Reflex",spend:9685,revenue:48881,orders:84,imp:44982,clicks:1736,roas:5.05,ctr:3.86,cvr:4.84,cpa:115.3},{name:"26.01.26/Mind",spend:8660,revenue:36697,orders:71,imp:38251,clicks:1507,roas:4.24,ctr:3.94,cvr:4.71,cpa:121.98},{name:"15.03.26/spot",spend:2480,revenue:9464,orders:24,imp:8361,clicks:309,roas:3.82,ctr:3.7,cvr:7.77,cpa:103.37},{name:"15.03.26/X-Glass",spend:1618,revenue:5384,orders:12,imp:4713,clicks:159,roas:3.33,ctr:3.37,cvr:7.55,cpa:134.91},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  apr: {shopee:{spend:795272,revenue:4338779,orders:10351,imp:4843206,clicks:140824,roas:5.46,ctr:2.91,cvr:7.35,cpa:76.83,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14722,revenue:123732,orders:179,imp:69022,clicks:1269,roas:8.4,ctr:1.84,cvr:14.11,cpa:82.25},{name:"Shop GMV Max",spend:83400,revenue:580840,orders:1467,imp:648359,clicks:13936,roas:6.96,ctr:2.15,cvr:10.53,cpa:56.85},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:10022,revenue:64441,orders:134,imp:57081,clicks:1301,roas:6.43,ctr:2.28,cvr:10.3,cpa:74.8},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:23757,revenue:141893,orders:791,imp:565934,clicks:4973,roas:5.97,ctr:0.88,cvr:15.91,cpa:30.03},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:17452,revenue:101792,orders:241,imp:75223,clicks:1800,roas:5.83,ctr:2.39,cvr:13.39,cpa:72.42}],worst5:[{name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0},{name:"int06-04-26",spend:7354,revenue:9281,orders:22,imp:7087,clicks:210,roas:1.26,ctr:2.96,cvr:10.48,cpa:334.31},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:11173,revenue:35095,orders:66,imp:49165,clicks:899,roas:3.14,ctr:1.83,cvr:7.34,cpa:169.29},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:14240,revenue:67518,orders:442,imp:242622,clicks:2894,roas:4.74,ctr:1.19,cvr:15.27,cpa:32.22},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:31648,revenue:150593,orders:402,imp:166651,clicks:4809,roas:4.76,ctr:2.89,cvr:8.36,cpa:78.73}],all:[{name:"Shop GMV Max",spend:83400,revenue:580840,orders:1467,imp:648359,clicks:13936,roas:6.96,ctr:2.15,cvr:10.53,cpa:56.85},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:82102,revenue:453797,orders:724,imp:335323,clicks:5547,roas:5.53,ctr:1.65,cvr:13.05,cpa:113.4},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:57031,revenue:299938,orders:666,imp:203122,clicks:57372,roas:5.26,ctr:28.25,cvr:1.16,cpa:85.63},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:55126,revenue:297377,orders:795,imp:395231,clicks:7259,roas:5.39,ctr:1.84,cvr:10.95,cpa:69.34},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:51168,revenue:247735,orders:629,imp:373351,clicks:5283,roas:4.84,ctr:1.42,cvr:11.91,cpa:81.35},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:37403,revenue:213410,orders:431,imp:180165,clicks:2982,roas:5.71,ctr:1.66,cvr:14.45,cpa:86.78},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:33520,revenue:173822,orders:335,imp:189956,clicks:4288,roas:5.19,ctr:2.26,cvr:7.81,cpa:100.06},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:31648,revenue:150593,orders:402,imp:166651,clicks:4809,roas:4.76,ctr:2.89,cvr:8.36,cpa:78.73},{name:"shop 06.04.26",spend:28720,revenue:159766,orders:376,imp:23543,clicks:1667,roas:5.56,ctr:7.08,cvr:22.56,cpa:76.38},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:27649,revenue:148645,orders:320,imp:151231,clicks:2562,roas:5.38,ctr:1.69,cvr:12.49,cpa:86.4},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:23757,revenue:141893,orders:791,imp:565934,clicks:4973,roas:5.97,ctr:0.88,cvr:15.91,cpa:30.03},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:23556,revenue:128408,orders:189,imp:82551,clicks:1716,roas:5.45,ctr:2.08,cvr:11.01,cpa:124.64},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:23462,revenue:113015,orders:203,imp:127082,clicks:1815,roas:4.82,ctr:1.43,cvr:11.18,cpa:115.58},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:21912,revenue:113063,orders:237,imp:104931,clicks:1764,roas:5.16,ctr:1.68,cvr:13.44,cpa:92.46},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:21288,revenue:110178,orders:279,imp:128469,clicks:2387,roas:5.18,ctr:1.86,cvr:11.69,cpa:76.3},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:20956,revenue:108889,orders:252,imp:80832,clicks:2156,roas:5.2,ctr:2.67,cvr:11.69,cpa:83.16},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:20431,revenue:104749,orders:257,imp:100349,clicks:2554,roas:5.13,ctr:2.55,cvr:10.06,cpa:79.5},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:18628,revenue:98727,orders:209,imp:119736,clicks:2358,roas:5.3,ctr:1.97,cvr:8.86,cpa:89.13},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:17452,revenue:101792,orders:241,imp:75223,clicks:1800,roas:5.83,ctr:2.39,cvr:13.39,cpa:72.42},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:15591,revenue:78505,orders:186,imp:114836,clicks:2026,roas:5.04,ctr:1.76,cvr:9.18,cpa:83.83},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:15413,revenue:75143,orders:142,imp:72481,clicks:1409,roas:4.88,ctr:1.94,cvr:10.08,cpa:108.55},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14722,revenue:123732,orders:179,imp:69022,clicks:1269,roas:8.4,ctr:1.84,cvr:14.11,cpa:82.25},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:14240,revenue:67518,orders:442,imp:242622,clicks:2894,roas:4.74,ctr:1.19,cvr:15.27,cpa:32.22},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:13942,revenue:71129,orders:178,imp:105639,clicks:2060,roas:5.1,ctr:1.95,cvr:8.64,cpa:78.33},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:13595,revenue:67285,orders:199,imp:73232,clicks:1528,roas:4.95,ctr:2.09,cvr:13.02,cpa:68.32},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:11173,revenue:35095,orders:66,imp:49165,clicks:899,roas:3.14,ctr:1.83,cvr:7.34,cpa:169.29},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:10022,revenue:64441,orders:134,imp:57081,clicks:1301,roas:6.43,ctr:2.28,cvr:10.3,cpa:74.8},{name:"int06-04-26",spend:7354,revenue:9281,orders:22,imp:7087,clicks:210,roas:1.26,ctr:2.96,cvr:10.48,cpa:334.31},{name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0}]},tiktok:{spend:248473,revenue:1284452,orders:5199,imp:1825735,clicks:64017,roas:5.17,ctr:3.51,cvr:8.12,cpa:47.79,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:50285,revenue:345243,orders:2800,imp:535594,clicks:21425,roas:6.87,ctr:4.0,cvr:13.07,cpa:17.96},{name:"16.04.26/XGlass-Spot",spend:11297,revenue:65008,orders:156,imp:44379,clicks:2268,roas:5.75,ctr:5.11,cvr:6.88,cpa:72.42},{name:"12.02.26/Refresh",spend:14150,revenue:73137,orders:166,imp:47681,clicks:1741,roas:5.17,ctr:3.65,cvr:9.53,cpa:85.25},{name:"15.03.26/spot",spend:925,revenue:4687,orders:12,imp:2975,clicks:104,roas:5.06,ctr:3.5,cvr:11.54,cpa:77.16},{name:"Sugar",spend:44332,revenue:213710,orders:533,imp:218397,clicks:7761,roas:4.82,ctr:3.55,cvr:6.87,cpa:83.18}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"06.04.26/All GMV",spend:999,revenue:440,orders:2,imp:13471,clicks:363,roas:0.44,ctr:2.69,cvr:0.55,cpa:499.99},{name:"26.01.26/Reflex",spend:1529,revenue:3590,orders:7,imp:6732,clicks:224,roas:2.35,ctr:3.33,cvr:3.12,cpa:218.56},{name:"15.03.26/X-Glass",spend:651,revenue:2258,orders:5,imp:1588,clicks:55,roas:3.47,ctr:3.46,cvr:9.09,cpa:130.25},{name:"06.04.26/All GMV1",spend:1948,revenue:6900,orders:20,imp:16755,clicks:432,roas:3.54,ctr:2.58,cvr:4.63,cpa:97.41}],all:[{name:"29.01.26/Interior wipe - refresh wipe",spend:50285,revenue:345243,orders:2800,imp:535594,clicks:21425,roas:6.87,ctr:4.0,cvr:13.07,cpa:17.96},{name:"Sugar",spend:44332,revenue:213710,orders:533,imp:218397,clicks:7761,roas:4.82,ctr:3.55,cvr:6.87,cpa:83.18},{name:"20.11.25/All",spend:35786,revenue:170249,orders:450,imp:568500,clicks:16825,roas:4.76,ctr:2.96,cvr:2.67,cpa:79.53},{name:"Cleaner",spend:22896,revenue:93494,orders:459,imp:152005,clicks:5938,roas:4.08,ctr:3.91,cvr:7.73,cpa:49.88},{name:"22.12.25/ไม้ปัด",spend:21518,revenue:87943,orders:160,imp:57428,clicks:1916,roas:4.09,ctr:3.34,cvr:8.35,cpa:134.49},{name:"12.02.26/Refresh",spend:14150,revenue:73137,orders:166,imp:47681,clicks:1741,roas:5.17,ctr:3.65,cvr:9.53,cpa:85.25},{name:"12.04.26/Interior",spend:13395,revenue:54395,orders:124,imp:70803,clicks:2068,roas:4.06,ctr:2.92,cvr:6.0,cpa:108.03},{name:"16.04.26/XGlass-Spot",spend:11297,revenue:65008,orders:156,imp:44379,clicks:2268,roas:5.75,ctr:5.11,cvr:6.88,cpa:72.42},{name:"Interior/reflex",spend:11156,revenue:40633,orders:80,imp:43658,clicks:1310,roas:3.64,ctr:3.0,cvr:6.11,cpa:139.46},{name:"26.01.26/Mind",spend:6860,revenue:32942,orders:61,imp:23132,clicks:778,roas:4.8,ctr:3.36,cvr:7.84,cpa:112.47},{name:"12.04.26/Reflex",spend:6234,revenue:28381,orders:45,imp:22637,clicks:809,roas:4.55,ctr:3.57,cvr:5.56,cpa:138.54},{name:"06.04.26/All GMV1",spend:1948,revenue:6900,orders:20,imp:16755,clicks:432,roas:3.54,ctr:2.58,cvr:4.63,cpa:97.41},{name:"26.01.26/Reflex",spend:1529,revenue:3590,orders:7,imp:6732,clicks:224,roas:2.35,ctr:3.33,cvr:3.12,cpa:218.56},{name:"06.04.26/All GMV",spend:999,revenue:440,orders:2,imp:13471,clicks:363,roas:0.44,ctr:2.69,cvr:0.55,cpa:499.99},{name:"15.03.26/spot",spend:925,revenue:4687,orders:12,imp:2975,clicks:104,roas:5.06,ctr:3.5,cvr:11.54,cpa:77.16},{name:"15.03.26/X-Glass",spend:651,revenue:2258,orders:5,imp:1588,clicks:55,roas:3.47,ctr:3.46,cvr:9.09,cpa:130.25},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  may: {shopee:{spend:631751,revenue:3847602,orders:9319,imp:4788555,clicks:165754,roas:6.09,ctr:3.46,cvr:5.62,cpa:67.79,top5:[{name:"Shop GMV Max",spend:71100,revenue:547137,orders:1414,imp:907285,clicks:17725,roas:7.7,ctr:1.95,cvr:7.98,cpa:50.28},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:46355,revenue:303151,orders:669,imp:338656,clicks:7910,roas:6.54,ctr:2.34,cvr:8.46,cpa:69.29},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:35552,revenue:239027,orders:581,imp:296039,clicks:5177,roas:6.72,ctr:1.75,cvr:11.22,cpa:61.19},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:36049,revenue:217692,orders:330,imp:195273,clicks:2951,roas:6.04,ctr:1.51,cvr:11.18,cpa:109.24},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:24185,revenue:163586,orders:309,imp:163514,clicks:2862,roas:6.76,ctr:1.75,cvr:10.8,cpa:78.27}],worst5:[{name:"int06-04-26",spend:4761,revenue:1415,orders:6,imp:2665,clicks:116,roas:0.3,ctr:4.35,cvr:5.17,cpa:793.53},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:12834,revenue:41151,orders:91,imp:61741,clicks:1229,roas:3.21,ctr:1.99,cvr:7.4,cpa:141.03},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:40674,revenue:140405,orders:363,imp:252139,clicks:77861,roas:3.45,ctr:30.88,cvr:0.47,cpa:112.05},{name:"shop 06.04.26",spend:23607,revenue:126432,orders:290,imp:16080,clicks:1414,roas:5.36,ctr:8.79,cvr:20.51,cpa:81.4},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:18668,revenue:100437,orders:133,imp:79661,clicks:1865,roas:5.38,ctr:2.34,cvr:7.13,cpa:140.36}],all:[{name:"Shop GMV Max",spend:71100,revenue:547137,orders:1414,imp:907285,clicks:17725,roas:7.7,ctr:1.95,cvr:7.98,cpa:50.28},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:46355,revenue:303151,orders:669,imp:338656,clicks:7910,roas:6.54,ctr:2.34,cvr:8.46,cpa:69.29},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:35552,revenue:239027,orders:581,imp:296039,clicks:5177,roas:6.72,ctr:1.75,cvr:11.22,cpa:61.19},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:36049,revenue:217692,orders:330,imp:195273,clicks:2951,roas:6.04,ctr:1.51,cvr:11.18,cpa:109.24},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:24185,revenue:163586,orders:309,imp:163514,clicks:2862,roas:6.76,ctr:1.75,cvr:10.8,cpa:78.27},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:26484,revenue:153722,orders:337,imp:136843,clicks:2667,roas:5.8,ctr:1.95,cvr:12.64,cpa:78.59},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:23903,revenue:144570,orders:353,imp:174972,clicks:3628,roas:6.05,ctr:2.07,cvr:9.73,cpa:67.71},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:40674,revenue:140405,orders:363,imp:252139,clicks:77861,roas:3.45,ctr:30.88,cvr:0.47,cpa:112.05},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:22411,revenue:136684,orders:306,imp:142870,clicks:2505,roas:6.1,ctr:1.75,cvr:12.22,cpa:73.24},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:22798,revenue:133624,orders:331,imp:147539,clicks:3721,roas:5.86,ctr:2.52,cvr:8.9,cpa:68.88},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:21251,revenue:133084,orders:245,imp:143660,clicks:3418,roas:6.26,ctr:2.38,cvr:7.17,cpa:86.74},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:19664,revenue:132907,orders:204,imp:102215,clicks:1828,roas:6.76,ctr:1.79,cvr:11.16,cpa:96.39},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:17085,revenue:129615,orders:709,imp:446187,clicks:4289,roas:7.59,ctr:0.96,cvr:16.53,cpa:24.1},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:20278,revenue:127808,orders:273,imp:95385,clicks:2261,roas:6.3,ctr:2.37,cvr:12.07,cpa:74.28},{name:"shop 06.04.26",spend:23607,revenue:126432,orders:290,imp:16080,clicks:1414,roas:5.36,ctr:8.79,cvr:20.51,cpa:81.4},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:19990,revenue:112745,orders:299,imp:107444,clicks:2885,roas:5.64,ctr:2.69,cvr:10.36,cpa:66.86},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:15474,revenue:108526,orders:282,imp:70928,clicks:1769,roas:7.01,ctr:2.49,cvr:15.94,cpa:54.87},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:18668,revenue:100437,orders:133,imp:79661,clicks:1865,roas:5.38,ctr:2.34,cvr:7.13,cpa:140.36},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:14344,revenue:93978,orders:628,imp:249526,clicks:3721,roas:6.55,ctr:1.49,cvr:16.88,cpa:22.84},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:15727,revenue:93166,orders:200,imp:117125,clicks:2539,roas:5.92,ctr:2.17,cvr:7.88,cpa:78.64},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:15926,revenue:89795,orders:176,imp:130221,clicks:2573,roas:5.64,ctr:1.98,cvr:6.84,cpa:90.49},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:12645,revenue:81665,orders:96,imp:69668,clicks:1473,roas:6.46,ctr:2.11,cvr:6.52,cpa:131.72},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:13129,revenue:76159,orders:209,imp:120298,clicks:2264,roas:5.8,ctr:1.88,cvr:9.23,cpa:62.82},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:13664,revenue:75282,orders:132,imp:66861,clicks:1513,roas:5.51,ctr:2.26,cvr:8.72,cpa:103.51},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:13179,revenue:73354,orders:232,imp:80351,clicks:1764,roas:5.57,ctr:2.2,cvr:13.15,cpa:56.8},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:7716,revenue:56019,orders:85,imp:50813,clicks:1142,roas:7.26,ctr:2.25,cvr:7.44,cpa:90.78},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:12834,revenue:41151,orders:91,imp:61741,clicks:1229,roas:3.21,ctr:1.99,cvr:7.4,cpa:141.03},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:2297,revenue:14467,orders:36,imp:22596,clicks:684,roas:6.3,ctr:3.03,cvr:5.26,cpa:63.8},{name:"int06-04-26",spend:4761,revenue:1415,orders:6,imp:2665,clicks:116,roas:0.3,ctr:4.35,cvr:5.17,cpa:793.53}]},tiktok:{spend:235760,revenue:1177906,orders:6255,imp:1927418,clicks:67678,roas:5.0,ctr:3.51,cvr:9.24,cpa:37.69,top5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:65061,revenue:341901,orders:2005,imp:661929,clicks:22565,roas:5.26,ctr:3.41,cvr:8.89,cpa:32.45},{name:"29.01.26/Interior wipe - refresh wipe",spend:59119,revenue:340485,orders:2937,imp:561344,clicks:21860,roas:5.76,ctr:3.89,cvr:13.44,cpa:20.13},{name:"Sugar",spend:23697,revenue:126396,orders:321,imp:106164,clicks:4277,roas:5.33,ctr:4.03,cvr:7.51,cpa:73.82},{name:"20.11.25/All",spend:20114,revenue:104218,orders:276,imp:309999,clicks:9020,roas:5.18,ctr:2.91,cvr:3.06,cpa:72.88},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.42}],worst5:[{name:"26.01.26/Mind",spend:7001,revenue:21558,orders:45,imp:20113,clicks:608,roas:3.08,ctr:3.02,cvr:7.4,cpa:155.57},{name:"12.02.26/Refresh",spend:10596,revenue:37101,orders:83,imp:34185,clicks:1097,roas:3.5,ctr:3.21,cvr:7.57,cpa:127.66},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.42},{name:"22.12.25/ไม้ปัด",spend:6882,revenue:26628,orders:44,imp:16976,clicks:642,roas:3.87,ctr:3.78,cvr:6.85,cpa:156.41},{name:"Cleaner",spend:13685,revenue:53571,orders:268,imp:84807,clicks:3488,roas:3.91,ctr:4.11,cvr:7.68,cpa:51.06}],all:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:65061,revenue:341901,orders:2005,imp:661929,clicks:22565,roas:5.26,ctr:3.41,cvr:8.89,cpa:32.45},{name:"29.01.26/Interior wipe - refresh wipe",spend:59119,revenue:340485,orders:2937,imp:561344,clicks:21860,roas:5.76,ctr:3.89,cvr:13.44,cpa:20.13},{name:"Sugar",spend:23697,revenue:126396,orders:321,imp:106164,clicks:4277,roas:5.33,ctr:4.03,cvr:7.51,cpa:73.82},{name:"20.11.25/All",spend:20114,revenue:104218,orders:276,imp:309999,clicks:9020,roas:5.18,ctr:2.91,cvr:3.06,cpa:72.88},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.42},{name:"Cleaner",spend:13685,revenue:53571,orders:268,imp:84807,clicks:3488,roas:3.91,ctr:4.11,cvr:7.68,cpa:51.06},{name:"16.04.26/XGlass-Spot",spend:9216,revenue:44043,orders:102,imp:35963,clicks:1331,roas:4.78,ctr:3.7,cvr:7.66,cpa:90.35},{name:"12.02.26/Refresh",spend:10596,revenue:37101,orders:83,imp:34185,clicks:1097,roas:3.5,ctr:3.21,cvr:7.57,cpa:127.66},{name:"12.04.26/Reflex",spend:5371,revenue:28346,orders:45,imp:17927,clicks:692,roas:5.28,ctr:3.86,cvr:6.5,cpa:119.36},{name:"22.12.25/ไม้ปัด",spend:6882,revenue:26628,orders:44,imp:16976,clicks:642,roas:3.87,ctr:3.78,cvr:6.85,cpa:156.41},{name:"26.01.26/Mind",spend:7001,revenue:21558,orders:45,imp:20113,clicks:608,roas:3.08,ctr:3.02,cvr:7.4,cpa:155.57}]}},
+};
+
+let curPeriod = 'all'; // legacy compat
+let curPeriodKeys = ['jan','feb','mar','apr','may']; // all months
+
+// Combine multiple period snapshots for a platform
+function getCombinedPlatform(keys, platform) {
+  const datasets = keys.map(k => DATA_PERIODS[k][platform]).filter(Boolean);
+  if (!datasets.length) return DATA_PERIODS.all[platform];
+  if (datasets.length === 1) return datasets[0];
+  const spend   = datasets.reduce((a,d)=>a+d.spend,0);
+  const revenue = datasets.reduce((a,d)=>a+d.revenue,0);
+  const orders  = datasets.reduce((a,d)=>a+d.orders,0);
+  const imp     = datasets.reduce((a,d)=>a+d.imp,0);
+  const clicks  = datasets.reduce((a,d)=>a+d.clicks,0);
+  const roas = spend  ? revenue/spend      : 0;
+  const ctr  = imp    ? clicks/imp*100     : 0;
+  const cvr  = clicks ? orders/clicks*100  : 0;
+  const cpa  = orders ? spend/orders       : 0;
+  // Ad-level lists: use all-period as fallback (can't properly merge per-ad across periods)
+  const listSrc = DATA_PERIODS.all[platform] || datasets[datasets.length-1];
+  return {spend,revenue,orders,imp,clicks,roas,ctr,cvr,cpa,
+          top5:listSrc.top5, worst5:listSrc.worst5, all:listSrc.all};
+}
+function getSH(){ return getCombinedPlatform(curPeriodKeys,'shopee'); }
+function getTK(){ return getCombinedPlatform(curPeriodKeys,'tiktok'); }
+
+
+const DATA = {
+  shopee: {
+    spend:3035842,revenue:18210959,clicks:531190,imp:18402997,orders:43716,
+    roas:6.0,ctr:2.89,cvr:8.23,cpa:69,
+    top5:[
+      {name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:75730,revenue:735049,roas:9.71,ctr:2.0,cvr:12.73,cpa:66},
+      {name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:51660,revenue:423037,roas:8.19,ctr:0.73,cvr:21.9,cpa:22},
+      {name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:43689,revenue:310515,roas:7.11,ctr:2.35,cvr:11.4,cpa:72},
+      {name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:34229,revenue:241622,roas:7.06,ctr:1.09,cvr:20.46,cpa:24},
+      {name:"Shop GMV Max",spend:219678,revenue:1546513,roas:7.04,ctr:2.19,cvr:9.43,cpa:56}
+    ],
+    worst5:[
+      {name:"int06-04-26",spend:10109,revenue:10143,roas:1.0,ctr:3.82,cvr:7.48,cpa:404},
+      {name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:56921,revenue:230405,roas:4.05,ctr:2.03,cvr:12.19,cpa:77},
+      {name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:91773,revenue:440731,roas:4.8,ctr:1.99,cvr:9.48,cpa:93},
+      {name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:51758,revenue:251153,roas:4.85,ctr:2.08,cvr:9.18,cpa:90},
+      {name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:173367,revenue:867688,roas:5.0,ctr:27.96,cvr:1.03,cpa:87}
+    ],
+    all:[
+      {name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:354359,revenue:2179434,roas:6.15,ctr:1.63,cvr:13.54,cpa:99},
+      {name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:226919,revenue:1594435,roas:7.03,ctr:1.95,cvr:13.07,cpa:52},
+      {name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:221261,revenue:1166378,roas:5.27,ctr:1.51,cvr:13.05,cpa:75},
+      {name:"Shop GMV Max",spend:219678,revenue:1546513,roas:7.04,ctr:2.19,cvr:9.43,cpa:56},
+      {name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:173367,revenue:867688,roas:5.0,ctr:27.96,cvr:1.03,cpa:87},
+      {name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:170221,revenue:1139635,roas:6.7,ctr:1.71,cvr:14.37,cpa:73},
+      {name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:135828,revenue:806152,roas:5.94,ctr:2.74,cvr:9.59,cpa:66},
+      {name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:112862,revenue:723189,roas:6.41,ctr:2.33,cvr:10.32,cpa:73},
+      {name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:103976,revenue:572850,roas:5.51,ctr:1.53,cvr:12.94,cpa:104},
+      {name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:98925,revenue:510042,roas:5.16,ctr:2.02,cvr:8.92,cpa:84},
+      {name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:92295,revenue:587610,roas:6.37,ctr:1.84,cvr:14.9,cpa:68},
+      {name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:91773,revenue:440731,roas:4.8,ctr:1.99,cvr:9.48,cpa:93},
+      {name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:87827,revenue:517657,roas:5.89,ctr:1.83,cvr:12.89,cpa:77},
+      {name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:76068,revenue:427601,roas:5.62,ctr:2.62,cvr:11.71,cpa:70},
+      {name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:75730,revenue:735049,roas:9.71,ctr:2.0,cvr:12.73,cpa:66},
+      {name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:67493,revenue:435044,roas:6.45,ctr:2.66,cvr:12.86,cpa:67},
+      {name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:62082,revenue:358374,roas:5.77,ctr:1.9,cvr:12.76,cpa:70},
+      {name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:61340,revenue:368088,roas:6.0,ctr:2.24,cvr:10.87,cpa:106},
+      {name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:60068,revenue:327694,roas:5.46,ctr:2.12,cvr:11.24,cpa:93},
+      {name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:56921,revenue:230405,roas:4.05,ctr:2.03,cvr:12.19,cpa:77},
+      {name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:56898,revenue:327870,roas:5.76,ctr:1.97,cvr:10.36,cpa:69},
+      {name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:51758,revenue:251153,roas:4.85,ctr:2.08,cvr:9.18,cpa:90},
+      {name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:51660,revenue:423037,roas:8.19,ctr:0.73,cvr:21.9,cpa:22},
+      {name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:51354,revenue:341787,roas:6.66,ctr:2.43,cvr:15.25,cpa:60},
+      {name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:43689,revenue:310515,roas:7.11,ctr:2.35,cvr:11.4,cpa:72},
+      {name:"shop 06.04.26",spend:40724,revenue:211943,roas:5.2,ctr:8.27,cvr:21.91,cpa:79},
+      {name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:34229,revenue:241622,roas:7.06,ctr:1.09,cvr:20.46,cpa:24},
+      {name:"int06-04-26",spend:10109,revenue:10143,roas:1.0,ctr:3.82,cvr:7.48,cpa:404}
+    ]
+  },
+  tiktok: {
+    spend:1050019,revenue:5443009,clicks:264438,imp:7903568,orders:20779,
+    roas:5.18,ctr:3.35,cvr:7.86,cpa:51,
+    top5:[
+      {name:"4.4 Live_GMV",spend:1496,revenue:38730,roas:25.9,ctr:0,cvr:0,cpa:21},
+      {name:"07.06.26/GMVLive แอ้น",spend:1917,revenue:15625,roas:8.15,ctr:0,cvr:0,cpa:56},
+      {name:"25.04.26/Live GMV New",spend:3008,revenue:23348,roas:7.76,ctr:0,cvr:0,cpa:63},
+      {name:"29.01.26/Interior wipe - refresh wipe",spend:133240,revenue:926794,roas:6.96,ctr:2.52,cvr:17.41,cpa:17},
+      {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:15022,revenue:95501,roas:6.36,ctr:0,cvr:0,cpa:55}
+    ],
+    worst5:[
+      {name:"06.04.26/All GMV",spend:1000,revenue:440,roas:0.44,ctr:4.57,cvr:16.67,cpa:500},
+      {name:"08.05.26/GMVLiveปาย",spend:1507,revenue:2527,roas:1.68,ctr:0,cvr:0,cpa:215},
+      {name:"09.08.25/Beach",spend:1977,revenue:5669,roas:2.87,ctr:6.34,cvr:5.95,cpa:165},
+      {name:"08.05.26/GMVLive ปาย03",spend:1373,revenue:4166,roas:3.03,ctr:0,cvr:0,cpa:125},
+      {name:"05.05.26/GMVLive",spend:4837,revenue:15994,roas:3.31,ctr:0,cvr:0,cpa:90}
+    ],
+    all:[
+      {name:"Sugar",spend:189425,revenue:962763,roas:5.08,ctr:3.55,cvr:11.13,cpa:71},
+      {name:"20.11.25/All",spend:175464,revenue:918475,roas:5.23,ctr:4.82,cvr:10.5,cpa:68},
+      {name:"29.01.26/Interior wipe - refresh wipe",spend:133240,revenue:926794,roas:6.96,ctr:2.52,cvr:17.41,cpa:17},
+      {name:"22.12.25/ไม้ปัด",spend:113297,revenue:551813,roas:4.87,ctr:4.6,cvr:19.86,cpa:115},
+      {name:"Cleaner",spend:83167,revenue:373438,roas:4.49,ctr:3.35,cvr:13.99,cpa:45},
+      {name:"Interior/reflex",spend:67944,revenue:307969,roas:4.53,ctr:3.02,cvr:14.88,cpa:100},
+      {name:"12.02.26/Refresh",spend:46002,revenue:202496,roas:4.4,ctr:3.71,cvr:17.22,cpa:100},
+      {name:"26.01.26/Mind",spend:28096,revenue:119803,roas:4.26,ctr:6.74,cvr:7.91,cpa:121},
+      {name:"12.04.26/Interior",spend:26799,revenue:102268,roas:3.82,ctr:4.22,cvr:9.38,cpa:113},
+      {name:"26.01.26/Reflex",spend:19995,revenue:102850,roas:5.14,ctr:4.04,cvr:6.01,cpa:98},
+      {name:"16.04.26/XGlass-Spot",spend:18735,revenue:99899,roas:5.33,ctr:4.8,cvr:8.94,cpa:79},
+      {name:"18.11.25/Refresh",spend:17604,revenue:85292,roas:4.85,ctr:4.82,cvr:6.83,cpa:88},
+      {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:15022,revenue:95501,roas:6.36,ctr:0,cvr:0,cpa:55},
+      {name:"Spot",spend:10648,revenue:45463,roas:4.27,ctr:3.64,cvr:5.79,cpa:109},
+      {name:"12.04.26/Reflex",spend:10538,revenue:51033,roas:4.84,ctr:6.71,cvr:11.3,cpa:129},
+      {name:"05.05.26/GMVLive",spend:4837,revenue:15994,roas:3.31,ctr:0,cvr:0,cpa:90},
+      {name:"05.05.26/GMVLive ปาย",spend:4580,revenue:22705,roas:4.96,ctr:0,cvr:0,cpa:72},
+      {name:"15.03.26/spot",spend:3407,revenue:14152,roas:4.15,ctr:5.22,cvr:20.45,cpa:95},
+      {name:"25.04.26/Live GMV New",spend:3008,revenue:23348,roas:7.76,ctr:0,cvr:0,cpa:63},
+      {name:"07.05.26/GMVLive แอ้น",spend:2456,revenue:10003,roas:4.07,ctr:0,cvr:0,cpa:117},
+      {name:"15.03.26/X-Glass",spend:2270,revenue:7643,roas:3.37,ctr:7.16,cvr:8.98,cpa:134},
+      {name:"09.08.25/Beach",spend:1977,revenue:5669,roas:2.87,ctr:6.34,cvr:5.95,cpa:165},
+      {name:"06.04.26/All GMV1",spend:1948,revenue:6900,roas:3.54,ctr:7.14,cvr:15.04,cpa:97},
+      {name:"07.06.26/GMVLive แอ้น",spend:1917,revenue:15625,roas:8.15,ctr:0,cvr:0,cpa:56},
+      {name:"08.05.26/GMVLiveปาย",spend:1507,revenue:2527,roas:1.68,ctr:0,cvr:0,cpa:215},
+      {name:"4.4 Live_GMV",spend:1496,revenue:38730,roas:25.9,ctr:0,cvr:0,cpa:21},
+      {name:"08.05.26/GMVLive ปาย03",spend:1373,revenue:4166,roas:3.03,ctr:0,cvr:0,cpa:125},
+      {name:"06.04.26/All GMV",spend:1000,revenue:440,roas:0.44,ctr:4.57,cvr:16.67,cpa:500},
+      {name:"08.05.26/GMVLiveปายรอบสอง",spend:1000,revenue:6054,roas:6.05,ctr:0,cvr:0,cpa:56},
+      {name:"08.05.26/GMVLive ปาย04",spend:700,revenue:3408,roas:4.87,ctr:0,cvr:0,cpa:78}
+    ]
+  }
+};
+
+const addedEntries = [];
+
+// ── Sort state ─────────────────────────────────────────────────────
+const sortState = {
+  shopee: { col: null, dir: 'desc' },
+  tiktok: { col: null, dir: 'desc' }
+};
+
+function sortTable(platform, col) {
+  const state = sortState[platform];
+  if (state.col === col) {
+    state.dir = state.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    state.col = col;
+    // ชื่อ → A-Z ascending เป็น default, ตัวเลข → มากไปน้อย
+    state.dir = col === 'name' ? 'asc' : 'desc';
+  }
+
+  const src = platform === 'shopee' ? getSH() : getTK();
+  const sorted = [...src.all].sort((a, b) => {
+    const va = a[col], vb = b[col];
+    if (typeof va === 'string') {
+      const cmp = va.localeCompare(vb, 'th');
+      return state.dir === 'asc' ? cmp : -cmp;
+    }
+    return state.dir === 'asc' ? va - vb : vb - va;
+  });
+
+  buildAllTable(platform + '-all-body', sorted);
+
+  // อัปเดต icon บน header
+  const tableId = platform + '-all-table';
+  document.querySelectorAll('#' + tableId + ' th.sortable').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === col) {
+      th.classList.add(state.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+const fmt = n => n?.toLocaleString('th-TH',{maximumFractionDigits:0}) ?? '—';
+const fmtD = (n,d=2) => n?.toFixed(d) ?? '—';
+function roasClass(r){ return r>=6?'roas-high':r>=4?'roas-mid':'roas-low'; }
+
+// ── Tab switching ─────────────────────────────────────────────────
+function showTab(name, evt){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const clickedTab = evt ? evt.target : (event && event.target);
+  if (clickedTab) clickedTab.classList.add('active');
+  // If switching to overview and charts were updated while hidden, re-render now
+  if (name === 'overview' && _chartsNeedsUpdate) {
+    initCharts();
+    _chartsNeedsUpdate = false;
+  }
+}
+
+// ── Comparison rows ───────────────────────────────────────────────
+function buildCmp(containerId, d, colorClass){
+  const metrics = [
+    {label:'Spend',sv:d.spend,fmt:'฿'+fmt(d.spend)},
+    {label:'Revenue',sv:d.revenue,fmt:'฿'+fmt(d.revenue)},
+    {label:'ROAS',sv:d.roas,fmt:fmtD(d.roas)+'x'},
+    {label:'CTR',sv:d.ctr,fmt:fmtD(d.ctr)+'%'},
+    {label:'CVR',sv:d.cvr,fmt:fmtD(d.cvr)+'%'},
+    {label:'CPA',sv:d.cpa,fmt:'฿'+fmtD(d.cpa)},
+    {label:'Orders',sv:d.orders,fmt:fmt(d.orders)},
+    {label:'Impressions',sv:d.imp,fmt:fmt(d.imp)},
+  ];
+  const el = document.getElementById(containerId);
+  el.innerHTML = metrics.map(m=>`
+    <div class="cmp-row">
+      <div class="cmp-label">${m.label}</div>
+      <div class="cmp-val" style="color:var(--${colorClass})">${m.fmt}</div>
+    </div>`).join('');
+}
+
+// ── Top 5 rows ────────────────────────────────────────────────────
+function buildTop5(containerId, arr, isBest){
+  const medals = isBest ? ['🥇','🥈','🥉','4️⃣','5️⃣'] : ['❌','❌','❌','❌','❌'];
+  const el = document.getElementById(containerId);
+  el.innerHTML = arr.map((a,i)=>`
+    <div class="top-row">
+      <div style="font-size:18px;width:28px;flex-shrink:0">${medals[i]}</div>
+      <div>
+        <div class="top-name" title="${a.name}">${a.name}</div>
+        <div class="top-sub">Spend ฿${fmt(a.spend)} · Revenue ฿${fmt(a.revenue)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="top-roas ${roasClass(a.roas)}">${fmtD(a.roas)}x</div>
+        <div class="top-sub">CTR ${fmtD(a.ctr)}% · CVR ${fmtD(a.cvr)}%</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── All ads table ─────────────────────────────────────────────────
+function buildAllTable(tbodyId, arr){
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = arr.map((a,i)=>`
+    <tr>
+      <td style="color:var(--muted);font-weight:700">${i+1}</td>
+      <td class="ad-name" title="${a.name}">${a.name}</td>
+      <td style="color:var(--gray)">฿${fmt(a.spend)}</td>
+      <td style="color:var(--green)">฿${fmt(a.revenue)}</td>
+      <td><span class="roas-badge ${roasClass(a.roas)}">${fmtD(a.roas)}x</span></td>
+      <td style="color:var(--blue)">${fmtD(a.ctr)}%</td>
+      <td style="color:var(--yellow)">${fmtD(a.cvr)}%</td>
+      <td style="color:#1A5CDB">฿${fmt(a.cpa)}</td>
+    </tr>`).join('');
+}
+
+// ── Charts ────────────────────────────────────────────────────────
+const chartDefaults = {
+  plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Segoe UI'}}},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',borderColor:'rgba(249,115,22,.4)',borderWidth:1,padding:12}},
+  scales:{x:{ticks:{color:'#6B7280',maxRotation:30},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.06)'}}}
+};
+
+
+// ── updateCharts: update chart data without full re-init ──────────
+let _chartsInited = false;
+let _chartsNeedsUpdate = false;
+
+function updateCharts(sh, tk){
+  // Only render charts if the overview tab is currently visible
+  const overviewVisible = document.getElementById('tab-overview').classList.contains('active');
+  if (overviewVisible) {
+    initCharts();
+    _chartsInited = true;
+    _chartsNeedsUpdate = false;
+  } else {
+    // Defer until user navigates to overview
+    _chartsNeedsUpdate = true;
+  }
+}
+
+function initCharts(){
+  // Destroy existing charts first — must pass canvas element (not string ID) for Chart.js 4
+  ['chartROAS','chartSpendRev','chartCTRCVR','chartOrderCPA'].forEach(id=>{
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+  });
+  const sh=getSH(), tk=getTK();
+// ROAS bar chart - all ads/campaigns
+  const sLabels = getSH().all.map(a=>a.name.substring(0,20)+'…');
+  const sRoas   = getSH().all.map(a=>a.roas);
+  const tLabels = getTK().all.map(a=>a.name.substring(0,22)+'…');
+  const tRoas   = getTK().all.map(a=>a.roas);
+
+  new Chart(document.getElementById('chartROAS'),{
+    type:'bar',
+    data:{
+      labels:['Shopee','TikTok'],
+      datasets:[{
+        label:'ROAS เฉลี่ย',
+        data:[getSH().roas, getTK().roas],
+        backgroundColor:['rgba(238,77,45,.7)','rgba(45,212,191,.7)'],
+        borderColor:['#EE4D2D','#2DD4CF'],borderWidth:2,borderRadius:6,
+      }]
+    },
+    options:{...chartDefaults,plugins:{...chartDefaults.plugins,legend:{display:false}},
+      scales:{...chartDefaults.scales,y:{...chartDefaults.scales.y,suggestedMax:8}}}
+  });
+
+  // Spend vs Revenue grouped
+  new Chart(document.getElementById('chartSpendRev'),{
+    type:'bar',
+    data:{
+      labels:['🛍️ Shopee','🎵 TikTok'],
+      datasets:[
+        {label:'Spend (฿)',data:[getSH().spend,getTK().spend],backgroundColor:'rgba(239,68,68,.6)',borderColor:'#EF4444',borderWidth:2,borderRadius:4},
+        {label:'Revenue (฿)',data:[getSH().revenue,getTK().revenue],backgroundColor:'rgba(16,185,129,.6)',borderColor:'#10B981',borderWidth:2,borderRadius:4},
+      ]
+    },
+    options:{...chartDefaults}
+  });
+
+  // CTR CVR
+  new Chart(document.getElementById('chartCTRCVR'),{
+    type:'radar',
+    data:{
+      labels:['CTR %','CVR %','ROAS (×1)','CPA inverse','Orders (÷100)'],
+      datasets:[
+        {label:'Shopee',data:[getSH().ctr, getSH().cvr, getSH().roas, 10-Math.min(9.9,getSH().cpa/100), getSH().orders/100],backgroundColor:'rgba(238,77,45,.15)',borderColor:'#EE4D2D',pointBackgroundColor:'#EE4D2D',borderWidth:2},
+        {label:'TikTok',data:[getTK().ctr, getTK().cvr, getTK().roas, 10-Math.min(9.9,getTK().cpa/100), getTK().orders/100],backgroundColor:'rgba(45,212,191,.1)',borderColor:'#2DD4CF',pointBackgroundColor:'#2DD4CF',borderWidth:2},
+      ]
+    },
+    options:{plugins:{...chartDefaults.plugins},scales:{r:{ticks:{color:'#6B7280',backdropColor:'transparent'},grid:{color:'rgba(255,255,255,.08)'},pointLabels:{color:'#9CA3AF'}}}}
+  });
+
+  // Orders & CPA
+  new Chart(document.getElementById('chartOrderCPA'),{
+    type:'bar',
+    data:{
+      labels:['🛍️ Shopee','🎵 TikTok'],
+      datasets:[
+        {label:'Orders',data:[getSH().orders,getTK().orders],backgroundColor:'rgba(59,130,246,.6)',borderColor:'#3B82F6',borderWidth:2,borderRadius:4,yAxisID:'y'},
+        {label:'CPA (฿)',data:[getSH().cpa,getTK().cpa],backgroundColor:'rgba(249,115,22,.6)',borderColor:'#F97316',borderWidth:2,borderRadius:4,yAxisID:'y1',type:'line'},
+      ]
+    },
+    options:{...chartDefaults,scales:{
+      x:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.04)'}},
+      y:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.06)'},position:'left'},
+      y1:{ticks:{color:'#F97316'},grid:{display:false},position:'right'},
+    }}
+  });
+}
+
+// ── Add data form ─────────────────────────────────────────────────
+function addEntry(){
+  const platform = document.getElementById('f-platform').value;
+  const name = document.getElementById('f-name').value.trim();
+  const period = document.getElementById('f-period').value.trim();
+  const spend = parseFloat(document.getElementById('f-spend').value)||0;
+  const revenue = parseFloat(document.getElementById('f-revenue').value)||0;
+  const imp = parseFloat(document.getElementById('f-imp').value)||0;
+  const clicks = parseFloat(document.getElementById('f-clicks').value)||0;
+  const orders = parseFloat(document.getElementById('f-orders').value)||0;
+
+  if(!name||!spend){
+    alert('กรุณากรอกชื่อ Ads และ Spend');return;
+  }
+
+  const entry = {
+    platform, name, period,
+    spend, revenue,
+    roas: spend ? +(revenue/spend).toFixed(2) : 0,
+    ctr: imp ? +((clicks/imp)*100).toFixed(2) : 0,
+    cvr: clicks ? +((orders/clicks)*100).toFixed(2) : 0,
+    cpa: orders ? +(spend/orders).toFixed(2) : 0,
+  };
+  addedEntries.push(entry);
+  renderAddedTable();
+  clearForm();
+  const t = document.getElementById('success-toast');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+function renderAddedTable(){
+  const tbody = document.getElementById('added-body');
+  if(!addedEntries.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">ยังไม่มีข้อมูล</td></tr>';
+    return;
+  }
+  const plat = {Shopee:'badge-shopee',TikTok:'badge-tiktok',Meta:'badge-tiktok',Google:'badge-shopee'};
+  tbody.innerHTML = addedEntries.map((e,i)=>`
+    <tr>
+      <td><span class="${plat[e.platform]||'badge-tiktok'}">${e.platform}</span></td>
+      <td class="ad-name">${e.name}</td>
+      <td style="color:var(--muted)">${e.period||'—'}</td>
+      <td>฿${fmt(e.spend)}</td>
+      <td style="color:var(--green)">฿${fmt(e.revenue)}</td>
+      <td><span class="roas-badge ${roasClass(e.roas)}">${e.roas}x</span></td>
+      <td style="color:var(--blue)">${e.ctr}%</td>
+      <td style="color:var(--yellow)">${e.cvr}%</td>
+      <td style="color:#1A5CDB">฿${e.cpa}</td>
+      <td><button onclick="removeEntry(${i})" style="background:rgba(239,68,68,.15);color:var(--red);border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px">ลบ</button></td>
+    </tr>`).join('');
+}
+
+function removeEntry(i){ addedEntries.splice(i,1); renderAddedTable(); }
+
+function clearForm(){
+  ['f-name','f-period','f-spend','f-revenue','f-imp','f-clicks','f-orders']
+    .forEach(id=>document.getElementById(id).value='');
+}
+
+function exportCSV(){
+  if(!addedEntries.length){alert('ไม่มีข้อมูลให้ Export');return;}
+  const headers = ['Platform','Name','Period','Spend','Revenue','ROAS','CTR','CVR','CPA'];
+  const rows = addedEntries.map(e=>[e.platform,`"${e.name}"`,e.period,e.spend,e.revenue,e.roas,e.ctr,e.cvr,e.cpa]);
+  const csv = [headers.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='WIBWUB_Ads_Added.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Render KPI cards ──────────────────────────────────────────────
+function renderKPIs(){
+  const sh=getSH(), tk=getTK();
+  const bSpend=sh.spend+tk.spend, bRev=sh.revenue+tk.revenue;
+  const bOrd=sh.orders+tk.orders, bImp=sh.imp+tk.imp;
+  const bRoas=bSpend?bRev/bSpend:0, bCpa=bOrd?bSpend/bOrd:0;
+  const fmtM=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('kpi-blend-spend','฿'+fmt(bSpend));
+  set('kpi-blend-rev','฿'+fmt(bRev));
+  set('kpi-blend-roas',fmtD(bRoas)+'x');
+  set('kpi-blend-orders',fmt(bOrd));
+  set('kpi-blend-cpa','฿'+fmtD(bCpa));
+  set('kpi-blend-imp',fmtM(bImp));
+  set('sh-kpi-spend','฿'+fmt(sh.spend));
+  set('sh-kpi-rev','฿'+fmt(sh.revenue));
+  set('sh-kpi-roas',fmtD(sh.roas)+'x');
+  set('sh-kpi-ctr',fmtD(sh.ctr)+'%');
+  set('sh-kpi-cvr',fmtD(sh.cvr)+'%');
+  set('sh-kpi-cpa','฿'+fmtD(sh.cpa));
+  set('sh-kpi-orders',fmt(sh.orders));
+  set('sh-kpi-imp',fmtM(sh.imp));
+  set('tk-kpi-spend','฿'+fmt(tk.spend));
+  set('tk-kpi-rev','฿'+fmt(tk.revenue));
+  set('tk-kpi-roas',fmtD(tk.roas)+'x');
+  set('tk-kpi-ctr',fmtD(tk.ctr)+'%');
+  set('tk-kpi-cvr',fmtD(tk.cvr)+'%');
+  set('tk-kpi-cpa','฿'+fmtD(tk.cpa));
+  set('tk-kpi-orders',fmt(tk.orders));
+  set('tk-kpi-imp',fmtM(tk.imp));
+  const pb=document.getElementById('period-badge-txt');
+  if(pb)pb.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
+}
+
+// ── Period switcher ────────────────────────────────────────────────
+// ── NEW: Dropdown Picker Functions ────────────────────────────────
+const ADS_PERIOD_LABELS = {
+  all: 'ทั้งหมด (ม.ค. – 24 พ.ค. 2569)',
+  jan: 'มกราคม 2569',
+  feb: 'กุมภาพันธ์ 2569',
+  mar: 'มีนาคม 2569',
+  apr: 'เมษายน 2569',
+  may: 'พฤษภาคม 2569 (1–24 พ.ค.)',
+};
+const ADS_PERIOD_SUMMARY = {
+  all: 'Shopee ฿18.21M · TikTok ฿5.44M',
+  jan: 'Shopee ฿3.61M · TikTok ฿898K',
+  feb: 'Shopee ฿3.75M · TikTok ฿1.04M',
+  mar: 'Shopee ฿3.62M · TikTok ฿1.13M',
+  apr: 'Shopee ฿4.34M · TikTok ฿1.28M',
+  may: 'Shopee ฿3.85M · TikTok ฿1.18M',
+};
+
+// ── Period Picker ─────────────────────────────────────────────────
+const ADS_PERIOD_DEFS = {
+  all: { keys:['all'],  label:'ทั้งหมด (ม.ค. – 24 พ.ค. 2569)', badge:'1 ม.ค. – 24 พ.ค. 2569' },
+  jan: { keys:['jan'],  label:'มกราคม 2569',                    badge:'ม.ค. 2569' },
+  feb: { keys:['feb'],  label:'กุมภาพันธ์ 2569',                badge:'ก.พ. 2569' },
+  mar: { keys:['mar'],  label:'มีนาคม 2569',                    badge:'มี.ค. 2569' },
+  apr: { keys:['apr'],  label:'เมษายน 2569',                    badge:'เม.ย. 2569' },
+  may: { keys:['may'],  label:'พ.ค. 2569 (1–24)',               badge:'พ.ค. (1–24) 2569' },
+};
+let curPickedPeriod = 'all';
+
+function adsPickPeriod(key, btn){
+  curPickedPeriod = key;
+  curPeriodKeys = ADS_PERIOD_DEFS[key].keys;
+  document.querySelectorAll('.ads-period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('adsPeriodLabel').textContent = ADS_PERIOD_DEFS[key].label;
+  document.getElementById('period-badge-txt').textContent = ADS_PERIOD_DEFS[key].badge;
+  adsClosePicker();
+  renderDashboard();
+}
+
+function adsTogglePicker(){
+  const panel=document.getElementById('adsMPickerPanel');
+  const btn=document.getElementById('adsMRangeBtn');
+  const bd=document.getElementById('adsBackdrop');
+  const open=panel.classList.contains('open');
+  panel.classList.toggle('open',!open);
+  btn.classList.toggle('open',!open);
+  bd.classList.toggle('open',!open);
+}
+function adsClosePicker(){
+  document.getElementById('adsMPickerPanel').classList.remove('open');
+  document.getElementById('adsMRangeBtn').classList.remove('open');
+  document.getElementById('adsBackdrop').classList.remove('open');
+}
+function adsPeriodSelect(){}  // legacy no-op
+
+
+// Legacy setPeriod kept for backward compat
+function setPeriod(key, btn){
+  curPeriod=key;
+  renderDashboard();
+}
+
+// ── renderDashboard: re-render everything ──────────────────────────
+function renderDashboard(){
+  const sh=getSH(), tk=getTK();
+  renderKPIs();
+  buildCmp('shopee-cmp', sh, 'shopee');
+  buildCmp('tiktok-cmp', tk, 'tiktok');
+  buildTop5('shopee-top5-best', sh.top5, true);
+  buildTop5('shopee-top5-worst', sh.worst5, false);
+  buildTop5('tiktok-top5-best', tk.top5, true);
+  buildTop5('tiktok-top5-worst', tk.worst5, false);
+  buildAllTable('shopee-all-body', sh.all);
+  buildAllTable('tiktok-all-body', tk.all);
+  updateCharts(sh, tk);
+}
+
+// ── Init ───────────────────────────────────────────────────────────
+renderDashboard();
+</script>
+</body>
+</html>
