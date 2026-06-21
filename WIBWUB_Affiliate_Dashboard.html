@@ -232,7 +232,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="hdr-logo">WIB<span>WUB</span></div>
     <div class="hdr-sub">Affiliate Analytics Dashboard</div>
   </div>
-  <div class="hdr-badge">📅 1–17 มิ.ย. 2569 · อัปเดต 19 มิ.ย. 2026</div>
+  <div class="hdr-badge">📅 1–20 มิ.ย. 2569 · อัปเดต 20 มิ.ย. 2026</div>
 </div>
 
 <div class="nav">
@@ -260,10 +260,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
   </div>
 </div>
 <div id="tab-overview" class="panel active">
-  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มี.ค.–มิ.ย. 2026 · 48 active creators (Jun GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
+  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มี.ค.–มิ.ย. 2026 · 53 active creators (Jun GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
 
   <div class="kstrip">
-    <div class="kk"><div class="kkl">Affiliate GMV รวม</div><div class="kkv teal">฿2.67M</div><div class="kks">มี.ค.–มิ.ย. 2026</div></div>
+    <div class="kk"><div class="kkl">Affiliate GMV รวม</div><div class="kkv teal">฿2.71M</div><div class="kks">มี.ค.–มิ.ย. 2026</div></div>
     <div class="kk"><div class="kkl">Net GMV (หลังคืนเงิน)</div><div class="kkv green">฿2.60M</div><div class="kks">returns รวม ฿48.2K</div></div>
     <div class="kk"><div class="kkl">ครีเอเตอร์ที่ Active</div><div class="kkv blue">1,168</div><div class="kks">ค่าคอม avg 11.2%</div></div>
     <div class="kk"><div class="kkl">Orders รวม</div><div class="kkv purple">13,991</div><div class="kks">AOV ฿190/order</div></div>
@@ -350,8 +350,8 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th onclick="sortTbl('tbl-products',4,this)">ราคา/หน่วย <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',5,this)">Returns <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',6,this)">Net GMV <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-products',7,this)">ครีเอเตอร์ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-17</div></th>
-          <th onclick="sortTbl('tbl-products',8,this)">วีดีโอ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-17</div></th>
+          <th onclick="sortTbl('tbl-products',7,this)">ครีเอเตอร์ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-20</div></th>
+          <th onclick="sortTbl('tbl-products',8,this)">วีดีโอ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">มิ.ย.1-20</div></th>
           <th>% ของ Total GMV</th>
         </tr>
       </thead>
@@ -451,7 +451,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <!-- ════ TREND ════ -->
 <div id="tab-trend" class="panel">
   <div class="tr-kstrip">
-    <div class="tr-k" style="--kac:var(--teal)"><div class="tr-kl">GMV รวมทั้งปี</div><div class="tr-kv" style="color:var(--teal)">฿2.67M</div><div class="tr-ks">ม.ค.–มิ.ย. 2026</div></div>
+    <div class="tr-k" style="--kac:var(--teal)"><div class="tr-kl">GMV รวมทั้งปี</div><div class="tr-kv" style="color:var(--teal)">฿2.71M</div><div class="tr-ks">ม.ค.–มิ.ย. 2026</div></div>
     <div class="tr-k" style="--kac:var(--green)"><div class="tr-kl">Net GMV รวม</div><div class="tr-kv" style="color:var(--green)">฿2.60M</div><div class="tr-ks">หลังหักคืน ~1.8%</div></div>
     <div class="tr-k" style="--kac:var(--amber)"><div class="tr-kl">Commission รวม</div><div class="tr-kv" style="color:var(--amber)">฿295K</div><div class="tr-ks">avg rate 11.1%</div></div>
     <div class="tr-k" style="--kac:var(--purple)"><div class="tr-kl">Peak Month</div><div class="tr-kv" style="color:var(--purple)">พ.ค. 69</div><div class="tr-ks">฿951K GMV</div></div>
@@ -547,7 +547,7 @@ const CREATORS = [
   {name:'aomsin.wong', gmv:1031, returns:0, net:1031, comm:164, orders:1, comm_rate:15.9},
 ];
 
-// Monthly GMV per creator: [มี.ค., เม.ย., พ.ค., มิ.ย.1-17]
+// Monthly GMV per creator: [มี.ค., เม.ย., พ.ค., มิ.ย.1-20]
 const CREATOR_MONTHS = {
   'fahareejun':[0,29331,228257,0],
   'rita.fe_':[77739,61408,42307,14941],
@@ -758,12 +758,12 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:3,vid:19,monthly:{mar:25400,apr:134300,may:393400,jun:18294},ret:{mar:178,apr:1500,may:2900,jun:355}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:3,vid:22,monthly:{mar:25400,apr:134300,may:393400,jun:18294},ret:{mar:178,apr:1500,may:2900,jun:355}},
   {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:19,vid:75,monthly:{mar:36100,apr:162600,may:168300,jun:97634},ret:{mar:246,apr:2200,may:1100,jun:428}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:157,monthly:{mar:39000,apr:147300,may:119400,jun:97125},ret:{mar:732,apr:4200,may:3100,jun:2100}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:46,monthly:{mar:31900,apr:69400,may:67500,jun:51947},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:148,monthly:{mar:25800,apr:54500,may:59000,jun:26941},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:20,monthly:{mar:25400,apr:49600,may:40400,jun:18294},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:167,monthly:{mar:39000,apr:147300,may:119400,jun:97125},ret:{mar:732,apr:4200,may:3100,jun:2100}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:51,monthly:{mar:31900,apr:69400,may:67500,jun:51947},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:159,monthly:{mar:25800,apr:54500,may:59000,jun:26941},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:22,monthly:{mar:25400,apr:49600,may:40400,jun:18294},ret:{mar:1200,apr:1400,may:355,jun:355}},
   {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:6,monthly:{mar:3700,apr:15900,may:10200,jun:5220},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
 const VIDEOS = [
@@ -1174,11 +1174,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-17)"];
-const AF_GMV = [0,0,655259,724337,951325,337429];
-const AF_NET = [0,0,642947,708947,937364,330720];
-const AF_COM = [0,0,82886,69235,105035,41130];
-const AF_CR  = [0,0,398,418,558,486];
+const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-20)"];
+const AF_GMV = [0,0,655259,724337,951325,375789];
+const AF_NET = [0,0,642947,708947,937364,369080];
+const AF_COM = [0,0,82886,69235,105035,46005];
+const AF_CR  = [0,0,398,418,558,274];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
