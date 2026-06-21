@@ -47,7 +47,7 @@ for p in products:
         continue
 
     # อัปเดต stock fields จาก Shipnity
-    p["stock"]    = ship.get("total", 0) or 0
+    p["stock"]    = (ship.get("available", 0) or 0) + (ship.get("reserved", 0) or 0)
     p["reserved"] = ship.get("reserved", 0) or 0
     p["avail"]    = ship.get("available", 0) or 0
 
