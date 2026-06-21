@@ -1,0 +1,5398 @@
+{
+  "generated": "2026-06-16",
+  "months": [
+    "ม.ค.",
+    "ก.พ.",
+    "มี.ค.",
+    "เม.ย.",
+    "พ.ค.",
+    "มิ.ย."
+  ],
+  "month_nums": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "monthly": {
+    "shopee": {
+      "revenue": [
+        3179125,
+        2757812,
+        2882341,
+        3202414,
+        3409122,
+        1873338
+      ],
+      "orders": [
+        7184,
+        6287,
+        6579,
+        7645,
+        8602,
+        4469
+      ],
+      "cancelled": [
+        779,
+        694,
+        725,
+        978,
+        1108,
+        588
+      ],
+      "cancel_pct": [
+        9.8,
+        9.9,
+        9.9,
+        11.3,
+        11.4,
+        11.6
+      ],
+      "aov": [
+        443,
+        439,
+        438,
+        419,
+        396,
+        419
+      ]
+    },
+    "lazada": {
+      "revenue": [
+        150942,
+        104875,
+        152964,
+        95120,
+        106762,
+        58557
+      ],
+      "orders": [
+        380,
+        271,
+        419,
+        244,
+        263,
+        152
+      ],
+      "cancelled": [
+        43,
+        51,
+        92,
+        59,
+        54,
+        24
+      ],
+      "cancel_pct": [
+        10.2,
+        15.8,
+        18.0,
+        19.5,
+        17.0,
+        13.6
+      ],
+      "aov": [
+        397,
+        387,
+        365,
+        390,
+        406,
+        385
+      ]
+    },
+    "tiktok": {
+      "revenue": [
+        1069223,
+        1085294,
+        1182570,
+        1221056,
+        1438434,
+        444037
+      ],
+      "orders": [
+        3639,
+        4130,
+        4420,
+        5200,
+        7850,
+        1835
+      ],
+      "cancelled": [
+        369,
+        360,
+        373,
+        561,
+        639,
+        439
+      ],
+      "cancel_pct": [
+        9.2,
+        8.0,
+        7.8,
+        9.7,
+        7.5,
+        19.3
+      ],
+      "aov": [
+        294,
+        263,
+        268,
+        235,
+        183,
+        242
+      ]
+    },
+    "line": {
+      "revenue": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "orders": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cancelled": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "cancel_pct": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "aov": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "new_vs_returning": {
+    "shopee": {
+      "new": [
+        7176,
+        5570,
+        5543,
+        6313,
+        6906,
+        3362
+      ],
+      "returning": [
+        0,
+        715,
+        1034,
+        1332,
+        1695,
+        1107
+      ]
+    },
+    "lazada": {
+      "new": [
+        272,
+        226,
+        353,
+        199,
+        259,
+        151
+      ],
+      "returning": [
+        108,
+        45,
+        57,
+        44,
+        4,
+        0
+      ]
+    },
+    "tiktok": {
+      "new": [
+        2960,
+        3476,
+        3882,
+        4811,
+        7672,
+        1835
+      ],
+      "returning": [
+        666,
+        647,
+        530,
+        387,
+        169,
+        0
+      ]
+    },
+    "line": {
+      "new": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "returning": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  },
+  "top_products": [
+    {
+      "name": "Unknown",
+      "total_revenue": 2823368,
+      "total_qty": 11718,
+      "platforms": {
+        "shopee": {
+          "revenue": 2823368,
+          "qty": 11718,
+          "monthly_revenue": [
+            439480,
+            375578,
+            469359,
+            571953,
+            657552,
+            309446
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wild Duster",
+      "total_revenue": 2804724,
+      "total_qty": 4548,
+      "platforms": {
+        "shopee": {
+          "revenue": 2247234,
+          "qty": 3416,
+          "monthly_revenue": [
+            582206,
+            422723,
+            474641,
+            411061,
+            249367,
+            107236
+          ]
+        },
+        "lazada": {
+          "revenue": 34455,
+          "qty": 57,
+          "monthly_revenue": [
+            12086,
+            5774,
+            5265,
+            5260,
+            5561,
+            509
+          ]
+        },
+        "tiktok": {
+          "revenue": 523035,
+          "qty": 1075,
+          "monthly_revenue": [
+            135573,
+            122768,
+            133929,
+            78756,
+            42277,
+            9732
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Sugar Wax",
+      "total_revenue": 2124882,
+      "total_qty": 6091,
+      "platforms": {
+        "shopee": {
+          "revenue": 1392514,
+          "qty": 3680,
+          "monthly_revenue": [
+            260116,
+            214068,
+            246615,
+            260909,
+            259511,
+            151295
+          ]
+        },
+        "lazada": {
+          "revenue": 58745,
+          "qty": 138,
+          "monthly_revenue": [
+            19098,
+            9397,
+            10695,
+            6734,
+            3706,
+            9115
+          ]
+        },
+        "tiktok": {
+          "revenue": 673623,
+          "qty": 2273,
+          "monthly_revenue": [
+            134768,
+            143729,
+            129996,
+            109416,
+            103699,
+            52015
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Refresh Leather",
+      "total_revenue": 1170029,
+      "total_qty": 3310,
+      "platforms": {
+        "shopee": {
+          "revenue": 677594,
+          "qty": 1619,
+          "monthly_revenue": [
+            100048,
+            86637,
+            114754,
+            133289,
+            154602,
+            88264
+          ]
+        },
+        "lazada": {
+          "revenue": 33215,
+          "qty": 91,
+          "monthly_revenue": [
+            4521,
+            2581,
+            8683,
+            8159,
+            4437,
+            4834
+          ]
+        },
+        "tiktok": {
+          "revenue": 459220,
+          "qty": 1600,
+          "monthly_revenue": [
+            61830,
+            54640,
+            81736,
+            95220,
+            155681,
+            10113
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reflex Coating",
+      "total_revenue": 1165935,
+      "total_qty": 2227,
+      "platforms": {
+        "shopee": {
+          "revenue": 861453,
+          "qty": 1568,
+          "monthly_revenue": [
+            131024,
+            141373,
+            156110,
+            175140,
+            154783,
+            103023
+          ]
+        },
+        "lazada": {
+          "revenue": 52353,
+          "qty": 108,
+          "monthly_revenue": [
+            9872,
+            10591,
+            13052,
+            6933,
+            8273,
+            3632
+          ]
+        },
+        "tiktok": {
+          "revenue": 252129,
+          "qty": 551,
+          "monthly_revenue": [
+            44597,
+            51534,
+            51385,
+            40602,
+            44294,
+            19717
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Quartz Shampoo",
+      "total_revenue": 1004626,
+      "total_qty": 2598,
+      "platforms": {
+        "shopee": {
+          "revenue": 949064,
+          "qty": 2518,
+          "monthly_revenue": [
+            139075,
+            155938,
+            163532,
+            179912,
+            192215,
+            118392
+          ]
+        },
+        "lazada": {
+          "revenue": 26101,
+          "qty": 38,
+          "monthly_revenue": [
+            2852,
+            5218,
+            10165,
+            3339,
+            3243,
+            1284
+          ]
+        },
+        "tiktok": {
+          "revenue": 29461,
+          "qty": 42,
+          "monthly_revenue": [
+            7409,
+            4137,
+            3740,
+            3669,
+            5999,
+            4507
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Spot Clean",
+      "total_revenue": 862749,
+      "total_qty": 1978,
+      "platforms": {
+        "shopee": {
+          "revenue": 619674,
+          "qty": 1368,
+          "monthly_revenue": [
+            87386,
+            58236,
+            60200,
+            146710,
+            167042,
+            100100
+          ]
+        },
+        "lazada": {
+          "revenue": 27659,
+          "qty": 63,
+          "monthly_revenue": [
+            5162,
+            1698,
+            4932,
+            4724,
+            7422,
+            3721
+          ]
+        },
+        "tiktok": {
+          "revenue": 215416,
+          "qty": 547,
+          "monthly_revenue": [
+            34190,
+            20098,
+            17167,
+            75030,
+            55133,
+            13798
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Bundle/Set",
+      "total_revenue": 765507,
+      "total_qty": 753,
+      "platforms": {
+        "shopee": {
+          "revenue": 597743,
+          "qty": 576,
+          "monthly_revenue": [
+            116884,
+            111117,
+            71470,
+            97321,
+            124196,
+            76755
+          ]
+        },
+        "lazada": {
+          "revenue": 46797,
+          "qty": 54,
+          "monthly_revenue": [
+            17309,
+            9302,
+            8323,
+            2764,
+            8039,
+            1060
+          ]
+        },
+        "tiktok": {
+          "revenue": 120967,
+          "qty": 123,
+          "monthly_revenue": [
+            14438,
+            43028,
+            20352,
+            19490,
+            19364,
+            4295
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Mind Detailer",
+      "total_revenue": 753050,
+      "total_qty": 1289,
+      "platforms": {
+        "shopee": {
+          "revenue": 567242,
+          "qty": 890,
+          "monthly_revenue": [
+            115586,
+            120246,
+            84860,
+            99073,
+            103352,
+            44125
+          ]
+        },
+        "lazada": {
+          "revenue": 24103,
+          "qty": 41,
+          "monthly_revenue": [
+            5610,
+            4730,
+            6939,
+            2758,
+            3686,
+            380
+          ]
+        },
+        "tiktok": {
+          "revenue": 161705,
+          "qty": 358,
+          "monthly_revenue": [
+            27133,
+            31569,
+            36125,
+            31269,
+            31184,
+            4425
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Interior Set",
+      "total_revenue": 650736,
+      "total_qty": 480,
+      "platforms": {
+        "shopee": {
+          "revenue": 602688,
+          "qty": 442,
+          "monthly_revenue": [
+            114954,
+            134652,
+            89897,
+            97324,
+            109830,
+            56031
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 48048,
+          "qty": 38,
+          "monthly_revenue": [
+            7923,
+            7768,
+            11715,
+            11062,
+            5996,
+            3584
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Interior Wipe",
+      "total_revenue": 627352,
+      "total_qty": 1765,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 81895,
+          "qty": 188,
+          "monthly_revenue": [
+            15981,
+            8750,
+            16883,
+            14807,
+            15639,
+            9835
+          ]
+        },
+        "tiktok": {
+          "revenue": 545457,
+          "qty": 1577,
+          "monthly_revenue": [
+            110150,
+            92030,
+            98166,
+            98280,
+            103447,
+            43384
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wipes (Interior)",
+      "total_revenue": 496823,
+      "total_qty": 5797,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 5563,
+          "qty": 70,
+          "monthly_revenue": [
+            1264,
+            848,
+            1357,
+            1413,
+            681,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 491260,
+          "qty": 5727,
+          "monthly_revenue": [
+            19179,
+            30862,
+            54919,
+            108243,
+            278057,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Monster Towel",
+      "total_revenue": 470990,
+      "total_qty": 629,
+      "platforms": {
+        "shopee": {
+          "revenue": 426579,
+          "qty": 572,
+          "monthly_revenue": [
+            60595,
+            68053,
+            70178,
+            79273,
+            87041,
+            61439
+          ]
+        },
+        "lazada": {
+          "revenue": 17894,
+          "qty": 22,
+          "monthly_revenue": [
+            2161,
+            2376,
+            3868,
+            3923,
+            5566,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 26517,
+          "qty": 35,
+          "monthly_revenue": [
+            4819,
+            5369,
+            2639,
+            3160,
+            4094,
+            6436
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Sugar+Martini Bundle",
+      "total_revenue": 466200,
+      "total_qty": 1280,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 466200,
+          "qty": 1280,
+          "monthly_revenue": [
+            78732,
+            85481,
+            72067,
+            90728,
+            93156,
+            46036
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "X-Glass",
+      "total_revenue": 452720,
+      "total_qty": 1112,
+      "platforms": {
+        "shopee": {
+          "revenue": 389768,
+          "qty": 954,
+          "monthly_revenue": [
+            49162,
+            27733,
+            38536,
+            43040,
+            141361,
+            89936
+          ]
+        },
+        "lazada": {
+          "revenue": 13029,
+          "qty": 32,
+          "monthly_revenue": [
+            1263,
+            2280,
+            3393,
+            1267,
+            3098,
+            1728
+          ]
+        },
+        "tiktok": {
+          "revenue": 49923,
+          "qty": 126,
+          "monthly_revenue": [
+            4991,
+            5021,
+            8226,
+            6729,
+            13780,
+            11176
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Cleaner+Towel Bundle",
+      "total_revenue": 424499,
+      "total_qty": 2374,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 424499,
+          "qty": 2374,
+          "monthly_revenue": [
+            50161,
+            80751,
+            94348,
+            79994,
+            79991,
+            39254
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wipes (Front)",
+      "total_revenue": 399766,
+      "total_qty": 4963,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 5166,
+          "qty": 63,
+          "monthly_revenue": [
+            882,
+            540,
+            1318,
+            1156,
+            726,
+            544
+          ]
+        },
+        "tiktok": {
+          "revenue": 394600,
+          "qty": 4900,
+          "monthly_revenue": [
+            22274,
+            37051,
+            57342,
+            96537,
+            124389,
+            57007
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wild Duster Set",
+      "total_revenue": 391443,
+      "total_qty": 473,
+      "platforms": {
+        "shopee": {
+          "revenue": 350159,
+          "qty": 420,
+          "monthly_revenue": [
+            97078,
+            75687,
+            71229,
+            49279,
+            44068,
+            12818
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 41284,
+          "qty": 53,
+          "monthly_revenue": [
+            14719,
+            7767,
+            10041,
+            4724,
+            3400,
+            633
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Refresh Leather Set",
+      "total_revenue": 356557,
+      "total_qty": 511,
+      "platforms": {
+        "shopee": {
+          "revenue": 277470,
+          "qty": 375,
+          "monthly_revenue": [
+            42080,
+            42980,
+            34950,
+            52850,
+            71150,
+            33460
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 79087,
+          "qty": 136,
+          "monthly_revenue": [
+            11659,
+            12257,
+            17641,
+            15580,
+            14675,
+            7275
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Graphene Sealant",
+      "total_revenue": 313097,
+      "total_qty": 398,
+      "platforms": {
+        "shopee": {
+          "revenue": 251447,
+          "qty": 311,
+          "monthly_revenue": [
+            27600,
+            36000,
+            43521,
+            48678,
+            53082,
+            42566
+          ]
+        },
+        "lazada": {
+          "revenue": 26167,
+          "qty": 42,
+          "monthly_revenue": [
+            8197,
+            5731,
+            4094,
+            694,
+            5066,
+            2385
+          ]
+        },
+        "tiktok": {
+          "revenue": 35483,
+          "qty": 45,
+          "monthly_revenue": [
+            3626,
+            5055,
+            8266,
+            5669,
+            5603,
+            7264
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Deep Clean",
+      "total_revenue": 301606,
+      "total_qty": 573,
+      "platforms": {
+        "shopee": {
+          "revenue": 260260,
+          "qty": 479,
+          "monthly_revenue": [
+            28325,
+            43003,
+            51927,
+            54969,
+            57110,
+            24926
+          ]
+        },
+        "lazada": {
+          "revenue": 11454,
+          "qty": 24,
+          "monthly_revenue": [
+            3903,
+            1529,
+            3239,
+            2131,
+            652,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 29892,
+          "qty": 70,
+          "monthly_revenue": [
+            3582,
+            4146,
+            9033,
+            4447,
+            5761,
+            2923
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Martini Cloth",
+      "total_revenue": 288198,
+      "total_qty": 1741,
+      "platforms": {
+        "shopee": {
+          "revenue": 216248,
+          "qty": 1307,
+          "monthly_revenue": [
+            46781,
+            33144,
+            34462,
+            35801,
+            41209,
+            24851
+          ]
+        },
+        "lazada": {
+          "revenue": 8981,
+          "qty": 58,
+          "monthly_revenue": [
+            1241,
+            1437,
+            3055,
+            753,
+            1654,
+            841
+          ]
+        },
+        "tiktok": {
+          "revenue": 62969,
+          "qty": 376,
+          "monthly_revenue": [
+            17873,
+            11580,
+            11590,
+            6326,
+            12333,
+            3267
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Visible Glass",
+      "total_revenue": 283542,
+      "total_qty": 903,
+      "platforms": {
+        "shopee": {
+          "revenue": 149421,
+          "qty": 462,
+          "monthly_revenue": [
+            19528,
+            16378,
+            19929,
+            36357,
+            38943,
+            18286
+          ]
+        },
+        "lazada": {
+          "revenue": 15302,
+          "qty": 40,
+          "monthly_revenue": [
+            3296,
+            1781,
+            2818,
+            2857,
+            2945,
+            1605
+          ]
+        },
+        "tiktok": {
+          "revenue": 118819,
+          "qty": 401,
+          "monthly_revenue": [
+            17410,
+            17162,
+            20343,
+            32604,
+            23460,
+            7840
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tire & Trim",
+      "total_revenue": 275939,
+      "total_qty": 524,
+      "platforms": {
+        "shopee": {
+          "revenue": 275939,
+          "qty": 524,
+          "monthly_revenue": [
+            52153,
+            36042,
+            44768,
+            47191,
+            65818,
+            29967
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Gift Box",
+      "total_revenue": 264499,
+      "total_qty": 117,
+      "platforms": {
+        "shopee": {
+          "revenue": 256720,
+          "qty": 113,
+          "monthly_revenue": [
+            85570,
+            65670,
+            32980,
+            31900,
+            20300,
+            20300
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 7779,
+          "qty": 4,
+          "monthly_revenue": [
+            1592,
+            1692,
+            4495,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Beach Wet Coat",
+      "total_revenue": 252118,
+      "total_qty": 540,
+      "platforms": {
+        "shopee": {
+          "revenue": 184062,
+          "qty": 356,
+          "monthly_revenue": [
+            32947,
+            23512,
+            33630,
+            32993,
+            35273,
+            25707
+          ]
+        },
+        "lazada": {
+          "revenue": 13810,
+          "qty": 29,
+          "monthly_revenue": [
+            2533,
+            855,
+            4160,
+            2411,
+            2178,
+            1673
+          ]
+        },
+        "tiktok": {
+          "revenue": 54246,
+          "qty": 155,
+          "monthly_revenue": [
+            13690,
+            7532,
+            9751,
+            8355,
+            11525,
+            3393
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Recove Serum",
+      "total_revenue": 251876,
+      "total_qty": 510,
+      "platforms": {
+        "shopee": {
+          "revenue": 210973,
+          "qty": 421,
+          "monthly_revenue": [
+            32786,
+            37568,
+            22694,
+            41827,
+            52167,
+            23931
+          ]
+        },
+        "lazada": {
+          "revenue": 10221,
+          "qty": 23,
+          "monthly_revenue": [
+            4233,
+            395,
+            2096,
+            1903,
+            0,
+            1594
+          ]
+        },
+        "tiktok": {
+          "revenue": 30682,
+          "qty": 66,
+          "monthly_revenue": [
+            2756,
+            4220,
+            7172,
+            8425,
+            6747,
+            1362
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Popular Set",
+      "total_revenue": 236056,
+      "total_qty": 178,
+      "platforms": {
+        "shopee": {
+          "revenue": 212446,
+          "qty": 160,
+          "monthly_revenue": [
+            60945,
+            39864,
+            32433,
+            39890,
+            29980,
+            9334
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 23610,
+          "qty": 18,
+          "monthly_revenue": [
+            6099,
+            4738,
+            1440,
+            8393,
+            2940,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Interior Wipes Set",
+      "total_revenue": 219204,
+      "total_qty": 981,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 219204,
+          "qty": 981,
+          "monthly_revenue": [
+            18556,
+            28235,
+            40167,
+            51734,
+            52448,
+            28064
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Reflex Coating Set",
+      "total_revenue": 217025,
+      "total_qty": 266,
+      "platforms": {
+        "shopee": {
+          "revenue": 183002,
+          "qty": 223,
+          "monthly_revenue": [
+            41916,
+            34206,
+            26543,
+            26735,
+            33212,
+            20390
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 34023,
+          "qty": 43,
+          "monthly_revenue": [
+            6487,
+            5285,
+            6059,
+            5459,
+            8355,
+            2378
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Banyakart",
+      "total_revenue": 193415,
+      "total_qty": 478,
+      "platforms": {
+        "shopee": {
+          "revenue": 162478,
+          "qty": 405,
+          "monthly_revenue": [
+            21215,
+            19492,
+            23704,
+            28315,
+            44035,
+            25717
+          ]
+        },
+        "lazada": {
+          "revenue": 5298,
+          "qty": 16,
+          "monthly_revenue": [
+            357,
+            1341,
+            2633,
+            380,
+            291,
+            296
+          ]
+        },
+        "tiktok": {
+          "revenue": 25639,
+          "qty": 57,
+          "monthly_revenue": [
+            6088,
+            2404,
+            3871,
+            5401,
+            4879,
+            2996
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Super Dry Towel",
+      "total_revenue": 181293,
+      "total_qty": 386,
+      "platforms": {
+        "shopee": {
+          "revenue": 161545,
+          "qty": 342,
+          "monthly_revenue": [
+            24504,
+            17289,
+            24897,
+            28441,
+            40851,
+            25563
+          ]
+        },
+        "lazada": {
+          "revenue": 5488,
+          "qty": 12,
+          "monthly_revenue": [
+            876,
+            1470,
+            0,
+            1854,
+            426,
+            862
+          ]
+        },
+        "tiktok": {
+          "revenue": 14260,
+          "qty": 32,
+          "monthly_revenue": [
+            2642,
+            2390,
+            3271,
+            1748,
+            3033,
+            1176
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Perfect Cloth",
+      "total_revenue": 180613,
+      "total_qty": 883,
+      "platforms": {
+        "shopee": {
+          "revenue": 144377,
+          "qty": 706,
+          "monthly_revenue": [
+            26360,
+            21476,
+            24108,
+            24962,
+            36066,
+            11405
+          ]
+        },
+        "lazada": {
+          "revenue": 10440,
+          "qty": 52,
+          "monthly_revenue": [
+            915,
+            1475,
+            3916,
+            1736,
+            1962,
+            436
+          ]
+        },
+        "tiktok": {
+          "revenue": 25796,
+          "qty": 125,
+          "monthly_revenue": [
+            7113,
+            4951,
+            5798,
+            2825,
+            3868,
+            1241
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wash at Home Set",
+      "total_revenue": 162750,
+      "total_qty": 153,
+      "platforms": {
+        "shopee": {
+          "revenue": 145829,
+          "qty": 135,
+          "monthly_revenue": [
+            25216,
+            15459,
+            27394,
+            28560,
+            32400,
+            16800
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 16921,
+          "qty": 18,
+          "monthly_revenue": [
+            6037,
+            3515,
+            3250,
+            2049,
+            2070,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (WTLSPY0001)",
+      "total_revenue": 160390,
+      "total_qty": 431,
+      "platforms": {
+        "shopee": {
+          "revenue": 133037,
+          "qty": 354,
+          "monthly_revenue": [
+            19495,
+            26460,
+            21381,
+            27358,
+            24830,
+            13513
+          ]
+        },
+        "lazada": {
+          "revenue": 1828,
+          "qty": 5,
+          "monthly_revenue": [
+            371,
+            306,
+            757,
+            0,
+            0,
+            394
+          ]
+        },
+        "tiktok": {
+          "revenue": 25525,
+          "qty": 72,
+          "monthly_revenue": [
+            3082,
+            4993,
+            5890,
+            4947,
+            5190,
+            1423
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wash Set",
+      "total_revenue": 130349,
+      "total_qty": 45,
+      "platforms": {
+        "shopee": {
+          "revenue": 114010,
+          "qty": 39,
+          "monthly_revenue": [
+            44030,
+            23310,
+            25130,
+            7180,
+            7180,
+            7180
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 16339,
+          "qty": 6,
+          "monthly_revenue": [
+            4886,
+            4632,
+            3590,
+            3231,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SBRW000029)",
+      "total_revenue": 127607,
+      "total_qty": 337,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 5245,
+          "qty": 15,
+          "monthly_revenue": [
+            2382,
+            335,
+            635,
+            0,
+            1162,
+            731
+          ]
+        },
+        "tiktok": {
+          "revenue": 122362,
+          "qty": 322,
+          "monthly_revenue": [
+            31913,
+            27924,
+            28085,
+            9232,
+            17688,
+            7520
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tire",
+      "total_revenue": 125691,
+      "total_qty": 305,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 30388,
+          "qty": 66,
+          "monthly_revenue": [
+            6949,
+            9846,
+            5801,
+            4285,
+            2611,
+            896
+          ]
+        },
+        "tiktok": {
+          "revenue": 95303,
+          "qty": 239,
+          "monthly_revenue": [
+            16523,
+            19730,
+            14517,
+            19386,
+            18050,
+            7097
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Paint prep)",
+      "total_revenue": 124088,
+      "total_qty": 463,
+      "platforms": {
+        "shopee": {
+          "revenue": 124088,
+          "qty": 463,
+          "monthly_revenue": [
+            22064,
+            18358,
+            22856,
+            22369,
+            22935,
+            15506
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (TPOL000003)",
+      "total_revenue": 123942,
+      "total_qty": 730,
+      "platforms": {
+        "shopee": {
+          "revenue": 100714,
+          "qty": 586,
+          "monthly_revenue": [
+            14830,
+            14070,
+            18063,
+            21546,
+            21945,
+            10260
+          ]
+        },
+        "lazada": {
+          "revenue": 4035,
+          "qty": 27,
+          "monthly_revenue": [
+            667,
+            1082,
+            1003,
+            527,
+            0,
+            756
+          ]
+        },
+        "tiktok": {
+          "revenue": 19193,
+          "qty": 117,
+          "monthly_revenue": [
+            2662,
+            2945,
+            4581,
+            3476,
+            4284,
+            1245
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Wash Mitt",
+      "total_revenue": 117453,
+      "total_qty": 246,
+      "platforms": {
+        "shopee": {
+          "revenue": 59476,
+          "qty": 123,
+          "monthly_revenue": [
+            11245,
+            9800,
+            7250,
+            8649,
+            14839,
+            7693
+          ]
+        },
+        "lazada": {
+          "revenue": 14356,
+          "qty": 31,
+          "monthly_revenue": [
+            3012,
+            2385,
+            2979,
+            1063,
+            3247,
+            1670
+          ]
+        },
+        "tiktok": {
+          "revenue": 43621,
+          "qty": 92,
+          "monthly_revenue": [
+            9097,
+            5091,
+            9948,
+            8248,
+            9714,
+            1523
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Margarita Cloth",
+      "total_revenue": 115740,
+      "total_qty": 670,
+      "platforms": {
+        "shopee": {
+          "revenue": 90883,
+          "qty": 540,
+          "monthly_revenue": [
+            20676,
+            20790,
+            14908,
+            18038,
+            9156,
+            7315
+          ]
+        },
+        "lazada": {
+          "revenue": 3658,
+          "qty": 23,
+          "monthly_revenue": [
+            279,
+            933,
+            1014,
+            560,
+            525,
+            347
+          ]
+        },
+        "tiktok": {
+          "revenue": 21199,
+          "qty": 107,
+          "monthly_revenue": [
+            2504,
+            4514,
+            3569,
+            4458,
+            4477,
+            1677
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (APC)",
+      "total_revenue": 113672,
+      "total_qty": 276,
+      "platforms": {
+        "shopee": {
+          "revenue": 113672,
+          "qty": 276,
+          "monthly_revenue": [
+            23066,
+            14006,
+            20816,
+            16144,
+            30062,
+            9578
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SJUL000018)",
+      "total_revenue": 106094,
+      "total_qty": 82,
+      "platforms": {
+        "shopee": {
+          "revenue": 82220,
+          "qty": 61,
+          "monthly_revenue": [
+            1090,
+            8030,
+            15290,
+            22240,
+            23060,
+            12510
+          ]
+        },
+        "lazada": {
+          "revenue": 5236,
+          "qty": 5,
+          "monthly_revenue": [
+            0,
+            2070,
+            1978,
+            0,
+            0,
+            1188
+          ]
+        },
+        "tiktok": {
+          "revenue": 18638,
+          "qty": 16,
+          "monthly_revenue": [
+            0,
+            4590,
+            2294,
+            4796,
+            2572,
+            4386
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Microfiber wash)",
+      "total_revenue": 104378,
+      "total_qty": 316,
+      "platforms": {
+        "shopee": {
+          "revenue": 104378,
+          "qty": 316,
+          "monthly_revenue": [
+            13807,
+            23517,
+            21204,
+            15550,
+            14750,
+            15550
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (UV protect)",
+      "total_revenue": 101493,
+      "total_qty": 443,
+      "platforms": {
+        "shopee": {
+          "revenue": 101493,
+          "qty": 443,
+          "monthly_revenue": [
+            11780,
+            15450,
+            15400,
+            25240,
+            23331,
+            10292
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EWLM000002)",
+      "total_revenue": 99571,
+      "total_qty": 184,
+      "platforms": {
+        "shopee": {
+          "revenue": 99571,
+          "qty": 184,
+          "monthly_revenue": [
+            12060,
+            15716,
+            17606,
+            23121,
+            19720,
+            11348
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EMCA000004)",
+      "total_revenue": 85365,
+      "total_qty": 500,
+      "platforms": {
+        "shopee": {
+          "revenue": 60925,
+          "qty": 355,
+          "monthly_revenue": [
+            12769,
+            7270,
+            5541,
+            10260,
+            17690,
+            7395
+          ]
+        },
+        "lazada": {
+          "revenue": 4223,
+          "qty": 26,
+          "monthly_revenue": [
+            1290,
+            150,
+            295,
+            929,
+            1196,
+            363
+          ]
+        },
+        "tiktok": {
+          "revenue": 20217,
+          "qty": 119,
+          "monthly_revenue": [
+            2250,
+            2409,
+            3377,
+            5949,
+            4079,
+            2153
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ECLY000006)",
+      "total_revenue": 81331,
+      "total_qty": 156,
+      "platforms": {
+        "shopee": {
+          "revenue": 81331,
+          "qty": 156,
+          "monthly_revenue": [
+            26031,
+            18900,
+            8450,
+            9100,
+            10400,
+            8450
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Quick Shine",
+      "total_revenue": 76086,
+      "total_qty": 345,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 13387,
+          "qty": 59,
+          "monthly_revenue": [
+            3205,
+            1965,
+            2734,
+            2690,
+            1404,
+            1389
+          ]
+        },
+        "tiktok": {
+          "revenue": 62699,
+          "qty": 286,
+          "monthly_revenue": [
+            11730,
+            13215,
+            11048,
+            10292,
+            9512,
+            6902
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tire Clean",
+      "total_revenue": 75396,
+      "total_qty": 143,
+      "platforms": {
+        "shopee": {
+          "revenue": 75396,
+          "qty": 143,
+          "monthly_revenue": [
+            19516,
+            11910,
+            14822,
+            6858,
+            9010,
+            13280
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Tire Applicator",
+      "total_revenue": 71215,
+      "total_qty": 1225,
+      "platforms": {
+        "shopee": {
+          "revenue": 56395,
+          "qty": 963,
+          "monthly_revenue": [
+            11696,
+            9025,
+            9753,
+            10740,
+            9459,
+            5722
+          ]
+        },
+        "lazada": {
+          "revenue": 967,
+          "qty": 14,
+          "monthly_revenue": [
+            60,
+            422,
+            65,
+            130,
+            290,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 13853,
+          "qty": 248,
+          "monthly_revenue": [
+            5835,
+            1389,
+            2128,
+            2351,
+            1255,
+            895
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Steel)",
+      "total_revenue": 65296,
+      "total_qty": 101,
+      "platforms": {
+        "shopee": {
+          "revenue": 65296,
+          "qty": 101,
+          "monthly_revenue": [
+            9880,
+            9350,
+            9286,
+            13800,
+            11578,
+            11402
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SBUG000028)",
+      "total_revenue": 64521,
+      "total_qty": 285,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 2382,
+          "qty": 10,
+          "monthly_revenue": [
+            519,
+            283,
+            471,
+            235,
+            447,
+            427
+          ]
+        },
+        "tiktok": {
+          "revenue": 62139,
+          "qty": 275,
+          "monthly_revenue": [
+            18269,
+            15399,
+            13785,
+            6532,
+            5595,
+            2559
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BTIR000006)",
+      "total_revenue": 50568,
+      "total_qty": 271,
+      "platforms": {
+        "shopee": {
+          "revenue": 50568,
+          "qty": 271,
+          "monthly_revenue": [
+            7438,
+            11020,
+            9500,
+            7220,
+            7790,
+            7600
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Detailing brush)",
+      "total_revenue": 42847,
+      "total_qty": 227,
+      "platforms": {
+        "shopee": {
+          "revenue": 42847,
+          "qty": 227,
+          "monthly_revenue": [
+            7798,
+            7503,
+            6836,
+            6290,
+            7760,
+            6660
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BWHE000007)",
+      "total_revenue": 40523,
+      "total_qty": 85,
+      "platforms": {
+        "shopee": {
+          "revenue": 33213,
+          "qty": 69,
+          "monthly_revenue": [
+            4693,
+            3760,
+            6710,
+            4830,
+            6860,
+            6360
+          ]
+        },
+        "lazada": {
+          "revenue": 2466,
+          "qty": 6,
+          "monthly_revenue": [
+            710,
+            0,
+            409,
+            867,
+            480,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 4844,
+          "qty": 10,
+          "monthly_revenue": [
+            1650,
+            440,
+            1862,
+            0,
+            892,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SSTL010009)",
+      "total_revenue": 32584,
+      "total_qty": 56,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 4957,
+          "qty": 10,
+          "monthly_revenue": [
+            847,
+            1470,
+            1539,
+            501,
+            600,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 27627,
+          "qty": 46,
+          "monthly_revenue": [
+            5796,
+            6171,
+            7079,
+            3075,
+            3926,
+            1580
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BHOR000002)",
+      "total_revenue": 29363,
+      "total_qty": 120,
+      "platforms": {
+        "shopee": {
+          "revenue": 24000,
+          "qty": 96,
+          "monthly_revenue": [
+            2750,
+            4000,
+            5750,
+            5250,
+            3250,
+            3000
+          ]
+        },
+        "lazada": {
+          "revenue": 691,
+          "qty": 3,
+          "monthly_revenue": [
+            0,
+            250,
+            214,
+            227,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 4672,
+          "qty": 21,
+          "monthly_revenue": [
+            1109,
+            696,
+            688,
+            189,
+            1608,
+            382
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (2woolduster)",
+      "total_revenue": 29106,
+      "total_qty": 26,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 29106,
+          "qty": 26,
+          "monthly_revenue": [
+            9400,
+            9260,
+            6600,
+            1116,
+            1650,
+            1080
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SUVP000002)",
+      "total_revenue": 22279,
+      "total_qty": 117,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 2839,
+          "qty": 18,
+          "monthly_revenue": [
+            527,
+            347,
+            1093,
+            190,
+            508,
+            174
+          ]
+        },
+        "tiktok": {
+          "revenue": 19440,
+          "qty": 99,
+          "monthly_revenue": [
+            4591,
+            1260,
+            4606,
+            3730,
+            4499,
+            754
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SMCW010017)",
+      "total_revenue": 21696,
+      "total_qty": 99,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 5374,
+          "qty": 27,
+          "monthly_revenue": [
+            1097,
+            219,
+            2186,
+            608,
+            1088,
+            176
+          ]
+        },
+        "tiktok": {
+          "revenue": 16322,
+          "qty": 72,
+          "monthly_revenue": [
+            3358,
+            3225,
+            2562,
+            1489,
+            4324,
+            1364
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BFRT000008)",
+      "total_revenue": 21427,
+      "total_qty": 67,
+      "platforms": {
+        "shopee": {
+          "revenue": 14170,
+          "qty": 43,
+          "monthly_revenue": [
+            2570,
+            1450,
+            3150,
+            2800,
+            2800,
+            1400
+          ]
+        },
+        "lazada": {
+          "revenue": 2423,
+          "qty": 8,
+          "monthly_revenue": [
+            553,
+            262,
+            601,
+            0,
+            1007,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 4834,
+          "qty": 16,
+          "monthly_revenue": [
+            1406,
+            530,
+            350,
+            998,
+            1257,
+            293
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (STES000000)",
+      "total_revenue": 21129,
+      "total_qty": 147,
+      "platforms": {
+        "shopee": {
+          "revenue": 5060,
+          "qty": 34,
+          "monthly_revenue": [
+            5060,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 306,
+          "qty": 2,
+          "monthly_revenue": [
+            306,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 15763,
+          "qty": 111,
+          "monthly_revenue": [
+            14648,
+            1115,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ESCR000001)",
+      "total_revenue": 19894,
+      "total_qty": 182,
+      "platforms": {
+        "shopee": {
+          "revenue": 12110,
+          "qty": 106,
+          "monthly_revenue": [
+            1780,
+            813,
+            3067,
+            2100,
+            2250,
+            2100
+          ]
+        },
+        "lazada": {
+          "revenue": 2121,
+          "qty": 20,
+          "monthly_revenue": [
+            436,
+            75,
+            715,
+            148,
+            488,
+            259
+          ]
+        },
+        "tiktok": {
+          "revenue": 5663,
+          "qty": 56,
+          "monthly_revenue": [
+            1249,
+            1010,
+            548,
+            1328,
+            1294,
+            234
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Terrain Pre-Wash",
+      "total_revenue": 17100,
+      "total_qty": 48,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 4329,
+          "qty": 9,
+          "monthly_revenue": [
+            234,
+            186,
+            811,
+            332,
+            2766,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 12771,
+          "qty": 39,
+          "monthly_revenue": [
+            1207,
+            2479,
+            3347,
+            2936,
+            2566,
+            236
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SAPC010007)",
+      "total_revenue": 15432,
+      "total_qty": 52,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 4270,
+          "qty": 14,
+          "monthly_revenue": [
+            532,
+            562,
+            903,
+            934,
+            642,
+            697
+          ]
+        },
+        "tiktok": {
+          "revenue": 11162,
+          "qty": 38,
+          "monthly_revenue": [
+            1549,
+            2008,
+            2916,
+            2053,
+            2636,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BWHE000011)",
+      "total_revenue": 14066,
+      "total_qty": 46,
+      "platforms": {
+        "shopee": {
+          "revenue": 6720,
+          "qty": 21,
+          "monthly_revenue": [
+            960,
+            1280,
+            2240,
+            640,
+            1280,
+            320
+          ]
+        },
+        "lazada": {
+          "revenue": 1713,
+          "qty": 6,
+          "monthly_revenue": [
+            512,
+            327,
+            320,
+            554,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 5633,
+          "qty": 19,
+          "monthly_revenue": [
+            2028,
+            847,
+            960,
+            600,
+            936,
+            262
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SPRP010011)",
+      "total_revenue": 13444,
+      "total_qty": 68,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 4047,
+          "qty": 20,
+          "monthly_revenue": [
+            422,
+            864,
+            1003,
+            182,
+            652,
+            924
+          ]
+        },
+        "tiktok": {
+          "revenue": 9397,
+          "qty": 48,
+          "monthly_revenue": [
+            1962,
+            1783,
+            1045,
+            1839,
+            2055,
+            713
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ESEC000009)",
+      "total_revenue": 11511,
+      "total_qty": 68,
+      "platforms": {
+        "shopee": {
+          "revenue": 8750,
+          "qty": 50,
+          "monthly_revenue": [
+            1400,
+            1225,
+            1400,
+            1750,
+            1225,
+            1750
+          ]
+        },
+        "lazada": {
+          "revenue": 605,
+          "qty": 4,
+          "monthly_revenue": [
+            299,
+            0,
+            145,
+            161,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 2156,
+          "qty": 14,
+          "monthly_revenue": [
+            161,
+            1149,
+            306,
+            304,
+            131,
+            105
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Bucket)",
+      "total_revenue": 11210,
+      "total_qty": 19,
+      "platforms": {
+        "shopee": {
+          "revenue": 11210,
+          "qty": 19,
+          "monthly_revenue": [
+            2950,
+            1180,
+            1770,
+            1770,
+            1770,
+            1770
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ESUE010005)",
+      "total_revenue": 11000,
+      "total_qty": 44,
+      "platforms": {
+        "shopee": {
+          "revenue": 11000,
+          "qty": 44,
+          "monthly_revenue": [
+            1750,
+            2750,
+            1500,
+            2000,
+            2000,
+            1000
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SPNX000014)",
+      "total_revenue": 10832,
+      "total_qty": 18,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 10832,
+          "qty": 18,
+          "monthly_revenue": [
+            3920,
+            1710,
+            586,
+            1995,
+            1931,
+            690
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ECOV000007)",
+      "total_revenue": 9800,
+      "total_qty": 20,
+      "platforms": {
+        "shopee": {
+          "revenue": 9800,
+          "qty": 20,
+          "monthly_revenue": [
+            1470,
+            1470,
+            1470,
+            3920,
+            1470,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (ESUE000005)",
+      "total_revenue": 7815,
+      "total_qty": 133,
+      "platforms": {
+        "shopee": {
+          "revenue": 5084,
+          "qty": 86,
+          "monthly_revenue": [
+            1221,
+            560,
+            896,
+            568,
+            1463,
+            376
+          ]
+        },
+        "lazada": {
+          "revenue": 859,
+          "qty": 15,
+          "monthly_revenue": [
+            157,
+            110,
+            202,
+            114,
+            170,
+            106
+          ]
+        },
+        "tiktok": {
+          "revenue": 1872,
+          "qty": 32,
+          "monthly_revenue": [
+            455,
+            223,
+            311,
+            390,
+            437,
+            56
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BULT000003)",
+      "total_revenue": 7492,
+      "total_qty": 40,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 1414,
+          "qty": 7,
+          "monthly_revenue": [
+            128,
+            323,
+            253,
+            460,
+            0,
+            250
+          ]
+        },
+        "tiktok": {
+          "revenue": 6078,
+          "qty": 33,
+          "monthly_revenue": [
+            873,
+            1424,
+            1412,
+            932,
+            982,
+            455
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Apcdetailing)",
+      "total_revenue": 7233,
+      "total_qty": 12,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 7233,
+          "qty": 12,
+          "monthly_revenue": [
+            2360,
+            1570,
+            1342,
+            672,
+            773,
+            516
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (TPOL010003)",
+      "total_revenue": 5181,
+      "total_qty": 7,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 5181,
+          "qty": 7,
+          "monthly_revenue": [
+            0,
+            0,
+            2340,
+            0,
+            800,
+            2041
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (RBOX000001)",
+      "total_revenue": 5160,
+      "total_qty": 80,
+      "platforms": {
+        "shopee": {
+          "revenue": 5160,
+          "qty": 80,
+          "monthly_revenue": [
+            740,
+            715,
+            975,
+            910,
+            715,
+            1105
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BSYN000004)",
+      "total_revenue": 4440,
+      "total_qty": 24,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 589,
+          "qty": 3,
+          "monthly_revenue": [
+            0,
+            0,
+            410,
+            179,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 3851,
+          "qty": 21,
+          "monthly_revenue": [
+            350,
+            1294,
+            1180,
+            420,
+            397,
+            210
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SMCW030017)",
+      "total_revenue": 3840,
+      "total_qty": 5,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 2890,
+          "qty": 4,
+          "monthly_revenue": [
+            0,
+            0,
+            1415,
+            0,
+            0,
+            1475
+          ]
+        },
+        "tiktok": {
+          "revenue": 950,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            950,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EBAG000008)",
+      "total_revenue": 3811,
+      "total_qty": 4,
+      "platforms": {
+        "shopee": {
+          "revenue": 990,
+          "qty": 1,
+          "monthly_revenue": [
+            990,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 2821,
+          "qty": 3,
+          "monthly_revenue": [
+            2821,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SUVP010002)",
+      "total_revenue": 3651,
+      "total_qty": 4,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 3651,
+          "qty": 4,
+          "monthly_revenue": [
+            0,
+            0,
+            1978,
+            1673,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SPRP030011)",
+      "total_revenue": 2656,
+      "total_qty": 4,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 2656,
+          "qty": 4,
+          "monthly_revenue": [
+            593,
+            0,
+            692,
+            756,
+            615,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EBUC020001)",
+      "total_revenue": 2363,
+      "total_qty": 6,
+      "platforms": {
+        "shopee": {
+          "revenue": 1260,
+          "qty": 3,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            420,
+            0,
+            840
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 1103,
+          "qty": 3,
+          "monthly_revenue": [
+            783,
+            0,
+            0,
+            320,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EBUC000001)",
+      "total_revenue": 2062,
+      "total_qty": 4,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 538,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            538,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 1524,
+          "qty": 3,
+          "monthly_revenue": [
+            580,
+            502,
+            0,
+            0,
+            442,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (Phoenix)",
+      "total_revenue": 2028,
+      "total_qty": 3,
+      "platforms": {
+        "shopee": {
+          "revenue": 2028,
+          "qty": 3,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            2028,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BLIM010003)",
+      "total_revenue": 2006,
+      "total_qty": 5,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 466,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            466,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 1540,
+          "qty": 4,
+          "monthly_revenue": [
+            0,
+            0,
+            752,
+            0,
+            395,
+            393
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (BBLU000010)",
+      "total_revenue": 1424,
+      "total_qty": 10,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 173,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            173,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 1251,
+          "qty": 9,
+          "monthly_revenue": [
+            120,
+            512,
+            0,
+            170,
+            449,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SWTL030008)",
+      "total_revenue": 1244,
+      "total_qty": 1,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 1244,
+          "qty": 1,
+          "monthly_revenue": [
+            1244,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SAPC050007)",
+      "total_revenue": 1145,
+      "total_qty": 1,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 1145,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            1145,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (EBUC000002)",
+      "total_revenue": 1021,
+      "total_qty": 2,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 531,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            531,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 490,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            490,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "name": "Other (SAPC030007)",
+      "total_revenue": 730,
+      "total_qty": 1,
+      "platforms": {
+        "shopee": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "lazada": {
+          "revenue": 730,
+          "qty": 1,
+          "monthly_revenue": [
+            0,
+            0,
+            730,
+            0,
+            0,
+            0
+          ]
+        },
+        "tiktok": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "line": {
+          "revenue": 0,
+          "qty": 0,
+          "monthly_revenue": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      }
+    }
+  ],
+  "totals": {
+    "revenue": [
+      4399290,
+      3947981,
+      4217875,
+      4518590,
+      4954318,
+      2375932
+    ],
+    "orders": [
+      11203,
+      10688,
+      11418,
+      13089,
+      16715,
+      6456
+    ]
+  }
+}

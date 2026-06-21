@@ -1,0 +1,551 @@
+{
+  "fetched_at": "2026-06-21T15:48:33Z",
+  "products": [
+    {
+      "code": "SDIA000034",
+      "total": 347,
+      "reserved": 0,
+      "available": 230,
+      "sold": 117
+    },
+    {
+      "code": "BWLD000002",
+      "total": 665,
+      "reserved": 2,
+      "available": 33,
+      "sold": 630
+    },
+    {
+      "code": "STES000000",
+      "total": 491,
+      "reserved": 0,
+      "available": 0,
+      "sold": 491
+    },
+    {
+      "code": "EWIP000002",
+      "total": 35806,
+      "reserved": 2,
+      "available": 16,
+      "sold": 35788
+    },
+    {
+      "code": "TFRE000007",
+      "total": 4307,
+      "reserved": 21,
+      "available": 78,
+      "sold": 4208
+    },
+    {
+      "code": "SCNR010033",
+      "total": 4313,
+      "reserved": 21,
+      "available": 78,
+      "sold": 4214
+    },
+    {
+      "code": "EBUC020001",
+      "total": 607,
+      "reserved": 1,
+      "available": 159,
+      "sold": 447
+    },
+    {
+      "code": "BLIM010003",
+      "total": 199,
+      "reserved": 0,
+      "available": 70,
+      "sold": 131
+    },
+    {
+      "code": "SLIM010002",
+      "total": 296,
+      "reserved": 0,
+      "available": 0,
+      "sold": 296
+    },
+    {
+      "code": "SLIM010001",
+      "total": 313,
+      "reserved": 0,
+      "available": 0,
+      "sold": 313
+    },
+    {
+      "code": "ESCR000001",
+      "total": 4606,
+      "reserved": 6,
+      "available": 557,
+      "sold": 4043
+    },
+    {
+      "code": "BWHE000011",
+      "total": 3033,
+      "reserved": 2,
+      "available": 238,
+      "sold": 2794
+    },
+    {
+      "code": "SGFS010020",
+      "total": 1220,
+      "reserved": 1,
+      "available": 188,
+      "sold": 1031
+    },
+    {
+      "code": "EWIP000001",
+      "total": 60596,
+      "reserved": 2,
+      "available": 2,
+      "sold": 60595
+    },
+    {
+      "code": "RBOX000001",
+      "total": 1748,
+      "reserved": 2,
+      "available": 764,
+      "sold": 982
+    },
+    {
+      "code": "EGEL000001",
+      "total": 810,
+      "reserved": 0,
+      "available": 312,
+      "sold": 498
+    },
+    {
+      "code": "ESUE010005",
+      "total": 832,
+      "reserved": 5,
+      "available": 52,
+      "sold": 775
+    },
+    {
+      "code": "FBOT000001",
+      "total": 2755,
+      "reserved": 2,
+      "available": 60,
+      "sold": 2693
+    },
+    {
+      "code": "TMGA010006",
+      "total": 90,
+      "reserved": 0,
+      "available": 3,
+      "sold": 87
+    },
+    {
+      "code": "TMTN010004",
+      "total": 132,
+      "reserved": 0,
+      "available": 13,
+      "sold": 119
+    },
+    {
+      "code": "TPOL010003",
+      "total": 152,
+      "reserved": 1,
+      "available": 5,
+      "sold": 146
+    },
+    {
+      "code": "TPER010002",
+      "total": 191,
+      "reserved": 0,
+      "available": 1,
+      "sold": 190
+    },
+    {
+      "code": "EFOM000001",
+      "total": 1004,
+      "reserved": 2,
+      "available": 543,
+      "sold": 460
+    },
+    {
+      "code": "EMIU000010",
+      "total": 5298,
+      "reserved": 8,
+      "available": 213,
+      "sold": 5078
+    },
+    {
+      "code": "ESEC000009",
+      "total": 3235,
+      "reserved": 2,
+      "available": 184,
+      "sold": 3051
+    },
+    {
+      "code": "EBAG000008",
+      "total": 168,
+      "reserved": 0,
+      "available": 1,
+      "sold": 167
+    },
+    {
+      "code": "ECOV000007",
+      "total": 253,
+      "reserved": 0,
+      "available": 2,
+      "sold": 251
+    },
+    {
+      "code": "ECLY000006",
+      "total": 3312,
+      "reserved": 0,
+      "available": 263,
+      "sold": 3049
+    },
+    {
+      "code": "ESUE000005",
+      "total": 4229,
+      "reserved": 2,
+      "available": 530,
+      "sold": 3702
+    },
+    {
+      "code": "EMCA000004",
+      "total": 14655,
+      "reserved": 22,
+      "available": 299,
+      "sold": 14337
+    },
+    {
+      "code": "EPOR000003",
+      "total": 1067,
+      "reserved": 2,
+      "available": 79,
+      "sold": 986
+    },
+    {
+      "code": "EWLM000002",
+      "total": 8840,
+      "reserved": 8,
+      "available": 305,
+      "sold": 8536
+    },
+    {
+      "code": "ETIR000001",
+      "total": 17771,
+      "reserved": 23,
+      "available": 580,
+      "sold": 17178
+    },
+    {
+      "code": "BMCO000009",
+      "total": 628,
+      "reserved": 0,
+      "available": 0,
+      "sold": 628
+    },
+    {
+      "code": "BFRT000008",
+      "total": 5462,
+      "reserved": 4,
+      "available": 308,
+      "sold": 5154
+    },
+    {
+      "code": "BWHE000007",
+      "total": 3791,
+      "reserved": 1,
+      "available": 580,
+      "sold": 3212
+    },
+    {
+      "code": "BTIR000006",
+      "total": 7485,
+      "reserved": 4,
+      "available": 304,
+      "sold": 7179
+    },
+    {
+      "code": "BHOR000002",
+      "total": 14757,
+      "reserved": 11,
+      "available": 901,
+      "sold": 13859
+    },
+    {
+      "code": "BWLD000001",
+      "total": 30904,
+      "reserved": 26,
+      "available": 434,
+      "sold": 30444
+    },
+    {
+      "code": "TMGA000006",
+      "total": 17284,
+      "reserved": 9,
+      "available": 235,
+      "sold": 17046
+    },
+    {
+      "code": "TMTN000004",
+      "total": 59664,
+      "reserved": 62,
+      "available": 1184,
+      "sold": 58457
+    },
+    {
+      "code": "TPOL000003",
+      "total": 20055,
+      "reserved": 23,
+      "available": 567,
+      "sold": 19472
+    },
+    {
+      "code": "TPER000002",
+      "total": 69201,
+      "reserved": 46,
+      "available": 338,
+      "sold": 68877
+    },
+    {
+      "code": "TSPD000001",
+      "total": 16408,
+      "reserved": 14,
+      "available": 171,
+      "sold": 16235
+    },
+    {
+      "code": "SGFS000020",
+      "total": 9809,
+      "reserved": 10,
+      "available": 343,
+      "sold": 9456
+    },
+    {
+      "code": "SJUL000018",
+      "total": 460,
+      "reserved": 3,
+      "available": 160,
+      "sold": 297
+    },
+    {
+      "code": "BBLU000010",
+      "total": 2612,
+      "reserved": 8,
+      "available": 590,
+      "sold": 2022
+    },
+    {
+      "code": "BSYN000004",
+      "total": 3050,
+      "reserved": 9,
+      "available": 312,
+      "sold": 2729
+    },
+    {
+      "code": "BULT000003",
+      "total": 5174,
+      "reserved": 13,
+      "available": 1253,
+      "sold": 3921
+    },
+    {
+      "code": "Recove",
+      "total": 4450,
+      "reserved": 14,
+      "available": 52,
+      "sold": 0
+    },
+    {
+      "code": "Banyakart",
+      "total": 4351,
+      "reserved": 25,
+      "available": 19,
+      "sold": 0
+    },
+    {
+      "code": "Bucket",
+      "total": 1019,
+      "reserved": 0,
+      "available": 49,
+      "sold": 0
+    },
+    {
+      "code": "Beach",
+      "total": 10637,
+      "reserved": 7,
+      "available": 192,
+      "sold": 0
+    },
+    {
+      "code": "Brown",
+      "total": 4980,
+      "reserved": 14,
+      "available": 296,
+      "sold": 0
+    },
+    {
+      "code": "Bugbug",
+      "total": 3115,
+      "reserved": 11,
+      "available": 69,
+      "sold": 0
+    },
+    {
+      "code": "wibwubcap",
+      "total": 494,
+      "reserved": 0,
+      "available": 114,
+      "sold": 0
+    },
+    {
+      "code": "Visible",
+      "total": 11141,
+      "reserved": 19,
+      "available": 158,
+      "sold": 0
+    },
+    {
+      "code": "Tire clean",
+      "total": 4582,
+      "reserved": 2,
+      "available": 179,
+      "sold": 0
+    },
+    {
+      "code": "Terrain",
+      "total": 3052,
+      "reserved": 5,
+      "available": 82,
+      "sold": 0
+    },
+    {
+      "code": "Detailing brush",
+      "total": 33000,
+      "reserved": 22,
+      "available": 2140,
+      "sold": 0
+    },
+    {
+      "code": "Sugar",
+      "total": 76244,
+      "reserved": 89,
+      "available": 768,
+      "sold": 0
+    },
+    {
+      "code": "Mind",
+      "total": 12661,
+      "reserved": 9,
+      "available": 190,
+      "sold": 0
+    },
+    {
+      "code": "Microfiber wash",
+      "total": 6337,
+      "reserved": 3,
+      "available": 280,
+      "sold": 0
+    },
+    {
+      "code": "Deep clean",
+      "total": 6072,
+      "reserved": 10,
+      "available": 170,
+      "sold": 0
+    },
+    {
+      "code": "Phoenix",
+      "total": 1052,
+      "reserved": 0,
+      "available": 61,
+      "sold": 0
+    },
+    {
+      "code": "Spot",
+      "total": 18332,
+      "reserved": 59,
+      "available": 193,
+      "sold": 0
+    },
+    {
+      "code": "Xglass",
+      "total": 18689,
+      "reserved": 67,
+      "available": 451,
+      "sold": 0
+    },
+    {
+      "code": "Paint prep",
+      "total": 11101,
+      "reserved": 11,
+      "available": 180,
+      "sold": 0
+    },
+    {
+      "code": "Taar",
+      "total": 982,
+      "reserved": 0,
+      "available": 1,
+      "sold": 0
+    },
+    {
+      "code": "Steel",
+      "total": 3232,
+      "reserved": 6,
+      "available": 18,
+      "sold": 0
+    },
+    {
+      "code": "Waterless",
+      "total": 3080,
+      "reserved": 2,
+      "available": 177,
+      "sold": 0
+    },
+    {
+      "code": "APC",
+      "total": 5083,
+      "reserved": 8,
+      "available": 167,
+      "sold": 0
+    },
+    {
+      "code": "Refresh",
+      "total": 29086,
+      "reserved": 49,
+      "available": 647,
+      "sold": 0
+    },
+    {
+      "code": "Quartz shampoo",
+      "total": 32432,
+      "reserved": 35,
+      "available": 477,
+      "sold": 0
+    },
+    {
+      "code": "Tire&trim gel",
+      "total": 13087,
+      "reserved": 17,
+      "available": 94,
+      "sold": 0
+    },
+    {
+      "code": "Reflex",
+      "total": 18379,
+      "reserved": 32,
+      "available": 255,
+      "sold": 0
+    },
+    {
+      "code": "UV protect",
+      "total": 11646,
+      "reserved": 14,
+      "available": 126,
+      "sold": 0
+    },
+    {
+      "code": "Interior",
+      "total": 45897,
+      "reserved": 64,
+      "available": 337,
+      "sold": 0
+    }
+  ]
+}
