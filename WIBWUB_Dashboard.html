@@ -1441,7 +1441,7 @@ function go(id, el) {
 }
 
 // ── RAW DATA (from spreadsheets) ──
-const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค."];
+const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย."];
 const SH_REV = [4231653, 4383214, 4560321, 5204395, 5581064, 3802947];
 const TK_REV = [1152566.73, 1171209.0, 1280967.0, 1350396.99, 1563644.02, 375599];
 const LZ_REV = [179084, 120948, 183370, 110531, 129523, 88377];
@@ -1460,7 +1460,7 @@ const LINE_ORD = [279, 407, 282, 316, 304, 257];
 const SH_CANCEL_PCT = [4.62, 4.45, 4.26, 5.94, 5.38, 5.47];
 const TK_CANCEL_PCT = [9.64, 8.32, 8.39, 9.7, 7.69, 9.0];
 const LZ_CANCEL_PCT = [22.67, 24.61, 24.36, 24.86, 25.0, 15.79];
-const SH_ADS = [575400, 559100, 589300, 795300, 826300, 592800];
+const SH_ADS = [575400, 559100, 589300, 795300, 826300, 611400];
 const SH_FEE = [911498, 944144, 1046921, 1225115, 1433217, 1017288];
 const SH_NEW = [4453, 3817, 4050, 4873, 5536, 3371];
 const SH_OLD = [1940, 1869, 1891, 1985, 2186, 1577];
@@ -1471,12 +1471,12 @@ const TK_LIVE = [132807,177180,131689,144970,153299,97148];
 const TK_AFIPCT = [40.0, 47.0, 51.2, 53.6, 58.4, 47.64];
 const TK_NEW  = [2046,2669,2984,3915,6144,1438];
 const TK_OLD  = [468,548,541,632,771,334];
-const TK_ADSSPEND = [164956, 202579, 249294, 256168, 357295, 6709];
+const TK_ADSSPEND = [164956, 202579, 249294, 256168, 357295, 172202];
 const TK_FEECOMM = [271216, 267255, 270719, 294223, 402802, 368890];
 const LZ_ADS = [5760, 5680, 7220, 5710, 6590, 7780];
 const LZ_FEE = [31627, 21361, 32384, 19521, 22875, 15608];
 const LZ_COUPON = [3210, 2725, 5070, 2250, 2910, 1050];
-const LZ_COST_PCT = [22.67,24.61,24.36,24.86,25.0];
+const LZ_COST_PCT = [22.67,24.61,24.36,24.86,25.0,27.65];
 const LZ_NEW  = [157,0,163,108,112,20];
 const LZ_OLD  = [57,0,64,42,32,12];
 
@@ -1594,7 +1594,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.172,26.746],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.172,26.519],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
   {label:'Facebook',data:[58,59,61,63,64,null],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:4},
   {label:'Instagram',data:[35,36,37,38,39,null],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
