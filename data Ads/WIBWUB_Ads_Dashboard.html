@@ -594,7 +594,11 @@ const DATA_PERIODS = {
 };
 
 let curPeriod = 'all'; // legacy compat
-let curPeriodKeys = ['jan','feb','mar','apr','may']; // all months
+  jun: {
+    shopee:{spend:611400,revenue:3437488,orders:7532,imp:3304421,clicks:144085,roas:5.62,ctr:4.36,cvr:5.23,cpa:81.17,top5:[{name:"Shop GMV Max",spend:77000,revenue:522622,orders:1143,imp:627594,clicks:14334,roas:6.79,ctr:2.28,cvr:7.97,cpa:67.37},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:83190,revenue:356689,orders:716,imp:255844,clicks:71457,roas:4.29,ctr:27.93,cvr:1.0,cpa:116.19},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:42977,revenue:274219,orders:680,imp:265661,clicks:6549,roas:6.38,ctr:2.47,cvr:10.38,cpa:63.2},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:36755,revenue:211099,orders:506,imp:209369,clicks:4980,roas:5.74,ctr:2.38,cvr:10.16,cpa:72.64},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:33704,revenue:186780,orders:298,imp:149188,clicks:2798,roas:5.54,ctr:1.88,cvr:10.65,cpa:113.1}],worst5:[{name:"int06-04-26",spend:4397,revenue:3392,orders:11,imp:8395,clicks:230,roas:0.77,ctr:2.74,cvr:4.78,cpa:399.77},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10349,revenue:18810,orders:41,imp:47399,clicks:1064,roas:1.82,ctr:2.24,cvr:3.85,cpa:252.42},{name:"shop 06.04.26",spend:21927,revenue:71385,orders:181,imp:57287,clicks:1941,roas:3.26,ctr:3.39,cvr:9.33,cpa:121.15},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:83190,revenue:356689,orders:716,imp:255844,clicks:71457,roas:4.29,ctr:27.93,cvr:1.0,cpa:116.19},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:140,revenue:729,orders:3,imp:1163,clicks:53,roas:5.2,ctr:4.56,cvr:5.66,cpa:46.69}],all:[{name:"Shop GMV Max",spend:77000,revenue:522622,orders:1143,imp:627594,clicks:14334,roas:6.79,ctr:2.28,cvr:7.97,cpa:67.37},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:83190,revenue:356689,orders:716,imp:255844,clicks:71457,roas:4.29,ctr:27.93,cvr:1.0,cpa:116.19},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:42977,revenue:274219,orders:680,imp:265661,clicks:6549,roas:6.38,ctr:2.47,cvr:10.38,cpa:63.2},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:36755,revenue:211099,orders:506,imp:209369,clicks:4980,roas:5.74,ctr:2.38,cvr:10.16,cpa:72.64},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:33704,revenue:186780,orders:298,imp:149188,clicks:2798,roas:5.54,ctr:1.88,cvr:10.65,cpa:113.1},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:27838,revenue:164485,orders:350,imp:143798,clicks:3312,roas:5.91,ctr:2.3,cvr:10.57,cpa:79.54},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:24401,revenue:130996,orders:194,imp:90134,clicks:1973,roas:5.37,ctr:2.19,cvr:9.83,cpa:125.78},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:22741,revenue:129935,orders:236,imp:111116,clicks:2419,roas:5.71,ctr:2.18,cvr:9.76,cpa:96.36},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:23338,revenue:129076,orders:323,imp:121458,clicks:3557,roas:5.53,ctr:2.93,cvr:9.08,cpa:72.25},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:22001,revenue:129015,orders:312,imp:111964,clicks:2849,roas:5.86,ctr:2.54,cvr:10.95,cpa:70.52},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:17762,revenue:112754,orders:266,imp:97210,clicks:2473,roas:6.35,ctr:2.54,cvr:10.76,cpa:66.78},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:16501,revenue:103790,orders:167,imp:67711,clicks:1550,roas:6.29,ctr:2.29,cvr:10.77,cpa:98.81},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:16274,revenue:94702,orders:207,imp:84085,clicks:2184,roas:5.82,ctr:2.6,cvr:9.48,cpa:78.62},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:17006,revenue:90816,orders:183,imp:82155,clicks:1743,roas:5.34,ctr:2.12,cvr:10.5,cpa:92.93},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:15148,revenue:88811,orders:156,imp:91722,clicks:2745,roas:5.86,ctr:2.99,cvr:5.68,cpa:97.1},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:11392,revenue:85154,orders:451,imp:168320,clicks:3404,roas:7.47,ctr:2.02,cvr:13.25,cpa:25.26},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:12775,revenue:81223,orders:100,imp:61637,clicks:1394,roas:6.36,ctr:2.26,cvr:7.17,cpa:127.75},{name:"shop 06.04.26",spend:21927,revenue:71385,orders:181,imp:57287,clicks:1941,roas:3.26,ctr:3.39,cvr:9.33,cpa:121.15},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:11103,revenue:71115,orders:151,imp:53146,clicks:1410,roas:6.41,ctr:2.65,cvr:10.71,cpa:73.53},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:12335,revenue:66958,orders:128,imp:93510,clicks:2065,roas:5.43,ctr:2.21,cvr:6.2,cpa:96.37},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:8441,revenue:66280,orders:192,imp:49611,clicks:1291,roas:7.85,ctr:2.6,cvr:14.87,cpa:43.96},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:11441,revenue:64311,orders:164,imp:77207,clicks:1564,roas:5.62,ctr:2.03,cvr:10.49,cpa:69.76},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:10631,revenue:56437,orders:140,imp:55594,clicks:1704,roas:5.31,ctr:3.07,cvr:8.22,cpa:75.93},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:8548,revenue:47698,orders:72,imp:40080,clicks:947,roas:5.58,ctr:2.36,cvr:7.6,cpa:118.72},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:6494,revenue:41597,orders:62,imp:42568,clicks:1144,roas:6.41,ctr:2.69,cvr:5.42,cpa:104.74},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:4791,revenue:36610,orders:99,imp:39495,clicks:951,roas:7.64,ctr:2.41,cvr:10.41,cpa:48.4},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10349,revenue:18810,orders:41,imp:47399,clicks:1064,roas:1.82,ctr:2.24,cvr:3.85,cpa:252.42},{name:"int06-04-26",spend:4397,revenue:3392,orders:11,imp:8395,clicks:230,roas:0.77,ctr:2.74,cvr:4.78,cpa:399.77},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:140,revenue:729,orders:3,imp:1163,clicks:53,roas:5.2,ctr:4.56,cvr:5.66,cpa:46.69}]},
+    tiktok:{spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0,top5:[],worst5:[],all:[]}
+  },
+let curPeriodKeys = ['jan','feb','mar','apr','may','jun']; // all months
 
 // Combine multiple period snapshots for a platform
 function getCombinedPlatform(keys, platform) {
@@ -865,7 +869,7 @@ function initCharts(){
     if (existing) existing.destroy();
   });
 
-  const months = ['jan','feb','mar','apr','may'];
+  const months = ['jan','feb','mar','apr','may','jun'];
   const mLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
   const shRevArr   = months.map(m => DATA_PERIODS[m].shopee.revenue);
   const tkRevArr   = months.map(m => DATA_PERIODS[m].tiktok.revenue);
@@ -1057,6 +1061,7 @@ const ADS_PERIOD_LABELS = {
   mar: 'มีนาคม 2569',
   apr: 'เมษายน 2569',
   may: 'พฤษภาคม 2569 (1–31 พ.ค.)',
+  jun: 'มิถุนายน 2569 (1–22 มิ.ย.)',
 };
 const ADS_PERIOD_SUMMARY = {
   all: 'Shopee ฿20.30M · TikTok ฿5.81M',
@@ -1065,16 +1070,18 @@ const ADS_PERIOD_SUMMARY = {
   mar: 'Shopee ฿3.62M · TikTok ฿1.13M',
   apr: 'Shopee ฿4.34M · TikTok ฿1.28M',
   may: 'Shopee ฿4.97M · TikTok ฿1.46M',
+  jun: 'Shopee ฿3.44M (01-22 มิ.ย.)',
 };
 
 // ── Period Picker ─────────────────────────────────────────────────
 const ADS_PERIOD_DEFS = {
-  all: { keys:['jan','feb','mar','apr','may'],  label:'ทั้งหมด (ม.ค. – 31 พ.ค. 2569)', badge:'1 ม.ค. – 31 พ.ค. 2569' },
+  all: { keys:['jan','feb','mar','apr','may','jun'],  label:'ทั้งหมด (ม.ค. – มิ.ย. 2569)', badge:'1 ม.ค. – 22 มิ.ย. 2569' },
   jan: { keys:['jan'],  label:'มกราคม 2569',                    badge:'ม.ค. 2569' },
   feb: { keys:['feb'],  label:'กุมภาพันธ์ 2569',                badge:'ก.พ. 2569' },
   mar: { keys:['mar'],  label:'มีนาคม 2569',                    badge:'มี.ค. 2569' },
   apr: { keys:['apr'],  label:'เมษายน 2569',                    badge:'เม.ย. 2569' },
-  may: { keys:['may'],  label:'พ.ค. 2569 (1–31)',               badge:'พ.ค. (1–31) 2569' },
+  may: { keys:['may'],  label:'พ.ค. 2569 (1–31)',               badge:'พ.ค. (1–31) 2569' }
+  jun: { keys:['jun'],  label:'มิ.ย. 2569 (1–22)',               badge:'มิ.ย. (1–22) 2569' },
 };
 let curPickedPeriod = 'all';
 
