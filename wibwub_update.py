@@ -468,7 +468,8 @@ def process_shipnity():
              if not os.path.basename(f).startswith('~')]
     agg = defaultdict(lambda: {'q':0, 's':0.0})
     product_set = set()
-    order_seen = {}   # order_id → {d, ch, s} — ใช้ dedup order counts
+    order_seen = {}        # order_id → {d, ch, s} — ใช้ dedup order counts
+    seen_order_prod = set()  # (order_id, name) — dedup ไฟล์ที่ซ้อนทับกัน
 
     for fp in sorted(files):
         wb = openpyxl.load_workbook(fp, data_only=True)
@@ -484,8 +485,6 @@ def process_shipnity():
             if not date_val: continue
             name = str(row[1]).strip() if row[1] else ''
             if not name: continue
-            # FIX: ใช้ราคาต่อหน่วย × จำนวน (col2 × col3) แทน ยอดขายออเดอร์ (col5)
-            # col5 คือยอดรวมทั้งออเดอร์ → นับหลายครั้งต่อออเดอร์เดียว (double-count)
             unit_price  = parse_num(row[2]) if len(row) > 2 and row[2] else 0
             qty         = int(parse_num(row[3])) if len(row) > 3 and row[3] else 1
             rev         = unit_price * max(1, qty)
@@ -493,6 +492,10 @@ def process_shipnity():
             order_total = parse_num(row[5]) if len(row) > 5 and row[5] else 0
             ch          = norm_ch(str(row[15]).strip() if len(row) > 15 and row[15] else '')
             if rev <= 0: continue
+            # FIX: dedup (order_id, product) เพื่อป้องกัน double-count จากไฟล์ที่ซ้อนทับกัน
+            op_key = (order_id, name) if order_id else None
+            if op_key and op_key in seen_order_prod: continue
+            if op_key: seen_order_prod.add(op_key)
             agg[(date_val, name, ch)]['q'] += qty
             agg[(date_val, name, ch)]['s'] += rev
             product_set.add(name)
