@@ -232,7 +232,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="hdr-logo">WIB<span>WUB</span></div>
     <div class="hdr-sub">Affiliate Analytics Dashboard</div>
   </div>
-  <div class="hdr-badge" id="aff-updated">📅 1–20 มิ.ย. 2569 · อัปเดต 22 มิ.ย. 2569</div>
+  <div class="hdr-badge" id="aff-updated">📅 1–23 มิ.ย. 2569 · อัปเดต 25 มิ.ย. 2569</div>
 </div>
 
 <div class="nav">
@@ -260,7 +260,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   </div>
 </div>
 <div id="tab-overview" class="panel active">
-  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มี.ค.–มิ.ย. 2026 · 60 active creators (Jun GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
+  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มี.ค.–มิ.ย. 2026 · 69 active creators (Jun GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
 
   <div class="kstrip">
     <div class="kk"><div class="kkl">Affiliate GMV รวม</div><div class="kkv teal">฿2.75M</div><div class="kks">มี.ค.–มิ.ย. 2026</div></div>
@@ -302,7 +302,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <div id="tab-creators" class="panel">
   <div class="kstrip">
     <div class="kk"><div class="kkl">Total Creator GMV</div><div class="kkv teal">฿2,668K</div><div class="kks">1,634 unique creators</div></div>
-    <div class="kk"><div class="kkl">Top Creator</div><div class="kkv blue">.namoshop125</div><div class="kks">฿32K GMV · 84 orders</div></div>
+    <div class="kk"><div class="kkl">Top Creator</div><div class="kkv blue">.namoshop125</div><div class="kks">฿48K GMV · 124 orders</div></div>
     <div class="kk"><div class="kkl">Top by Orders</div><div class="kkv purple">pailong05</div><div class="kks">213 orders</div></div>
     <div class="kk"><div class="kkl">Best GMV/Order (AOV)</div><div class="kkv amber">rita.fe_</div><div class="kks">฿238/order</div></div>
   </div>
@@ -489,54 +489,58 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <script>
 // ══════════════════════════════════════════
-//  DATA  (มิ.ย. 1–22, 2026 — จาก Transaction_Analysis_Creator_List_20260601-20260622.xlsx)
-//  ข้อมูลจริง: 554 total creators, 60 active (GMV ≥ ฿1K), Total GMV ฿413.5K — มิ.ย. 1–22, 2026
-//  จาก Transaction_Analysis_Creator_List_20260601-20260622.xlsx
+//  DATA  (มิ.ย. 1–24, 2026 — Transaction_Analysis_Creator_List_20260601-20260624.xlsx)
+//  ข้อมูลจริง: Total GMV ฿459,569 / NET ฿452,171 / COMM ฿57,144 — มิ.ย. 1–24, 2026
+//  creator count = 321 (GMV>0), active 69 (GMV≥฿1K) จาก 01-24 file
 const CREATORS = [
-  {name:".namoshop125", gmv:45123, returns:695, net:44428, comm:5649, orders:119, comm_rate:12.5},
-  {name:"pailong05", gmv:28827, returns:0, net:28827, comm:3441, orders:224, comm_rate:11.9},
-  {name:"noonjourneyyy", gmv:27613, returns:375, net:27238, comm:3201, orders:131, comm_rate:11.6},
-  {name:"papajate", gmv:22395, returns:648, net:21747, comm:2889, orders:61, comm_rate:12.9},
-  {name:"rita.fe_", gmv:17041, returns:0, net:17041, comm:2283, orders:46, comm_rate:13.4},
-  {name:"rrak_kk", gmv:12035, returns:0, net:12035, comm:1682, orders:82, comm_rate:14.0},
-  {name:"nnhtr_", gmv:11906, returns:0, net:11906, comm:1739, orders:57, comm_rate:14.6},
-  {name:"jarkkystory", gmv:10749, returns:0, net:10749, comm:1283, orders:34, comm_rate:11.9},
+  {name:".namoshop125", gmv:46823, returns:695, net:46128, comm:5869, orders:122, comm_rate:12.5},
+  {name:"pailong05", gmv:30065, returns:0, net:30065, comm:3606, orders:233, comm_rate:12.0},
+  {name:"noonjourneyyy", gmv:28793, returns:375, net:28418, comm:3344, orders:136, comm_rate:11.6},
+  {name:"papajate", gmv:22856, returns:648, net:22208, comm:2958, orders:63, comm_rate:12.9},
+  {name:"rita.fe_", gmv:18220, returns:0, net:18220, comm:2460, orders:49, comm_rate:13.5},
+  {name:"rrak_kk", gmv:12770, returns:0, net:12770, comm:1788, orders:89, comm_rate:14.0},
+  {name:"nnhtr_", gmv:12474, returns:0, net:12474, comm:1806, orders:62, comm_rate:14.5},
+  {name:"ralph.detailing8", gmv:11298, returns:347, net:10951, comm:1548, orders:30, comm_rate:13.7},
+  {name:"jarkkystory", gmv:11099, returns:0, net:11099, comm:1311, orders:35, comm_rate:11.8},
   {name:"muchmai_mumi", gmv:10426, returns:0, net:10426, comm:1466, orders:29, comm_rate:14.1},
-  {name:"ralph.detailing8", gmv:10086, returns:347, net:9739, comm:1366, orders:27, comm_rate:13.5},
-  {name:"orion_risingstar", gmv:9793, returns:0, net:9793, comm:1210, orders:74, comm_rate:12.4},
+  {name:"orion_risingstar", gmv:10079, returns:0, net:10079, comm:1252, orders:78, comm_rate:12.4},
   {name:"phanuwatinsri", gmv:9610, returns:0, net:9610, comm:821, orders:49, comm_rate:8.5},
+  {name:"saiinum.storry", gmv:9305, returns:0, net:9305, comm:599, orders:87, comm_rate:6.4},
   {name:"somkidkongchom", gmv:9058, returns:0, net:9058, comm:1274, orders:44, comm_rate:14.1},
-  {name:"saiinum.storry", gmv:9046, returns:0, net:9046, comm:586, orders:84, comm_rate:6.5},
   {name:"thekratae", gmv:7393, returns:343, net:7050, comm:810, orders:64, comm_rate:11.0},
   {name:"melodylotto", gmv:7267, returns:0, net:7267, comm:1019, orders:21, comm_rate:14.0},
-  {name:"plearntumarai", gmv:6703, returns:0, net:6703, comm:847, orders:20, comm_rate:12.6},
-  {name:"evee.vespa", gmv:4803, returns:195, net:4608, comm:689, orders:22, comm_rate:14.3},
+  {name:"plearntumarai", gmv:7053, returns:0, net:7053, comm:899, orders:21, comm_rate:12.8},
+  {name:"evee.vespa", gmv:5001, returns:195, net:4806, comm:718, orders:23, comm_rate:14.4},
   {name:"punch_chalita8", gmv:4504, returns:0, net:4504, comm:414, orders:11, comm_rate:9.2},
   {name:"tangkwaky", gmv:3856, returns:0, net:3856, comm:383, orders:27, comm_rate:9.9},
-  {name:"james.khunphrom", gmv:3742, returns:0, net:3742, comm:246, orders:29, comm_rate:6.6},
+  {name:"james.khunphrom", gmv:3839, returns:0, net:3839, comm:250, orders:30, comm_rate:6.5},
   {name:"body.chaya9", gmv:3264, returns:0, net:3264, comm:490, orders:8, comm_rate:15.0},
-  {name:"yuii24654", gmv:2945, returns:0, net:2945, comm:437, orders:11, comm_rate:14.9},
-  {name:"joakrw", gmv:2646, returns:0, net:2646, comm:318, orders:8, comm_rate:12.0},
-  {name:"mushinyiwz", gmv:2587, returns:0, net:2587, comm:223, orders:8, comm_rate:8.6},
+  {name:"yuii24654", gmv:3143, returns:0, net:3143, comm:447, orders:12, comm_rate:14.2},
+  {name:"joakrw", gmv:2984, returns:0, net:2984, comm:368, orders:9, comm_rate:12.3},
+  {name:"mushinyiwz", gmv:2959, returns:0, net:2959, comm:279, orders:9, comm_rate:9.4},
+  {name:"fahareejun", gmv:2784, returns:179, net:2605, comm:308, orders:24, comm_rate:11.1},
   {name:"aornor.kd", gmv:2489, returns:0, net:2489, comm:351, orders:20, comm_rate:14.1},
   {name:"tiktokshop_affiliate_th", gmv:2460, returns:0, net:2460, comm:200, orders:5, comm_rate:8.1},
   {name:"aoohphonhan", gmv:2377, returns:0, net:2377, comm:282, orders:9, comm_rate:11.9},
   {name:"mumdriving", gmv:2334, returns:0, net:2334, comm:322, orders:11, comm_rate:13.8},
   {name:"phrim_p", gmv:2329, returns:85, net:2244, comm:305, orders:22, comm_rate:13.1},
+  {name:"tsc799", gmv:2032, returns:0, net:2032, comm:266, orders:5, comm_rate:13.1},
   {name:"taaum234", gmv:1914, returns:0, net:1914, comm:259, orders:11, comm_rate:13.5},
-  {name:"tsc799", gmv:1643, returns:0, net:1643, comm:208, orders:4, comm_rate:12.6},
+  {name:"tarracing_main", gmv:1913, returns:0, net:1913, comm:249, orders:5, comm_rate:13.0},
+  {name:"rouey_sook", gmv:1724, returns:0, net:1724, comm:186, orders:5, comm_rate:10.8},
   {name:"i.namthip_", gmv:1611, returns:0, net:1611, comm:98, orders:14, comm_rate:6.1},
   {name:"ctl.mkzk", gmv:1609, returns:0, net:1609, comm:230, orders:9, comm_rate:14.3},
+  {name:"_ijstagram", gmv:1599, returns:0, net:1599, comm:222, orders:10, comm_rate:13.9},
   {name:"chayaanit_", gmv:1580, returns:0, net:1580, comm:237, orders:2, comm_rate:15.0},
   {name:"pinkcar3682", gmv:1530, returns:0, net:1530, comm:191, orders:5, comm_rate:12.5},
-  {name:"tarracing_main", gmv:1504, returns:0, net:1504, comm:188, orders:4, comm_rate:12.5},
   {name:"zhenzhumama", gmv:1481, returns:0, net:1481, comm:222, orders:2, comm_rate:15.0},
   {name:"choaof_channel", gmv:1450, returns:0, net:1450, comm:218, orders:1, comm_rate:15.0},
   {name:"suwit_deepal.khonkaen", gmv:1449, returns:0, net:1449, comm:103, orders:3, comm_rate:7.1},
   {name:"totokittisak1", gmv:1445, returns:761, net:684, comm:161, orders:3, comm_rate:11.2},
   {name:"japann.story", gmv:1441, returns:0, net:1441, comm:179, orders:3, comm_rate:12.4},
+  {name:"sine_review19", gmv:1399, returns:250, net:1149, comm:169, orders:9, comm_rate:12.1},
+  {name:"detailist.888", gmv:1390, returns:0, net:1390, comm:228, orders:4, comm_rate:16.4},
   {name:"sleepreview", gmv:1384, returns:0, net:1384, comm:186, orders:4, comm_rate:13.4},
-  {name:"rouey_sook", gmv:1352, returns:0, net:1352, comm:131, orders:4, comm_rate:9.7},
   {name:"matenatthapong", gmv:1330, returns:431, net:899, comm:152, orders:5, comm_rate:11.4},
   {name:"jaykubtookwan", gmv:1271, returns:0, net:1271, comm:159, orders:4, comm_rate:12.5},
   {name:"jeabheng", gmv:1218, returns:0, net:1218, comm:120, orders:3, comm_rate:9.8},
@@ -544,40 +548,42 @@ const CREATORS = [
   {name:"imay8story", gmv:1195, returns:0, net:1195, comm:161, orders:1, comm_rate:13.5},
   {name:"useryftl0r2904", gmv:1191, returns:0, net:1191, comm:60, orders:4, comm_rate:5.0},
   {name:"pkautocare168", gmv:1162, returns:0, net:1162, comm:149, orders:6, comm_rate:12.8},
+  {name:"fernnframe", gmv:1123, returns:0, net:1123, comm:168, orders:4, comm_rate:15.0},
   {name:"evdrive.diary", gmv:1119, returns:0, net:1119, comm:164, orders:3, comm_rate:14.7},
   {name:"numtonn", gmv:1116, returns:372, net:744, comm:167, orders:3, comm_rate:15.0},
   {name:"seessoms", gmv:1115, returns:0, net:1115, comm:142, orders:3, comm_rate:12.8},
   {name:"mriderreview", gmv:1112, returns:0, net:1112, comm:167, orders:3, comm_rate:15.0},
+  {name:"sakkarinnn2006", gmv:1107, returns:0, net:1107, comm:134, orders:5, comm_rate:12.1},
+  {name:"nittayasaykongdee", gmv:1095, returns:0, net:1095, comm:164, orders:4, comm_rate:15.0},
   {name:"ymfamily_review", gmv:1062, returns:792, net:270, comm:124, orders:3, comm_rate:11.7},
   {name:"ekokungah", gmv:1039, returns:398, net:642, comm:81, orders:3, comm_rate:7.8},
   {name:"day25380", gmv:1031, returns:0, net:1031, comm:72, orders:9, comm_rate:7.0},
   {name:"aomsin.wong", gmv:1031, returns:0, net:1031, comm:164, orders:1, comm_rate:15.9},
-  {name:"sine_review19", gmv:1009, returns:250, net:759, comm:110, orders:8, comm_rate:10.9},
 ];
 
 // Monthly GMV per creator: [มี.ค., เม.ย., พ.ค., มิ.ย.1-22]
 const CREATOR_MONTHS = {
-  'fahareejun':[0,29331,228257,296],
-  'rita.fe_':[77739,61408,42307,17041],
-  'pailong05':[15035,67105,73333,28827],
-  'noonjourneyyy':[35421,44803,36368,27613],
+  'fahareejun':[0,29331,228257,2784],
+  'rita.fe_':[77739,61408,42307,18220],
+  'pailong05':[15035,67105,73333,30065],
+  'noonjourneyyy':[35421,44803,36368,28793],
   'muchmai_mumi':[32705,26324,23220,10426],
-  'nnhtr_':[14338,24292,29269,11906],
-  'jarkkystory':[30903,23877,13688,10749],
-  'ralph.detailing8':[19175,21249,26070,10086],
+  'nnhtr_':[14338,24292,29269,12474],
+  'jarkkystory':[30903,23877,13688,11099],
+  'ralph.detailing8':[19175,21249,26070,11298],
   'phanuwatinsri':[20766,18440,19538,9610],
-  'orion_risingstar':[15588,14800,19517,9793],
-  'plearntumarai':[12638,19653,19171,6703],
-  'rrak_kk':[14409,16644,13169,12035],
-  '_ijstagram':[13942,21179,14776,905],
-  'papajate':[10795,8300,16973,22395],
+  'orion_risingstar':[15588,14800,19517,10079],
+  'plearntumarai':[12638,19653,19171,7053],
+  'rrak_kk':[14409,16644,13169,12770],
+  '_ijstagram':[13942,21179,14776,1599],
+  'papajate':[10795,8300,16973,22856],
   'thekataecx30':[10088,22891,10848,0],
   'melodylotto':[13809,15426,9800,7267],
-  'ceo.blk.item':[0,5957,26761,576],
-  'poppyme.6':[13386,10912,8876,107],
-  'evee.vespa':[10592,8992,8597,4803],
-  '.namoshop125':[0,0,588,45123],
-  'phuengthitii':[0,0,27751,89],
+  'ceo.blk.item':[0,5957,26761,975],
+  'poppyme.6':[13386,10912,8876,196],
+  'evee.vespa':[10592,8992,8597,5001],
+  '.namoshop125':[0,0,588,46823],
+  'phuengthitii':[0,0,27751,732],
   'ploypimlaplus':[8397,10067,8095,360],
   'taaum234':[13900,5533,2823,1914],
   'somkidkongchom':[2476,6016,6698,9058],
@@ -585,16 +591,16 @@ const CREATOR_MONTHS = {
   'numtonn':[5412,10405,3991,1116],
   'rawinreview2465':[2292,3724,12010,0],
   'aoohphonhan':[6277,5878,3044,2377],
-  'mushinyiwz':[9631,1341,2123,2587],
+  'mushinyiwz':[9631,1341,2123,2959],
   'tangkwaky':[2810,3115,2603,3856],
-  'joakrw':[2922,1290,5913,2646],
-  'saiinum.storry':[0,0,3424,9046],
+  'joakrw':[2922,1290,5913,2984],
+  'saiinum.storry':[0,0,3424,9305],
   'body.chaya9':[2501,3491,2813,3264],
   'aornor.kd':[1525,2260,5016,2489],
   'totokittisak1':[0,8072,1750,1445],
   'suwit_deepal.khonkaen':[2555,2912,3840,1449],
-  'james.khunphrom':[780,495,4680,3742],
-  'rouey_sook':[4313,2090,2201,1352],
+  'james.khunphrom':[780,495,4680,3839],
+  'rouey_sook':[4313,2090,2201,1724],
   'ctl.mkzk':[3178,3554,2019,1609],
   'sleepreview':[1500,3269,2986,1384],
   'appleuser24423576':[4456,3273,372,372],
@@ -604,9 +610,9 @@ const CREATOR_MONTHS = {
   'matenatthapong':[0,1046,5079,1330],
   'nipaashop':[2313,1125,2319,980],
   'frameck':[1362,1865,3292,0],
-  'tarracing_main':[2286,2769,304,1504],
+  'tarracing_main':[2286,2769,304,1913],
   'pkautocare168':[3328,560,1292,1162],
-  'yuii24654':[0,2226,1799,2945],
+  'yuii24654':[0,2226,1799,3143],
   'manutsananpibanwo':[4354,1100,0,693],
   'ting_indie':[1847,2552,1277,468],
   'mumdriving':[1454,775,1415,2334],
@@ -624,7 +630,7 @@ const CREATOR_MONTHS = {
   'g_gggguy':[1392,557,2303,0],
   'gaem.9619':[1153,1336,1317,286],
   'iceshop45_':[2430,862,661,0],
-  'cherryreviewbeautys':[0,2235,1645,60],
+  'cherryreviewbeautys':[0,2235,1645,149],
   'tonpalm__':[2207,1204,287,0],
   'mat_cy':[367,884,1618,788],
   'pployaugust':[2241,774,632,0],
@@ -636,13 +642,13 @@ const CREATOR_MONTHS = {
   'khun.tee':[420,1814,1195,0],
   'yumifamily_review':[750,685,931,0],
   'amore.eyewere':[0,2333,1028,89],
-  'mamutchalin':[0,0,3261,89],
+  'mamutchalin':[0,0,3261,178],
   'papapae988':[1728,1367,0,0],
   'nijujuucyuz':[1526,147,1412,0],
-  'tsc799':[0,0,1401,1643],
+  'tsc799':[0,0,1401,2032],
   'wittayathongom':[489,1617,0,926],
   'mameehappy':[0,2729,286,0],
-  'sakkarinnn2006':[623,1096,522,711],
+  'sakkarinnn2006':[623,1096,522,1107],
   'nakwan789':[1104,1103,354,558],
   'arsynfk1m':[2475,441,0,0],
   '.brshop1':[0,631,1685,970],
@@ -658,16 +664,16 @@ const CREATOR_MONTHS = {
   'phrim_p':[0,0,0,2329],
   'krunid_':[1556,770,0,321],
   'a.mor_':[0,1550,750,0],
-  'fernnframe':[1430,159,401,925],
+  'fernnframe':[1430,159,401,1123],
   'newpocofy07':[0,0,2214,0],
   'mycarnooknook':[178,1304,0,718],
   'cartiktok395':[0,1601,598,0],
   'asas29804':[1385,181,178,644],
   'honzo.zoto':[815,360,575,435],
-  'm.n00123':[817,1007,325,0],
+  'm.n00123':[817,1007,325,337],
   'ap_review999':[0,0,2059,174],
   'chon_fe3889':[1346,448,0,349],
-  'detailist.888':[1386,0,420,583],
+  'detailist.888':[1386,0,420,1390],
   'pannisa.m':[713,85,1168,174],
   'reallyjayyy':[2132,0,0,355],
   'view.miipro':[1046,993,72,0],
@@ -765,19 +771,19 @@ const CREATOR_MONTHS = {
   'mriderreview':[0,0,0,1112],
   'ymfamily_review':[0,0,0,1062],
   'aomsin.wong':[0,0,0,1031],
-  'sine_review19':[0,0,0,1009],
+  'sine_review19':[0,0,0,1399],
 };
 
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:1,vid:3,monthly:{mar:25400,apr:134300,may:393400,jun:18294},ret:{mar:178,apr:1500,may:2900,jun:355}},
-  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:19,vid:75,monthly:{mar:36100,apr:162600,may:168300,jun:97634},ret:{mar:246,apr:2200,may:1100,jun:428}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:167,monthly:{mar:39000,apr:147300,may:119400,jun:97125},ret:{mar:732,apr:4200,may:3100,jun:2100}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:51,monthly:{mar:31900,apr:69400,may:67500,jun:51947},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:159,monthly:{mar:25800,apr:54500,may:59000,jun:26941},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:22,monthly:{mar:25400,apr:49600,may:40400,jun:18294},ret:{mar:1200,apr:1400,may:355,jun:355}},
-  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:6,monthly:{mar:3700,apr:15900,may:10200,jun:5220},ret:{mar:0,apr:230,may:539,jun:0}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:9,vid:10,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
+  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:18,vid:89,monthly:{mar:36100,apr:162600,may:168300,jun:105801},ret:{mar:246,apr:2200,may:1100,jun:678}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:193,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:55,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:185,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:32,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:16,monthly:{mar:3700,apr:15900,may:10200,jun:7679},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
 const VIDEOS = [
   {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'',gmv:257100,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:29200,may:227900,jun:0}},
@@ -1187,11 +1193,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-20)"];
-const AF_GMV = [0,0,655259,724337,951325,375789];
-const AF_NET = [0,0,642947,708947,937364,369080];
-const AF_COM = [0,0,82886,69235,105035,46005];
-const AF_CR  = [0,0,398,418,558,274];
+const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-24)"];
+const AF_GMV = [0,0,655259,724337,951325,459569];
+const AF_NET = [0,0,642947,708947,937364,452171];
+const AF_COM = [0,0,82886,69235,105035,57144];
+const AF_CR  = [0,0,398,418,558,321];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
