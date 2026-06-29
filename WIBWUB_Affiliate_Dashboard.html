@@ -1202,11 +1202,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-25)"];
-const AF_GMV = [0,0,655259,724337,951325,491141];
-const AF_NET = [0,0,642947,708947,937364,483742];
-const AF_COM = [0,0,82886,69235,105035,57144];
-const AF_CR  = [0,0,398,418,558,321];
+const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-27)"];
+const AF_GMV = [0,0,655259,724337,951325,550142];
+const AF_NET = [0,0,642947,708947,937364,542744];
+const AF_COM = [0,0,82886,69235,105035,68304];
+const AF_CR  = [0,0,398,418,558,355];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
@@ -1505,7 +1505,7 @@ function showProfile(name){
     window._profChartInst = new Chart(canvas.getContext('2d'), {
       type:'bar',
       data:{
-        labels:['มี.ค.','เม.ย.','พ.ค.','มิ.ย.(1-25)'],
+        labels:['มี.ค.','เม.ย.','พ.ค.','มิ.ย.(1-27)'],
         datasets:[{
           label:'GMV',
           data: mData,
