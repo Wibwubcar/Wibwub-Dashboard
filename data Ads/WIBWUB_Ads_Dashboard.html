@@ -202,10 +202,10 @@
 
 <!-- Tabs -->
 <div class="tabs">
-  <div class="tab active" onclick="showTab('overview',event)">📊 ภาพรวม</div>
-  <div class="tab" onclick="showTab('shopee',event)">🛍️ Shopee</div>
-  <div class="tab" onclick="showTab('tiktok',event)">🎵 TikTok</div>
-  <div class="tab" onclick="showTab('adddata',event)">➕ เพิ่มข้อมูล</div>
+  <div class="tab active" data-tab="overview">📊 ภาพรวม</div>
+  <div class="tab" data-tab="shopee">🛍️ Shopee</div>
+  <div class="tab" data-tab="tiktok">🎵 TikTok</div>
+  <div class="tab" data-tab="adddata">➕ เพิ่มข้อมูล</div>
 </div>
 
 <div class="period-bar">
@@ -1610,6 +1610,13 @@ window.adsTogglePicker = adsTogglePicker;
 window.adsClosePicker = adsClosePicker;
 window.sortTable = sortTable;
 window.addEntry = addEntry;
+
+// ── Bind tab events using addEventListener (works in all contexts) ──
+document.querySelectorAll('[data-tab]').forEach(function(el) {
+  el.addEventListener('click', function(e) {
+    showTab(this.getAttribute('data-tab'), e);
+  });
+});
 </script>
 </body>
 </html>
