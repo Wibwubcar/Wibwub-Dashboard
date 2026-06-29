@@ -1109,8 +1109,8 @@
     <section id="social" class="section">
       <div class="kpi-grid">
         <div class="kpi tk-c"><div class="kpi-label">TikTok Followers</div><div class="kpi-val">26,746</div><div class="kpi-sub up">↑ 1.35% จากพ.ค. · ข้อมูล 19 มิ.ย.</div><div class="kpi-ico">🎵</div></div>
-        <div class="kpi bl"><div class="kpi-label">Facebook Likes</div><div class="kpi-val">62K</div><div class="kpi-sub up">↑ 3.1%</div><div class="kpi-ico">👍</div></div>
-        <div class="kpi pu"><div class="kpi-label">Instagram Followers</div><div class="kpi-val">38K</div><div class="kpi-sub up">↑ 2.8%</div><div class="kpi-ico">📷</div></div>
+        <div class="kpi bl"><div class="kpi-label">Facebook Likes</div><div class="kpi-val">65K</div><div class="kpi-sub up">↑ 3.1%</div><div class="kpi-ico">👍</div></div>
+        <div class="kpi pu"><div class="kpi-label">Instagram Followers</div><div class="kpi-val">40K</div><div class="kpi-sub up">↑ 2.8%</div><div class="kpi-ico">📷</div></div>
         <div class="kpi rd"><div class="kpi-label">YouTube Subscribers</div><div class="kpi-val">17K</div><div class="kpi-sub up">↑ 1.2%</div><div class="kpi-ico">▶️</div></div>
         <div class="kpi gr"><div class="kpi-label">Engagement Rate</div><div class="kpi-val">7.2%</div><div class="kpi-sub up">↑ 0.4%</div><div class="kpi-ico">❤️</div></div>
         <div class="kpi or"><div class="kpi-label">Total Views (เดือน)</div><div class="kpi-val">3.1M</div><div class="kpi-sub up">↑ 22.6%</div><div class="kpi-ico">👁</div></div>
@@ -1594,9 +1594,9 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.339,26.746],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:4},
-  {label:'Facebook',data:[58,59,61,63,64,null],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:4},
-  {label:'Instagram',data:[35,36,37,38,39,null],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:4},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.339,26.746],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
+  {label:'Facebook',data:[58,59,61,63,64,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
+  {label:'Instagram',data:[35,36,37,38,39,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
 new Chart('soc_eng',{type:'doughnut',data:{labels:['TikTok','Facebook','Instagram','YouTube'],datasets:[{data:[58,22,14,6],backgroundColor:[TIKTOK,'#1877f2','#e1306c','#ff0000'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'58%'}});
 
