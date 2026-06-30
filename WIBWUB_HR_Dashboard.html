@@ -467,7 +467,7 @@ async function triggerCheckoutNotify(){
   [btn,btn2].forEach(b=>{if(b){b.textContent='⏳ กำลังตรวจสอบ...';b.disabled=true;}});
   if(st){st.textContent='';st.style.color='var(--sub)';}
   try{
-    const today=new Date().toISOString().split('T')[0];
+    const today=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];
     const docs=await fsQuery('attendance',[{field:'date',value:today}]);
     const missing=docs
       .map(d=>d.data())
@@ -529,7 +529,7 @@ async function triggerMorningSummary(){
   if(btn){btn.textContent='⏳ กำลังดึงข้อมูล...';btn.disabled=true;}
   if(st){st.textContent='';st.style.color='var(--sub)';}
   try{
-    const today=new Date().toISOString().split('T')[0];
+    const today=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];
     const thTime=new Date().toLocaleTimeString('th-TH',{hour:'2-digit',minute:'2-digit',hour12:false});
     const docs=await fsQuery('attendance',[{field:'date',value:today}]);
     const records=docs.map(d=>d.data());
@@ -630,7 +630,7 @@ async function loadToday(){
     renderTodayTable(docs,wrap);
   }catch(e){wrap.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
 }
-function setTodayDate(){document.getElementById('today-date').value=new Date().toISOString().split('T')[0];loadToday();}
+function setTodayDate(){document.getElementById('today-date').value=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];loadToday();}
 
 function fmtTime(v){
   if(!v)return'—';
