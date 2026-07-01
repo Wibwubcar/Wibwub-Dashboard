@@ -23,7 +23,7 @@ with open(SNAPSHOT, encoding="utf-8") as f:
 
 # สร้าง lookup ด้วย code (SKU)
 raw_list = raw["products"] if isinstance(raw, dict) and "products" in raw else raw
-    ship_map = {p["code"]: p for p in raw_list if isinstance(p,dict) and p.get("code")}
+ship_map = {p["code"]: p for p in raw_list if isinstance(p,dict) and p.get("code")}
 print(f"📦 Shipnity: {len(ship_map)} SKUs")
 
 # ─── อ่าน Procurement_Dashboard.html ─────────────────────────────────────────
