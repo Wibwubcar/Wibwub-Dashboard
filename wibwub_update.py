@@ -660,6 +660,22 @@ def update_html(sales, aff, posts, shipnity):
             html = re.sub(r'const raw=\[[\s\S]*?\];', lambda m: raw_block, html)
             write_if_changed(fp, html, 'WIBWUB_Affiliate_Dashboard.html')
 
+    # B1b. Bump cache-busting version บน iframe ที่ WIBWUB_Dashboard.html ใช้ฝัง Affiliate Dashboard
+    # (ป้องกันปัญหา: แก้ WIBWUB_Affiliate_Dashboard.html แล้ว แต่ iframe หลักยังแคชโค้ดเก่าเพราะ ?v= ไม่เคยเปลี่ยน)
+    if aff:
+        fp = BASE / 'WIBWUB_Dashboard.html'
+        if fp.exists():
+            html = fp.read_text(encoding='utf-8')
+            m = re.search(r'WIBWUB_Affiliate_Dashboard\.html\?v=(\d+)', html)
+            if m:
+                old_v = int(m.group(1)); new_v = old_v + 1
+                html = html.replace(f'WIBWUB_Affiliate_Dashboard.html?v={old_v}',
+                                     f'WIBWUB_Affiliate_Dashboard.html?v={new_v}')
+                write_if_changed(fp, html, 'WIBWUB_Dashboard.html (affiliate iframe cache-bust)')
+                log(f'  ✅ Affiliate iframe cache-bust: v{old_v} → v{new_v}')
+            else:
+                log('  WARNING: ไม่พบ WIBWUB_Affiliate_Dashboard.html?v=N pattern ใน WIBWUB_Dashboard.html — ข้าม cache-bust')
+
     # B2. Mobile — AFI arrays (ต้องตรงกับ Affiliate Dashboard เสมอ)
     if aff:
         fp = BASE / 'WIBWUB_Mobile.html'
