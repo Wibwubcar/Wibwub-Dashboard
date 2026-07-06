@@ -397,6 +397,9 @@ def process_affiliate():
                 tfirst, tlast = month_bounds(mi)
                 ds = max(s, tfirst).day
                 de = min(e, tlast).day
+                # หมายเหตุ: แสดง (start-end) ทุกเดือนที่มีไฟล์จริง (ทั้งเดือนเต็ม/ไม่เต็ม)
+                # เพื่อความชัดเจนของช่วงข้อมูล — ต่างจาก format เดิมที่เคยแก้ด้วยมือซึ่งซ่อน
+                # suffix นี้ไว้เฉพาะเดือนเก่าๆ อย่างไม่สม่ำเสมอ (บาง full month มี บางอันไม่มี)
                 day_range[mi] = (ds, de)
 
     for fp in xlsx_files:
