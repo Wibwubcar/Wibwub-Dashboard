@@ -260,15 +260,15 @@ tr:hover td{background:rgba(59,130,246,.04)}
   </div>
 </div>
 <div id="tab-overview" class="panel active">
-  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — มิ.ย. 2026 (1–30) · 87 active creators (Jun GMV ≥ ฿1K) · ยังไม่รวมข้อมูล Livestream · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
+  <div class="note">📊 ข้อมูลจริงจาก Transaction_Analysis_Creator_List — อัปเดตล่าสุดถึง ก.ค. 2026 (1–5) · ยังไม่รวมข้อมูล Livestream ใน GMV รวม (ดู Live GMV แยกด้านล่าง) · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
 
   <div class="kstrip">
-    <div class="kk"><div class="kkl">Affiliate GMV (มิ.ย.)</div><div class="kkv teal">฿0.64M</div><div class="kks">มิ.ย. 2026 (1–30)</div></div>
-    <div class="kk"><div class="kkl">Net GMV (หลังคืนเงิน)</div><div class="kkv green">฿0.63M</div><div class="kks">returns รวม ฿10.2K</div></div>
-    <div class="kk"><div class="kkl">ครีเอเตอร์ที่ Active</div><div class="kkv blue">87</div><div class="kks">Jun GMV ≥ ฿1K (398 มียอด)</div></div>
-    <div class="kk"><div class="kkl">Orders (มิ.ย.)</div><div class="kkv purple">3,103</div><div class="kks">AOV ฿207/order</div></div>
+    <div class="kk"><div class="kkl">Affiliate GMV (ก.ค. 1-5)</div><div class="kkv teal">฿199K</div><div class="kks">มิ.ย. เต็มเดือน ฿642K</div></div>
+    <div class="kk"><div class="kkl">Net GMV (หลังคืนเงิน)</div><div class="kkv green">฿196K</div><div class="kks">ก.ค. 1-5 · มิ.ย. ฿632K</div></div>
+    <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">198</div><div class="kks">ก.ค. 1-5 (มิ.ย. 398)</div></div>
     <div class="kk"><div class="kkl">สินค้าที่ขายผ่าน Affiliate</div><div class="kkv amber">7+</div><div class="kks">หมวด ยานยนต์</div></div>
-    <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (มิ.ย.)</div><div class="kkv" style="color:var(--pink)">฿79K</div><div class="kks">avg 12.3% rate</div></div>
+    <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (ก.ค. 1-5)</div><div class="kkv" style="color:var(--pink)">฿22.7K</div><div class="kks">มิ.ย. ฿79.3K</div></div>
+    <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">฿26.1K</div><div class="kks">มิ.ย. ฿19.0K + ก.ค.1-5 ฿7.1K · 59 sessions</div></div>
   </div>
 
   <div class="g2">
@@ -815,56 +815,51 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:15,vid:22,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
-  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:17,vid:118,monthly:{mar:36100,apr:162600,may:168300,jun:105801},ret:{mar:246,apr:2200,may:1100,jun:678}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:11,vid:225,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:7,vid:74,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:4,vid:200,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:3,vid:41,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
-  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:2,vid:24,monthly:{mar:3700,apr:15900,may:10200,jun:7679},ret:{mar:0,apr:230,may:539,jun:0}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:27,vid:28,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
+  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:19,vid:23,monthly:{mar:36100,apr:162600,may:168300,jun:105801},ret:{mar:246,apr:2200,may:1100,jun:678}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:10,vid:26,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:8,vid:6,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:5,vid:18,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:4,vid:7,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:1,vid:1,monthly:{mar:3700,apr:15900,may:10200,jun:7679},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
 const VIDEOS = [
-  {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'',gmv:257100,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:29200,may:227900,jun:0}},
-  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7617018768392260872',caption:'',gmv:116500,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:8900,apr:48400,may:49600,jun:9600}},
-  {creator:'noonjourneyyy',product:'WIBWUB CLEANER',vid_id:'7599129746668031239',caption:'',gmv:64200,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:11300,apr:18400,may:16200,jun:18300}},
-  {creator:'phanuwatinsri',product:'WIBWUB CLEANER',vid_id:'7527954240350850312',caption:'',gmv:53200,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:9100,apr:18400,may:18600,jun:7100}},
-  {creator:'muchmai_mumi',product:'WIBWUB Sugar',vid_id:'7599620482215726357',caption:'',gmv:49100,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:5500,apr:19100,may:20500,jun:4000}},
-  {creator:'orion_risingstar',product:'WIBWUB Interior wipes',vid_id:'7603325545362836743',caption:'',gmv:47300,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:3800,apr:14800,may:19500,jun:9200}},
-  {creator:'rrak_kk',product:'WIBWUB Interior wipes',vid_id:'7556331624997211400',caption:'',gmv:44900,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:4100,apr:16600,may:13200,jun:11000}},
-  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7618508119617916181',caption:'',gmv:38500,units:0,date:'เม.ย.–มิ.ย.',monthly:{mar:0,apr:14400,may:15300,jun:8800}},
-  {creator:'jarkkystory',product:'WIBWUB Sugar',vid_id:'7544674710374632722',caption:'',gmv:37200,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:5500,apr:18200,may:9000,jun:4500}},
-  {creator:'melodylotto',product:'WIBWUB Refresh',vid_id:'7385534707611487496',caption:'',gmv:33400,units:0,date:'มี.ค.–มิ.ย.',monthly:{mar:5300,apr:15000,may:9200,jun:3900}},
-  {creator:'phuengthitii',product:'WIBWUB Refresh Leather Wipes',vid_id:'7636752833634684180',caption:'',gmv:25500,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:25500,jun:0}},
-  {creator:'_ijstagram',product:'WIBWUB Refresh Leather Wipes',vid_id:'7602803290635652360',caption:'',gmv:25200,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3700,apr:13900,may:7600,jun:0}},
-  {creator:'ceo.blk.item',product:'WIBWUB Refresh Leather Wipes',vid_id:'7627808652782619911',caption:'',gmv:24400,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:24400,jun:0}},
-  {creator:'rita.fe_',product:'WIBWUB Interior',vid_id:'7520545675902340359',caption:'',gmv:21100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3700,apr:8400,may:9000,jun:0}},
-  {creator:'poppyme.6',product:'WIBWUB Refresh Leather Wipes',vid_id:'7615994847882661140',caption:'',gmv:20100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3600,apr:8800,may:7700,jun:0}},
-  {creator:'nnhtr_',product:'WIBWUB Interior wipes',vid_id:'7575343727783251207',caption:'',gmv:16900,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:9900,may:7000,jun:0}},
-  {creator:'.namoshop125',product:'WIBWUB Sugar',vid_id:'7645490747550010642',caption:'',gmv:15900,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:15900}},
-  {creator:'papajate',product:'WIBWUB Sugar',vid_id:'7605205146968149256',caption:'',gmv:15500,units:0,date:'พ.ค.–มิ.ย.',monthly:{mar:0,apr:0,may:7600,jun:7900}},
-  {creator:'rita.fe_',product:'WIBWUB Interior',vid_id:'7586623681439304981',caption:'',gmv:14700,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:3600,apr:11100,may:0,jun:0}},
-  {creator:'rawinreview2465',product:'WIBWUB Refresh Leather Wipes',vid_id:'7619404140250434834',caption:'',gmv:13800,units:0,date:'มี.ค. พ.ค.',monthly:{mar:2200,apr:0,may:11600,jun:0}},
-  {creator:'.namoshop125',product:'WIBWUB Sugar',vid_id:'7647069840611511559',caption:'',gmv:13300,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:13300}},
-  {creator:'punch_chalita8',product:'WIBWUB Sugar',vid_id:'7529896559408860434',caption:'',gmv:11600,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:2600,apr:9000,may:0,jun:0}},
-  {creator:'rita.fe_',product:'WIBWUB Visible',vid_id:'7527301111057747218',caption:'',gmv:10500,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:2200,apr:8300,may:0,jun:0}},
-  {creator:'plearntumarai',product:'WIBWUB Sugar',vid_id:'7611483496745389333',caption:'',gmv:9800,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:9800,jun:0}},
-  {creator:'thekratae',product:'WIBWUB Refresh Leather Wipes',vid_id:'7544585420206525697',caption:'',gmv:8600,units:0,date:'เม.ย.',monthly:{mar:0,apr:8600,may:0,jun:0}},
-  {creator:'saiinum.storry',product:'WIBWUB Sugar',vid_id:'7640712047969324309',caption:'',gmv:8500,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:8500}},
-  {creator:'numtonn',product:'WIBWUB Sugar',vid_id:'7620744784663104788',caption:'',gmv:7900,units:0,date:'เม.ย.',monthly:{mar:0,apr:7900,may:0,jun:0}},
-  {creator:'noonjourneyyy',product:'WIBWUB Refresh Leather Wipes',vid_id:'7624024056282598664',caption:'',gmv:7600,units:0,date:'เม.ย.',monthly:{mar:0,apr:7600,may:0,jun:0}},
-  {creator:'papajate',product:'WIBWUB Refresh Leather Wipes',vid_id:'7641925575564627208',caption:'',gmv:7100,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:7100,jun:0}},
-  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7647055918403800327',caption:'',gmv:6200,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:6200}},
-  {creator:'papajate',product:'WIBWUB Refresh',vid_id:'7613619749418716434',caption:'',gmv:4400,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:4400}},
-  {creator:'muchmai_mumi',product:'WIBWUB Sugar',vid_id:'7648236786753228052',caption:'',gmv:4000,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:4000}},
-  {creator:'tangkwaky',product:'WIBWUB Interior wipes',vid_id:'7580958315442703634',caption:'',gmv:3900,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:3900}},
-  {creator:'nnhtr_',product:'WIBWUB Interior',vid_id:'7640110247104859399',caption:'',gmv:3700,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:3700}},
-  {creator:'james.khunphrom',product:'WIBWUB Interior wipes',vid_id:'7448869944219028743',caption:'',gmv:3500,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:3500}},
-  {creator:'rita.fe_',product:'WIBWUB Refresh',vid_id:'7526881276683455752',caption:'',gmv:3100,units:0,date:'มี.ค.',monthly:{mar:3100,apr:0,may:0,jun:0}},
-  {creator:'thekratae',product:'WIBWUB Interior wipes',vid_id:'7552874394003967253',caption:'',gmv:3100,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:3100}},
-  {creator:'m.lifemedia',product:'WIBWUB Refresh',vid_id:'7621519773284830484',caption:'',gmv:2600,units:0,date:'มี.ค.',monthly:{mar:2600,apr:0,may:0,jun:0}},
-  {creator:'plearntumarai',product:'WIBWUB Sugar',vid_id:'7607693756770487573',caption:'',gmv:2200,units:0,date:'มี.ค.',monthly:{mar:2200,apr:0,may:0,jun:0}},
-  {creator:'reallyjayyy',product:'WIBWUB Refresh',vid_id:'7389863450119376136',caption:'',gmv:2100,units:0,date:'มี.ค.',monthly:{mar:2100,apr:0,may:0,jun:0}},
-  {creator:'ploypimlaplus',product:'WIBWUB Refresh Leather Wipes',vid_id:'7553914130764221714',caption:'',gmv:2100,units:0,date:'มี.ค.',monthly:{mar:2100,apr:0,may:0,jun:0}},
+  {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'',gmv:257100,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:29200,may:227900,jun:0,jul:0}},
+  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7617018768392260872',caption:'',gmv:106900,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:8900,apr:48400,may:49600,jun:0,jul:0}},
+  {creator:'phanuwatinsri',product:'WIBWUB CLEANER',vid_id:'7527954240350850312',caption:'',gmv:46100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:9100,apr:18400,may:18600,jun:0,jul:0}},
+  {creator:'noonjourneyyy',product:'WIBWUB CLEANER',vid_id:'7599129746668031239',caption:'',gmv:45900,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:11300,apr:18400,may:16200,jun:0,jul:0}},
+  {creator:'muchmai_mumi',product:'WIBWUB Sugar',vid_id:'7599620482215726357',caption:'',gmv:45100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:5500,apr:19100,may:20500,jun:0,jul:0}},
+  {creator:'orion_risingstar',product:'WIBWUB Interior wipes',vid_id:'7603325545362836743',caption:'',gmv:38100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3800,apr:14800,may:19500,jun:0,jul:0}},
+  {creator:'rrak_kk',product:'WIBWUB Interior wipes',vid_id:'7556331624997211400',caption:'',gmv:33900,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:4100,apr:16600,may:13200,jun:0,jul:0}},
+  {creator:'jarkkystory',product:'WIBWUB Sugar',vid_id:'7544674710374632722',caption:'',gmv:32700,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:5500,apr:18200,may:9000,jun:0,jul:0}},
+  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7618508119617916181',caption:'',gmv:29700,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:14400,may:15300,jun:0,jul:0}},
+  {creator:'melodylotto',product:'WIBWUB Refresh',vid_id:'7385534707611487496',caption:'',gmv:29500,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:5300,apr:15000,may:9200,jun:0,jul:0}},
+  {creator:'phuengthitii',product:'WIBWUB Refresh Leather Wipes',vid_id:'7636752833634684180',caption:'',gmv:25500,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:25500,jun:0,jul:0}},
+  {creator:'_ijstagram',product:'WIBWUB Refresh Leather Wipes',vid_id:'7602803290635652360',caption:'',gmv:25200,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3700,apr:13900,may:7600,jun:0,jul:0}},
+  {creator:'ceo.blk.item',product:'WIBWUB Refresh Leather Wipes',vid_id:'7627808652782619911',caption:'',gmv:24400,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:24400,jun:0,jul:0}},
+  {creator:'rita.fe_',product:'WIBWUB Interior',vid_id:'7520545675902340359',caption:'',gmv:21100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3700,apr:8400,may:9000,jun:0,jul:0}},
+  {creator:'poppyme.6',product:'WIBWUB Refresh Leather Wipes',vid_id:'7615994847882661140',caption:'',gmv:20100,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:3600,apr:8800,may:7700,jun:0,jul:0}},
+  {creator:'nnhtr_',product:'WIBWUB Interior wipes',vid_id:'7575343727783251207',caption:'',gmv:16900,units:0,date:'เม.ย.–พ.ค.',monthly:{mar:0,apr:9900,may:7000,jun:0,jul:0}},
+  {creator:'rita.fe_',product:'WIBWUB Interior',vid_id:'7586623681439304981',caption:'',gmv:14700,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:3600,apr:11100,may:0,jun:0,jul:0}},
+  {creator:'rawinreview2465',product:'WIBWUB Refresh Leather Wipes',vid_id:'7619404140250434834',caption:'',gmv:13800,units:0,date:'มี.ค.–พ.ค.',monthly:{mar:2200,apr:0,may:11600,jun:0,jul:0}},
+  {creator:'punch_chalita8',product:'WIBWUB Sugar',vid_id:'7529896559408860434',caption:'',gmv:11600,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:2600,apr:9000,may:0,jun:0,jul:0}},
+  {creator:'rita.fe_',product:'WIBWUB Visible',vid_id:'7527301111057747218',caption:'',gmv:10500,units:0,date:'มี.ค.–เม.ย.',monthly:{mar:2200,apr:8300,may:0,jun:0,jul:0}},
+  {creator:'pailong05',product:'WIBWUB Interior wipes',vid_id:'7647055918403800327',caption:'',gmv:10359,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:10359,jul:0}},
+  {creator:'plearntumarai',product:'WIBWUB Sugar',vid_id:'7611483496745389333',caption:'',gmv:9800,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:9800,jun:0,jul:0}},
+  {creator:'.namoshop125',product:'WIBWUB Sugar',vid_id:'7647069840611511559',caption:'',gmv:9128,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:9128,jul:0}},
+  {creator:'thekratae',product:'WIBWUB Refresh Leather Wipes',vid_id:'7544585420206525697',caption:'',gmv:8600,units:0,date:'เม.ย.',monthly:{mar:0,apr:8600,may:0,jun:0,jul:0}},
+  {creator:'numtonn',product:'WIBWUB Sugar',vid_id:'7620744784663104788',caption:'',gmv:7900,units:0,date:'เม.ย.',monthly:{mar:0,apr:7900,may:0,jun:0,jul:0}},
+  {creator:'papajate',product:'WIBWUB Sugar',vid_id:'7605205146968149256',caption:'',gmv:7600,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:7600,jun:0,jul:0}},
+  {creator:'noonjourneyyy',product:'WIBWUB Refresh Leather Wipes',vid_id:'7624024056282598664',caption:'',gmv:7600,units:0,date:'เม.ย.',monthly:{mar:0,apr:7600,may:0,jun:0,jul:0}},
+  {creator:'papajate',product:'WIBWUB Refresh Leather Wipes',vid_id:'7641925575564627208',caption:'',gmv:7100,units:0,date:'พ.ค.',monthly:{mar:0,apr:0,may:7100,jun:0,jul:0}},
+  {creator:'noonjourneyyy',product:'WIBWUB Refresh Leather Wipes',vid_id:'7658242937444289799',caption:'',gmv:6753,units:0,date:'ก.ค.',monthly:{mar:0,apr:0,may:0,jun:0,jul:6753}},
+  {creator:'rita.fe_',product:'WIBWUB Refresh',vid_id:'7526881276683455752',caption:'',gmv:3100,units:0,date:'มี.ค.',monthly:{mar:3100,apr:0,may:0,jun:0,jul:0}},
+  {creator:'m.lifemedia',product:'WIBWUB Refresh',vid_id:'7621519773284830484',caption:'',gmv:2600,units:0,date:'มี.ค.',monthly:{mar:2600,apr:0,may:0,jun:0,jul:0}},
+  {creator:'.namoshop125',product:'WIBWUB Sugar',vid_id:'7655185084940619026',caption:'',gmv:2385,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:2385,jul:0}},
+  {creator:'papajate',product:'WIBWUB Refresh Leather Wipes',vid_id:'7656782534193204498',caption:'',gmv:2373,units:0,date:'มิ.ย.',monthly:{mar:0,apr:0,may:0,jun:2373,jul:0}},
+  {creator:'plearntumarai',product:'WIBWUB Sugar',vid_id:'7607693756770487573',caption:'',gmv:2200,units:0,date:'มี.ค.',monthly:{mar:2200,apr:0,may:0,jun:0,jul:0}},
+  {creator:'reallyjayyy',product:'WIBWUB Refresh',vid_id:'7389863450119376136',caption:'',gmv:2100,units:0,date:'มี.ค.',monthly:{mar:2100,apr:0,may:0,jun:0,jul:0}},
+  {creator:'ploypimlaplus',product:'WIBWUB Refresh Leather Wipes',vid_id:'7553914130764221714',caption:'',gmv:2100,units:0,date:'มี.ค.',monthly:{mar:2100,apr:0,may:0,jun:0,jul:0}},
 ];
 
 
@@ -1231,11 +1226,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-30)"];
-const AF_GMV = [0,0,655259,724337,951325,642490];
-const AF_NET = [0,0,642947,708947,937364,632313];
-const AF_COM = [0,0,82886,69235,105035,79284];
-const AF_CR  = [0,0,398,418,558,398];
+const AF_MO  = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย. (1-30)","ก.ค. (1-5)"];
+const AF_GMV = [0,0,655259,724337,951325,642490,199014];
+const AF_NET = [0,0,642947,708947,937364,632313,195973];
+const AF_COM = [0,0,82886,69235,105035,79284,22658];
+const AF_CR  = [0,0,398,418,558,398,198];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
