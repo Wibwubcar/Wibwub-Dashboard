@@ -4,3 +4,7 @@
 setup_autopush.sh
 ~
 wibwub_push.html
+__pycache__/
+*.pyc
+*.bak
+*.bak*
