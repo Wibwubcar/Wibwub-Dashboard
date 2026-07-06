@@ -68,8 +68,10 @@ def parse_num(s):
 def replace_arr(html, name, values, qs=False):
     vs = (json.dumps(values, ensure_ascii=False) if qs
           else '[' + ','.join(str(v) for v in values) + ']')
+    # ใช้ lambda เป็น repl เพื่อไม่ให้ re.sub พยายาม decode backslash-escape
+    # ในข้อมูลจริง (เช่น \u, \p ที่มาจากชื่อ/ข้อความ) จนพัง "bad escape"
     return re.sub(rf'(const {re.escape(name)}\s*=\s*)\[.*?\]',
-                  rf'\g<1>{vs}', html, flags=re.DOTALL)
+                  lambda m: m.group(1) + vs, html, flags=re.DOTALL)
 
 def write_if_changed(path, html, label):
     path = Path(path)
@@ -309,13 +311,61 @@ def process_affiliate():
         # fallback: ชื่อเดือนภาษาอังกฤษ (เดาปีจากไฟล์ date ไม่ได้ จึงข้าม)
         return None
 
-    xlsx_files = [f for f in sorted(os.listdir(AFI_DIR))
-                  if f.endswith('.xlsx') and not f.startswith(('~', '.'))]
+    # สแกนแบบ recursive (os.walk) เพราะไฟล์ Creator_List ฉบับสมบูรณ์ของบางเดือน
+    # อาจถูกย้ายไปเก็บในโฟลเดอร์ย่อย (เช่น Data Affiliate/ครีเอเตอร์/) ไม่ใช่แค่ top-level
+    # อ่านเฉพาะไฟล์ Creator_List เท่านั้น — ไฟล์ Video_List/Product_List/Live_List/
+    # Core_Metrics ใช้ column layout ต่างกัน (col1 อาจเป็น video ID/product ID แทน GMV)
+    # ถ้าอ่านปนกัน จะได้ยอด GMV บวก ID ตัวเลขยาวๆ เข้าไปด้วย ทำให้ยอดพังเป็นเลขมหาศาล
+    all_files = []
+    for root, _dirs, files in os.walk(AFI_DIR):
+        for f in files:
+            if f.endswith('.xlsx') and not f.startswith(('~', '.')) and 'Creator_List' in f:
+                all_files.append(str(Path(root) / f))
+
+    def month_bounds(i):
+        mo = (10 + i) % 12 + 1
+        yr = 2025 + (10 + i) // 12
+        first = datetime.date(yr, mo, 1)
+        last = (datetime.date(yr + (mo // 12), mo % 12 + 1, 1) - datetime.timedelta(days=1))
+        return first, last
+
+    def parse_range(fname):
+        # หาช่วงวันที่ในชื่อไฟล์ "YYYYMMDD-YYYYMMDD"
+        m = re.search(r'(20\d{6})-(20\d{6})', fname)
+        if not m: return None
+        try:
+            s = datetime.datetime.strptime(m.group(1), '%Y%m%d').date()
+            e = datetime.datetime.strptime(m.group(2), '%Y%m%d').date()
+            return s, e
+        except Exception:
+            return None
+
+    # เลือก "1 ไฟล์ต่อเดือน" คือไฟล์ที่ช่วงวันที่ครอบคลุม (overlap) เดือนนั้นมากที่สุด
+    # (ไม่ใช่แค่ end-date ล่าสุด — เพราะไฟล์สัปดาห์สุดท้ายเช่น 20260625-20260701 จะมี
+    # end-date ใหม่กว่าไฟล์เต็มเดือน 20260601-20260630 ทั้งที่คลุมข้อมูลเดือนนั้นน้อยกว่ามาก)
+    # แทนที่จะไล่ประมวลผลทุกไฟล์ของเดือนเดียวกันแล้ว overwrite ทีละครีเอเตอร์
+    # — วิธีเดิมทำให้ครีเอเตอร์ที่หายไปจากไฟล์ใหม่กว่า (แต่มีอยู่ในไฟล์เก่า) ค้างค่าผิดๆ ไว้
+    best_per_month = {}   # mi -> (fp, overlap_days, end_date)
+    for fp in all_files:
+        fname = os.path.basename(fp)
+        mi = detect_mi(fname)
+        if mi is None: continue
+        rng = parse_range(fname)
+        if not rng: continue
+        s, e = rng
+        tfirst, tlast = month_bounds(mi)
+        overlap = (min(e, tlast) - max(s, tfirst)).days + 1
+        if overlap <= 0: continue
+        cur = best_per_month.get(mi)
+        if cur is None or (overlap, e) > (cur[1], cur[2]):
+            best_per_month[mi] = (fp, overlap, e)
+
+    xlsx_files = sorted(v[0] for v in best_per_month.values())
 
     # pass 1: หาเดือนล่าสุดเพื่อกำหนดจำนวนเดือน (อย่างน้อยถึง พค.69 = index 6)
     max_idx = 6
     for f in xlsx_files:
-        mi = detect_mi(f)
+        mi = detect_mi(os.path.basename(f))
         if mi is not None:
             max_idx = max(max_idx, mi)
     MONTH_ORDER = [idx_to_label(i) for i in range(max_idx + 1)]
@@ -324,11 +374,12 @@ def process_affiliate():
     c_net  = defaultdict(lambda: [None]*len(MONTH_ORDER))
     c_comm = defaultdict(lambda: [None]*len(MONTH_ORDER))
 
-    for fname in xlsx_files:
+    for fp in xlsx_files:
+        fname = os.path.basename(fp)
         mi = detect_mi(fname)
         if mi is None: log(f'  WARNING: ไม่รู้เดือนของ {fname}'); continue
         try:
-            df = pd.read_excel(AFI_DIR / fname, header=None)
+            df = pd.read_excel(fp, header=None)
             cnt = 0
             for _, row in df.iterrows():
                 name = str(row.iloc[0]).strip().lstrip('@') if pd.notna(row.iloc[0]) else ''
@@ -338,6 +389,11 @@ def process_affiliate():
                     gmv  = pn(row.iloc[1])  if len(row) > 1  else 0
                     ret  = pn(row.iloc[2])  if len(row) > 2  else 0
                     comm = pn(row.iloc[10]) if len(row) > 10 else 0
+                    # sanity guard: ยอด GMV ต่อครีเอเตอร์ต่อเดือนจริงไม่เคยเกินหลักล้านบาท
+                    # ถ้าเจอเลขมหาศาล (เช่น video ID/product ID หลุดเข้ามา) ให้ข้ามแถวนี้ทิ้ง
+                    if gmv > 10_000_000 or comm > 10_000_000:
+                        log(f'  WARNING: ข้ามแถวผิดปกติใน {fname} name={name!r} gmv={gmv} comm={comm}')
+                        continue
                     if gmv > 0:
                         c_gmv[name][mi]  = int(gmv)
                         c_net[name][mi]  = int(gmv - ret)
@@ -570,17 +626,19 @@ def update_html(sales, aff, posts, shipnity):
             html = fp.read_text(encoding='utf-8')
             for k, v in [('gmvD',aff['gmvD']),('netD',aff['netD']),
                          ('commD',aff['commD']),('crD',aff['crD'])]:
-                html = re.sub(rf'const {k}\s*=\s*\[.*?\]',
-                              f'const {k}=['+','.join(str(x) for x in v)+']', html)
-            html = re.sub(r'const months\s*=\s*\[.*?\]',
-                          f'const months={json.dumps(aff["months"],ensure_ascii=False)}', html)
+                repl_str = f'const {k}=['+','.join(str(x) for x in v)+']'
+                html = re.sub(rf'const {k}\s*=\s*\[.*?\]', lambda m, s=repl_str: s, html)
+            months_str = f'const months={json.dumps(aff["months"],ensure_ascii=False)}'
+            html = re.sub(r'const months\s*=\s*\[.*?\]', lambda m: months_str, html)
             raw_js = ',\n'.join(
-                '  {n:"'+c['n']+'",t:'+str(c['t'])+',"ma":'+str(c['ma'])
+                '  {n:"'+c['n'].replace('\\','\\\\').replace('"','\\"')+'",t:'+str(c['t'])+',"ma":'+str(c['ma'])
                 +',mn:['+','.join('null' if v is None else str(v) for v in c['mn'])+']}'
                 for c in aff['creators'][:500]
             )
-            html = re.sub(r'const raw=\[[\s\S]*?\];',
-                          'const raw=[\n' + raw_js + '\n];', html)
+            raw_block = 'const raw=[\n' + raw_js + '\n];'
+            # ใช้ lambda เป็น repl กัน re.sub ตีความ backslash ในชื่อ creator
+            # (เช่น \u, \p) เป็น escape sequence จนพังแบบ "bad escape \u"
+            html = re.sub(r'const raw=\[[\s\S]*?\];', lambda m: raw_block, html)
             write_if_changed(fp, html, 'WIBWUB_Affiliate_Dashboard.html')
 
     # B2. Mobile — AFI arrays (ต้องตรงกับ Affiliate Dashboard เสมอ)
@@ -589,8 +647,8 @@ def update_html(sales, aff, posts, shipnity):
         if fp.exists():
             html = fp.read_text(encoding='utf-8')
             for k, v in [('AFI_GMV',aff['gmvD']),('AFI_NET',aff['netD']),('AFI_COMM',aff['commD'])]:
-                html = re.sub(rf'const {k}\s*=\s*\[.*?\]',
-                              f'const {k}=['+','.join(str(x) for x in v)+']', html)
+                repl_str = f'const {k}=['+','.join(str(x) for x in v)+']'
+                html = re.sub(rf'const {k}\s*=\s*\[.*?\]', lambda m, s=repl_str: s, html)
             write_if_changed(fp, html, 'WIBWUB_Mobile.html (AFI arrays)')
 
     # C. TikTok Dashboard
@@ -607,7 +665,7 @@ def update_html(sales, aff, posts, shipnity):
         fp = BASE / 'WIBWUB_TikTok_Dashboard_v7.html'
         if fp.exists():
             html = fp.read_text(encoding='utf-8')
-            html = re.sub(r'ALL_POSTS\s*=\s*\[[\s\S]*?\]', new_block, html)
+            html = re.sub(r'ALL_POSTS\s*=\s*\[[\s\S]*?\]', lambda m: new_block, html)
             write_if_changed(fp, html, 'WIBWUB_TikTok_Dashboard_v7.html')
 
     # D. Sales Dashboard (Shipnity)
@@ -616,7 +674,8 @@ def update_html(sales, aff, posts, shipnity):
         if fp.exists():
             html = fp.read_text(encoding='utf-8')
             raw_js = json.dumps(shipnity, ensure_ascii=False, separators=(',', ':'))
-            html = re.sub(r'const RAW\s*=\s*\{[\s\S]*?\};', f'const RAW = {raw_js};', html)
+            raw_block = f'const RAW = {raw_js};'
+            html = re.sub(r'const RAW\s*=\s*\{[\s\S]*?\};', lambda m: raw_block, html)
             write_if_changed(fp, html, 'Sales_Dashboard.html')
 
 # ═════════════════════════════════════════════════════════════════════════════
