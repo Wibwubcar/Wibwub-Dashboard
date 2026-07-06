@@ -1,47 +1,65 @@
 #!/bin/bash
-# WIBWUB Downloads Cleaner
-# ลบไฟล์ Shipnity + Affiliate เก่าที่ค้างใน Downloads
-# (ไฟล์เหล่านี้ถูก copy ไปโฟลเดอร์งานแล้ว)
+# WIBWUB Downloads Cleanup — ย้ายไฟล์งานทุกชนิดออกจาก Downloads
+# รันทุกครั้งหลังจาก schedule ดาวน์โหลดไฟล์ใหม่
 
-DOWNLOADS=~/Downloads
+DL="$HOME/Downloads"
+ALL="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 
-echo "🧹 WIBWUB Downloads Cleaner"
-echo "================================"
+move_file() {
+  local src="$1"; local dst_dir="$2"
+  [ -f "$src" ] && mv "$src" "$dst_dir/" && echo "✅ $(basename "$src")" || true
+}
+
+move_glob() {
+  local pattern="$1"; local dst_dir="$2"
+  for f in $pattern; do
+    [ -f "$f" ] && mv "$f" "$dst_dir/" && echo "✅ $(basename "$f")" || true
+  done
+}
+
+echo "🧹 ย้ายไฟล์งานออกจาก Downloads..."
 echo ""
 
-# นับก่อน
-SH_COUNT=$(ls "$DOWNLOADS"/Data_*-*-2026*.xlsx 2>/dev/null | wc -l | tr -d ' ')
-AF_COUNT=$(ls "$DOWNLOADS"/Transaction_Analysis_Creator_List_*.xlsx 2>/dev/null | wc -l | tr -d ' ')
+# ── Affiliate (TikTok) ──────────────────────────────────────────
+echo "📁 Affiliate →"
+move_glob "$DL/Transaction_Analysis_Creator_List_*.xlsx"  "$ALL/Data Affiliate/ครีเอเตอร์"
+move_glob "$DL/Transaction_Analysis_Video_List_*.xlsx"    "$ALL/Data Affiliate/วีดีโอ"
+move_glob "$DL/Transaction_Analysis_Product_List_*.xlsx"  "$ALL/Data Affiliate/สินค้า"
+move_glob "$DL/Transaction_Analysis_Live_List_*.xlsx"     "$ALL/Data Affiliate/ไลฟ์สตรีม"
+move_glob "$DL/Creator_List_*.xlsx"                       "$ALL/Data Affiliate/ครีเอเตอร์"
+move_glob "$DL/Core_Stats_*.xlsx"                         "$ALL/Data Affiliate/ครีเอเตอร์"
 
-echo "พบไฟล์ที่จะลบ:"
-echo "  📊 Shipnity export:  $SH_COUNT ไฟล์"
-echo "  🛒 Affiliate report: $AF_COUNT ไฟล์"
+# ── Order files ──────────────────────────────────────────────────
 echo ""
+echo "📁 Orders →"
+move_glob "$DL/Order.all.*.xlsx"                          "$ALL/data ยอดขาย plaform/Shopee"
+move_glob "$DL/Order.all.*.zip"                           "$ALL/data ยอดขาย plaform/Shopee"
+move_glob "$DL/ทั้งหมด*คำสั่งซื้อ*.xlsx"                "$ALL/data ยอดขาย plaform/Tiktok"
+move_glob "$DL/Order Report *.xlsx"                       "$ALL/data ยอดขาย plaform/Line My Shop"
+move_glob "$DL/Lazada_Orders_*.xlsx"                      "$ALL/data ยอดขาย plaform/Lazada"
 
-if [ "$SH_COUNT" -eq 0 ] && [ "$AF_COUNT" -eq 0 ]; then
-  echo "✅ Downloads สะอาดดีแล้ว!"
-  read -p "กด Enter เพื่อปิด..."
-  exit 0
-fi
+# ── Shipnity ─────────────────────────────────────────────────────
+echo ""
+echo "📁 Shipnity →"
+move_glob "$DL/Data_*.xlsx"                               "$ALL/Data Shipnity"
+move_glob "$DL/Data-*.xlsx"                               "$ALL/Data Shipnity"
 
-echo "⚠️  จะลบไฟล์เหล่านี้ออกจาก Downloads (ไม่ใช่โฟลเดอร์งาน)"
-read -p "ยืนยันลบ? (y/n): " confirm
+# ── Ads ──────────────────────────────────────────────────────────
+echo ""
+echo "📁 Ads →"
+move_glob "$DL/ข้อมูล-Shopee-Ads-*.csv"                 "$ALL/data Ads/Shopee"
+move_glob "$DL/WIBWUBCAR-Campaign Report-*.xlsx"          "$ALL/data Ads/Tiktok"
+move_glob "$DL/Campaign overview data *.xlsx"             "$ALL/data Ads/Tiktok"
+move_glob "$DL/creative data for product campaigns *.xlsx" "$ALL/data Ads/Tiktok"
+move_glob "$DL/livestream data for live campaigns *.xlsx"  "$ALL/data Ads/Tiktok"
+move_glob "$DL/ExportAds_V2_*.xlsx"                       "$ALL/data Ads/Tiktok"
 
-if [ "$confirm" = "y" ] || [ "$confirm" = "Y" ]; then
-  # ลบ Shipnity exports (Data_DD-MM-YYYY.xlsx)
-  rm -f "$DOWNLOADS"/Data_*-*-2026*.xlsx 2>/dev/null
-  echo "✅ ลบ Shipnity exports $SH_COUNT ไฟล์"
-
-  # ลบ Affiliate reports
-  rm -f "$DOWNLOADS"/Transaction_Analysis_Creator_List_*.xlsx 2>/dev/null
-  echo "✅ ลบ Affiliate reports $AF_COUNT ไฟล์"
-
-  echo ""
-  REMAINING=$(ls "$DOWNLOADS" | wc -l | tr -d ' ')
-  echo "🎉 เสร็จ! เหลือไฟล์ใน Downloads: $REMAINING ไฟล์"
-else
-  echo "ยกเลิก — ไม่ได้ลบอะไร"
-fi
+# ── Content / Followers ───────────────────────────────────────────
+echo ""
+echo "📁 Content →"
+move_glob "$DL/Followers_wibwubcar*.zip"                  "$ALL/data content"
 
 echo ""
-read -p "กด Enter เพื่อปิด..."
+echo "✅ เสร็จแล้ว!"
+echo "Done! กด Enter เพื่อปิด"
+read

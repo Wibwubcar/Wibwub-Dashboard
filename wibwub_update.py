@@ -381,6 +381,23 @@ def process_affiliate():
     c_gmv  = defaultdict(lambda: [None]*len(MONTH_ORDER))
     c_net  = defaultdict(lambda: [None]*len(MONTH_ORDER))
     c_comm = defaultdict(lambda: [None]*len(MONTH_ORDER))
+    c_ord  = defaultdict(lambda: [None]*len(MONTH_ORDER))
+    c_ret  = defaultdict(lambda: [None]*len(MONTH_ORDER))
+
+    # เก็บช่วงวัน (start_day-end_day) ของไฟล์ที่เลือกใช้ต่อเดือน — ใช้ทำ label
+    # แบบ "มิ.ย. (1-30)" / "ก.ค. (1-5)" ให้ตรงกับ format เดิมที่เคยแก้ด้วยมือ
+    day_range = {}
+    for fp in xlsx_files:
+        fname = os.path.basename(fp)
+        mi = detect_mi(fname)
+        if mi is not None:
+            rng = parse_range(fname)
+            if rng:
+                s, e = rng
+                tfirst, tlast = month_bounds(mi)
+                ds = max(s, tfirst).day
+                de = min(e, tlast).day
+                day_range[mi] = (ds, de)
 
     for fp in xlsx_files:
         fname = os.path.basename(fp)
@@ -396,6 +413,7 @@ def process_affiliate():
                     def pn(v): return parse_num(v) if pd.notna(v) else 0
                     gmv  = pn(row.iloc[1])  if len(row) > 1  else 0
                     ret  = pn(row.iloc[2])  if len(row) > 2  else 0
+                    ordn = pn(row.iloc[3])  if len(row) > 3  else 0
                     comm = pn(row.iloc[10]) if len(row) > 10 else 0
                     # sanity guard: ยอด GMV ต่อครีเอเตอร์ต่อเดือนจริงไม่เคยเกินหลักล้านบาท
                     # ถ้าเจอเลขมหาศาล (เช่น video ID/product ID หลุดเข้ามา) ให้ข้ามแถวนี้ทิ้ง
@@ -406,6 +424,8 @@ def process_affiliate():
                         c_gmv[name][mi]  = int(gmv)
                         c_net[name][mi]  = int(gmv - ret)
                         c_comm[name][mi] = int(comm)
+                        c_ord[name][mi]  = int(ordn)
+                        c_ret[name][mi]  = int(ret)
                         cnt += 1
                 except: pass
             log(f'  {fname} → {MONTH_ORDER[mi]}: {cnt} creators')
@@ -417,8 +437,15 @@ def process_affiliate():
         mn = c_gmv[name]
         total = sum(v for v in mn if v)
         if not total: continue
-        creators.append({'n': name, 't': total,
-                         'ma': sum(1 for v in mn if v), 'mn': mn})
+        tot_ret  = sum(v for v in c_ret[name]  if v)
+        tot_comm = sum(v for v in c_comm[name] if v)
+        tot_ord  = sum(v for v in c_ord[name]  if v)
+        creators.append({
+            'n': name, 't': total, 'ma': sum(1 for v in mn if v), 'mn': mn,
+            'returns': tot_ret, 'net': total - tot_ret, 'comm': tot_comm,
+            'orders': tot_ord,
+            'comm_rate': round(tot_comm / total * 100, 1) if total else 0,
+        })
     creators.sort(key=lambda x: -x['t'])
 
     gmvD  = [sum(c_gmv[c['n']][i]  or 0 for c in creators) for i in range(len(MONTH_ORDER))]
@@ -431,8 +458,44 @@ def process_affiliate():
     log(f'  netD ={netD}   ← ตรวจว่า net ≤ gmv ทุกเดือน')
     log(f'  commD={commD}')
 
+    # ── สร้างชุดข้อมูลพร้อมเขียนลง HTML โดยตรง (ตรงกับชื่อตัวแปรจริงใน
+    #    WIBWUB_Affiliate_Dashboard.html: AF_MO/AF_GMV/AF_NET/AF_COM/AF_CR
+    #    (เริ่มนับที่ ม.ค. ของปีปัจจุบัน) และ CREATORS/CREATOR_MONTHS
+    #    (เริ่มนับที่ มี.ค. ของปีปัจจุบัน) — ป้องกันบัคเดิมที่สคริปต์เขียนไปยัง
+    #    ชื่อตัวแปรเก่า (gmvD/netD/commD/crD/months/raw) ที่ไม่มีอยู่จริงในไฟล์
+    #    ทำให้ re.sub ไม่เจอ match แล้วไม่อัปเดตอะไรเลยแบบเงียบๆ ทุกเดือน
+    THAI_M = {1:'ม.ค.',2:'ก.พ.',3:'มี.ค.',4:'เม.ย.',5:'พ.ค.',6:'มิ.ย.',
+              7:'ก.ค.',8:'ส.ค.',9:'ก.ย.',10:'ต.ค.',11:'พ.ย.',12:'ธ.ค.'}
+    cur_year = datetime.datetime.now().year
+    jan_idx = ym_to_idx(cur_year, 1)
+    mar_idx = ym_to_idx(cur_year, 3)
+
+    af_mo = []
+    for i in range(max(jan_idx, 0), len(MONTH_ORDER)):
+        mo = (10 + i) % 12 + 1
+        lbl = THAI_M[mo]
+        if i in day_range:
+            lbl += f' ({day_range[i][0]}-{day_range[i][1]})'
+        af_mo.append(lbl)
+    af_gmv = gmvD[max(jan_idx, 0):]
+    af_net = netD[max(jan_idx, 0):]
+    af_com = commD[max(jan_idx, 0):]
+    af_cr  = crD[max(jan_idx, 0):]
+
+    creators_out = [{
+        'name': c['n'], 'gmv': c['t'], 'returns': c['returns'], 'net': c['net'],
+        'comm': c['comm'], 'orders': c['orders'], 'comm_rate': c['comm_rate'],
+    } for c in creators if c['t'] >= 1000]
+
+    creator_months_out = {
+        c['n']: [v or 0 for v in c['mn'][max(mar_idx, 0):]] for c in creators
+    }
+
     return {'months': MONTH_ORDER, 'gmvD': gmvD, 'netD': netD,
-            'commD': commD, 'crD': crD, 'creators': creators}
+            'commD': commD, 'crD': crD, 'creators': creators,
+            'AF_MO': af_mo, 'AF_GMV': af_gmv, 'AF_NET': af_net,
+            'AF_COM': af_com, 'AF_CR': af_cr,
+            'CREATORS': creators_out, 'CREATOR_MONTHS': creator_months_out}
 
 # ═════════════════════════════════════════════════════════════════════════════
 # STEP 4: Process TikTok Content
@@ -639,25 +702,44 @@ def update_html(sales, aff, posts, shipnity):
             write_if_changed(fp, html, fname)
 
     # B. Affiliate Dashboard
+    # หมายเหตุ: ตัวแปรจริงในไฟล์คือ AF_MO/AF_GMV/AF_NET/AF_COM/AF_CR (KPI trend)
+    # และ CREATORS/CREATOR_MONTHS (ตาราง creator) — ไม่ใช่ gmvD/netD/commD/crD/months/raw
+    # ที่เคยเขียนผิดมาก่อน (เป็นสาเหตุที่ข้อมูล affiliate ไม่เคยถูกอัปเดตโดยอัตโนมัติ)
     if aff:
         fp = BASE / 'WIBWUB_Affiliate_Dashboard.html'
         if fp.exists():
             html = fp.read_text(encoding='utf-8')
-            for k, v in [('gmvD',aff['gmvD']),('netD',aff['netD']),
-                         ('commD',aff['commD']),('crD',aff['crD'])]:
-                repl_str = f'const {k}=['+','.join(str(x) for x in v)+']'
-                html = re.sub(rf'const {k}\s*=\s*\[.*?\]', lambda m, s=repl_str: s, html)
-            months_str = f'const months={json.dumps(aff["months"],ensure_ascii=False)}'
-            html = re.sub(r'const months\s*=\s*\[.*?\]', lambda m: months_str, html)
-            raw_js = ',\n'.join(
-                '  {n:"'+c['n'].replace('\\','\\\\').replace('"','\\"')+'",t:'+str(c['t'])+',"ma":'+str(c['ma'])
-                +',mn:['+','.join('null' if v is None else str(v) for v in c['mn'])+']}'
-                for c in aff['creators'][:500]
+
+            # B1. KPI trend arrays (Jan-indexed)
+            html = replace_arr(html, 'AF_MO',  aff['AF_MO'],  qs=True)
+            html = replace_arr(html, 'AF_GMV', aff['AF_GMV'])
+            html = replace_arr(html, 'AF_NET', aff['AF_NET'])
+            html = replace_arr(html, 'AF_COM', aff['AF_COM'])
+            html = replace_arr(html, 'AF_CR',  aff['AF_CR'])
+
+            # B2. CREATORS (creator totals table)
+            def esc(s):
+                return str(s).replace('\\', '\\\\').replace('"', '\\"')
+            creators_js = ',\n'.join(
+                '  {name:"'+esc(c['name'])+'",gmv:'+str(c['gmv'])+',returns:'+str(c['returns'])
+                +',net:'+str(c['net'])+',comm:'+str(c['comm'])+',orders:'+str(c['orders'])
+                +',comm_rate:'+str(c['comm_rate'])+'}'
+                for c in aff['CREATORS']
             )
-            raw_block = 'const raw=[\n' + raw_js + '\n];'
-            # ใช้ lambda เป็น repl กัน re.sub ตีความ backslash ในชื่อ creator
-            # (เช่น \u, \p) เป็น escape sequence จนพังแบบ "bad escape \u"
-            html = re.sub(r'const raw=\[[\s\S]*?\];', lambda m: raw_block, html)
+            creators_block = 'const CREATORS = [\n' + creators_js + '\n];'
+            # ใช้ lambda เป็น repl กัน re.sub ตีความ backslash ในชื่อ creator เป็น escape sequence
+            html = re.sub(r'const CREATORS\s*=\s*\[[\s\S]*?\];', lambda m: creators_block, html)
+
+            # B3. CREATOR_MONTHS (per-creator per-month GMV, Mar-indexed)
+            def esc_key(s):
+                return str(s).replace('\\', '\\\\').replace("'", "\\'")
+            cm_js = ',\n'.join(
+                "  '"+esc_key(name)+"':["+','.join(str(v) for v in months)+']'
+                for name, months in aff['CREATOR_MONTHS'].items()
+            )
+            cm_block = 'const CREATOR_MONTHS = {\n' + cm_js + '\n};'
+            html = re.sub(r'const CREATOR_MONTHS\s*=\s*\{[\s\S]*?\};', lambda m: cm_block, html)
+
             write_if_changed(fp, html, 'WIBWUB_Affiliate_Dashboard.html')
 
     # B1b. Bump cache-busting version บน iframe ที่ WIBWUB_Dashboard.html ใช้ฝัง Affiliate Dashboard
