@@ -826,18 +826,32 @@ def git_push():
         subprocess.run(['git', 'add'] + files, cwd=str(BASE), check=True,
                        capture_output=True)
         diff = subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=str(BASE))
-        if diff.returncode == 0:
-            log('  Git: ไม่มีอะไรเปลี่ยน'); return
-        ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-        subprocess.run(['git', 'commit', '-m', f'auto: update {ts}',
-                        '--author=WIBWUB Bot <marketingwibwub@gmail.com>'],
-                       cwd=str(BASE), check=True, capture_output=True)
-        r = subprocess.run(['git', 'push', 'origin', 'main'],
-                           cwd=str(BASE), capture_output=True, text=True)
-        if r.returncode == 0:
-            log('  ✅ Git pushed')
+        if diff.returncode != 0:
+            ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
+            subprocess.run(['git', 'commit', '-m', f'auto: update {ts}',
+                            '--author=WIBWUB Bot <marketingwibwub@gmail.com>'],
+                           cwd=str(BASE), check=True, capture_output=True)
         else:
-            err(f'  Git push failed: {r.stderr.strip()}')
+            log('  Git: ไม่มีอะไรเปลี่ยนใหม่ให้ commit')
+
+        # เดิม: ถ้ารอบนี้ไม่มีอะไรใหม่ให้ commit สคริปต์จะ return ทันทีโดยไม่เช็คว่า
+        # local มี commit ที่ค้างไม่ได้ push อยู่หรือไม่ (เช่น commit ที่ทำด้วยมือ/
+        # ผ่าน Claude นอกรอบ schedule) ทำให้ผู้ใช้ต้องมา push_now.command เองทุกครั้ง
+        # แก้โดยเช็ค origin/main..HEAD ทุกรอบ แล้ว push ถ้ามี commit ค้างจริง
+        subprocess.run(['git', 'fetch', 'origin', 'main'], cwd=str(BASE),
+                       capture_output=True)
+        ahead = subprocess.run(['git', 'rev-list', '--count', 'origin/main..HEAD'],
+                               cwd=str(BASE), capture_output=True, text=True)
+        n_ahead = ahead.stdout.strip() if ahead.returncode == 0 else ''
+        if n_ahead and n_ahead != '0':
+            r = subprocess.run(['git', 'push', 'origin', 'main'],
+                               cwd=str(BASE), capture_output=True, text=True)
+            if r.returncode == 0:
+                log(f'  ✅ Git pushed ({n_ahead} commit)')
+            else:
+                err(f'  Git push failed: {r.stderr.strip()}')
+        else:
+            log('  Git: ไม่มีอะไรต้อง push (up to date กับ origin/main)')
     except subprocess.CalledProcessError as e:
         err(f'  Git error: {e}')
     except Exception as e:
