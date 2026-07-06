@@ -248,10 +248,18 @@ def process_sales(sheets):
 
     # กรองเฉพาะเดือนของปีปัจจุบัน (เช่น XX/26) เพื่อให้ตรงกับ M5 ใน Dashboard
     # M5 = ['ม.ค.','ก.พ.',...] ใช้ชื่อเดือนเท่านั้น ไม่มีปี → ต้องมีเดือนเท่ากัน
+    # ใช้ union ของทั้ง 3 แพลตฟอร์ม (ไม่ใช่แค่ shopee) — เดิมถ้า shopee ยังไม่มีเดือนนั้น
+    # (แต่ lazada/tiktok มีแล้ว) เดือนนั้นจะหายไปทั้งเดือนจาก Dashboard ทั้งที่มีข้อมูลบางส่วน
     current_yr = datetime.datetime.now().strftime('%y')  # '26'
-    available = [m for m in ALL_MONTHS if m in shopee and m.endswith(f'/{current_yr}')]
+    months_seen = set(shopee) | set(tiktok) | set(lazada)
+    available = [m for m in ALL_MONTHS if m in months_seen and m.endswith(f'/{current_yr}')]
     if not available:
-        err('  ไม่พบข้อมูล Shopee — ข้าม Sales'); return None
+        err('  ไม่พบข้อมูล Sales (shopee/tiktok/lazada ว่างทั้งหมด) — ข้าม Sales'); return None
+    missing = [(m, [nm for nm, d in (('shopee',shopee),('tiktok',tiktok),('lazada',lazada)) if m not in d])
+               for m in available]
+    for m, plats in missing:
+        if plats:
+            log(f'  WARNING: {m} ไม่มีข้อมูลจาก {", ".join(plats)} (ใช้ 0 แทน)')
 
     labels = [to_label(m) for m in available]
     n = len(available)
@@ -607,6 +615,10 @@ def update_html(sales, aff, posts, shipnity):
 
     # A. Dashboard + Mobile — อัปเดต Sales arrays พร้อมกัน
     if sales:
+        THAI_M = {1:'ม.ค.',2:'ก.พ.',3:'มี.ค.',4:'เม.ย.',5:'พ.ค.',6:'มิ.ย.',
+                  7:'ก.ค.',8:'ส.ค.',9:'ก.ย.',10:'ต.ค.',11:'พ.ย.',12:'ธ.ค.'}
+        _now = datetime.datetime.now()
+        badge_str = f'อัปเดต {_now.day} {THAI_M[_now.month]} {_now.year + 543}'
         for fname in ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']:
             fp = BASE / fname
             if not fp.exists(): log(f'  SKIP {fname}'); continue
@@ -617,6 +629,13 @@ def update_html(sales, aff, posts, shipnity):
             for k in SALES_ARRS:
                 if k in html:
                     html = replace_arr(html, k, sales[k])
+            # อัปเดต badge "อัปเดต D MMM YYYY" ใน header ให้ตรงกับวันที่รันจริง
+            # (เดิม hardcode ไว้ตอนสร้างไฟล์ ไม่เคยถูกแตะโดยสคริปต์นี้มาก่อน — ทำให้ badge ค้างวันเก่า)
+            html = re.sub(
+                r'(id="dash-updated"[^>]*>)อัปเดต \d{1,2} \S+ \d{4}',
+                rf'\g<1>{badge_str}',
+                html
+            )
             write_if_changed(fp, html, fname)
 
     # B. Affiliate Dashboard
@@ -700,7 +719,8 @@ def git_push():
     files = ['WIBWUB_Mobile.html', 'WIBWUB_Dashboard.html',
              'WIBWUB_Affiliate_Dashboard.html', 'WIBWUB_TikTok_Dashboard_v7.html',
              'data Ads/WIBWUB_Ads_Dashboard.html',
-             'Data Shipnity/Sales_Dashboard.html', 'sw.js']
+             'Data Shipnity/Sales_Dashboard.html', 'sw.js',
+             'Procurement_Dashboard.html']
     try:
         subprocess.run(['git', 'add'] + files, cwd=str(BASE), check=True,
                        capture_output=True)
