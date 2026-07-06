@@ -110,6 +110,15 @@ if date_str not in html_new and "table-note" in html_new:
         f'<div class="note" id="table-note">อัปเดตล่าสุด: {date_str} (Shipnity live)</div>'
     )
 
+# อัปเดต header badge หลัก "อัปเดต D MMM YYYY" (พ.ศ., ตัวย่อไทย) — เคยเป็น static string ไม่เคยถูกแตะมาก่อน
+thai_months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+thai_date_str = f'{today.day} {thai_months[today.month-1]} {today.year + 543}'
+html_new = re.sub(
+    r'(อัปเดต )\d{1,2} [ก-ฮ]+\.?[ก-ฮ]*\.? \d{4}',
+    rf'\g<1>{thai_date_str}',
+    html_new
+)
+
 DASHBOARD.write_text(html_new, encoding="utf-8")
 print(f"💾 บันทึก Procurement_Dashboard.html แล้ว")
 print(f"📅 วันที่อัปเดต: {date_str}")
