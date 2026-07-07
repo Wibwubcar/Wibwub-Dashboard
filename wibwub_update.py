@@ -73,6 +73,17 @@ def replace_arr(html, name, values, qs=False):
     return re.sub(rf'(const {re.escape(name)}\s*=\s*)\[.*?\]',
                   lambda m: m.group(1) + vs, html, flags=re.DOTALL)
 
+def extract_arr(html, name):
+    """อ่านค่าปัจจุบันของ const array จาก HTML — ใช้เทียบกันก่อนเขียนทับ
+    เพื่อกันกรณี fetch ข้อมูลใหม่ล้มเหลวบางส่วนแล้วเขียน 0 ทับข้อมูลจริงที่มีอยู่แล้ว"""
+    m = re.search(rf'const {re.escape(name)}\s*=\s*(\[.*?\])', html, re.DOTALL)
+    if not m:
+        return None
+    try:
+        return json.loads(m.group(1))
+    except Exception:
+        return None
+
 def write_if_changed(path, html, label):
     path = Path(path)
     if not path.exists(): err(f'{label}: file not found'); return False
@@ -694,7 +705,23 @@ def update_html(sales, aff, posts, shipnity):
                 html = replace_arr(html, 'M5', sales['M4'], qs=True)
             for k in SALES_ARRS:
                 if k in html:
-                    html = replace_arr(html, k, sales[k])
+                    new_vals = sales[k]
+                    old_vals = extract_arr(html, k)
+                    if old_vals and len(old_vals) == len(new_vals):
+                        merged = []
+                        for i, nv in enumerate(new_vals):
+                            ov = old_vals[i]
+                            # กัน fetch fail บางส่วน (เช่น Sheet เข้าไม่ได้ชั่วคราว) เขียน 0
+                            # ทับข้อมูลจริงที่มีอยู่แล้ว — ถ้าค่าใหม่เป็น 0 แต่ค่าเดิมไม่ใช่ 0/None
+                            # ให้คงค่าเดิมไว้แทน (revenue สะสมไม่ควรลดกลับไป 0 กลางเดือน)
+                            if nv == 0 and ov not in (0, None):
+                                merged.append(ov)
+                                log(f'  ⚠️  {k}[{i}] ({sales["M4"][i]}): ได้ 0 จาก fetch แต่ของเดิมคือ {ov} — คงค่าเดิมไว้ (ป้องกันข้อมูลหาย)')
+                            else:
+                                merged.append(nv)
+                        html = replace_arr(html, k, merged)
+                    else:
+                        html = replace_arr(html, k, new_vals)
             # อัปเดต badge "อัปเดต D MMM YYYY" ใน header ให้ตรงกับวันที่รันจริง
             # (เดิม hardcode ไว้ตอนสร้างไฟล์ ไม่เคยถูกแตะโดยสคริปต์นี้มาก่อน — ทำให้ badge ค้างวันเก่า)
             html = re.sub(
