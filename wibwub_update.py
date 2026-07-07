@@ -700,28 +700,49 @@ def update_html(sales, aff, posts, shipnity):
             fp = BASE / fname
             if not fp.exists(): log(f'  SKIP {fname}'); continue
             html = fp.read_text(encoding='utf-8')
-            # M5 คือตัวแปร month labels ใน Dashboard/Mobile (ไม่ใช่ M4)
-            if 'M5' in html:
-                html = replace_arr(html, 'M5', sales['M4'], qs=True)
-            for k in SALES_ARRS:
-                if k in html:
-                    new_vals = sales[k]
-                    old_vals = extract_arr(html, k)
-                    if old_vals and len(old_vals) == len(new_vals):
-                        merged = []
-                        for i, nv in enumerate(new_vals):
-                            ov = old_vals[i]
-                            # กัน fetch fail บางส่วน (เช่น Sheet เข้าไม่ได้ชั่วคราว) เขียน 0
-                            # ทับข้อมูลจริงที่มีอยู่แล้ว — ถ้าค่าใหม่เป็น 0 แต่ค่าเดิมไม่ใช่ 0/None
-                            # ให้คงค่าเดิมไว้แทน (revenue สะสมไม่ควรลดกลับไป 0 กลางเดือน)
-                            if nv == 0 and ov not in (0, None):
-                                merged.append(ov)
-                                log(f'  ⚠️  {k}[{i}] ({sales["M4"][i]}): ได้ 0 จาก fetch แต่ของเดิมคือ {ov} — คงค่าเดิมไว้ (ป้องกันข้อมูลหาย)')
-                            else:
-                                merged.append(nv)
-                        html = replace_arr(html, k, merged)
-                    else:
-                        html = replace_arr(html, k, new_vals)
+            # กันไม่ให้จำนวนเดือนของ M5/Sales arrays "หด" กลับ (เช่น fetch รอบนี้
+            # ตรวจเจอแค่ 5 เดือน ทั้งที่ของเดิมมี 7 เดือนแล้ว) — เคยเกิดจริง
+            # (สคริปต์รันตอนที่ยังไม่เห็นข้อมูล มิ.ย./ก.ค. ใน Sheet ครบ) แล้วเขียน
+            # ทับ M5+ทุก array ด้วยความยาวสั้นกว่าเดิม ลบข้อมูล มิ.ย./ก.ค. ที่กู้คืนไว้แล้วหายไปหมด
+            old_m5 = extract_arr(html, 'M5')
+            n_new = len(sales['M4'])
+            n_old = len(old_m5) if old_m5 else 0
+            months_shrunk = bool(old_m5) and n_new < n_old
+            if months_shrunk:
+                log(f'  ⚠️  {fname}: fetch ใหม่มีแค่ {n_new} เดือน แต่ของเดิมมี {n_old} เดือน '
+                    f'({old_m5}) — ข้าม M5+sales arrays ทั้งหมดของไฟล์นี้รอบนี้ (ป้องกันข้อมูลหาย)')
+            else:
+                # M5 คือตัวแปร month labels ใน Dashboard/Mobile (ไม่ใช่ M4)
+                if 'M5' in html:
+                    html = replace_arr(html, 'M5', sales['M4'], qs=True)
+                for k in SALES_ARRS:
+                    if k in html:
+                        new_vals = sales[k]
+                        old_vals = extract_arr(html, k)
+                        if old_vals and len(new_vals) < len(old_vals):
+                            # เผื่อ array นี้ยาวสั้นกว่าเดิมแม้ M5 จะไม่หด (ไม่ควรเกิด แต่กันไว้)
+                            log(f'  ⚠️  {k}: fetch ใหม่มีแค่ {len(new_vals)} รายการ แต่ของเดิมมี '
+                                f'{len(old_vals)} รายการ — ข้าม (ป้องกันข้อมูลหาย)')
+                            continue
+                        if old_vals and len(old_vals) <= len(new_vals):
+                            merged = []
+                            for i, nv in enumerate(new_vals):
+                                if i < len(old_vals):
+                                    ov = old_vals[i]
+                                    # กัน fetch fail บางส่วน (เช่น Sheet เข้าไม่ได้ชั่วคราว) เขียน 0
+                                    # ทับข้อมูลจริงที่มีอยู่แล้ว — ถ้าค่าใหม่เป็น 0 แต่ค่าเดิมไม่ใช่ 0/None
+                                    # ให้คงค่าเดิมไว้แทน (revenue สะสมไม่ควรลดกลับไป 0 กลางเดือน)
+                                    if nv == 0 and ov not in (0, None):
+                                        merged.append(ov)
+                                        log(f'  ⚠️  {k}[{i}] ({sales["M4"][i]}): ได้ 0 จาก fetch แต่ของเดิมคือ {ov} — คงค่าเดิมไว้ (ป้องกันข้อมูลหาย)')
+                                    else:
+                                        merged.append(nv)
+                                else:
+                                    # เดือนใหม่ที่เพิ่มเข้ามาต่อท้าย (ของเดิมไม่มี ไม่ต้อง merge)
+                                    merged.append(nv)
+                            html = replace_arr(html, k, merged)
+                        else:
+                            html = replace_arr(html, k, new_vals)
             # อัปเดต badge "อัปเดต D MMM YYYY" ใน header ให้ตรงกับวันที่รันจริง
             # (เดิม hardcode ไว้ตอนสร้างไฟล์ ไม่เคยถูกแตะโดยสคริปต์นี้มาก่อน — ทำให้ badge ค้างวันเก่า)
             html = re.sub(
