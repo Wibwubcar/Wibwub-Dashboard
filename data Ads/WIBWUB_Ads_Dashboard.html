@@ -194,7 +194,7 @@
 <div class="header">
   <div class="logo"><img src="../logo-header.png" alt="WIBWUB" style="height:24px;display:block;"></div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span class="period-badge"><span id="period-badge-txt">1 ม.ค. – 9 ก.ค. 2569</span></span>
+    <span class="period-badge"><span id="period-badge-txt">ก.ค. (1–9) 2569</span></span>
     <span style="font-size:11px;color:var(--muted)">ข้อมูลจริงจาก Shopee + TikTok</span>
     <span id="ads-updated" style="font-size:11px;color:var(--muted);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:3px 10px;border-radius:20px">อัปเดต 9 ก.ค. 2569</span>
   </div>
@@ -212,13 +212,13 @@
   <span class="period-bar-label">📅 ช่วงเวลา:</span>
   <div class="ads-mpicker-wrap">
     <div class="ads-mrange-btn" id="adsMRangeBtn" onclick="adsTogglePicker()">
-      <span id="adsPeriodLabel">ทั้งหมด (ม.ค. – 9 ก.ค. 2569)</span>
+      <span id="adsPeriodLabel">กรกฎาคม 2569</span>
       <span class="caret">▾</span>
     </div>
     <div class="ads-backdrop" id="adsBackdrop" onclick="adsClosePicker()"></div>
     <div class="ads-mpicker-panel" id="adsMPickerPanel">
       <div class="ads-mp-sec-label">เลือกช่วงเวลา</div>
-      <button class="ads-period-btn active" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
+      <button class="ads-period-btn" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
         <span class="pb-label">ทั้งหมด</span>
         <span class="pb-sub">ม.ค. – 9 ก.ค. 2569 · Shopee ฿27.18M · TikTok ฿6.37M</span>
       </button>
@@ -246,7 +246,7 @@
         <span class="pb-label">มิถุนายน 2569</span>
         <span class="pb-sub">01–30 มิ.ย. · Shopee ฿5.05M · TK ฿0.25M · TikTok ฿1.23M</span>
       </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-jul" onclick="adsPickPeriod('jul',this)">
+      <button class="ads-period-btn active" id="adsPeriodBtn-jul" onclick="adsPickPeriod('jul',this)">
         <span class="pb-label">กรกฎาคม 2569</span>
         <span class="pb-sub">01–09 ก.ค. · Shopee ฿1.83M · TikTok ฿0.56M</span>
       </button>
@@ -610,8 +610,8 @@ const DATA_PERIODS = {
   }
 };
 
-let curPeriod = 'all'; // legacy compat
-let curPeriodKeys = ['jan','feb','mar','apr','may','jun','jul']; // all months
+let curPeriod = 'jul'; // legacy compat — default = current month, not "all"
+let curPeriodKeys = ['jul']; // default: current month only (was bug: defaulted to all months summed)
 
 // Combine multiple period snapshots for a platform
 function getCombinedPlatform(keys, platform) {
@@ -1101,7 +1101,7 @@ const ADS_PERIOD_DEFS = {
   jun: { keys:['jun'],  label:'มิ.ย. 2569 (1–30)',               badge:'มิ.ย. (1–30) 2569' },
   jul: { keys:['jul'],  label:'ก.ค. 2569 (1–9)',                 badge:'ก.ค. (1–9) 2569' },
 };
-let curPickedPeriod = 'all';
+let curPickedPeriod = 'jul'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
 
 function adsPickPeriod(key, btn){
   curPickedPeriod = key;
