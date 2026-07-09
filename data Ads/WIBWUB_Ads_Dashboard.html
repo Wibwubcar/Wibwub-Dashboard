@@ -157,20 +157,32 @@
   .period-bar{display:flex;align-items:center;gap:10px;padding:10px 24px;background:var(--panel);border-bottom:1px solid var(--border);flex-wrap:wrap;position:sticky;top:60px;z-index:88;}
   .period-bar-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;white-space:nowrap;}
   .ads-mpicker-wrap{position:relative;}
-  .ads-mrange-btn{display:inline-flex;align-items:center;gap:9px;padding:7px 18px;border-radius:20px;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--orange);color:#1A5CDB;background:rgba(255,107,43,.08);user-select:none;white-space:nowrap;transition:background .15s;}
-  .ads-mrange-btn:hover{background:rgba(255,107,43,.15);}
-  .ads-mrange-btn .caret{font-size:10px;transition:transform .2s;}
-  .ads-mrange-btn.open .caret{transform:rotate(180deg);}
-  .ads-mpicker-panel{position:absolute;top:calc(100% + 8px);left:0;background:var(--panel);border:1.5px solid var(--border);border-radius:16px;box-shadow:0 10px 36px rgba(0,0,0,.28);padding:16px 18px;z-index:300;min-width:280px;display:none;flex-direction:column;gap:8px;}
-  .ads-mpicker-panel.open{display:flex;}
-  .ads-mp-sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px;}
-  .ads-period-btn{padding:10px 14px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--gray);background:transparent;text-align:left;transition:all .15s;width:100%;display:flex;flex-direction:column;gap:2px;}
-  .ads-period-btn .pb-label{font-size:13px;font-weight:700;}
-  .ads-period-btn .pb-sub{font-size:10px;color:var(--muted);}
-  .ads-period-btn:hover{border-color:#1A5CDB;color:#1A5CDB;}
+  .ads-mrange-btn{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;font-size:12.5px;font-weight:700;cursor:pointer;border:1.5px solid var(--border);color:var(--gray);background:var(--panel);user-select:none;white-space:nowrap;transition:all .15s;box-shadow:0 1px 3px rgba(0,0,0,.05);}
+  .ads-mrange-btn:hover{border-color:var(--orange);color:var(--orange);box-shadow:0 3px 10px rgba(26,92,219,.12);}
+  .ads-mrange-btn.open{border-color:var(--orange);color:var(--orange);background:var(--orange-lt);box-shadow:0 3px 10px rgba(26,92,219,.15);}
+  .ads-mrange-btn .cal-ic{font-size:13px;line-height:1;}
+  .ads-mrange-btn .caret{font-size:9px;color:var(--muted);transition:transform .2s;}
+  .ads-mrange-btn.open .caret{transform:rotate(180deg);color:var(--orange);}
+  .ads-mpicker-panel{position:absolute;top:calc(100% + 10px);left:0;background:var(--panel);border:1px solid var(--border);border-radius:16px;box-shadow:0 16px 40px rgba(15,15,15,.14),0 2px 8px rgba(15,15,15,.06);padding:16px;z-index:300;min-width:340px;display:none;flex-direction:column;gap:0;}
+  .ads-mpicker-panel.open{display:flex;animation:adsPickerIn .16s ease;}
+  @keyframes adsPickerIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+  .ads-mp-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+  .ads-mp-title{font-size:13px;font-weight:800;color:var(--gray);display:flex;align-items:center;gap:6px;}
+  .ads-mp-close{width:22px;height:22px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:12px;color:var(--muted);cursor:pointer;transition:all .15s;}
+  .ads-mp-close:hover{background:var(--orange-lt);color:var(--orange);}
+  .ads-mp-divider{height:1px;background:var(--border);margin:12px 0;}
+  .ads-mp-sec-label{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+  .ads-period-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .ads-period-btn{position:relative;padding:9px 12px;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;border:1.5px solid var(--border);color:var(--gray);background:transparent;text-align:left;transition:all .15s;width:100%;display:flex;flex-direction:column;gap:2px;}
+  .ads-period-btn .pb-label{font-size:12.5px;font-weight:700;display:flex;align-items:center;gap:5px;}
+  .ads-period-btn .pb-sub{font-size:10px;color:var(--muted);line-height:1.4;}
+  .ads-period-btn:hover{border-color:#1A5CDB;color:#1A5CDB;background:rgba(26,92,219,.04);}
   .ads-period-btn:hover .pb-sub{color:#1A5CDB;}
-  .ads-period-btn.active{background:#EEF3FD;color:#1A5CDB;border-color:#1A5CDB;}
+  .ads-period-btn.active{background:#EEF3FD;color:#1A5CDB;border-color:#1A5CDB;box-shadow:0 2px 8px rgba(26,92,219,.12);}
   .ads-period-btn.active .pb-sub{color:#1A5CDB;}
+  .ads-period-btn.active::after{content:'✓';position:absolute;top:8px;right:10px;font-size:11px;font-weight:900;color:#1A5CDB;}
+  .ads-period-all-btn{margin-bottom:0;}
+  .pb-current-tag{font-size:8.5px;font-weight:800;color:#1A5CDB;background:#EEF3FD;border:1px solid #c5d5f5;padding:1px 6px;border-radius:20px;letter-spacing:.3px;}
   .ads-backdrop{position:fixed;inset:0;z-index:299;display:none;}
   .ads-backdrop.open{display:block;}
   .period-summary-txt{font-size:11px;color:var(--muted);}
@@ -212,44 +224,52 @@
   <span class="period-bar-label">📅 ช่วงเวลา:</span>
   <div class="ads-mpicker-wrap">
     <div class="ads-mrange-btn" id="adsMRangeBtn" onclick="adsTogglePicker()">
+      <span class="cal-ic">📅</span>
       <span id="adsPeriodLabel">กรกฎาคม 2569</span>
       <span class="caret">▾</span>
     </div>
     <div class="ads-backdrop" id="adsBackdrop" onclick="adsClosePicker()"></div>
     <div class="ads-mpicker-panel" id="adsMPickerPanel">
-      <div class="ads-mp-sec-label">เลือกช่วงเวลา</div>
-      <button class="ads-period-btn" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
+      <div class="ads-mp-header">
+        <span class="ads-mp-title">📅 เลือกช่วงเวลา</span>
+        <span class="ads-mp-close" onclick="adsClosePicker()">✕</span>
+      </div>
+      <button class="ads-period-btn ads-period-all-btn" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
         <span class="pb-label">ทั้งหมด</span>
         <span class="pb-sub">ม.ค. – 9 ก.ค. 2569 · Shopee ฿27.18M · TikTok ฿6.37M</span>
       </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-jan" onclick="adsPickPeriod('jan',this)">
-        <span class="pb-label">มกราคม 2569</span>
-        <span class="pb-sub">01–31 ม.ค. · Shopee ฿3.61M · TikTok ฿898K</span>
-      </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-feb" onclick="adsPickPeriod('feb',this)">
-        <span class="pb-label">กุมภาพันธ์ 2569</span>
-        <span class="pb-sub">01–28 ก.พ. · Shopee ฿3.75M · TikTok ฿1.04M</span>
-      </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-mar" onclick="adsPickPeriod('mar',this)">
-        <span class="pb-label">มีนาคม 2569</span>
-        <span class="pb-sub">01–31 มี.ค. · Shopee ฿3.62M · TikTok ฿1.13M</span>
-      </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-apr" onclick="adsPickPeriod('apr',this)">
-        <span class="pb-label">เมษายน 2569</span>
-        <span class="pb-sub">01–30 เม.ย. · Shopee ฿4.34M · TikTok ฿1.28M</span>
-      </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-may" onclick="adsPickPeriod('may',this)">
-        <span class="pb-label">พฤษภาคม 2569</span>
-        <span class="pb-sub">01–31 พ.ค. · Shopee ฿4.97M · TikTok ฿1.46M</span>
-      </button>
-      <button class="ads-period-btn" id="adsPeriodBtn-jun" onclick="adsPickPeriod('jun',this)">
-        <span class="pb-label">มิถุนายน 2569</span>
-        <span class="pb-sub">01–30 มิ.ย. · Shopee ฿5.05M · TK ฿0.25M · TikTok ฿1.23M</span>
-      </button>
-      <button class="ads-period-btn active" id="adsPeriodBtn-jul" onclick="adsPickPeriod('jul',this)">
-        <span class="pb-label">กรกฎาคม 2569</span>
-        <span class="pb-sub">01–09 ก.ค. · Shopee ฿1.83M · TikTok ฿0.56M</span>
-      </button>
+      <div class="ads-mp-divider"></div>
+      <div class="ads-mp-sec-label">รายเดือน</div>
+      <div class="ads-period-grid">
+        <button class="ads-period-btn" id="adsPeriodBtn-jan" onclick="adsPickPeriod('jan',this)">
+          <span class="pb-label">มกราคม 2569</span>
+          <span class="pb-sub">01–31 ม.ค.<br>Shopee ฿3.61M · TikTok ฿898K</span>
+        </button>
+        <button class="ads-period-btn" id="adsPeriodBtn-feb" onclick="adsPickPeriod('feb',this)">
+          <span class="pb-label">กุมภาพันธ์ 2569</span>
+          <span class="pb-sub">01–28 ก.พ.<br>Shopee ฿3.75M · TikTok ฿1.04M</span>
+        </button>
+        <button class="ads-period-btn" id="adsPeriodBtn-mar" onclick="adsPickPeriod('mar',this)">
+          <span class="pb-label">มีนาคม 2569</span>
+          <span class="pb-sub">01–31 มี.ค.<br>Shopee ฿3.62M · TikTok ฿1.13M</span>
+        </button>
+        <button class="ads-period-btn" id="adsPeriodBtn-apr" onclick="adsPickPeriod('apr',this)">
+          <span class="pb-label">เมษายน 2569</span>
+          <span class="pb-sub">01–30 เม.ย.<br>Shopee ฿4.34M · TikTok ฿1.28M</span>
+        </button>
+        <button class="ads-period-btn" id="adsPeriodBtn-may" onclick="adsPickPeriod('may',this)">
+          <span class="pb-label">พฤษภาคม 2569</span>
+          <span class="pb-sub">01–31 พ.ค.<br>Shopee ฿4.97M · TikTok ฿1.46M</span>
+        </button>
+        <button class="ads-period-btn" id="adsPeriodBtn-jun" onclick="adsPickPeriod('jun',this)">
+          <span class="pb-label">มิถุนายน 2569</span>
+          <span class="pb-sub">01–30 มิ.ย.<br>Shopee ฿5.05M · TikTok ฿1.23M</span>
+        </button>
+        <button class="ads-period-btn active" id="adsPeriodBtn-jul" onclick="adsPickPeriod('jul',this)">
+          <span class="pb-label">กรกฎาคม 2569 <span class="pb-current-tag">เดือนนี้</span></span>
+          <span class="pb-sub">01–09 ก.ค.<br>Shopee ฿1.83M · TikTok ฿0.56M</span>
+        </button>
+      </div>
     </div>
   </div>
   <span class="period-summary-txt" id="ads-period-summary"></span>
