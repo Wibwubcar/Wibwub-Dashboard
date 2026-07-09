@@ -1053,7 +1053,7 @@ function renderKPIs(){
   set('sh-kpi-orders',fmt(sh.orders));
   set('sh-kpi-imp',fmtM(sh.imp));
   // GMV Max KPIs — use TK_BREAKDOWN (actual creative data xlsx), not DATA_PERIODS
-  const mx = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.total;
+  const mx = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.total;
   const fmtM2=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n);
   set('tk-kpi-spend','฿'+fmt(mx.spend));
   set('tk-kpi-rev','฿'+fmt(mx.revenue));
@@ -1395,6 +1395,22 @@ const TK_BREAKDOWN = {
       campaigns:[]
     }
   },
+  jul: {
+    gmvLive: {
+      total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0},
+      sessions:[]
+    },
+    gmvMax: {
+      total:{spend:128257.42,orders:2796,revenue:551700.36,imp:0,clicks:0,roi:4.30,ctr:0,cvr:0,cpa:45.87},
+      top5:[],
+      worst5:[],
+      campaigns:[]
+    },
+    bizAds: {
+      total:{spend:4678.88,imp:81790,clicks:2855,cpm:57.21,ctr:3.49},
+      campaigns:[{name:"C-Ads TOP CREATOR",spend:4481.34,imp:81549,clicks:2854,cpm:54.95,ctr:3.5},{name:"30.06.26/Follower",spend:197.54,imp:241,clicks:1,cpm:819.67,ctr:0.41}]
+    }
+  },
   all: {
     gmvLive: {
       total:{spend:50751,orders:1132,revenue:453532,views:88412,roi:8.94,cpa:44.83},
@@ -1472,8 +1488,17 @@ const TK_BREAKDOWN = {
   }
 };
 
+// Safe empty template — used when a period has no TK_BREAKDOWN entry yet,
+// so a missing month shows zeros instead of silently falling back to the
+// whole-history "all" aggregate (root cause of a past bug).
+const EMPTY_TK_PERIOD = {
+  gmvLive: { total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0}, sessions:[] },
+  gmvMax: { total:{spend:0,orders:0,revenue:0,imp:0,clicks:0,roi:0,ctr:0,cvr:0,cpa:0}, top5:[], worst5:[], campaigns:[] },
+  bizAds: { total:{spend:0,imp:0,clicks:0,cpm:0,ctr:0}, campaigns:[] }
+};
+
 // ── TikTok Sub-tab switcher ────────────────────────────────────────────
-function getTkPeriod(){ return TK_BREAKDOWN[curPickedPeriod] || TK_BREAKDOWN.all; }
+function getTkPeriod(){ return TK_BREAKDOWN[curPickedPeriod] || EMPTY_TK_PERIOD; }
 
 function showTkTab(key, el){
   document.querySelectorAll('.tk-subtab').forEach(t=>t.classList.remove('active'));
@@ -1616,7 +1641,7 @@ function renderDashboard(){
   buildTop5('shopee-top5-best', sh.top5, true);
   buildTop5('shopee-top5-worst', sh.worst5, false);
   // GMV Max top5/worst5 from TK_BREAKDOWN (sorted by roi)
-  const mxAll = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.campaigns;
+  const mxAll = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.campaigns;
   const mxSorted = [...mxAll].sort((a,b)=>b.roi-a.roi);
   const mxTop5 = mxSorted.slice(0,5).map(c=>({...c,roas:c.roi}));
   const mxWorst5 = [...mxSorted].reverse().slice(0,5).map(c=>({...c,roas:c.roi}));
@@ -1624,7 +1649,7 @@ function renderDashboard(){
   buildTop5('tiktok-top5-worst', mxWorst5, false);
   buildAllTable('shopee-all-body', sh.all);
   // GMV Max table — build from TK_BREAKDOWN campaign list
-  const mxCamps = (TK_BREAKDOWN[curPickedPeriod]||TK_BREAKDOWN.all).gmvMax.campaigns;
+  const mxCamps = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.campaigns;
   const mxRows = mxCamps.map(c=>({...c, roas:c.roi}));  // alias roi→roas for buildAllTable
   buildAllTable('tiktok-all-body', mxRows);
   updateCharts(sh, tk);
