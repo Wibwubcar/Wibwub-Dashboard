@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TikTok Shop Dashboard — WIBWUB</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f12;
+  --surface: #161a1f;
+  --surface2: #1e242c;
+  --border: rgba(255,255,255,0.07);
+  --border2: rgba(255,255,255,0.12);
+  --text: #e8eaed;
+  --muted: #7a8494;
+  --accent-blue: #4a9eff;
+  --accent-green: #2dd4a0;
+  --accent-amber: #f0a842;
+  --accent-red: #ff5f5f;
+  --accent-purple: #a78bfa;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'IBM Plex Sans Thai', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem;
+}
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon {
+  width: 40px; height: 40px;
+  background: linear-gradient(135deg, #ff0050, #00f2ea);
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+}
+.brand-text h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+.brand-text p { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.header-badge {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--muted);
+}
+
+/* KPI Cards */
+.kpi-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 1.5rem; }
+.kpi {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+}
+.kpi::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.kpi.blue::before { background: var(--accent-blue); }
+.kpi.green::before { background: var(--accent-green); }
+.kpi.amber::before { background: var(--accent-amber); }
+.kpi.purple::before { background: var(--accent-purple); }
+.kpi-label { font-size: 11px; color: var(--muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
+.kpi-value { font-size: 26px; font-weight: 600; line-height: 1; letter-spacing: -0.5px; }
+.kpi-value.blue { color: var(--accent-blue); }
+.kpi-value.green { color: var(--accent-green); }
+.kpi-value.amber { color: var(--accent-amber); }
+.kpi-value.purple { color: var(--accent-purple); }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 6px; }
+.kpi-sub.up { color: var(--accent-green); }
+.kpi-sub.down { color: var(--accent-red); }
+
+/* Main chart */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 16px;
+}
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 16px; }
+.card-title { font-size: 14px; font-weight: 500; }
+.card-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; color: var(--muted); }
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.leg-dot { width: 10px; height: 10px; border-radius: 2px; }
+.leg-line { width: 16px; height: 3px; border-radius: 2px; }
+
+/* Two col */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* Cycle grid */
+.cycle-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.cycle-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
+}
+.cycle-month { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.cycle-val { font-size: 15px; font-weight: 600; }
+.cycle-growth { font-size: 11px; margin-top: 2px; }
+.up-txt { color: var(--accent-green); }
+.dn-txt { color: var(--accent-red); }
+.nc-txt { color: var(--muted); }
+.bar-track { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; margin-top: 8px; }
+.bar-fill { height: 3px; border-radius: 2px; }
+
+/* Promo table */
+.promo-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.promo-table th {
+  text-align: left; padding: 8px 10px;
+  font-size: 11px; font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border2);
+}
+.promo-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+.promo-table tr:last-child td { border-bottom: none; }
+.promo-table tr:hover td { background: rgba(255,255,255,0.02); }
+.tag {
+  font-size: 10px; padding: 2px 7px;
+  border-radius: 4px; display: inline-block;
+  font-weight: 500;
+}
+.tag-blue { background: rgba(74,158,255,0.15); color: var(--accent-blue); }
+.tag-green { background: rgba(45,212,160,0.15); color: var(--accent-green); }
+.tag-amber { background: rgba(240,168,66,0.15); color: var(--accent-amber); }
+.tag-purple { background: rgba(167,139,250,0.15); color: var(--accent-purple); }
+
+/* Insight cards */
+.insight-list { list-style: none; }
+.insight-list li {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+}
+.insight-list li:last-child { border-bottom: none; }
+.insight-list li .val { font-weight: 500; color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 11px; }
+
+.section-label {
+  font-size: 10px; font-weight: 500;
+  color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.08em;
+  margin-bottom: 12px;
+}
+
+footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+  display: flex; justify-content: space-between;
+}
+</style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="brand">
+    <div class="brand-icon">🚗</div>
+    <div class="brand-text">
+      <h1>TikTok Shop Dashboard</h1>
+      <p>WIBWUB — ผลิตภัณฑ์ดูแลรถยนต์</p>
+    </div>
+  </div>
+  <div class="header-badge">ม.ค. 2025 – เม.ย. 2026</div>
+</div>
+
+<!-- KPI -->
+<div class="kpi-row">
+  <div class="kpi blue">
+    <div class="kpi-label">ยอดขายรวม 2025</div>
+    <div class="kpi-value blue">฿6.51M</div>
+    <div class="kpi-sub">เติบโตตลอดปี</div>
+  </div>
+  <div class="kpi green">
+    <div class="kpi-label">ยอดขาย เม.ย. 2026</div>
+    <div class="kpi-value green">฿1.35M</div>
+    <div class="kpi-sub up">↑ +5.3% vs มี.ค.</div>
+  </div>
+  <div class="kpi amber">
+    <div class="kpi-label">Flash Sale สูงสุด</div>
+    <div class="kpi-value amber">฿491K</div>
+    <div class="kpi-sub">ม.ค. 2026 – Brand Crazy Deal</div>
+  </div>
+  <div class="kpi purple">
+    <div class="kpi-label">ROAS GMV Max (เฉลี่ย)</div>
+    <div class="kpi-value purple">10–13x</div>
+    <div class="kpi-sub">Sugar / Interior Wipe สูงสุด</div>
+  </div>
+</div>
+
+<!-- Main Chart -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-title">ยอดขายรายเดือน — เปรียบเทียบ 3 มิติ</div>
+      <div class="card-subtitle">ยอดรวม · ยอดหลังหัก Affiliate · ค่าใช้จ่าย Ads</div>
+    </div>
+    <div class="legend">
+      <div class="legend-item"><span class="leg-dot" style="background:#4a9eff;opacity:0.75"></span>ยอดขายรวม</div>
+      <div class="legend-item"><span class="leg-dot" style="background:#2dd4a0;opacity:0.85"></span>ยอดหลังหัก Affiliate</div>
+      <div class="legend-item"><span class="leg-line" style="background:#f0a842;"></span>ค่า Ads (GMV+Boost)</div>
+    </div>
+  </div>
+  <div style="position:relative;width:100%;height:300px;">
+    <canvas id="mainChart" role="img" aria-label="กราฟยอดขายรายเดือน TikTok Shop WIBWUB"></canvas>
+  </div>
+  <div style="font-size:11px;color:var(--muted);margin-top:12px;padding:8px 12px;background:var(--surface2);border-radius:6px;">
+    * เดือน ม.ค.–เม.ย. 2025 ยังไม่มีการแยกข้อมูล Affiliate จึงแสดงยอดเท่ากับยอดรวม &nbsp;|&nbsp;
+    ค่า Ads = ยอด Ads + GMV Max ที่ใช้จริงต่อเดือน
+  </div>
+</div>
+
+<!-- Growth + Donut -->
+<div class="two-col">
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-header">
+      <div>
+        <div class="card-title">% การเติบโต MoM</div>
+        <div class="card-subtitle">เทียบเดือนต่อเดือน</div>
+      </div>
+    </div>
+    <div style="position:relative;width:100%;height:190px;">
+      <canvas id="growthChart" role="img" aria-label="กราฟ % การเติบโต"></canvas>
+    </div>
+  </div>
+  <div class="card" style="margin-bottom:0;">
+    <div class="card-header">
+      <div>
+        <div class="card-title">สัดส่วนช่องทาง (เฉลี่ย 2026)</div>
+        <div class="card-subtitle">ที่มาของยอดขาย</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div style="position:relative;width:160px;height:160px;flex-shrink:0;">
+        <canvas id="donutChart" role="img" aria-label="สัดส่วนช่องทาง"></canvas>
+      </div>
+      <div style="flex:1;">
+        <div class="legend" style="flex-direction:column;gap:10px;">
+          <div class="legend-item"><span class="leg-dot" style="background:#4a9eff;"></span><span>Ads / GMV Max <strong style="color:var(--text);">50%</strong></span></div>
+          <div class="legend-item"><span class="leg-dot" style="background:#f0a842;"></span><span>Flash Sale <strong style="color:var(--text);">30%</strong></span></div>
+          <div class="legend-item"><span class="leg-dot" style="background:#d4537e;"></span><span>Live Stream <strong style="color:var(--text);">12%</strong></span></div>
+          <div class="legend-item"><span class="leg-dot" style="background:#2dd4a0;"></span><span>Affiliate <strong style="color:var(--text);">8%</strong></span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sales Cycle -->
+<div class="card">
+  <div class="section-label">Sales Cycle รายเดือน</div>
+  <div class="cycle-grid" id="cycleGrid"></div>
+</div>
+
+<!-- Promo Table -->
+<div class="card">
+  <div class="card-header">
+    <div>
+      <div class="card-title">กิจกรรมส่งเสริมการขายสำคัญ</div>
+      <div class="card-subtitle">Campaign · Flash Sale · Live</div>
+    </div>
+  </div>
+  <table class="promo-table">
+    <thead>
+      <tr>
+        <th>เดือน</th>
+        <th>แคมเปญ</th>
+        <th>ประเภท</th>
+        <th style="text-align:right;">ยอดขาย (฿)</th>
+        <th>หมายเหตุ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>ม.ค. 25</td><td>Jan Payday + ตรุษจีน</td><td><span class="tag tag-blue">แคมเปญ</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">30,910</td><td style="color:var(--muted);">ช้อปวันเงินเดือนออก</td></tr>
+      <tr><td>ก.พ. 25</td><td>2.2 Campaign</td><td><span class="tag tag-blue">แคมเปญ</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">22,411</td><td style="color:var(--muted);">Double Day</td></tr>
+      <tr><td>มี.ค. 25</td><td>3.3 Campaign + Live</td><td><span class="tag tag-purple">ไลฟ์+แคมเปญ</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">68,547</td><td style="color:var(--muted);">ยอดพุ่ง x3</td></tr>
+      <tr><td>เม.ย. 25</td><td>TikTok After Songkran</td><td><span class="tag tag-blue">แคมเปญ</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">88,988</td><td style="color:var(--muted);">ยอดสูงสุดช่วงแรก</td></tr>
+      <tr><td>มิ.ย. 25</td><td>6.6 Campaign</td><td><span class="tag tag-blue">แคมเปญ</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">79,786</td><td style="color:var(--muted);">Double Day</td></tr>
+      <tr><td>ก.ย. 25</td><td>9.9 + เข้า TikTok Mall</td><td><span class="tag tag-green">Flash Sale</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">91,249</td><td style="color:var(--muted);">จุดเปลี่ยนสำคัญ — ได้โค้ดระบบ</td></tr>
+      <tr><td>ต.ค. 25</td><td>Brand Crazy Deal</td><td><span class="tag tag-green">Flash Sale</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">134,115</td><td style="color:var(--muted);">ยอด Flash Sale พุ่ง</td></tr>
+      <tr><td>พ.ย. 25</td><td>Brand Crazy Deal + 11.11</td><td><span class="tag tag-green">Flash Sale</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">180,298</td><td style="color:var(--muted);">11.11 ดันยอดแรง</td></tr>
+      <tr><td>ธ.ค. 25</td><td>Brand Crazy Deal + Live 12.12</td><td><span class="tag tag-purple">ไลฟ์+Flash</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">383,331</td><td style="color:var(--muted);">Live 12.12 ยอด ฿68,238 ครั้งเดียว!</td></tr>
+      <tr><td>ม.ค. 26</td><td>Brand Crazy Deal</td><td><span class="tag tag-green">Flash Sale</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">491,183</td><td style="color:var(--accent-green);font-weight:500;">สูงสุดในประวัติศาสตร์</td></tr>
+      <tr><td>ก.พ. 26</td><td>Brand Crazy Deal + Live เข้มข้น</td><td><span class="tag tag-amber">Ads+Live+Flash</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">388,284</td><td style="color:var(--muted);">Live 23 ครั้ง รวม ฿129,962</td></tr>
+      <tr><td>มี.ค. 26</td><td>Brand Crazy Deal + 3.3</td><td><span class="tag tag-amber">Ads+Live+Flash</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">445,033</td><td style="color:var(--muted);">ไลฟ์คู่ แอ้น+ปาย</td></tr>
+      <tr><td>เม.ย. 26</td><td>Brand Crazy Deal + Live 4.4</td><td><span class="tag tag-amber">Ads+Live+Flash</span></td><td style="text-align:right;font-family:'IBM Plex Mono',monospace;">225,070</td><td style="color:var(--muted);">Live รวม ฿118,260</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- Insights -->
+<div class="two-col">
+  <div class="card" style="margin-bottom:0;">
+    <div class="section-label">ปัจจัยที่ทำให้ยอดโตขึ้น</div>
+    <ul class="insight-list">
+      <li>เข้า TikTok Mall (ก.ย. 25)<span class="val">โค้ดระบบลด 12–20%</span></li>
+      <li>Brand Crazy Deal<span class="val">ยอดทะยาน 3–4 เท่า</span></li>
+      <li>GMV Max Ads<span class="val">ROAS 8–23x</span></li>
+      <li>ไลฟ์สดสม่ำเสมอ<span class="val">ยอดต่อเนื่อง</span></li>
+      <li>Affiliate + Boost KOL<span class="val">ขยายฐานลูกค้าใหม่</span></li>
+      <li>คลิปกระแส (เจนนี่ / Melodylotto)<span class="val">คนดูเพิ่มหลายเท่า</span></li>
+    </ul>
+  </div>
+  <div class="card" style="margin-bottom:0;">
+    <div class="section-label">ค่าใช้จ่ายสำคัญ</div>
+    <ul class="insight-list">
+      <li>Flash Sale fee เพิ่ม<span class="val">+3.21% ต่อรายการ</span></li>
+      <li>คูปองลูกค้าใหม่ ลด 25 บ.<span class="val">฿6,975–11,592 / เดือน</span></li>
+      <li>Ads Live ROAS สูงสุด<span class="val">114x (22 พ.ค. 25)</span></li>
+      <li>GMV Max ROAS เฉลี่ย<span class="val">8–13x</span></li>
+      <li>ค่า Affiliate (คอมมิชชั่น)<span class="val">~35–39% ของยอด</span></li>
+      <li>ค่าธรรมเนียมรวม 2025<span class="val">฿1.12M (31.8%)</span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="card" style="margin-top:16px;">
+  <div class="section-label">สินค้าขายดีต่อเนื่อง</div>
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
+    <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;border:1px solid var(--border);">
+      <div style="font-size:20px;margin-bottom:6px;">🥇</div>
+      <div style="font-size:13px;font-weight:500;">Sugar</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">อันดับ 1 ทุกเดือน</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;border:1px solid var(--border);">
+      <div style="font-size:20px;margin-bottom:6px;">🥈</div>
+      <div style="font-size:13px;font-weight:500;">Interior Wipe</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">พุ่งแรง Q1 2026</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;border:1px solid var(--border);">
+      <div style="font-size:20px;margin-bottom:6px;">🥉</div>
+      <div style="font-size:13px;font-weight:500;">Refresh Leather Wipes</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">คลิปแมสติดกระแส</div>
+    </div>
+    <div style="background:var(--surface2);border-radius:8px;padding:12px 14px;border:1px solid var(--border);">
+      <div style="font-size:20px;margin-bottom:6px;">⭐</div>
+      <div style="font-size:13px;font-weight:500;">Wool Duster / Cleaner</div>
+      <div style="font-size:11px;color:var(--muted);margin-top:3px;">Top 5 ทุกเดือน</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <span>WIBWUB — TikTok Shop Sales Report</span>
+  <span>ข้อมูล: ม.ค. 2025 – เม.ย. 2026</span>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script>
+const months = ['ม.ค.25','ก.พ.25','มี.ค.25','เม.ย.25','พ.ค.25','มิ.ย.25','ก.ค.25','ส.ค.25','ก.ย.25','ต.ค.25','พ.ย.25','ธ.ค.25','ม.ค.26','ก.พ.26','มี.ค.26','เม.ย.26'];
+const totalSales   = [353905,295470,333245,364362,391028,429828,459147,501213,502297,498337,614976,934968,1152567,1171209,1280967,1350397];
+const afiDeduction = [0,0,0,0,135243,132917,152078,220483,194142,216925,288702,346143,460976,550756,655259,724120];
+const netAfterAfi  = totalSales.map((v,i) => Math.round(v - afiDeduction[i]));
+const adsSpend     = [76925,42890,49445,35207,34756,44797,54520,76599,81292,84379,100633,141225,164956,202579,249295,256169];
+
+const gridColor  = 'rgba(255,255,255,0.05)';
+const labelColor = '#5a6478';
+
+Chart.defaults.color = labelColor;
+Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+
+new Chart(document.getElementById('mainChart'), {
+  type: 'bar',
+  data: {
+    labels: months,
+    datasets: [
+      { label:'ยอดขายรวม',           data: totalSales,  backgroundColor:'rgba(74,158,255,0.55)', borderRadius:4, borderSkipped:false, order:3 },
+      { label:'ยอดหลังหัก Affiliate', data: netAfterAfi, backgroundColor:'rgba(45,212,160,0.65)', borderRadius:4, borderSkipped:false, order:2 },
+      { type:'line', label:'ค่า Ads (GMV+Boost)', data: adsSpend,
+        borderColor:'#f0a842', backgroundColor:'rgba(240,168,66,0.08)',
+        fill:true, tension:0.4, pointRadius:4,
+        pointBackgroundColor:'#f0a842', pointBorderColor:'#1e242c', pointBorderWidth:2,
+        borderWidth:2, order:1
+      }
+    ]
+  },
+  options: {
+    responsive:true, maintainAspectRatio:false,
+    interaction:{ mode:'index', intersect:false },
+    plugins:{
+      legend:{ display:false },
+      tooltip:{ callbacks:{ label: ctx => ' ' + ctx.dataset.label + ': ฿' + ctx.parsed.y.toLocaleString() } }
+    },
+    scales:{
+      x:{ ticks:{ color:labelColor, font:{size:10}, autoSkip:false, maxRotation:45 }, grid:{ display:false } },
+      y:{ ticks:{ color:labelColor, font:{size:10}, callback: v => '฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':(v/1000).toFixed(0)+'K') }, grid:{ color:gridColor } }
+    }
+  }
+});
+
+const momGrowth = totalSales.map((v,i) => i===0 ? 0 : Math.round((v-totalSales[i-1])/totalSales[i-1]*100));
+new Chart(document.getElementById('growthChart'), {
+  type:'line',
+  data:{
+    labels: months,
+    datasets:[{
+      data: momGrowth,
+      borderColor:'#a78bfa', backgroundColor:'rgba(167,139,250,0.1)',
+      fill:true, tension:0.35, pointRadius:4,
+      pointBackgroundColor: momGrowth.map(v => v>=0?'#2dd4a0':'#ff5f5f'),
+      pointBorderColor:'#1e242c', pointBorderWidth:1.5,
+      borderWidth:2
+    }]
+  },
+  options:{
+    responsive:true, maintainAspectRatio:false,
+    plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ' '+ctx.parsed.y+'%' } } },
+    scales:{
+      x:{ ticks:{ color:labelColor, font:{size:10}, autoSkip:true, maxRotation:45 }, grid:{display:false} },
+      y:{ ticks:{ color:labelColor, font:{size:10}, callback: v=>v+'%' }, grid:{ color:gridColor } }
+    }
+  }
+});
+
+new Chart(document.getElementById('donutChart'), {
+  type:'doughnut',
+  data:{
+    labels:['Ads/GMV Max','Flash Sale','Live','Affiliate'],
+    datasets:[{ data:[50,30,12,8], backgroundColor:['#4a9eff','#f0a842','#d4537e','#2dd4a0'], borderWidth:0, hoverOffset:4 }]
+  },
+  options:{ responsive:true, maintainAspectRatio:false, cutout:'65%', plugins:{ legend:{display:false}, tooltip:{ callbacks:{ label: ctx => ctx.label+': '+ctx.parsed+'%' } } } }
+});
+
+// Cycle grid
+const cycleData = [
+  {m:'ม.ค. 25',v:353905,g:null,c:'#4a9eff'},
+  {m:'ก.พ. 25',v:295470,g:-17,c:'#ff5f5f'},
+  {m:'มี.ค. 25',v:333245,g:13,c:'#4a9eff'},
+  {m:'เม.ย. 25',v:364362,g:9,c:'#4a9eff'},
+  {m:'พ.ค. 25',v:391028,g:7,c:'#4a9eff'},
+  {m:'มิ.ย. 25',v:429828,g:10,c:'#4a9eff'},
+  {m:'ก.ค. 25',v:459147,g:7,c:'#4a9eff'},
+  {m:'ส.ค. 25',v:501213,g:9,c:'#4a9eff'},
+  {m:'ก.ย. 25',v:502297,g:0,c:'#7a8494'},
+  {m:'ต.ค. 25',v:498337,g:-1,c:'#ff5f5f'},
+  {m:'พ.ย. 25',v:614976,g:23,c:'#2dd4a0'},
+  {m:'ธ.ค. 25',v:934968,g:52,c:'#2dd4a0'},
+  {m:'ม.ค. 26',v:1152567,g:23,c:'#2dd4a0'},
+  {m:'ก.พ. 26',v:1171209,g:2,c:'#4a9eff'},
+  {m:'มี.ค. 26',v:1280967,g:9,c:'#4a9eff'},
+  {m:'เม.ย. 26',v:1350397,g:5,c:'#4a9eff'}
+];
+const maxV = Math.max(...cycleData.map(d=>d.v));
+const grid = document.getElementById('cycleGrid');
+cycleData.forEach(d=>{
+  const pct = Math.round(d.v/maxV*100);
+  const gStr = d.g===null ? '<span class="nc-txt">—</span>'
+    : d.g>0 ? `<span class="up-txt">↑ +${d.g}%</span>`
+    : d.g<0 ? `<span class="dn-txt">↓ ${d.g}%</span>`
+    : '<span class="nc-txt">0%</span>';
+  grid.innerHTML += `<div class="cycle-item">
+    <div class="cycle-month">${d.m}</div>
+    <div class="cycle-val" style="color:${d.c}">฿${(d.v/1000).toFixed(0)}K</div>
+    <div class="cycle-growth">${gStr}</div>
+    <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:${d.c};opacity:0.6;"></div></div>
+  </div>`;
+});
+</script>
+</body>
+</html>

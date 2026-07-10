@@ -1,0 +1,181 @@
+===== launchctl list (wibwub/shipnity) =====
+-	0	com.wibwub.auto-push
+-	0	com.wibwub.netlify-deploy
+-	0	com.wibwub.update
+-	0	com.wibwub.watchdog
+-	0	com.wibwub.download-mover
+-	0	com.wibwub.autopush
+
+===== ~/Library/LaunchAgents =====
+total 88
+drwx------@ 13 thanasablilutanon  staff   416 Jul  2 23:41 .
+drwx------@ 95 thanasablilutanon  staff  3040 Jul  3 16:49 ..
+-rw-------   1 thanasablilutanon  staff   821 May 12 10:35 com.drhybrid.autoupdate.plist
+-rw-r--r--   1 thanasablilutanon  staff   730 May 10 10:05 com.drhybrid.deploy.plist
+-rw-r--r--@  1 thanasablilutanon  staff   884 May 25  2025 com.google.GoogleUpdater.wake.plist
+-rw-r--r--@  1 thanasablilutanon  staff   181 Jan 13  2025 com.google.keystone.agent.plist
+-rw-r--r--@  1 thanasablilutanon  staff   181 Jan 13  2025 com.google.keystone.xpcservice.plist
+-rw-r--r--@  1 thanasablilutanon  staff   656 Jul  3 14:16 com.wibwub.auto-push.plist
+-rw-r--r--@  1 thanasablilutanon  staff   834 Jun  8 15:32 com.wibwub.autopush.plist
+-rw-r--r--@  1 thanasablilutanon  staff   773 Jul  3 14:16 com.wibwub.download-mover.plist
+-rw-r--r--@  1 thanasablilutanon  staff   968 May 12 08:11 com.wibwub.netlify-deploy.plist
+-rw-r--r--@  1 thanasablilutanon  staff   931 Jun  5 11:07 com.wibwub.update.plist
+-rw-r--r--   1 thanasablilutanon  staff   735 May 29 13:28 com.wibwub.watchdog.plist
+
+===== LaunchAgents plist contents (wibwub/shipnity related) =====
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.auto-push.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wibwub.auto-push</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/wibwub_auto_push.sh</string>
+    </array>
+    <key>StartInterval</key>
+    <integer>300</integer>
+    <key>RunAtLoad</key>
+    <true/>
+</dict>
+</plist>
+
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.autopush.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.wibwub.autopush</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/wibwub_autopush.sh</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>120</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>/Users/thanasablilutanon/Library/Logs/wibwub_autopush.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/thanasablilutanon/Library/Logs/wibwub_autopush.log</string>
+</dict>
+</plist>
+
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.download-mover.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wibwub.download-mover</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/wibwub_auto_move.sh</string>
+    </array>
+    <key>WatchPaths</key>
+    <array>
+        <string>/Users/thanasablilutanon/Downloads</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>ThrottleInterval</key>
+    <integer>5</integer>
+</dict>
+</plist>
+
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.netlify-deploy.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.wibwub.netlify-deploy</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/thanasablilutanon/Downloads/test_netlify_deploy.sh</string>
+    </array>
+
+    <!-- จับตาไฟล์ HTML — ถ้าเปลี่ยนแปลง deploy ขึ้น Netlify ทันที -->
+    <key>WatchPaths</key>
+    <array>
+        <string>/Users/thanasablilutanon/Downloads/WUBWUB_TikTok_Dashboard_v7.html</string>
+    </array>
+
+    <key>RunAtLoad</key>
+    <false/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/thanasablilutanon/Downloads/netlify-deploy.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/thanasablilutanon/Downloads/netlify-deploy.log</string>
+</dict>
+</plist>
+
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.update.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>com.wibwub.update</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/bin/osascript</string>
+    <string>-e</string>
+    <string>tell application "Terminal" to do script "/Users/thanasablilutanon/wibwub_run.sh"</string>
+  </array>
+  <key>StartCalendarInterval</key>
+  <array>
+    <dict><key>Hour</key><integer>9</integer><key>Minute</key><integer>0</integer></dict>
+    <dict><key>Hour</key><integer>18</integer><key>Minute</key><integer>0</integer></dict>
+  </array>
+  <key>RunAtLoad</key><false/>
+  <key>StandardOutPath</key><string>/Users/thanasablilutanon/Library/Logs/wibwub_launch.log</string>
+  <key>StandardErrorPath</key><string>/Users/thanasablilutanon/Library/Logs/wibwub_launch.log</string>
+</dict>
+</plist>
+
+--- /Users/thanasablilutanon/Library/LaunchAgents/com.wibwub.watchdog.plist ---
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.wibwub.watchdog</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/thanasablilutanon/.wibwub_watchdog.sh</string>
+  </array>
+  <key>StartInterval</key>
+  <integer>300</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <false/>
+  <key>WorkingDirectory</key>
+  <string>/Users/thanasablilutanon</string>
+  <key>StandardOutPath</key>
+  <string>/tmp/wibwub_watchdog.log</string>
+  <key>StandardErrorPath</key>
+  <string>/tmp/wibwub_watchdog.log</string>
+</dict>
+</plist>
+
+===== crontab -l =====
+crontab: no crontab for thanasablilutanon
+
+===== find home for shipnity/stock fetch scripts =====
+/Users/thanasablilutanon/Documents/Claude/Scheduled/wibwub-shipnity-monday
+/Users/thanasablilutanon/Documents/Claude/Scheduled/fetch_stock_now.command
+
+===== Automator / Shortcuts related =====
+
+DONE

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WUBWUB TikTok Dashboard v4</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f3ef;--sur:#fff;--sur2:#efece5;--sur3:#e6e2d8;
+  --bd:rgba(0,0,0,.09);--bd2:rgba(0,0,0,.16);
+  --t1:#17170d;--t2:#56544c;--t3:#888680;
+  --red:#d43f3f;--rbg:#fdf0f0;--rbd:#f2b3b3;--rdk:#8a2020;
+  --grn:#1b9664;--gbg:#ecf8f2;--gbd:#85cead;--gdk:#125c3c;
+  --blu:#2878d0;--bbg:#e8f2fc;--bdk:#1a4c88;
+  --pur:#6760d2;--pbg:#eeedfc;--pdk:#3c3890;
+  --amb:#c07a10;--abg:#fdf1e1;--adk:#784a05;
+  --cor:#bd4c24;--cbg:#faeee9;--cdk:#862f14;
+  --tel:#179068;--tbg:#e3f5ef;--tdk:#0c5742;
+  --r:8px;--rl:13px;
+  --font:'Noto Sans Thai','Sarabun',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--t1);font-size:14px;line-height:1.5}
+
+/* Header */
+.hdr{background:var(--sur);border-bottom:.5px solid var(--bd);padding:.9rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20}
+.hdr-l{display:flex;align-items:center;gap:10px}
+.logo{width:34px;height:34px;background:#111;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ht{font-size:15px;font-weight:600}.hs{font-size:11px;color:var(--t3);margin-top:1px}
+.hdate{font-size:11px;color:var(--t3);background:var(--sur2);padding:4px 11px;border-radius:20px;border:.5px solid var(--bd)}
+
+.wrap{max-width:1160px;margin:0 auto;padding:1.4rem 1.75rem 4rem}
+
+/* KPI */
+.krow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.kpi{background:var(--sur2);border-radius:var(--r);padding:.85rem 1rem}
+.kl{font-size:10px;color:var(--t3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.kv{font-size:24px;font-weight:600;line-height:1;margin-bottom:3px}
+.ks{font-size:11px}
+.up{color:var(--gdk)}.dn{color:var(--rdk)}.nu{color:var(--t3)}
+
+/* 3 Metric cards */
+.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.mc{background:var(--sur);border:.5px solid var(--bd);border-radius:var(--rl);padding:.9rem 1rem}
+.mc.fl{border-color:var(--red);background:var(--rbg)}
+.mc-hd{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px}
+.mc-nm{font-size:10px;color:var(--t2);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.bfl{background:var(--rbg);color:var(--rdk);border:.5px solid var(--rbd)}
+.bok{background:var(--gbg);color:var(--gdk);border:.5px solid var(--gbd)}
+.mv{font-size:30px;font-weight:600;line-height:1;margin-bottom:2px}
+.red{color:var(--rdk)}.grn{color:var(--gdk)}
+.mt{font-size:11px;margin-bottom:8px;opacity:.85}
+.mt.r{color:var(--rdk)}.mt.g{color:var(--gdk)}
+.pb{height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.pf{height:100%;border-radius:3px}
+.mn{font-size:10px;opacity:.8}
+.mn.r{color:var(--rdk)}.mn.g{color:var(--gdk)}
+
+/* Alert */
+.alrt{border-radius:var(--r);padding:.75rem 1rem;display:flex;align-items:flex-start;gap:10px;margin-bottom:1.2rem}
+.alrt.danger{background:var(--rbg);border:.5px solid var(--rbd)}
+.alrt.ok{background:var(--gbg);border:.5px solid var(--gbd)}
+.at{font-size:12.5px;font-weight:500;line-height:1.5}
+.danger .at{color:var(--rdk)}.ok .at{color:var(--gdk)}
+
+/* Tabs */
+.tabs{display:flex;border-bottom:.5px solid var(--bd2);margin-bottom:1.2rem;overflow-x:auto}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 15px 11px;font-size:13px;cursor:pointer;color:var(--t3);font-family:var(--font);white-space:nowrap;margin-bottom:-.5px;transition:color .12s}
+.tab:hover{color:var(--t1)}
+.tab.active{color:var(--t1);font-weight:600;border-bottom-color:var(--t1)}
+.pnl{display:none}.pnl.active{display:block}
+
+.sec{font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+
+/* Chart card */
+.cc{background:var(--sur);border:.5px solid var(--bd);border-radius:var(--rl);padding:1.1rem 1.4rem;margin-bottom:12px}
+.ct{font-size:12px;color:var(--t2);font-weight:500;margin-bottom:8px}
+.cw{position:relative;width:100%}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.leg{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.lx{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
+
+/* Sub-tabs (for top5) */
+.stabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.stab{background:var(--sur2);border:.5px solid var(--bd);border-radius:20px;padding:5px 14px;font-size:12px;cursor:pointer;color:var(--t2);font-family:var(--font);transition:all .12s}
+.stab.active{background:var(--t1);color:#fff;border-color:var(--t1)}
+.spnl{display:none}.spnl.active{display:block}
+
+/* Top5 items */
+.t5i{border:.5px solid var(--bd);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:8px;background:var(--sur);display:flex;gap:12px;align-items:flex-start}
+.rnk{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--t2);flex-shrink:0;margin-top:2px}
+.r1{background:var(--abg);color:var(--adk)}
+.r2{background:#e0ddd6;color:#585750}
+.r3{background:var(--cbg);color:var(--cdk)}
+.ti{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.45}
+.tm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font-size:11px;color:var(--t3)}
+.cv{font-weight:500;color:var(--t2)}
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.pi{background:var(--bbg);color:var(--bdk)}
+.pt{background:var(--tbg);color:var(--tdk)}
+.pa{background:var(--abg);color:var(--adk)}
+.pc2{background:var(--cbg);color:var(--cdk)}
+.pp{background:var(--pbg);color:var(--pdk)}
+.po{background:#e8f0e4;color:#2a6018}
+/* highlight for the sorted metric */
+.hi-ret{background:#fff3e0;color:#7a4500;font-weight:700;padding:1px 6px;border-radius:6px}
+.hi-watch{background:#e8eafd;color:#2e308f;font-weight:700;padding:1px 6px;border-radius:6px}
+.hi-er{background:#e4f7ee;color:#0e5a38;font-weight:700;padding:1px 6px;border-radius:6px}
+
+/* Table */
+.tw{overflow-x:auto;border:.5px solid var(--bd);border-radius:var(--rl);background:var(--sur)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--sur2);border-bottom:.5px solid var(--bd2)}
+th{padding:8px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--t3);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:var(--t1)}
+th.sorted{color:var(--t1)}
+td{padding:7px 12px;border-bottom:.5px solid var(--bd);vertical-align:middle;color:var(--t2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#f8f7f3}
+.cc-cell{max-width:260px;color:var(--t1);font-weight:500;font-size:12px;line-height:1.4}
+.vr{color:var(--rdk);font-weight:600}.vg{color:var(--gdk);font-weight:600}
+.fbtns{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
+.fb{background:var(--sur2);border:.5px solid var(--bd);border-radius:20px;padding:4px 12px;font-size:12px;cursor:pointer;font-family:var(--font);color:var(--t2)}
+.fb.active{background:var(--t1);color:#fff;border-color:var(--t1)}
+
+/* Pillar */
+.g2h{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+
+/* Reco */
+.rg{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rc{border:.5px solid var(--bd);border-radius:var(--rl);padding:1.1rem;background:var(--sur)}
+.rn{font-size:22px;font-weight:700;color:var(--t3);margin-bottom:5px;line-height:1}
+.rt{font-size:13px;font-weight:600;margin-bottom:6px;line-height:1.45}
+.rw{font-size:11px;color:var(--t3);line-height:1.55}
+.ins{margin-top:12px;padding:10px 14px;background:var(--sur2);border-radius:var(--r);border:.5px solid var(--bd);font-size:12px;color:var(--t2);line-height:1.6}
+
+@media(max-width:768px){
+  .wrap{padding:1rem}
+  .krow,.m3,.g2,.g2h,.rg{grid-template-columns:1fr}
+  .hdr{padding:.75rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-l">
+    <div class="logo"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 7v6l8 5 8-5V7L10 2z" fill="white" opacity=".9"/></svg></div>
+    <div><div class="ht">WUBWUB · TikTok Dashboard</div><div class="hs">Content Performance · มี.ค. – พ.ค. 2026 · v4</div></div>
+  </div>
+  <div class="hdate" id="hdate"></div>
+</div>
+
+<div class="wrap">
+
+  <!-- KPI -->
+  <div class="krow">
+    <div class="kpi"><div class="kl">ยอดวิว (สัปดาห์ล่าสุด)</div><div class="kv">13,915</div><div class="ks up">▲ 38.6% vs สัปดาห์ก่อน</div></div>
+    <div class="kpi"><div class="kl">Engagement รวม</div><div class="kv">198</div><div class="ks up">▲ 38.5% vs สัปดาห์ก่อน</div></div>
+    <div class="kpi"><div class="kl">คลิปทั้งหมด</div><div class="kv">39</div><div class="ks nu">04 มี.ค. – 03 พ.ค. 2026</div></div>
+    <div class="kpi"><div class="kl">สัปดาห์ที่ดีที่สุด</div><div class="kv">15,268</div><div class="ks nu">views · 09 มี.ค. 2026</div></div>
+  </div>
+
+  <!-- 3 Metrics -->
+  <div class="m3">
+    <div class="mc fl">
+      <div class="mc-hd"><div class="mc-nm">5-Sec Retention</div><span class="badge bfl">ต่ำกว่าเป้า</span></div>
+      <div class="mv red">14.9%</div>
+      <div class="mt r">เป้าหมาย 40% · ขาดอีก 25.1%</div>
+      <div class="pb"><div class="pf" style="width:37%;background:var(--red)"></div></div>
+      <div class="mn r">สูงสุดที่เคยทำได้: 24% (24 มี.ค. 2026)</div>
+    </div>
+    <div class="mc fl">
+      <div class="mc-hd"><div class="mc-nm">Avg. Watch Time %</div><span class="badge bfl">ต่ำกว่าเป้า</span></div>
+      <div class="mv red">10.4%</div>
+      <div class="mt r">เป้าหมาย 20% · ขาดอีก 9.6%</div>
+      <div class="pb"><div class="pf" style="width:52%;background:var(--red)"></div></div>
+      <div class="mn r">สูงสุดที่เคยทำได้: 21% (24 มี.ค. 2026)</div>
+    </div>
+    <div class="mc fl">
+      <div class="mc-hd"><div class="mc-nm">Engagement Rate %</div><span class="badge bfl">ต่ำกว่าเป้า</span></div>
+      <div class="mv red">1.46%</div>
+      <div class="mt r">เป้าหมาย 5% · ขาดอีก 3.54%</div>
+      <div class="pb"><div class="pf" style="width:29%;background:var(--red)"></div></div>
+      <div class="mn r">สูงสุดที่เคยทำได้: 3.99% (29 มี.ค. 2026)</div>
+    </div>
+  </div>
+
+  <!-- Alert: OK this week -->
+  <div class="alrt ok">
+    <svg style="flex-shrink:0;margin-top:1px" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#1b9664"/><path d="M4.5 8l2.5 2.5 4.5-4.5" stroke="white" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div class="at">✅ <strong>สัปดาห์ล่าสุด (27 เม.ย. – 03 พ.ค.)</strong> Views +38.6% และ Engagement +38.5% vs สัปดาห์ก่อน — ไม่มี flag การลดลง 20%+</div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="sw('metrics',this)">แนวโน้ม 3 Metrics</button>
+    <button class="tab" onclick="sw('views',this)">Views & Engagement</button>
+    <button class="tab" onclick="sw('top5',this)">Top 5 Content</button>
+    <button class="tab" onclick="sw('all',this)">คลิปทั้งหมด (39)</button>
+    <button class="tab" onclick="sw('pillars',this)">Content Pillars</button>
+    <button class="tab" onclick="sw('reco',this)">แนะนำสัปดาห์หน้า</button>
+  </div>
+
+  <!-- Panel: Metrics -->
+  <div id="p-metrics" class="pnl active">
+    <div class="sec">แนวโน้มรายสัปดาห์ vs เป้าหมาย (มี.ค. – พ.ค. 2026)</div>
+    <div class="cc">
+      <div class="ct">5-Sec Retention % — เป้าหมาย 40%</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#bd4c24"></span>Retention จริง</span><span class="li"><span class="lx" style="border-color:#d43f3f"></span>เป้าหมาย 40%</span></div>
+      <div class="cw" style="height:175px"><canvas id="rc"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">Avg. Watch Time % — เป้าหมาย 20%</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#6760d2"></span>Watch Time จริง</span><span class="li"><span class="lx" style="border-color:#6760d2"></span>เป้าหมาย 20%</span></div>
+      <div class="cw" style="height:175px"><canvas id="wc"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">Engagement Rate % — เป้าหมาย 5%</div>
+      <div class="leg"><span class="li"><span class="ld" style="background:#1b9664"></span>ER จริง</span><span class="li"><span class="lx" style="border-color:#1b9664"></span>เป้าหมาย 5%</span></div>
+      <div class="cw" style="height:175px"><canvas id="ec"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Panel: Views & Engagement -->
+  <div id="p-views" class="pnl">
+    <div class="sec">Views & Engagement รายสัปดาห์</div>
+    <div class="g2">
+      <div class="cc" style="margin:0"><div class="ct">ยอดวิวรวม</div><div class="leg"><span class="li"><span class="ld" style="background:#2878d0"></span>Views</span></div><div class="cw" style="height:240px"><canvas id="vc"></canvas></div></div>
+      <div class="cc" style="margin:0"><div class="ct">Engagement รวม</div><div class="leg"><span class="li"><span class="ld" style="background:#1b9664"></span>Engagement</span></div><div class="cw" style="height:240px"><canvas id="egc"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- Panel: Top 5 -->
+  <div id="p-top5" class="pnl">
+    <div class="sec">Top Content Rankings</div>
+    <div class="stabs">
+      <button class="stab active" onclick="sst('views',this)">🏆 ยอดวิวสูงสุด</button>
+      <button class="stab" onclick="sst('ret',this)">⏱ 5-Sec Retention สูงสุด</button>
+      <button class="stab" onclick="sst('watch',this)">👁 Avg. Watch Time สูงสุด</button>
+      <button class="stab" onclick="sst('er',this)">💬 Engagement Rate สูงสุด</button>
+    </div>
+
+    <!-- Sub: Views -->
+    <div id="sp-views" class="spnl active">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">จัดอันดับจาก <strong>ยอดวิว (Views)</strong> สูงสุด 5 อันดับ</div>
+      <div class="t5i"><div class="rnk r1">1</div><div style="flex:1;min-width:0"><div class="ti">ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind</div><div class="tm"><span class="chip">👁 <span class="cv">10,000</span></span><span class="chip">❤ <span class="cv">105</span></span><span class="chip">💾 <span class="cv">14</span></span><span class="chip">Ret: <span class="cv">23%</span></span><span class="chip">Watch: <span class="cv">15.6%</span></span><span class="chip">ER: <span class="cv">1.21%</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">04 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r2">2</div><div style="flex:1;min-width:0"><div class="ti">วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต ใช้ตัว interior ช่วยได้เยอะครับ</div><div class="tm"><span class="chip">👁 <span class="cv">7,086</span></span><span class="chip">❤ <span class="cv">43</span></span><span class="chip">💾 <span class="cv">2</span></span><span class="chip">Ret: <span class="cv">19%</span></span><span class="chip">Watch: <span class="cv">6.6%</span></span><span class="chip">ER: <span class="cv">0.66%</span></span><span class="pill pt">Knowledge</span><span style="font-size:10px;color:var(--t3)">08 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r3">3</div><div style="flex:1;min-width:0"><div class="ti">สายทำรถเยอะ ต้องจัดแล้ว sugar ขนาด 5 ลิตร ประหยัดสุด!</div><div class="tm"><span class="chip">👁 <span class="cv">5,873</span></span><span class="chip">❤ <span class="cv">47</span></span><span class="chip">💾 <span class="cv">3</span></span><span class="chip">Ret: <span class="cv">12%</span></span><span class="chip">Watch: <span class="cv">10.1%</span></span><span class="chip">ER: <span class="cv">0.87%</span></span><span class="pill pc2">Sale</span><span style="font-size:10px;color:var(--t3)">15 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">4</div><div style="flex:1;min-width:0"><div class="ti">เอาคราบน้ำ คราบแป้งสงกรานต์ที่ล้างยังไง ก็ล้างไม่ออก จะออกด้วยวิธีนี้ครับ</div><div class="tm"><span class="chip">👁 <span class="cv">5,245</span></span><span class="chip">❤ <span class="cv">58</span></span><span class="chip">💾 <span class="cv">9</span></span><span class="chip">Ret: <span class="cv">19%</span></span><span class="chip">Watch: <span class="cv">11.3%</span></span><span class="chip">ER: <span class="cv">1.35%</span></span><span class="pill po">Seasonal</span><span style="font-size:10px;color:var(--t3)">20 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">5</div><div style="flex:1;min-width:0"><div class="ti">กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆนะครับ เพราะปกติจะมีสารปรอทเคลือบอยู่</div><div class="tm"><span class="chip">👁 <span class="cv">5,025</span></span><span class="chip">❤ <span class="cv">50</span></span><span class="chip">💾 <span class="cv">6</span></span><span class="chip">Ret: <span class="cv">16%</span></span><span class="chip">Watch: <span class="cv">10.1%</span></span><span class="chip">ER: <span class="cv">1.17%</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">27 มี.ค. 2026</span></div></div></div>
+    </div>
+
+    <!-- Sub: Retention -->
+    <div id="sp-ret" class="spnl">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">จัดอันดับจาก <strong>5-Sec Retention %</strong> สูงสุด 5 อันดับ (เป้าหมาย 40%)</div>
+      <div class="t5i"><div class="rnk r1">1</div><div style="flex:1;min-width:0"><div class="ti">ผ้าที่เช็ดรถต้องเป็นผ้าไร้ขอบเท่านั้นเลยครับ ทำยังไงกับผิวรถจะไม่เกิดรอยครับ</div><div class="tm"><span class="chip">👁 <span class="cv">674</span></span><span class="hi-ret">Ret: 24%</span><span class="chip">Watch: <span class="cv">21.0%</span></span><span class="chip">ER: <span class="cv">2.08%</span></span><span class="chip">❤ <span class="cv">13</span></span><span class="pill pa">Review</span><span style="font-size:10px;color:var(--t3)">24 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r2">2</div><div style="flex:1;min-width:0"><div class="ti">ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind</div><div class="tm"><span class="chip">👁 <span class="cv">10,000</span></span><span class="hi-ret">Ret: 23%</span><span class="chip">Watch: <span class="cv">15.6%</span></span><span class="chip">ER: <span class="cv">1.21%</span></span><span class="chip">❤ <span class="cv">105</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">04 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r3">3</div><div style="flex:1;min-width:0"><div class="ti">น้ำยา 2 ตัวนี้ใช้กับกระจกเหมือนกัน แต่จุดประสงค์การใช้งานต่างกันนะคร้าบ</div><div class="tm"><span class="chip">👁 <span class="cv">401</span></span><span class="hi-ret">Ret: 23%</span><span class="chip">Watch: <span class="cv">11.7%</span></span><span class="chip">ER: <span class="cv">3.99%</span></span><span class="chip">❤ <span class="cv">11</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">29 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">4</div><div style="flex:1;min-width:0"><div class="ti">3 ตัวนี้ใช้ล้างสี เคลียร์คราบพร้อมเคลือบจบหลังสงกรานต์ครับ</div><div class="tm"><span class="chip">👁 <span class="cv">2,570</span></span><span class="hi-ret">Ret: 22%</span><span class="chip">Watch: <span class="cv">10.8%</span></span><span class="chip">ER: <span class="cv">1.91%</span></span><span class="chip">❤ <span class="cv">39</span></span><span class="pill pt">Knowledge</span><span style="font-size:10px;color:var(--t3)">14 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">5</div><div style="flex:1;min-width:0"><div class="ti">เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถแบบสังเกตได้</div><div class="tm"><span class="chip">👁 <span class="cv">807</span></span><span class="hi-ret">Ret: 21%</span><span class="chip">Watch: <span class="cv">14.7%</span></span><span class="chip">ER: <span class="cv">3.72%</span></span><span class="chip">❤ <span class="cv">28</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">19 มี.ค. 2026</span></div></div></div>
+    </div>
+
+    <!-- Sub: Watch Time -->
+    <div id="sp-watch" class="spnl">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">จัดอันดับจาก <strong>Avg. Watch Time %</strong> สูงสุด 5 อันดับ (เป้าหมาย 20%)</div>
+      <div class="t5i"><div class="rnk r1">1</div><div style="flex:1;min-width:0"><div class="ti">ผ้าที่เช็ดรถต้องเป็นผ้าไร้ขอบเท่านั้นเลยครับ ทำยังไงกับผิวรถจะไม่เกิดรอยครับ</div><div class="tm"><span class="chip">👁 <span class="cv">674</span></span><span class="chip">Ret: <span class="cv">24%</span></span><span class="hi-watch">Watch: 21.0%</span><span class="chip">ER: <span class="cv">2.08%</span></span><span class="chip">❤ <span class="cv">13</span></span><span class="pill pa">Review</span><span style="font-size:10px;color:var(--t3)">24 มี.ค. 2026 ⭐ เกินเป้า!</span></div></div></div>
+      <div class="t5i"><div class="rnk r2">2</div><div style="flex:1;min-width:0"><div class="ti">ใครที่ตามหาน้ำยาเคลือบที่เช็ดง่ายมาก ง่ายๆพอๆกับกลุ่ม quick detailer แนะนำ Reflex</div><div class="tm"><span class="chip">👁 <span class="cv">2,821</span></span><span class="chip">Ret: <span class="cv">19%</span></span><span class="hi-watch">Watch: 18.1%</span><span class="chip">ER: <span class="cv">1.77%</span></span><span class="chip">❤ <span class="cv">39</span></span><span class="pill po">Awareness</span><span style="font-size:10px;color:var(--t3)">09 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r3">3</div><div style="flex:1;min-width:0"><div class="ti">เริ่มแล้วนะค้าบ แจกจนกว่าของจะหมด</div><div class="tm"><span class="chip">👁 <span class="cv">1,162</span></span><span class="chip">Ret: <span class="cv">14%</span></span><span class="hi-watch">Watch: 16.1%</span><span class="chip">ER: <span class="cv">2.07%</span></span><span class="chip">❤ <span class="cv">17</span></span><span class="pill pp">Brand Expert</span><span style="font-size:10px;color:var(--t3)">01 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">4</div><div style="flex:1;min-width:0"><div class="ti">ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind</div><div class="tm"><span class="chip">👁 <span class="cv">10,000</span></span><span class="chip">Ret: <span class="cv">23%</span></span><span class="hi-watch">Watch: 15.6%</span><span class="chip">ER: <span class="cv">1.21%</span></span><span class="chip">❤ <span class="cv">105</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">04 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">5</div><div style="flex:1;min-width:0"><div class="ti">เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถแบบสังเกตได้</div><div class="tm"><span class="chip">👁 <span class="cv">807</span></span><span class="chip">Ret: <span class="cv">21%</span></span><span class="hi-watch">Watch: 14.7%</span><span class="chip">ER: <span class="cv">3.72%</span></span><span class="chip">❤ <span class="cv">28</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">19 มี.ค. 2026</span></div></div></div>
+    </div>
+
+    <!-- Sub: ER -->
+    <div id="sp-er" class="spnl">
+      <div style="font-size:11px;color:var(--t3);margin-bottom:10px">จัดอันดับจาก <strong>Engagement Rate %</strong> สูงสุด 5 อันดับ (เป้าหมาย 5%)</div>
+      <div class="t5i"><div class="rnk r1">1</div><div style="flex:1;min-width:0"><div class="ti">น้ำยา 2 ตัวนี้ใช้กับกระจกเหมือนกัน แต่จุดประสงค์การใช้งานต่างกันนะคร้าบ</div><div class="tm"><span class="chip">👁 <span class="cv">401</span></span><span class="chip">Ret: <span class="cv">23%</span></span><span class="chip">Watch: <span class="cv">11.7%</span></span><span class="hi-er">ER: 3.99%</span><span class="chip">❤ <span class="cv">11</span></span><span class="chip">💾 <span class="cv">5</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">29 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r2">2</div><div style="flex:1;min-width:0"><div class="ti">เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถแบบสังเกตได้</div><div class="tm"><span class="chip">👁 <span class="cv">807</span></span><span class="chip">Ret: <span class="cv">21%</span></span><span class="chip">Watch: <span class="cv">14.7%</span></span><span class="hi-er">ER: 3.72%</span><span class="chip">❤ <span class="cv">28</span></span><span class="chip">💾 <span class="cv">2</span></span><span class="pill pi">Interview</span><span style="font-size:10px;color:var(--t3)">19 มี.ค. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk r3">3</div><div style="flex:1;min-width:0"><div class="ti">มันมาพร้อมสงกรานต์จ้า</div><div class="tm"><span class="chip">👁 <span class="cv">811</span></span><span class="chip">Ret: <span class="cv">21%</span></span><span class="chip">Watch: <span class="cv">7.7%</span></span><span class="hi-er">ER: 2.96%</span><span class="chip">❤ <span class="cv">22</span></span><span class="chip">💾 <span class="cv">1</span></span><span class="pill pp">Lifestyle</span><span style="font-size:10px;color:var(--t3)">11 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">4</div><div style="flex:1;min-width:0"><div class="ti">เพื่อน้องกี้พี่ทำได้</div><div class="tm"><span class="chip">👁 <span class="cv">678</span></span><span class="chip">Ret: <span class="cv">20%</span></span><span class="chip">Watch: <span class="cv">5.6%</span></span><span class="hi-er">ER: 2.36%</span><span class="chip">❤ <span class="cv">14</span></span><span class="chip">💬 <span class="cv">2</span></span><span class="pill pp">Lifestyle</span><span style="font-size:10px;color:var(--t3)">09 เม.ย. 2026</span></div></div></div>
+      <div class="t5i"><div class="rnk">5</div><div style="flex:1;min-width:0"><div class="ti">เป็นสายไหนกันครับ ส่วนแอดสายตี้😆</div><div class="tm"><span class="chip">👁 <span class="cv">1,214</span></span><span class="chip">Ret: <span class="cv">19%</span></span><span class="chip">Watch: <span class="cv">9.2%</span></span><span class="hi-er">ER: 2.31%</span><span class="chip">❤ <span class="cv">20</span></span><span class="chip">💾 <span class="cv">5</span></span><span class="pill pp">Lifestyle</span><span style="font-size:10px;color:var(--t3)">09 เม.ย. 2026</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- Panel: All Posts -->
+  <div id="p-all" class="pnl">
+    <div class="sec">คลิปทั้งหมด 39 คลิป</div>
+    <div class="fbtns" id="fbtns"></div>
+    <div class="tw"><table><thead><tr>
+      <th>#</th><th>วันที่</th><th>Pillar</th><th>Content</th>
+      <th onclick="sortTbl('views')" id="th-views">Views ↕</th>
+      <th>Eng</th><th>❤</th><th>💬</th><th>🔁</th><th>💾</th>
+      <th onclick="sortTbl('ret')" id="th-ret">5s Ret ↕</th>
+      <th onclick="sortTbl('watch')" id="th-watch">Watch% ↕</th>
+      <th onclick="sortTbl('er')" id="th-er">ER% ↕</th>
+    </tr></thead><tbody id="tb"></tbody></table></div>
+    <div style="font-size:11px;color:var(--t3);margin-top:8px">💡 คลิก Header คอลัมน์เพื่อเรียงลำดับ</div>
+  </div>
+
+  <!-- Panel: Pillars -->
+  <div id="p-pillars" class="pnl">
+    <div class="sec">Performance แยกตาม Content Pillar</div>
+    <div class="g2h">
+      <div class="cc" style="margin:0"><div class="ct">ยอดวิวรวมแยก Pillar</div><div class="cw" style="height:300px"><canvas id="pvc"></canvas></div></div>
+      <div class="cc" style="margin:0"><div class="ct">Engagement รวมแยก Pillar</div><div class="cw" style="height:300px"><canvas id="pec"></canvas></div></div>
+    </div>
+  </div>
+
+  <!-- Panel: Reco -->
+  <div id="p-reco" class="pnl">
+    <div class="sec">แนะนำ 3 หัวข้อสำหรับสัปดาห์หน้า (พ.ค. 2026)</div>
+    <div class="rg">
+      <div class="rc">
+        <div class="rn">01</div><div style="margin-bottom:8px"><span class="pill pt">Knowledge</span></div>
+        <div class="rt">ทำไมน้ำยาภายในรถต้องไม่มีกลิ่น — สารเคมีที่แอบซ่อนในผลิตภัณฑ์ทั่วไป</div>
+        <div class="rw">Knowledge เรื่องกลิ่น-สารเคมีมี ER ต่อเนื่อง 1.54–1.98% + Knowledge เป็น Pillar ที่ views รวมสูงสุด เน้น hook ความ "ไม่รู้มาก่อน" เพื่อดัน Retention</div>
+      </div>
+      <div class="rc">
+        <div class="rn">02</div><div style="margin-bottom:8px"><span class="pill pi">Interview</span></div>
+        <div class="rt">5 ข้อที่ไม่ควรทำกับรถหน้าร้อน — myth-busting จากผู้เชี่ยวชาญ</div>
+        <div class="rw">Interview มี Retention เฉลี่ยสูงสุดในทุก Pillar (17–23%) และ Watch Time ดีกว่าเฉลี่ย — myth-busting กระตุ้น Comment & Save ช่วยดัน ER เข้าใกล้เป้า 5%</div>
+      </div>
+      <div class="rc">
+        <div class="rn">03</div><div style="margin-bottom:8px"><span class="pill pa">Review</span></div>
+        <div class="rt">Before/After: ผ้าไร้ขอบ vs ผ้าทั่วไป ความแตกต่างที่ผิวรถบอกได้เอง</div>
+        <div class="rw">Review "ผ้าไร้ขอบ" มี Retention 24% และ Watch Time 21% — สูงที่สุดในข้อมูล Before/After format ช่วยเพิ่ม Save rate และ Watch Time ให้เข้าใกล้เป้า 20%</div>
+      </div>
+    </div>
+    <div class="ins">💡 <strong>Insight พ.ค. 2026:</strong> สัปดาห์ล่าสุดฟื้นตัวแรง +38% — Lifestyle content (ER สูงสุด 2.36–2.96%) แม้ Views ต่ำ แต่ดึง engagement ได้ดีมาก ควรผสม Lifestyle 1 คลิป/สัปดาห์เพื่อเพิ่ม ER รวม และรักษา Interview + Knowledge ให้ครบ 2 Pillar ต่อสัปดาห์ เป้า Retention 40% ยังต้องพัฒนา hook 5 วิแรกต่อเนื่อง</div>
+  </div>
+
+</div>
+
+<script>
+document.getElementById('hdate').textContent = new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+
+// Weekly data Mar-May 2026
+const WK  = ['02 มี.ค.','09 มี.ค.','16 มี.ค.','23 มี.ค.','30 มี.ค.','06 เม.ย.','13 เม.ย.','20 เม.ย.','27 เม.ย.'];
+const VW  = [11950,15268,7558,9103,3026,11439,8441,10037,13915];
+const EG  = [138,226,128,120,48,131,146,143,198];
+const RET = [18,17.2,14.8,18.6,13,19,16.6,16,14.9];
+const WCH = [12.9,12,12.3,12.7,12.2,7.9,11.1,10.6,10.4];
+const ER  = [1.04,1.71,1.97,2.01,1.68,1.85,1.6,1.38,1.46];
+const n   = WK.length;
+
+const baseO={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false}},y:{ticks:{font:{size:10}}}}};
+
+function lineC(id,data,col,target,ymax){
+  new Chart(document.getElementById(id),{type:'line',data:{labels:WK,datasets:[
+    {data,borderColor:col,backgroundColor:col+'18',fill:true,tension:.35,pointRadius:3.5,pointBackgroundColor:col,borderWidth:2},
+    {data:Array(n).fill(target),borderColor:col,borderDash:[5,4],pointRadius:0,borderWidth:1.5,fill:false}
+  ]},options:{...baseO,scales:{x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false}},y:{max:ymax,ticks:{font:{size:10},callback:v=>v+'%'}}}}});
+}
+function barC(id,data,col){new Chart(document.getElementById(id),{type:'bar',data:{labels:WK,datasets:[{data,backgroundColor:col,borderRadius:3}]},options:{...baseO}});}
+
+const PL=['Interview','Knowledge','Review','Other','Awareness','Sale','Lifestyle','Brand Expert'];
+const PV=[26291,25009,9730,9292,8902,7648,2703,1162];
+const PE=[387,309,148,121,152,69,68,24];
+const PC=['#2878d0','#1b9664','#c07a10','#6a9f54','#bd4c24','#d4537e','#6760d2','#888780'];
+const hO={responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},indexAxis:'y',scales:{x:{ticks:{font:{size:10}}},y:{ticks:{font:{size:10}}}}};
+
+// All posts
+const POSTS=[
+  {date:'04 มี.ค. 2026',pillar:'Interview',content:'ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind',views:10000,eng:121,love:105,comment:0,share:2,save:14,ret:23,watch:15.6,er:1.21},
+  {date:'05 มี.ค. 2026',pillar:'Interview',content:'ตอบกลับ @Natakorn ภายในรถโดนน้ำหอมหยดใส่แล้วเป็นรอยด่าง',views:1950,eng:17,love:14,comment:1,share:0,save:2,ret:13,watch:10.3,er:0.87},
+  {date:'09 มี.ค. 2026',pillar:'Awareness',content:'ใครที่ตามหาน้ำยาเคลือบที่เช็ดง่ายมาก ง่ายๆพอๆกับ quick detailer แนะนำ Reflex',views:2821,eng:50,love:39,comment:2,share:2,save:7,ret:19,watch:18.1,er:1.77},
+  {date:'13 มี.ค. 2026',pillar:'Awareness',content:'Set นี้ทนอย่าต่ำคือสามเดือน คุ้ม!!',views:2482,eng:43,love:32,comment:0,share:0,save:11,ret:21,watch:11.1,er:1.73},
+  {date:'14 มี.ค. 2026',pillar:'Interview',content:'คราบขี้ไคล ขัดด้วยมือสบายๆ',views:2820,eng:53,love:41,comment:3,share:2,save:7,ret:17,watch:11.5,er:1.88},
+  {date:'15 มี.ค. 2026',pillar:'Interview',content:'Hard coat ตัวเดียวที่ใช้งานง่าย สามารถทำเองได้เลย',views:1272,eng:29,love:25,comment:0,share:0,save:4,ret:17,watch:9.3,er:2.28},
+  {date:'15 มี.ค. 2026',pillar:'Sale',content:'สายทำรถเยอะ ต้องจัดแล้ว sugar ขนาด 5 ลิตร ประหยัดสุด!',views:5873,eng:51,love:47,comment:0,share:1,save:3,ret:12,watch:10.1,er:0.87},
+  {date:'16 มี.ค. 2026',pillar:'Awareness',content:'ใช้แล้วรถนุ่ม แนะนำ Reflex เลยครับ',views:3599,eng:59,love:47,comment:3,share:2,save:7,ret:16,watch:11.0,er:1.64},
+  {date:'18 มี.ค. 2026',pillar:'Interview',content:'ตอบกลับ @tt คราบครีม แนะนำน้ำยาและทิชชู่เปียก Refresh เลยครับ',views:1377,eng:21,love:16,comment:2,share:1,save:2,ret:12,watch:11.8,er:1.53},
+  {date:'19 มี.ค. 2026',pillar:'Interview',content:'เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถแบบสังเกตได้',views:807,eng:30,love:28,comment:0,share:0,save:2,ret:21,watch:14.7,er:3.72},
+  {date:'21 มี.ค. 2026',pillar:'Sale',content:'ทิชชูเปียกสำหรับเช็ดเก็บฝุ่นภายในรถแบบไม่เงา',views:1775,eng:18,love:15,comment:0,share:0,save:3,ret:10,watch:11.5,er:1.01},
+  {date:'23 มี.ค. 2026',pillar:'Knowledge',content:'ไม่ใช่แค่เงา แต่ให้ความนุ่มมือจัดๆเลยตัวนี้',views:2228,eng:14,love:13,comment:0,share:0,save:1,ret:11,watch:9.1,er:0.63},
+  {date:'24 มี.ค. 2026',pillar:'Review',content:'ผ้าที่เช็ดรถต้องเป็นผ้าไร้ขอบเท่านั้น ทำยังไงกับผิวรถจะไม่เกิดรอย',views:674,eng:14,love:13,comment:0,share:0,save:1,ret:24,watch:21.0,er:2.08},
+  {date:'27 มี.ค. 2026',pillar:'Interview',content:'กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆ เพราะมีสารปรอทเคลือบอยู่',views:5025,eng:59,love:50,comment:0,share:3,save:6,ret:16,watch:10.1,er:1.17},
+  {date:'28 มี.ค. 2026',pillar:'Interview',content:'ฟิล์มกันรอย ใช้ Reflex ได้เลย น้ำยาจะไม่บดบังความใสและทำให้ฟิล์มหมอง',views:775,eng:17,love:17,comment:0,share:0,save:0,ret:19,watch:11.5,er:2.19},
+  {date:'29 มี.ค. 2026',pillar:'Interview',content:'น้ำยา 2 ตัวนี้ใช้กับกระจกเหมือนกัน แต่จุดประสงค์การใช้งานต่างกัน',views:401,eng:16,love:11,comment:0,share:0,save:5,ret:23,watch:11.7,er:3.99},
+  {date:'01 เม.ย. 2026',pillar:'Brand Expert',content:'เริ่มแล้วนะค้าบ แจกจนกว่าของจะหมด',views:1162,eng:24,love:17,comment:3,share:3,save:1,ret:14,watch:16.1,er:2.07},
+  {date:'02 เม.ย. 2026',pillar:'Interview',content:'คราบน้ำบาดาล มักมีระดับความรุนแรง 2 แบบ',views:1864,eng:24,love:21,comment:0,share:0,save:3,ret:12,watch:8.4,er:1.29},
+  {date:'08 เม.ย. 2026',pillar:'Knowledge',content:'วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต ใช้ interior ช่วยได้เยอะ',views:7086,eng:47,love:43,comment:0,share:2,save:2,ret:19,watch:6.6,er:0.66},
+  {date:'09 เม.ย. 2026',pillar:'Lifestyle',content:'เพื่อน้องกี้พี่ทำได้',views:678,eng:16,love:14,comment:2,share:0,save:0,ret:20,watch:5.6,er:2.36},
+  {date:'09 เม.ย. 2026',pillar:'Lifestyle',content:'เป็นสายไหนกันครับ ส่วนแอดสายตี้😆',views:1214,eng:28,love:20,comment:3,share:0,save:5,ret:19,watch:9.2,er:2.31},
+  {date:'11 เม.ย. 2026',pillar:'Lifestyle',content:'มันมาพร้อมสงกรานต์จ้า',views:811,eng:24,love:22,comment:1,share:0,save:1,ret:21,watch:7.7,er:2.96},
+  {date:'11 เม.ย. 2026',pillar:'Review',content:'คราบเล็กๆน้อยๆในรถ บางทีก็น่ารำคาญ กว่าจะรอล้างรถเผลอๆเป็นเดือน ใช้ interior',views:1650,eng:16,love:12,comment:2,share:1,save:1,ret:16,watch:10.3,er:0.97},
+  {date:'13 เม.ย. 2026',pillar:'Knowledge',content:'รถปัจจุบันจะมีตัวกรองที่ปล่อยประจุออกมาในอากาศ ทำให้ฝุ่นมีโมเลกุลหนักขึ้น',views:1317,eng:14,love:12,comment:0,share:0,save:2,ret:13,watch:7.0,er:1.06},
+  {date:'14 เม.ย. 2026',pillar:'Knowledge',content:'3 ตัวนี้ใช้ล้างสี เคลียร์คราบพร้อมเคลือบจบหลังสงกรานต์ครับ',views:2570,eng:49,love:39,comment:0,share:4,save:6,ret:22,watch:10.8,er:1.91},
+  {date:'14 เม.ย. 2026',pillar:'Knowledge',content:'ลูกค้าถามมาว่าหลังใช้ตัวนี้แล้วต้องเคลือบซ้ำไหม จริงๆตัวนี้มีสารเคลือบในตัว',views:1066,eng:11,love:10,comment:0,share:0,save:1,ret:18,watch:14.5,er:1.03},
+  {date:'16 เม.ย. 2026',pillar:'Review',content:'ตัวเปียกแล้วนั่งในรถ ซักพักนึงมีกลิ่นอับ สามารถใช้ตัวนี้ได้ครับ',views:1142,eng:21,love:19,comment:0,share:0,save:2,ret:14,watch:12.1,er:1.84},
+  {date:'16 เม.ย. 2026',pillar:'Knowledge',content:'ใช้น้ำเปล่าเช็ดก็ได้นี่!',views:2346,eng:51,love:27,comment:1,share:18,save:5,ret:16,watch:11.1,er:2.17},
+  {date:'20 เม.ย. 2026',pillar:'Review',content:'ตัวสามัญประจำรถ แอดเองยังเอาติดไว้ข้างรถเลยครับ',views:2073,eng:31,love:26,comment:0,share:0,save:5,ret:14,watch:8.6,er:1.50},
+  {date:'20 เม.ย. 2026',pillar:'Other',content:'เอาคราบน้ำ คราบแป้งสงกรานต์ที่ล้างยังไง ก็ล้างไม่ออก จะออกด้วยวิธีนี้ครับ',views:5245,eng:71,love:58,comment:1,share:3,save:9,ret:19,watch:11.3,er:1.35},
+  {date:'21 เม.ย. 2026',pillar:'Knowledge',content:'น้ำยาภายในของแบรนด์จะไม่มีกลิ่น เพราะกลิ่นที่เติมลงไปมีสารระเหย',views:1784,eng:34,love:30,comment:0,share:0,save:4,ret:18,watch:13.3,er:1.91},
+  {date:'26 เม.ย. 2026',pillar:'Knowledge',content:'เวลาทำความสะอาดรถ จะทำก็ต่อเมื่อเริ่มสกปรกตามความรู้สึก',views:935,eng:7,love:7,comment:0,share:0,save:0,ret:13,watch:9.0,er:0.75},
+  {date:'27 เม.ย. 2026',pillar:'Knowledge',content:'สาเหตุที่ WIBWUB ไม่ใส่กลิ่นสำหรับภายในก็เพราะสาเหตุนี้เลยครับ',views:2205,eng:34,love:31,comment:0,share:0,save:3,ret:15,watch:13.6,er:1.54},
+  {date:'27 เม.ย. 2026',pillar:'Knowledge',content:'ตัวบรรยากาศสามารถใช้ได้สองวิธี คือฉีดที่พรมหรือฉีดไปยังจุดที่กำเนิดกลิ่น',views:1161,eng:23,love:21,comment:0,share:0,save:2,ret:20,watch:11.3,er:1.98},
+  {date:'29 เม.ย. 2026',pillar:'Knowledge',content:'ไม่ต้องปัดฝุ่นก่อน ตัวนี้ฉีดแล้วเช็ดได้เลย เก็บฝุ่นพร้อมทำความสะอาดในขั้นตอนเดียว',views:2311,eng:25,love:22,comment:0,share:1,save:2,ret:15,watch:10.8,er:1.08},
+  {date:'30 เม.ย. 2026',pillar:'Review',content:'ผ้าซับน้ำ Monster ผืนใหญ่ ทั้งคันเอาอยู่จริง',views:1828,eng:26,love:23,comment:0,share:1,save:2,ret:13,watch:8.8,er:1.42},
+  {date:'01 พ.ค. 2026',pillar:'Review',content:'ภายนอกใส ภายในเนี๊ยบ 2 ตัวนี้มีติดรถไว้ จบเรื่องฝุ่น ใช้งานง่าย ดูแลรถได้ทุกวัน',views:2363,eng:40,love:35,comment:0,share:1,save:4,ret:16,watch:8.0,er:1.69},
+  {date:'02 พ.ค. 2026',pillar:'Other',content:'ก็แดดมันร้อน~ ผิวแทบไหม้ แล้วทำไมภายในยังสวย ป้องกันด้วย UV Protect วัสดุภายในไม่ซีด',views:2028,eng:25,love:23,comment:1,share:0,save:1,ret:13,watch:7.9,er:1.23},
+  {date:'03 พ.ค. 2026',pillar:'Other',content:'มีค่า pH-Balance ไม่กัดเบาะ เช็ดได้ทุกพื้นผิวภายในรถ ใช้งานได้อย่างมั่นใจ',views:2019,eng:25,love:24,comment:0,share:0,save:1,ret:12,watch:12.4,er:1.24},
+];
+
+const pillColor={Interview:'pi',Knowledge:'pt',Review:'pa',Awareness:'pc2',Sale:'pc2',Lifestyle:'pp','Brand Expert':'pp',Other:'po'};
+const pillarsAll=[...new Set(POSTS.map(p=>p.pillar))].sort();
+
+let currentFilter='ALL', sortKey='views', sortAsc=false;
+let tblBuilt=false;
+
+function buildFiltBtns(){
+  const c=document.getElementById('fbtns');
+  const all=document.createElement('button');
+  all.className='fb active';all.textContent='ทั้งหมด ('+POSTS.length+')';
+  all.onclick=()=>{currentFilter='ALL';filtTable(all)};c.appendChild(all);
+  pillarsAll.forEach(p=>{
+    const cnt=POSTS.filter(x=>x.pillar===p).length;
+    const b=document.createElement('button');
+    b.className='fb';b.textContent=p+' ('+cnt+')';
+    b.onclick=()=>{currentFilter=p;filtTable(b)};c.appendChild(b);
+  });
+}
+
+function filtTable(btn){
+  document.querySelectorAll('.fb').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable();
+}
+
+function sortTbl(key){
+  if(sortKey===key) sortAsc=!sortAsc; else {sortKey=key;sortAsc=false;}
+  document.querySelectorAll('th[id^="th-"]').forEach(th=>th.classList.remove('sorted'));
+  const el=document.getElementById('th-'+key);
+  if(el){el.classList.add('sorted');el.textContent=({views:'Views',ret:'5s Ret',watch:'Watch%',er:'ER%'}[key])+(sortAsc?' ↑':' ↓');}
+  renderTable();
+}
+
+function renderTable(){
+  let data=currentFilter==='ALL'?[...POSTS]:POSTS.filter(p=>p.pillar===currentFilter);
+  data.sort((a,b)=>sortAsc?a[sortKey]-b[sortKey]:b[sortKey]-a[sortKey]);
+  const tb=document.getElementById('tb');tb.innerHTML='';
+  data.forEach((r,i)=>{
+    const rc=r.ret>=40?'vg':r.ret>=25?'':'vr';
+    const wc=r.watch>=20?'vg':r.watch>=15?'':'vr';
+    const ec=r.er>=5?'vg':r.er>=3?'':'vr';
+    const pc2=pillColor[r.pillar]||'';
+    tb.innerHTML+=`<tr>
+      <td style="color:var(--t3);font-size:11px">${i+1}</td>
+      <td style="white-space:nowrap;font-size:11px;color:var(--t3)">${r.date}</td>
+      <td><span class="pill ${pc2}">${r.pillar}</span></td>
+      <td class="cc-cell">${r.content}</td>
+      <td style="font-weight:600">${r.views.toLocaleString()}</td>
+      <td>${r.eng}</td><td>${r.love}</td><td>${r.comment}</td><td>${r.share}</td><td>${r.save}</td>
+      <td class="${rc}">${r.ret}%</td>
+      <td class="${wc}">${r.watch}%</td>
+      <td class="${ec}">${r.er}%</td>
+    </tr>`;
+  });
+}
+
+// Sub-tabs for Top5
+function sst(id,btn){
+  document.querySelectorAll('.stab').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.spnl').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sp-'+id).classList.add('active');
+}
+
+// Main tab switch
+const initd={};
+function sw(id,btn){
+  document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+  if(!initd[id]){
+    initd[id]=true;
+    if(id==='views'){barC('vc',VW,'#2878d0');barC('egc',EG,'#1b9664');}
+    if(id==='pillars'){
+      new Chart(document.getElementById('pvc'),{type:'bar',data:{labels:PL,datasets:[{data:PV,backgroundColor:PC,borderRadius:3}]},options:hO});
+      new Chart(document.getElementById('pec'),{type:'bar',data:{labels:PL,datasets:[{data:PE,backgroundColor:PC,borderRadius:3}]},options:hO});
+    }
+    if(id==='all'&&!tblBuilt){tblBuilt=true;buildFiltBtns();renderTable();}
+  }
+}
+
+// Init
+lineC('rc',RET,'#bd4c24',40,50);
+lineC('wc',WCH,'#6760d2',20,28);
+lineC('ec',ER,'#1b9664',5,6);
+</script>
+</body>
+</html>
