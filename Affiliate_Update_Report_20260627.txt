@@ -1,0 +1,37 @@
+✅ WIBWUB Affiliate Update — 27 มิ.ย. 2026
+📅 ช่วงข้อมูล: 1 มิ.ย. – 24 มิ.ย. 2026
+   (เลือกวันสุดท้าย = 24 มิ.ย. เพราะข้อมูลสมบูรณ์ถึงวันนี้ — แพลตฟอร์มขึ้น "อัปเดตเมื่อ 25 มิ.ย. 0:00";
+    ข้อมูล 25 มิ.ย. ยัง backfill ไม่ครบ จึงไม่ใช้)
+
+📁 ไฟล์ที่ย้ายแล้ว (Data Affiliate/):
+  ครีเอเตอร์/ ← Transaction_Analysis_Creator_List_20260601-20260624.xlsx
+  สินค้า/     ← Transaction_Analysis_Product_List_20260601-20260624.xlsx
+  วีดีโอ/     ← (ไม่ได้อัปเดต — export ค้างคิว "กำลังส่งออก" จาก data delay; dashboard ไม่ต้องใช้)
+  ไลฟ์สตรีม/ ← (ไม่ได้อัปเดต — export ค้างคิวเช่นกัน)
+
+📊 ตัวเลขเดือน มิ.ย. (1–24):
+   GMV:  ฿459,569
+   Net:  ฿452,171  (GMV − returns)
+   Comm: ฿57,144
+👥 Creators (GMV>0): 321
+
+🔄 อัปเดตในไฟล์:
+  WIBWUB_Affiliate_Dashboard.html
+    • AF_GMV[มิ.ย.] 459,379 → 459,569
+    • AF_NET[มิ.ย.] 451,981 → 452,171
+    • AF_CR [มิ.ย.] 308 → 321
+    • AF_COM[มิ.ย.] 57,144 (เท่าเดิม)
+    • PRODUCTS cr/vid: ตรงกับ product file อยู่แล้ว — ไม่ต้องแก้
+  WIBWUB_Mobile.html
+    • AFI_GMV/NET/COMM[มิ.ย.] = 459,569 / 452,171 / 57,144 (ถูกต้องอยู่แล้ว)
+    • KPI mks-grid: "321 creators · มิย.69" (ถูกต้องอยู่แล้ว)
+
+⚙️ sw.js: v249 → v250
+
+📌 หมายเหตุ:
+  • KPI "ครีเอเตอร์ที่ Active = 1,168" และ KPI strip ยอดรวม มี.ค.–มิ.ย. (฿2.75M ฯลฯ)
+    เป็นค่าสะสมหลายเดือน ไม่ใช่ค่ารายเดือน จึงไม่แตะ
+  • วิดีโอ/ไลฟ์ไม่ได้ export รอบนี้เพราะคิว export ค้างจาก platform data delay
+    — dashboard ใช้แค่ Creator + Product จึงอัปเดตครบตามที่ต้องการ
+
+📌 ขั้นตอนถัดไป: ดับเบิ้ลคลิก push_now.command เพื่อ push ขึ้น GitHub

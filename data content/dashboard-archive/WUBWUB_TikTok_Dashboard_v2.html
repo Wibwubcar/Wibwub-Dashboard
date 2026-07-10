@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WUBWUB TikTok Content Dashboard v2</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f4f0;--surface:#fff;--surface2:#f0ede5;--surface3:#e8e4da;
+  --border:rgba(0,0,0,.09);--border2:rgba(0,0,0,.16);
+  --text1:#18180e;--text2:#5a5952;--text3:#8a887f;
+  --red:#d94040;--red-bg:#fdf0f0;--red-border:#f2b3b3;--red-dark:#8f2222;
+  --green:#1e9a6a;--green-bg:#edf8f3;--green-border:#8fd4b5;--green-dark:#145c3e;
+  --blue:#2e7fd4;--blue-bg:#eaf3fd;--blue-dark:#1a4e8a;
+  --purple:#6e68d6;--purple-bg:#efeefd;--purple-dark:#3f3a9e;
+  --amber:#c97d12;--amber-bg:#fdf3e3;--amber-dark:#7a4c08;
+  --coral:#c45028;--coral-bg:#faf0eb;--coral-dark:#8a3318;
+  --teal:#1a9070;--teal-bg:#e5f6f1;--teal-dark:#0e5a46;
+  --r:8px;--rl:12px;
+  --font:'Noto Sans Thai','Sarabun',system-ui,sans-serif;
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text1);min-height:100vh;font-size:14px}
+
+/* Header */
+.hdr{background:var(--surface);border-bottom:.5px solid var(--border);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:20;gap:12px}
+.hdr-brand{display:flex;align-items:center;gap:10px}
+.hdr-logo{width:34px;height:34px;background:#111;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-title{font-size:15px;font-weight:600;letter-spacing:-.01em}
+.hdr-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.hdr-badge{font-size:11px;color:var(--text3);background:var(--surface2);padding:4px 10px;border-radius:20px;border:.5px solid var(--border);white-space:nowrap}
+
+.wrap{max-width:1120px;margin:0 auto;padding:1.5rem 1.75rem 4rem}
+
+/* KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:10px}
+.kpi{background:var(--surface2);border-radius:var(--r);padding:.9rem 1rem}
+.kpi-lbl{font-size:10px;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.kpi-val{font-size:25px;font-weight:600;line-height:1;margin-bottom:3px}
+.kpi-sub{font-size:11px}
+.up{color:var(--green-dark)} .dn{color:var(--red-dark)} .nu{color:var(--text3)}
+
+/* 3 Metric cards */
+.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:10px}
+.mc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:.9rem 1rem}
+.mc.flag{border-color:var(--red);background:var(--red-bg)}
+.mc-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:5px}
+.mc-name{font-size:10px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.mc-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.flag-badge{background:var(--red-bg);color:var(--red-dark);border:.5px solid var(--red-border)}
+.mc-val{font-size:30px;font-weight:600;line-height:1;margin-bottom:2px}
+.mc-val.red{color:var(--red-dark)}
+.mc-tgt{font-size:11px;color:var(--red-dark);margin-bottom:8px;opacity:.85}
+.prog-bg{height:5px;background:rgba(0,0,0,.08);border-radius:3px;overflow:hidden;margin-bottom:4px}
+.prog{height:100%;border-radius:3px}
+.mc-note{font-size:10px;color:var(--red-dark);opacity:.8}
+
+/* Alert */
+.alert{border-radius:var(--r);padding:.75rem 1rem;display:flex;align-items:flex-start;gap:10px;margin-bottom:1.25rem}
+.alert.danger{background:var(--red-bg);border:.5px solid var(--red-border)}
+.alert.warn{background:var(--amber-bg);border:.5px solid #e8c070}
+.alert.ok{background:var(--green-bg);border:.5px solid var(--green-border)}
+.alert-icon{flex-shrink:0;margin-top:1px}
+.alert-text{font-size:12.5px;font-weight:500;line-height:1.5}
+.danger .alert-text{color:var(--red-dark)}
+.warn .alert-text{color:var(--amber-dark)}
+.ok .alert-text{color:var(--green-dark)}
+
+/* Tabs */
+.tabs{display:flex;gap:0;margin-bottom:1.25rem;border-bottom:.5px solid var(--border2);overflow-x:auto}
+.tab{background:none;border:none;border-bottom:2px solid transparent;padding:9px 16px 11px;font-size:13px;cursor:pointer;color:var(--text3);font-family:var(--font);white-space:nowrap;transition:color .12s;margin-bottom:-.5px}
+.tab:hover{color:var(--text1)}
+.tab.active{color:var(--text1);font-weight:600;border-bottom-color:var(--text1)}
+.panel{display:none}
+.panel.active{display:block}
+
+.sec-title{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.07em;text-transform:uppercase;margin-bottom:12px}
+
+/* Cards */
+.cc{background:var(--surface);border:.5px solid var(--border);border-radius:var(--rl);padding:1.1rem 1.4rem;margin-bottom:12px}
+.cc-title{font-size:12px;color:var(--text2);font-weight:500;margin-bottom:8px}
+.chart-wrap{position:relative;width:100%}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.leg{display:flex;gap:14px;margin-bottom:10px;flex-wrap:wrap}
+.li{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)}
+.ld{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.lx{width:18px;height:0;border-top:2px dashed;flex-shrink:0}
+
+/* Top5 */
+.t5{border:.5px solid var(--border);border-radius:var(--r);padding:.85rem 1rem;margin-bottom:8px;background:var(--surface);display:flex;gap:12px;align-items:flex-start}
+.rnk{width:26px;height:26px;border-radius:50%;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:var(--text2);flex-shrink:0;margin-top:2px}
+.r1{background:var(--amber-bg);color:var(--amber-dark)}
+.r2{background:#e0ddd5;color:#5a5952}
+.r3{background:var(--coral-bg);color:var(--coral-dark)}
+.t5-title{font-size:13px;font-weight:500;margin-bottom:5px;line-height:1.45}
+.t5-meta{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.chip{font-size:11px;color:var(--text3)}
+.cv{font-weight:500;color:var(--text2)}
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500}
+.p-blue{background:var(--blue-bg);color:var(--blue-dark)}
+.p-teal{background:var(--teal-bg);color:var(--teal-dark)}
+.p-amber{background:var(--amber-bg);color:var(--amber-dark)}
+.p-coral{background:var(--coral-bg);color:var(--coral-dark)}
+.p-purple{background:var(--purple-bg);color:var(--purple-dark)}
+
+/* All posts table */
+.tbl-wrap{overflow-x:auto;border:.5px solid var(--border);border-radius:var(--rl);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{background:var(--surface2);border-bottom:.5px solid var(--border2)}
+th{padding:9px 12px;text-align:left;font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+td{padding:8px 12px;border-bottom:.5px solid var(--border);vertical-align:top;color:var(--text2)}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--surface2)}
+td.content-cell{max-width:260px;color:var(--text1);font-weight:500}
+.tbl-badge{font-size:10px;padding:1px 7px;border-radius:8px;font-weight:500;white-space:nowrap;display:inline-block}
+.val-red{color:var(--red-dark);font-weight:500}
+.val-ok{color:var(--green-dark);font-weight:500}
+
+/* Reco */
+.reco-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.rc{border:.5px solid var(--border);border-radius:var(--rl);padding:1.1rem;background:var(--surface)}
+.rc-num{font-size:22px;font-weight:700;color:var(--text3);margin-bottom:5px;line-height:1}
+.rc-title{font-size:13px;font-weight:600;margin-bottom:6px;line-height:1.45;color:var(--text1)}
+.rc-why{font-size:11px;color:var(--text3);line-height:1.55}
+.insight{margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:var(--r);border:.5px solid var(--border);font-size:12px;color:var(--text2);line-height:1.6}
+
+/* Metric pct coloring */
+.pct{display:inline-block}
+.pct.low{color:var(--red-dark)}
+
+@media(max-width:768px){
+  .wrap{padding:1rem}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .m3,.g2,.reco-grid{grid-template-columns:1fr}
+  .hdr{padding:.75rem 1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-brand">
+    <div class="hdr-logo">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M10 2L2 7v6l8 5 8-5V7L10 2z" fill="white" opacity=".9"/></svg>
+    </div>
+    <div>
+      <div class="hdr-title">WUBWUB · TikTok Dashboard</div>
+      <div class="hdr-sub">Content Performance · อัปเดตข้อมูล v2</div>
+    </div>
+  </div>
+  <div class="hdr-badge" id="hdr-date">กำลังโหลด...</div>
+</div>
+
+<div class="wrap">
+
+  <!-- KPI Row -->
+  <div class="kpi-row">
+    <div class="kpi">
+      <div class="kpi-lbl">ยอดวิว (สัปดาห์ล่าสุด)</div>
+      <div class="kpi-val">2,570</div>
+      <div class="kpi-sub dn">▼ 65.8% vs สัปดาห์ก่อน</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">Engagement รวม</div>
+      <div class="kpi-val">49</div>
+      <div class="kpi-sub dn">▼ 54.6% vs สัปดาห์ก่อน</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">คลิปทั้งหมด</div>
+      <div class="kpi-val">37</div>
+      <div class="kpi-sub nu">Jan 2026 – Apr 2027</div>
+    </div>
+    <div class="kpi">
+      <div class="kpi-lbl">สัปดาห์ที่ดีที่สุด</div>
+      <div class="kpi-val">15,268</div>
+      <div class="kpi-sub nu">views · 09 Mar 2026</div>
+    </div>
+  </div>
+
+  <!-- 3 Metric Cards -->
+  <div class="m3">
+    <div class="mc flag">
+      <div class="mc-head">
+        <div class="mc-name">5-Sec Retention</div>
+        <span class="mc-badge flag-badge">ต่ำกว่าเป้า</span>
+      </div>
+      <div class="mc-val red">22%</div>
+      <div class="mc-tgt">เป้าหมาย 40% · ขาดอีก 18%</div>
+      <div class="prog-bg"><div class="prog" style="width:55%;background:var(--red)"></div></div>
+      <div class="mc-note">สูงสุดที่เคยทำได้: 24% (24 Mar 2026)</div>
+    </div>
+    <div class="mc flag">
+      <div class="mc-head">
+        <div class="mc-name">Avg. Watch Time %</div>
+        <span class="mc-badge flag-badge">ต่ำกว่าเป้า</span>
+      </div>
+      <div class="mc-val red">10.8%</div>
+      <div class="mc-tgt">เป้าหมาย 20% · ขาดอีก 9.2%</div>
+      <div class="prog-bg"><div class="prog" style="width:54%;background:var(--red)"></div></div>
+      <div class="mc-note">สูงสุดที่เคยทำได้: 21% (24 Mar 2026)</div>
+    </div>
+    <div class="mc flag">
+      <div class="mc-head">
+        <div class="mc-name">Engagement Rate %</div>
+        <span class="mc-badge flag-badge">ต่ำกว่าเป้า</span>
+      </div>
+      <div class="mc-val red">1.91%</div>
+      <div class="mc-tgt">เป้าหมาย 5% · ขาดอีก 3.09%</div>
+      <div class="prog-bg"><div class="prog" style="width:38%;background:var(--red)"></div></div>
+      <div class="mc-note">สูงสุดที่เคยทำได้: 3.99% (29 Mar 2026)</div>
+    </div>
+  </div>
+
+  <!-- Flag Alert -->
+  <div class="alert danger">
+    <svg class="alert-icon" width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="8" fill="#d94040"/><path d="M8 4.5v4M8 10.5v1" stroke="white" stroke-width="1.6" stroke-linecap="round"/></svg>
+    <div class="alert-text">
+      🚨 <strong>FLAG:</strong> สัปดาห์ล่าสุด (14 Apr 2027) Engagement ลดลง <strong>54.6%</strong> และ Views ลดลง <strong>65.8%</strong> เทียบสัปดาห์ก่อน — เกินเกณฑ์ 20% อย่างมีนัยสำคัญ อาจเป็นผลจากช่วง gap ระหว่างโพสต์ที่ยาวนาน
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('metrics',this)">แนวโน้ม 3 Metrics</button>
+    <button class="tab" onclick="switchTab('weekly',this)">Views & Engagement</button>
+    <button class="tab" onclick="switchTab('top5',this)">Top 5 Content</button>
+    <button class="tab" onclick="switchTab('allposts',this)">ข้อมูลคลิปทั้งหมด</button>
+    <button class="tab" onclick="switchTab('pillars',this)">Content Pillars</button>
+    <button class="tab" onclick="switchTab('reco',this)">แนะนำสัปดาห์หน้า</button>
+  </div>
+
+  <!-- Panel: 3 Metrics -->
+  <div id="p-metrics" class="panel active">
+    <div class="sec-title">แนวโน้มรายสัปดาห์ vs เป้าหมาย (37 คลิป)</div>
+    <div class="cc">
+      <div class="cc-title">5-Sec Retention % — เป้าหมาย 40%</div>
+      <div class="leg">
+        <span class="li"><span class="ld" style="background:#c45028"></span>Retention จริง</span>
+        <span class="li"><span class="lx" style="border-color:#d94040"></span>เป้าหมาย 40%</span>
+      </div>
+      <div class="chart-wrap" style="height:180px"><canvas id="retC" aria-label="5-sec retention vs target 40%"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="cc-title">Avg. Watch Time % — เป้าหมาย 20%</div>
+      <div class="leg">
+        <span class="li"><span class="ld" style="background:#6e68d6"></span>Watch Time จริง</span>
+        <span class="li"><span class="lx" style="border-color:#6e68d6"></span>เป้าหมาย 20%</span>
+      </div>
+      <div class="chart-wrap" style="height:180px"><canvas id="watchC" aria-label="avg watch time vs target 20%"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="cc-title">Engagement Rate % — เป้าหมาย 5%</div>
+      <div class="leg">
+        <span class="li"><span class="ld" style="background:#1e9a6a"></span>Eng Rate จริง</span>
+        <span class="li"><span class="lx" style="border-color:#1e9a6a"></span>เป้าหมาย 5%</span>
+      </div>
+      <div class="chart-wrap" style="height:180px"><canvas id="erC" aria-label="engagement rate vs target 5%"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Panel: Weekly -->
+  <div id="p-weekly" class="panel">
+    <div class="sec-title">Views & Engagement รายสัปดาห์</div>
+    <div class="g2">
+      <div class="cc" style="margin-bottom:0">
+        <div class="cc-title">ยอดวิวรวมต่อสัปดาห์</div>
+        <div class="leg"><span class="li"><span class="ld" style="background:#2e7fd4"></span>Views</span></div>
+        <div class="chart-wrap" style="height:240px"><canvas id="viewsC" aria-label="weekly views"></canvas></div>
+      </div>
+      <div class="cc" style="margin-bottom:0">
+        <div class="cc-title">Engagement รวมต่อสัปดาห์</div>
+        <div class="leg"><span class="li"><span class="ld" style="background:#1e9a6a"></span>Engagement</span></div>
+        <div class="chart-wrap" style="height:240px"><canvas id="engC" aria-label="weekly engagement"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel: Top 5 -->
+  <div id="p-top5" class="panel">
+    <div class="sec-title">Top 5 คลิปที่มียอดวิวสูงสุด</div>
+
+    <div class="t5">
+      <div class="rnk r1">1</div>
+      <div style="flex:1;min-width:0">
+        <div class="t5-title">ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind</div>
+        <div class="t5-meta">
+          <span class="chip">👁 <span class="cv">10,000</span></span>
+          <span class="chip">❤ <span class="cv">105</span></span>
+          <span class="chip">💾 <span class="cv">14</span></span>
+          <span class="chip">Ret: <span class="cv">23%</span></span>
+          <span class="chip">Watch: <span class="cv">15.6%</span></span>
+          <span class="chip">ER: <span class="cv">1.21%</span></span>
+          <span class="pill p-blue">Interview</span>
+          <span style="font-size:10px;color:var(--text3)">04 Mar 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="t5">
+      <div class="rnk r2">2</div>
+      <div style="flex:1;min-width:0">
+        <div class="t5-title">วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต ใช้ตัว interior ช่วยได้เยอะครับ</div>
+        <div class="t5-meta">
+          <span class="chip">👁 <span class="cv">7,086</span></span>
+          <span class="chip">❤ <span class="cv">43</span></span>
+          <span class="chip">💾 <span class="cv">2</span></span>
+          <span class="chip">Ret: <span class="cv">19%</span></span>
+          <span class="chip">Watch: <span class="cv">6.6%</span></span>
+          <span class="chip">ER: <span class="cv">0.66%</span></span>
+          <span class="pill p-teal">Knowledge</span>
+          <span style="font-size:10px;color:var(--text3)">08 Apr 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="t5">
+      <div class="rnk r3">3</div>
+      <div style="flex:1;min-width:0">
+        <div class="t5-title">สายทำรถเยอะ ต้องจัดแล้ว sugar ขนาด 5 ลิตร ประหยัดสุด!</div>
+        <div class="t5-meta">
+          <span class="chip">👁 <span class="cv">5,873</span></span>
+          <span class="chip">❤ <span class="cv">47</span></span>
+          <span class="chip">💾 <span class="cv">3</span></span>
+          <span class="chip">Ret: <span class="cv">12%</span></span>
+          <span class="chip">Watch: <span class="cv">10.1%</span></span>
+          <span class="chip">ER: <span class="cv">0.87%</span></span>
+          <span class="pill p-coral">Sale</span>
+          <span style="font-size:10px;color:var(--text3)">15 Mar 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="t5">
+      <div class="rnk">4</div>
+      <div style="flex:1;min-width:0">
+        <div class="t5-title">เอาคราบน้ำ คราบแป้งสงกรานต์ที่ล้างยังไง ก็ล้างไม่ออก จะออกด้วยวิธีนี้ครับ</div>
+        <div class="t5-meta">
+          <span class="chip">👁 <span class="cv">5,245</span></span>
+          <span class="chip">❤ <span class="cv">58</span></span>
+          <span class="chip">💾 <span class="cv">9</span></span>
+          <span class="chip">Ret: <span class="cv">19%</span></span>
+          <span class="chip">Watch: <span class="cv">11.3%</span></span>
+          <span class="chip">ER: <span class="cv">1.35%</span></span>
+          <span class="pill p-amber">Seasonal</span>
+          <span style="font-size:10px;color:var(--text3)">20 Apr 2026</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="t5">
+      <div class="rnk">5</div>
+      <div style="flex:1;min-width:0">
+        <div class="t5-title">กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆนะครับ เพราะปกติจะมีสารปรอทเคลือบอยู่</div>
+        <div class="t5-meta">
+          <span class="chip">👁 <span class="cv">5,025</span></span>
+          <span class="chip">❤ <span class="cv">50</span></span>
+          <span class="chip">💾 <span class="cv">6</span></span>
+          <span class="chip">Ret: <span class="cv">16%</span></span>
+          <span class="chip">Watch: <span class="cv">10.1%</span></span>
+          <span class="chip">ER: <span class="cv">1.17%</span></span>
+          <span class="pill p-blue">Interview</span>
+          <span style="font-size:10px;color:var(--text3)">27 Mar 2026</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel: All Posts Table -->
+  <div id="p-allposts" class="panel">
+    <div class="sec-title">คลิปทั้งหมด 37 คลิป</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>วันที่</th>
+            <th>Pillar</th>
+            <th>Content</th>
+            <th>Views</th>
+            <th>Eng</th>
+            <th>5s Ret</th>
+            <th>Watch%</th>
+            <th>ER%</th>
+          </tr>
+        </thead>
+        <tbody id="allPostsBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Panel: Pillars -->
+  <div id="p-pillars" class="panel">
+    <div class="sec-title">Performance แยกตาม Content Pillar</div>
+    <div class="g2">
+      <div class="cc" style="margin-bottom:0">
+        <div class="cc-title">ยอดวิวรวมแยกตาม Pillar</div>
+        <div class="chart-wrap" style="height:300px"><canvas id="pillarVC" aria-label="pillar views"></canvas></div>
+      </div>
+      <div class="cc" style="margin-bottom:0">
+        <div class="cc-title">Engagement รวมแยกตาม Pillar</div>
+        <div class="chart-wrap" style="height:300px"><canvas id="pillarEC" aria-label="pillar engagement"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Panel: Reco -->
+  <div id="p-reco" class="panel">
+    <div class="sec-title">แนะนำ 3 หัวข้อสำหรับสัปดาห์หน้า</div>
+    <div class="reco-grid">
+      <div class="rc">
+        <div class="rc-num">01</div>
+        <div style="margin-bottom:8px"><span class="pill p-teal">Knowledge</span></div>
+        <div class="rc-title">วิธีดูแลรถหลังสงกรานต์ ล้างคราบแป้ง-น้ำอย่างถูกต้องด้วย WIBWUB</div>
+        <div class="rc-why">Seasonal content (20 Apr) ทำ 5,245 views และ Save 9 อัน — Knowledge ใต้ context สงกรานต์ยังค้นหาได้อยู่ ต่อยอดกระแสพร้อม product tie-in</div>
+      </div>
+      <div class="rc">
+        <div class="rc-num">02</div>
+        <div style="margin-bottom:8px"><span class="pill p-blue">Interview / Expert</span></div>
+        <div class="rc-title">5 สิ่งที่ไม่ควรทำกับรถในช่วงหน้าร้อน (myth-busting format)</div>
+        <div class="rc-why">Interview format มี Retention สูงสุดเฉลี่ย 17–23% และ Save rate ดี — หัวข้อ "myth-busting" กระตุ้น comment & share ช่วยเพิ่ม ER เข้าใกล้เป้า 5%</div>
+      </div>
+      <div class="rc">
+        <div class="rc-num">03</div>
+        <div style="margin-bottom:8px"><span class="pill p-purple">Review</span></div>
+        <div class="rc-title">รีวิว Before/After ผ้าซับน้ำ Monster ล้างรถทั้งคันได้จริงไหม?</div>
+        <div class="rc-why">Review/ผ้า content ทำได้ดี + ผ้า Monster ที่โพสต์แล้วมี engagement ดี — Before/After format เพิ่ม Watch Time และ Save อย่างมีนัย</div>
+      </div>
+    </div>
+    <div class="insight">
+      💡 <strong>Insight สำคัญ:</strong> ข้อมูลล่าสุดมี gap โพสต์นานมาก (27 Apr → 14 Apr ปีถัดไป) ทำให้ Views และ Engagement ตก -65% และ -55% — แนะนำให้วางแผน <strong>ความสม่ำเสมอในการโพสต์</strong> อย่างน้อย 3–4 คลิป/สัปดาห์ก่อนโฟกัสเพิ่ม Retention และ ER ให้ถึงเป้า
+    </div>
+  </div>
+
+</div><!-- /wrap -->
+
+<script>
+// Date
+document.getElementById('hdr-date').textContent = new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
+
+// Data
+const WK  = ['05 Jan','04 Mar','09 Mar','16 Mar','23 Mar','01 Apr','08 Apr','13 Apr','20 Apr','27 Apr','14 Apr*'];
+const VW  = [2363,11950,15268,7558,9103,3026,11439,5871,10037,7505,2570];
+const EG  = [40,138,226,128,120,48,131,97,143,108,49];
+const RET = [16,18,17.2,14.8,18.6,13,19,15.2,16,15.8,22];
+const WCH = [8,12.9,12,12.3,12.7,12.2,7.9,11.2,10.6,11.1,10.8];
+const ER  = [1.69,1.04,1.71,1.97,2.01,1.68,1.85,1.53,1.38,1.51,1.91];
+const n   = WK.length;
+
+const baseOpts = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  scales:{
+    x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false}},
+    y:{ticks:{font:{size:10}}}
+  }
+};
+
+function lineC(id, data, color, target, ymax) {
+  new Chart(document.getElementById(id),{
+    type:'line',
+    data:{labels:WK, datasets:[
+      {data, borderColor:color, backgroundColor:color+'18', fill:true, tension:.35, pointRadius:3.5, pointBackgroundColor:color, borderWidth:2},
+      {data:Array(n).fill(target), borderColor:color, borderDash:[5,4], pointRadius:0, borderWidth:1.5, fill:false}
+    ]},
+    options:{...baseOpts, scales:{
+      x:{ticks:{font:{size:10},maxRotation:45,autoSkip:false}},
+      y:{max:ymax, ticks:{font:{size:10}, callback:v=>v+'%'}}
+    }}
+  });
+}
+
+function barC(id, data, color) {
+  new Chart(document.getElementById(id),{
+    type:'bar',
+    data:{labels:WK, datasets:[{data, backgroundColor:color, borderRadius:3}]},
+    options:{...baseOpts}
+  });
+}
+
+// Pillar data (merged & normalized)
+const PL = ['Interview','Knowledge','Awareness','Review','Sale','Lifestyle\n& Trendy','Brand Expert','Sales'];
+const PV = [26291,25009,8902,9730,5873,2703,1162,1775];
+const PE = [387,309,152,148,51,68,24,18];
+const PC = ['#2e7fd4','#1e9a6a','#c45028','#c97d12','#d4537e','#6e68d6','#888780','#639922'];
+
+const hOpts = {
+  responsive:true, maintainAspectRatio:false,
+  plugins:{legend:{display:false}},
+  indexAxis:'y',
+  scales:{
+    x:{ticks:{font:{size:10}}},
+    y:{ticks:{font:{size:10}}}
+  }
+};
+
+// All posts data
+const posts = [
+  ['05 Jan 26','Review','ภายนอกใส ภายในเนี๊ยบ 2 ตัวนี้มีติดรถไว้ จบเรื่องฝุ่น',2363,40,16,8.0,1.69],
+  ['04 Mar 26','Interview','ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind',10000,121,23,15.6,1.21],
+  ['05 Mar 26','Interview','ภายในรถโดนน้ำหอมหยดใส่แล้วเป็นรอยด่าง',1950,17,13,10.3,0.87],
+  ['09 Mar 26','Awareness','น้ำยาเคลือบที่เช็ดง่าย ง่ายพอๆกับ quick detailer แนะนำ Reflex',2821,50,19,18.1,1.77],
+  ['13 Mar 26','Awareness','Set นี้ทนอย่าต่ำคือสามเดือน คุ้ม!!',2482,43,21,11.1,1.73],
+  ['14 Mar 26','Interview','คราบขี้ไคล ขัดด้วยมือสบายๆ',2820,53,17,11.5,1.88],
+  ['15 Mar 26','Interview','Hard coat ตัวเดียวที่ใช้งานง่าย ทำเองได้เลย',1272,29,17,9.3,2.28],
+  ['15 Mar 26','Sale','สายทำรถเยอะ ต้องจัดแล้ว sugar ขนาด 5 ลิตร ประหยัดสุด!',5873,51,12,10.1,0.87],
+  ['16 Mar 26','Awareness','ใช้แล้วรถนุ่ม แนะนำ Reflex เลยครับ',3599,59,16,11.0,1.64],
+  ['18 Mar 26','Interview','คราบครีม แนะนำน้ำยาและทิชชู่เปียก Refresh',1377,21,12,11.8,1.53],
+  ['19 Mar 26','Interview','เช็ดทำความสะอาดฝุ่นภายในรถพร้อมเพิ่มความหรูให้รถ',807,30,21,14.7,3.72],
+  ['21 Mar 26','Sale','ทิชชูเปียกสำหรับเช็ดเก็บฝุ่นภายในรถแบบไม่เงา',1775,18,10,11.5,1.01],
+  ['23 Mar 26','Knowledge','ไม่ใช่แค่เงา แต่ให้ความนุ่มมือจัดๆเลยตัวนี้',2228,14,11,9.1,0.63],
+  ['24 Mar 26','Review','ผ้าที่เช็ดรถต้องเป็นผ้าไร้ขอบเท่านั้น',674,14,24,21.0,2.08],
+  ['27 Mar 26','Interview','กระจกมองข้างไม่ควรใช้น้ำยาขจัดคราบอื่นๆ',5025,59,16,10.1,1.17],
+  ['28 Mar 26','Interview','ฟิล์มกันรอย ใช้ Reflex ได้เลยนะครับ',775,17,19,11.5,2.19],
+  ['29 Mar 26','Interview','น้ำยา 2 ตัวนี้ใช้กับกระจกเหมือนกัน แต่จุดประสงค์ต่าง',401,16,23,11.7,3.99],
+  ['01 Apr 26','Brand Expert','เริ่มแล้วนะค้าบ แจกจนกว่าของจะหมด',1162,24,14,16.1,2.07],
+  ['02 Apr 26','Interview','คราบน้ำบาดาล มักมีระดับความรุนแรง 2 แบบ',1864,24,12,8.4,1.29],
+  ['08 Apr 26','Knowledge','วิธีลดฝุ่นภายในรถ ยิ่งโดนเฉพาะไฟฟ้าสถิต',7086,47,19,6.6,0.66],
+  ['09 Apr 26','Lifestyle','เพื่อน้องกี้พี่ทำได้',678,16,20,5.6,2.36],
+  ['09 Apr 26','Lifestyle','เป็นสายไหนกันครับ ส่วนแอดสายตี้😆',1214,28,19,9.2,2.31],
+  ['11 Apr 26','Review','คราบเล็กๆน้อยๆในรถ บางทีก็น่ารำคาญมากครับ',1650,16,16,10.3,0.97],
+  ['11 Apr 26','Lifestyle','มันมาพร้อมสงกรานต์จ้า',811,24,21,7.7,2.96],
+  ['13 Apr 26','Knowledge','รถปัจจุบันจะมีตัวกรองที่ปล่อยประจุออกมาในอากาศ',1317,14,13,7.0,1.06],
+  ['14 Apr 26','Knowledge','หลังใช้ตัวนี้แล้วต้องเคลือบซ้ำไหม',1066,11,18,14.5,1.03],
+  ['16 Apr 26','Review','ตัวเปียกแล้วนั่งในรถ ซักพักนึงมีกลิ่นอับ',1142,21,14,12.1,1.84],
+  ['16 Apr 26','Knowledge','ใช้น้ำเปล่าเช็ดก็ได้นี่!',2346,51,16,11.1,2.17],
+  ['20 Apr 26','Review','ตัวสามัญประจำรถ แอดเองยังเอาติดไว้ข้างรถ',2073,34,14,8.6,1.50],
+  ['20 Apr 26','Other','เอาคราบน้ำ คราบแป้งสงกรานต์ ที่ล้างยังไงก็ล้างไม่ออก',5245,71,19,11.3,1.35],
+  ['21 Apr 26','Knowledge','น้ำยาภายในของแบรนด์จะไม่มีกลิ่น',1784,34,18,13.3,1.91],
+  ['26 Apr 26','Knowledge','เวลาทำความสะอาดได้เราจะทำก็ต่อเมื่อเริ่มสกปรก',935,7,13,9.0,0.75],
+  ['27 Apr 26','Knowledge','สาเหตุที่ WIBWUB ไม่ใส่กลิ่นสำหรับภายใน',2205,34,15,13.6,1.54],
+  ['27 Apr 26','Knowledge','ตัวบรรยากาศสามารถใช้ได้สองวิธี',1161,23,20,11.3,1.98],
+  ['29 Apr 26','Knowledge','ไม่ต้องปัดฝุ่นก่อน ตัวนี้ฉีดแล้วเช็ดได้เลย',2311,25,15,10.8,1.08],
+  ['30 Apr 26','Review','ผ้าซับน้ำ Monster ผืนใหญ่ ทั้งคันเอาอยู่จริง',1828,26,13,8.8,1.42],
+  ['14 Apr 27','Knowledge','3 ตัวนี้ใช้ล้างสี เคลียร์คราบพร้อมเคลือบจบหลังสงกรานต์',2570,49,22,10.8,1.91],
+];
+
+// Pill colors for pillars in table
+const pillarPill = {
+  'Interview':'p-blue','Knowledge':'p-teal','Awareness':'p-coral',
+  'Review':'p-amber','Sale':'p-coral','Lifestyle':'p-purple',
+  'Brand Expert':'p-purple','Other':'','Sales':'p-amber'
+};
+
+function buildTable() {
+  const tbody = document.getElementById('allPostsBody');
+  posts.forEach((r,i) => {
+    const [date,pillar,content,views,eng,ret,watch,er] = r;
+    const retC = ret >= 40 ? 'val-ok' : ret >= 25 ? '' : 'val-red';
+    const watchC = watch >= 20 ? 'val-ok' : watch >= 15 ? '' : 'val-red';
+    const erC2 = er >= 5 ? 'val-ok' : er >= 3 ? '' : 'val-red';
+    const pp = pillarPill[pillar] || '';
+    tbody.innerHTML += `<tr>
+      <td style="color:var(--text3);font-size:11px">${i+1}</td>
+      <td style="white-space:nowrap;font-size:11px;color:var(--text3)">${date}</td>
+      <td><span class="tbl-badge pill ${pp}">${pillar}</span></td>
+      <td class="content-cell" style="font-size:12px">${content}</td>
+      <td style="font-weight:500;white-space:nowrap">${views.toLocaleString()}</td>
+      <td>${eng}</td>
+      <td class="${retC}">${ret}%</td>
+      <td class="${watchC}">${watch}%</td>
+      <td class="${erC2}">${er}%</td>
+    </tr>`;
+  });
+}
+
+// Tab switching with lazy chart init
+const inited = {};
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('p-'+id).classList.add('active');
+  btn.classList.add('active');
+
+  if (!inited[id]) {
+    inited[id] = true;
+    if (id==='weekly') {
+      barC('viewsC', VW, '#2e7fd4');
+      barC('engC', EG, '#1e9a6a');
+    }
+    if (id==='pillars') {
+      new Chart(document.getElementById('pillarVC'),{type:'bar',data:{labels:PL,datasets:[{data:PV,backgroundColor:PC,borderRadius:3}]},options:hOpts});
+      new Chart(document.getElementById('pillarEC'),{type:'bar',data:{labels:PL,datasets:[{data:PE,backgroundColor:PC,borderRadius:3}]},options:hOpts});
+    }
+    if (id==='allposts') buildTable();
+  }
+}
+
+// Init default tab charts
+lineC('retC',  RET, '#c45028', 40, 50);
+lineC('watchC',WCH, '#6e68d6', 20, 28);
+lineC('erC',   ER,  '#1e9a6a',  5,  6);
+</script>
+</body>
+</html>
