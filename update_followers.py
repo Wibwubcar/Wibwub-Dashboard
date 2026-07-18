@@ -7,8 +7,21 @@ import os, re, csv, zipfile, glob
 from datetime import datetime
 from pathlib import Path
 
-BASE    = Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All")
-DL      = Path("/Users/thanasablilutanon/Downloads")
+MAC_BASE = Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All")
+MAC_DL   = Path("/Users/thanasablilutanon/Downloads")
+
+# Portable path resolution: when run inside the sandbox (bash tool), the mac
+# paths above don't exist — the same folders are mounted under
+# /sessions/<session-name>/mnt/All and /sessions/<session-name>/mnt/Downloads,
+# where <session-name> changes every run. Resolve relative to this script's
+# own location instead of hardcoding a session name.
+if MAC_BASE.exists():
+    BASE = MAC_BASE
+    DL = MAC_DL
+else:
+    BASE = Path(__file__).resolve().parent  # .../mnt/All
+    DL = BASE.parent / "Downloads"          # .../mnt/Downloads
+
 DASH    = BASE / "WIBWUB_Dashboard.html"
 MOBILE  = BASE / "WIBWUB_Mobile.html"
 
