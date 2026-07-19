@@ -100,10 +100,10 @@ a{color:inherit;text-decoration:none}
   <div class="hdr-logo">WIB<span>WUB</span></div>
   <div>
     <div style="font-size:16px;font-weight:700">Platform Sales Analytics</div>
-    <div class="hdr-sub">ข้อมูล ม.ค.–มิ.ย. 2569 &nbsp;|&nbsp; Shopee · TikTok · Lazada · Line My Shop · Other</div>
+    <div class="hdr-sub">ยอดขายรายเดือน ม.ค.–มิ.ย. 2569 · สินค้าขายดีถึง 19 ก.ค. 2569 &nbsp;|&nbsp; Shopee · TikTok · Lazada · Line My Shop · Other</div>
   </div>
   <div style="flex:1"></div>
-  <div class="hdr-badge">อัปเดต 29 มิ.ย. 2569</div>
+  <div class="hdr-badge">อัปเดต 19 ก.ค. 2569</div>
 </div>
 
 <div class="tabs">
@@ -118,7 +118,7 @@ a{color:inherit;text-decoration:none}
   <div class="kpi-row">
     <div class="kpi-card blue">
       <div class="kpi-label">ยอดขายรวม (YTD)</div>
-      <div class="kpi-val">฿27.6M</div>
+      <div class="kpi-val">฿27.7M</div>
       <div class="kpi-sub">Shopee+TikTok+Lazada+LMS</div>
     </div>
     <div class="kpi-card">
@@ -258,7 +258,7 @@ a{color:inherit;text-decoration:none}
   </div>
 
   <div class="section">
-    <div class="sec-title" id="prodChartTitle">Top 15 สินค้าขายดี — รวมทุก Platform (ม.ค.–มิ.ย. 2569)</div>
+    <div class="sec-title" id="prodChartTitle">Top 15 สินค้าขายดี — รวมทุก Platform (ม.ค.–19 ก.ค. 2569)</div>
     <div class="sec-sub">ยอดขายจากไฟล์ต้นทาง (THB gross) · Shopee <span style="color:#ee4d2d">■</span> TikTok <span style="color:#69c9d0">■</span> Lazada <span style="color:#4a6cf7">■</span> Line My Shop <span style="color:#22c55e">■</span> Other <span style="color:#a78bfa">■</span></div>
     <div class="hbar-chart-wrap"><canvas id="chartProd"></canvas></div>
   </div>
@@ -284,7 +284,7 @@ a{color:inherit;text-decoration:none}
   </div>
 </div>
 
-<div class="footer">WIBWUB Platform Analytics · ข้อมูล ณ 17 มิ.ย. 2569 · Shopee · TikTok · Lazada · Line My Shop · Other (FB/LINE_OA/Carcare) — ม.ค.–มิ.ย. 2026</div>
+<div class="footer">WIBWUB Platform Analytics · ข้อมูล ณ 19 ก.ค. 2569 · Shopee · TikTok · Lazada · Line My Shop · Other (FB/LINE_OA/Carcare) — ยอดขายรายเดือน ม.ค.–มิ.ย. / สินค้าขายดี ม.ค.–19 ก.ค. 2026</div>
 
 <script>
 // ===================== DATA =====================
@@ -292,11 +292,11 @@ const MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','�
 const SH_REV = [3179125,2757812,2882341,3202414,3409122,2355563];
 const TK_REV = [1069223,1085294,1182570,1221056,1438434,988401];
 const LZ_REV = [150942,105245,152964,95888,106762,74413];
-const LMS_REV = [289886,441204,401837,348105,379012,435179];
+const LMS_REV = [289886,443234,401837,350240,382802,357878];
 const SH_ORD = [7184,6287,6579,7645,8602,7624];
 const TK_ORD = [3639,4130,4420,5200,7850,3130];
 const LZ_ORD = [380,271,419,244,263,259];
-const LMS_ORD = [279,407,279,316,303,389];
+const LMS_ORD = [279,407,279,316,303,336];
 const SH_CXL = [9.8,9.9,9.9,11.3,11.4,11.6];
 const TK_CXL = [9.2,8.0,7.8,9.7,7.5,7.1];
 const LZ_CXL = [10.2,15.8,18.0,19.5,17.0,13.6];
@@ -304,7 +304,7 @@ const LMS_CXL = [0,0,0,0,0,0];
 const SH_AOV = [443,439,438,419,396,309];
 const TK_AOV = [294,263,268,235,183,316];
 const LZ_AOV = [397,387,365,390,406,385];
-const LMS_AOV = [1039,1084,1440,1102,1251,1100];
+const LMS_AOV = [1039,1089,1440,1108,1263,1065];
 const SH_NEW = [7176,5570,5543,6313,6906,3362];
 const SH_RET = [0,715,1034,1332,1695,1107];
 const TK_NEW = [2960,3476,3882,4811,7672,1835];
@@ -313,39 +313,39 @@ const LZ_NEW = [272,226,353,199,259,151];
 const LZ_RET = [108,45,57,44,4,0];
 const LMS_NEW = [236,318,210,214,200,147];
 const LMS_RET = [254,475,372,332,445,277];
-const TOTAL_REV = 27752792;
+const TOTAL_REV = 27683446;
 
 const PRODUCTS = [
-  {sku:"BWLD000001",n:"ไม้ปัดฝุ่นขนแกะแท้ (WIBWUB Wool Duster)",t:4222768,s:2445945,k:348636,l:34454,lms:85034,oth:1308699},
-  {sku:"SSUG010024",n:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar)",t:4144163,s:2759316,k:620599,l:33253,lms:0,oth:730995},
-  {sku:"SINT030001",n:"สเปรย์ทำความสะอาดภายในรถ ไม่เงา (WIBWUB Interior)",t:3260848,s:3211642,k:10548,l:12058,lms:0,oth:26600},
-  {sku:"SQSH030005",n:"เซรามิคแชมพู + ผ้า + ถุงมือ (Quartz Shampoo Set)",t:2759161,s:2623041,k:17548,l:16652,lms:0,oth:101920},
-  {sku:"SRFX000003",n:"สเปรย์เคลือบสี Ceramic Coating (WIBWUB Reflex)",t:2213801,s:1618457,k:129200,l:18893,lms:0,oth:447251},
-  {sku:"SRFT010006",n:"ทิชชู่เปียกทำความสะอาดเบาะหนัง (WIBWUB Refresh)",t:2031200,s:1617878,k:256152,l:15875,lms:0,oth:141296},
-  {sku:"EWIP000001",n:"ทิชชู่เปียกทำความสะอาดภายในรถ (WIBWUB Interior Wipe)",t:2006336,s:1586653,k:402956,l:5166,lms:0,oth:11561},
-  {sku:"SMIN010019",n:"สเปรย์เช็ดเก็บฝุ่นภายนอก (MIND Detailer)",t:1838854,s:1661017,k:98669,l:7192,lms:0,oth:71976},
-  {sku:"SPOT010013",n:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean)",t:1727741,s:1177773,k:180135,l:18878,lms:0,oth:350955},
-  {sku:"STRM010004",n:"เจลเคลือบพลาสติกและยาง กันน้ำ (WIBWUB Tire&Trim)",t:1697026,s:1480448,k:23297,l:8054,lms:0,oth:185227},
-  {sku:"TPER000002",n:"ผ้าไมโครไฟเบอร์ขนแกะ BOA ไร้ขอบ 500gsm (WIBWUB Perfect)",t:1469730,s:1036500,k:24216,l:10650,lms:0,oth:398364},
-  {sku:"TMTN000004",n:"ผ้าเช็ดน้ำยาเคลือบสี (WIBWUB Martini)",t:1460105,s:1144533,k:60299,l:8980,lms:0,oth:246293},
-  {sku:"ETIR000001",n:"ฟองน้ำทายาง (WIBWUB Tire Applicator)",t:1411931,s:1379957,k:14178,l:968,lms:2655,oth:14174},
-  {sku:"SXGL000012",n:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield)",t:1341136,s:1017434,k:49765,l:10100,lms:0,oth:263837},
-  {sku:"SVIS000026",n:"น้ำยาทำความสะอาดกระจก (WIBWUB Visible)",t:1182878,s:1072852,k:65085,l:4746,lms:0,oth:40196},
-  {sku:"TMON000005",n:"ผ้าไมโครไฟเบอร์ซับน้ำขนาดเล็ก (WIBWUB Monster)",t:1073902,s:966203,k:19763,l:8964,lms:29420,oth:49552},
-  {sku:"TMGA000006",n:"สเปรย์เช็ดเก็บฝุ่นภายนอก สูตรแกลเลอรี่ (Gallery Detailer)",t:1060534,s:1002544,k:17851,l:3658,lms:0,oth:36482},
-  {sku:"SREC010032",n:"เซรั่มบำรุงเบาะหนัง (WIBWUB Recove Leather Serum)",t:958366,s:823480,k:30683,l:10668,lms:0,oth:93536},
-  {sku:"TPOL000003",n:"ผ้าเช็ดเคลือบเซรามิคและแว็กซ์ (WIBWUB Polish Cloth)",t:879724,s:743370,k:19384,l:4035,lms:0,oth:112935},
-  {sku:"SINT010001",n:"น้ำยาเช็ดฝุ่นเคลือบภายในรถ (WIBWUB Interior Coat)",t:858512,s:0,k:241495,l:36940,lms:0,oth:580078},
-  {sku:"SDPN030016",n:"แชมพูขจัดคราบฝังลึก (WIBWUB Deep Clean V.2)",t:843870,s:834226,k:5061,l:3083,lms:0,oth:1500},
-  {sku:"EMIU000010",n:"ถุงมือล้างรถไมโครไฟเบอร์ Premium (Wash Mitt)",t:792724,s:719711,k:18759,l:5914,lms:17160,oth:31180},
-  {sku:"SCNR010033",n:"น้ำยาฟื้นฟูผิวรถ (WIBWUB Cleaner Restore)",t:753615,s:746487,k:0,l:0,lms:0,oth:7128},
-  {sku:"SMCW010017",n:"น้ำยาซักผ้าไมโครไฟเบอร์ (WIBWUB Microfiber Wash)",t:749696,s:720081,k:16593,l:5373,lms:0,oth:7649},
-  {sku:"SBYK010031",n:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB Banyakart)",t:695695,s:608048,k:26997,l:5923,lms:18723,oth:36004},
-  {sku:"TSPD000001",n:"ผ้าไมโครไฟเบอร์ซับน้ำขนาดเล็กพิเศษ (WIBWUB Speed Dry)",t:686772,s:539581,k:14751,l:5489,lms:20260,oth:106691},
-  {sku:"Wooldusterset",n:"ชุดไม้ปัดฝุ่นขนแกะ (Wool Duster Set)",t:677941,s:611234,k:41284,l:5023,lms:20400,oth:0},
-  {sku:"SBCH010031",n:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach Wet Coat)",t:670835,s:616116,k:33303,l:11482,lms:0,oth:9934},
-  {sku:"SGFS000020",n:"น้ำยาเคลือบสีกราฟีน (WIBWUB Graphene Sealant)",t:649914,s:407270,k:15646,l:20757,lms:51750,oth:154490},
-  {sku:"STCL000027",n:"น้ำยาทำความสะอาดยาง (WIBWUB Tire Clean)",t:555454,s:522567,k:22442,l:2045,lms:0,oth:8400}
+  {sku:"BWLD000001",n:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster)",t:4853325,s:2855391,k:374013,l:210886,lms:61124,oth:1351911},
+  {sku:"SSUG010024",n:"น้ำยาเคลือบสีรถยนต์แบบสเปรย์แวกซ์ (WIBWUB Sugar)",t:4609263,s:2553062,k:757595,l:456605,lms:48140,oth:793861},
+  {sku:"SINT010001",n:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior )",t:2998855,s:1652461,k:299531,l:334825,lms:45981,oth:666057},
+  {sku:"SRFX000003",n:"สเปรย์เคลือบสีรถชนิด ceramic coating spray ( WIBWUB Reflex V.2 )",t:1987930,s:1188875,k:157193,l:114479,lms:29539,oth:497844},
+  {sku:"EWIP000001",n:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes )",t:1944286,s:1037211,k:830682,l:55578,lms:8296,oth:12519},
+  {sku:"SQSH000005",n:"เซรามิคแชมพูล้างรถ (Quartz Shampoo)",t:1821426,s:1488907,k:79316,l:111350,lms:25280,oth:116573},
+  {sku:"SPOT010013",n:"น้ำยาขจัดคราบน้ำบนผิวรถยนต์(WIBWUB Spot Clean)",t:1758932,s:927643,k:212585,l:138223,lms:22831,oth:457650},
+  {sku:"SRFT010006",n:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังรถยนต์โดยเฉพาะ (WIBWUB Refresh)",t:1707935,s:1051308,k:308252,l:159947,lms:33566,oth:154862},
+  {sku:"SMIN010019",n:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB Mind Quick Detailer)",t:1559752,s:1292924,k:108886,l:63418,lms:20670,oth:73854},
+  {sku:"STRM010004",n:"เจลเคลือบและฟื้นฟูพลาสติกและยาง สูตรกันน้ำ (WIBWUB Tire & Trim Gel)",t:1308257,s:958564,k:31351,l:95177,lms:27195,oth:195971},
+  {sku:"SXGL000012",n:"น้ำยาเคลือบกระจก ( WIBWUB X-glass shield V.2)",t:1293848,s:731875,k:70095,l:111859,lms:29025,oth:350994},
+  {sku:"EWIP000002",n:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes)",t:1250934,s:370659,k:836621,l:20736,lms:2844,oth:20074},
+  {sku:"INTERIORSET",n:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set)",t:1166135,s:810243,k:57477,l:260435,lms:37980,oth:0},
+  {sku:"TPER000002",n:"ผ้าไมโครไฟเบอร์ขนแกะ BOA ไร้ขอบ 500gsm (WIBWUB Perfect)",t:977911,s:403165,k:27917,l:105279,lms:6630,oth:434920},
+  {sku:"TMON000005",n:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster)",t:940085,s:771434,k:21145,l:77059,lms:16500,oth:53947},
+  {sku:"SSUG030024",n:"น้ำยาเคลือบสีรถยนต์แบบสเปรย์แวกซ์ (WIBWUB Sugar)",t:838010,s:0,k:71839,l:205891,lms:132930,oth:427350},
+  {sku:"TMTN000004",n:"ผ้าสำหรับเช็ดน้ำยาเคลือบสีโดยเฉพาะ (WIBWUB Martini)",t:837436,s:371274,k:72835,l:103713,lms:14112,oth:275502},
+  {sku:"SREC010032",n:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ - WIBWUB Recove Leather Serum ขนาด 500 ml.",t:757965,s:563714,k:32158,l:49133,lms:17542,oth:95418},
+  {sku:"REFRESHSET",n:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังรถยนต์โดยเฉพาะ (WIBWUB Refresh)",t:729139,s:487813,k:105797,l:115370,lms:20160,oth:0},
+  {sku:"SVIS000026",n:"น้ำยาทำความสะอาดกระจกรถยนต์ (WIBWUB Visible)",t:719942,s:507078,k:81031,l:65572,lms:12395,oth:53866},
+  {sku:"SUGARMARTINI",n:"น้ำยาเคลือบสีรถยนต์แบบสเปรย์แวกซ์ (WIBWUB Sugar)",t:681737,s:0,k:653657,l:0,lms:28080,oth:0},
+  {sku:"WOOLDUSTERSET",n:"ชุดไม้ปัดฝุ่นขนแกะ (Wool Duster Set)",t:679150,s:553305,k:44662,l:49733,lms:31450,oth:0},
+  {sku:"SBCH010031",n:"น้ำยาเคลือบสีรถยนต์แบบไม่ต้องเช็ด (WIBWUB Beach wet coat)",t:644804,s:474680,k:39544,l:93598,lms:24598,oth:12384},
+  {sku:"SDPN030016",n:"แชมพูขจัดคราบฝังลึก (WIBWUB Deep Clean V.2)",t:643206,s:586056,k:5851,l:36300,lms:13500,oth:1500},
+  {sku:"SGFS000020",n:"น้ำยาเคลือบสีกราฟีน (WIBWUB Graphene Ceramic Sealant V.2) ทนสูงสุด 1 ปี",t:635711,s:269306,k:21107,l:102748,lms:54390,oth:188160},
+  {sku:"REFRESHWIPES3",n:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes)",t:635626,s:319932,k:294785,l:17525,lms:3383,oth:0},
+  {sku:"TSPD000001",n:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบผืนเล็กสำหรับรถยนต์และมอเตอร์ไซต์ ( WIBWUB Superdry Double Side )",t:615254,s:398161,k:17565,l:69479,lms:11070,oth:118979},
+  {sku:"SBYK010031",n:"สเปรย์ปรับสภาพกลิ่นภายใน รถยนต์ (WIBWUB BANYAKART - ODOR ELIMINATOR)",t:610035,s:442330,k:47394,l:33099,lms:22373,oth:64839},
+  {sku:"SCNR010033",n:"น้ำยาฟื้นฟูผิวรถ (WIBWUB Cleaner Restore)",t:561851,s:21460,k:530983,l:390,lms:1592,oth:7425},
+  {sku:"POPULARSET",n:"เซทรวมสินค้าขายดีของร้าน **ครบทั้งภายในภายนอกเคลือบสี (Popular set)",t:475118,s:400572,k:26339,l:30147,lms:18060,oth:0}
 ]
 // ===================== HELPERS =====================
 const C = {
@@ -477,7 +477,7 @@ function filterProd(f, btn){
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
   const titles = {all:'รวมทุก Platform',shopee:'Shopee',tiktok:'TikTok',lazada:'Lazada',lms:'Line My Shop',other:'Other (FB/LINE/ฯลฯ)'};
-  document.getElementById('prodChartTitle').textContent = `Top 15 สินค้าขายดี — ${titles[f]} (ม.ค.–มิ.ย. 2569)`;
+  document.getElementById('prodChartTitle').textContent = `Top 15 สินค้าขายดี — ${titles[f]} (ม.ค.–19 ก.ค. 2569)`;
   document.getElementById('prodTableTitle').textContent = `รายละเอียดสินค้า — ${titles[f]}`;
   buildProdChart();
   buildProdTable();
