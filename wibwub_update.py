@@ -413,22 +413,53 @@ def process_affiliate():
                 # suffix นี้ไว้เฉพาะเดือนเก่าๆ อย่างไม่สม่ำเสมอ (บาง full month มี บางอันไม่มี)
                 day_range[mi] = (ds, de)
 
+    # ── หา column gmv/ret/orders/comm จาก "ชื่อ header จริง" ในแถวแรกของไฟล์
+    #    (ห้ามใช้ตำแหน่ง column ตายตัวเด็ดขาด — TikTok มีอย่างน้อย 2 format ที่
+    #    ตำแหน่ง column ไม่ตรงกัน: "Transaction_Analysis_Creator_List_*" (เก่า)
+    #    vs "Creator_List_*" (ใหม่) ถ้า hardcode ตำแหน่งจะได้ net/comm ผิดทันที
+    #    ที่ format เปลี่ยน (บั๊คที่เคยเกิดจริง: commD เพี้ยนเป็นเลขหลักหน่วย,
+    #    netD สูงกว่า gmvD)
+    def find_col(header_row, candidates):
+        """หา column index จาก header โดย match แบบ EXACT string เท่านั้น (ไม่ใช่ substring)
+           เพราะ format ใหม่มี column คอมมิชชั่นหลายตัวที่ชื่อคล้ายกันมาก เช่น
+           'ค่าคอมมิชชั่นโดยประมาณของการร่วมงานแบบกำหนดเป้าหมาย' ซึ่งไม่ใช่ column ที่ต้องการ"""
+        for i, h in enumerate(header_row):
+            h = str(h).strip() if pd.notna(h) else ''
+            if h in candidates:
+                return i
+        return None
+
+    GMV_HDRS  = ['GMV จากแอฟฟิลิเอต', 'GMV จากครีเอเตอร์']
+    RET_HDRS  = ['GMV ของการคืนเงินจากแอฟฟิลิเอต', 'การคืนเงิน']
+    ORD_HDRS  = ['คำสั่งซื้อแอฟฟิลิเอต', 'คำสั่งซื้อที่ระบุแหล่งที่มา']
+    COMM_HDRS = ['ค่าคอมมิชชั่นโดยประมาณ']
+
     for fp in xlsx_files:
         fname = os.path.basename(fp)
         mi = detect_mi(fname)
         if mi is None: log(f'  WARNING: ไม่รู้เดือนของ {fname}'); continue
         try:
             df = pd.read_excel(fp, header=None)
+            header_row = df.iloc[0].tolist() if len(df) else []
+            col_gmv  = find_col(header_row, GMV_HDRS)
+            col_ret  = find_col(header_row, RET_HDRS)
+            col_ord  = find_col(header_row, ORD_HDRS)
+            col_comm = find_col(header_row, COMM_HDRS)
+            if col_gmv is None:
+                err(f'  ERROR {fname}: หา column GMV ไม่เจอในแถว header (format ไม่รู้จัก) — ข้ามไฟล์นี้ทั้งไฟล์')
+                continue
+            if col_ret is None or col_ord is None or col_comm is None:
+                log(f'  WARNING: {fname} หา column ไม่ครบ (ret={col_ret} ord={col_ord} comm={col_comm}) — ที่ขาดจะนับเป็น 0')
             cnt = 0
             for _, row in df.iterrows():
                 name = str(row.iloc[0]).strip().lstrip('@') if pd.notna(row.iloc[0]) else ''
                 if not name or name in ['nan','Creator','ชื่อครีเอเตอร์'] or 'Unnamed' in name: continue
                 try:
                     def pn(v): return parse_num(v) if pd.notna(v) else 0
-                    gmv  = pn(row.iloc[1])  if len(row) > 1  else 0
-                    ret  = pn(row.iloc[2])  if len(row) > 2  else 0
-                    ordn = pn(row.iloc[3])  if len(row) > 3  else 0
-                    comm = pn(row.iloc[10]) if len(row) > 10 else 0
+                    gmv  = pn(row.iloc[col_gmv])
+                    ret  = pn(row.iloc[col_ret])  if col_ret  is not None else 0
+                    ordn = pn(row.iloc[col_ord])  if col_ord  is not None else 0
+                    comm = pn(row.iloc[col_comm]) if col_comm is not None else 0
                     # sanity guard: ยอด GMV ต่อครีเอเตอร์ต่อเดือนจริงไม่เคยเกินหลักล้านบาท
                     # ถ้าเจอเลขมหาศาล (เช่น video ID/product ID หลุดเข้ามา) ให้ข้ามแถวนี้ทิ้ง
                     if gmv > 10_000_000 or comm > 10_000_000:
@@ -442,7 +473,7 @@ def process_affiliate():
                         c_ret[name][mi]  = int(ret)
                         cnt += 1
                 except: pass
-            log(f'  {fname} → {MONTH_ORDER[mi]}: {cnt} creators')
+            log(f'  {fname} → {MONTH_ORDER[mi]}: {cnt} creators (col gmv={col_gmv} ret={col_ret} ord={col_ord} comm={col_comm})')
         except Exception as e:
             err(f'  ERROR {fname}: {e}')
 
