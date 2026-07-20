@@ -1200,12 +1200,13 @@
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <div style="font-size:.82rem;font-weight:700;color:#111">📈 Follower รายวัน — เลือกเดือน</div>
           <div style="display:flex;gap:6px;flex-wrap:wrap" id="fol-month-btns">
-            <button onclick="showFollowerMonth(0)" class="fol-btn fol-active" id="fbtn-0">ม.ค.</button>
+            <button onclick="showFollowerMonth(0)" class="fol-btn" id="fbtn-0">ม.ค.</button>
             <button onclick="showFollowerMonth(1)" class="fol-btn" id="fbtn-1">ก.พ.</button>
             <button onclick="showFollowerMonth(2)" class="fol-btn" id="fbtn-2">มี.ค.</button>
             <button onclick="showFollowerMonth(3)" class="fol-btn" id="fbtn-3">เม.ย.</button>
             <button onclick="showFollowerMonth(4)" class="fol-btn" id="fbtn-4">พ.ค.</button>
             <button onclick="showFollowerMonth(5)" class="fol-btn" id="fbtn-5">มิ.ย.</button>
+            <button onclick="showFollowerMonth(6)" class="fol-btn" id="fbtn-6">ก.ค.</button>
           </div>
         </div>
         <div style="font-size:.75rem;color:#888;margin-bottom:10px" id="fol-chart-sub">มกราคม 2569 · เริ่ม 22,458 → จบ 23,404 · +946 คน (+4.21%)</div>
@@ -1234,17 +1235,20 @@
         {label:'พฤษภาคม 2569',start:25597,end:26172,net:575,pct:2.25,sub:'พฤษภาคม 2569 · เริ่ม 25,597 → จบ 26,172 · +575 คน (+2.25%)',
          days:["1 พ.ค.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31 พ.ค."],
          vals:[25597,25619,25641,25659,25763,25785,25850,25908,25924,25944,25964,25977,26004,26016,26037,26047,25944,25964,25977,26004,26016,26037,26047,26057,26084,26099,26112,26124,26133,26152,26172]},
-        {label:'มิถุนายน 2569',start:26390,end:26746,net:356,pct:1.35,sub:'มิถุนายน 2569 · เริ่ม 26,390 → ล่าสุด 26,746 · +356 คน (ข้อมูล 1–19 มิ.ย.)',
+        {label:'มิถุนายน 2569',start:26339,end:26989,net:650,pct:2.47,sub:'มิถุนายน 2569 · เริ่ม 26,339 → จบ 26,989 · +650 คน (+2.47%)',
+         days:["1 มิ.ย.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30 มิ.ย."],
+         vals:[26339,26390,26403,26424,26445,26448,26519,26533,26550,26560,26570,26592,26601,26615,26645,26687,26697,26716,26741,26746,26755,26780,26808,26821,26834,26917,26937,26948,26976,26989]},
+        {label:'กรกฎาคม 2569',start:27083,end:27506,net:423,pct:1.56,sub:'กรกฎาคม 2569 · เริ่ม 27,083 → ล่าสุด 27,506 · +423 คน (ข้อมูล 1–19 ก.ค.)',
          col:'#1A5CDB',
-         days:["1 มิ.ย.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19 มิ.ย."],
-         vals:[26390,26403,26424,26445,26448,26519,26533,26550,26560,26570,26592,26601,26615,26645,26687,26697,26716,26741,26746]},
+         days:["1 ก.ค.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19 ก.ค."],
+         vals:[27083,27086,27106,27127,27145,27164,27191,27232,27253,27272,27296,27323,27346,27386,27404,27438,27454,27484,27506]},
       ];
       let folChart = null;
       function showFollowerMonth(idx){
         document.querySelectorAll('.fol-btn').forEach((b,i)=>b.classList.toggle('fol-active',i===idx));
         document.getElementById('fol-chart-sub').textContent = FOL_DATA[idx].sub;
-        const color = idx===4?'#1A5CDB':idx===0?'#ff6b2b':'#111';
-        const bg = idx===4?'rgba(26,92,219,.08)':idx===0?'rgba(255,107,43,.08)':'rgba(17,17,17,.06)';
+        const color = idx===6?'#1A5CDB':idx===0?'#ff6b2b':'#111';
+        const bg = idx===6?'rgba(26,92,219,.08)':idx===0?'rgba(255,107,43,.08)':'rgba(17,17,17,.06)';
         if(folChart){folChart.destroy();}
         folChart = new Chart('fol_daily',{
           type:'line',
@@ -1257,7 +1261,7 @@
             scales:{y:{ticks:{callback:v=>v.toLocaleString()}}}}
         });
       }
-      setTimeout(()=>showFollowerMonth(0), 300);
+      setTimeout(()=>showFollowerMonth(6), 300);
       </script>
 
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff">
