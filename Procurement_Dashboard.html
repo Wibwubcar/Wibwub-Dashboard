@@ -267,6 +267,14 @@ tbody td.num{text-align:right}
   <div id="h-kpi" style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap"></div>
 
   <!-- Table -->
+  <div style="display:flex;justify-content:flex-end;margin-bottom:8px">
+    <select class="srt-sel" id="h-sort-sel" onchange="hSort(this.value)">
+      <option value="group" selected>เรียงตาม: กลุ่มสินค้า (Shipnity)</option>
+      <option value="total">เรียงตาม: ขายรวม (ชิ้น)</option>
+      <option value="avg">เรียงตาม: เฉลี่ย/วัน</option>
+      <option value="max">เรียงตาม: สูงสุด 1 วัน</option>
+    </select>
+  </div>
   <div class="tbl-wrap" id="h-tbl-wrap" style="display:none">
   <table>
   <thead>
@@ -707,7 +715,7 @@ const HIST_DAILY={"2026-01-31":{"1":117,"17":24,"25":8,"0":107,"23":9,"5":67,"21
 // Calendar state
 let hSelStart = null, hSelEnd = null, hPickStep = 0;
 let hCalY = 2026, hCalM = 5; // default: Jun 2026
-let hSortKey = 'total';
+let hSortKey = 'group';
 
 const H_THAI_MONTHS = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const H_DOW = ['อา','จ','อ','พ','พฤ','ศ','ส'];
@@ -815,7 +823,10 @@ function hqPreset(s, e) {
 }
 
 function hSort(key) {
-  hSortKey = key; hRender();
+  hSortKey = key;
+  const sel = document.getElementById('h-sort-sel');
+  if (sel) sel.value = key;
+  hRender();
 }
 
 function hRender() {
@@ -855,8 +866,28 @@ function hRender() {
       maxDay: maxPerDay[i] || 0,
     }));
 
-  // Sort
-  if (hSortKey === 'total') rows.sort((a,b) => b.total - a.total);
+  // Attach product info (full name, category, avail) for grouping + display
+  const PROD_MAP = {};
+  PRODUCTS.forEach(p => { PROD_MAP[p.sku] = p; });
+  rows.forEach(r => {
+    const pr = PROD_MAP[r.sku];
+    r.fullName = pr ? pr.name : r.name;
+    r.cat = pr ? pr.cat : 'อื่นๆ (ไม่พบใน PRODUCTS ปัจจุบัน)';
+    r.avail = pr ? pr.avail : null;
+  });
+
+  // Sort — group by product family/size (Shipnity cat) by default, like Stock Overview
+  const isGrouped = hSortKey === 'group';
+  if (isGrouped) {
+    rows.sort((a, b) => {
+      const au = groupHasNearOut(a.cat) ? 0 : 1;
+      const bu = groupHasNearOut(b.cat) ? 0 : 1;
+      if (au !== bu) return au - bu;
+      if (a.cat !== b.cat) return a.cat.localeCompare(b.cat, 'th');
+      return sizeMl(a.fullName) - sizeMl(b.fullName);
+    });
+  }
+  else if (hSortKey === 'total') rows.sort((a,b) => b.total - a.total);
   else if (hSortKey === 'avg') rows.sort((a,b) => b.avgDay - a.avgDay);
   else if (hSortKey === 'max') rows.sort((a,b) => b.maxDay - a.maxDay);
 
@@ -871,13 +902,15 @@ function hRender() {
   `;
 
   // Build table
-  const PROD_MAP = {};
-  PRODUCTS.forEach(p => { PROD_MAP[p.sku] = p; });
-
   let html = '';
+  let lastCat = null;
   rows.forEach(r => {
-    const prod = PROD_MAP[r.sku];
-    const avail = prod ? prod.avail : null;
+    if (isGrouped && r.cat !== lastCat) {
+      lastCat = r.cat;
+      const warn = groupHasNearOut(r.cat) ? '<span class="grp-warn">⚠️ มีไซส์ใกล้หมดในกลุ่มนี้</span>' : '';
+      html += `<tr class="grp-row"><td colspan="6"><span class="grp-name">${r.cat}</span>${warn}</td></tr>`;
+    }
+    const avail = r.avail;
     let readyHtml = '';
     if (avail !== null && r.total > 0) {
       const ratio = avail / r.total;
@@ -893,9 +926,8 @@ function hRender() {
     } else if (avail === null) {
       readyHtml = `<span style="font-size:11px;color:var(--sub)">—</span>`;
     }
-    const fullName = prod ? prod.name : r.name;
     html += `<tr>
-      <td><div class="pn">${fullName}</div><div style="display:flex;gap:4px;margin-top:3px"><span class="ps">${r.sku}</span></div></td>
+      <td><div class="pn">${r.fullName}</div><div style="display:flex;gap:4px;margin-top:3px"><span class="ps">${r.sku}</span></div></td>
       <td class="num" style="font-weight:700;font-size:14px">${r.total.toLocaleString()}</td>
       <td class="num">${r.avgDay}</td>
       <td class="num" style="color:var(--rd);font-weight:600">${r.maxDay.toLocaleString()}</td>
