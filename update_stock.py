@@ -1,17 +1,24 @@
 #!/usr/bin/env python3
 """
 update_stock.py — อัปเดต Procurement_Dashboard.html ด้วยข้อมูลสต๊อกล่าสุดจาก Shipnity
-รับ input จาก Data Shipnity/stock_snapshot.json
+รับ input จาก Data Shipnity/stock_snapshot.json (stock/avail/reserved)
+และ Data Shipnity/Data_DD-MM-YYYY.xlsx (order-level, ใช้คำนวณ sold7d/sold14d/burn)
 Usage: python3 update_stock.py
+
+สถานะ (status) ใหม่ 4 ระดับ อิงจาก "วันคงเหลือ" (avail ÷ burn):
+  urgent (หมดเร็วมาก) <=7 วัน, low (ใกล้หมด) 8-14 วัน,
+  watch (เริ่มตึง) 15-30 วัน, ok (ปกติ) >30 วัน, oos (หมดสต๊อก) avail<=0
+Burn/วัน = sold7d ÷ 7 (ยอดขาย 7 วันล่าสุดเท่านั้น ไม่ใช่ค่าเฉลี่ย 6 เดือนแบบเดิม)
 """
 
-import json, re, sys
+import glob, json, os, re, sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 BASE = Path(__file__).parent
 SNAPSHOT = BASE / "Data Shipnity" / "Stock" / "stock_snapshot.json"
 DASHBOARD = BASE / "Procurement_Dashboard.html"
+SHIPNITY_DIR = BASE / "Data Shipnity"
 
 # ─── อ่าน snapshot จาก Shipnity ─────────────────────────────────────────────
 if not SNAPSHOT.exists():
@@ -31,7 +38,50 @@ if stale_days >= 1:
 # สร้าง lookup ด้วย code (SKU)
 raw_list = raw["products"] if isinstance(raw, dict) and "products" in raw else raw
 ship_map = {p["code"]: p for p in raw_list if isinstance(p,dict) and p.get("code")}
-print(f"📦 Shipnity: {len(ship_map)} SKUs")
+print(f"📦 Shipnity stock: {len(ship_map)} SKUs")
+
+# ─── หาไฟล์ order-level ล่าสุด (Data_DD-MM-YYYY.xlsx เท่านั้น — ห้ามใช้ Data-Page-1_*  ───
+# เพราะ Data-Page-1_* เป็น export แค่หน้าแรก (~500 แถวล่าสุด) ไม่ใช่ยอดสะสมทั้งเดือน
+order_files = sorted(
+    glob.glob(str(SHIPNITY_DIR / "Data_[0-9][0-9]-[0-9][0-9]-*.xlsx")),
+    key=os.path.getmtime, reverse=True
+)
+
+sold7_map, sold14_map = {}, {}
+if not order_files:
+    print("⚠️  ไม่พบไฟล์ Data_DD-MM-YYYY.xlsx ใน Data Shipnity/ — จะข้ามการคำนวณ sold7d/sold14d/burn (ใช้ค่าเดิม)")
+else:
+    order_file = order_files[0]
+    print(f"🧾 ใช้ไฟล์ order-level: {os.path.basename(order_file)} (แก้ไขล่าสุด {datetime.fromtimestamp(os.path.getmtime(order_file)).strftime('%d/%m/%Y %H:%M')})")
+    import openpyxl
+    wb = openpyxl.load_workbook(order_file, read_only=True, data_only=True)
+    ws = wb.active
+    today_dt = datetime.now()
+    d7_start  = (today_dt - timedelta(days=6)).date()   # ขาย 7 วันล่าสุด (รวมวันนี้)
+    d14_start = (today_dt - timedelta(days=13)).date()  # ขาย 14 วันล่าสุด (รวมวันนี้)
+    rows_seen = 0
+    for row in ws.iter_rows(min_row=2, values_only=True):
+        if not row or not row[0] or len(row) < 20:
+            continue
+        sku = str(row[0])
+        qty = row[3] or 0
+        created_raw = row[19]
+        if not created_raw:
+            continue
+        try:
+            if isinstance(created_raw, datetime):
+                created_date = created_raw.date()
+            else:
+                created_date = datetime.strptime(str(created_raw).strip()[:16], "%d/%m/%Y %H:%M").date()
+        except Exception:
+            continue
+        rows_seen += 1
+        if created_date >= d14_start:
+            sold14_map[sku] = sold14_map.get(sku, 0) + qty
+            if created_date >= d7_start:
+                sold7_map[sku] = sold7_map.get(sku, 0) + qty
+    wb.close()
+    print(f"   อ่าน {rows_seen} แถว → sold7d: {len(sold7_map)} SKU, sold14d: {len(sold14_map)} SKU")
 
 # ─── อ่าน Procurement_Dashboard.html ─────────────────────────────────────────
 html = DASHBOARD.read_text(encoding="utf-8")
@@ -50,17 +100,23 @@ updated = 0
 for p in products:
     sku = p.get("sku", "")
     ship = ship_map.get(sku)
-    if not ship:
-        continue
 
-    # อัปเดต stock fields จาก Shipnity
-    p["stock"]    = (ship.get("available", 0) or 0) + (ship.get("reserved", 0) or 0)
-    p["reserved"] = ship.get("reserved", 0) or 0
-    p["avail"]    = ship.get("available", 0) or 0
+    # อัปเดต stock fields จาก Shipnity (ถ้ามี snapshot ของ SKU นี้)
+    if ship:
+        p["stock"]    = (ship.get("available", 0) or 0) + (ship.get("reserved", 0) or 0)
+        p["reserved"] = ship.get("reserved", 0) or 0
+        p["avail"]    = ship.get("available", 0) or 0
+        updated += 1
 
-    # คำนวณ days, stockout, status ใหม่
+    # อัปเดต sold7d/sold14d/burn จากไฟล์ order-level (ถ้ามี)
+    if order_files:
+        p["sold7d"]  = int(sold7_map.get(sku, 0))
+        p["sold14d"] = int(sold14_map.get(sku, 0))
+        p["burn"] = round(p["sold7d"] / 7, 2)
+
+    # คำนวณ days, stockout, status ใหม่ (4 ระดับ: urgent/low/watch/ok/oos)
     burn = p.get("burn", 0) or 0
-    avail = p["avail"]
+    avail = p.get("avail", 0) or 0
 
     if avail <= 0:
         p["days"] = 0
@@ -75,18 +131,16 @@ for p in products:
         p["days"] = days
         stockout = today + timedelta(days=days)
         p["stockout"] = stockout.strftime("%Y-%m-%d")
-        if days <= 0:
-            p["status"] = "oos"
-        elif days <= 20:
-            p["status"] = "critical"
-        elif days <= 45:
+        if days <= 7:
+            p["status"] = "urgent"
+        elif days <= 14:
             p["status"] = "low"
+        elif days <= 30:
+            p["status"] = "watch"
         else:
             p["status"] = "ok"
 
-    updated += 1
-
-print(f"✅ อัปเดต {updated}/{len(products)} SKUs")
+print(f"✅ อัปเดตสต๊อก {updated}/{len(products)} SKUs")
 
 # ─── เช็ค SKU ที่มีใน Shipnity แต่ยังไม่ถูก track ใน Dashboard ─────────────────────
 tracked_skus = {p.get("sku", "") for p in products}
@@ -95,11 +149,12 @@ if missing_skus:
     print(f"⚠️  พบ {len(missing_skus)} SKU ใน Shipnity ที่ยังไม่มีใน PRODUCTS (ไม่ถูกอัปเดต): {', '.join(missing_skus[:20])}{' ...' if len(missing_skus) > 20 else ''}")
 
 # ─── สถิติสรุป ─────────────────────────────────────────────────────────────────
-critical = sum(1 for p in products if p["status"] == "critical")
-low      = sum(1 for p in products if p["status"] == "low")
-ok       = sum(1 for p in products if p["status"] == "ok")
-oos      = sum(1 for p in products if p["status"] == "oos")
-print(f"   🔴 วิกฤต: {critical}  🟡 เฝ้าระวัง: {low}  🟢 ปกติ: {ok}  ⬛ หมด: {oos}")
+urgent = sum(1 for p in products if p["status"] == "urgent")
+low    = sum(1 for p in products if p["status"] == "low")
+watch  = sum(1 for p in products if p["status"] == "watch")
+ok     = sum(1 for p in products if p["status"] == "ok")
+oos    = sum(1 for p in products if p["status"] == "oos")
+print(f"   🔴 หมดเร็วมาก(≤7d): {urgent}  🟡 ใกล้หมด(8-14d): {low}  🟠 เริ่มตึง(15-30d): {watch}  🟢 ปกติ(>30d): {ok}  ⬛ หมด: {oos}")
 
 # ─── เขียนกลับ HTML ──────────────────────────────────────────────────────────
 new_products_json = json.dumps(products, ensure_ascii=False, separators=(',', ':'))
