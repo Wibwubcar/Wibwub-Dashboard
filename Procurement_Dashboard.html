@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WIBWUB — Stock Forecast</title>
 <style>
-:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;--bl:#1A5CDB;--rd:#ef4444;--yl:#f59e0b;--or:#f97316;--gn:#22c55e;--rd-bg:rgba(239,68,68,.08);--yl-bg:rgba(245,158,11,.08);--or-bg:rgba(249,115,22,.08);--gn-bg:rgba(34,197,94,.08)}
+:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;--bl:#1A5CDB;--rd:#ef4444;--yl:#f59e0b;--or:#f97316;--gn:#22c55e;--rd-bg:rgba(239,68,68,.08);--yl-bg:rgba(245,158,11,.08);--or-bg:rgba(249,115,22,.08);--gn-bg:rgba(34,197,94,.08);--hdr-h:0px;--stock-sticky-top:0px;--thead-top:0px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
-.hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px;position:sticky;top:0;z-index:40;background:var(--bg);padding-top:4px}
 .logo{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--bl)}.logo span{color:var(--tx)}
 .pt{font-size:13px;color:var(--sub);margin-top:2px}
 .hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.6}
@@ -79,7 +79,10 @@ tbody td.num{text-align:right}
 /* empty */
 .empty{text-align:center;padding:40px;color:var(--sub);font-size:14px}
 /* View tabs */
-.vtabs{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--bd)}
+.vtabs{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--bd);position:sticky;top:var(--hdr-h);z-index:39;background:var(--bg)}
+/* Frozen header (Excel-style freeze panes) for สต๊อก Overview */
+.stock-sticky{position:sticky;top:var(--stock-sticky-top);z-index:38;background:var(--bg);padding-bottom:2px;box-shadow:0 4px 6px -4px rgba(0,0,0,.15)}
+#view-stock thead th{position:sticky;top:var(--thead-top);z-index:15}
 .vtab{padding:9px 20px;font-size:13px;font-weight:600;cursor:pointer;border:none;background:none;color:var(--sub);border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .15s;font-family:inherit}
 .vtab.active{color:var(--bl);border-bottom-color:var(--bl)}
 .vtab:hover{color:var(--tx)}
@@ -133,6 +136,7 @@ tbody td.num{text-align:right}
 </div>
 
 <div id="view-stock">
+<div class="stock-sticky" id="stock-sticky">
 <div class="krow">
   <div class="kc rd"><div class="kl">🔴 หมดเร็วมาก ≤7 วัน</div><div class="kv" id="cnt-rd">—</div><div class="ks">สั่งซื้อทันที</div></div>
   <div class="kc yl"><div class="kl">🟡 ใกล้หมด 8–14 วัน</div><div class="kv" id="cnt-yl">—</div><div class="ks">สั่งซื้อเร็วๆ นี้</div></div>
@@ -161,6 +165,7 @@ tbody td.num{text-align:right}
     <option value="name">เรียงตาม: ชื่อสินค้า</option>
   </select>
 </div>
+</div><!-- /stock-sticky -->
 
 <div class="tbl-wrap">
 <table>
@@ -463,6 +468,7 @@ function renderTable() {
 
   const noteEl = document.getElementById('table-note');
   noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn/วัน = ยอดขาย 7 วันล่าสุด ÷ 7 &nbsp;|&nbsp; วันคงเหลือ = สต๊อกพร้อมขาย ÷ Burn/วัน &nbsp;|&nbsp; จอง = orders ที่รอจัดส่ง &nbsp;|&nbsp; ขาย 7 วันล่าสุด = ยอดขาย 14–20 ก.ค. 2569 &nbsp;|&nbsp; ขาย 14 วันล่าสุด = ยอดขาย 7–20 ก.ค. 2569`;
+  updateSticky();
 }
 
 renderTable();
@@ -482,7 +488,31 @@ function switchView(v) {
   });
   if (v === 'forecast') { buildMonthGrid(); if (fcSelStart && fcSelEnd) renderForecast(); }
   if (v === 'history')  { hBuildCals(); }
+  updateSticky();
 }
+
+// ── Frozen header (Excel-style freeze panes) ──────────────
+// Stacks .hdr → .vtabs → #stock-sticky (KPI row + filter/sort controls) → thead,
+// each pinned to the top of the viewport right below the one before it.
+// Heights are measured (not hardcoded) so responsive layout changes (e.g. the
+// KPI row wrapping to 3-per-row on mobile) don't break the stacking.
+function updateSticky() {
+  const root = document.documentElement.style;
+  const hdr = document.querySelector('.hdr');
+  const vtabs = document.querySelector('.vtabs');
+  const hdrH = hdr ? hdr.offsetHeight : 0;
+  root.setProperty('--hdr-h', hdrH + 'px');
+  const vtabsH = vtabs ? vtabs.offsetHeight : 0;
+  const afterTabs = hdrH + vtabsH;
+  root.setProperty('--stock-sticky-top', afterTabs + 'px');
+  const stockView = document.getElementById('view-stock');
+  const stockSticky = document.getElementById('stock-sticky');
+  const isStockVisible = stockView && stockView.style.display !== 'none';
+  const stockStickyH = (isStockVisible && stockSticky) ? stockSticky.offsetHeight : 0;
+  root.setProperty('--thead-top', (afterTabs + stockStickyH) + 'px');
+}
+window.addEventListener('resize', updateSticky);
+window.addEventListener('load', updateSticky);
 
 function buildMonthGrid() {
   const grid = document.getElementById('fc-month-grid');
