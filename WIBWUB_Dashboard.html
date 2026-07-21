@@ -1599,7 +1599,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.339,26.976,27.506],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.590,26.339,26.976,27.555],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
   {label:'Instagram',data:[35,36,37,38,39,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
