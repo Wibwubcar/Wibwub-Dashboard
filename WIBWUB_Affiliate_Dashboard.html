@@ -374,7 +374,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="kk"><div class="kkl">วีดีโอที่บันทึก</div><div class="kkv teal">51</div><div class="kks">จากหน้า TikTok Affiliate</div></div>
     <div class="kk"><div class="kkl">Top Video GMV</div><div class="kkv amber">฿354K</div><div class="kks">by fahareejun</div></div>
     <div class="kk"><div class="kkl">Avg GMV/Video</div><div class="kkv blue">฿27.1K</div><div class="kks">ทั้ง 51 คลิป</div></div>
-    <div class="kk"><div class="kkl">Top Units/Video</div><div class="kkv green">94 units</div><div class="kks">น้ำยาฟินฟู</div></div>
+    <div class="kk"><div class="kkl">คลิปที่ขายได้ / ทั้งหมด</div><div class="kkv green" id="kk-sold-ratio">–</div><div class="kks" id="kk-sold-ratio-sub">รวมทุกครีเอเตอร์</div></div>
   </div>
 
   <div class="sec">รายการวีดีโอ (เรียงตาม GMV)</div>
@@ -4792,6 +4792,16 @@ function renderVideos(){
       <td><a href="https://www.tiktok.com/@${v.creator}/video/${v.vid_id}" target="_blank" rel="noopener" style="color:var(--blue);font-size:13px;font-weight:600;text-decoration:none;white-space:nowrap">▶ ดูคลิป ↗</a></td>
     </tr>`;
   }).join('');
+
+  // KPI card: sold clips / total clips, aggregated across all creators
+  // (respects the active month filter — "sold" = generated GMV in that scope)
+  const totalClips = VIDEOS.length;
+  const soldClips = VIDEOS.filter(v=>vGMV(v)>0).length;
+  const ratioPct = totalClips ? Math.round((soldClips/totalClips)*100) : 0;
+  const ratioEl = document.getElementById('kk-sold-ratio');
+  const ratioSubEl = document.getElementById('kk-sold-ratio-sub');
+  if(ratioEl) ratioEl.textContent = `${soldClips} / ${totalClips}`;
+  if(ratioSubEl) ratioSubEl.textContent = `${ratioPct}% รวมทุกครีเอเตอร์`;
 }
 
 function renderMatrix(){
