@@ -5261,12 +5261,12 @@ function showProfile(name){
     const canvasId = 'prof-chart-'+c.name.replace(/[^a-z0-9]/gi,'_');
     const canvas = document.getElementById(canvasId);
     if(!canvas) return;
-    const mData = CREATOR_MONTHS[c.name] || [0,0,0,0];
+    const mData = CREATOR_MONTHS[c.name] || [0,0,0,0,0];
     if(window._profChartInst) window._profChartInst.destroy();
     window._profChartInst = new Chart(canvas.getContext('2d'), {
       type:'bar',
       data:{
-        labels:['มี.ค.','เม.ย.','พ.ค.','มิ.ย.(1-27)'],
+        labels:['มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.(1-18)'],
         datasets:[{
           label:'GMV',
           data: mData,
