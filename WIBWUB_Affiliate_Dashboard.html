@@ -4793,15 +4793,16 @@ function renderVideos(){
     </tr>`;
   }).join('');
 
-  // KPI card: sold clips / total clips, aggregated across all creators
-  // (respects the active month filter — "sold" = generated GMV in that scope)
+  // KPI card: sold clips / total clips, aggregated across all creators.
+  // Always all-time (v.gmv, not vGMV/activeMonth) so the number stays fixed
+  // no matter which month tab is selected — matches the "ทั้งหมด" (total) label.
   const totalClips = VIDEOS.length;
-  const soldClips = VIDEOS.filter(v=>vGMV(v)>0).length;
+  const soldClips = VIDEOS.filter(v=>v.gmv>0).length;
   const ratioPct = totalClips ? Math.round((soldClips/totalClips)*100) : 0;
   const ratioEl = document.getElementById('kk-sold-ratio');
   const ratioSubEl = document.getElementById('kk-sold-ratio-sub');
   if(ratioEl) ratioEl.textContent = `${soldClips} / ${totalClips}`;
-  if(ratioSubEl) ratioSubEl.textContent = `${ratioPct}% รวมทุกครีเอเตอร์`;
+  if(ratioSubEl) ratioSubEl.textContent = `${ratioPct}% รวมทุกครีเอเตอร์ (ทุกเดือน)`;
 }
 
 function renderMatrix(){
