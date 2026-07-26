@@ -1,5 +1,5 @@
 // WIBWUB Service Worker — auto-update on new version
-const CACHE = 'wibwub-v468';
+const CACHE = 'wibwub-v469';
 const FILES = [
   '/Wibwub-Dashboard/WIBWUB_Mobile.html',
   '/Wibwub-Dashboard/manifest.json',
