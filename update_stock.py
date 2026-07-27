@@ -9,6 +9,10 @@ Usage: python3 update_stock.py
   urgent (หมดเร็วมาก) <=7 วัน, low (ใกล้หมด) 8-14 วัน,
   watch (เริ่มตึง) 15-30 วัน, ok (ปกติ) >30 วัน, oos (หมดสต๊อก) avail<=0
 Burn/วัน = sold7d ÷ 7 (ยอดขาย 7 วันล่าสุดเท่านั้น ไม่ใช่ค่าเฉลี่ย 6 เดือนแบบเดิม)
+
+หมายเหตุ (27 ก.ค. 2569): sold7d/sold14d/burn นับ "7/14 วันเต็มล่าสุด ไม่รวมวันนี้" (สิ้นสุดที่เมื่อวาน)
+เพื่อกันปัญหาเลขขยับไปมาระหว่างวัน — ถ้ารวมวันนี้ (ที่ยังขายไม่จบวัน) เข้าไปด้วย เลขจะน้อยกว่าจริงเสมอ
+เวลาเทียบกับยอดสด Shipnity แล้วดูเหมือนข้อมูลไม่ตรงกัน ทั้งที่จริงๆคือคนละช่วงเวลากัน (partial vs full day)
 """
 
 import glob, json, os, re, sys
@@ -59,8 +63,12 @@ else:
     wb = openpyxl.load_workbook(order_file, read_only=True, data_only=True)
     ws = wb.active
     today_dt = datetime.now()
-    d7_start  = (today_dt - timedelta(days=6)).date()   # ขาย 7 วันล่าสุด (รวมวันนี้)
-    d14_start = (today_dt - timedelta(days=13)).date()  # ขาย 14 วันล่าสุด (รวมวันนี้)
+    today_date = today_dt.date()
+    # ไม่รวม "วันนี้" ในหน้าต่าง 7/14 วัน — วันนี้ยังไม่จบวัน ยอดจะนับได้ไม่ครบเสมอ
+    # ไม่ว่าจะรันตอนไหนก็ตาม (เช้า/บ่าย/เย็น) ทำให้ burn/สถานะขยับไปมาโดยไม่มีเหตุผล
+    # นับ 7/14 วัน "เต็มวัน" ล่าสุด สิ้นสุดที่เมื่อวาน — เลขจะนิ่ง ไม่ว่าจะเช็คช่วงเวลาไหนของวัน
+    d7_start  = (today_dt - timedelta(days=7)).date()   # ขาย 7 วันเต็มล่าสุด (ไม่รวมวันนี้)
+    d14_start = (today_dt - timedelta(days=14)).date()  # ขาย 14 วันเต็มล่าสุด (ไม่รวมวันนี้)
     rows_seen = 0
     for row in ws.iter_rows(min_row=2, values_only=True):
         if not row or not row[0] or len(row) < 20:
@@ -79,7 +87,7 @@ else:
         except Exception:
             continue
         rows_seen += 1
-        if created_date >= d14_start:
+        if created_date < today_date and created_date >= d14_start:
             sold14_map[sku] = sold14_map.get(sku, 0) + qty
             if created_date >= d7_start:
                 sold7_map[sku] = sold7_map.get(sku, 0) + qty
