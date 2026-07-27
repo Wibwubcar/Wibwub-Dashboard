@@ -48,6 +48,8 @@ order_files = sorted(
 )
 
 sold7_map, sold14_map = {}, {}
+day_sku_qty = {}  # date_str -> sku -> qty (ใช้อัปเดต HIST_DAILY/HIST_DATES ด้านล่าง — ครอบคลุมทั้งไฟล์ ไม่ใช่แค่ 7/14 วัน)
+name_fallback = {}
 if not order_files:
     print("⚠️  ไม่พบไฟล์ Data_DD-MM-YYYY.xlsx ใน Data Shipnity/ — จะข้ามการคำนวณ sold7d/sold14d/burn (ใช้ค่าเดิม)")
 else:
@@ -64,6 +66,7 @@ else:
         if not row or not row[0] or len(row) < 20:
             continue
         sku = str(row[0])
+        prod_name = row[1]
         qty = row[3] or 0
         created_raw = row[19]
         if not created_raw:
@@ -80,6 +83,12 @@ else:
             sold14_map[sku] = sold14_map.get(sku, 0) + qty
             if created_date >= d7_start:
                 sold7_map[sku] = sold7_map.get(sku, 0) + qty
+        # เก็บทุกวันที่มีในไฟล์นี้ (ปกติคือทั้งเดือนปัจจุบัน) ไว้อัปเดต HIST_DAILY ด้านล่าง
+        date_str = created_date.strftime("%Y-%m-%d")
+        day_sku_qty.setdefault(date_str, {})
+        day_sku_qty[date_str][sku] = day_sku_qty[date_str].get(sku, 0) + qty
+        if sku not in name_fallback and prod_name:
+            name_fallback[sku] = str(prod_name)
     wb.close()
     print(f"   อ่าน {rows_seen} แถว → sold7d: {len(sold7_map)} SKU, sold14d: {len(sold14_map)} SKU")
 
@@ -163,6 +172,49 @@ html_new = re.sub(
     f'const PRODUCTS = {new_products_json};',
     html, flags=re.DOTALL
 )
+
+# ─── อัปเดต HIST_DAILY/HIST_DATES/HIST_SKUS (ตาราง "ดูย้อนหลัง") ──────────────────
+# เดิมตารางนี้ถูกสร้างครั้งเดียวตอน redesign (ครอบคลุมแค่ ม.ค.-29 มิ.ย. 2569) แล้วไม่เคย
+# ถูกแตะอีกเลย ทำให้ "ดูย้อนหลัง" ไม่มีข้อมูลเดือน ก.ค. เป็นต้นไปเลย (เจอบั๊กนี้ 27 ก.ค. 2569)
+# จุดนี้เติมข้อมูลรายวันจากไฟล์ order-level เดียวกับด้านบน ให้ครอบคลุมทุกวันในไฟล์เสมอ
+if order_files and day_sku_qty:
+    hm = re.search(r'const HIST_SKUS=(\[.*?\]);', html_new, re.DOTALL)
+    dm = re.search(r'const HIST_DATES=(\[.*?\]);', html_new, re.DOTALL)
+    am = re.search(r'const HIST_DAILY=(\{.*?\});', html_new, re.DOTALL)
+    if hm and dm and am:
+        hist_skus = json.loads(hm.group(1))
+        hist_dates = json.loads(dm.group(1))
+        hist_daily = json.loads(am.group(1))
+        sku_index = {s["s"]: i for i, s in enumerate(hist_skus)}
+        prod_name_by_sku = {p.get("sku"): p.get("name") for p in products if p.get("sku")}
+        new_skus_added = 0
+        for date_str, sku_qty in day_sku_qty.items():
+            day_entry = {}
+            for sku, qty in sku_qty.items():
+                if qty <= 0:
+                    continue
+                if sku not in sku_index:
+                    name = prod_name_by_sku.get(sku) or name_fallback.get(sku) or sku
+                    idx = len(hist_skus)
+                    hist_skus.append({"s": sku, "n": name})
+                    sku_index[sku] = idx
+                    new_skus_added += 1
+                day_entry[str(sku_index[sku])] = int(qty)
+            hist_daily[date_str] = day_entry
+        hist_dates = sorted(set(hist_dates) | set(day_sku_qty.keys()))
+
+        def _replace_const(s, name, value, is_obj):
+            json_str = json.dumps(value, ensure_ascii=False, separators=(',', ':'))
+            pattern = re.compile(rf'const {name}=\{{.*?\}};' if is_obj else rf'const {name}=\[.*?\];', re.DOTALL)
+            new_s, n = pattern.subn(lambda m: f'const {name}={json_str};', s, count=1)
+            return new_s if n == 1 else s
+
+        html_new = _replace_const(html_new, "HIST_SKUS", hist_skus, is_obj=False)
+        html_new = _replace_const(html_new, "HIST_DATES", hist_dates, is_obj=False)
+        html_new = _replace_const(html_new, "HIST_DAILY", hist_daily, is_obj=True)
+        print(f"🕐 อัปเดต HIST_DAILY: +{len(day_sku_qty)} วันจากไฟล์ (รวม {len(hist_dates)} วัน), +{new_skus_added} SKU ใหม่")
+    else:
+        print("⚠️  ไม่พบ HIST_SKUS/HIST_DATES/HIST_DAILY ใน Dashboard — ข้ามการอัปเดตตาราง ดูย้อนหลัง")
 
 # อัปเดต last_updated badge ใน header
 # ใช้วันที่ของ "ข้อมูล" (snapshot_date) ไม่ใช่วันที่รันสคริปต์ — กันไม่ให้ badge โกหกว่าข้อมูลสดกว่าที่เป็นจริง
