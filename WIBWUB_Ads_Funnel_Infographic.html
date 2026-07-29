@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB TikTok Ads Funnel รายเดือน</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+  :root{
+    --navy:#1A5CDB;
+    --navy-dark:#0F3E9E;
+    --dark:#111111;
+    --grey:#666666;
+    --light:#EAF1FE;
+    --good:#1E8E3E;
+    --warn:#D93025;
+    --gold:#E8A93A;
+    --bg:#F5F8FE;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; padding:0;
+    font-family:"Noto Sans Thai","Tahoma","Segoe UI",sans-serif;
+    background:var(--bg);
+    color:var(--dark);
+  }
+  .wrap{max-width:1100px;margin:0 auto;padding:32px 20px 60px;}
+  .header{
+    background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+    color:#fff;border-radius:16px;padding:32px 36px;margin-bottom:28px;
+    box-shadow:0 8px 24px rgba(26,92,219,.25);
+  }
+  .header h1{margin:0 0 8px;font-size:26px;font-weight:800;}
+  .header p{margin:0;font-size:15px;opacity:.9;}
+  .header .badge{
+    display:inline-block;margin-top:14px;background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.35);border-radius:999px;
+    padding:6px 16px;font-size:14px;font-weight:600;margin-right:8px;
+  }
+  .card{
+    background:#fff;border-radius:16px;padding:28px 30px;margin-bottom:24px;
+    box-shadow:0 2px 14px rgba(0,0,0,.06);
+  }
+  .card h2{
+    font-size:19px;margin:0 0 4px;color:var(--navy-dark);font-weight:800;
+    display:flex;align-items:center;gap:8px;
+  }
+  .card .sub{color:var(--grey);font-size:13.5px;margin:0 0 18px;}
+  .kpi-row{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:8px;}
+  .kpi{
+    flex:1;min-width:150px;background:var(--light);border-radius:12px;
+    padding:16px 18px;text-align:center;
+  }
+  .kpi .v{font-size:21px;font-weight:800;color:var(--navy-dark);}
+  .kpi .l{font-size:12px;color:var(--grey);margin-top:4px;}
+  .kpi.good .v{color:var(--good);}
+  .kpi.warn .v{color:var(--warn);}
+
+  /* FUNNEL */
+  .funnel{display:flex;flex-direction:column;align-items:center;gap:0;margin:20px 0 10px;}
+  .funnel-stage{
+    position:relative;color:#fff;text-align:center;padding:14px 10px;
+    font-weight:700;clip-path:polygon(0 0,100% 0,88% 100%,12% 100%);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .funnel-stage .name{font-size:13px;opacity:.95;font-weight:600;}
+  .funnel-stage .val{font-size:20px;margin-top:2px;}
+  .funnel-stage .pct{font-size:11.5px;opacity:.85;margin-top:2px;}
+  .funnel-drop{font-size:12px;color:var(--warn);text-align:center;font-weight:700;margin:2px 0;}
+  .funnel-legend{display:flex;justify-content:center;gap:18px;margin-top:12px;flex-wrap:wrap;font-size:12.5px;color:var(--grey);}
+  .funnel-legend span{display:flex;align-items:center;gap:6px;}
+  .dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+
+  .chart-box{position:relative;height:320px;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+  @media(max-width:760px){.two-col{grid-template-columns:1fr;} table{font-size:11.5px;}}
+
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px;}
+  th{background:var(--navy);color:#fff;padding:9px 8px;text-align:center;font-weight:700;white-space:nowrap;}
+  td{padding:8px 8px;border-bottom:1px solid #eee;text-align:center;white-space:nowrap;}
+  tr:nth-child(even) td{background:#fafcff;}
+  td.month{text-align:left;font-weight:700;color:var(--navy-dark);}
+  .up{color:var(--good);font-weight:700;}
+  .down{color:var(--warn);font-weight:700;}
+  .tag{display:inline-block;padding:2px 10px;border-radius:999px;font-size:11.5px;font-weight:700;}
+  .tag.good{background:#E4F4E8;color:var(--good);}
+  .tag.warn{background:#FCE8E6;color:var(--warn);}
+  .tag.note{background:#FFF3E0;color:#B26A00;}
+
+  .insight{
+    display:flex;gap:12px;padding:14px 16px;border-radius:12px;margin-bottom:12px;
+    border-left:4px solid var(--navy);background:var(--light);
+  }
+  .insight.warn{border-left-color:var(--warn);background:#FCECEB;}
+  .insight.good{border-left-color:var(--good);background:#EAF7ED;}
+  .insight .ico{font-size:20px;}
+  .insight .txt{font-size:13.5px;line-height:1.6;}
+  .insight .txt b{color:var(--navy-dark);}
+  .insight.warn .txt b{color:var(--warn);}
+  .insight.good .txt b{color:var(--good);}
+
+  .plan-step{display:flex;gap:14px;margin-bottom:16px;align-items:flex-start;}
+  .plan-step .num{
+    flex:none;width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+  }
+  .plan-step .body b{color:var(--navy-dark);}
+  .plan-step .body{font-size:13.8px;line-height:1.65;}
+  .foot{text-align:center;color:var(--grey);font-size:12px;margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <h1>🎵 TikTok Ads Funnel รายเดือน</h1>
+    <p>สรุป Funnel การยิงแอดส์ TikTok เฉพาะช่องทางเดียว แยกตามเดือน พร้อมแผนสเกลงบเพิ่ม</p>
+    <div class="badge">ข้อมูลจริง ม.ค.–ก.ค. 2569</div>
+    <div class="badge">อ้างอิงจาก data Ads/WIBWUB_Ads_Dashboard.html</div>
+  </div>
+
+  <!-- OVERVIEW KPI -->
+  <div class="card">
+    <h2>📊 ภาพรวม 7 เดือน</h2>
+    <p class="sub">สะสม ม.ค.–ก.ค. 2569 (ก.ค. เป็นข้อมูลบางส่วน ยังไม่มี impressions/clicks)</p>
+    <div class="kpi-row">
+      <div class="kpi"><div class="v">฿1,715,819</div><div class="l">งบแอดส์รวม (บาท)</div></div>
+      <div class="kpi good"><div class="v">฿8,447,965</div><div class="l">ยอดขายรวม (บาท)</div></div>
+      <div class="kpi good"><div class="v">4.92x</div><div class="l">Blended ROAS 7 เดือน</div></div>
+      <div class="kpi good"><div class="v">+37.4%</div><div class="l">ยอดขายโต ม.ค.→มิ.ย. (เดือนเต็มล่าสุด)</div></div>
+    </div>
+  </div>
+
+  <!-- FUNNEL: latest complete month -->
+  <div class="card">
+    <h2>🔻 Funnel เดือนล่าสุดที่มีข้อมูลครบ — มิถุนายน 2569</h2>
+    <p class="sub">Impressions → Clicks → Orders → Revenue | งบแอดส์ ฿258,404 | ROAS 4.94x</p>
+    <div class="funnel" id="funnel"></div>
+    <div class="funnel-legend">
+      <span><span class="dot" style="background:#1A5CDB"></span>Impressions</span>
+      <span><span class="dot" style="background:#3D7EF0"></span>Clicks</span>
+      <span><span class="dot" style="background:#7BA6F5"></span>Orders</span>
+      <span><span class="dot" style="background:#1E8E3E"></span>Revenue</span>
+    </div>
+  </div>
+
+  <!-- MONTHLY TABLE -->
+  <div class="card">
+    <h2>📅 ตารางรายเดือน — Spend / Funnel / ROAS</h2>
+    <p class="sub">CTR, CVR, CPA และ % การเติบโตของยอดขายเทียบเดือนก่อนหน้า (MoM)</p>
+    <div style="overflow-x:auto">
+    <table>
+      <tr>
+        <th>เดือน</th><th>งบแอดส์</th><th>Impressions</th><th>Clicks</th><th>CTR</th>
+        <th>Orders</th><th>CVR</th><th>Revenue</th><th>ROAS</th><th>CPA</th><th>ยอดขายโต MoM</th>
+      </tr>
+      <tr><td class="month">ม.ค.</td><td>฿150,133</td><td>1,323,590</td><td>46,354</td><td>3.50%</td><td>2,614</td><td>5.64%</td><td>฿897,521</td><td>5.98x</td><td>฿57.43</td><td>—</td></tr>
+      <tr><td class="month">ก.พ.</td><td>฿190,270</td><td>1,507,768</td><td>44,698</td><td>2.96%</td><td>3,523</td><td>7.88%</td><td>฿1,035,055</td><td>5.44x</td><td>฿54.01</td><td class="up">+15.32%</td></tr>
+      <tr><td class="month">มี.ค.</td><td>฿240,851</td><td>1,616,237</td><td>51,133</td><td>3.16%</td><td>3,844</td><td>7.52%</td><td>฿1,132,888</td><td>4.70x</td><td>฿62.66</td><td class="up">+9.45%</td></tr>
+      <tr><td class="month">เม.ย.</td><td>฿248,473</td><td>1,825,735</td><td>64,017</td><td>3.51%</td><td>5,199</td><td>8.12%</td><td>฿1,284,452</td><td>5.17x</td><td>฿47.79</td><td class="up">+13.38%</td></tr>
+      <tr><td class="month">พ.ค.</td><td>฿290,941</td><td>2,573,993</td><td>87,816</td><td>3.41%</td><td>7,520</td><td>8.56%</td><td>฿1,461,482</td><td>5.02x</td><td>฿38.69</td><td class="up">+13.78%</td></tr>
+      <tr><td class="month">มิ.ย.</td><td>฿258,404</td><td>5,444,142</td><td>73,668</td><td>1.35%</td><td>4,565</td><td>6.20%</td><td>฿1,233,228</td><td>4.94x</td><td>฿54.68</td><td class="down">-15.62%</td></tr>
+      <tr><td class="month">ก.ค.*</td><td>฿336,747</td><td>—</td><td>—</td><td>—</td><td>7,714</td><td>—</td><td>฿1,403,339</td><td>4.17x</td><td>฿43.65</td><td class="up">+13.79%</td></tr>
+    </table>
+    </div>
+    <p class="foot" style="text-align:left;margin-top:10px">*ก.ค. ยังไม่มีข้อมูล impressions/clicks/CTR/CVR ในระบบ (เดือนยังไม่ปิด) — ตัวเลข spend/revenue/orders/ROAS/CPA เป็นข้อมูลสะสมล่าสุด</p>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="card">
+    <div class="two-col">
+      <div>
+        <h2>💵 ยอดขาย vs งบแอดส์ รายเดือน</h2>
+        <p class="sub">แท่ง = Revenue, เส้น = ROAS</p>
+        <div class="chart-box"><canvas id="revChart"></canvas></div>
+      </div>
+      <div>
+        <h2>🖱️ CTR / CVR รายเดือน</h2>
+        <p class="sub">สัญญาณคุณภาพครีเอทีฟและการยิงกลุ่มเป้าหมาย</p>
+        <div class="chart-box"><canvas id="ctrChart"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INSIGHTS -->
+  <div class="card">
+    <h2>🔍 สิ่งที่ข้อมูลบอก</h2>
+    <div class="insight good">
+      <div class="ico">✅</div>
+      <div class="txt"><b>พ.ค. คือเดือนที่มีประสิทธิภาพดีที่สุด</b> — ROAS 5.02x, CPA ต่ำสุด ฿38.69, CTR 3.41%, CVR สูงสุด 8.56% แม้เพิ่มงบ +17% จาก เม.ย. ก็ยังทำผลตอบแทนดีขึ้นเรื่อยๆ (Rev +13.78%, Orders +44.64%) แปลว่างบระดับ ~฿290K ยังไม่ถึงจุดอิ่มตัว</div>
+    </div>
+    <div class="insight warn">
+      <div class="ico">⚠️</div>
+      <div class="txt"><b>มิ.ย. เกิด CTR ร่วงฮวบ 3.41% → 1.35%</b> ทั้งที่ Impressions พุ่งขึ้น 2.1 เท่า (2.57M → 5.44M) แต่ Clicks กลับลดลง — เป็นสัญญาณ <b>ครีเอทีฟ/กลุ่มเป้าหมายล้า (ad fatigue)</b> ไม่ใช่แค่ "งบเยอะเกินไป" เพราะ มิ.ย. ใช้งบ<b>น้อยกว่า</b>พ.ค. ถึง 11% แต่ยอดขายกลับหายไป 15.6% ถ้ารักษาประสิทธิภาพระดับ พ.ค. ไว้ได้ มิ.ย. น่าจะทำยอดได้เพิ่มอีก ~฿227,000</div>
+    </div>
+    <div class="insight">
+      <div class="ico">📈</div>
+      <div class="txt"><b>ก.ค. ฟื้นยอดขายด้วยการอัดงบเพิ่ม</b> (+30.3% เป็น ฿336,747) ทำให้ยอดขายกลับมาโต +13.8% แต่ ROAS ร่วงต่อเหลือ 4.17x (ต่ำสุดในรอบ 7 เดือน) — สะท้อนว่าการ "อัดงบเพิ่มเฉยๆ" โดยไม่แก้ครีเอทีฟ/ออดิเอนซ์ยังให้ผลตอบแทนต่อบาทที่ลดลงต่อเนื่อง</div>
+    </div>
+  </div>
+
+  <!-- ALL ACTIVE CAMPAIGNS (live check) -->
+  <div class="card">
+    <h2>🟢 แคมเปญที่เปิดอยู่ตอนนี้ (เช็คสดจาก TikTok Ads Manager)</h2>
+    <p class="sub">เช็คสดจาก GMV Max Dashboard ณ วันที่ 21 ก.ค. 2569 — มีแคมเปญเปิด (Active) อยู่จริงตอนนี้ทั้งหมด 8 แคมเปญ</p>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>แคมเปญ</th><th>สถานะ</th><th>งบ/วัน</th><th>ใช้ไปสะสม</th><th>Orders</th><th>CPO</th><th>ยอดขายสะสม</th><th>ROI</th></tr>
+      <tr><td class="month">22.06.26/Refreshwipes</td><td><span class="tag good">Active</span></td><td>฿8,000</td><td>฿51,891</td><td>1,861</td><td>฿27.88</td><td>฿203,042</td><td>3.91x</td></tr>
+      <tr><td class="month">22.06.26/Interiorwipes</td><td><span class="tag good">Active</span></td><td>฿4,000</td><td>฿20,107</td><td>603</td><td>฿33.34</td><td>฿74,546</td><td>3.71x</td></tr>
+      <tr><td class="month">17.06.26/AllProduct</td><td><span class="tag good">Active</span></td><td>฿2,400</td><td>฿12,566</td><td>151</td><td>฿83.22</td><td>฿67,636</td><td>5.38x</td></tr>
+      <tr><td class="month">16.06.26/Xglass.Spot.Visible</td><td><span class="tag good">Active</span></td><td>฿800</td><td>฿3,355</td><td>45</td><td>฿74.56</td><td>฿16,884</td><td>5.03x</td></tr>
+      <tr><td class="month">15.07.26/Refresh</td><td><span class="tag good">Active</span></td><td>฿1,500</td><td>฿3,262</td><td>20</td><td>฿163.11</td><td>฿9,829</td><td>3.01x</td></tr>
+      <tr style="background:#FFF3E0">
+        <td class="month">21.07.26/CleanerLowROI</td><td><span class="tag note">Active — TikTok แจ้งเตือน</span></td><td>฿2,500</td><td>฿2,361</td><td>23</td><td>฿102.66</td><td>฿4,760</td><td>2.02x</td>
+      </tr>
+      <tr><td class="month">20.07.26/Sugar</td><td><span class="tag good">Active</span></td><td>฿8,000</td><td>฿1,812</td><td>19</td><td>฿95.37</td><td>฿7,160</td><td>3.95x</td></tr>
+      <tr><td class="month">20.07.26/Interior</td><td><span class="tag good">Active</span></td><td>฿2,000</td><td>฿774</td><td>5</td><td>฿154.78</td><td>฿1,806</td><td>2.33x</td></tr>
+      <tr style="font-weight:800;background:var(--light)">
+        <td class="month">รวม 8 แคมเปญ Active</td><td>—</td><td>฿29,200</td><td>฿96,129</td><td>2,727</td><td>—</td><td>฿385,663</td><td>4.01x (blended)</td>
+      </tr>
+    </table>
+    </div>
+    <p class="foot" style="text-align:left;margin-top:10px">ตัวเลขต่อแคมเปญ = ยอดสะสมนับจากวันที่เปิดแคมเปญนั้น (ไม่ใช่ยอดรายเดือนปฏิทินเหมือนตารางด้านบน) — งบ/วัน คือ daily budget cap ปัจจุบันที่ตั้งไว้ในระบบ</p>
+
+    <div class="insight warn" style="margin-top:16px">
+      <div class="ico">⚠️</div>
+      <div class="txt"><b>TikTok เตือนเรื่องงบเองด้วย:</b> ระบบแจ้งว่างบ ฿2,500/วัน ของ <b>21.07.26/CleanerLowROI</b> "อาจจำกัดการส่งมอบโฆษณาและยอดขาย" แนะนำเพิ่มเป็น ฿7,000/วัน — แคมเปญนี้เพิ่งเปิดได้ไม่กี่วัน ROI 2.02x ยังต่ำกว่าเป้า ควรรอดูข้อมูลอีก 3-5 วันก่อนตัดสินใจเพิ่มงบจริง เพราะข้อมูลยังน้อยเกินไป (Orders แค่ 23 ตัว)</div>
+    </div>
+    <div class="insight good">
+      <div class="ico">💡</div>
+      <div class="txt"><b>งบกระจุกอยู่ที่ 2 แคมเปญหลัก</b> — Refreshwipes + Interiorwipes รวมกันใช้งบ ฿71,998 คิดเป็น <b>75% ของงบ Active ทั้งหมด</b> และทำยอดขาย ฿277,588 คิดเป็น 72% ของยอดขายจาก Active campaigns ทั้งหมด — นี่คือ 2 แคมเปญที่ควรดูแลใกล้ชิดที่สุดในการบริหารรายวัน</div>
+    </div>
+  </div>
+
+  <!-- FUNNEL PLACEMENT -->
+  <div class="card">
+    <h2>🧭 วาง Funnel แต่ละแคมเปญ/สินค้า (จากข้อมูล TikTok ทั้งหมดที่มี)</h2>
+    <p class="sub">แบ่งช่วง Funnel ตาม Orders สะสม, CPO, ROI และอายุแคมเปญ (กว้าง/หลาย SKU vs เฉพาะเจาะจง) — ดูว่าตัวไหนควรอยู่ Awareness, ตัวไหนกำลังสร้างสัญญาณ, ตัวไหนคือเครื่องทำเงินหลัก</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-top:16px">
+      <div style="background:#EAF1FE;border-radius:14px;padding:16px;border-top:5px solid #1A5CDB">
+        <div style="font-weight:800;color:var(--navy-dark);font-size:14px;margin-bottom:4px">🔵 TOF — Awareness / Prospecting</div>
+        <div style="font-size:12px;color:var(--grey);margin-bottom:12px">กวาดออดิเอนซ์กว้าง หรือเพิ่งเปิด ข้อมูลยังน้อย — หน้าที่คือเก็บสัญญาณให้ TikTok เรียนรู้</div>
+        <div style="font-size:13px;line-height:1.9">
+          <div>🏷️ <b>17.06.26/AllProduct</b><br><span style="color:var(--grey);font-size:11.5px">Multi-SKU กว้าง · 151 orders · CPO ฿83.22</span></div>
+          <div style="margin-top:8px">🏷️ <b>20.07.26/Interior</b><br><span style="color:var(--grey);font-size:11.5px">เปิด ~1-2 วัน · 5 orders · CPO ฿154.78</span></div>
+          <div style="margin-top:8px">🏷️ <b>21.07.26/CleanerLowROI</b><br><span style="color:var(--grey);font-size:11.5px">เปิด ~1 วัน · 23 orders · ROI 2.02x</span></div>
+        </div>
+      </div>
+      <div style="background:#FFF3E0;border-radius:14px;padding:16px;border-top:5px solid var(--gold)">
+        <div style="font-weight:800;color:#B26A00;font-size:14px;margin-bottom:4px">🟡 MOF — Consideration / Building Signal</div>
+        <div style="font-size:12px;color:var(--grey);margin-bottom:12px">SKU เฉพาะเจาะจง กำลังสะสม Order/สัญญาณ ROI เริ่มเห็นแนวโน้มชัดขึ้น</div>
+        <div style="font-size:13px;line-height:1.9">
+          <div>🏷️ <b>16.06.26/Xglass.Spot.Visible</b><br><span style="color:var(--grey);font-size:11.5px">นิชกลุ่มเฉพาะ · 45 orders · ROI 5.03x</span></div>
+          <div style="margin-top:8px">🏷️ <b>15.07.26/Refresh</b><br><span style="color:var(--grey);font-size:11.5px">SKU เดี่ยว · 20 orders · ROI 3.01x</span></div>
+          <div style="margin-top:8px">🏷️ <b>20.07.26/Sugar</b><br><span style="color:var(--grey);font-size:11.5px">SKU เดี่ยว · 19 orders · ROI 3.95x (แนวโน้มดี)</span></div>
+        </div>
+      </div>
+      <div style="background:#EAF7ED;border-radius:14px;padding:16px;border-top:5px solid var(--good)">
+        <div style="font-weight:800;color:var(--good);font-size:14px;margin-bottom:4px">🟢 BOF — Conversion / Harvest</div>
+        <div style="font-size:12px;color:var(--grey);margin-bottom:12px">TikTok เรียนรู้ audience เต็มที่แล้ว CPO ต่ำ Volume สูง — เครื่องผลิตยอดขายหลัก</div>
+        <div style="font-size:13px;line-height:1.9">
+          <div>🏷️ <b>22.06.26/Refreshwipes</b><br><span style="color:var(--grey);font-size:11.5px">1,861 orders · CPO ฿27.88 (ต่ำสุด) · ROI 3.91x</span></div>
+          <div style="margin-top:8px">🏷️ <b>22.06.26/Interiorwipes</b><br><span style="color:var(--grey);font-size:11.5px">603 orders · CPO ฿33.34 · ROI 3.71x</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;margin-top:20px">
+    <table>
+      <tr><th>Stage</th><th>แคมเปญ</th><th>เหตุผลที่จัดอยู่ตรงนี้</th><th>สิ่งที่ควรทำต่อ</th></tr>
+      <tr>
+        <td style="text-align:left;white-space:normal" rowspan="3">🔵 TOF</td>
+        <td style="text-align:left;white-space:normal">17.06.26/AllProduct</td>
+        <td style="text-align:left;white-space:normal">กวาดหลาย SKU พร้อมกัน ใช้เป็นตัวหาสัญญาณ audience กว้างให้ระบบ ROI ดีอยู่แล้ว (5.38x) แม้ CPO สูงกว่ากลุ่ม BOF</td>
+        <td style="text-align:left;white-space:normal">คงบทบาท prospecting ไว้ + เพิ่มงบ +฿1,500/วัน เพื่อขยายฐาน audience ป้อนให้แคมเปญ BOF ต่อ</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal">20.07.26/Interior</td>
+        <td style="text-align:left;white-space:normal">เพิ่งเปิด 1-2 วัน มี Orders แค่ 5 ตัว — ข้อมูลยังไม่พอบอกว่าจะไปทาง MOF หรือ BOF</td>
+        <td style="text-align:left;white-space:normal">คงงบเดิม ปล่อยให้เก็บข้อมูลอีก 5-7 วัน ก่อนตัดสินใจ</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal">21.07.26/CleanerLowROI</td>
+        <td style="text-align:left;white-space:normal">เพิ่งเปิด ~1 วัน ROI ยังต่ำ (2.02x) TikTok เองก็แนะนำให้เพิ่มงบเพื่อให้ delivery ดีขึ้น</td>
+        <td style="text-align:left;white-space:normal">เพิ่มงบบางส่วน (+฿1,500-2,500/วัน) ให้ระบบเรียนรู้เร็วขึ้น แล้วประเมินใหม่ใน 5-7 วัน</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal" rowspan="3">🟡 MOF</td>
+        <td style="text-align:left;white-space:normal">16.06.26/Xglass.Spot.Visible</td>
+        <td style="text-align:left;white-space:normal">สินค้านิชเฉพาะกลุ่ม (กระจก/จุดเปื้อน) Order สะสม 45 ตัว ROI ดี (5.03x) กำลังพิสูจน์ตัวเองในระดับกลาง</td>
+        <td style="text-align:left;white-space:normal">เพิ่มงบ +฿500/วัน ดันให้ก้าวสู่ BOF</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal">15.07.26/Refresh</td>
+        <td style="text-align:left;white-space:normal">SKU เดี่ยว เปิดมา ~6 วัน ROI 3.01x ยังไม่แข็งแรงเท่ากลุ่ม BOF</td>
+        <td style="text-align:left;white-space:normal">คงงบเดิม รอ Orders สะสมแตะ 50-100 ตัวก่อนสเกล</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal">20.07.26/Sugar</td>
+        <td style="text-align:left;white-space:normal">SKU เดี่ยว เพิ่งเปิด 1-2 วัน แต่ ROI เริ่มดี (3.95x) — สัญญาณบวกเร็วกว่าตัวอื่นที่เปิดพร้อมกัน</td>
+        <td style="text-align:left;white-space:normal">ปล่อยให้ใช้งบ cap เดิม (฿8,000/วัน) ให้เต็มก่อน ยังไม่ต้องเพิ่ม</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal" rowspan="2">🟢 BOF</td>
+        <td style="text-align:left;white-space:normal">22.06.26/Refreshwipes</td>
+        <td style="text-align:left;white-space:normal">Order สะสมมากสุด (1,861) CPO ต่ำสุดในทุกแคมเปญ (฿27.88) — พิสูจน์แล้วว่าเป็นเครื่องผลิตยอดขายหลัก</td>
+        <td style="text-align:left;white-space:normal">ดันงบเพิ่ม +฿3,000/วัน ทันที เป้ายอดเพิ่ม +฿315,000/เดือน</td>
+      </tr>
+      <tr>
+        <td style="text-align:left;white-space:normal">22.06.26/Interiorwipes</td>
+        <td style="text-align:left;white-space:normal">Order สะสม 603 ตัว CPO ต่ำ (฿33.34) เป็นคู่หูของ Refreshwipes ในการทำยอดหลัก</td>
+        <td style="text-align:left;white-space:normal">ดันงบเพิ่ม +฿2,000/วัน ทันที เป้ายอดเพิ่ม +฿198,000/เดือน</td>
+      </tr>
+    </table>
+    </div>
+
+    <div class="insight" style="margin-top:16px">
+      <div class="ico">🧭</div>
+      <div class="txt"><b>ภาพรวม Funnel:</b> ตอนนี้ TOF มี 3 แคมเปญ (กว้าง/ใหม่), MOF มี 3 แคมเปญ (กำลังสร้างสัญญาณ), และ BOF มีแค่ 2 แคมเปญ (ตัวทำเงินหลัก) — โครงสร้างค่อนข้างสมดุลสำหรับธุรกิจที่กำลังโต แต่ควรจับตา <b>Xglass.Spot.Visible และ Sugar</b> ให้ดี เพราะมีสัญญาณพร้อมขยับขึ้นเป็น BOF เร็วที่สุดในกลุ่ม MOF</div>
+    </div>
+  </div>
+
+  <!-- SCALE PLAN -->
+  <div class="card">
+    <h2>🚀 เพิ่มงบเท่าไหร่ เป้ายอดคืนเท่าไหร่ — เฉพาะ 8 แคมเปญที่เปิดอยู่จริงตอนนี้</h2>
+    <p class="sub">แบ่งเป็น 2 กลุ่ม: "ดันงบเพิ่มได้เลย" (มีข้อมูลพิสูจน์ผลแล้ว) กับ "รอดูก่อน" (แคมเปญใหม่ &lt;10 วัน ข้อมูลยังน้อยเกินตัดสินใจ)</p>
+
+    <p style="font-weight:800;color:var(--navy-dark);margin:18px 0 6px;font-size:14.5px">✅ กลุ่มที่ 1 — ดันงบเพิ่มได้เลย (ROI พิสูจน์แล้ว)</p>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>แคมเปญ</th><th>งบ/วันปัจจุบัน</th><th>งบ/วันใหม่</th><th>เพิ่มงบ/วัน</th><th>ROI ที่ผ่านมา</th><th>ROI คาดหวัง (marginal)</th><th>เป้ายอดขายที่เพิ่ม/เดือน</th></tr>
+      <tr>
+        <td class="month">22.06.26/Refreshwipes</td><td>฿8,000</td><td class="up">฿11,000</td>
+        <td class="up">+฿3,000</td><td>3.91x</td><td>~3.5x</td>
+        <td class="up">+฿315,000</td>
+      </tr>
+      <tr>
+        <td class="month">17.06.26/AllProduct</td><td>฿2,400</td><td class="up">฿3,900</td>
+        <td class="up">+฿1,500</td><td>5.38x (ROI สูงสุด)</td><td>~4.8x</td>
+        <td class="up">+฿216,000</td>
+      </tr>
+      <tr>
+        <td class="month">22.06.26/Interiorwipes</td><td>฿4,000</td><td class="up">฿6,000</td>
+        <td class="up">+฿2,000</td><td>3.71x</td><td>~3.3x</td>
+        <td class="up">+฿198,000</td>
+      </tr>
+      <tr>
+        <td class="month">16.06.26/Xglass.Spot.Visible</td><td>฿800</td><td class="up">฿1,300</td>
+        <td class="up">+฿500</td><td>5.03x</td><td>~4.5x</td>
+        <td class="up">+฿67,500</td>
+      </tr>
+      <tr style="font-weight:800;background:var(--light)">
+        <td class="month">รวมกลุ่มที่ 1 (4 แคมเปญ)</td><td>฿15,200</td><td>฿22,200</td>
+        <td class="up">+฿7,000/วัน (≈+฿210,000/เดือน)</td><td>—</td><td>~3.9x เฉลี่ย</td>
+        <td class="up">+฿796,500/เดือน</td>
+      </tr>
+    </table>
+    </div>
+
+    <p style="font-weight:800;color:var(--navy-dark);margin:22px 0 6px;font-size:14.5px">⏳ กลุ่มที่ 2 — รอดูก่อน (แคมเปญใหม่ ข้อมูลยังน้อย)</p>
+    <div style="overflow-x:auto">
+    <table>
+      <tr><th>แคมเปญ</th><th>อายุแคมเปญ</th><th>งบ/วันปัจจุบัน</th><th>ROI ตอนนี้</th><th>คำแนะนำ</th></tr>
+      <tr>
+        <td class="month">15.07.26/Refresh</td><td>~6 วัน</td><td>฿1,500</td><td>3.01x</td>
+        <td>คงงบเดิม รอ Orders สะสมเกิน 50-100 ตัวก่อนพิจารณาเพิ่มงบ</td>
+      </tr>
+      <tr>
+        <td class="month">20.07.26/Sugar</td><td>~1-2 วัน</td><td>฿8,000</td><td>3.95x</td>
+        <td>งบเดิมยังไม่ถูกใช้เต็ม (ใช้ไปแค่ ฿1,812 จาก cap ฿8,000/วัน) — ปล่อยให้ระบบ ramp เต็ม budget ก่อน ยังไม่ต้องเพิ่ม</td>
+      </tr>
+      <tr style="background:#FFF3E0">
+        <td class="month">21.07.26/CleanerLowROI</td><td>~1 วัน</td><td>฿2,500</td><td>2.02x</td>
+        <td>TikTok แนะนำเพิ่มเป็น ฿7,000 แต่ ROI ยังต่ำ — เพิ่มแค่บางส่วนเป็น ฿4,000-5,000/วัน แล้วรีเช็คใน 5-7 วัน ก่อนเพิ่มเต็มตามคำแนะนำ</td>
+      </tr>
+      <tr>
+        <td class="month">20.07.26/Interior</td><td>~1-2 วัน</td><td>฿2,000</td><td>2.33x</td>
+        <td>Orders มีแค่ 5 ตัว — เร็วเกินไปที่จะตัดสินใจ คงงบเดิมไว้ก่อน รอ 5-7 วัน</td>
+      </tr>
+    </table>
+    </div>
+
+    <div class="insight good" style="margin-top:18px">
+      <div class="ico">🎯</div>
+      <div class="txt"><b>สรุปเป้าหมายทันที:</b> เพิ่มงบรวม <b>+฿7,000/วัน (≈+฿210,000/เดือน)</b> ใน 4 แคมเปญที่พิสูจน์ ROI แล้ว (Refreshwipes, AllProduct, Interiorwipes, Xglass.Spot.Visible) ตั้งเป้ายอดขายเพิ่มกลับมา <b>+฿796,500/เดือน</b> — ส่วนอีก 4 แคมเปญที่เพิ่งเปิด (Refresh, Sugar, CleanerLowROI, Interior) ให้คงงบเดิมไว้ก่อน รอข้อมูลสะสมครบ 5-7 วันแล้วค่อยประเมินใหม่</div>
+    </div>
+  </div>
+
+  <p class="foot">WIBWUB Marketing · ข้อมูลจาก TikTok GMV Max Dashboard (เช็คสดวันที่ 21 ก.ค. 2569) — เฉพาะ 8 แคมเปญที่ Active อยู่จริง</p>
+</div>
+
+<script>
+  const fmt = n => new Intl.NumberFormat('en-US').format(Math.round(n));
+
+  // ---- FUNNEL (June — last complete month) ----
+  const stages = [
+    {name:'Impressions', val:5444142, color:'#1A5CDB', display:v=>fmt(v)},
+    {name:'Clicks', val:73668, color:'#3D7EF0', display:v=>fmt(v)},
+    {name:'Orders', val:4565, color:'#7BA6F5', display:v=>fmt(v)},
+    {name:'Revenue', val:1233228, color:'#1E8E3E', display:v=>'฿'+fmt(v)},
+  ];
+  const maxW = 600, minW = 240;
+  const logs = stages.map(s => Math.log10(s.val));
+  const maxLog = Math.max(...logs), minLog = Math.min(...logs);
+  const funnelEl = document.getElementById('funnel');
+  stages.forEach((s,i)=>{
+    const w = minW + (maxW-minW) * ((logs[i]-minLog)/(maxLog-minLog));
+    const pct = i===0 ? 100 : (s.val/stages[0].val*100);
+    const div = document.createElement('div');
+    div.className='funnel-stage';
+    div.style.background = s.color;
+    div.style.width = w+'px';
+    div.innerHTML = `<div class="name">${s.name}</div><div class="val">${s.display(s.val)}</div><div class="pct">${i===0?'100%':pct.toFixed(3)+'% ของ Impressions'}</div>`;
+    funnelEl.appendChild(div);
+    if(i < stages.length-1){
+      const drop = document.createElement('div');
+      drop.className='funnel-drop';
+      if(i===2){
+        drop.textContent = `▼ ROAS 4.94x`;
+        drop.style.color = '#1E8E3E';
+      } else {
+        drop.textContent = `▼ conversion ${(stages[i+1].val/s.val*100).toFixed(2)}%`;
+      }
+      funnelEl.appendChild(drop);
+    }
+  });
+
+  // ---- REVENUE + ROAS CHART ----
+  const months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.*'];
+  const revenue = [897521,1035055,1132888,1284452,1461482,1233228,1403339.1];
+  const roas    = [5.98,5.44,4.70,5.17,5.02,4.94,4.17];
+
+  new Chart(document.getElementById('revChart'), {
+    data:{
+      labels: months,
+      datasets:[
+        {
+          type:'bar', label:'Revenue',
+          data: revenue, backgroundColor:'#1A5CDB', borderRadius:6, maxBarThickness:40,
+          yAxisID:'y',
+        },
+        {
+          type:'line', label:'ROAS',
+          data: roas, borderColor:'#E8A93A', backgroundColor:'#E8A93A',
+          borderWidth:3, pointRadius:5, pointBackgroundColor:'#E8A93A',
+          yAxisID:'y1', tension:.3,
+        }
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'top', labels:{font:{size:12}}},
+        tooltip:{callbacks:{label: ctx => ctx.dataset.label === 'Revenue' ? ('Revenue: ฿'+fmt(ctx.raw)) : ('ROAS: '+ctx.raw+'x') }}
+      },
+      scales:{
+        y:{ position:'left', ticks:{ callback:v=>'฿'+(v/1e6).toFixed(1)+'M' } },
+        y1:{ position:'right', grid:{drawOnChartArea:false}, ticks:{ callback:v=>v+'x' } }
+      }
+    }
+  });
+
+  // ---- CTR/CVR CHART ----
+  const ctr = [3.5,2.96,3.16,3.51,3.41,1.35,null];
+  const cvr = [5.64,7.88,7.52,8.12,8.56,6.2,null];
+  new Chart(document.getElementById('ctrChart'), {
+    type:'line',
+    data:{
+      labels: months,
+      datasets:[
+        { label:'CTR %', data: ctr, borderColor:'#1A5CDB', backgroundColor:'#1A5CDB', tension:.3, pointRadius:5, borderWidth:3 },
+        { label:'CVR %', data: cvr, borderColor:'#1E8E3E', backgroundColor:'#1E8E3E', tension:.3, pointRadius:5, borderWidth:3 },
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{position:'top', labels:{font:{size:12}}} },
+      scales:{ y:{ ticks:{ callback:v=>v+'%' } } }
+    }
+  });
+</script>
+</body>
+</html>
