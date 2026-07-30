@@ -267,7 +267,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="kstrip">
     <div class="kk"><div class="kkl">Affiliate GMV (ก.ค. 1-27)</div><div class="kkv teal">฿1,330K</div><div class="kks">มิ.ย. เต็มเดือน ฿642K</div></div>
     <div class="kk"><div class="kkl">Net GMV (หลังคืนเงิน)</div><div class="kkv green">฿1,245K</div><div class="kks">ก.ค. 1-27 · มิ.ย. ฿632K</div></div>
-    <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">688</div><div class="kks">ก.ค. 1-27 (มิ.ย. 398)</div></div>
+    <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">688</div><div class="kks">ก.ค. 1-27 (มิ.ย. 398) · จากครีเอเตอร์รวมทั้งหมด 1,754 คนสะสม</div></div>
     <div class="kk"><div class="kkl">สินค้าที่ขายผ่าน Affiliate</div><div class="kkv amber">7+</div><div class="kks">หมวด ยานยนต์</div></div>
     <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (ก.ค. 1-27)</div><div class="kkv" style="color:var(--pink)">฿153K</div><div class="kks">มิ.ย. ฿79.3K</div></div>
     <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">฿37.7K</div><div class="kks">มิ.ย. ฿18.2K + ก.ค.1-17 ฿19.5K · 365 sessions</div></div>
@@ -276,9 +276,12 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="sec" style="margin-top:4px">📌 เดือนนี้ KOL Insights</div>
   <div class="kstrip">
     <div class="kk"><div class="kkl">Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+107%</div><div class="kks">฿642K (มิ.ย.) → ฿1,330K (ก.ค. 1-27)</div></div>
+    <div class="kk"><div class="kkl">Net Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+97%</div><div class="kks">฿632K (มิ.ย.) → ฿1,245K (ก.ค. 1-27)</div></div>
     <div class="kk"><div class="kkl">Active Creator โตจากเดือนก่อน</div><div class="kkv blue">+73%</div><div class="kks">398 คน (มิ.ย.) → 688 คน (ก.ค.) · +290 คน</div></div>
+    <div class="kk"><div class="kkl">Creator ใหม่ (ก.ค.)</div><div class="kkv blue">546</div><div class="kks">ไม่เคยขายในมิ.ย. แต่มียอด ก.ค. · จากรวมทั้งหมด 1,754 คน</div></div>
     <div class="kk"><div class="kkl">Net Margin</div><div class="kkv green">93.6%</div><div class="kks">Net GMV ฿1,245K ÷ GMV ฿1,330K</div></div>
     <div class="kk"><div class="kkl">สินค้าขายดีสุดครองสัดส่วน</div><div class="kkv amber">28.7%</div><div class="kks">Leather Wipes จาก GMV สินค้ารวมทุกตัว</div></div>
+    <div class="kk"><div class="kkl">Order ทั้งหมด</div><div class="kkv purple">21,891</div><div class="kks">ของ 279 ครีเอเตอร์ที่มีข้อมูลละเอียด</div></div>
     <div class="kk"><div class="kkl">Top 30 ครีเอเตอร์ครองสัดส่วน</div><div class="kkv purple">76.8%</div><div class="kks">ของ GMV กลุ่มครีเอเตอร์ที่มีข้อมูลละเอียด (279 คน)</div></div>
   </div>
 
@@ -293,16 +296,6 @@ tr:hover td{background:rgba(59,130,246,.04)}
     </div>
   </div>
 
-  <div class="g2">
-    <div class="cc">
-      <div class="ct">Orders vs GMV</div>
-      <div class="cw" style="height:180px"><canvas id="c-scatter"></canvas></div>
-    </div>
-    <div class="cc">
-      <div class="ct">สัดส่วน GMV แยก Product</div>
-      <div class="cw" style="height:180px"><canvas id="c-pie"></canvas></div>
-    </div>
-  </div>
 </div>
 
 <!-- ════ CREATORS ════ -->
@@ -339,10 +332,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <div id="tab-products" class="panel">
   <div class="kstrip">
-    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">7</div><div class="kks">ครบทุกตัวจากทั้งหมด 7 สินค้า · ผ่าน 808 creators</div></div>
-    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue">Leather Wipes</div><div class="kks">฿553K · 5,041 ชิ้น</div></div>
-    <div class="kk"><div class="kkl">Top Product (Units)</div><div class="kkv green">Leather Wipes</div><div class="kks">5,041 ชิ้น</div></div>
-    <div class="kk"><div class="kkl">Best Price/Unit</div><div class="kkv amber">Refresh</div><div class="kks">฿406/ชิ้น</div></div>
+    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal" id="kk-prod-active">–</div><div class="kks" id="kk-prod-active-sub">–</div></div>
+    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue" id="kk-prod-top-gmv">–</div><div class="kks" id="kk-prod-top-gmv-sub">–</div></div>
+    <div class="kk" title="คำนวณจากยอดสะสมทั้งหมด — ยังไม่มีข้อมูลจำนวนชิ้นแยกรายเดือน"><div class="kkl">Top Product (Units) ⓘ</div><div class="kkv green" id="kk-prod-top-units">–</div><div class="kks" id="kk-prod-top-units-sub">–</div></div>
+    <div class="kk" title="คำนวณจากยอดสะสมทั้งหมด — ยังไม่มีข้อมูลจำนวนชิ้นแยกรายเดือน"><div class="kkl">Best Price/Unit ⓘ</div><div class="kkv amber" id="kk-prod-best-price">–</div><div class="kks" id="kk-prod-best-price-sub">–</div></div>
   </div>
 
   <div class="sec">ตารางสินค้า</div>
@@ -4924,6 +4917,29 @@ function renderProducts(){
       <td data-val="${sharePct}"><div class="mini-bar" style="--w:${sharePct}%">${sharePct}%</div></td>
     </tr>`;
   }).join('');
+
+  // KPI strip — month-aware where the data supports it
+  const setTxtP = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
+  const mLabelP = {all:'มี.ค.–ก.ค.',mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',jul:'ก.ค.'};
+
+  // Active products + Top Product (GMV): fully month-aware using dGMV (pGMV)
+  setTxtP('kk-prod-active', allP.length);
+  setTxtP('kk-prod-active-sub', `${allP.length} จากทั้งหมด ${PRODUCTS.length} สินค้ามียอดขาย${activeMonth==='all'?'':' ('+mLabelP[activeMonth]+')'}`);
+
+  if(sorted[0]){
+    setTxtP('kk-prod-top-gmv', sorted[0].short);
+    setTxtP('kk-prod-top-gmv-sub', `${fmtK(sorted[0].dGMV)}${activeMonth==='all'?'':' · '+mLabelP[activeMonth]}`);
+  }
+
+  // Top Product (Units) & Best Price/Unit: PRODUCTS.units has no monthly breakdown,
+  // so these stay all-time (cumulative) figures regardless of selected month — labeled as such (ⓘ)
+  const byUnitsAll = [...PRODUCTS].sort((a,b)=>b.units-a.units)[0];
+  setTxtP('kk-prod-top-units', byUnitsAll.short);
+  setTxtP('kk-prod-top-units-sub', `${byUnitsAll.units.toLocaleString()} ชิ้น (สะสมทั้งหมด)`);
+
+  const byPriceAll = [...PRODUCTS].sort((a,b)=>Math.round(b.gmv/b.units)-Math.round(a.gmv/a.units))[0];
+  setTxtP('kk-prod-best-price', byPriceAll.short);
+  setTxtP('kk-prod-best-price-sub', `฿${fmtFull(Math.round(byPriceAll.gmv/byPriceAll.units))}/ชิ้น (สะสมทั้งหมด)`);
 }
 
 function renderVideos(){
@@ -5098,23 +5114,6 @@ function buildCharts(){
     datasets:[{data:pGMV,backgroundColor:['#14b8a6','#3b82f6','#8b5cf6'],borderRadius:6,borderSkipped:false}]
   },options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false}},
     scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}},plugins:[barValueLabels]});
-
-  // Scatter: orders vs GMV
-  mkChart('c-scatter',{type:'scatter',data:{
-    datasets:[{label:'Creator',data:CREATORS.map(c=>({x:c.orders,y:c.gmv/1000})),
-      backgroundColor:COLORS,pointRadius:8,pointHoverRadius:10}]
-  },options:{responsive:true,maintainAspectRatio:false,
-    plugins:{legend:{display:false},tooltip:{callbacks:{
-      label:ctx=>`${CREATORS[ctx.dataIndex]?.name}: ${ctx.raw.x} orders, ฿${ctx.raw.y.toFixed(1)}K GMV`
-    }}},
-    scales:{x:{title:{display:true,text:'Orders'}},y:{title:{display:true,text:'GMV (K฿)'}}}}});
-
-  // Pie
-  mkChart('c-pie',{type:'doughnut',data:{
-    labels:pNames,
-    datasets:[{data:pGMV,backgroundColor:['#14b8a6','#3b82f6','#8b5cf6'],borderWidth:0}]
-  },options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
-    plugins:{legend:{position:'right',labels:{padding:12,font:{size:11}}}}}});
 
   // Video bar (gmv>0 guard: VIDEOS now also contains zero-sale clips, keep this
   // chart limited to sales-driving videos like before)
