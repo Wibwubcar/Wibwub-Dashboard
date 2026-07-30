@@ -273,10 +273,19 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">฿37.7K</div><div class="kks">มิ.ย. ฿18.2K + ก.ค.1-17 ฿19.5K · 365 sessions</div></div>
   </div>
 
+  <div class="sec" style="margin-top:4px">📌 เดือนนี้ KOL Insights</div>
+  <div class="kstrip">
+    <div class="kk"><div class="kkl">Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+107%</div><div class="kks">฿642K (มิ.ย.) → ฿1,330K (ก.ค. 1-27)</div></div>
+    <div class="kk"><div class="kkl">Active Creator โตจากเดือนก่อน</div><div class="kkv blue">+73%</div><div class="kks">398 คน (มิ.ย.) → 688 คน (ก.ค.) · +290 คน</div></div>
+    <div class="kk"><div class="kkl">Net Margin</div><div class="kkv green">93.6%</div><div class="kks">Net GMV ฿1,245K ÷ GMV ฿1,330K</div></div>
+    <div class="kk"><div class="kkl">สินค้าขายดีสุดครองสัดส่วน</div><div class="kkv amber">28.7%</div><div class="kks">Leather Wipes จาก GMV สินค้ารวมทุกตัว</div></div>
+    <div class="kk"><div class="kkl">Top 30 ครีเอเตอร์ครองสัดส่วน</div><div class="kkv purple">76.8%</div><div class="kks">ของ GMV กลุ่มครีเอเตอร์ที่มีข้อมูลละเอียด (279 คน)</div></div>
+  </div>
+
   <div class="g2">
     <div class="cc">
-      <div class="ct">GMV แยกตาม Creator</div>
-      <div class="cw" style="height:220px"><canvas id="c-creator-gmv"></canvas></div>
+      <div class="ct">Creator GMV Distribution <span style="font-size:11px;color:var(--t3);font-weight:400">(279 ครีเอเตอร์ที่มีข้อมูลละเอียด)</span></div>
+      <div class="cw" style="height:220px"><canvas id="c-creator-dist"></canvas></div>
     </div>
     <div class="cc">
       <div class="ct">GMV แยกตาม Product</div>
@@ -284,11 +293,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     </div>
   </div>
 
-  <div class="g3">
-    <div class="cc">
-      <div class="ct">ประสิทธิภาพ (GMV per Order)</div>
-      <div class="cw" style="height:180px"><canvas id="c-aov"></canvas></div>
-    </div>
+  <div class="g2">
     <div class="cc">
       <div class="ct">Orders vs GMV</div>
       <div class="cw" style="height:180px"><canvas id="c-scatter"></canvas></div>
@@ -302,11 +307,11 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <!-- ════ CREATORS ════ -->
 <div id="tab-creators" class="panel">
-  <div class="kstrip">
-    <div class="kk"><div class="kkl">Total Creator GMV</div><div class="kkv teal">฿3,511K</div><div class="kks">1,597 unique creators</div></div>
-    <div class="kk"><div class="kkl">Top Creator</div><div class="kkv blue">fahareejun</div><div class="kks">฿414K GMV · 3,708 orders</div></div>
-    <div class="kk"><div class="kkl">Top by Orders</div><div class="kkv purple">fahareejun</div><div class="kks">3,708 orders</div></div>
-    <div class="kk"><div class="kkl">Best GMV/Order (AOV)</div><div class="kkv amber">numtonn</div><div class="kks">฿621/order</div></div>
+  <div class="kstrip" id="creators-kstrip">
+    <div class="kk"><div class="kkl" id="ck-gmv-l">Total Creator GMV</div><div class="kkv teal" id="ck-gmv-v">฿3,511K</div><div class="kks" id="ck-gmv-s">1,597 unique creators</div></div>
+    <div class="kk"><div class="kkl" id="ck-top-l">Top Creator</div><div class="kkv blue" id="ck-top-v">fahareejun</div><div class="kks" id="ck-top-s">฿414K GMV · 3,708 orders</div></div>
+    <div class="kk"><div class="kkl" id="ck-ord-l">Top by Orders</div><div class="kkv purple" id="ck-ord-v">fahareejun</div><div class="kks" id="ck-ord-s">3,708 orders</div></div>
+    <div class="kk"><div class="kkl" id="ck-aov-l">Best GMV/Order (AOV)</div><div class="kkv amber" id="ck-aov-v">numtonn</div><div class="kks" id="ck-aov-s">฿621/order</div></div>
   </div>
 
   <div class="sec">ตารางครีเอเตอร์</div>
@@ -319,10 +324,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th onclick="sortTbl('tbl-creators',2,this)">GMV <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-creators',3,this)">Returns <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-creators',4,this)">Net GMV <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-creators',5,this)">Commission <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-creators',5,this)" title="ค่าคอมมิชชั่นที่ครีเอเตอร์ได้รับจากยอดขาย (GMV × Comm%)">Commission <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-creators',6,this)">Orders <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-creators',7,this)">AOV <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-creators',8,this)">Comm% <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-creators',8,this)" title="อัตราค่าคอมมิชชั่น = Commission ÷ GMV">Comm% <span class="sort-icon">↕</span></th>
         </tr>
       </thead>
       <tbody id="creators-body"></tbody>
@@ -334,13 +339,14 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <div id="tab-products" class="panel">
   <div class="kstrip">
-    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">7</div><div class="kks">ผ่าน 808 creators</div></div>
-    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue">Leather Wipes</div><div class="kks">฿553K · 5,041 หน่วย</div></div>
-    <div class="kk"><div class="kkl">Top Product (Units)</div><div class="kkv green">Leather Wipes</div><div class="kks">5,041 หน่วย</div></div>
-    <div class="kk"><div class="kkl">Best Price/Unit</div><div class="kkv amber">Refresh</div><div class="kks">฿406/หน่วย</div></div>
+    <div class="kk"><div class="kkl">สินค้าที่ Active</div><div class="kkv teal">7</div><div class="kks">ครบทุกตัวจากทั้งหมด 7 สินค้า · ผ่าน 808 creators</div></div>
+    <div class="kk"><div class="kkl">Top Product (GMV)</div><div class="kkv blue">Leather Wipes</div><div class="kks">฿553K · 5,041 ชิ้น</div></div>
+    <div class="kk"><div class="kkl">Top Product (Units)</div><div class="kkv green">Leather Wipes</div><div class="kks">5,041 ชิ้น</div></div>
+    <div class="kk"><div class="kkl">Best Price/Unit</div><div class="kkv amber">Refresh</div><div class="kks">฿406/ชิ้น</div></div>
   </div>
 
   <div class="sec">ตารางสินค้า</div>
+  <div id="products-month-note" class="note" style="display:none;margin-bottom:10px"></div>
   <div class="tw">
     <table id="tbl-products">
       <thead>
@@ -348,8 +354,8 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th>#</th>
           <th>สินค้า</th>
           <th onclick="sortTbl('tbl-products',2,this)">GMV รวม <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-products',3,this)">Units <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-products',4,this)">ราคา/หน่วย <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-products',3,this)">ชิ้น <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-products',4,this)">ราคา/ชิ้น <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',5,this)">Returns <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',6,this)">Net GMV <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-products',7,this)">ครีเอเตอร์ <span class="sort-icon">↕</span><div style="font-size:9px;color:var(--t3)">ก.ค.1-24</div></th>
@@ -360,20 +366,14 @@ tr:hover td{background:rgba(59,130,246,.04)}
       <tbody id="products-body"></tbody>
     </table>
   </div>
-
-  <div class="sec">GMV แยกสินค้า × Creator</div>
-  <div class="cc">
-    <div class="ct">ใครขายสินค้าไหนได้เท่าไหร่</div>
-    <div class="cw" style="height:250px"><canvas id="c-prod-stacked"></canvas></div>
-  </div>
 </div>
 
 <!-- ════ VIDEOS ════ -->
 <div id="tab-videos" class="panel">
   <div class="kstrip">
-    <div class="kk"><div class="kkl">วีดีโอที่บันทึก</div><div class="kkv teal">51</div><div class="kks">จากหน้า TikTok Affiliate</div></div>
-    <div class="kk"><div class="kkl">Top Video GMV</div><div class="kkv amber">฿354K</div><div class="kks">by fahareejun</div></div>
-    <div class="kk"><div class="kkl">Avg GMV/Video</div><div class="kkv blue">฿27.1K</div><div class="kks">ทั้ง 51 คลิป</div></div>
+    <div class="kk"><div class="kkl">คลิปทั้งหมดในระบบ</div><div class="kkv teal" id="kk-total-clips">–</div><div class="kks">รวมทุกครีเอเตอร์ · ทุกเดือน</div></div>
+    <div class="kk"><div class="kkl">Top Video GMV</div><div class="kkv amber" id="kk-top-video">–</div><div class="kks" id="kk-top-video-sub">–</div></div>
+    <div class="kk"><div class="kkl">Avg GMV/Video</div><div class="kkv blue" id="kk-avg-video">–</div><div class="kks" id="kk-avg-video-sub">เฉลี่ยเฉพาะคลิปที่มียอดขาย</div></div>
     <div class="kk"><div class="kkl">คลิปที่ขายได้ / ทั้งหมด</div><div class="kkv green" id="kk-sold-ratio">–</div><div class="kks" id="kk-sold-ratio-sub">รวมทุกครีเอเตอร์</div></div>
   </div>
 
@@ -410,7 +410,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="creator-list">
       <div class="cl-header">
         <input class="cl-search" id="cl-search" type="text" placeholder="🔍 ค้นหาครีเอเตอร์…" oninput="filterCreatorList(this.value)">
-        <div style="font-size:11px;color:var(--t3);margin-top:6px">แสดง <span id="cl-count">15</span> / 15 ครีเอเตอร์</div>
+        <div style="font-size:11px;color:var(--t3);margin-top:6px">แสดง <span id="cl-count">–</span> / <span id="cl-total">–</span> ครีเอเตอร์</div>
       </div>
       <div class="cl-scroll" id="cl-scroll"></div>
     </div>
@@ -470,11 +470,11 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <div id="tab-kolroi" class="panel">
   <div class="kol-kpi-row">
     <div class="kol-kpi"><div class="kol-kpi-l">Total Spend</div><div class="kol-kpi-v" style="color:var(--red)">฿649K</div><div class="kol-kpi-s">ทุก tier รวมกัน</div></div>
-    <div class="kol-kpi"><div class="kol-kpi-l">Affiliate GMV (tracked)</div><div class="kol-kpi-v" style="color:var(--teal)">฿812K</div><div class="kol-kpi-s">KOLs ที่มี affiliate link</div></div>
+    <div class="kol-kpi" title="ยอดขายที่เกิดจากลิงก์/โค้ด affiliate ของ KOL ที่จ่ายค่าจ้างในหน้านี้เท่านั้น (ไม่รวม Affiliate GMV ของครีเอเตอร์ทั่วไปในแท็บ Overview/Creator ซึ่งเป็นยอดรวมทั้งระบบ)"><div class="kol-kpi-l">Affiliate GMV (tracked) ⓘ</div><div class="kol-kpi-v" style="color:var(--teal)">฿812K</div><div class="kol-kpi-s">ยอดขายที่เกิดจาก KOLs จ่ายค่าจ้างที่มี affiliate link เท่านั้น</div></div>
     <div class="kol-kpi"><div class="kol-kpi-l">Best ROI</div><div class="kol-kpi-v" style="color:var(--green)">46×</div><div class="kol-kpi-s">muchmai_mumi (Bonus)</div></div>
     <div class="kol-kpi"><div class="kol-kpi-l">Organic Stars</div><div class="kol-kpi-v" style="color:var(--blue)">1</div><div class="kol-kpi-s">pailong05</div></div>
   </div>
-  <div class="note" style="margin-bottom:12px">💡 ROI = Affiliate GMV ÷ Spend · Mega KOLs วัด brand awareness แยกต่างหาก · Organic = ไม่เคยจ่ายค่าจ้าง</div>
+  <div class="note" style="margin-bottom:12px">💡 ROI = Affiliate GMV ÷ Spend · "Affiliate GMV (tracked) ฿812K" ด้านบน = ยอดขายเฉพาะของ KOL ที่จ่ายค่าจ้างในหน้านี้ (คนละตัวเลขกับ Affiliate GMV รวมทั้งระบบในแท็บ Overview/Creator) · Mega KOLs วัด brand awareness แยกต่างหาก · Organic = ไม่เคยจ่ายค่าจ้าง</div>
   <div class="kol-grid" id="kol-grid"></div>
 </div>
 
@@ -4837,11 +4837,61 @@ function renderCreators(){
       ${retCell}${netCell}${commCell}${ordCell}${aovCell}${commRCell}
     </tr>`;
   }).join('');
+
+  updateCreatorsKpiStrip(list, isAll, mLabel);
+}
+
+// Recompute the Creators-tab KPI strip so it reflects the active month filter
+// instead of staying frozen on all-time totals (root cause of "sort by month
+// doesn't seem to change the numbers" confusion).
+function updateCreatorsKpiStrip(list, isAll, mLabel){
+  const scope = isAll ? '' : ` (${mLabel[activeMonth]})`;
+  const totalGMV = list.reduce((s,c)=>s+c.dGMV,0);
+  const setTxt = (id,val)=>{ const el=document.getElementById(id); if(el) el.textContent = val; };
+
+  setTxt('ck-gmv-l', 'Total Creator GMV'+scope);
+  setTxt('ck-gmv-v', fmtK(totalGMV));
+  setTxt('ck-gmv-s', isAll ? '1,597 unique creators (สะสมทั้งหมด)' : `${list.length} ครีเอเตอร์ที่มียอด${scope}`);
+
+  if(list.length===0) return;
+  const topGMV = list[0];
+  const topGMVOrders = isAll ? topGMV.orders : Math.max(1, Math.round(topGMV.orders * (topGMV.dGMV/Math.max(1,topGMV.gmv))));
+  setTxt('ck-top-l', 'Top Creator'+scope);
+  setTxt('ck-top-v', topGMV.name);
+  setTxt('ck-top-s', `${fmtK(topGMV.dGMV)} GMV · ~${topGMVOrders} orders`);
+
+  const byOrders = [...list].map(c=>({...c, estOrders: isAll ? c.orders : Math.max(1, Math.round(c.orders * (c.dGMV/Math.max(1,c.gmv))))}))
+                             .sort((a,b)=>b.estOrders-a.estOrders)[0];
+  setTxt('ck-ord-l', 'Top by Orders'+scope);
+  setTxt('ck-ord-v', byOrders.name);
+  setTxt('ck-ord-s', `${isAll?'':'~'}${byOrders.estOrders} orders`);
+
+  const byAov = [...list].map(c=>{
+    const estOrders = isAll ? c.orders : Math.max(1, Math.round(c.orders * (c.dGMV/Math.max(1,c.gmv))));
+    return {...c, estAov: Math.round(c.dGMV/Math.max(1,estOrders))};
+  }).sort((a,b)=>b.estAov-a.estAov)[0];
+  setTxt('ck-aov-l', 'Best GMV/Order (AOV)'+scope);
+  setTxt('ck-aov-v', byAov.name);
+  setTxt('ck-aov-s', `${isAll?'':'~'}฿${byAov.estAov.toLocaleString()}/order`);
 }
 
 function renderProducts(){
   const tbody = document.getElementById('products-body');
+  const noteEl = document.getElementById('products-month-note');
   const allP = PRODUCTS.map(p=>({...p,dGMV:pGMV(p)})).filter(p=>p.dGMV>0);
+
+  // Product-level monthly breakdown currently only exists for มี.ค.–มิ.ย.
+  // (ก.ค. ยังไม่มีข้อมูลแยกรายสินค้าแบบเดียวกับเดือนก่อนหน้า — ป้องกันตารางว่างที่สับสน)
+  const hasMonthData = activeMonth==='all' || PRODUCTS.some(p=>p.monthly && activeMonth in p.monthly);
+  if(noteEl){
+    if(!hasMonthData){
+      noteEl.style.display = 'block';
+      noteEl.textContent = `⚠️ ยังไม่มีข้อมูลสินค้าแยกรายเดือนสำหรับเดือนนี้ — ข้อมูลรายสินค้าตอนนี้มีถึงเดือน มิ.ย. เท่านั้น (ดูยอดรวมทุกเดือนได้ที่ปุ่ม "รวม")`;
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
+
   const sorted = [...allP].sort((a,b)=>b.dGMV-a.dGMV);
   const maxGMV = sorted[0]?.dGMV||1;
   const totalD = allP.reduce((s,p)=>s+p.dGMV,0)||1;
@@ -4865,7 +4915,7 @@ function renderProducts(){
           <div class="gmv-track"><div class="gmv-fill" style="width:${pct}%"></div></div>
         </div>
       </td>
-      <td data-val="${p.units}">${p.units.toLocaleString()} หน่วย</td>
+      <td data-val="${p.units}">${p.units.toLocaleString()} ชิ้น</td>
       <td data-val="${ppu}" style="color:var(--amber)">฿${fmtFull(ppu)}</td>
       <td data-val="${ret}" style="color:${ret>0?'var(--red)':'var(--t3)'}">฿${fmtK(ret)}</td>
       <td data-val="${netGMV}" style="color:var(--green)">฿${fmtK(netGMV)}</td>
@@ -4918,6 +4968,25 @@ function renderVideos(){
   const ratioSubEl = document.getElementById('kk-sold-ratio-sub');
   if(ratioEl) ratioEl.textContent = `${soldClips} / ${totalClips}`;
   if(ratioSubEl) ratioSubEl.textContent = `${ratioPct}% รวมทุกครีเอเตอร์ (ทุกเดือน)`;
+
+  const totalClipsEl = document.getElementById('kk-total-clips');
+  if(totalClipsEl) totalClipsEl.textContent = totalClips.toLocaleString();
+
+  const soldVideos = VIDEOS.filter(v=>v.gmv>0);
+  const topVid = [...soldVideos].sort((a,b)=>b.gmv-a.gmv)[0];
+  const topVideoEl = document.getElementById('kk-top-video');
+  const topVideoSubEl = document.getElementById('kk-top-video-sub');
+  if(topVid){
+    if(topVideoEl) topVideoEl.textContent = fmtK(topVid.gmv);
+    if(topVideoSubEl) topVideoSubEl.textContent = `by ${topVid.creator}`;
+  }
+
+  const totalGMVSold = soldVideos.reduce((s,v)=>s+v.gmv,0);
+  const avgGMV = soldClips ? Math.round(totalGMVSold/soldClips) : 0;
+  const avgVideoEl = document.getElementById('kk-avg-video');
+  const avgVideoSubEl = document.getElementById('kk-avg-video-sub');
+  if(avgVideoEl) avgVideoEl.textContent = fmtK(avgGMV);
+  if(avgVideoSubEl) avgVideoSubEl.textContent = `เฉลี่ยเฉพาะคลิปที่มียอดขาย (${soldClips} คลิป)`;
 }
 
 function renderMatrix(){
@@ -4933,8 +5002,13 @@ function renderMatrix(){
   head.innerHTML = `<tr><th>Creator / Product</th>${prods.map(p=>`<th>${p}</th>`).join('')}<th>GMV รวม</th></tr>`;
 
   // Body
+  // Month-aware total: use activeMonth GMV (cGMV) when a specific month is
+  // selected, falling back to all-time c.gmv only for the "all" view — this
+  // keeps the sort order and "GMV รวม" column consistent with the per-cell
+  // values (which already use cpGMV / month-filtered data).
+  const totalFor = c => activeMonth==='all' ? c.gmv : cGMV(c.name);
   const tbody = document.getElementById('matrix-body');
-  const sorted = [...activeCreators].sort((a,b)=>b.gmv-a.gmv);
+  const sorted = [...activeCreators].sort((a,b)=>totalFor(b)-totalFor(a));
   tbody.innerHTML = sorted.map(c=>{
     const cells = prodNames.map(p=>{
       const v = cpGMV(c.name, p);
@@ -4947,7 +5021,7 @@ function renderMatrix(){
     return `<tr>
       <td class="creator-col"><div class="creator-chip"><div class="creator-av">${getAv(c.name)}</div>${c.name}</div></td>
       ${cells}
-      <td><strong style="color:var(--teal)">${fmtK(c.gmv)}</strong></td>
+      <td><strong style="color:var(--teal)">${fmtK(totalFor(c))}</strong></td>
     </tr>`;
   }).join('');
 
@@ -4979,28 +5053,51 @@ function buildCharts(){
   const crGMV   = CREATORS.map(c=>c.gmv);
   const pNames  = PRODUCTS.map(p=>p.short);
   const pGMV    = PRODUCTS.map(p=>p.gmv);
+  const pGMVTotal = pGMV.reduce((s,v)=>s+v,0)||1;
 
-  // Creator GMV bar
-  mkChart('c-creator-gmv',{type:'bar',data:{
-    labels:crNames,
-    datasets:[{data:crGMV,backgroundColor:COLORS,borderRadius:6,borderSkipped:false}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}},x:{ticks:{maxRotation:20}}}}});
+  // Value + % label plugin (draws on top of each bar) — used by product GMV chart
+  const barValueLabels = {
+    id:'barValueLabels',
+    afterDatasetsDraw(chart){
+      const {ctx} = chart;
+      chart.data.datasets.forEach((ds,dsIdx)=>{
+        const meta = chart.getDatasetMeta(dsIdx);
+        meta.data.forEach((bar,i)=>{
+          const val = ds.data[i];
+          const pct = ((val/pGMVTotal)*100).toFixed(1);
+          ctx.save();
+          ctx.fillStyle = '#e2e8f0';
+          ctx.font = '600 11px Segoe UI, sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText(`฿${(val/1000).toFixed(0)}K (${pct}%)`, bar.x, bar.y - 6);
+          ctx.restore();
+        });
+      });
+    }
+  };
 
-  // Product GMV bar
+  // Creator GMV distribution (bucketed by GMV range, real counts from CREATORS)
+  const distBuckets = [
+    {label:'0-1K', min:0, max:1000},
+    {label:'1K-5K', min:1000, max:5000},
+    {label:'5K-10K', min:5000, max:10000},
+    {label:'10K+', min:10000, max:Infinity},
+  ];
+  const distCounts = distBuckets.map(b=>CREATORS.filter(c=>c.gmv>=b.min && c.gmv<b.max).length);
+  mkChart('c-creator-dist',{type:'bar',data:{
+    labels:distBuckets.map(b=>b.label),
+    datasets:[{label:'จำนวนครีเอเตอร์',data:distCounts,
+      backgroundColor:['#64748b','#3b82f6','#14b8a6','#f59e0b'],borderRadius:6,borderSkipped:false}]
+  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},
+    tooltip:{callbacks:{label:ctx=>`${ctx.raw} คน`}}},
+    scales:{y:{ticks:{stepSize:1,precision:0}},x:{title:{display:true,text:'GMV ต่อครีเอเตอร์ (฿)'}}}}});
+
+  // Product GMV bar — with exact value + % of total labels on each bar
   mkChart('c-product-gmv',{type:'bar',data:{
     labels:pNames,
     datasets:[{data:pGMV,backgroundColor:['#14b8a6','#3b82f6','#8b5cf6'],borderRadius:6,borderSkipped:false}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
-
-  // AOV per creator
-  mkChart('c-aov',{type:'bar',data:{
-    labels:crNames,
-    datasets:[{label:'AOV',data:CREATORS.map(c=>Math.round(c.gmv/c.orders)),
-      backgroundColor:'rgba(139,92,246,.6)',borderColor:'#8b5cf6',borderWidth:1,borderRadius:4}]
-  },options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
-    scales:{y:{ticks:{callback:v=>'฿'+v}},x:{ticks:{maxRotation:30,font:{size:10}}}}}});
+  },options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},plugins:{legend:{display:false}},
+    scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}},plugins:[barValueLabels]});
 
   // Scatter: orders vs GMV
   mkChart('c-scatter',{type:'scatter',data:{
@@ -5018,21 +5115,6 @@ function buildCharts(){
     datasets:[{data:pGMV,backgroundColor:['#14b8a6','#3b82f6','#8b5cf6'],borderWidth:0}]
   },options:{responsive:true,maintainAspectRatio:false,cutout:'60%',
     plugins:{legend:{position:'right',labels:{padding:12,font:{size:11}}}}}});
-
-  // Stacked: product × creator (derived from VIDEOS sample data)
-  // gmv>0 guard: keep this chart's x-axis limited to creators that have at
-  // least one sales-driving clip, same as before VIDEOS included zero-sale clips
-  const videoCreators = [...new Set(VIDEOS.filter(v=>v.gmv>0).map(v=>v.creator))];
-  mkChart('c-prod-stacked',{type:'bar',data:{
-    labels:videoCreators,
-    datasets:PRODUCTS.map((p,i)=>({
-      label:p.short,
-      data:videoCreators.map(cr=>cpGMV(cr,p.name)),
-      backgroundColor:COLORS[i],borderRadius:4,
-    }))
-  },options:{responsive:true,maintainAspectRatio:false,
-    scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}},
-    plugins:{legend:{position:'top'}}}});
 
   // Video bar (gmv>0 guard: VIDEOS now also contains zero-sale clips, keep this
   // chart limited to sales-driving videos like before)
@@ -5253,6 +5335,7 @@ function renderCreatorList(filter=''){
   const scroll = document.getElementById('cl-scroll');
   const filtered = SORTED_CREATORS.filter(c=>c.name.toLowerCase().includes(filter.toLowerCase()));
   document.getElementById('cl-count').textContent = filtered.length;
+  document.getElementById('cl-total').textContent = SORTED_CREATORS.length;
   scroll.innerHTML = filtered.map((c,i)=>{
     const rank = SORTED_CREATORS.indexOf(c)+1;
     const pct = Math.round((c.gmv/MAX_GMV)*100);
@@ -5314,17 +5397,6 @@ function showProfile(name){
         </div>`;
       }).join('');
 
-  // Comparison bars (vs max creator for each metric)
-  const maxOrders = Math.max(...CREATORS.map(x=>x.orders));
-  const maxComm = Math.max(...CREATORS.map(x=>x.comm));
-  const maxAov = Math.max(...CREATORS.map(x=>Math.round(x.gmv/x.orders)));
-  const bars = [
-    {label:'GMV', val:fmtK(c.gmv), pct:Math.round((c.gmv/MAX_GMV)*100), color:'var(--teal)'},
-    {label:'Orders', val:c.orders, pct:Math.round((c.orders/maxOrders)*100), color:'var(--blue)'},
-    {label:'Commission', val:fmtK(c.comm), pct:Math.round((c.comm/maxComm)*100), color:'var(--amber)'},
-    {label:'AOV', val:fmtFull(aov), pct:Math.round((aov/maxAov)*100), color:'var(--purple)'},
-  ];
-
   // Peer comparison: where does this creator stand?
   const gmvPercentile = Math.round((SORTED_CREATORS.filter(x=>x.gmv<=c.gmv).length/CREATORS.length)*100);
 
@@ -5349,17 +5421,6 @@ function showProfile(name){
       <div class="pk"><div class="pkl">Returns</div><div class="pkv" style="color:${c.returns>0?'var(--red)':'var(--t3)'}">${c.returns>0?fmtK(c.returns):'-'}</div><div class="pks">${c.returns>0?((c.returns/c.gmv*100).toFixed(1))+'% return rate':'ไม่มีการคืนเงิน'}</div></div>
       <div class="pk"><div class="pkl">Commission</div><div class="pkv" style="color:var(--amber)">${fmtK(c.comm)}</div><div class="pks">${c.comm_rate}% rate</div></div>
       <div class="pk"><div class="pkl">Orders</div><div class="pkv" style="color:var(--blue)">${c.orders}</div><div class="pks">AOV ${fmtFull(aov)}</div></div>
-    </div>
-
-    <div class="prof-bar-wrap">
-      <div style="font-size:12px;font-weight:600;color:var(--t2);text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px">เทียบกับครีเอเตอร์อันดับ 1</div>
-      ${bars.map(b=>`
-        <div class="prof-bar-row">
-          <div class="prof-bar-label">${b.label}</div>
-          <div class="prof-bar-track"><div class="prof-bar-fill" style="width:${b.pct}%;background:${b.color}"></div></div>
-          <div class="prof-bar-val">${b.val}</div>
-        </div>
-      `).join('')}
     </div>
 
     <div class="sec" style="margin-top:16px">ยอดขายรายเดือน — @${c.name}</div>
