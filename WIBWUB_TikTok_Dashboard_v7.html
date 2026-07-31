@@ -1650,8 +1650,6 @@ tr:hover td{background:#f9f8f4}
 </div><!-- /wrap -->
 
 <script>
-document.getElementById('hdate').textContent = new Date().toLocaleDateString('th-TH',{day:'numeric',month:'short',year:'numeric'});
-
 const ALL_POSTS = [
   {lbl:'4/3/26',day:0,month:0,pillar:'interview',content:'interview',views:10000,eng:1,love:105,comment:0,share:2,save:14,ret:23.0,watch:15.57,er:1.0,url:'#'},
   {lbl:'5/3/26',day:0,month:0,pillar:'interview',content:'interview',views:1950,eng:1,love:14,comment:1,share:0,save:2,ret:13.0,watch:10.29,er:1.0,url:'#'},
@@ -1755,8 +1753,8 @@ const ALL_POSTS = [
   {lbl:'21/7/26',day:0,month:0,pillar:'',content:'',views:1210,eng:2,love:21,comment:0,share:0,save:1,ret:17.0,watch:13.68,er:2.0,url:'#'},
   {lbl:'23/7/26',day:0,month:0,pillar:'',content:'',views:801,eng:1,love:12,comment:0,share:0,save:0,ret:22.0,watch:9.8,er:1.0,url:'#'},
   {lbl:'25/7/26',day:0,month:0,pillar:'',content:'',views:967,eng:3,love:24,comment:4,share:3,save:1,ret:26.0,watch:11.2,er:3.0,url:'#'},
-  {lbl:'28/7/26',day:0,month:0,pillar:'',content:'',views:0,eng:0,love:0,comment:0,share:0,save:0,ret:0.0,watch:0.0,er:0.0,url:'#'}
-]',views:1950,eng:17,love:14,comment:1,share:0,save:2,ret:13.0,watch:10.29,er:0.87,url:'#'},
+  {lbl:'28/7/26',day:0,month:0,pillar:'',content:'',views:0,eng:0,love:0,comment:0,share:0,save:0,ret:0.0,watch:0.0,er:0.0,url:'#'},
+  {lbl:'5/3/26',day:0,month:0,pillar:'interview',content:'interview',views:1950,eng:17,love:14,comment:1,share:0,save:2,ret:13.0,watch:10.29,er:0.87,url:'#'},
   {lbl:'9/3/26',day:9,month:3,pillar:'Awareness',content:'[Awareness]',views:2821,eng:50,love:39,comment:2,share:2,save:7,ret:19.0,watch:18.08,er:1.77,url:'#'},
   {lbl:'13/3/26',day:13,month:3,pillar:'Awareness',content:'[Awareness]',views:2482,eng:43,love:32,comment:0,share:0,save:11,ret:21.0,watch:11.05,er:1.73,url:'#'},
   {lbl:'14/3/26',day:14,month:3,pillar:'Interview',content:'[Interview]',views:2820,eng:53,love:41,comment:3,share:2,save:7,ret:17.0,watch:11.51,er:1.88,url:'#'},
@@ -1858,6 +1856,20 @@ const ALL_POSTS = [
   {lbl:'23/7/26',day:23,month:7,pillar:'Review',content:'ท้าเช็ดเบาะให้พี่ไรเดอร์ มาดูกันว่าจะเอาออกไหม?',views:801,eng:12,love:12,comment:0,share:0,save:0,ret:22.0,watch:9.80,er:1.50,url:'https://www.tiktok.com/@wibwubcar/video/7665702433133284615'},
   {lbl:'25/7/26',day:25,month:7,pillar:'Sale',content:'เคลือบรถด้วย Sugar เงาฉ่ำ ฟินๆ กันครับ',views:967,eng:32,love:24,comment:4,share:3,save:1,ret:26.0,watch:11.20,er:3.31,url:'https://www.tiktok.com/@wibwubcar/video/7666491188022742280'}
 ];
+
+// อัปเดต badge วันที่ให้อ้างอิงจากคลิปล่าสุดจริงใน ALL_POSTS (ไม่ใช่วันที่วันนี้)
+// เดิม badge นี้ set เป็น new Date() ทุกครั้งที่เปิดหน้า ทำให้ดูเหมือนข้อมูลใหม่เสมอ
+// ทั้งที่คลิปล่าสุดอาจค้างมาหลายวันแล้ว (ไม่มี automation ดึงข้อมูลคลิปอัตโนมัติ)
+(function(){
+  const THM = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const last = ALL_POSTS[ALL_POSTS.length - 1];
+  const parts = (last.lbl.match(/^(\d+)\/(\d+)\/(\d+)/) || []).slice(1).map(Number);
+  const el = document.getElementById('hdate');
+  if (parts.length === 3 && el) {
+    const [d, m, yy] = parts;
+    el.textContent = `ข้อมูลล่าสุดถึง ${d} ${THM[m-1]} ${2500+yy+43}`;
+  }
+})();
 
 const MONTH_COLOR = {3:'#2878d0', 4:'#c4406e', 5:'#1b9664', 6:'#9333ea', 7:'#ea8c33'};
 const pillCls = {Interview:'pi',Knowledge:'pt',Review:'pa',Awareness:'paw',Sale:'pc2',Lifestyle:'pp','Brand Expert':'pp',Other:'po'};
