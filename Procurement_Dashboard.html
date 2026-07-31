@@ -315,6 +315,17 @@ function fmtDate(iso) {
 }
 function fmtNum(n) { return n.toLocaleString(); }
 
+// ช่วงวันที่ขาย 7/14 วันล่าสุด (นับ "วันเต็มล่าสุด ไม่รวมวันนี้" สิ้นสุดที่เมื่อวาน — ตรงกับ update_stock.py)
+function soldRangeLabel(daysBack) {
+  const end = new Date(TODAY); end.setDate(end.getDate() - 1); // เมื่อวาน
+  const start = new Date(TODAY); start.setDate(start.getDate() - daysBack);
+  const sameMonth = start.getMonth() === end.getMonth() && start.getFullYear() === end.getFullYear();
+  if (sameMonth) {
+    return `${start.getDate()}–${end.getDate()} ${TH_MONTHS[end.getMonth()]} ${end.getFullYear()+543}`;
+  }
+  return `${start.getDate()} ${TH_MONTHS[start.getMonth()]}–${end.getDate()} ${TH_MONTHS[end.getMonth()]} ${end.getFullYear()+543}`;
+}
+
 function pillHtml(st) {
   const labels = {urgent:'หมดเร็วมาก', low:'ใกล้หมด', watch:'เริ่มตึง', ok:'ปกติ', oos:'หมดสต๊อก', nodata:'— ไม่มีข้อมูล'};
   return `<span class="pill ${st}"><span class="dot"></span>${labels[st]||st}</span>`;
@@ -471,7 +482,7 @@ function renderTable() {
   tbody.innerHTML = rows;
 
   const noteEl = document.getElementById('table-note');
-  noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn/วัน = ยอดขาย 7 วันล่าสุด ÷ 7 &nbsp;|&nbsp; วันคงเหลือ = สต๊อกพร้อมขาย ÷ Burn/วัน &nbsp;|&nbsp; จอง = orders ที่รอจัดส่ง &nbsp;|&nbsp; ขาย 7 วันล่าสุด = ยอดขาย 14–20 ก.ค. 2569 &nbsp;|&nbsp; ขาย 14 วันล่าสุด = ยอดขาย 7–20 ก.ค. 2569`;
+  noteEl.innerHTML = `แสดง ${arr.length} จาก ${PRODUCTS.length} รายการ &nbsp;|&nbsp; Burn/วัน = ยอดขาย 7 วันล่าสุด ÷ 7 &nbsp;|&nbsp; วันคงเหลือ = สต๊อกพร้อมขาย ÷ Burn/วัน &nbsp;|&nbsp; จอง = orders ที่รอจัดส่ง &nbsp;|&nbsp; ขาย 7 วันล่าสุด = ยอดขาย ${soldRangeLabel(7)} &nbsp;|&nbsp; ขาย 14 วันล่าสุด = ยอดขาย ${soldRangeLabel(14)}`;
   updateSticky();
 }
 
