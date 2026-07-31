@@ -2537,12 +2537,12 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:305,vid:191,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:308,vid:194,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
   {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:222,vid:143,monthly:{mar:36100,apr:162600,may:168300,jun:105801},ret:{mar:246,apr:2200,may:1100,jun:678}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:126,vid:197,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:53,vid:39,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:69,vid:106,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:47,vid:46,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:132,vid:207,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:55,vid:45,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:72,vid:114,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:47,vid:47,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
   {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:13,vid:17,monthly:{mar:3700,apr:15900,may:10200,jun:7679},ret:{mar:0,apr:230,may:539,jun:0}},
 ];
 const VIDEOS = [
@@ -5161,11 +5161,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.", "ก.พ.", "มี.ค. (1-31)", "เม.ย. (1-30)", "พ.ค. (1-31)", "มิ.ย. (1-30)", "ก.ค. (1-29)"];
-const AF_GMV = [0,0,655171,724241,951158,642378,1395996];
-const AF_NET = [0,0,642865,708855,937203,632200,1305074];
-const AF_COM = [0,0,82699,69021,104772,79104,161901];
-const AF_CR  = [0,0,398,418,558,398,705];
+const AF_MO  = ["ม.ค.", "ก.พ.", "มี.ค. (1-31)", "เม.ย. (1-30)", "พ.ค. (1-31)", "มิ.ย. (1-30)", "ก.ค. (1-30)"];
+const AF_GMV = [0,0,655171,724241,951158,642378,1424548];
+const AF_NET = [0,0,642865,708855,937203,632200,1400643];
+const AF_COM = [0,0,82699,69021,104772,79104,166130];
+const AF_CR  = [0,0,398,418,558,398,716];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
