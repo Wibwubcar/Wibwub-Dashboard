@@ -206,9 +206,9 @@
 <div class="header">
   <div class="logo"><img src="../logo-header.png" alt="WIBWUB" style="height:24px;display:block;"></div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span class="period-badge"><span id="period-badge-txt">ส.ค. (Shopee ถึง 31 ก.ค., TikTok ถึง 1 ส.ค.) 2569</span></span>
+    <span class="period-badge"><span id="period-badge-txt">ส.ค. (Shopee ถึง 31 ก.ค., TikTok ถึง 2 ส.ค.) 2569</span></span>
     <span style="font-size:11px;color:var(--muted)">ข้อมูลจริงจาก Shopee + TikTok</span>
-    <span id="ads-updated" title="TikTok ครบถ้วนถึง 1 ส.ค. 2569 (เดือนใหม่) / Shopee ครบถ้วนถึง 31 ก.ค. 2569 (รอ sync เดือน ส.ค.)" style="font-size:11px;color:var(--muted);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:3px 10px;border-radius:20px">อัปเดต 1 ส.ค. 2569 (TikTok) / 31 ก.ค. (Shopee)</span>
+    <span id="ads-updated" title="TikTok ครบถ้วนถึง 2 ส.ค. 2569 (เดือนใหม่) / Shopee ครบถ้วนถึง 31 ก.ค. 2569 (รอ sync เดือน ส.ค.)" style="font-size:11px;color:var(--muted);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:3px 10px;border-radius:20px">อัปเดต 2 ส.ค. 2569 (TikTok) / 31 ก.ค. (Shopee)</span>
   </div>
 </div>
 
@@ -236,7 +236,7 @@
       </div>
       <button class="ads-period-btn ads-period-all-btn" id="adsPeriodBtn-all" onclick="adsPickPeriod('all',this)">
         <span class="pb-label">ทั้งหมด</span>
-        <span class="pb-sub">ม.ค. – ส.ค. 2569 (ถึง 1 ส.ค.) · Shopee ฿31.22M · TikTok ฿9.02M</span>
+        <span class="pb-sub">ม.ค. – ส.ค. 2569 (ถึง 2 ส.ค.) · Shopee ฿31.22M · TikTok ฿9.13M</span>
       </button>
       <div class="ads-mp-divider"></div>
       <div class="ads-mp-sec-label">รายเดือน</div>
@@ -271,7 +271,7 @@
         </button>
         <button class="ads-period-btn active" id="adsPeriodBtn-aug" onclick="adsPickPeriod('aug',this)">
           <span class="pb-label">สิงหาคม 2569 <span class="pb-current-tag">เดือนนี้</span></span>
-          <span class="pb-sub">01 ส.ค. (TikTok เท่านั้น รอ Shopee)<br>Shopee ฿0 · TikTok ฿9.9K</span>
+          <span class="pb-sub">01–02 ส.ค. (TikTok เท่านั้น รอ Shopee)<br>Shopee ฿0 · TikTok ฿9.9K</span>
         </button>
       </div>
     </div>
@@ -636,7 +636,7 @@ const DATA_PERIODS = {
   aug: {
     /* Aug 1 (partial day, first day of month): TikTok only — GMV Max hourly overview export + Business Ads campaign report, both 2026-08-01 to 2026-08-01. Shopee not covered by this task (separate scheduled task 'wibwub-download-shopee-ads' owns Shopee data); placeholder zeros until that task runs. */
     shopee:{spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0,top5:[],worst5:[]},
-    tiktok:{spend:2527.73,revenue:9908.99,orders:26,imp:0,clicks:0,roas:3.92,ctr:0,cvr:0,cpa:97.22,top5:[],worst5:[],all:[]}
+    tiktok:{spend:14735.69,revenue:58749.5,orders:153,imp:0,clicks:0,roas:3.99,ctr:0,cvr:0,cpa:96.31,top5:[],worst5:[],all:[]}
   }
 };
 
@@ -1477,16 +1477,16 @@ const TK_BREAKDOWN = {
       sessions:[]
     },
     gmvMax: {
-      /* Aug 1 only, hourly overview export (Campaign overview data 20260801 - 20260801.xlsx) — Total row used directly, no per-campaign breakdown available in this export format. */
-      total:{spend:2409.77,orders:26,revenue:9908.99,imp:0,clicks:0,roi:4.11,ctr:0,cvr:0,cpa:92.68},
+      /* Aug 1-2, Campaign overview data 20260801 - 20260802.xlsx — Total row used directly, no per-campaign breakdown available in this export format. */
+      total:{spend:14192.67,orders:153,revenue:58749.5,imp:0,clicks:0,roi:4.14,ctr:0,cvr:0,cpa:92.76},
       top5:[],
       worst5:[],
       campaigns:[]
     },
     bizAds: {
-      /* Aug 1 only (WIBWUBCAR-Campaign Report-2026-08-01 to 2026-08-01.xlsx), 91 campaigns aggregated (only 1 with nonzero spend). clicks field = Clicks (destination) this run (export template did not include Clicks (all)). */
-      total:{spend:117.96,imp:2955,clicks:115,cpm:39.92,ctr:3.89},
-      campaigns:[{name:"C-Ads TOP CREATOR",spend:117.96,imp:2955,clicks:115,cpm:39.92,ctr:3.89}]
+      /* Aug 1-2 (WIBWUBCAR-Campaign Report-2026-08-01 to 2026-08-02.xlsx), 20 campaigns aggregated (only 1 with nonzero spend). clicks field = Clicks (all); verified sum(campaigns)==Total row. */
+      total:{spend:543.02,imp:11785,clicks:577,cpm:46.08,ctr:4.9},
+      campaigns:[{name:"C-Ads TOP CREATOR",spend:543.02,imp:11785,clicks:577,cpm:46.08,ctr:4.9}]
     }
   },
   all: {
