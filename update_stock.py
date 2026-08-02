@@ -44,24 +44,52 @@ raw_list = raw["products"] if isinstance(raw, dict) and "products" in raw else r
 ship_map = {p["code"]: p for p in raw_list if isinstance(p,dict) and p.get("code")}
 print(f"📦 Shipnity stock: {len(ship_map)} SKUs")
 
-# ─── หาไฟล์ order-level ล่าสุด (Data_DD-MM-YYYY.xlsx เท่านั้น — ห้ามใช้ Data-Page-1_*  ───
+# ─── หาไฟล์ order-level (Data_DD-MM-YYYY.xlsx เท่านั้น — ห้ามใช้ Data-Page-1_*  ───
 # เพราะ Data-Page-1_* เป็น export แค่หน้าแรก (~500 แถวล่าสุด) ไม่ใช่ยอดสะสมทั้งเดือน
 order_files = sorted(
     glob.glob(str(SHIPNITY_DIR / "Data_[0-9][0-9]-[0-9][0-9]-*.xlsx")),
     key=os.path.getmtime, reverse=True
 )
 
+# Shipnity export เป็น "ยอดสะสมตั้งแต่ต้นเดือนถึงวันที่ export" แล้วรีเซ็ตทุกเดือน —
+# ไฟล์เดือนใหม่ (เช่น Data_01-08-2026.xlsx) จะไม่มีข้อมูลของเดือนก่อนหน้าเลย
+# ถ้าใช้แค่ไฟล์ล่าสุดไฟล์เดียว (order_files[0]) ตอนเปลี่ยนเดือน จะทำให้:
+#  1) sold7d/14d/burn คำนวณตกหล่นวันท้ายเดือนก่อนหน้า (หน้าต่าง 7/14 วันคาบเกี่ยวข้ามเดือน)
+#  2) HIST_DAILY ของวันท้ายเดือนก่อนหน้าถูกเขียนทับด้วยข้อมูล partial-day
+#     (เจอบั๊กนี้ 2 ส.ค. 2569: 31/07 เหลือ 162 หน่วย, 01/08 เหลือ 244 หน่วย ทั้งที่วันอื่นๆ
+#     ขายเฉลี่ย 800-1000 หน่วย/วัน — เพราะ order_files[0] ตอนนั้นคือไฟล์เล็กของเดือนใหม่)
+# แก้โดย: หา "ไฟล์ล่าสุดของแต่ละเดือน" เฉพาะเดือนที่หน้าต่าง 14 วันครอบคลุมถึง (ปกติ 1-2 เดือน)
+# แล้วรวมข้อมูลรายวันจากไฟล์เหล่านั้นเข้าด้วยกัน แทนที่จะใช้ไฟล์เดียว
+FNAME_RE = re.compile(r'Data_(\d{2})-(\d{2})-(\d{4})\.xlsx$')
+_today_for_months = datetime.now().date()
+_d14_for_months = _today_for_months - timedelta(days=14)
+target_months = {(_today_for_months.year, _today_for_months.month),
+                  (_d14_for_months.year, _d14_for_months.month)}
+
+best_file_per_month = {}  # (year, month) -> (day, filepath) — เก็บไฟล์ที่มี "day" มากสุดของเดือนนั้น (สมบูรณ์สุด)
+for f in order_files:
+    fm = FNAME_RE.search(os.path.basename(f))
+    if not fm:
+        continue
+    day, mon, yr = int(fm.group(1)), int(fm.group(2)), int(fm.group(3))
+    key = (yr, mon)
+    if key not in target_months:
+        continue
+    if key not in best_file_per_month or day > best_file_per_month[key][0]:
+        best_file_per_month[key] = (day, f)
+
+selected_files = [f for _, f in sorted(best_file_per_month.values())]
+# fallback: ถ้า regex หาเดือนจาก filename ไม่เจอเลย ใช้ไฟล์ล่าสุดไฟล์เดียวแบบเดิม (กันพัง)
+if not selected_files and order_files:
+    selected_files = [order_files[0]]
+
 sold7_map, sold14_map = {}, {}
-day_sku_qty = {}  # date_str -> sku -> qty (ใช้อัปเดต HIST_DAILY/HIST_DATES ด้านล่าง — ครอบคลุมทั้งไฟล์ ไม่ใช่แค่ 7/14 วัน)
+day_sku_qty = {}  # date_str -> sku -> qty (รวมจากทุกไฟล์ที่เลือก — ใช้อัปเดต HIST_DAILY/HIST_DATES ด้านล่างด้วย)
 name_fallback = {}
 if not order_files:
     print("⚠️  ไม่พบไฟล์ Data_DD-MM-YYYY.xlsx ใน Data Shipnity/ — จะข้ามการคำนวณ sold7d/sold14d/burn (ใช้ค่าเดิม)")
 else:
-    order_file = order_files[0]
-    print(f"🧾 ใช้ไฟล์ order-level: {os.path.basename(order_file)} (แก้ไขล่าสุด {datetime.fromtimestamp(os.path.getmtime(order_file)).strftime('%d/%m/%Y %H:%M')})")
     import openpyxl
-    wb = openpyxl.load_workbook(order_file, read_only=True, data_only=True)
-    ws = wb.active
     today_dt = datetime.now()
     today_date = today_dt.date()
     # ไม่รวม "วันนี้" ในหน้าต่าง 7/14 วัน — วันนี้ยังไม่จบวัน ยอดจะนับได้ไม่ครบเสมอ
@@ -69,36 +97,43 @@ else:
     # นับ 7/14 วัน "เต็มวัน" ล่าสุด สิ้นสุดที่เมื่อวาน — เลขจะนิ่ง ไม่ว่าจะเช็คช่วงเวลาไหนของวัน
     d7_start  = (today_dt - timedelta(days=7)).date()   # ขาย 7 วันเต็มล่าสุด (ไม่รวมวันนี้)
     d14_start = (today_dt - timedelta(days=14)).date()  # ขาย 14 วันเต็มล่าสุด (ไม่รวมวันนี้)
-    rows_seen = 0
-    for row in ws.iter_rows(min_row=2, values_only=True):
-        if not row or not row[0] or len(row) < 20:
-            continue
-        sku = str(row[0])
-        prod_name = row[1]
-        qty = row[3] or 0
-        created_raw = row[19]
-        if not created_raw:
-            continue
-        try:
-            if isinstance(created_raw, datetime):
-                created_date = created_raw.date()
-            else:
-                created_date = datetime.strptime(str(created_raw).strip()[:16], "%d/%m/%Y %H:%M").date()
-        except Exception:
-            continue
-        rows_seen += 1
-        if created_date < today_date and created_date >= d14_start:
-            sold14_map[sku] = sold14_map.get(sku, 0) + qty
-            if created_date >= d7_start:
-                sold7_map[sku] = sold7_map.get(sku, 0) + qty
-        # เก็บทุกวันที่มีในไฟล์นี้ (ปกติคือทั้งเดือนปัจจุบัน) ไว้อัปเดต HIST_DAILY ด้านล่าง
-        date_str = created_date.strftime("%Y-%m-%d")
-        day_sku_qty.setdefault(date_str, {})
-        day_sku_qty[date_str][sku] = day_sku_qty[date_str].get(sku, 0) + qty
-        if sku not in name_fallback and prod_name:
-            name_fallback[sku] = str(prod_name)
-    wb.close()
-    print(f"   อ่าน {rows_seen} แถว → sold7d: {len(sold7_map)} SKU, sold14d: {len(sold14_map)} SKU")
+    total_rows_seen = 0
+    for order_file in selected_files:
+        print(f"🧾 ใช้ไฟล์ order-level: {os.path.basename(order_file)} (แก้ไขล่าสุด {datetime.fromtimestamp(os.path.getmtime(order_file)).strftime('%d/%m/%Y %H:%M')})")
+        wb = openpyxl.load_workbook(order_file, read_only=True, data_only=True)
+        ws = wb.active
+        rows_seen = 0
+        for row in ws.iter_rows(min_row=2, values_only=True):
+            if not row or not row[0] or len(row) < 20:
+                continue
+            sku = str(row[0])
+            prod_name = row[1]
+            qty = row[3] or 0
+            created_raw = row[19]
+            if not created_raw:
+                continue
+            try:
+                if isinstance(created_raw, datetime):
+                    created_date = created_raw.date()
+                else:
+                    created_date = datetime.strptime(str(created_raw).strip()[:16], "%d/%m/%Y %H:%M").date()
+            except Exception:
+                continue
+            rows_seen += 1
+            if created_date < today_date and created_date >= d14_start:
+                sold14_map[sku] = sold14_map.get(sku, 0) + qty
+                if created_date >= d7_start:
+                    sold7_map[sku] = sold7_map.get(sku, 0) + qty
+            # เก็บทุกวันที่มีในไฟล์นี้ (ปกติคือทั้งเดือนของไฟล์นั้น) ไว้อัปเดต HIST_DAILY ด้านล่าง
+            date_str = created_date.strftime("%Y-%m-%d")
+            day_sku_qty.setdefault(date_str, {})
+            day_sku_qty[date_str][sku] = day_sku_qty[date_str].get(sku, 0) + qty
+            if sku not in name_fallback and prod_name:
+                name_fallback[sku] = str(prod_name)
+        wb.close()
+        print(f"   อ่าน {rows_seen} แถวจากไฟล์นี้")
+        total_rows_seen += rows_seen
+    print(f"   รวมทุกไฟล์ ({total_rows_seen} แถว) → sold7d: {len(sold7_map)} SKU, sold14d: {len(sold14_map)} SKU, {len(day_sku_qty)} วันที่มีข้อมูล")
 
 # ─── อ่าน Procurement_Dashboard.html ─────────────────────────────────────────
 html = DASHBOARD.read_text(encoding="utf-8")
