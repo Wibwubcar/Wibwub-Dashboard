@@ -1457,10 +1457,10 @@ function go(id, el) {
 }
 
 // ── RAW DATA (from spreadsheets) ──
-const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค."];
-const SH_REV = [4231653,4383214,4560321,5204395,5581064,5439447,5012235];
-const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,1803127.22];
-const LZ_REV = [179084,120948,183370,110531,129523,106882,85766];
+const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค."];
+const SH_REV = [4231653,4383214,4560321,5204395,5581064,5632009,5923704];
+const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47];
+const LZ_REV = [179084,120948,183370,110531,129523,118094.70,95770.98];
 const FB_REV = [2154876, 1328934, 1067756, 804737, 984233, 761275, 761275];
 const LINE_REV = [156070, 241955, 185715, 186283, 169583, 140023, 140023];
 const WEB_REV  = [4568,1760,11754,3060,4468,1355,1355];
@@ -1468,16 +1468,16 @@ const CARE_REV = [84069, 90135, 70706, 92510, 100266, 86982, 86982];
 const MKT_REV = [580,0,0,490,17365,0,0];
 const BEUK_REV= [0,0,0,0,365,0,0];
 const POS_REV = [435,548,2277,267,590,0,0];
-const SH_ORD = [7532,6580,6873,8128,9093,8727,9081];
+const SH_ORD = [7532,6580,6873,8128,9093,8895,10511];
 const TK_ORD = [3204,3652,3934,5032,7543,4260,9248];
 const LZ_ORD = [236,176,255,161,157,145,90];
 const FB_ORD = [2990, 2001, 1579, 1178, 1486, 1177, 1177];
 const LINE_ORD = [279, 407, 282, 316, 304, 257, 257];
-const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.66,4.99];
+const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.16,5.34];
 const TK_CANCEL_PCT = [9.64, 8.32, 8.39, 9.7, 7.69, 8.66, 8.66];
 const LZ_CANCEL_PCT = [22.67, 24.61, 24.36, 24.86, 25.0, 13.98, 21.51];
-const SH_ADS = [575400, 559100, 589300, 795300, 826300, 885100, 972772, 24090];
-const SH_FEE = [911498,944144,1046921,1225115,1433217,1506562,1501665];
+const SH_ADS = [575400, 559100, 589300, 795300, 826300, 885100, 942122.40];
+const SH_FEE = [911498,944144,1046921,1225115,1433217,1506562,1774741.72];
 const SH_NEW = [4453, 3817, 4050, 4873, 5536, 3371, 4407];
 const SH_OLD = [1940, 1869, 1891, 1985, 2186, 1577, 1686];
 const TK_AFI = [460976, 550756, 655259, 724120, 913053, 375599, 897947];
@@ -1489,10 +1489,10 @@ const TK_NEW  = [2046,2669,2984,3915,6144,1794,1576];
 const TK_OLD  = [468,548,541,632,771,433,380];
 const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,444157];
 const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,519171];
-const LZ_ADS = [5760,5680,7220,5710,6590,8420,7210];
-const LZ_FEE = [31627,21361,32384,19521,22875,20856,15147];
-const LZ_COUPON = [3210, 2725, 5070, 2250, 2910, 1830, 2880];
-const LZ_COST_PCT = [22.67,24.61,24.36,24.86,25.0,26.34,29.43];
+const LZ_ADS = [5760,5680,7220,5710,6590,8420,9710];
+const LZ_FEE = [31627,21361,32384,19521,22875,20856,16914.09];
+const LZ_COUPON = [3210, 2725, 5070, 2250, 2910, 1830, 3060];
+const LZ_COST_PCT = [22.67,24.61,24.36,24.86,25.0,26.34,30.99];
 const LZ_NEW  = [157,0,163,108,112,20,20];
 const LZ_OLD  = [57,0,64,42,32,12,12];
 
@@ -1510,26 +1510,26 @@ function barColors(base, selIdx, totalBars) {
 
 // ── INIT CHARTS ──
 charts['ov_rev'] = new Chart('ov_rev',{type:'bar',data:{labels:M5,datasets:[
-  {label:'Shopee',data:SH_REV,backgroundColor:SH_REV.map((_,i)=>i===5?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
-  {label:'TikTok',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===5?'#333':'#33333344'),borderRadius:3,stack:'s'},
-  {label:'Facebook',data:FB_REV,backgroundColor:FB_REV.map((_,i)=>i===5?'#1877f2':'#1877f244'),borderRadius:3,stack:'s'},
-  {label:'Line',data:LINE_REV,backgroundColor:LINE_REV.map((_,i)=>i===5?'#06c755':'#06c75544'),borderRadius:3,stack:'s'},
-  {label:'Lazada',data:LZ_REV,backgroundColor:LZ_REV.map((_,i)=>i===5?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
-  {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===5?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
+  {label:'Shopee',data:SH_REV,backgroundColor:SH_REV.map((_,i)=>i===6?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
+  {label:'TikTok',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===6?'#333':'#33333344'),borderRadius:3,stack:'s'},
+  {label:'Facebook',data:FB_REV,backgroundColor:FB_REV.map((_,i)=>i===6?'#1877f2':'#1877f244'),borderRadius:3,stack:'s'},
+  {label:'Line',data:LINE_REV,backgroundColor:LINE_REV.map((_,i)=>i===6?'#06c755':'#06c75544'),borderRadius:3,stack:'s'},
+  {label:'Lazada',data:LZ_REV,backgroundColor:LZ_REV.map((_,i)=>i===6?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
+  {label:'Website',data:WEB_REV,backgroundColor:WEB_REV.map((_,i)=>i===6?'#1A5CDB':'#1A5CDB44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
 charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 60.8%','Facebook 16.0%','TikTok 16.5%','Line 5.1%','Lazada 1.5%','Website 0.1%'],datasets:[{data:[25647987,6739036,6965194,2155080,643982,26965],backgroundColor:[SHOPEE,'#1877f2',TIKTOK,'#06c755','#1A5CDB',LAZADA],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'62%'}});
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
-  {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===5?6:3),pointBackgroundColor:SHOPEE},
-  {label:'TikTok',data:TK_ORD,borderColor:TIKTOK,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===5?6:3),pointBackgroundColor:TIKTOK},
-  {label:'Lazada',data:LZ_ORD,borderColor:LAZADA,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===5?6:3),pointBackgroundColor:LAZADA},
+  {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===6?6:3),pointBackgroundColor:SHOPEE},
+  {label:'TikTok',data:TK_ORD,borderColor:TIKTOK,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===6?6:3),pointBackgroundColor:TIKTOK},
+  {label:'Lazada',data:LZ_ORD,borderColor:LAZADA,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===6?6:3),pointBackgroundColor:LAZADA},
 ]},options:{...BASE,scales:{y:{beginAtZero:true}}}});
 
 charts['ov_cancel'] = new Chart('ov_cancel',{type:'bar',data:{labels:M5,datasets:[
-  {label:'Shopee',data:SH_CANCEL_PCT,backgroundColor:SH_CANCEL_PCT.map((_,i)=>i===5?SHOPEE+'cc':SHOPEE+'44'),borderRadius:4},
-  {label:'TikTok',data:TK_CANCEL_PCT,backgroundColor:TK_CANCEL_PCT.map((_,i)=>i===5?TIKTOK+'cc':TIKTOK+'44'),borderRadius:4},
-  {label:'Lazada',data:LZ_CANCEL_PCT,backgroundColor:LZ_CANCEL_PCT.map((_,i)=>i===5?LAZADA+'cc':LAZADA+'44'),borderRadius:4},
+  {label:'Shopee',data:SH_CANCEL_PCT,backgroundColor:SH_CANCEL_PCT.map((_,i)=>i===6?SHOPEE+'cc':SHOPEE+'44'),borderRadius:4},
+  {label:'TikTok',data:TK_CANCEL_PCT,backgroundColor:TK_CANCEL_PCT.map((_,i)=>i===6?TIKTOK+'cc':TIKTOK+'44'),borderRadius:4},
+  {label:'Lazada',data:LZ_CANCEL_PCT,backgroundColor:LZ_CANCEL_PCT.map((_,i)=>i===6?LAZADA+'cc':LAZADA+'44'),borderRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 
 charts['ov_cust'] = new Chart('ov_cust',{type:'doughnut',data:{labels:['ใหม่ Shopee','เก่า Shopee','ใหม่ TikTok','เก่า TikTok','ใหม่ Lazada'],datasets:[{data:[5536,2186,5023,625,112],backgroundColor:['#ee4d2d','#ffaa7a','#444','#aaa','#1b04a1'],borderWidth:2,borderColor:'#fff'}]},options:{...BASE,cutout:'55%'}});
@@ -1541,37 +1541,37 @@ charts['sl_line'] = new Chart('sl_line',{type:'line',data:{labels:M5,datasets:[
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 
 charts['sl_orders'] = new Chart('sl_orders',{type:'bar',data:{labels:M5,datasets:[
-  {label:'Shopee',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===5?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
-  {label:'TikTok',data:TK_ORD,backgroundColor:TK_ORD.map((_,i)=>i===5?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
-  {label:'Lazada',data:LZ_ORD,backgroundColor:LZ_ORD.map((_,i)=>i===5?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
+  {label:'Shopee',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===6?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
+  {label:'TikTok',data:TK_ORD,backgroundColor:TK_ORD.map((_,i)=>i===6?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
+  {label:'Lazada',data:LZ_ORD,backgroundColor:LZ_ORD.map((_,i)=>i===6?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 
 charts['sh_line'] = new Chart('sh_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:SH_REV,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 charts['sh_cust'] = new Chart('sh_cust',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ลูกค้าใหม่',data:SH_NEW,backgroundColor:SH_NEW.map((_,i)=>i===5?'rgba(238,77,45,.85)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
-  {label:'ลูกค้าเก่า',data:SH_OLD,backgroundColor:SH_OLD.map((_,i)=>i===5?'rgba(238,77,45,.45)':'rgba(238,77,45,.15)'),borderRadius:4,stack:'c'},
+  {label:'ลูกค้าใหม่',data:SH_NEW,backgroundColor:SH_NEW.map((_,i)=>i===6?'rgba(238,77,45,.85)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
+  {label:'ลูกค้าเก่า',data:SH_OLD,backgroundColor:SH_OLD.map((_,i)=>i===6?'rgba(238,77,45,.45)':'rgba(238,77,45,.15)'),borderRadius:4,stack:'c'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 charts['sh_cost'] = new Chart('sh_cost',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดใช้ Ads',data:SH_ADS,backgroundColor:SH_ADS.map((_,i)=>i===5?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
-  {label:'ค่าธรรมเนียม',data:SH_FEE,backgroundColor:SH_FEE.map((_,i)=>i===5?'rgba(251,146,60,.8)':'rgba(251,146,60,.3)'),borderRadius:4,stack:'c'},
+  {label:'ยอดใช้ Ads',data:SH_ADS,backgroundColor:SH_ADS.map((_,i)=>i===6?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:4,stack:'c'},
+  {label:'ค่าธรรมเนียม',data:SH_FEE,backgroundColor:SH_FEE.map((_,i)=>i===6?'rgba(251,146,60,.8)':'rgba(251,146,60,.3)'),borderRadius:4,stack:'c'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true,ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['sh_cancel'] = new Chart('sh_cancel',{type:'line',data:{labels:M5,datasets:[{label:'% ยกเลิก',data:SH_CANCEL_PCT,borderColor:SHOPEE,backgroundColor:'rgba(238,77,45,.1)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
-charts['sh_orders'] = new Chart('sh_orders',{type:'bar',data:{labels:M5,datasets:[{label:'order',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===5?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:6}]},options:{...BASE,plugins:{legend:{display:false}}}});
+charts['sh_orders'] = new Chart('sh_orders',{type:'bar',data:{labels:M5,datasets:[{label:'order',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===6?'rgba(238,77,45,.8)':'rgba(238,77,45,.3)'),borderRadius:6}]},options:{...BASE,plugins:{legend:{display:false}}}});
 
 charts['tk_line'] = new Chart('tk_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:TK_REV,borderColor:TIKTOK,backgroundColor:'rgba(30,30,30,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}});
 charts['tk_afi'] = new Chart('tk_afi',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดขาย',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===5?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:3},
-  {label:'ยอด Affiliate',data:TK_AFI,backgroundColor:TK_AFI.map((_,i)=>i===5?'rgba(139,92,246,.7)':'rgba(139,92,246,.25)'),borderRadius:3},
-  {label:'ยอดหลังหัก',data:TK_NET,backgroundColor:TK_NET.map((_,i)=>i===5?'rgba(20,184,166,.7)':'rgba(20,184,166,.25)'),borderRadius:3},
+  {label:'ยอดขาย',data:TK_REV,backgroundColor:TK_REV.map((_,i)=>i===6?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:3},
+  {label:'ยอด Affiliate',data:TK_AFI,backgroundColor:TK_AFI.map((_,i)=>i===6?'rgba(139,92,246,.7)':'rgba(139,92,246,.25)'),borderRadius:3},
+  {label:'ยอดหลังหัก',data:TK_NET,backgroundColor:TK_NET.map((_,i)=>i===6?'rgba(20,184,166,.7)':'rgba(20,184,166,.25)'),borderRadius:3},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['tk_afipct'] = new Chart('tk_afipct',{type:'line',data:{labels:M5,datasets:[{label:'% Afi',data:TK_AFIPCT,borderColor:'#8b5cf6',backgroundColor:'rgba(139,92,246,.1)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>v+'%'}}}}});
 charts['tk_adslive'] = new Chart('tk_adslive',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ยอดจาก Ads',data:TK_ADS,backgroundColor:TK_ADS.map((_,i)=>i===5?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:4},
-  {label:'ยอด Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===5?'rgba(26,92,219,.7)':'rgba(26,92,219,.25)'),borderRadius:4},
+  {label:'ยอดจาก Ads',data:TK_ADS,backgroundColor:TK_ADS.map((_,i)=>i===6?'rgba(30,30,30,.6)':'rgba(30,30,30,.2)'),borderRadius:4},
+  {label:'ยอด Live',data:TK_LIVE,backgroundColor:TK_LIVE.map((_,i)=>i===6?'rgba(26,92,219,.7)':'rgba(26,92,219,.25)'),borderRadius:4},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['tk_cust'] = new Chart('tk_cust',{type:'bar',data:{labels:M5,datasets:[
-  {label:'ลูกค้าใหม่',data:TK_NEW,backgroundColor:TK_NEW.map((_,i)=>i===5?'rgba(30,30,30,.7)':'rgba(30,30,30,.25)'),borderRadius:4,stack:'c'},
-  {label:'ลูกค้าเก่า',data:TK_OLD,backgroundColor:TK_OLD.map((_,i)=>i===5?'rgba(30,30,30,.35)':'rgba(30,30,30,.12)'),borderRadius:4,stack:'c'},
+  {label:'ลูกค้าใหม่',data:TK_NEW,backgroundColor:TK_NEW.map((_,i)=>i===6?'rgba(30,30,30,.7)':'rgba(30,30,30,.25)'),borderRadius:4,stack:'c'},
+  {label:'ลูกค้าเก่า',data:TK_OLD,backgroundColor:TK_OLD.map((_,i)=>i===6?'rgba(30,30,30,.35)':'rgba(30,30,30,.12)'),borderRadius:4,stack:'c'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 
 charts['lz_line'] = new Chart('lz_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:LZ_REV,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
