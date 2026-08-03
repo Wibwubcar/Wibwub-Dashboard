@@ -1,0 +1,32 @@
+{
+  "generated": "2026-08-03 Monday update",
+  "note": "Shipnity-only revenue (excludes marketplace mk/mkq fields present in ALL_PRODUCTS). Computed from one cumulative file per month (Jan–Aug 3 partial). NOT written into WIBWUB_Mobile.html / WIBWUB_Dashboard.html — see report for reasoning (same as 2026-08-01 run).",
+  "months_included": [
+    "Data_มกราคม.xlsx",
+    "Data_กุมภาพันธ์.xlsx",
+    "Data-มีนา.xlsx",
+    "Data_เมษา.xlsx",
+    "Data_พฤษภาคม.xlsx",
+    "Data_มิถุนายน.xlsx",
+    "Data_กรกฎาคม.xlsx",
+    "Data_สิงหาคม.xlsx (through Aug 3)"
+  ],
+  "total_order_lines": 184479,
+  "top15": [
+    {"n": "Wool duster-ไม้ปัดขนแกะ", "v": 5579523, "q": 8740},
+    {"n": "Sugar (Sugar-500ml+Spray)", "v": 4676613, "q": 15679},
+    {"n": "Interior (Interior-500ml+Spray)", "v": 3641105, "q": 10545},
+    {"n": "Interior wipes", "v": 2267178, "q": 31163},
+    {"n": "Refresh (Refresh-500ml+หัวโฟม สีขาว)", "v": 2160021, "q": 6006},
+    {"n": "Refresh wipes", "v": 2041087, "q": 26254},
+    {"n": "Spot (Spot-500ml)", "v": 1966363, "q": 5269},
+    {"n": "Perfect", "v": 1741706, "q": 11469},
+    {"n": "Reflex (Reflex-250ml+Spray)", "v": 1506352, "q": 3922},
+    {"n": "Tire&trim gel (Tire&trim gel-500ml)", "v": 1365492, "q": 3036},
+    {"n": "Sugar (Sugar-3L แถมขวดสเปรย์)", "v": 1343499, "q": 1144},
+    {"n": "Martini", "v": 1332659, "q": 10712},
+    {"n": "Xglass (Xglass-100ml)", "v": 1304184, "q": 3522},
+    {"n": "Quartz shampoo (Quartz shampoo-1L)", "v": 1184189, "q": 5048},
+    {"n": "Mind (Mind-500ml+Spray)", "v": 1166057, "q": 2907}
+  ]
+}
