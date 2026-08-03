@@ -206,7 +206,7 @@
 <div class="header">
   <div class="logo"><img src="../logo-header.png" alt="WIBWUB" style="height:24px;display:block;"></div>
   <div style="display:flex;align-items:center;gap:12px">
-    <span class="period-badge"><span id="period-badge-txt">ส.ค. (Shopee ถึง 31 ก.ค., TikTok ถึง 2 ส.ค.) 2569</span></span>
+    <span class="period-badge"><span id="period-badge-txt">ส.ค. (Shopee ถึง 1 ส.ค., TikTok ถึง 2 ส.ค.) 2569</span></span>
     <span style="font-size:11px;color:var(--muted)">ข้อมูลจริงจาก Shopee + TikTok</span>
     <span id="ads-updated" title="TikTok ครบถ้วนถึง 2 ส.ค. 2569 / Shopee ข้อมูลครบถ้วนถึง 1 ส.ค. 2569 (ทั้งยอดรวมและ breakdown รายแคมเปญจาก CSV วันเดียว)" style="font-size:11px;color:var(--muted);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:3px 10px;border-radius:20px">อัปเดต 2 ส.ค. 2569 (TikTok) / 1 ส.ค. (Shopee)</span>
   </div>
@@ -1131,7 +1131,7 @@ const ADS_PERIOD_DEFS = {
   may: { keys:['may'],  label:'พ.ค. 2569 (1–31)',               badge:'พ.ค. (1–31) 2569' },
   jun: { keys:['jun'],  label:'มิ.ย. 2569 (1–30)',               badge:'มิ.ย. (1–30) 2569' },
   jul: { keys:['jul'],  label:'ก.ค. 2569 (ครบ 1-30)',  badge:'ก.ค. 2569 (ครบ 1-30)' },
-  aug: { keys:['aug'],  label:'ส.ค. 2569 (TikTok เท่านั้น)',  badge:'ส.ค. 2569 (1, TikTok เท่านั้น)' },
+  aug: { keys:['aug'],  label:'ส.ค. 2569 (Shopee ครบ 1 / TikTok ครบ 1-2)',  badge:'ส.ค. 2569 (Shopee ถึง 1 / TikTok ถึง 2)' },
 };
 let curPickedPeriod = 'aug'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
 
