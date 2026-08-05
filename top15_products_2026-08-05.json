@@ -1,0 +1,92 @@
+{
+  "used_files": [
+    "Data_มกราคม.xlsx",
+    "Data_กุมภาพันธ์.xlsx",
+    "Data-มีนา.xlsx",
+    "Data_เมษา.xlsx",
+    "Data_พฤษภาคม.xlsx",
+    "Data_มิถุนายน.xlsx",
+    "Data_กรกฎาคม.xlsx",
+    "Data_สิงหาคม.xlsx"
+  ],
+  "skipped_files": [],
+  "total_order_lines": 186433,
+  "total_products": 192,
+  "top15": [
+    {
+      "name": "Wool duster-ไม้ปัดขนแกะ",
+      "revenue": 5598925.0,
+      "qty": 8769
+    },
+    {
+      "name": "Sugar (Sugar-500ml+Spray)",
+      "revenue": 4715037.0,
+      "qty": 15798
+    },
+    {
+      "name": "Interior (Interior-500ml+Spray)",
+      "revenue": 3666664.0,
+      "qty": 10618
+    },
+    {
+      "name": "Interior wipes",
+      "revenue": 2307560.0,
+      "qty": 31692
+    },
+    {
+      "name": "Refresh (Refresh-500ml+หัวโฟม สีขาว)",
+      "revenue": 2181964.0,
+      "qty": 6066
+    },
+    {
+      "name": "Refresh wipes",
+      "revenue": 2131780.0,
+      "qty": 27438
+    },
+    {
+      "name": "Spot (Spot-500ml)",
+      "revenue": 1997215.2000000002,
+      "qty": 5345
+    },
+    {
+      "name": "Perfect",
+      "revenue": 1731898.0,
+      "qty": 11406
+    },
+    {
+      "name": "Reflex (Reflex-250ml+Spray)",
+      "revenue": 1517421,
+      "qty": 3953
+    },
+    {
+      "name": "Tire&trim gel (Tire&trim gel-500ml)",
+      "revenue": 1381462.0,
+      "qty": 3069
+    },
+    {
+      "name": "Sugar (Sugar-3L แถมขวดสเปรย์)",
+      "revenue": 1354772.0,
+      "qty": 1152
+    },
+    {
+      "name": "Martini",
+      "revenue": 1324056.0,
+      "qty": 10659
+    },
+    {
+      "name": "Xglass (Xglass-100ml)",
+      "revenue": 1317589,
+      "qty": 3558
+    },
+    {
+      "name": "Quartz shampoo (Quartz shampoo-1L)",
+      "revenue": 1190308.0,
+      "qty": 5071
+    },
+    {
+      "name": "Mind (Mind-500ml+Spray)",
+      "revenue": 1170506.0,
+      "qty": 2919
+    }
+  ]
+}

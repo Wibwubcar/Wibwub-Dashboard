@@ -1,0 +1,888 @@
+{
+  "generated": "2026-08-04",
+  "files_used": {
+    "Data_มกราคม.xlsx": {
+      "total_rows": 28093,
+      "new_unique": 27979,
+      "month": 1
+    },
+    "Data_กุมภาพันธ์.xlsx": {
+      "total_rows": 24572,
+      "new_unique": 24469,
+      "month": 2
+    },
+    "Data_เมษา.xlsx": {
+      "total_rows": 23839,
+      "new_unique": 23771,
+      "month": 4
+    },
+    "Data_พฤษภาคม.xlsx": {
+      "total_rows": 28733,
+      "new_unique": 28620,
+      "month": 5
+    },
+    "Data_มิถุนายน.xlsx": {
+      "total_rows": 24339,
+      "new_unique": 24250,
+      "month": 6
+    },
+    "Data_กรกฎาคม.xlsx": {
+      "total_rows": 30939,
+      "new_unique": 30889,
+      "month": 7
+    },
+    "Data_สิงหาคม.xlsx": {
+      "total_rows": 2974,
+      "new_unique": 2971,
+      "month": 8
+    }
+  },
+  "total_unique_order_lines": 162949,
+  "top15": [
+    {
+      "name": "Wool duster-ไม้ปัดขนแกะ",
+      "revenue": 4601402.0,
+      "qty": 7230
+    },
+    {
+      "name": "Sugar (Sugar-500ml+Spray)",
+      "revenue": 4087360.0,
+      "qty": 13722
+    },
+    {
+      "name": "Interior (Interior-500ml+Spray)",
+      "revenue": 3177311.0,
+      "qty": 9224
+    },
+    {
+      "name": "Interior wipes",
+      "revenue": 2049213.0,
+      "qty": 28104
+    },
+    {
+      "name": "Refresh wipes",
+      "revenue": 1920452.0,
+      "qty": 24666
+    },
+    {
+      "name": "Refresh (Refresh-500ml+หัวโฟม สีขาว)",
+      "revenue": 1885214.0,
+      "qty": 5250
+    },
+    {
+      "name": "Spot (Spot-500ml)",
+      "revenue": 1863368.2000000002,
+      "qty": 4988
+    },
+    {
+      "name": "Perfect",
+      "revenue": 1489927.0,
+      "qty": 9818
+    },
+    {
+      "name": "Reflex (Reflex-250ml+Spray)",
+      "revenue": 1283566,
+      "qty": 3349
+    },
+    {
+      "name": "Xglass (Xglass-100ml)",
+      "revenue": 1233942,
+      "qty": 3333
+    },
+    {
+      "name": "Tire&trim gel (Tire&trim gel-500ml)",
+      "revenue": 1214089.0,
+      "qty": 2707
+    },
+    {
+      "name": "Sugar (Sugar-3L แถมขวดสเปรย์)",
+      "revenue": 1200701.0,
+      "qty": 1024
+    },
+    {
+      "name": "Martini",
+      "revenue": 1172237.0,
+      "qty": 9480
+    },
+    {
+      "name": "Quartz shampoo (Quartz shampoo-1L)",
+      "revenue": 1035787.0,
+      "qty": 4397
+    },
+    {
+      "name": "Mind (Mind-500ml+Spray)",
+      "revenue": 976916.0,
+      "qty": 2437
+    }
+  ],
+  "all_products_totals": {
+    "Refresh wipes": {
+      "revenue": 1920452.0,
+      "qty": 24666
+    },
+    "Tire&trim gel (Tire&trim gel-500ml)": {
+      "revenue": 1214089.0,
+      "qty": 2707
+    },
+    "Recove (Recove-500ml)": {
+      "revenue": 699463,
+      "qty": 1421
+    },
+    "Interior wipes": {
+      "revenue": 2049213.0,
+      "qty": 28104
+    },
+    "Paint prep (Paint prep-500ml+Spray)": {
+      "revenue": 314051,
+      "qty": 1769
+    },
+    "Martini": {
+      "revenue": 1172237.0,
+      "qty": 9480
+    },
+    "Microfiber applicator-ฟองน้ำผ้าไมโครไฟเบอร์": {
+      "revenue": 300189,
+      "qty": 2079
+    },
+    "Graphene": {
+      "revenue": 609680,
+      "qty": 1186
+    },
+    "Microfiber wash (Microfiber wash-500ml)": {
+      "revenue": 232002,
+      "qty": 989
+    },
+    "Quartz shampoo (Quartz shampoo-3L)": {
+      "revenue": 561089,
+      "qty": 989
+    },
+    "UV protect (UV protect-100ml)": {
+      "revenue": 294226,
+      "qty": 1671
+    },
+    "Cleaner": {
+      "revenue": 287100,
+      "qty": 2910
+    },
+    "ผ้าไมโครไฟเบอร์ (สีเหลือง)": {
+      "revenue": 290000,
+      "qty": 2904
+    },
+    "Reflex (Reflex-250ml+Spray)": {
+      "revenue": 1283566,
+      "qty": 3349
+    },
+    "Margarita": {
+      "revenue": 435946,
+      "qty": 2923
+    },
+    "Mind (Mind-3L แถมขวดสเปรย์)": {
+      "revenue": 602381.0,
+      "qty": 465
+    },
+    "Tire applicator-ฟองน้ำทายาง": {
+      "revenue": 165180,
+      "qty": 3075
+    },
+    "Sugar (Sugar-500ml+Spray)": {
+      "revenue": 4087360.0,
+      "qty": 13722
+    },
+    "น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat)": {
+      "revenue": 10987.099999999999,
+      "qty": 25
+    },
+    "เซรามิคแชมพูล้างรถ (Quartz Shampoo)": {
+      "revenue": 29761.070000000003,
+      "qty": 85
+    },
+    "Spot (Spot-500ml)": {
+      "revenue": 1863368.2000000002,
+      "qty": 4988
+    },
+    "Wool duster-ไม้ปัดขนแกะ": {
+      "revenue": 4601402.0,
+      "qty": 7230
+    },
+    "APC (APC-3L แถมขวดสเปรย์)": {
+      "revenue": 41735,
+      "qty": 39
+    },
+    "Banyakart (Banyakart-500ml)": {
+      "revenue": 584748,
+      "qty": 1466
+    },
+    "Sugar (Sugar-3L แถมขวดสเปรย์)": {
+      "revenue": 1200701.0,
+      "qty": 1024
+    },
+    "Brown (Brown-500ml+Spray)": {
+      "revenue": 429535,
+      "qty": 1083
+    },
+    "Polisher": {
+      "revenue": 487334,
+      "qty": 3733
+    },
+    "Perfect": {
+      "revenue": 1489927.0,
+      "qty": 9818
+    },
+    "Interior (Interior-500ml+Spray)": {
+      "revenue": 3177311.0,
+      "qty": 9224
+    },
+    "Superdry doubleside": {
+      "revenue": 761801.0,
+      "qty": 1924
+    },
+    "Wool wash mitt-ถุงมือขนแกะ": {
+      "revenue": 452678,
+      "qty": 1074
+    },
+    "Quartz shampoo (Quartz shampoo-1L)": {
+      "revenue": 1035787.0,
+      "qty": 4397
+    },
+    "Refresh (Refresh-500ml+หัวโฟม สีขาว)": {
+      "revenue": 1885214.0,
+      "qty": 5250
+    },
+    "Horse hair brush-แปรงขนม้า": {
+      "revenue": 432178,
+      "qty": 2064
+    },
+    "Premium mitt-ถุงมือไมโครไฟเบอร์": {
+      "revenue": 403993,
+      "qty": 887
+    },
+    "Wheel brush-แปรงขัดล้อ": {
+      "revenue": 138795,
+      "qty": 288
+    },
+    "(เกรดB) ไม้ปัดขนแกะ": {
+      "revenue": 187980,
+      "qty": 482
+    },
+    "Terrain (Terrain-500ml)": {
+      "revenue": 128799,
+      "qty": 479
+    },
+    "Visible (Visible-500ml + หัวโฟมสีขาว)": {
+      "revenue": 604261,
+      "qty": 2394
+    },
+    "Deep clean (Deep clean-1L)": {
+      "revenue": 333102,
+      "qty": 930
+    },
+    "Mind (Mind-500ml+Spray)": {
+      "revenue": 976916.0,
+      "qty": 2437
+    },
+    "Waterless (Waterless-500ml )": {
+      "revenue": 342703,
+      "qty": 983
+    },
+    "Secondary container": {
+      "revenue": 75842,
+      "qty": 481
+    },
+    "Monster": {
+      "revenue": 841315,
+      "qty": 1152
+    },
+    "Bugbug (Bugbug-500ml+Spray)": {
+      "revenue": 261266,
+      "qty": 1086
+    },
+    "Scrubber": {
+      "revenue": 89850,
+      "qty": 843
+    },
+    "Xglass (Xglass-100ml)": {
+      "revenue": 1233942,
+      "qty": 3333
+    },
+    "Detailing brush (Synthetic)": {
+      "revenue": 173544,
+      "qty": 1153
+    },
+    "Detailing brush (Blue stiff)": {
+      "revenue": 129614,
+      "qty": 1226
+    },
+    "Detailing brush (Ultra soft)": {
+      "revenue": 191310,
+      "qty": 1382
+    },
+    "Sugar (Sugar-5L แถมขวดสเปรย์)": {
+      "revenue": 321190,
+      "qty": 191
+    },
+    "Steel (Steel-500ml+Spray)": {
+      "revenue": 264813,
+      "qty": 470
+    },
+    "ขวดสเปรย์ใส": {
+      "revenue": 0,
+      "qty": 744
+    },
+    "Phoenix (Phoenix-250ml+Spray)": {
+      "revenue": 46154,
+      "qty": 79
+    },
+    "Beach (Beach-500ml+Spray)": {
+      "revenue": 450948.0,
+      "qty": 804
+    },
+    "Quartz shampoo (Quartz shampoo-5L)": {
+      "revenue": 524556.0,
+      "qty": 613
+    },
+    "สเปรย์ทำความสะอาดภายในแบบไม่เงา ( WIBWUB Interior )": {
+      "revenue": 45650.58,
+      "qty": 108
+    },
+    "น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar)": {
+      "revenue": 52589.58,
+      "qty": 119
+    },
+    "สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray (WIBWUB Reflex V.2 )": {
+      "revenue": 35513.09,
+      "qty": 60
+    },
+    "Flex wheelbrush": {
+      "revenue": 133759,
+      "qty": 562
+    },
+    "Front wheel brush": {
+      "revenue": 176544,
+      "qty": 715
+    },
+    "Tire brush-แปรงขัดยาง": {
+      "revenue": 143703,
+      "qty": 926
+    },
+    "ไม้ปัดฝุ่นขน Wool duster": {
+      "revenue": 32817.729999999996,
+      "qty": 53
+    },
+    "IK foam 1.5": {
+      "revenue": 1008,
+      "qty": 109
+    },
+    "Tire clean (Tire clean-500ml + หัวโฟมสีขาว)": {
+      "revenue": 233067,
+      "qty": 652
+    },
+    "Reflex (Reflex-3L แถมขวดสเปรย์)": {
+      "revenue": 127600,
+      "qty": 54
+    },
+    "Reflex (Reflex-1L แถมขวดสเปรย์)": {
+      "revenue": 165843,
+      "qty": 133
+    },
+    "น้ำยาขจัดคราบยางมะตอย สูตรขจัดคราบหนัก (WIBWUB Brown V.2 )": {
+      "revenue": 3373.94,
+      "qty": 10
+    },
+    "Claymitt": {
+      "revenue": 178878,
+      "qty": 343
+    },
+    "Prewash cola": {
+      "revenue": 1790,
+      "qty": 10
+    },
+    "APC (APC-500ml+Spray)": {
+      "revenue": 231270.0,
+      "qty": 758
+    },
+    "Portable bucket (ถังพกพา)": {
+      "revenue": 8742,
+      "qty": 79
+    },
+    "น้ำยาเคลือบสีกราฟีน (WIBWUB Graphene Sealant)": {
+      "revenue": 20771.530000000002,
+      "qty": 37
+    },
+    "Beach (Beach-250ml+Spray)": {
+      "revenue": 123622.0,
+      "qty": 361
+    },
+    "Deep clean (Deep clean-3L)": {
+      "revenue": 172401,
+      "qty": 225
+    },
+    "Waterless (Waterless-3L แถมขวดสเปรย์ใส)": {
+      "revenue": 8820,
+      "qty": 6
+    },
+    "ฟองน้ำสำหรับลงน้ำยาเคลือบเซรามิก (Coating block)": {
+      "revenue": 16207.789999999997,
+      "qty": 258
+    },
+    "Suede applicator": {
+      "revenue": 26389,
+      "qty": 471
+    },
+    "ถุงมือดินน้ำมันขจัดคราบไคล (WIBWUB Clay Mitt)": {
+      "revenue": 4000.4700000000003,
+      "qty": 8
+    },
+    "สเปรย์ปรับสภาพกลิ่นพรมภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)": {
+      "revenue": 5598.42,
+      "qty": 17
+    },
+    "น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep)": {
+      "revenue": 5509.8,
+      "qty": 22
+    },
+    "ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes)": {
+      "revenue": 5227.820000000001,
+      "qty": 72
+    },
+    "ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh )": {
+      "revenue": 12176.580000000002,
+      "qty": 33
+    },
+    "Tester": {
+      "revenue": 0,
+      "qty": 94
+    },
+    "Deep clean (Deep clean-5L)": {
+      "revenue": 128910,
+      "qty": 103
+    },
+    "Tire&trim gel (Tire&trim gel-5L แถมขวด)": {
+      "revenue": 57750,
+      "qty": 21
+    },
+    "Beach (Beach-5L แถมขวดสเปรย์)": {
+      "revenue": 61750,
+      "qty": 20
+    },
+    "Interior (Interior-5L แถมขวดสเปรย์)": {
+      "revenue": 100968,
+      "qty": 63
+    },
+    "Fixcase": {
+      "revenue": 180,
+      "qty": 223
+    },
+    "แปรงทำความสะอาดยางรถยนต์ (WIBWUB Tire Brush)": {
+      "revenue": 2893.21,
+      "qty": 17
+    },
+    "Julia": {
+      "revenue": 377092,
+      "qty": 306
+    },
+    "ผ้าสำหรับเช็ดน้ำยาเคลือบสีโดยเฉพาะ (WIBWUB Martini)": {
+      "revenue": 6473.23,
+      "qty": 45
+    },
+    "Visible (Visible-3L แถมขวดสเปรย์)": {
+      "revenue": 90612,
+      "qty": 110
+    },
+    "Anna nano diamond": {
+      "revenue": 266710,
+      "qty": 149
+    },
+    "Suede Towels": {
+      "revenue": 50194,
+      "qty": 201
+    },
+    "Tire clean (Tire clean-3L แถมขวดสเปรย์)": {
+      "revenue": 76530,
+      "qty": 51
+    },
+    "APC (APC-5L แถมขวดสเปรย์)": {
+      "revenue": 38290,
+      "qty": 28
+    },
+    "Martini 10 ผืน": {
+      "revenue": 20700,
+      "qty": 20
+    },
+    "หมวก WIBWUB (หมวกสีเทา)": {
+      "revenue": 0,
+      "qty": 39
+    },
+    "หมวก WIBWUB (หมวกสีเขียว)": {
+      "revenue": 0,
+      "qty": 36
+    },
+    "Refresh (Refresh-3L แถมขวดสเปรย์)": {
+      "revenue": 158531,
+      "qty": 101
+    },
+    "Interior (Interior-3L แถมขวดสเปรย์)": {
+      "revenue": 321623.0,
+      "qty": 306
+    },
+    "Visible (Visible-5L แถมขวดสเปรย์)": {
+      "revenue": 39774,
+      "qty": 32
+    },
+    "Mind (Mind-5L แถมขวดสเปรย์)": {
+      "revenue": 52000,
+      "qty": 26
+    },
+    "น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean)": {
+      "revenue": 24317.75,
+      "qty": 64
+    },
+    "Bugbug (Bugbug-3L แถมขวดสเปรย์)": {
+      "revenue": 27000,
+      "qty": 36
+    },
+    "UV protect (UV protect-1L แถมขวดสเปรย์)": {
+      "revenue": 60360,
+      "qty": 61
+    },
+    "Terrain (Terrain-3L )": {
+      "revenue": 97150,
+      "qty": 81
+    },
+    "Spot (Spot-3L แถมขวด)": {
+      "revenue": 106154,
+      "qty": 67
+    },
+    "สเปรย์เคลือบป้องกันรังสี UV สำหรับภายใน (WIBWUB UV Protect)": {
+      "revenue": 1832.1100000000001,
+      "qty": 11
+    },
+    "ฟองน้ำ Premium Microfiber Applicator (แพค 2 ชิ้น)": {
+      "revenue": 4648.02,
+      "qty": 29
+    },
+    "ผ้าคลุมล้อ (WIBWUB Tire Cover)": {
+      "revenue": 851,
+      "qty": 2
+    },
+    "Side bucket": {
+      "revenue": 32599,
+      "qty": 83
+    },
+    "Bucket (Wash bucket (น้ำเงิน))": {
+      "revenue": 34974,
+      "qty": 69
+    },
+    "Microfiber wash (Microfiber wash-25L)": {
+      "revenue": 8700,
+      "qty": 3
+    },
+    "Microfiber wash (Microfiber wash-3L)": {
+      "revenue": 96551,
+      "qty": 115
+    },
+    "Mini detailing kit": {
+      "revenue": 36464,
+      "qty": 245
+    },
+    "Bucket (Rince bucket (เทา))": {
+      "revenue": 16058,
+      "qty": 32
+    },
+    "Xglass (Xglass-1L แถมขวด)": {
+      "revenue": 126086,
+      "qty": 142
+    },
+    "Tire cover": {
+      "revenue": 16170,
+      "qty": 33
+    },
+    "กระเป๋า Detailing bag": {
+      "revenue": 14150,
+      "qty": 15
+    },
+    "น้ำยาซักผ้าไมโครไฟเบอร์ (WIBWUB Microfiber Wash)": {
+      "revenue": 3647.6600000000003,
+      "qty": 17
+    },
+    "เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)": {
+      "revenue": 9285.22,
+      "qty": 21
+    },
+    "ผ้าสำหรับเช็ดคุ่กับน้ำยาเก็บฝุ่นโดยเฉพาะ (WIBWUB Margarita)": {
+      "revenue": 2627.2500000000005,
+      "qty": 16
+    },
+    "แปรง Detailing สำหรับเก็บรายละเอียด  (WIBWUB Detailing brush)": {
+      "revenue": 1289.65,
+      "qty": 7
+    },
+    "เจลเคลือบและฟื้นฟูพลาสติกและยาง สูตรกันน้ำ (WIBWUB Tire & Trim Gel)": {
+      "revenue": 8566.900000000001,
+      "qty": 14
+    },
+    "Tire&trim gel (Tire&trim gel-3L แถมขวด)": {
+      "revenue": 104220.0,
+      "qty": 56
+    },
+    "น้ำยาทำความสะอาดกระจก (WIBWUB Visible)": {
+      "revenue": 10489.04,
+      "qty": 25
+    },
+    "Paint prep (Paint prep-3L แถมขวดสเปรย์)": {
+      "revenue": 50160,
+      "qty": 67
+    },
+    "Beach (Beach-3L แถมขวดสเปรย์)": {
+      "revenue": 67250,
+      "qty": 34
+    },
+    "สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB Mind Quick Detailer)": {
+      "revenue": 8509.89,
+      "qty": 13
+    },
+    "ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry Doubleside )": {
+      "revenue": 6138.25,
+      "qty": 14
+    },
+    "Ceramic Coating Spray for Car Paint (Wibwub Reflex V.2)": {
+      "revenue": 3392.71,
+      "qty": 7
+    },
+    "Perfect 10 ผืน": {
+      "revenue": 13200,
+      "qty": 11
+    },
+    "น้ำยาขจัดคราบแมลงโดยเฉพาะรถยนต์ (WIBWUB Bug bug)": {
+      "revenue": 3176.9800000000005,
+      "qty": 12
+    },
+    "Bugbug (Bugbug-5L แถมขวดสเปรย์)": {
+      "revenue": 23500,
+      "qty": 22
+    },
+    "Strip wheel brush": {
+      "revenue": 14214,
+      "qty": 31
+    },
+    "ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes)": {
+      "revenue": 4904.680000000001,
+      "qty": 65
+    },
+    "ฟองน้ำ Suede Applicator": {
+      "revenue": 642.17,
+      "qty": 12
+    },
+    "ฟองน้ำทายาง (WIBWUB Tire applicator)": {
+      "revenue": 1074.0,
+      "qty": 20
+    },
+    "Margarita 10 ผืน": {
+      "revenue": 19300,
+      "qty": 17
+    },
+    "แปรงขัดล้อแบบปรับองศาได้ (WIBWUB Flex wheel brush)": {
+      "revenue": 1656.18,
+      "qty": 6
+    },
+    "โฟมขจัดคราบฝังลึก (WIBWUB Deep Clean)": {
+      "revenue": 9955.35,
+      "qty": 23
+    },
+    "ถุงมือล้างรถขนแกะแท้ (WIBWUB Wool wash mitt)": {
+      "revenue": 3362.5299999999997,
+      "qty": 7
+    },
+    "แปรงขัดหน้าล้อ (WIBWUB Front Wheel Brush)": {
+      "revenue": 2008.3100000000002,
+      "qty": 7
+    },
+    "ผ้าสำหรับลงน้ำยาเคลือบเซรามิก (Suede Coating Towel)": {
+      "revenue": 904.66,
+      "qty": 4
+    },
+    "เซททดลองผลิตภัณฑ์ดูแลรถ (Mini detailing kit)": {
+      "revenue": 268.5,
+      "qty": 2
+    },
+    "ฟองน้ำสครับเบาะหนัง (WIBWUB Scrubber pad)": {
+      "revenue": 1339.58,
+      "qty": 15
+    },
+    "น้ำยาเคลือบกระจก ( WIBWUB X-Glass Shield )": {
+      "revenue": 12024.900000000001,
+      "qty": 29
+    },
+    "ผลิตภัณฑ์ภัณฑ์ขจัดคราบผงเบรก (WIBWUB Steel)": {
+      "revenue": 3368.3100000000004,
+      "qty": 7
+    },
+    "ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 70*90 (WIBWUB Monster)": {
+      "revenue": 4700.84,
+      "qty": 7
+    },
+    "ขวดผสมน้ำยา (WIBWUB Secondary Container)": {
+      "revenue": 434.06,
+      "qty": 3
+    },
+    "ผ้าไมโครไฟเบอร์ BOA ไร้ขอบ 500 gsm (WIBWUB Perfect)": {
+      "revenue": 8067.250000000001,
+      "qty": 42
+    },
+    "น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner)": {
+      "revenue": 5802.63,
+      "qty": 14
+    },
+    "ถุงมือล้างรถไมโครไฟเบอร์ ( Premium Wash Mitt)": {
+      "revenue": 5631.429999999999,
+      "qty": 13
+    },
+    "น้ำยาล้างรถสำหรับ Pre-Wash (WIBWUB Terrain)": {
+      "revenue": 3631.4199999999996,
+      "qty": 7
+    },
+    "Microfiber Cloth for Absorbing Water Without Edges 70*90 (Wibwub Monster)": {
+      "revenue": 2315,
+      "qty": 3
+    },
+    "Ella": {
+      "revenue": 162540,
+      "qty": 126
+    },
+    "Car Care Product Trial Set (Mini Detailing Kit)": {
+      "revenue": 142.44,
+      "qty": 1
+    },
+    "WIBWUB Wheel brush (แปรงขัดล้อ)": {
+      "revenue": 2481.62,
+      "qty": 6
+    },
+    "ผ้า Polisher สำหรับเช็ดเคลือบเซรามิค": {
+      "revenue": 3154.0799999999995,
+      "qty": 23
+    },
+    "สเปรย์เช็ดเก็บฝุ่นดูแลผิวรถระหว่างวัน (WIBWUB Mind Quick Detailer)": {
+      "revenue": 897.24,
+      "qty": 2
+    },
+    "น้ำยาล้างรถแบบไม่ใช้น้ำ (WIBWUB  Waterless)": {
+      "revenue": 1224.6,
+      "qty": 1
+    },
+    "Waterless (Waterless-5L แถมขวดสเปรย์ใส)": {
+      "revenue": 8600,
+      "qty": 4
+    },
+    "Quartz shampoo (Quartz shampoo-25L)": {
+      "revenue": 29700,
+      "qty": 11
+    },
+    "Spot (Spot-5L แถมขวด)": {
+      "revenue": 9200,
+      "qty": 4
+    },
+    "Paint prep (Paint prep-5L แถมขวดสเปรย์)": {
+      "revenue": 11400,
+      "qty": 12
+    },
+    "Microfiber Laundry Detergent (Wibwub Microfiber Wash)": {
+      "revenue": 1152.5,
+      "qty": 3
+    },
+    "Reflex (Reflex-500ml+Spray)": {
+      "revenue": 875620.0,
+      "qty": 1363
+    },
+    "Ceramic Coating (Wibwub Julia)": {
+      "revenue": 2329,
+      "qty": 2
+    },
+    "น้ำยาเคลือบเซรามิค (WIBWUB JULIA)": {
+      "revenue": 7121.51,
+      "qty": 6
+    },
+    "แปรงขนม้าแท้ (Horse Brush)": {
+      "revenue": 475,
+      "qty": 2
+    },
+    "Polisher 10 ผืน": {
+      "revenue": 29200,
+      "qty": 36
+    },
+    "Foam cannon (Connector-L)": {
+      "revenue": 1390,
+      "qty": 1
+    },
+    "น้ำยาทำความสะอาดยางโดยเฉพาะ (WIBWUB Tire Clean)": {
+      "revenue": 5553.790000000001,
+      "qty": 10
+    },
+    "Gel for Coating and Restoring Plastic and Rubber, Waterproof Formula (Wibwub Tire & Trim Gel)": {
+      "revenue": 1678.6,
+      "qty": 4
+    },
+    "Bucket (Rinse bucket (เทา))": {
+      "revenue": 36989,
+      "qty": 70
+    },
+    "Phoenix (Phoenix-1L แถมขวดสเปรย์)": {
+      "revenue": 3980,
+      "qty": 2
+    },
+    "Terrain (Terrain-5L )": {
+      "revenue": 21600,
+      "qty": 12
+    },
+    "Tire clean (Tire clean-5L แถมขวดสเปรย์)": {
+      "revenue": 13650,
+      "qty": 7
+    },
+    "Asphalt Stain Remover Heavy Stain Removal Formula (Wibwub Brown)": {
+      "revenue": 1139.3600000000001,
+      "qty": 3
+    },
+    "Steel (Steel-3L แถมขวดสเปรย์)": {
+      "revenue": 15000,
+      "qty": 6
+    },
+    "Microfiber wash (Microfiber wash-5L)": {
+      "revenue": 13050,
+      "qty": 10
+    },
+    "Refresh (Refresh-5L แถมขวดสเปรย์)": {
+      "revenue": 26350,
+      "qty": 12
+    },
+    "Interior (Interior-25L)": {
+      "revenue": 6000,
+      "qty": 2
+    },
+    "Water Stain Remover (Wibwub Spot Clean)": {
+      "revenue": 3336.41,
+      "qty": 10
+    },
+    "Specialized Leather Seat Cleaning Product (Wibwub Refresh)": {
+      "revenue": 1461,
+      "qty": 4
+    },
+    "ถังน้ำล้างรถ ขนาด 20L (WIBWUB Bucket)": {
+      "revenue": 531,
+      "qty": 1
+    },
+    "Dust-Collecting Spray to Care for the Car's Surface during the Day (Wibwub Mind Quick Detailer)": {
+      "revenue": 370,
+      "qty": 1
+    },
+    "Wipes Specifically for Cleaning Leather Seats: Made in Thailand (Wibwub Refresh Leather Wipes)": {
+      "revenue": 68.27,
+      "qty": 1
+    },
+    "Specialized Leather Upholstery Cleaning Product (Wibwub Refresh)": {
+      "revenue": 360,
+      "qty": 1
+    },
+    "Steel (Steel-5L แถมขวดสเปรย์)": {
+      "revenue": 3800,
+      "qty": 1
+    }
+  }
+}
