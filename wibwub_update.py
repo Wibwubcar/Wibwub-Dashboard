@@ -860,11 +860,16 @@ def update_html(sales, aff, posts, shipnity):
                               'views','eng','love','comment','share','save',
                               'ret','watch','er','url']) + '}'
                    for p in posts]
-        new_block = 'ALL_POSTS = [\n' + ',\n'.join(entries) + '\n]'
+        new_block = 'ALL_POSTS = [\n' + ',\n'.join(entries) + '\n];'
         fp = BASE / 'WIBWUB_TikTok_Dashboard_v7.html'
         if fp.exists():
             html = fp.read_text(encoding='utf-8')
-            html = re.sub(r'ALL_POSTS\s*=\s*\[[\s\S]*?\]', lambda m: new_block, html)
+            # หมายเหตุ: ต้องแมทช์ถึง "];" (ปิดอาเรย์จริง) ไม่ใช่แค่ "]" ตัวแรกที่เจอ
+            # เพราะ entry บางอันมี content เป็น '[Awareness]', '[Interview]' ฯลฯ ที่มี ']'
+            # อยู่ในสตริงเอง ถ้าใช้ [\s\S]*?\] เฉยๆ (lazy) มันจะไปตัดจบกลางอาเรย์ที่ ']'
+            # ตัวแรกในสตริงเหล่านั้น ทำให้ไฟล์พังและ entry ที่เหลือ (รวมถึง object ถัดไป)
+            # หลุดหายหรือเขียนทับผิดตำแหน่ง (สาเหตุของ regression ที่เคยเกิดซ้ำ)
+            html = re.sub(r'ALL_POSTS\s*=\s*\[[\s\S]*?\]\s*;', lambda m: new_block, html)
             write_if_changed(fp, html, 'WIBWUB_TikTok_Dashboard_v7.html')
 
     # D. Sales Dashboard (Shipnity)
