@@ -2599,13 +2599,13 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:571394,units:5041,cr:312,vid:191,monthly:{mar:25400,apr:134300,may:393400,jun:7146},ret:{mar:178,apr:1500,may:2900,jun:179}},
-  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:464600,units:4043,cr:222,vid:143,monthly:{mar:36100,apr:162600,may:168300,jun:105801},ret:{mar:246,apr:2200,may:1100,jun:678}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:402800,units:1140,cr:160,vid:217,monthly:{mar:39000,apr:147300,may:119400,jun:131398},ret:{mar:732,apr:4200,may:3100,jun:2440}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:220700,units:1195,cr:59,vid:41,monthly:{mar:31900,apr:69400,may:67500,jun:64597},ret:{mar:567,apr:1700,may:2200,jun:768}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:166200,units:431,cr:81,vid:116,monthly:{mar:25800,apr:54500,may:59000,jun:34281},ret:{mar:744,apr:2300,may:350,jun:398}},
-  {name:'WIBWUB Refresh',short:'Refresh',gmv:133700,units:329,cr:47,vid:51,monthly:{mar:25400,apr:49600,may:40400,jun:28414},ret:{mar:1200,apr:1400,may:355,jun:355}},
-  {name:'WIBWUB Visible',short:'Visible',gmv:35000,units:118,cr:15,vid:20,monthly:{mar:3700,apr:15900,may:10200,jun:7679},ret:{mar:0,apr:230,may:539,jun:0}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:1079864,units:9957,cr:308,vid:194,monthly:{mar:25400,apr:134300,may:393400,jun:7146,jul:460227,aug:48243},ret:{mar:178,apr:1500,may:2900,jun:179,jul:20192,aug:1998}},
+  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:741269,units:6412,cr:222,vid:143,monthly:{mar:36100,apr:162600,may:168300,jun:105801,jul:257081,aug:19588},ret:{mar:246,apr:2200,may:1100,jun:678,jul:13170,aug:1220}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:800259,units:2242,cr:132,vid:207,monthly:{mar:39000,apr:147300,may:119400,jun:131398,jul:334926,aug:62533},ret:{mar:732,apr:4200,may:3100,jun:2440,jul:28535,aug:4905}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:308082,units:1675,cr:55,vid:45,monthly:{mar:31900,apr:69400,may:67500,jun:64597,jul:76425,aug:10957},ret:{mar:567,apr:1700,may:2200,jun:768,jul:4100,aug:1508}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:248646,units:657,cr:72,vid:114,monthly:{mar:25800,apr:54500,may:59000,jun:34281,jul:68139,aug:14307},ret:{mar:744,apr:2300,may:350,jun:398,jul:7010,aug:2306}},
+  {name:'WIBWUB Refresh',short:'Refresh',gmv:192277,units:469,cr:47,vid:47,monthly:{mar:25400,apr:49600,may:40400,jun:28414,jul:58577,aug:0},ret:{mar:1200,apr:1400,may:355,jun:355,jul:5628,aug:0}},
+  {name:'WIBWUB Visible',short:'Visible',gmv:46644,units:160,cr:13,vid:17,monthly:{mar:3700,apr:15900,may:10200,jun:7679,jul:8952,aug:2692},ret:{mar:0,apr:230,may:539,jun:0,jul:443,aug:311}},
 ];
 const VIDEOS = [
   {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'คนรักรถถูกใจสิ่งนี้มากกกก✨',gmv:161830,units:1294,date:'มิ.ย.–ก.ค.',monthly:{mar:0,apr:0,may:0,jun:21829,jul:140001}},
@@ -5130,13 +5130,12 @@ function renderProducts(){
   const noteEl = document.getElementById('products-month-note');
   const allP = PRODUCTS.map(p=>({...p,dGMV:pGMV(p)})).filter(p=>p.dGMV>0);
 
-  // Product-level monthly breakdown currently only exists for มี.ค.–มิ.ย.
-  // (ก.ค. ยังไม่มีข้อมูลแยกรายสินค้าแบบเดียวกับเดือนก่อนหน้า — ป้องกันตารางว่างที่สับสน)
+  // Product-level monthly breakdown now covers มี.ค.–ส.ค. (ส.ค. = ข้อมูลบางส่วน 1-5 ส.ค. เท่านั้น)
   const hasMonthData = activeMonth==='all' || PRODUCTS.some(p=>p.monthly && activeMonth in p.monthly);
   if(noteEl){
     if(!hasMonthData){
       noteEl.style.display = 'block';
-      noteEl.textContent = `⚠️ ยังไม่มีข้อมูลสินค้าแยกรายเดือนสำหรับเดือนนี้ — ข้อมูลรายสินค้าตอนนี้มีถึงเดือน มิ.ย. เท่านั้น (ดูยอดรวมทุกเดือนได้ที่ปุ่ม "รวม")`;
+      noteEl.textContent = `⚠️ ยังไม่มีข้อมูลสินค้าแยกรายเดือนสำหรับเดือนนี้ (ดูยอดรวมทุกเดือนได้ที่ปุ่ม "รวม")`;
     } else {
       noteEl.style.display = 'none';
     }
