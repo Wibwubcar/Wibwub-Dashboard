@@ -1,0 +1,187 @@
+#!/usr/bin/env python3
+"""
+update_followers_20260806.py — WIBWUB Daily TikTok Followers Update (2026-08-06)
+
+การดาวน์โหลด CSV/XLSX จากปุ่ม "ดาวน์โหลดข้อมูล" ในหน้า TikTok Studio ไม่ trigger
+การดาวน์โหลดไฟล์จริงในรอบนี้ (เหมือนที่เคยเกิดขึ้นเมื่อ 2026-08-05) จึงใช้วิธี scrape
+ข้อมูลจาก tooltip ของกราฟ (60 วันและ 7 วัน) แทน — ยืนยันค่าตรงกันทั้งสอง view:
+  2 ส.ค. = 27885, 3 ส.ค. = 27912, 4 ส.ค. = 27942 (จุดข้อมูลล่าสุดที่มีในกราฟ ณ วันที่รัน 6 ส.ค.)
+
+หมายเหตุ: HIST ด้านล่างสืบทอดมาจาก update_followers_api.py (รันเมื่อ 2026-08-05) ซึ่ง anchor
+วันที่ผิดไป 1 วัน (label ค่าสุดท้าย 27912 เป็น "4 ส.ค." ทั้งที่จริงคือ "3 ส.ค.") — แก้ไข anchor
+ให้ถูกต้องในรอบนี้ (2026-08-03) แล้วต่อด้วยจุดข้อมูลจริงของ 4 ส.ค. ที่ scrape มาใหม่ (27942)
+"""
+import re
+from datetime import datetime, timedelta
+from pathlib import Path
+
+MAC_BASE = Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All")
+if MAC_BASE.exists():
+    BASE = MAC_BASE
+else:
+    BASE = Path(__file__).resolve().parent
+
+DASH = BASE / "WIBWUB_Dashboard.html"
+MOBILE = BASE / "WIBWUB_Mobile.html"
+
+MONTH_MAP = {
+    'มกราคม':1,'กุมภาพันธ์':2,'มีนาคม':3,'เมษายน':4,
+    'พฤษภาคม':5,'มิถุนายน':6,'กรกฎาคม':7,'สิงหาคม':8,
+    'กันยายน':9,'ตุลาคม':10,'พฤศจิกายน':11,'ธันวาคม':12
+}
+MONTH_REV = {v: k for k, v in MONTH_MAP.items()}
+
+def parse_thai_date(s):
+    for th, n in MONTH_MAP.items():
+        if th in s:
+            day = int(s.split()[0])
+            return datetime(2026, n, day)
+    return None
+
+# ── raw history (inherited from 2026-08-05 run, anchor corrected to 2026-08-03) ──
+HIST = [25078,25093,25113,25117,25127,25142,25157,25170,25186,25196,25206,25229,25239,25257,25277,25298,25310,25377,25424,25437,25508,25527,25543,25557,25575,25590,25597,25619,25641,25659,25763,25785,25850,25908,25924,25944,25964,25977,26004,26016,26037,26047,26057,26084,26099,26112,26124,26133,26152,26172,26218,26229,26247,26277,26304,26320,26339,26390,26403,26424,26445,26448,26519,26533,26550,26560,26570,26592,26601,26615,26645,26687,26697,26716,26741,26746,26755,26780,26808,26821,26834,26917,26937,26948,26976,26989,27083,27086,27106,27127,27145,27164,27191,27232,27253,27272,27296,27323,27346,27386,27404,27438,27454,27484,27506,27539,27559,27583,27625,27646,27663,27690,27707,27733,27749,27780,27811,27834,27843,27885,27912]
+ANCHOR = datetime(2026, 8, 3)  # corrected: last of HIST (27912) = Aug 3, 2026
+
+rows = []
+for i, v in enumerate(HIST):
+    d = ANCHOR - timedelta(days=(len(HIST) - 1 - i))
+    thai_month = MONTH_REV[d.month]
+    rows.append((f"{d.day} {thai_month}", v))
+
+# ── newly scraped point: 4 สิงหาคม 2026 = 27942 (confirmed via chart tooltip, both 60d & 7d views) ──
+rows.append(("4 สิงหาคม", 27942))
+
+by_month = {}
+jan_count = None
+for date_str, count in rows:
+    d = parse_thai_date(date_str)
+    if d:
+        if d.month == 1 and jan_count is None:
+            jan_count = count
+        by_month[d.month] = count
+
+latest_date, latest_count = rows[-1]
+latest_k = round(latest_count / 1000, 3)
+print(f"Followers ล่าสุด: {latest_count:,} ({latest_k}K) — {latest_date}")
+
+if jan_count:
+    delta = latest_count - jan_count
+    delta_k = round(delta / 1000, 1)
+    delta_str = f"+{delta_k}K จาก ม.ค."
+    print(f"   Delta ม.ค.: {delta_str}")
+else:
+    delta_str = None
+    print("   ไม่มีข้อมูลย้อนหลังถึง ม.ค. ในช่วงนี้ — ข้าม delta")
+
+cur_month = 8
+cur_idx = cur_month - 1
+
+# ── WIBWUB_Dashboard.html : soc_follow TikTok array ─────────────────────
+dash = DASH.read_text(encoding='utf-8')
+
+def update_tiktok_array(html, new_val, idx):
+    def replacer(m):
+        vals = [v.strip() for v in m.group(1).split(',')]
+        while len(vals) <= idx:
+            vals.append('null')
+        vals[idx] = str(new_val)
+        while vals and vals[-1] == 'null':
+            vals.pop()
+        return "{label:'TikTok',data:[" + ','.join(vals) + "]"
+    return re.sub(r"\{label:'TikTok',data:\[([^\]]+)\]", replacer, html)
+
+dash = update_tiktok_array(dash, latest_k, cur_idx)
+
+# ── WIBWUB_Mobile.html ───────────────────────────────────────────────────
+mobile = MOBILE.read_text(encoding='utf-8')
+disp_k = f"{latest_k:.1f}K" if latest_k < 100 else f"{int(latest_k)}K"
+mobile2 = re.sub(
+    r'(<div class="mks">[^<]*<div class="mks-ic">📺</div>[^<]*<div class="mks-lbl">TK Followers</div>[^<]*<div class="mks-val">)[^<]*(</div>)',
+    rf'\g<1>{disp_k}\g<2>', mobile
+)
+if mobile2 == mobile:
+    mobile2 = re.sub(r'(TK Followers</div><div class="mks-val">)[^<]+(</div>)', rf'\g<1>{disp_k}\g<2>', mobile)
+mobile = mobile2
+if delta_str:
+    mobile = re.sub(
+        r'(TK Followers.*?<div class="mks-sub">)[^<]*(</div>)',
+        rf'\g<1>{delta_str}\g<2>', mobile, flags=re.DOTALL
+    )
+MOBILE.write_text(mobile, encoding='utf-8')
+print("WIBWUB_Mobile.html อัปเดตแล้ว")
+
+# ── FOL_DATA (Follower รายวัน เดือนปัจจุบัน) ─────────────────────────────
+TH_MONTHS_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+
+def build_fol_month_entry(cur_month, rows):
+    abbr = TH_MONTHS_ABBR[cur_month - 1]
+    full_name = MONTH_REV[cur_month]
+    year_be = 2026 + 543
+
+    month_rows = []
+    prev_month_last = None
+    for date_str, count in rows:
+        d = parse_thai_date(date_str)
+        if not d:
+            continue
+        if d.month == cur_month:
+            month_rows.append((d.day, count))
+        elif d.month == cur_month - 1 or (cur_month == 1 and d.month == 12):
+            prev_month_last = count
+
+    if not month_rows:
+        return None
+
+    month_rows.sort(key=lambda x: x[0])
+    start = prev_month_last if prev_month_last is not None else month_rows[0][1]
+    end = month_rows[-1][1]
+    net = end - start
+    pct = round(net / start * 100, 2) if start else 0
+    last_day = month_rows[-1][0]
+
+    days_list = []
+    vals_list = []
+    for day, count in month_rows:
+        if day == 1:
+            days_list.append(f"1 {abbr}")
+        elif day == last_day:
+            days_list.append(f"{day} {abbr}")
+        else:
+            days_list.append(str(day))
+        vals_list.append(count)
+
+    label = f"{full_name} {year_be}"
+    sub = (f"{label} · เริ่ม {start:,} → ล่าสุด {end:,} · +{net:,} คน (+{pct}%) "
+           f"(ข้อมูลรายวัน 1–{last_day} {abbr})")
+    days_js = ",".join(f'"{d}"' for d in days_list)
+    vals_js = ",".join(str(v) for v in vals_list)
+
+    return (f"{{label:'{label}',start:{start},end:{end},net:{net},pct:{pct},sub:'{sub}',\n"
+            f"         col:'#1A5CDB',\n"
+            f"         days:[{days_js}],\n"
+            f"         vals:[{vals_js}]}}")
+
+def update_fol_data(html, cur_month, rows):
+    full_name = MONTH_REV[cur_month]
+    year_be = 2026 + 543
+    new_entry = build_fol_month_entry(cur_month, rows)
+    if not new_entry:
+        print(f"FOL_DATA: ไม่พบข้อมูล {full_name} {year_be} — ข้าม")
+        return html, False
+    pattern = re.compile(
+        r"\{label:'" + re.escape(f"{full_name} {year_be}") + r"',.*?vals:\[[^\]]*\]\}",
+        re.DOTALL
+    )
+    if not pattern.search(html):
+        print(f"FOL_DATA: ไม่พบ entry เดือน {full_name} {year_be} ในไฟล์ — ข้าม")
+        return html, False
+    html2 = pattern.sub(lambda m: new_entry, html, count=1)
+    return html2, True
+
+dash, fol_updated = update_fol_data(dash, cur_month, rows)
+if fol_updated:
+    print("FOL_DATA (Follower รายวัน) อัปเดตแล้ว")
+
+DASH.write_text(dash, encoding='utf-8')
+print("WIBWUB_Dashboard.html อัปเดตแล้ว")
+print(f"\nDone — {latest_count:,} followers ({latest_date})")
