@@ -554,20 +554,41 @@ def process_tiktok_content(rows):
             hdr = row; data_start = i+1; break
     if not hdr: log('  WARNING: header ไม่พบใน TikTok Content sheet'); return []
 
-    def ci(kws):
+    def ci(kws, exclude=()):
         for j, h in enumerate(hdr):
+            if j in exclude: continue
             if any(k in h.lower().strip() for k in kws): return j
         return None
 
-    c_lbl=ci(['วันที่','lbl','date']); c_day=ci(['day','dow'])
-    c_mo=ci(['month','เดือน']); c_pil=ci(['pillar','category'])
-    c_con=ci(['content','caption']); c_v=ci(['view','วิว'])
-    c_eng=ci(['eng','engagement']); c_love=ci(['love','like'])
+    # หมายเหตุ: ชีตนี้ไม่มีคอลัมน์ day/month แยกต่างหาก — มีแค่คอลัมน์ DATE (เช่น "4/3/26")
+    # ต้อง parse day/month จาก lbl เอาเอง ห้ามหาคอลัมน์ day/month แยก (จะได้ None เสมอ -> 0 ทุกแถว)
+    c_lbl=ci(['วันที่','lbl','date'])
+    c_pil=ci(['pillar','category'])
+    # ต้อง exclude คอลัมน์ของ c_pil ก่อนหา c_con เพราะ header "Content Pillars"
+    # เองก็มีคำว่า "content" อยู่ในตัว ถ้าไม่ exclude จะจับคอลัมน์ pillar ซ้ำ (bug เดิม)
+    c_con=ci(['content','caption'], exclude={c_pil} if c_pil is not None else set())
+    c_v=ci(['view','วิว'])
+    c_love=ci(['love','like'])
     c_com=ci(['comment']); c_sha=ci(['share']); c_sav=ci(['save'])
-    c_ret=ci(['ret','retention']); c_wat=ci(['watch'])
-    c_er=ci(['er','rate']); c_url=ci(['url','tiktok.com'])
+    c_ret=ci(['ret','retention']); c_wat=ci(['watch','duration'])
+    # "Engagement Rate %" คือคอลัมน์ ER จริง (ไม่ใช่ eng total) — ไม่มีคอลัมน์ eng total ในชีต
+    # ต้องคำนวณ eng = love+comment+share+save เอง (ห้ามอ่านจากคอลัมน์ 'eng'/'engagement'
+    # เพราะจะไปจับคอลัมน์ "Engagement Rate %" ผิด ๆ)
+    c_er=ci(['er','rate'])
+    c_url=ci(['url','tiktok.com','link','คลิป'])
 
     def gv(row, c): return row[c] if c is not None and c < len(row) else ''
+
+    PILLAR_KEYWORDS = [
+        ('KNOWLEDGE', 'Knowledge'), ('REVIEW', 'Review'), ('TESTIM', 'Review'),
+        ('SALE', 'Sale'), ('LIFESTYLE', 'Lifestyle'), ('BRAND EXPERT', 'Brand Expert'),
+        ('INTERVIEW', 'Interview'), ('AWARENESS', 'Awareness'),
+    ]
+    def map_pillar(raw):
+        up = (raw or '').upper()
+        for kw, mapped in PILLAR_KEYWORDS:
+            if kw in up: return mapped
+        return 'Other'
 
     posts = []
     for row in rows[data_start:]:
@@ -576,19 +597,26 @@ def process_tiktok_content(rows):
             v = int(parse_num(gv(row, c_v)))
             lbl = gv(row, c_lbl).strip()
             if not v and not lbl: continue
-            def jv(v): return "'"+str(v).replace("'","\\'")+  "'" if isinstance(v,str) else v
+            dm = re.match(r'^(\d{1,2})/(\d{1,2})', lbl)
+            day, month = (int(dm.group(1)), int(dm.group(2))) if dm else (0, 0)
+            pillar = map_pillar(gv(row, c_pil).strip())
+            raw_content = gv(row, c_con).strip()
+            love    = int(parse_num(gv(row,c_love)))
+            comment = int(parse_num(gv(row,c_com)))
+            share   = int(parse_num(gv(row,c_sha)))
+            save    = int(parse_num(gv(row,c_sav)))
             posts.append({
                 'lbl':  lbl,
-                'day':  int(gv(row,c_day)) if str(gv(row,c_day)).strip().isdigit() else 0,
-                'month':int(gv(row,c_mo))  if str(gv(row,c_mo)).strip().isdigit()  else 0,
-                'pillar':  gv(row,c_pil).strip(),
-                'content': gv(row,c_con).strip(),
+                'day':  day,
+                'month':month,
+                'pillar':  pillar,
+                'content': raw_content or f'[{pillar}]',
                 'views':   v,
-                'eng':     int(parse_num(gv(row,c_eng))),
-                'love':    int(parse_num(gv(row,c_love))),
-                'comment': int(parse_num(gv(row,c_com))),
-                'share':   int(parse_num(gv(row,c_sha))),
-                'save':    int(parse_num(gv(row,c_sav))),
+                'eng':     love + comment + share + save,
+                'love':    love,
+                'comment': comment,
+                'share':   share,
+                'save':    save,
                 'ret':     float(parse_num(gv(row,c_ret))),
                 'watch':   float(parse_num(gv(row,c_wat))),
                 'er':      float(parse_num(gv(row,c_er))),
@@ -851,6 +879,14 @@ def update_html(sales, aff, posts, shipnity):
             write_if_changed(fp, html, 'WIBWUB_Mobile.html (AFI arrays)')
 
     # C. TikTok Dashboard
+    # Safety guard: ถ้า header/column detection พังอีกในอนาคต (เช่น sheet เปลี่ยนโครงสร้าง)
+    # แล้ว day/month พาร์สไม่ออกเกือบทุกแถว ห้ามเขียนทับ ALL_POSTS เดิม (จะทำให้กราฟว่างเปล่าอีก)
+    if posts:
+        zero_dm = sum(1 for p in posts if p['day'] == 0 and p['month'] == 0)
+        if len(posts) > 0 and zero_dm / len(posts) > 0.3:
+            log(f'  WARNING: TikTok Content {zero_dm}/{len(posts)} posts มี day/month=0 '
+                f'(ผิดปกติ — อาจเป็นเพราะ sheet เปลี่ยนโครงสร้าง) ข้ามการเขียน ALL_POSTS รอบนี้')
+            posts = []
     if posts:
         def jsv(v):
             if isinstance(v, str): return "'" + v.replace("'", "\\'") + "'"
