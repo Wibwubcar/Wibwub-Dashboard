@@ -1951,12 +1951,16 @@ function mPosts(m){ return ALL_POSTS.filter(p=>p.month===m); }
 
 function xOpts(color){ return {ticks:{font:{size:10},maxRotation:0,autoSkip:false,color},grid:{color:'rgba(0,0,0,0.05)'}}; }
 
+// Chart instances keyed by canvas id — needed so hidden-tab charts (built while
+// display:none, thus sized 0x0) can be resized once their tab becomes visible.
+const CHARTS = {};
+
 function mkBar(id, posts, key, color, yMax, pct, targetVal){
   const labels = posts.map(p=>p.lbl);
   const data = posts.map(p=>p[key]);
   const datasets = [{data, backgroundColor: color+'cc', borderRadius:4, borderWidth:0}];
   if(targetVal) datasets.push({type:'line',data:Array(posts.length).fill(targetVal),borderColor:'#d43f3f',borderDash:[5,4],pointRadius:0,borderWidth:1.5,order:0});
-  new Chart(document.getElementById(id),{
+  CHARTS[id] = new Chart(document.getElementById(id),{
     type:'bar',
     data:{labels, datasets},
     options:{
@@ -2072,6 +2076,13 @@ function switchMonth(id, btn){
   document.querySelectorAll('.mtab').forEach(t=>t.classList.remove('active'));
   document.getElementById('m-'+id).classList.add('active');
   btn.classList.add('active');
+  // Charts built while their .mpnl was display:none are sized 0x0 by Chart.js.
+  // Resize (and redraw as a fallback) every chart belonging to this month now
+  // that its panel is visible, so switching tabs actually shows the bars.
+  Object.keys(CHARTS).filter(k=>k.startsWith(id+'-')).forEach(k=>{
+    CHARTS[k].resize();
+    CHARTS[k].update();
+  });
 }
 </script>
 </body>
