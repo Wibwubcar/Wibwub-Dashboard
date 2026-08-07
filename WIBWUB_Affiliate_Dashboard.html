@@ -4959,7 +4959,15 @@ const VIDEOS = [
 
 
 // Helpers
-function fmtK(n){return n>=1000?'฿'+(n/1000).toFixed(1)+'K':'฿'+n}
+function fmtK(n){
+  if(n>=1000000){
+    const m=Math.floor(n/1000000);
+    let k=Math.round((n%1000000)/1000);
+    if(k>=1000)return '฿'+(m+1)+'m';
+    return '฿'+m+'m'+(k>0?k+'k':'');
+  }
+  return n>=1000?'฿'+(n/1000).toFixed(1)+'K':'฿'+n;
+}
 function fmtFull(n){return '฿'+n.toLocaleString()}
 function getAv(name){return name.slice(0,2).toUpperCase()}
 
@@ -5403,7 +5411,7 @@ function buildCharts(){
       backgroundColor:COLORS,borderRadius:4}]
   },options:{responsive:true,maintainAspectRatio:false,
     plugins:{legend:{display:false}},
-    scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(1)+'K'}},
+    scales:{y:{ticks:{callback:v=>fmtK(v)}},
       x:{ticks:{font:{size:10},maxRotation:20}}}}});
 
   // Radar — Creator performance (top 6 only to keep chart readable)
@@ -5732,9 +5740,9 @@ function showProfile(name){
       options:{
         responsive:true, maintainAspectRatio:false,
         plugins:{legend:{display:false},
-          tooltip:{callbacks:{label:ctx=>'GMV: ฿'+(ctx.raw/1000).toFixed(1)+'K'}}},
+          tooltip:{callbacks:{label:ctx=>'GMV: '+fmtK(ctx.raw)}}},
         scales:{
-          y:{ticks:{color:'#94a3b8',callback:v=>v===0?'':('฿'+(v/1000).toFixed(0)+'K')},grid:{color:'#1e2d45'}},
+          y:{ticks:{color:'#94a3b8',callback:v=>v===0?'':fmtK(v)},grid:{color:'#1e2d45'}},
           x:{ticks:{color:'#94a3b8'},grid:{display:false}}
         }
       }
