@@ -388,7 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div id="home-ch"></div>
   </div>
   <div class="mks-grid">
-    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿699K</div><div class="mks-sub">409 creators · สค.69 (1-13) — ก.ค. เต็มเดือน ฿1,453K</div></div>
+    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿747K</div><div class="mks-sub">434 creators · สค.69 (1-14) — ก.ค. เต็มเดือน ฿1,453K</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.3×</div><div class="mks-sub">Shopee+TikTok</div></div>
     <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">102 คลิป</div><div class="mks-sub">มี.ค.–ก.ค. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">28.2K</div><div class="mks-sub">+4.8K จาก ม.ค.</div></div>
@@ -448,13 +448,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
       <div class="sec-title">เลือกเดือน</div>
       <div class="mtabs" id="prod-mo-tabs">
         <div class="mtab active" onclick="setProdMo(-1,this)">รวม</div>
+        <div class="mtab" onclick="setProdMo(0,this)">ม.ค.</div>
+        <div class="mtab" onclick="setProdMo(1,this)">ก.พ.</div>
         <div class="mtab" onclick="setProdMo(2,this)">มี.ค.</div>
         <div class="mtab" onclick="setProdMo(3,this)">เม.ย.</div>
-        <div class="mtab" onclick="setProdMo(4,this)">พ.ค.*</div>
+        <div class="mtab" onclick="setProdMo(4,this)">พ.ค.</div>
+        <div class="mtab" onclick="setProdMo(5,this)">มิ.ย.</div>
+        <div class="mtab" onclick="setProdMo(6,this)">ก.ค.</div>
+        <div class="mtab" onclick="setProdMo(7,this)">ส.ค.*</div>
       </div>
     </div>
     <div class="card">
-      <div class="sh-ttl"><div class="sh-t" id="prod-title">Top สินค้าขายดี</div><div class="sh-b" id="prod-sub">ม.ค.–ก.ค. รวม</div></div>
+      <div class="sh-ttl"><div class="sh-t" id="prod-title">Top สินค้าขายดี</div><div class="sh-b" id="prod-sub">ม.ค.–ส.ค. รวม</div></div>
       <div id="prod-list"></div>
       <button class="more-btn" id="prod-more" onclick="showMoreProds()">แสดงเพิ่มเติม</button>
     </div>
@@ -868,10 +873,10 @@ const CHANNELS=[
   {n:'Website/อื่นๆ',v:28320,color:'#1A5CDB'},
 ];
 
-const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิย.69','กค.69 (1-31)','สค.69 (1-13)'];
-const AFI_GMV=[0,0,0,0,655171,724241,951158,660557,1452748,699377];
-const AFI_NET=[0,0,0,0,642865,708855,937203,650042,1428498,683500];
-const AFI_COMM=[0,0,0,0,82699,69021,104772,79293,169224,82211];
+const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.69','เมษา.69','พค.69','มิย.69','กค.69 (1-31)','สค.69 (1-14)'];
+const AFI_GMV=[0,0,0,0,655171,724241,951158,660557,1452748,746906];
+const AFI_NET=[0,0,0,0,642865,708855,937203,650042,1428498,729931];
+const AFI_COMM=[0,0,0,0,82699,69021,104772,79293,169224,87959];
 const TK_FOL=[23404,24192,24967,25590,26339,26746,27780,28146];
 const FOL_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.'];
 
@@ -932,39 +937,39 @@ const CREATORS=[
 // Top 15 products cumulative ม.ค.–ส.ค. (data through 16.08, updated 16.08.69)
 // v=ยอดขายจริง, q=จำนวนจริง, mk=งบการตลาด(ของแจก/ส่งInfluencer), mkq=จำนวนงบตลาด
 const ALL_PRODUCTS = [
-  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ', v:5814581, q:9117, mk:13188, mkq:20},
-  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ', v:5154038, q:17175, mk:46292, mkq:167},
-  {n:'Interior สเปรย์ทำความสะอาดภายในรถ', v:4012180, q:11590, mk:66649, mkq:181},
-  {n:'Interior Wipe ทิชชู่เปียกภายในรถ', v:2548676, q:34964, mk:11766, mkq:152},
-  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง', v:2524035, q:32393, mk:15912, mkq:205},
-  {n:'Refresh สเปรย์โฟมทำความสะอาด', v:2384873, q:6630, mk:16113, mkq:42},
-  {n:'Spot Clean น้ำยาขจัดคราบน้ำ', v:2248712, q:5988, mk:3402, mkq:9},
-  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm', v:1837485, q:12053, mk:22146, mkq:142},
-  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี', v:1618816, q:4214, mk:11142, mkq:29},
-  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง', v:1482962, q:3278, mk:10246, mkq:25},
-  {n:'Sugar สเปรย์แวกซ์ขนาด 3L', v:1474217, q:1249, mk:2100, mkq:2},
-  {n:'X-Glass Shield น้ำยาเคลือบกระจก', v:1452641, q:3920, mk:9000, mkq:24},
-  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี', v:1429425, q:11444, mk:12956, mkq:116},
-  {n:'Quartz Shampoo น้ำยาล้างรถ 1L', v:1299951, q:5463, mk:6298, mkq:37},
-  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก', v:1227242, q:3063, mk:10386, mkq:27},
+  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ', v:5820998, q:9125, mk:13188, mkq:20},
+  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ', v:5170876, q:17211, mk:46292, mkq:167},
+  {n:'Interior สเปรย์ทำความสะอาดภายในรถ', v:4021680, q:11610, mk:66649, mkq:181},
+  {n:'Interior Wipe ทิชชู่เปียกภายในรถ', v:2568469, q:35225, mk:11766, mkq:152},
+  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง', v:2556283, q:32752, mk:15912, mkq:205},
+  {n:'Refresh สเปรย์โฟมทำความสะอาด', v:2390080, q:6642, mk:16113, mkq:42},
+  {n:'Spot Clean น้ำยาขจัดคราบน้ำ', v:2254018, q:5994, mk:3402, mkq:9},
+  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm', v:1840856, q:12093, mk:22146, mkq:142},
+  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี', v:1621939, q:4220, mk:11142, mkq:29},
+  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง', v:1487065, q:3286, mk:10246, mkq:25},
+  {n:'Sugar สเปรย์แวกซ์ขนาด 3L', v:1475713, q:1246, mk:2100, mkq:2},
+  {n:'X-Glass Shield น้ำยาเคลือบกระจก', v:1456059, q:3928, mk:9000, mkq:24},
+  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี', v:1432260, q:11476, mk:12956, mkq:116},
+  {n:'Quartz Shampoo น้ำยาล้างรถ 1L', v:1304466, q:5465, mk:6298, mkq:37},
+  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก', v:1229049, q:3067, mk:10386, mkq:27},
 ];
 // Per-month product revenue [Jan|Feb|Mar|Apr|May|Jun|Jul|Aug(1-16)] — Shipnity ม.ค.–ส.ค. 2569
 const PROD_MO=[
-  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ', mo:[1507099, 1046781, 986897, 793736, 494683, 378444, 399467, 207474]},
-  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ', mo:[831809, 676366, 614137, 564876, 551479, 658453, 788042, 468876]},
-  {n:'Interior สเปรย์ทำความสะอาดภายในรถ', mo:[575274, 454450, 480716, 527885, 534196, 503709, 576373, 359577]},
-  {n:'Interior Wipe ทิชชู่เปียกภายในรถ', mo:[194802, 206851, 239009, 333117, 407397, 329860, 575484, 262156]},
-  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง', mo:[142886, 135047, 168249, 271024, 549258, 112736, 681643, 463192]},
-  {n:'Refresh สเปรย์โฟมทำความสะอาด', mo:[295237, 246447, 286730, 309950, 309561, 323343, 390560, 223045]},
-  {n:'Spot Clean น้ำยาขจัดคราบน้ำ', mo:[179051, 133562, 118836, 310269, 400105, 451814, 391095, 263980]},
-  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm', mo:[370954, 276376, 237718, 217760, 229852, 198980, 193727, 112118]},
-  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี', mo:[293731, 290715, 234059, 175201, 159560, 195270, 173048, 97232]},
-  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง', mo:[250925, 190042, 160494, 194023, 193962, 182321, 193879, 117316]},
-  {n:'Sugar สเปรย์แวกซ์ขนาด 3L', mo:[305407, 204990, 151630, 177847, 178823, 185187, 166331, 104002]},
-  {n:'X-Glass Shield น้ำยาเคลือบกระจก', mo:[110314, 93735, 77992, 82586, 276773, 386332, 278216, 146693]},
-  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี', mo:[240749, 176520, 149701, 147652, 191495, 204615, 206661, 112032]},
-  {n:'Quartz Shampoo น้ำยาล้างรถ 1L', mo:[206071, 162852, 152402, 153141, 188720, 162947, 172605, 101213]},
-  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก', mo:[224211, 211664, 192244, 177750, 150967, 102019, 114231, 54156]},
+  {n:'Wool Duster ไม้ปัดฝุ่นขนแกะ', mo:[1507099, 1046781, 986897, 793736, 494683, 378444, 399467, 213891]},
+  {n:'Sugar สเปรย์แวกซ์เคลือบสีรถ', mo:[831809, 676366, 614137, 564876, 551479, 658453, 788042, 485714]},
+  {n:'Interior สเปรย์ทำความสะอาดภายในรถ', mo:[575274, 454450, 480716, 527885, 534196, 503709, 576373, 369077]},
+  {n:'Interior Wipe ทิชชู่เปียกภายในรถ', mo:[194802, 206851, 239009, 333117, 407397, 329860, 575484, 281949]},
+  {n:'Refresh Wipes ทิชชู่เปียกเบาะหนัง', mo:[142886, 135047, 168249, 271024, 549258, 112736, 681643, 495440]},
+  {n:'Refresh สเปรย์โฟมทำความสะอาด', mo:[295237, 246447, 286730, 309950, 309561, 323343, 390560, 228252]},
+  {n:'Spot Clean น้ำยาขจัดคราบน้ำ', mo:[179051, 133562, 118836, 310269, 400105, 451814, 391095, 269286]},
+  {n:'Perfect ผ้าไมโครไฟเบอร์ BOA 500gsm', mo:[370954, 276376, 237718, 217760, 229852, 198980, 193727, 115489]},
+  {n:'Reflex Ceramic Coating สเปรย์เคลือบสี', mo:[293731, 290715, 234059, 175201, 159560, 195270, 173048, 100355]},
+  {n:'Tire & Trim เจลเคลือบพลาสติกและยาง', mo:[250925, 190042, 160494, 194023, 193962, 182321, 193879, 121419]},
+  {n:'Sugar สเปรย์แวกซ์ขนาด 3L', mo:[305407, 204990, 151630, 177847, 178823, 185187, 166331, 105498]},
+  {n:'X-Glass Shield น้ำยาเคลือบกระจก', mo:[110314, 93735, 77992, 82586, 276773, 386332, 278216, 150111]},
+  {n:'Martini ผ้าเช็ดน้ำยาเคลือบสี', mo:[240749, 176520, 149701, 147652, 191495, 204615, 206661, 114867]},
+  {n:'Quartz Shampoo น้ำยาล้างรถ 1L', mo:[206071, 162852, 152402, 153141, 188720, 162947, 172605, 105728]},
+  {n:'Mind Detailer สเปรย์เช็ดฝุ่นภายนอก', mo:[224211, 211664, 192244, 177750, 150967, 102019, 114231, 55963]},
 ];
 const ALL_POSTS=[
   {lbl:'4',m:3,pillar:'Interview',c:'ทำความสะอาดห้องเครื่องอย่างปลอดภัยด้วย WIBWUB Mind',views:10000,eng:121,ret:23,watch:15.6,er:1.21,url:'https://www.tiktok.com/@wibwubcar/video/7613359372290247957'},
@@ -1257,7 +1262,7 @@ function renderPlt(idx){
 // PRODUCTS
 // ════════════════════════════════════════
 let prodShown=7,prodMoIdx=-1;
-const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'];
+const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค. (1-16)'];
 function setProdMo(idx,el){
   prodMoIdx=idx;prodShown=7;
   document.querySelectorAll('#prod-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
