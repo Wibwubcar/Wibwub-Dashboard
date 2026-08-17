@@ -266,6 +266,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="navt active" onclick="switchTab('overview',this)">📊 ภาพรวม</div>
   <div class="navt" onclick="switchTab('creators',this)">👥 ครีเอเตอร์</div>
   <div class="navt" onclick="switchTab('tier',this)">🏆 Tier</div>
+  <div class="navt" onclick="switchTab('samples',this)">🎁 คำขอสินค้า</div>
   <div class="navt" onclick="switchTab('products',this)">📦 สินค้า</div>
   <div class="navt" onclick="switchTab('videos',this)">🎬 วีดีโอ</div>
   <div class="navt" onclick="switchTab('matrix',this)">🔗 Creator × Product</div>
@@ -389,6 +390,53 @@ tr:hover td{background:rgba(59,130,246,.04)}
       <tbody id="tier-body"></tbody>
     </table>
   </div>
+</div>
+
+<!-- ════ SAMPLE REQUESTS (คำขอสินค้า) ════ -->
+<div id="tab-samples" class="panel">
+  <div class="note">🎁 ข้อมูลจริงจาก TikTok Affiliate Center → การวิเคราะห์ → ตัวอย่างสินค้า (Insights) — ครอบคลุมตั้งแต่ <strong>20 พ.ย. 2568</strong> (วันแรกที่ TikTok เริ่มเก็บข้อมูล) ถึงปัจจุบัน · แต่ละเดือนตรวจสอบด้วยการ zoom เทียบช่วงวันที่บนหน้าจอจริงทุกเดือน · <strong>⚠️ "จัดส่งแล้ว" มี 2 ตัวเลขที่ฐานต่างกัน — อย่ารวมกัน:</strong> (1) <em>ตามคำขอ</em> = นับจากคำขอที่ถูกจัดส่งในช่วงนั้น (2) <em>ตามปฏิทิน</em> = นับจากพัสดุที่ถูกส่งจริงในเดือนนั้นๆ ไม่ว่าจะขอมาเมื่อไหร่ — ตัวเลขสองชุดนี้ต่างฐานกันโดยธรรมชาติของรายงาน TikTok เอง ไม่ใช่ความผิดพลาด</div>
+
+  <div class="qpicker" id="samp-qpicker"></div>
+
+  <div class="kstrip" id="samp-kstrip"></div>
+
+  <div class="sec">อัตราการแปลง (Conversion Funnel) — <span id="samp-sec-label"></span></div>
+  <div class="g2">
+    <div class="cc">
+      <div class="ct">คำขอ → อนุมัติ → จัดส่ง (ตามคำขอ) → โพสต์ → มียอดขาย</div>
+      <div class="cw" style="height:240px"><canvas id="samp-funnel-chart"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">แนวโน้มรายเดือน — คำขอ vs อนุมัติ vs โพสต์</div>
+      <div class="cw" style="height:240px"><canvas id="samp-trend-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="note" style="margin-top:4px">📦 <strong>แยกตามสินค้า / 🔀 แยกตามช่องทางที่ขอ:</strong> TikTok ไม่มีรายงานสรุปแบบ aggregate ที่แยกคำขอตัวอย่างสินค้าตามรายสินค้าหรือช่องทาง (Open Collaboration / Target Collaboration / TikTok Shop Campaign) ย้อนหลังทั้งหมด — หน้าคิวคำขอที่แยกช่องทางได้แสดงเฉพาะคำขอที่ยังค้างอยู่ปัจจุบัน (~130 รายการ) ไม่ใช่ยอดสะสมทั้งหมด และการนับตามสินค้าต้องไล่เปิดทีละคำขอเป็นร้อยๆ รายการซึ่งไม่คุ้มกับ automation ถ้าต้องการข้อมูลนี้จริงจัง แนะนำให้ตั้งทีมบันทึกตอนอนุมัติคำขอแต่ละครั้ง (สินค้า + ช่องทาง) ลง Sheet แยกต่างหาก แล้วอัปเดตหน้านี้ภายหลังได้</div>
+
+  <div class="sec">สรุปรายเดือนทั้งหมด</div>
+  <div class="tw">
+    <table id="tbl-samples">
+      <thead>
+        <tr>
+          <th>เดือน</th>
+          <th onclick="sortTbl('tbl-samples',1,this)">คำขอ <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',2,this)">อนุมัติ <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',3,this)">อัตราอนุมัติ <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',4,this)" title="จัดส่งแล้ว นับตามคำขอ (rolling)">จัดส่ง (ตามคำขอ) <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',5,this)" title="จัดส่งแล้ว นับตามพัสดุที่ออกจริงในเดือนนั้น">จัดส่ง (ตามปฏิทิน) <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',6,this)">โพสต์แล้ว <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',7,this)" title="อนุมัติแล้วแต่ยังไม่โพสต์ (โดยประมาณ)">ยังไม่โพสต์ <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',8,this)">คลิปทั้งหมด <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',9,this)">มียอดขาย <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',10,this)">GMV จากตัวอย่าง <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',11,this)">ROI 45 วัน <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="samples-body"></tbody>
+    </table>
+  </div>
+  <div class="note" id="samp-anomaly-note" style="margin-top:12px"></div>
 </div>
 
 <!-- ════ PRODUCTS ════ -->
@@ -8544,6 +8592,10 @@ function switchTab(id, el){
     const body = document.getElementById('tier-body');
     if(body && !body.dataset.init){ body.dataset.init='1'; renderTier(); }
   }
+  if(id==='samples'){
+    const body = document.getElementById('samples-body');
+    if(body && !body.dataset.init){ body.dataset.init='1'; initSamples(); }
+  }
 }
 
 // ══════════════════════════════════════════
@@ -8812,6 +8864,185 @@ function renderTier(){
   }
 
   renderQPicker();
+}
+
+// ══════════════════════════════════════════
+//  SAMPLE REQUESTS (คำขอสินค้า) — TikTok Affiliate Sample Insights
+//  Data pulled manually from TikTok Affiliate Center → การวิเคราะห์ →
+//  ตัวอย่างสินค้า (Insights), zoom-verified against the on-screen date range
+//  for every period. Two "shipped" metrics on different bases — see the
+//  note banner in the HTML for the funnel-vs-perf distinction.
+//  Per-product / per-channel breakdown is NOT available from TikTok's
+//  aggregate reports historically — documented as a limitation in the UI.
+// ══════════════════════════════════════════
+const SAMPLE_MONTHS = [
+  {key:'2025-11', label:'พ.ย. 2568 (20-30)', short:'พ.ย.\'68', partial:true,  range:'20/11/2025 - 30/11/2025', funnel:{req:58,  appr:19, shipped:19, posted:18, sale:4},  perf:{shipped:22,  gmv:54479.61,  cogs:1560.90,  content:28,  roi:3.8078}},
+  {key:'2025-12', label:'ธ.ค. 2568',          short:'ธ.ค.\'68',  partial:false, range:'01/12/2025 - 31/12/2025', funnel:{req:155, appr:83, shipped:83, posted:75, sale:26}, perf:{shipped:66,  gmv:115669.37, cogs:5386.20,  content:95,  roi:4.3851}},
+  {key:'2026-01', label:'ม.ค. 2569',          short:'ม.ค.',       partial:false, range:'01/01/2026 - 31/01/2026', funnel:{req:154, appr:72, shipped:72, posted:67, sale:18}, perf:{shipped:46,  gmv:128373.14, cogs:4058.10,  content:56,  roi:2.4179}},
+  {key:'2026-02', label:'ก.พ. 2569',          short:'ก.พ.',       partial:false, range:'01/02/2026 - 28/02/2026', funnel:{req:106, appr:58, shipped:58, posted:53, sale:13}, perf:{shipped:141, gmv:162945.87, cogs:11562.30, content:121, roi:1.3302}},
+  {key:'2026-03', label:'มี.ค. 2569',         short:'มี.ค.',      partial:false, range:'01/03/2026 - 31/03/2026', funnel:{req:203, appr:96, shipped:96, posted:89, sale:29}, perf:{shipped:131, gmv:235884.28, cogs:14031.90, content:202, roi:10.4355}},
+  {key:'2026-04', label:'เม.ย. 2569',         short:'เม.ย.',      partial:false, range:'01/04/2026 - 30/04/2026', funnel:{req:305, appr:151,shipped:151,posted:134,sale:53}, perf:{shipped:31,  gmv:264131.66, cogs:2142.30,  content:45,  roi:5.1514}},
+  {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:124, appr:60, shipped:60, posted:55, sale:26}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}},
+  {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:707, appr:95, shipped:95, posted:90, sale:17}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}, anomaly:'คำขอพุ่งเป็น 707 (ปกติ 100-300 ต่อเดือน) — อัตราอนุมัติร่วงเหลือ 13.4%'},
+  {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:125, appr:13, shipped:13, posted:13, sale:3},  perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}, anomaly:'อัตราอนุมัติเหลือเพียง 10.4% (13/125) เทียบกับปกติ 40-55%'},
+  {key:'2026-08', label:'ส.ค. 2569 (1-16)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 16/08/2026', funnel:{req:17,  appr:5,  shipped:5,  posted:5,  sale:1},  perf:{shipped:108, gmv:138729.07, cogs:6439.80,  content:77,  roi:0}},
+];
+
+const SAMPLE_LAST7D = {
+  key:'last7d', label:'7 วันล่าสุด', short:'7 วันล่าสุด', partial:true, rolling:true,
+  range:'10/08/2026 - 16/08/2026',
+  funnel:{req:9, appr:2, shipped:2, posted:2, sale:1},
+  perf:{shipped:43, gmv:59263.78, cogs:2457.90, content:39, roi:0}
+};
+
+let activeSampleKey = SAMPLE_MONTHS[SAMPLE_MONTHS.length-1].key; // default: latest confirmed month
+
+function sampleByKey(key){
+  if(key==='last7d') return SAMPLE_LAST7D;
+  if(key==='all'){
+    const agg = {key:'all', label:'รวมทั้งหมด (พ.ย. 68 - ปัจจุบัน)', short:'รวมทั้งหมด', partial:false,
+      range:'20/11/2025 - 16/08/2026',
+      funnel:{req:0,appr:0,shipped:0,posted:0,sale:0},
+      perf:{shipped:0,gmv:0,cogs:0,content:0,roi:0}};
+    SAMPLE_MONTHS.forEach(m=>{
+      agg.funnel.req+=m.funnel.req; agg.funnel.appr+=m.funnel.appr; agg.funnel.shipped+=m.funnel.shipped;
+      agg.funnel.posted+=m.funnel.posted; agg.funnel.sale+=m.funnel.sale;
+      agg.perf.shipped+=m.perf.shipped; agg.perf.gmv+=m.perf.gmv; agg.perf.cogs+=m.perf.cogs; agg.perf.content+=m.perf.content;
+    });
+    agg.perf.roi = agg.perf.cogs>0 ? Math.round(((agg.perf.gmv-agg.perf.cogs)/agg.perf.cogs)*10000)/10000 : 0;
+    return agg;
+  }
+  return SAMPLE_MONTHS.find(m=>m.key===key);
+}
+
+function renderSampQPicker(){
+  const el = document.getElementById('samp-qpicker');
+  if(!el) return;
+  const monthBtns = SAMPLE_MONTHS.map(m=>
+    `<button class="qbtn${activeSampleKey===m.key?' active':''}" onclick="setSampleKey('${m.key}')">${m.short}${m.anomaly?' ⚠️':''}</button>`
+  ).join('');
+  el.innerHTML = `
+    <span class="qpicker-label">📅 ช่วงเวลา</span>
+    ${monthBtns}
+    <span class="qpicker-divider"></span>
+    <button class="qbtn${activeSampleKey==='last7d'?' active':''}" onclick="setSampleKey('last7d')">🔄 7 วันล่าสุด</button>
+    <button class="qbtn${activeSampleKey==='all'?' active':''}" onclick="setSampleKey('all')">Σ รวมทั้งหมด</button>
+  `;
+}
+
+function setSampleKey(key){
+  activeSampleKey = key;
+  renderSamples();
+}
+
+let sampFunnelChart=null, sampTrendChart=null;
+
+function renderSamples(){
+  renderSampQPicker();
+  const d = sampleByKey(activeSampleKey);
+  if(!d) return;
+
+  const secLabel = document.getElementById('samp-sec-label');
+  if(secLabel) secLabel.textContent = `${d.label} (${d.range})`;
+
+  const apprRate = d.funnel.req>0 ? Math.round((d.funnel.appr/d.funnel.req)*1000)/10 : 0;
+  const postRate = d.funnel.appr>0 ? Math.round((d.funnel.posted/d.funnel.appr)*1000)/10 : 0;
+  const saleRate = d.funnel.posted>0 ? Math.round((d.funnel.sale/d.funnel.posted)*1000)/10 : 0;
+  const notPosted = Math.max(0, d.funnel.appr - d.funnel.posted);
+
+  const kstrip = document.getElementById('samp-kstrip');
+  if(kstrip){
+    kstrip.innerHTML = `
+      <div class="kk"><div class="kkl">คำขอทั้งหมด</div><div class="kkv teal">${d.funnel.req.toLocaleString()}</div><div class="kks">${d.label}</div></div>
+      <div class="kk"><div class="kkl">อนุมัติ</div><div class="kkv blue">${d.funnel.appr.toLocaleString()}</div><div class="kks">อัตราอนุมัติ ${apprRate}%</div></div>
+      <div class="kk"><div class="kkl">ปฏิเสธ / ไม่อนุมัติ</div><div class="kkv" style="color:var(--red)">${(d.funnel.req-d.funnel.appr).toLocaleString()}</div><div class="kks">${(100-apprRate).toFixed(1)}% ของคำขอ</div></div>
+      <div class="kk"><div class="kkl">จัดส่ง (ตามคำขอ)</div><div class="kkv amber">${d.funnel.shipped.toLocaleString()}</div><div class="kks">จัดส่ง (ตามปฏิทิน) ${d.perf.shipped.toLocaleString()}</div></div>
+      <div class="kk"><div class="kkl">โพสต์แล้ว</div><div class="kkv green">${d.funnel.posted.toLocaleString()}</div><div class="kks">ยังไม่โพสต์ ~${notPosted.toLocaleString()} · ${postRate}% ของอนุมัติ</div></div>
+      <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">มียอดขาย ${d.funnel.sale.toLocaleString()} คน (${saleRate}% ของที่โพสต์)</div></div>
+      <div class="kk"><div class="kkl">GMV จากตัวอย่าง</div><div class="kkv teal">${fmtK(d.perf.gmv)}</div><div class="kks">COGS ${fmtK(d.perf.cogs)}</div></div>
+      <div class="kk"><div class="kkl">ROI 45 วัน</div><div class="kkv amber">${d.perf.roi ? d.perf.roi.toFixed(2)+'×' : '–'}</div><div class="kks">GMV ÷ COGS โดยประมาณ</div></div>
+    `;
+  }
+
+  const funnelCanvas = document.getElementById('samp-funnel-chart');
+  if(funnelCanvas){
+    if(sampFunnelChart) sampFunnelChart.destroy();
+    sampFunnelChart = new Chart(funnelCanvas.getContext('2d'),{
+      type:'bar',
+      data:{
+        labels:['คำขอ','อนุมัติ','จัดส่ง (ตามคำขอ)','โพสต์แล้ว','มียอดขาย'],
+        datasets:[{
+          data:[d.funnel.req, d.funnel.appr, d.funnel.shipped, d.funnel.posted, d.funnel.sale],
+          backgroundColor:['#3b82f6','#14b8a6','#f59e0b','#8b5cf6','#22c55e'],
+          borderRadius:6, borderSkipped:false
+        }]
+      },
+      options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{display:false},
+          tooltip:{callbacks:{label:ctx=>{
+            const pct = d.funnel.req>0 ? ((ctx.raw/d.funnel.req)*100).toFixed(1) : 0;
+            return `${ctx.raw.toLocaleString()} (${pct}% ของคำขอ)`;
+          }}}},
+        scales:{x:{ticks:{color:'#94a3b8'},grid:{color:'#1e2d45'}},y:{ticks:{color:'#94a3b8'},grid:{display:false}}}}
+    });
+  }
+
+  const trendCanvas = document.getElementById('samp-trend-chart');
+  if(trendCanvas){
+    if(sampTrendChart) sampTrendChart.destroy();
+    sampTrendChart = new Chart(trendCanvas.getContext('2d'),{
+      type:'line',
+      data:{
+        labels:SAMPLE_MONTHS.map(m=>m.short),
+        datasets:[
+          {label:'คำขอ',     data:SAMPLE_MONTHS.map(m=>m.funnel.req),    borderColor:'#3b82f6', backgroundColor:'#3b82f622', borderWidth:2, pointRadius:3, tension:.3},
+          {label:'อนุมัติ',   data:SAMPLE_MONTHS.map(m=>m.funnel.appr),   borderColor:'#14b8a6', backgroundColor:'#14b8a622', borderWidth:2, pointRadius:3, tension:.3},
+          {label:'โพสต์แล้ว', data:SAMPLE_MONTHS.map(m=>m.funnel.posted), borderColor:'#8b5cf6', backgroundColor:'#8b5cf622', borderWidth:2, pointRadius:3, tension:.3},
+        ]
+      },
+      options:{responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{position:'top', labels:{color:'#94a3b8', font:{size:11}}}},
+        scales:{y:{ticks:{color:'#94a3b8'}, grid:{color:'#1e2d45'}}, x:{ticks:{color:'#94a3b8'}, grid:{color:'#1e2d45'}}}}
+    });
+  }
+
+  const tbody = document.getElementById('samples-body');
+  if(tbody){
+    const rows = [SAMPLE_LAST7D, ...SAMPLE_MONTHS];
+    tbody.innerHTML = rows.map(m=>{
+      const ar = m.funnel.req>0 ? ((m.funnel.appr/m.funnel.req)*100).toFixed(1) : '0.0';
+      const notPost = Math.max(0, m.funnel.appr - m.funnel.posted);
+      const isRolling = m.key==='last7d';
+      const rowStyle = isRolling ? ' style="background:var(--card2)"' : '';
+      const labelCell = isRolling ? `🔄 ${m.label}<span style="color:var(--t3);font-size:10px"> (rolling)</span>` : m.label + (m.anomaly?' ⚠️':'');
+      return `<tr${rowStyle}>
+        <td>${labelCell}</td>
+        <td data-val="${m.funnel.req}">${m.funnel.req.toLocaleString()}</td>
+        <td data-val="${m.funnel.appr}">${m.funnel.appr.toLocaleString()}</td>
+        <td data-val="${ar}">${ar}%</td>
+        <td data-val="${m.funnel.shipped}">${m.funnel.shipped.toLocaleString()}</td>
+        <td data-val="${m.perf.shipped}">${m.perf.shipped.toLocaleString()}</td>
+        <td data-val="${m.funnel.posted}">${m.funnel.posted.toLocaleString()}</td>
+        <td data-val="${notPost}">${notPost.toLocaleString()}</td>
+        <td data-val="${m.perf.content}">${m.perf.content.toLocaleString()}</td>
+        <td data-val="${m.funnel.sale}">${m.funnel.sale.toLocaleString()}</td>
+        <td data-val="${m.perf.gmv}">${fmtK(m.perf.gmv)}</td>
+        <td data-val="${m.perf.roi}">${m.perf.roi ? m.perf.roi.toFixed(2)+'×' : '–'}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const anomEl = document.getElementById('samp-anomaly-note');
+  if(anomEl){
+    const anomalies = SAMPLE_MONTHS.filter(m=>m.anomaly);
+    anomEl.innerHTML = anomalies.length
+      ? `⚠️ <strong>เดือนที่มีความผิดปกติ (ตรวจสอบแล้ว ไม่ใช่ข้อผิดพลาดในการดึงข้อมูล):</strong><br>${anomalies.map(m=>`• <strong>${m.label}:</strong> ${m.anomaly}`).join('<br>')}`
+      : '';
+  }
+}
+
+function initSamples(){
+  renderSamples();
 }
 
 // ══════════════════════════════════════════
