@@ -224,6 +224,28 @@ tr:hover td{background:rgba(59,130,246,.04)}
 .mfbtn.jun.active{background:#f59e0b;border-color:#f59e0b;color:#fff;font-weight:600}
 .mfbtn.aug.active{background:#0d9488;border-color:#0d9488;color:#fff;font-weight:600} .mfbtn.jul.active{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600}
 
+/* ── Tier Ranking tab ── */
+.qpicker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.qpicker-label{font-size:11px;color:var(--t3);font-weight:600;letter-spacing:.5px;text-transform:uppercase;margin-right:4px}
+.qbtn{padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--t2);font-size:12px;cursor:pointer;transition:.15s;font-family:inherit;white-space:nowrap}
+.qbtn:hover{border-color:var(--purple);color:var(--purple)}
+.qbtn.active{background:var(--purple);border-color:var(--purple);color:#fff;font-weight:600}
+.qbtn .qbtn-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:#4ade80;margin-left:6px;vertical-align:middle}
+.tier-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.tier-badge.tier-core{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.35)}
+.tier-badge.tier-growth{background:rgba(20,184,166,.15);color:#14b8a6;border:1px solid rgba(20,184,166,.35)}
+.tier-badge.tier-rising{background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.3)}
+.tier-badge.tier-special{background:linear-gradient(90deg,rgba(236,72,153,.18),rgba(139,92,246,.18));color:#ec4899;border:1px solid rgba(236,72,153,.4)}
+.tier-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:20px}
+.tier-lcard{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:12px 14px}
+.tier-lcard-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+.tier-lcard-cnt{font-size:18px;font-weight:800;color:var(--t1)}
+.tier-lcard-sub{font-size:11px;color:var(--t3)}
+.tier-growth-cell{font-size:11px;font-weight:600}
+.tier-growth-cell.up{color:var(--green)}
+.tier-growth-cell.down{color:var(--red)}
+.tier-growth-cell.flat{color:var(--t3)}
+
 </style>
 </head>
 <body>
@@ -239,6 +261,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <div class="nav">
   <div class="navt active" onclick="switchTab('overview',this)">📊 ภาพรวม</div>
   <div class="navt" onclick="switchTab('creators',this)">👥 ครีเอเตอร์</div>
+  <div class="navt" onclick="switchTab('tier',this)">🏆 Tier</div>
   <div class="navt" onclick="switchTab('products',this)">📦 สินค้า</div>
   <div class="navt" onclick="switchTab('videos',this)">🎬 วีดีโอ</div>
   <div class="navt" onclick="switchTab('matrix',this)">🔗 Creator × Product</div>
@@ -325,6 +348,41 @@ tr:hover td{background:rgba(59,130,246,.04)}
         </tr>
       </thead>
       <tbody id="creators-body"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ════ TIER RANKING ════ -->
+<div id="tab-tier" class="panel">
+  <div class="note">🏆 จัดอันดับ Top 30 ครีเอเตอร์ตามยอด GMV รวมของ<strong>ไตรมาส (block คงที่ 3 เดือน)</strong> ไม่ใช่ยอดย้อนหลัง 3 เดือนแบบเลื่อน — ไตรมาสอิงตามเดือนแรกที่มีข้อมูล (มี.ค.) คือ Q1 มี.ค.–พ.ค., Q2 มิ.ย.–ส.ค., Q3 ก.ย.–พ.ย., Q4 ธ.ค.–ก.พ. ไตรมาสปัจจุบันจะอัปเดตยอดทุกครั้งที่ซิงก์ข้อมูล Affiliate ใหม่ (ทุกสัปดาห์) จนกว่าจะครบเดือน</div>
+
+  <div class="qpicker" id="tier-qpicker"></div>
+
+  <div id="tier-coverage-note" class="note" style="display:none"></div>
+
+  <div class="kstrip" id="tier-kstrip"></div>
+
+  <div class="tier-legend">
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-core">🥇 Core Partner</span><span class="tier-lcard-cnt" id="tl-core-cnt">–</span></div><div class="tier-lcard-sub">GMV ไตรมาส ≥ ฿45,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-growth">🌱 Growth Partner</span><span class="tier-lcard-cnt" id="tl-growth-cnt">–</span></div><div class="tier-lcard-sub">GMV ไตรมาส ≥ ฿30,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-rising">🌤 Rising Partner</span><span class="tier-lcard-cnt" id="tl-rising-cnt">–</span></div><div class="tier-lcard-sub">มียอดแต่ยังไม่ถึง ฿30,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-special">✨ Special Partner</span><span class="tier-lcard-cnt" id="tl-special-cnt">–</span></div><div class="tier-lcard-sub">ยอดพุ่งเกิน 2 เท่าของอันดับ 1 ไตรมาสก่อนหน้า</div></div>
+  </div>
+
+  <div class="sec">Top 30 ครีเอเตอร์ตาม Tier — <span id="tier-sec-label"></span></div>
+  <div class="tw">
+    <table id="tbl-tier">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>ครีเอเตอร์</th>
+          <th>Tier</th>
+          <th onclick="sortTbl('tbl-tier',3,this)">GMV ไตรมาสนี้ <span class="sort-icon">↕</span></th>
+          <th>เทียบไตรมาสก่อน</th>
+          <th onclick="sortTbl('tbl-tier',5,this)">Orders (รวม) <span class="sort-icon">↕</span></th>
+        </tr>
+      </thead>
+      <tbody id="tier-body"></tbody>
     </table>
   </div>
 </div>
@@ -8478,6 +8536,10 @@ function switchTab(id, el){
     const list = document.getElementById('creator-list');
     if(list && !list.dataset.init){ list.dataset.init='1'; renderCreatorList(); }
   }
+  if(id==='tier'){
+    const body = document.getElementById('tier-body');
+    if(body && !body.dataset.init){ body.dataset.init='1'; renderTier(); }
+  }
 }
 
 // ══════════════════════════════════════════
@@ -8545,6 +8607,171 @@ function cGMV(name){
 function cpGMV(creatorName, productName){
   return VIDEOS.filter(v=>v.creator===creatorName && v.product===productName)
                .reduce((s,v)=>s+vGMV(v), 0);
+}
+
+// ══════════════════════════════════════════
+//  TIER RANKING (fixed quarterly blocks — NOT a rolling 3-month window)
+//  Q1=มี.ค.-พ.ค., Q2=มิ.ย.-ส.ค., Q3=ก.ย.-พ.ย., Q4=ธ.ค.-ก.พ. — aligned to the
+//  first tracked month (มี.ค. = CREATOR_MONTHS index 0), so
+//  quarterIdx = floor(monthArrIndex/3). Re-evaluated every quarter per the
+//  user's explicit correction (not a rolling window like May-Jul→Jun-Aug).
+//  Extend MONTH_ORDER if tracking ever passes 12 months (wraps past a 2nd ก.พ.).
+// ══════════════════════════════════════════
+const MONTH_ORDER    = ['mar','apr','may','jun','jul','aug','sep','oct','nov','dec','jan','feb'];
+const MONTH_LABEL_TH = {mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.',oct:'ต.ค.',nov:'พ.ย.',dec:'ธ.ค.',jan:'ม.ค.',feb:'ก.พ.'};
+const TIER_BASE_YEAR_BE = 2569; // BE year of the first tracked month (มี.ค. 2569)
+
+// Manually maintained — update alongside every affiliate data sync so the
+// "current quarter" coverage banner stays accurate (same underlying figure
+// as the "ส.ค. 1-14" note used elsewhere on this dashboard).
+const TIER_ASOF_LABEL = 'ส.ค. 1-14 2569';
+
+function quarterLabel(qi){
+  const yr = TIER_BASE_YEAR_BE + Math.floor(qi/4);
+  const pos = qi % 4;
+  if(pos===0) return `มี.ค.–พ.ค. ${yr}`;
+  if(pos===1) return `มิ.ย.–ส.ค. ${yr}`;
+  if(pos===2) return `ก.ย.–พ.ย. ${yr}`;
+  return `ธ.ค. ${yr}–ก.พ. ${yr+1}`;
+}
+
+function computeQuarters(){
+  const nMonths = Object.values(CREATOR_MONTHS).reduce((max,v)=>Math.max(max,v.length),0);
+  const nQ = Math.ceil(nMonths/3);
+  const quarters = [];
+  for(let q=0; q<nQ; q++){
+    const idxs = [q*3,q*3+1,q*3+2].filter(i=>i<nMonths);
+    quarters.push({ qi:q, label:quarterLabel(q), idxs, isCurrent:q===nQ-1 });
+  }
+  return quarters;
+}
+const TIER_QUARTERS = computeQuarters();
+let activeQuarterIdx = TIER_QUARTERS.length - 1; // default: latest quarter
+
+function quarterGMV(creatorName, idxs){
+  const arr = CREATOR_MONTHS[creatorName];
+  if(!arr) return 0;
+  return idxs.reduce((s,i)=>s+(arr[i]||0),0);
+}
+
+function tierOf(gmv, specialThreshold){
+  if(specialThreshold && gmv > specialThreshold) return 'special';
+  if(gmv >= 45000) return 'core';
+  if(gmv >= 30000) return 'growth';
+  return 'rising';
+}
+
+const TIER_META = {
+  core:    {label:'🥇 Core Partner',    cls:'tier-core'},
+  growth:  {label:'🌱 Growth Partner',  cls:'tier-growth'},
+  rising:  {label:'🌤 Rising Partner',  cls:'tier-rising'},
+  special: {label:'✨ Special Partner', cls:'tier-special'}
+};
+
+function renderQPicker(){
+  const el = document.getElementById('tier-qpicker');
+  if(!el) return;
+  el.innerHTML = '<span class="qpicker-label">📅 เลือกไตรมาส</span>' + TIER_QUARTERS.map(q=>
+    `<button class="qbtn${q.qi===activeQuarterIdx?' active':''}" onclick="setQuarter(${q.qi},this)">${q.label}${q.isCurrent?'<span class="qbtn-live" title="ไตรมาสปัจจุบัน กำลังนับข้อมูล"></span>':''}</button>`
+  ).join('');
+}
+
+function setQuarter(qi, btn){
+  activeQuarterIdx = qi;
+  renderTier();
+}
+
+function renderTier(){
+  if(!TIER_QUARTERS.length) return;
+  const quarter = TIER_QUARTERS[activeQuarterIdx];
+  const prevQuarter = activeQuarterIdx>0 ? TIER_QUARTERS[activeQuarterIdx-1] : null;
+
+  const secLabel = document.getElementById('tier-sec-label');
+  if(secLabel) secLabel.textContent = quarter.label + (quarter.isCurrent?' (กำลังนับ — ยังไม่ครบไตรมาส)':'');
+
+  // Coverage note only for the in-progress (current) quarter
+  const covEl = document.getElementById('tier-coverage-note');
+  if(covEl){
+    if(quarter.isCurrent){
+      covEl.style.display = 'block';
+      covEl.textContent = `⚠️ ไตรมาสนี้ยังไม่จบ — ยอดคำนวณจากข้อมูลที่ซิงก์ล่าสุดถึง ${TIER_ASOF_LABEL} เท่านั้น อันดับและยอดจะขยับทุกครั้งที่ซิงก์ข้อมูลใหม่ (ทุกสัปดาห์) จนกว่าจะครบไตรมาส`;
+    } else {
+      covEl.style.display = 'none';
+    }
+  }
+
+  const rankedAll = Object.keys(CREATOR_MONTHS)
+    .map(name=>({name, gmv: quarterGMV(name, quarter.idxs)}))
+    .filter(r=>r.gmv>0)
+    .sort((a,b)=>b.gmv-a.gmv);
+  const top30 = rankedAll.slice(0,30);
+
+  // Special Partner benchmark = 2x the #1 creator's total from the PREVIOUS
+  // quarter (an exceptional breakout star, not just "highest this quarter").
+  let prevTop1 = 0;
+  if(prevQuarter){
+    const prevRanked = Object.keys(CREATOR_MONTHS)
+      .map(name=>({name, gmv: quarterGMV(name, prevQuarter.idxs)}))
+      .sort((a,b)=>b.gmv-a.gmv);
+    prevTop1 = prevRanked[0]?.gmv || 0;
+  }
+  const specialThr = prevTop1 > 0 ? prevTop1*2 : null;
+
+  // Orders lookup from CREATORS (all-time totals — per-quarter order counts
+  // aren't tracked separately from CREATOR_MONTHS)
+  const ordersByName = {};
+  CREATORS.forEach(c=>{ ordersByName[c.name] = c.orders; });
+
+  const tbody = document.getElementById('tier-body');
+  const counts = {core:0, growth:0, rising:0, special:0};
+  if(tbody){
+    tbody.innerHTML = top30.map((r,i)=>{
+      const t = tierOf(r.gmv, specialThr);
+      counts[t]++;
+      const meta = TIER_META[t];
+      const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
+      let growthCell = '<td style="color:var(--t3)">–</td>';
+      if(prevQuarter){
+        const prevGmv = quarterGMV(r.name, prevQuarter.idxs);
+        if(prevGmv>0){
+          const pct = Math.round(((r.gmv-prevGmv)/prevGmv)*100);
+          const cls = pct>5?'up':pct<-5?'down':'flat';
+          const sign = pct>0?'+':'';
+          growthCell = `<td class="tier-growth-cell ${cls}">${sign}${pct}%</td>`;
+        } else {
+          growthCell = `<td class="tier-growth-cell up">🆕 ใหม่ในไตรมาสนี้</td>`;
+        }
+      }
+      return `<tr>
+        <td>${rnk}</td>
+        <td><div class="creator-chip"><div class="creator-av">${getAv(r.name)}</div>${r.name}</div></td>
+        <td><span class="tier-badge ${meta.cls}">${meta.label}</span></td>
+        <td data-val="${r.gmv}">${fmtK(r.gmv)}</td>
+        ${growthCell}
+        <td data-val="${ordersByName[r.name]||0}">${ordersByName[r.name]||'–'}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  const setTxt=(id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=val; };
+  setTxt('tl-core-cnt', counts.core);
+  setTxt('tl-growth-cnt', counts.growth);
+  setTxt('tl-rising-cnt', counts.rising);
+  setTxt('tl-special-cnt', counts.special);
+
+  const totalTop30GMV = top30.reduce((s,r)=>s+r.gmv,0);
+  const totalAllGMV = rankedAll.reduce((s,r)=>s+r.gmv,0) || 1;
+  const kstrip = document.getElementById('tier-kstrip');
+  if(kstrip){
+    kstrip.innerHTML = `
+      <div class="kk"><div class="kkl">Top 30 GMV รวม</div><div class="kkv teal">${fmtK(totalTop30GMV)}</div><div class="kks">${quarter.label}</div></div>
+      <div class="kk"><div class="kkl">สัดส่วนจาก Top 30</div><div class="kkv purple">${Math.round(totalTop30GMV/totalAllGMV*100)}%</div><div class="kks">ของ GMV ครีเอเตอร์ทั้งหมด ${rankedAll.length} คนที่มียอดไตรมาสนี้</div></div>
+      <div class="kk"><div class="kkl">Top Creator ไตรมาสนี้</div><div class="kkv blue">${top30[0]?top30[0].name:'–'}</div><div class="kks">${top30[0]?fmtK(top30[0].gmv):''}</div></div>
+      <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอดทั้งหมด</div><div class="kkv amber">${rankedAll.length}</div><div class="kks">ในไตรมาส ${quarter.label}</div></div>
+    `;
+  }
+
+  renderQPicker();
 }
 
 // ══════════════════════════════════════════
