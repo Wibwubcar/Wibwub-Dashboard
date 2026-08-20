@@ -429,7 +429,6 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th onclick="sortTbl('tbl-samples',7,this)" title="อนุมัติแล้วแต่ยังไม่โพสต์ (โดยประมาณ)">ยังไม่โพสต์ <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-samples',8,this)">คลิปทั้งหมด <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-samples',9,this)">GMV จากตัวอย่าง <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-samples',10,this)">ROI 45 วัน <span class="sort-icon">↕</span></th>
         </tr>
       </thead>
       <tbody id="samples-body"></tbody>
@@ -9452,7 +9451,6 @@ function renderSamples(){
       <div class="kk"><div class="kkl">โพสต์แล้ว</div><div class="kkv green">${d.funnel.posted!=null ? d.funnel.posted.toLocaleString() : '–'}</div><div class="kks">${notPosted!=null ? `ยังไม่โพสต์ ~${notPosted.toLocaleString()} · ${postRate}%${postRateFlag?'*':''} ของอนุมัติ` : 'ไม่มีข้อมูล (เริ่มเก็บ มิ.ย. 69)'}</div></div>
       <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">เนื้อหาตัวอย่างสินค้าทั้งหมด (Insights)</div></div>
       <div class="kk"><div class="kkl">GMV จากตัวอย่าง</div><div class="kkv teal">${fmtK(d.perf.gmv)}</div><div class="kks">COGS ${fmtK(d.perf.cogs)}</div></div>
-      <div class="kk"><div class="kkl">ROI 45 วัน</div><div class="kkv amber">${d.perf.roi ? d.perf.roi.toFixed(2)+'×' : '–'}</div><div class="kks">GMV ÷ COGS โดยประมาณ</div></div>
     `;
   }
 
@@ -9519,7 +9517,6 @@ function renderSamples(){
         <td data-val="${notPost!=null?notPost:-1}">${notPost!=null ? notPost.toLocaleString() : '–'}</td>
         <td data-val="${m.perf.content}">${m.perf.content.toLocaleString()}</td>
         <td data-val="${m.perf.gmv}">${fmtK(m.perf.gmv)}</td>
-        <td data-val="${m.perf.roi}">${m.perf.roi ? m.perf.roi.toFixed(2)+'×' : '–'}</td>
       </tr>`;
     }).join('');
   }
