@@ -9349,25 +9349,34 @@ function renderTier(){
 }
 
 // ══════════════════════════════════════════
-//  SAMPLE REQUESTS (คำขอสินค้า) — TikTok Affiliate Sample Insights
-//  Data pulled manually from TikTok Affiliate Center → การวิเคราะห์ →
-//  ตัวอย่างสินค้า (Insights), zoom-verified against the on-screen date range
-//  for every period. Two "shipped" metrics on different bases — see the
-//  note banner in the HTML for the funnel-vs-perf distinction.
-//  Per-product / per-channel breakdown is NOT available from TikTok's
-//  aggregate reports historically — documented as a limitation in the UI.
+//  SAMPLE REQUESTS (คำขอสินค้า)
+//  funnel.{req,appr,shipped} — sourced from the internal Google Sheet
+//  "Top 30 Affiliate" > tab "ขอสินค้า" (row-per-request log kept by the
+//  team). req = total rows logged that month; appr = rows where
+//  Status==="Approve" exactly (Reject/On Process/Done/Sent Product/Waiting/
+//  blank excluded); shipped is treated as === appr (no separate "shipped"
+//  status exists in the sheet). funnel.posted is null for months before
+//  Jun 2026 — the sheet's "การลงโพสต์" column was not reliably filled in
+//  before then. funnel.sale is unused/hidden (no reliable per-request sale
+//  data exists in either source).
+//  perf.{shipped,gmv,cogs,content,roi} — UNRELATED data source, still
+//  pulled from TikTok Affiliate Center → การวิเคราะห์ → ตัวอย่างสินค้า
+//  (Insights). Left unchanged by the sheet swap above; date-range coverage
+//  may not perfectly match the funnel range for a given month (see note
+//  banner in the HTML).
 // ══════════════════════════════════════════
 const SAMPLE_MONTHS = [
-  {key:'2025-11', label:'พ.ย. 2568 (20-30)', short:'พ.ย.\'68', partial:true,  range:'20/11/2025 - 30/11/2025', funnel:{req:58,  appr:19, shipped:19, posted:18, sale:4},  perf:{shipped:22,  gmv:54479.61,  cogs:1560.90,  content:28,  roi:3.8078}, unverifiable:true},
-  {key:'2025-12', label:'ธ.ค. 2568',          short:'ธ.ค.\'68',  partial:false, range:'01/12/2025 - 31/12/2025', funnel:{req:155, appr:83, shipped:83, posted:75, sale:26}, perf:{shipped:66,  gmv:115669.37, cogs:5386.20,  content:95,  roi:4.3851}, unverifiable:true},
-  {key:'2026-01', label:'ม.ค. 2569',          short:'ม.ค.',       partial:false, range:'01/01/2026 - 31/01/2026', funnel:{req:154, appr:72, shipped:72, posted:67, sale:18}, perf:{shipped:46,  gmv:128373.14, cogs:4058.10,  content:56,  roi:2.4179}, unverifiable:true},
-  {key:'2026-02', label:'ก.พ. 2569',          short:'ก.พ.',       partial:false, range:'01/02/2026 - 28/02/2026', funnel:{req:106, appr:58, shipped:58, posted:53, sale:13}, perf:{shipped:141, gmv:162945.87, cogs:11562.30, content:121, roi:1.3302}, unverifiable:true},
-  {key:'2026-03', label:'มี.ค. 2569',         short:'มี.ค.',      partial:false, range:'01/03/2026 - 31/03/2026', funnel:{req:203, appr:96, shipped:96, posted:89, sale:29}, perf:{shipped:131, gmv:235884.28, cogs:14031.90, content:202, roi:10.4355}, unverifiable:true},
-  {key:'2026-04', label:'เม.ย. 2569',         short:'เม.ย.',      partial:false, range:'01/04/2026 - 30/04/2026', funnel:{req:305, appr:151,shipped:151,posted:134,sale:53}, perf:{shipped:31,  gmv:264131.66, cogs:2142.30,  content:45,  roi:5.1514}, unverifiable:true},
-  {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:124, appr:60, shipped:60, posted:55, sale:26}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}, unverifiable:true},
-  {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:32,  appr:16, shipped:16, posted:37, sale:17}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}, corrected:true},
-  {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:64,  appr:22, shipped:22, posted:15, sale:3},  perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}, corrected:true},
-  {key:'2026-08', label:'ส.ค. 2569 (1-18)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 18/08/2026', funnel:{req:224, appr:136,shipped:136, posted:86, sale:2},  perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}, corrected:true},
+  {key:'2025-10', label:'ต.ค. 2568 (21-31)',  short:'ต.ค.\'68',  partial:true,  range:'21/10/2025 - 31/10/2025', funnel:{req:63,  appr:25,  shipped:25,  posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
+  {key:'2025-11', label:'พ.ย. 2568',          short:'พ.ย.\'68',  partial:false, range:'01/11/2025 - 30/11/2025', funnel:{req:145, appr:78,  shipped:78,  posted:null, sale:0}, perf:{shipped:22,  gmv:54479.61,  cogs:1560.90,  content:28,  roi:3.8078}},
+  {key:'2025-12', label:'ธ.ค. 2568',          short:'ธ.ค.\'68',  partial:false, range:'01/12/2025 - 31/12/2025', funnel:{req:141, appr:66,  shipped:66,  posted:null, sale:0}, perf:{shipped:66,  gmv:115669.37, cogs:5386.20,  content:95,  roi:4.3851}},
+  {key:'2026-01', label:'ม.ค. 2569',          short:'ม.ค.',       partial:false, range:'01/01/2026 - 31/01/2026', funnel:{req:114, appr:61,  shipped:61,  posted:null, sale:0}, perf:{shipped:46,  gmv:128373.14, cogs:4058.10,  content:56,  roi:2.4179}},
+  {key:'2026-02', label:'ก.พ. 2569',          short:'ก.พ.',       partial:false, range:'01/02/2026 - 28/02/2026', funnel:{req:274, appr:179, shipped:179, posted:null, sale:0}, perf:{shipped:141, gmv:162945.87, cogs:11562.30, content:121, roi:1.3302}},
+  {key:'2026-03', label:'มี.ค. 2569',         short:'มี.ค.',      partial:false, range:'01/03/2026 - 31/03/2026', funnel:{req:248, appr:165, shipped:165, posted:null, sale:0}, perf:{shipped:131, gmv:235884.28, cogs:14031.90, content:202, roi:10.4355}},
+  {key:'2026-04', label:'เม.ย. 2569',         short:'เม.ย.',      partial:false, range:'01/04/2026 - 30/04/2026', funnel:{req:85,  appr:37,  shipped:37,  posted:null, sale:0}, perf:{shipped:31,  gmv:264131.66, cogs:2142.30,  content:45,  roi:5.1514}},
+  {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:0,   appr:0,   shipped:0,   posted:0,    sale:0}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}, anomaly:'ทีมไม่ได้บันทึกคำขอสินค้าใหม่ในชีต "ขอสินค้า" เลยเดือนนี้ (0 แถว) — อาจเป็นช่วงหยุดพักการบันทึก ส่วน GMV/คลิปที่เกิดขึ้นจริง (คอลัมน์ขวา) มาจากคำขอเดือนก่อนหน้าที่ยังคงลงคอนเทนต์อยู่'},
+  {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
+  {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
+  {key:'2026-08', label:'ส.ค. 2569 (1-20)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 20/08/2026', funnel:{req:205, appr:98,  shipped:98,  posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
 ];
 
 const SAMPLE_LAST7D = {
@@ -9382,13 +9391,13 @@ let activeSampleKey = SAMPLE_MONTHS[SAMPLE_MONTHS.length-1].key; // default: lat
 function sampleByKey(key){
   if(key==='last7d') return SAMPLE_LAST7D;
   if(key==='all'){
-    const agg = {key:'all', label:'รวมทั้งหมด (พ.ย. 68 - ปัจจุบัน)', short:'รวมทั้งหมด', partial:false,
-      range:'20/11/2025 - 18/08/2026',
+    const agg = {key:'all', label:'รวมทั้งหมด (ต.ค. 68 - ปัจจุบัน)', short:'รวมทั้งหมด', partial:false,
+      range:'21/10/2025 - 20/08/2026',
       funnel:{req:0,appr:0,shipped:0,posted:0,sale:0},
       perf:{shipped:0,gmv:0,cogs:0,content:0,roi:0}};
     SAMPLE_MONTHS.forEach(m=>{
       agg.funnel.req+=m.funnel.req; agg.funnel.appr+=m.funnel.appr; agg.funnel.shipped+=m.funnel.shipped;
-      agg.funnel.posted+=m.funnel.posted; agg.funnel.sale+=m.funnel.sale;
+      agg.funnel.posted+=(m.funnel.posted||0); agg.funnel.sale+=m.funnel.sale;
       agg.perf.shipped+=m.perf.shipped; agg.perf.gmv+=m.perf.gmv; agg.perf.cogs+=m.perf.cogs; agg.perf.content+=m.perf.content;
     });
     agg.perf.roi = agg.perf.cogs>0 ? Math.round(((agg.perf.gmv-agg.perf.cogs)/agg.perf.cogs)*10000)/10000 : 0;
@@ -9428,10 +9437,10 @@ function renderSamples(){
   if(secLabel) secLabel.textContent = `${d.label} (${d.range})`;
 
   const apprRate = d.funnel.req>0 ? Math.round((d.funnel.appr/d.funnel.req)*1000)/10 : 0;
-  const rawPostRate = d.funnel.appr>0 ? (d.funnel.posted/d.funnel.appr)*100 : 0;
-  const postRate = Math.min(100, Math.round(rawPostRate*10)/10);
-  const postRateFlag = rawPostRate>100;
-  const notPosted = Math.max(0, d.funnel.appr - d.funnel.posted);
+  const rawPostRate = d.funnel.appr>0 && d.funnel.posted!=null ? (d.funnel.posted/d.funnel.appr)*100 : null;
+  const postRate = rawPostRate!=null ? Math.min(100, Math.round(rawPostRate*10)/10) : null;
+  const postRateFlag = rawPostRate!=null && rawPostRate>100;
+  const notPosted = d.funnel.posted!=null ? Math.max(0, d.funnel.appr - d.funnel.posted) : null;
 
   const kstrip = document.getElementById('samp-kstrip');
   if(kstrip){
@@ -9440,7 +9449,7 @@ function renderSamples(){
       <div class="kk"><div class="kkl">อนุมัติ</div><div class="kkv blue">${d.funnel.appr.toLocaleString()}</div><div class="kks">อัตราอนุมัติ ${apprRate}%</div></div>
       <div class="kk"><div class="kkl">ปฏิเสธ / ไม่อนุมัติ</div><div class="kkv" style="color:var(--red)">${(d.funnel.req-d.funnel.appr).toLocaleString()}</div><div class="kks">${(100-apprRate).toFixed(1)}% ของคำขอ</div></div>
       <div class="kk"><div class="kkl">จัดส่ง (ตามคำขอ)</div><div class="kkv amber">${d.funnel.shipped.toLocaleString()}</div><div class="kks">จัดส่ง (ตามปฏิทิน) ${d.perf.shipped.toLocaleString()}</div></div>
-      <div class="kk"><div class="kkl">โพสต์แล้ว</div><div class="kkv green">${d.funnel.posted.toLocaleString()}</div><div class="kks">ยังไม่โพสต์ ~${notPosted.toLocaleString()} · ${postRate}%${postRateFlag?'*':''} ของอนุมัติ</div></div>
+      <div class="kk"><div class="kkl">โพสต์แล้ว</div><div class="kkv green">${d.funnel.posted!=null ? d.funnel.posted.toLocaleString() : '–'}</div><div class="kks">${notPosted!=null ? `ยังไม่โพสต์ ~${notPosted.toLocaleString()} · ${postRate}%${postRateFlag?'*':''} ของอนุมัติ` : 'ไม่มีข้อมูล (เริ่มเก็บ มิ.ย. 69)'}</div></div>
       <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">เนื้อหาตัวอย่างสินค้าทั้งหมด (Insights)</div></div>
       <div class="kk"><div class="kkl">GMV จากตัวอย่าง</div><div class="kkv teal">${fmtK(d.perf.gmv)}</div><div class="kks">COGS ${fmtK(d.perf.cogs)}</div></div>
       <div class="kk"><div class="kkl">ROI 45 วัน</div><div class="kkv amber">${d.perf.roi ? d.perf.roi.toFixed(2)+'×' : '–'}</div><div class="kks">GMV ÷ COGS โดยประมาณ</div></div>
@@ -9463,6 +9472,7 @@ function renderSamples(){
       options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
         plugins:{legend:{display:false},
           tooltip:{callbacks:{label:ctx=>{
+            if(ctx.raw==null) return 'ไม่มีข้อมูล';
             const pct = d.funnel.req>0 ? ((ctx.raw/d.funnel.req)*100).toFixed(1) : 0;
             return `${ctx.raw.toLocaleString()} (${pct}% ของคำขอ)`;
           }}}},
@@ -9494,7 +9504,7 @@ function renderSamples(){
     const rows = [SAMPLE_LAST7D, ...SAMPLE_MONTHS];
     tbody.innerHTML = rows.map(m=>{
       const ar = m.funnel.req>0 ? ((m.funnel.appr/m.funnel.req)*100).toFixed(1) : '0.0';
-      const notPost = Math.max(0, m.funnel.appr - m.funnel.posted);
+      const notPost = m.funnel.posted!=null ? Math.max(0, m.funnel.appr - m.funnel.posted) : null;
       const isRolling = m.key==='last7d';
       const rowStyle = isRolling ? ' style="background:var(--card2)"' : '';
       const labelCell = isRolling ? `🔄 ${m.label}<span style="color:var(--t3);font-size:10px"> (rolling)</span>` : m.label + (m.anomaly?' ⚠️':m.corrected?' ✅':m.unverifiable?' 🔍':'');
@@ -9505,8 +9515,8 @@ function renderSamples(){
         <td data-val="${ar}">${ar}%</td>
         <td data-val="${m.funnel.shipped}">${m.funnel.shipped.toLocaleString()}</td>
         <td data-val="${m.perf.shipped}">${m.perf.shipped.toLocaleString()}</td>
-        <td data-val="${m.funnel.posted}">${m.funnel.posted.toLocaleString()}</td>
-        <td data-val="${notPost}">${notPost.toLocaleString()}</td>
+        <td data-val="${m.funnel.posted!=null?m.funnel.posted:-1}">${m.funnel.posted!=null ? m.funnel.posted.toLocaleString() : '–'}</td>
+        <td data-val="${notPost!=null?notPost:-1}">${notPost!=null ? notPost.toLocaleString() : '–'}</td>
         <td data-val="${m.perf.content}">${m.perf.content.toLocaleString()}</td>
         <td data-val="${m.perf.gmv}">${fmtK(m.perf.gmv)}</td>
         <td data-val="${m.perf.roi}">${m.perf.roi ? m.perf.roi.toFixed(2)+'×' : '–'}</td>
@@ -9517,20 +9527,14 @@ function renderSamples(){
   const anomEl = document.getElementById('samp-anomaly-note');
   if(anomEl){
     const anomalies = SAMPLE_MONTHS.filter(m=>m.anomaly);
-    const corrected = SAMPLE_MONTHS.filter(m=>m.corrected);
-    const unverifiable = SAMPLE_MONTHS.filter(m=>m.unverifiable);
     let parts = [];
+    parts.push(`📋 <strong>แหล่งข้อมูล "คำขอ"/"อนุมัติ"/"จัดส่ง":</strong> เปลี่ยนมาใช้ชีต Google Sheets ภายในทีม "Top 30 Affiliate" &gt; แท็บ "ขอสินค้า" (log รายคำขอที่ทีมกรอกเอง) แทนข้อมูลประมาณการเดิมจาก TikTok Insights — "คำขอ" = จำนวนแถวทั้งหมดที่บันทึกในเดือนนั้น, "อนุมัติ" = แถวที่สถานะ = "Approve" เท่านั้น (ไม่นับ Reject/On Process/Done/Sent Product/Waiting/ว่าง), "จัดส่ง" = เท่ากับ "อนุมัติ" (ชีตไม่มีสถานะแยกสำหรับจัดส่ง)`);
     if(anomalies.length){
-      parts.push(`⚠️ <strong>เดือนที่มีความผิดปกติ (ตรวจสอบแล้ว ไม่ใช่ข้อผิดพลาดในการดึงข้อมูล):</strong><br>${anomalies.map(m=>`• <strong>${m.label}:</strong> ${m.anomaly}`).join('<br>')}`);
+      parts.push(`⚠️ <strong>เดือนที่มีความผิดปกติ:</strong><br>${anomalies.map(m=>`• <strong>${m.label}:</strong> ${m.anomaly}`).join('<br>')}`);
     }
-    if(corrected.length){
-      parts.push(`✅ <strong>เดือนที่แก้ไขแล้ว (นับใหม่จากตาราง "รายละเอียด &gt; สินค้า" โดยตรง):</strong> ${corrected.map(m=>m.label).join(', ')} — "คำขอ"/"อนุมัติ"/"ไม่อนุมัติ" คำนวณจากผลรวมต่อสินค้า (อนุมัติ = จัดส่งแล้ว, ไม่อนุมัติ = คำขอ − จัดส่งแล้ว) ตามที่ยืนยันกับผู้ใช้ แม่นยำกว่าค่าเดิมที่มาจากแท็บ "คอนเวอร์ชั่นตามช่องทาง" ซึ่งไม่รวมข้อมูลพาร์ทเนอร์และเลื่อนช่วงเวลานับย้อนหลัง 45 วัน`);
-    }
-    if(unverifiable.length){
-      parts.push(`🔍 <strong>เดือนที่ยังตรวจสอบซ้ำไม่ได้:</strong> ${unverifiable.map(m=>m.label).join(', ')} — TikTok จำกัดรายงานราย SKU นี้ไว้เพียง 90 วันย้อนหลัง (ปัจจุบันย้อนได้ถึงราว 22 พ.ค. 2569) ตัวเลข "คำขอ"/"อนุมัติ" เดือนเหล่านี้จึงยังเป็นค่าเดิมจากวิธีคำนวณเก่า ซึ่งพบว่าคลาดเคลื่อนได้มากเมื่อเทียบกับเดือนที่ตรวจสอบใหม่แล้ว (มิ.ย.-ส.ค. 69) — ควรใช้ด้วยความระมัดระวัง`);
-    }
-    parts.push(`✅ <strong>"โพสต์แล้ว" แก้ไขแล้ว (มิ.ย.-ส.ค. 69):</strong> ใช้ค่า "เนื้อหาตัวอย่างทั้งหมด" จากหน้า Insights ของ TikTok ซึ่งตรวจสอบไขว้กับการนับ "วิดีโอที่มีตัวอย่างสินค้า" รายครีเอเตอร์จากตาราง รายละเอียด &gt; ครีเอเตอร์ ด้วยตนเองแล้วใกล้เคียงกันมาก (มิ.ย. 35≈37, ก.ค. 15=15, ส.ค. 79≈86) — ตัวเลข % "ของอนุมัติ" ที่มีเครื่องหมาย * อาจเกิน 100% เพราะ "โพสต์แล้ว" นับจำนวนคลิป ซึ่งครีเอเตอร์คนหนึ่งอาจโพสต์ได้มากกว่า 1 คลิปต่อ 1 การอนุมัติ`);
-    parts.push(`🚫 <strong>คอลัมน์ "มียอดขาย" ถูกซ่อนออกแล้ว:</strong> TikTok ไม่มีตัวเลขยอดขายที่นับแยกได้ตามตัวอย่างสินค้าที่เชื่อถือได้ — ค่าเดียวที่มีอยู่ (ในแท็บ "คอนเวอร์ชั่นตามช่องทาง") ระบุชัดเจนว่าไม่รวมข้อมูลจากพาร์ทเนอร์ ซึ่งเป็นส่วนใหญ่ของยอดขายจริงของ WIBWUB จึงตัดสินใจซ่อนค่านี้ไว้แทนการแสดงตัวเลขที่ไม่น่าเชื่อถือ`);
+    parts.push(`🕐 <strong>"โพสต์แล้ว" มีข้อมูลตั้งแต่ มิ.ย. 69 เป็นต้นไปเท่านั้น:</strong> คอลัมน์ "การลงโพสต์" ในชีตไม่ได้ถูกกรอกอย่างสม่ำเสมอก่อนเดือนมิถุนายน 2569 จึงแสดงเป็น "–" (ไม่มีข้อมูล) สำหรับ ต.ค. 68 - พ.ค. 69 แทนการเดาหรือใช้ค่าประมาณการเดิม`);
+    parts.push(`🚫 <strong>คอลัมน์ "มียอดขาย" ถูกซ่อนออกแล้ว:</strong> ไม่มีแหล่งข้อมูลยอดขายที่นับแยกได้ตามตัวอย่างสินค้าที่เชื่อถือได้ ทั้งจากชีตและจาก TikTok จึงตัดสินใจซ่อนค่านี้ไว้แทนการแสดงตัวเลขที่ไม่น่าเชื่อถือ`);
+    parts.push(`ℹ️ <strong>คอลัมน์ GMV/COGS/คลิป/ROI ยังมาจาก TikTok Insights เหมือนเดิม</strong> (ไม่ได้เปลี่ยนแหล่งข้อมูล) ช่วงเวลาของข้อมูลกลุ่มนี้อาจไม่ตรงกับช่วงคำขอในชีตเป๊ะๆ สำหรับบางเดือน (เช่น พ.ย. 68 ที่ "คำขอ" นับเต็มเดือนจากชีต แต่ GMV/คลิปยังอิงช่วง 20-30 พ.ย. เดิมจาก Insights)`);
     anomEl.innerHTML = parts.join('<br><br>');
   }
 }
