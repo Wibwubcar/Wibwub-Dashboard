@@ -403,7 +403,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="sec">อัตราการแปลง (Conversion Funnel) — <span id="samp-sec-label"></span></div>
   <div class="g2">
     <div class="cc">
-      <div class="ct">คำขอ → อนุมัติ → จัดส่ง (ตามคำขอ) → โพสต์ → มียอดขาย</div>
+      <div class="ct">คำขอ → อนุมัติ → จัดส่ง (ตามคำขอ) → โพสต์</div>
       <div class="cw" style="height:240px"><canvas id="samp-funnel-chart"></canvas></div>
     </div>
     <div class="cc">
@@ -428,9 +428,8 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th onclick="sortTbl('tbl-samples',6,this)">โพสต์แล้ว <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-samples',7,this)" title="อนุมัติแล้วแต่ยังไม่โพสต์ (โดยประมาณ)">ยังไม่โพสต์ <span class="sort-icon">↕</span></th>
           <th onclick="sortTbl('tbl-samples',8,this)">คลิปทั้งหมด <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-samples',9,this)">มียอดขาย <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-samples',10,this)">GMV จากตัวอย่าง <span class="sort-icon">↕</span></th>
-          <th onclick="sortTbl('tbl-samples',11,this)">ROI 45 วัน <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',9,this)">GMV จากตัวอย่าง <span class="sort-icon">↕</span></th>
+          <th onclick="sortTbl('tbl-samples',10,this)">ROI 45 วัน <span class="sort-icon">↕</span></th>
         </tr>
       </thead>
       <tbody id="samples-body"></tbody>
@@ -9366,9 +9365,9 @@ const SAMPLE_MONTHS = [
   {key:'2026-03', label:'มี.ค. 2569',         short:'มี.ค.',      partial:false, range:'01/03/2026 - 31/03/2026', funnel:{req:203, appr:96, shipped:96, posted:89, sale:29}, perf:{shipped:131, gmv:235884.28, cogs:14031.90, content:202, roi:10.4355}, unverifiable:true},
   {key:'2026-04', label:'เม.ย. 2569',         short:'เม.ย.',      partial:false, range:'01/04/2026 - 30/04/2026', funnel:{req:305, appr:151,shipped:151,posted:134,sale:53}, perf:{shipped:31,  gmv:264131.66, cogs:2142.30,  content:45,  roi:5.1514}, unverifiable:true},
   {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:124, appr:60, shipped:60, posted:55, sale:26}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}, unverifiable:true},
-  {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:32,  appr:16, shipped:16, posted:90, sale:17}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}, corrected:true},
-  {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:64,  appr:22, shipped:22, posted:13, sale:3},  perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}, corrected:true},
-  {key:'2026-08', label:'ส.ค. 2569 (1-18)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 18/08/2026', funnel:{req:224, appr:136,shipped:136, posted:7,  sale:2},  perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}, corrected:true},
+  {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:32,  appr:16, shipped:16, posted:37, sale:17}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}, corrected:true},
+  {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:64,  appr:22, shipped:22, posted:15, sale:3},  perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}, corrected:true},
+  {key:'2026-08', label:'ส.ค. 2569 (1-18)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 18/08/2026', funnel:{req:224, appr:136,shipped:136, posted:86, sale:2},  perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}, corrected:true},
 ];
 
 const SAMPLE_LAST7D = {
@@ -9432,7 +9431,6 @@ function renderSamples(){
   const rawPostRate = d.funnel.appr>0 ? (d.funnel.posted/d.funnel.appr)*100 : 0;
   const postRate = Math.min(100, Math.round(rawPostRate*10)/10);
   const postRateFlag = rawPostRate>100;
-  const saleRate = d.funnel.posted>0 ? Math.round((d.funnel.sale/d.funnel.posted)*1000)/10 : 0;
   const notPosted = Math.max(0, d.funnel.appr - d.funnel.posted);
 
   const kstrip = document.getElementById('samp-kstrip');
@@ -9443,7 +9441,7 @@ function renderSamples(){
       <div class="kk"><div class="kkl">ปฏิเสธ / ไม่อนุมัติ</div><div class="kkv" style="color:var(--red)">${(d.funnel.req-d.funnel.appr).toLocaleString()}</div><div class="kks">${(100-apprRate).toFixed(1)}% ของคำขอ</div></div>
       <div class="kk"><div class="kkl">จัดส่ง (ตามคำขอ)</div><div class="kkv amber">${d.funnel.shipped.toLocaleString()}</div><div class="kks">จัดส่ง (ตามปฏิทิน) ${d.perf.shipped.toLocaleString()}</div></div>
       <div class="kk"><div class="kkl">โพสต์แล้ว</div><div class="kkv green">${d.funnel.posted.toLocaleString()}</div><div class="kks">ยังไม่โพสต์ ~${notPosted.toLocaleString()} · ${postRate}%${postRateFlag?'*':''} ของอนุมัติ</div></div>
-      <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">มียอดขาย ${d.funnel.sale.toLocaleString()} คน (${saleRate}% ของที่โพสต์)</div></div>
+      <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">เนื้อหาตัวอย่างสินค้าทั้งหมด (Insights)</div></div>
       <div class="kk"><div class="kkl">GMV จากตัวอย่าง</div><div class="kkv teal">${fmtK(d.perf.gmv)}</div><div class="kks">COGS ${fmtK(d.perf.cogs)}</div></div>
       <div class="kk"><div class="kkl">ROI 45 วัน</div><div class="kkv amber">${d.perf.roi ? d.perf.roi.toFixed(2)+'×' : '–'}</div><div class="kks">GMV ÷ COGS โดยประมาณ</div></div>
     `;
@@ -9455,10 +9453,10 @@ function renderSamples(){
     sampFunnelChart = new Chart(funnelCanvas.getContext('2d'),{
       type:'bar',
       data:{
-        labels:['คำขอ','อนุมัติ','จัดส่ง (ตามคำขอ)','โพสต์แล้ว','มียอดขาย'],
+        labels:['คำขอ','อนุมัติ','จัดส่ง (ตามคำขอ)','โพสต์แล้ว'],
         datasets:[{
-          data:[d.funnel.req, d.funnel.appr, d.funnel.shipped, d.funnel.posted, d.funnel.sale],
-          backgroundColor:['#3b82f6','#14b8a6','#f59e0b','#8b5cf6','#22c55e'],
+          data:[d.funnel.req, d.funnel.appr, d.funnel.shipped, d.funnel.posted],
+          backgroundColor:['#3b82f6','#14b8a6','#f59e0b','#8b5cf6'],
           borderRadius:6, borderSkipped:false
         }]
       },
@@ -9510,7 +9508,6 @@ function renderSamples(){
         <td data-val="${m.funnel.posted}">${m.funnel.posted.toLocaleString()}</td>
         <td data-val="${notPost}">${notPost.toLocaleString()}</td>
         <td data-val="${m.perf.content}">${m.perf.content.toLocaleString()}</td>
-        <td data-val="${m.funnel.sale}">${m.funnel.sale.toLocaleString()}</td>
         <td data-val="${m.perf.gmv}">${fmtK(m.perf.gmv)}</td>
         <td data-val="${m.perf.roi}">${m.perf.roi ? m.perf.roi.toFixed(2)+'×' : '–'}</td>
       </tr>`;
@@ -9532,7 +9529,8 @@ function renderSamples(){
     if(unverifiable.length){
       parts.push(`🔍 <strong>เดือนที่ยังตรวจสอบซ้ำไม่ได้:</strong> ${unverifiable.map(m=>m.label).join(', ')} — TikTok จำกัดรายงานราย SKU นี้ไว้เพียง 90 วันย้อนหลัง (ปัจจุบันย้อนได้ถึงราว 22 พ.ค. 2569) ตัวเลข "คำขอ"/"อนุมัติ" เดือนเหล่านี้จึงยังเป็นค่าเดิมจากวิธีคำนวณเก่า ซึ่งพบว่าคลาดเคลื่อนได้มากเมื่อเทียบกับเดือนที่ตรวจสอบใหม่แล้ว (มิ.ย.-ส.ค. 69) — ควรใช้ด้วยความระมัดระวัง`);
     }
-    parts.push(`ℹ️ ตัวเลข "โพสต์แล้ว" และ "มียอดขาย" ทุกเดือนยังคงเป็นค่าเดิมจากแท็บ "คอนเวอร์ชั่นตามช่องทาง" เนื่องจาก TikTok ไม่มีรายงานแยกรายสินค้าสำหรับสองค่านี้ — ตัวเลข % "ของอนุมัติ" ที่มีเครื่องหมาย * หมายถึงคำนวณได้เกิน 100% เพราะฐาน "อนุมัติ" ถูกแก้ไขใหม่แล้วแต่ "โพสต์แล้ว" ยังไม่มีแหล่งข้อมูลทดแทน`);
+    parts.push(`✅ <strong>"โพสต์แล้ว" แก้ไขแล้ว (มิ.ย.-ส.ค. 69):</strong> ใช้ค่า "เนื้อหาตัวอย่างทั้งหมด" จากหน้า Insights ของ TikTok ซึ่งตรวจสอบไขว้กับการนับ "วิดีโอที่มีตัวอย่างสินค้า" รายครีเอเตอร์จากตาราง รายละเอียด &gt; ครีเอเตอร์ ด้วยตนเองแล้วใกล้เคียงกันมาก (มิ.ย. 35≈37, ก.ค. 15=15, ส.ค. 79≈86) — ตัวเลข % "ของอนุมัติ" ที่มีเครื่องหมาย * อาจเกิน 100% เพราะ "โพสต์แล้ว" นับจำนวนคลิป ซึ่งครีเอเตอร์คนหนึ่งอาจโพสต์ได้มากกว่า 1 คลิปต่อ 1 การอนุมัติ`);
+    parts.push(`🚫 <strong>คอลัมน์ "มียอดขาย" ถูกซ่อนออกแล้ว:</strong> TikTok ไม่มีตัวเลขยอดขายที่นับแยกได้ตามตัวอย่างสินค้าที่เชื่อถือได้ — ค่าเดียวที่มีอยู่ (ในแท็บ "คอนเวอร์ชั่นตามช่องทาง") ระบุชัดเจนว่าไม่รวมข้อมูลจากพาร์ทเนอร์ ซึ่งเป็นส่วนใหญ่ของยอดขายจริงของ WIBWUB จึงตัดสินใจซ่อนค่านี้ไว้แทนการแสดงตัวเลขที่ไม่น่าเชื่อถือ`);
     anomEl.innerHTML = parts.join('<br><br>');
   }
 }
