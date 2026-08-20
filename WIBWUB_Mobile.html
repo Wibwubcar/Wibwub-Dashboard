@@ -336,7 +336,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <img src="logo-header.png" style="height:28px;filter:brightness(0)invert(1);display:block;" alt="WIBWUB">
     <div class="hdr-sub">Hyper Cleaning Car</div>
   </div>
-  <div class="hdr-right" id="mob-hdr-right" data-updated="16 ส.ค. 2569">
+  <div class="hdr-right" id="mob-hdr-right" data-updated="20 ส.ค. 2569">
     <div id="hdrDate" class="hdr-date"></div>
     <div>ม.ค. – ส.ค. 2569</div>
     <div id="hdrUser" style="display:none;text-align:right;margin-top:4px;">
@@ -375,11 +375,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 <div class="page active" id="pg-home">
   <div class="home-hero">
     <div class="hh-lbl">ยอดขายรวม ม.ค.–ส.ค. 2569</div>
-    <div class="hh-val">฿61.7M</div>
+    <div class="hh-val">฿61.9M</div>
     <div class="hh-sub">124,156 unique orders · AOV ฿484</div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v">฿39.2M</div><div class="hhg-l">Shopee</div></div>
-      <div class="hhg"><div class="hhg-v">฿11.0M</div><div class="hhg-l">TikTok</div></div>
+      <div class="hhg"><div class="hhg-v">฿11.3M</div><div class="hhg-l">TikTok</div></div>
       <div class="hhg"><div class="hhg-v">฿1.01M</div><div class="hhg-l">Lazada</div></div>
     </div>
   </div>
@@ -835,7 +835,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // ════════════════════════════════════════
 const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.","ส.ค."];
 const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,3633915];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,1250566.90];
+const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,1491261.24];
 const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,70698.89];
 const FB_REV=[2152231,1328934,1061901,802047,980883,413040,413040,413040];
 const LINE_REV=[350828,459158,418472,397898,374817,153907,153907,153907];
@@ -854,8 +854,8 @@ const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.66,8.66,6.41];
 const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,20.38,20.38,20.38];
 const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,573415.48];
 const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1088720.07];
-const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,327827];
-const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,356263];
+const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,386518];
+const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,427212];
 const TK_AFI=[460976,550756,655259,724120,913053,375599,897947,746906];
 const TK_NET=[456036,544073,642947,708730,899484,369644,883721,729931];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,20.38,20.38,20.38];
@@ -1150,7 +1150,7 @@ function initHome(){
 let sMo=0;
 function initSalesOv(){
   document.getElementById('s-ov-kpi').innerHTML=`
-    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–ส.ค.)</div><div class="kc-val">฿61.7M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–ส.ค.)</div><div class="kc-val">฿61.9M</div><div class="kc-sub">ทุก Platform</div></div>
     <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">124,156</div><div class="kc-sub">unique orders</div></div>
     <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿482</div><div class="kc-sub">ต่อออเดอร์</div></div>
     <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
