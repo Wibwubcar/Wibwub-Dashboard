@@ -9368,14 +9368,14 @@ const SAMPLE_MONTHS = [
   {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:124, appr:60, shipped:60, posted:55, sale:26}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}},
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:707, appr:95, shipped:95, posted:90, sale:17}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}, anomaly:'คำขอพุ่งเป็น 707 (ปกติ 100-300 ต่อเดือน) — อัตราอนุมัติร่วงเหลือ 13.4%'},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:125, appr:13, shipped:13, posted:13, sale:3},  perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}, anomaly:'อัตราอนุมัติเหลือเพียง 10.4% (13/125) เทียบกับปกติ 40-55%'},
-  {key:'2026-08', label:'ส.ค. 2569 (1-16)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 16/08/2026', funnel:{req:17,  appr:5,  shipped:5,  posted:5,  sale:1},  perf:{shipped:108, gmv:138729.07, cogs:6439.80,  content:77,  roi:0}},
+  {key:'2026-08', label:'ส.ค. 2569 (1-18)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 18/08/2026', funnel:{req:20,  appr:7,  shipped:7,  posted:7,  sale:2},  perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
 ];
 
 const SAMPLE_LAST7D = {
   key:'last7d', label:'7 วันล่าสุด', short:'7 วันล่าสุด', partial:true, rolling:true,
-  range:'10/08/2026 - 16/08/2026',
-  funnel:{req:9, appr:2, shipped:2, posted:2, sale:1},
-  perf:{shipped:43, gmv:59263.78, cogs:2457.90, content:39, roi:0}
+  range:'12/08/2026 - 18/08/2026',
+  funnel:{req:10, appr:4, shipped:4, posted:4, sale:2},
+  perf:{shipped:48, gmv:58508.08, cogs:2657.40, content:30, roi:1.01}
 };
 
 let activeSampleKey = SAMPLE_MONTHS[SAMPLE_MONTHS.length-1].key; // default: latest confirmed month
@@ -9384,7 +9384,7 @@ function sampleByKey(key){
   if(key==='last7d') return SAMPLE_LAST7D;
   if(key==='all'){
     const agg = {key:'all', label:'รวมทั้งหมด (พ.ย. 68 - ปัจจุบัน)', short:'รวมทั้งหมด', partial:false,
-      range:'20/11/2025 - 16/08/2026',
+      range:'20/11/2025 - 18/08/2026',
       funnel:{req:0,appr:0,shipped:0,posted:0,sale:0},
       perf:{shipped:0,gmv:0,cogs:0,content:0,roi:0}};
     SAMPLE_MONTHS.forEach(m=>{
