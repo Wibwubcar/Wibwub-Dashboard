@@ -412,7 +412,18 @@ tr:hover td{background:rgba(59,130,246,.04)}
     </div>
   </div>
 
-  <div class="note" style="margin-top:4px">📦 <strong>แยกตามสินค้า / 🔀 แยกตามช่องทางที่ขอ:</strong> TikTok ไม่มีรายงานสรุปแบบ aggregate ที่แยกคำขอตัวอย่างสินค้าตามรายสินค้าหรือช่องทาง (Open Collaboration / Target Collaboration / TikTok Shop Campaign) ย้อนหลังทั้งหมด — หน้าคิวคำขอที่แยกช่องทางได้แสดงเฉพาะคำขอที่ยังค้างอยู่ปัจจุบัน (~130 รายการ) ไม่ใช่ยอดสะสมทั้งหมด และการนับตามสินค้าต้องไล่เปิดทีละคำขอเป็นร้อยๆ รายการซึ่งไม่คุ้มกับ automation ถ้าต้องการข้อมูลนี้จริงจัง แนะนำให้ตั้งทีมบันทึกตอนอนุมัติคำขอแต่ละครั้ง (สินค้า + ช่องทาง) ลง Sheet แยกต่างหาก แล้วอัปเดตหน้านี้ภายหลังได้</div>
+  <div class="note" style="margin-top:4px">🔀 <strong>แยกตามช่องทางที่ขอ:</strong> TikTok ไม่มีรายงานสรุปแบบ aggregate ที่แยกคำขอตัวอย่างสินค้าตามช่องทาง (Open Collaboration / Target Collaboration / TikTok Shop Campaign) ย้อนหลังทั้งหมด — หน้าคิวคำขอที่แยกช่องทางได้แสดงเฉพาะคำขอที่ยังค้างอยู่ปัจจุบัน (~130 รายการ) ไม่ใช่ยอดสะสมทั้งหมด ถ้าต้องการข้อมูลนี้จริงจัง แนะนำให้ตั้งทีมบันทึกช่องทางลง Sheet แยกต่างหากตอนอนุมัติคำขอแต่ละครั้ง แล้วอัปเดตหน้านี้ภายหลังได้</div>
+
+  <div class="sec">📦 แยกตามสินค้าที่ขอ — <span id="samp-prod-sec-label"></span></div>
+  <div class="tw">
+    <table id="tbl-samp-products">
+      <thead>
+        <tr><th>สินค้า</th><th>จำนวนคำขอ</th><th>สัดส่วน</th></tr>
+      </thead>
+      <tbody id="samp-products-body"></tbody>
+    </table>
+  </div>
+  <div class="note" id="samp-products-note" style="margin-top:8px"></div>
 
   <div class="sec">สรุปรายเดือนทั้งหมด</div>
   <div class="tw">
@@ -9385,6 +9396,54 @@ const SAMPLE_LAST7D = {
   perf:{shipped:48, gmv:58508.08, cogs:2657.40, content:30, roi:1.01}
 };
 
+// ══════════════════════════════════════════
+// SAMPLE_PRODUCTS — per-month breakdown of which product was
+// given/shipped per request, sourced from the "สินค้าที่ให้" column of the
+// same "ขอสินค้า" Google Sheet used for SAMPLE_MONTHS above (counted with
+// identical date-bucketing logic, so totals line up with funnel.req per
+// month exactly). Requests can list more than one product (comma-separated
+// in the sheet) so per-product counts can sum to more than `total`.
+// `unspecified` = rows where the column was blank or literally "-" (e.g.
+// rejected / still-pending requests where no product was ever assigned) —
+// always shown separately, never folded into a product's count.
+// ══════════════════════════════════════════
+const SAMPLE_PRODUCTS = {
+  '2025-10': {total:63,  unspecified:20, items:[{n:'Sugar',c:17},{n:'Interior wipes',c:16},{n:'Interior',c:6},{n:'Beach',c:4},{n:'Cleaner',c:4},{n:'Refresh',c:3}]},
+  '2025-11': {total:145, unspecified:0,  items:[{n:'Interior wipes',c:47},{n:'Sugar',c:45},{n:'Interior',c:29},{n:'Cleaner',c:19},{n:'Beach',c:13},{n:'Wet Coat',c:1}]},
+  '2025-12': {total:141, unspecified:23, items:[{n:'Interior wipes',c:31},{n:'Interior',c:29},{n:'Cleaner',c:19},{n:'Sugar',c:18},{n:'Beach',c:17},{n:'Refresh',c:8}]},
+  '2026-01': {total:114, unspecified:54, items:[{n:'Interior',c:19},{n:'Interior wipes',c:18},{n:'Cleaner',c:8},{n:'Beach',c:8},{n:'Refresh',c:7}]},
+  '2026-02': {total:274, unspecified:97, items:[{n:'Sugar',c:62},{n:'Interior wipes',c:33},{n:'Refresh Wipes',c:22},{n:'Cleaner',c:20},{n:'Interior',c:20},{n:'Refresh',c:11},{n:'Beach',c:10}]},
+  '2026-03': {total:248, unspecified:84, items:[{n:'Sugar',c:41},{n:'Interior wipes',c:33},{n:'Interior',c:25},{n:'Refresh Wipes',c:24},{n:'Cleaner',c:21},{n:'Beach',c:13},{n:'Refresh',c:8}]},
+  '2026-04': {total:85,  unspecified:49, items:[{n:'Refresh Wipes',c:10},{n:'Interior',c:8},{n:'Interior wipes',c:8},{n:'Cleaner',c:8},{n:'Beach',c:2},{n:'Refresh',c:2}]},
+  '2026-05': {total:0,   unspecified:0,  items:[]},
+  '2026-06': {total:34,  unspecified:16, items:[{n:'Sugar',c:10},{n:'Interior',c:8},{n:'Martini',c:1}]},
+  '2026-07': {total:48,  unspecified:33, items:[{n:'Interior',c:9},{n:'Sugar',c:6}]},
+  '2026-08': {total:205, unspecified:106,items:[{n:'Refresh Wipes',c:51},{n:'Interior wipes',c:33},{n:'Interior',c:6},{n:'Sugar',c:5},{n:'Reflex',c:4}]},
+};
+
+// last7d is a rolling window that cuts across month boundaries, so it's
+// counted separately (same 12/08-20/08/2026 sheet-date range as SAMPLE_LAST7D
+// above) rather than derived from the monthly buckets. NOTE: this total
+// (91 requests in-range) does not match SAMPLE_LAST7D.funnel.req (10) above —
+// that funnel number predates the sheet swap done for SAMPLE_MONTHS and
+// hasn't been recomputed from this sheet yet. Flagged to the user in the UI.
+const SAMPLE_PRODUCTS_LAST7D = {total:91, unspecified:45, items:[{n:'Refresh Wipes',c:24},{n:'Interior wipes',c:15},{n:'Interior',c:4},{n:'Sugar',c:2},{n:'Reflex',c:1}]};
+
+function productsByKey(key){
+  if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
+  if(key==='all'){
+    const agg = {total:0, unspecified:0, items:[]};
+    const counts = {};
+    Object.values(SAMPLE_PRODUCTS).forEach(m=>{
+      agg.total += m.total; agg.unspecified += m.unspecified;
+      m.items.forEach(it => { counts[it.n] = (counts[it.n]||0) + it.c; });
+    });
+    agg.items = Object.entries(counts).map(([n,c])=>({n,c})).sort((a,b)=>b.c-a.c);
+    return agg;
+  }
+  return SAMPLE_PRODUCTS[key] || {total:0, unspecified:0, items:[]};
+}
+
 let activeSampleKey = SAMPLE_MONTHS[SAMPLE_MONTHS.length-1].key; // default: latest confirmed month
 
 function sampleByKey(key){
@@ -9452,6 +9511,32 @@ function renderSamples(){
       <div class="kk"><div class="kkl">คลิปทั้งหมด</div><div class="kkv purple">${d.perf.content.toLocaleString()}</div><div class="kks">เนื้อหาตัวอย่างสินค้าทั้งหมด (Insights)</div></div>
       <div class="kk"><div class="kkl">GMV จากตัวอย่าง</div><div class="kkv teal">${fmtK(d.perf.gmv)}</div><div class="kks">COGS ${fmtK(d.perf.cogs)}</div></div>
     `;
+  }
+
+  const pd = productsByKey(activeSampleKey);
+  const prodSecLabel = document.getElementById('samp-prod-sec-label');
+  if(prodSecLabel) prodSecLabel.textContent = `${d.label} (${d.range})`;
+  const prodBody = document.getElementById('samp-products-body');
+  if(prodBody){
+    if(!pd || pd.total===0){
+      prodBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--t3)">ไม่มีข้อมูลคำขอในช่วงนี้</td></tr>`;
+    } else {
+      const rows = pd.items.map(it=>{
+        const pct = pd.total>0 ? ((it.c/pd.total)*100).toFixed(1) : 0;
+        return `<tr><td>${it.n}</td><td>${it.c.toLocaleString()}</td><td>${pct}%</td></tr>`;
+      }).join('');
+      const unspecPct = pd.total>0 ? ((pd.unspecified/pd.total)*100).toFixed(1) : 0;
+      const unspecRow = pd.unspecified>0 ? `<tr style="opacity:.6"><td>ไม่ระบุสินค้า</td><td>${pd.unspecified.toLocaleString()}</td><td>${unspecPct}%</td></tr>` : '';
+      prodBody.innerHTML = rows + unspecRow;
+    }
+  }
+  const prodNote = document.getElementById('samp-products-note');
+  if(prodNote){
+    let noteParts = [`ℹ️ นับจากคอลัมน์ "สินค้าที่ให้" ในชีต "ขอสินค้า" เดียวกับด้านบน — บางคำขอระบุมากกว่า 1 สินค้า (นับซ้ำได้ในแต่ละสินค้า) ผลรวมคอลัมน์สินค้าจึงอาจมากกว่าจำนวนคำขอทั้งหมด · แถว "ไม่ระบุสินค้า" คือคำขอที่ทีมยังไม่ได้กรอกช่องนี้ (เช่น ถูกปฏิเสธ/รอดำเนินการ) — ไม่ใช่สินค้าจริง ไม่ควรนับเป็นยอดขอสินค้าใดสินค้าหนึ่ง`];
+    if(activeSampleKey==='last7d'){
+      noteParts.push(`⚠️ ตัวเลขคำขอรวมในตารางนี้ (${pd.total}) นับสดจากคอลัมน์วันที่ในชีตโดยตรง และ<strong>ไม่ตรงกับ "คำขอทั้งหมด" ในการ์ดด้านบน (${d.funnel.req})</strong> — การ์ดด้านบนยังเป็นตัวเลขเก่าจากก่อนเปลี่ยนมาใช้ชีตนี้ ยังไม่ได้อัปเดต`);
+    }
+    prodNote.innerHTML = noteParts.join('<br><br>');
   }
 
   const funnelCanvas = document.getElementById('samp-funnel-chart');
