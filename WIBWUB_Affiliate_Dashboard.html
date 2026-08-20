@@ -418,7 +418,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="tw">
     <table id="tbl-samp-products">
       <thead>
-        <tr><th>สินค้า</th><th>จำนวนคำขอ</th><th>สัดส่วน</th></tr>
+        <tr><th>สินค้า</th><th>คำขอทั้งหมด</th><th>อนุมัติ</th><th>ปฏิเสธ</th><th>สัดส่วน</th></tr>
       </thead>
       <tbody id="samp-products-body"></tbody>
     </table>
@@ -9397,51 +9397,59 @@ const SAMPLE_LAST7D = {
 };
 
 // ══════════════════════════════════════════
-// SAMPLE_PRODUCTS — per-month breakdown of which product was
-// given/shipped per request, sourced from the "สินค้าที่ให้" column of the
-// same "ขอสินค้า" Google Sheet used for SAMPLE_MONTHS above (counted with
-// identical date-bucketing logic, so totals line up with funnel.req per
-// month exactly). Requests can list more than one product (comma-separated
-// in the sheet) so per-product counts can sum to more than `total`.
-// `unspecified` = rows where the column was blank or literally "-" (e.g.
-// rejected / still-pending requests where no product was ever assigned) —
+// SAMPLE_PRODUCTS — per-month breakdown of which product each request was
+// FOR, sourced from the "สินค้าที่ Creator ขอ" column (what the creator asked
+// for) — NOT "สินค้าที่ให้" (what was actually shipped, which the team only
+// fills in on approval and so under-counts rejected requests). Every product
+// row carries its own {c:total, appr:approved, rej:rejected, other:on-process
+// /done/sent/waiting} split, counted from the same "ขอสินค้า" Google Sheet
+// used for SAMPLE_MONTHS above (identical date-bucketing, so `total` lines up
+// with funnel.req per month exactly). Requests can list more than one product
+// (comma-separated in the sheet) so per-product counts can sum to more than
+// `total`. `unspecified` = rows where this column itself was blank/"-" (the
+// creator's ask was never logged at all, regardless of approve/reject) —
 // always shown separately, never folded into a product's count.
 // ══════════════════════════════════════════
 const SAMPLE_PRODUCTS = {
-  '2025-10': {total:63,  unspecified:20, items:[{n:'Sugar',c:17},{n:'Interior wipes',c:16},{n:'Interior',c:6},{n:'Beach',c:4},{n:'Cleaner',c:4},{n:'Refresh',c:3}]},
-  '2025-11': {total:145, unspecified:0,  items:[{n:'Interior wipes',c:47},{n:'Sugar',c:45},{n:'Interior',c:29},{n:'Cleaner',c:19},{n:'Beach',c:13},{n:'Wet Coat',c:1}]},
-  '2025-12': {total:141, unspecified:23, items:[{n:'Interior wipes',c:31},{n:'Interior',c:29},{n:'Cleaner',c:19},{n:'Sugar',c:18},{n:'Beach',c:17},{n:'Refresh',c:8}]},
-  '2026-01': {total:114, unspecified:54, items:[{n:'Interior',c:19},{n:'Interior wipes',c:18},{n:'Cleaner',c:8},{n:'Beach',c:8},{n:'Refresh',c:7}]},
-  '2026-02': {total:274, unspecified:97, items:[{n:'Sugar',c:62},{n:'Interior wipes',c:33},{n:'Refresh Wipes',c:22},{n:'Cleaner',c:20},{n:'Interior',c:20},{n:'Refresh',c:11},{n:'Beach',c:10}]},
-  '2026-03': {total:248, unspecified:84, items:[{n:'Sugar',c:41},{n:'Interior wipes',c:33},{n:'Interior',c:25},{n:'Refresh Wipes',c:24},{n:'Cleaner',c:21},{n:'Beach',c:13},{n:'Refresh',c:8}]},
-  '2026-04': {total:85,  unspecified:49, items:[{n:'Refresh Wipes',c:10},{n:'Interior',c:8},{n:'Interior wipes',c:8},{n:'Cleaner',c:8},{n:'Beach',c:2},{n:'Refresh',c:2}]},
-  '2026-05': {total:0,   unspecified:0,  items:[]},
-  '2026-06': {total:34,  unspecified:16, items:[{n:'Sugar',c:10},{n:'Interior',c:8},{n:'Martini',c:1}]},
-  '2026-07': {total:48,  unspecified:33, items:[{n:'Interior',c:9},{n:'Sugar',c:6}]},
-  '2026-08': {total:205, unspecified:106,items:[{n:'Refresh Wipes',c:51},{n:'Interior wipes',c:33},{n:'Interior',c:6},{n:'Sugar',c:5},{n:'Reflex',c:4}]},
+  '2025-10': {total:63,  unspecified:{c:63,appr:25,rej:20,other:18}, items:[]},
+  '2025-11': {total:145, unspecified:{c:145,appr:78,rej:55,other:12}, items:[]},
+  '2025-12': {total:141, unspecified:{c:80,appr:31,rej:38,other:11}, items:[{n:'Interior wipes',c:16,appr:12,rej:4,other:0},{n:'Interior',c:15,appr:7,rej:8,other:0},{n:'Cleaner',c:14,appr:6,rej:8,other:0},{n:'Beach',c:13,appr:6,rej:5,other:2},{n:'Refresh',c:7,appr:7,rej:0,other:0}]},
+  '2026-01': {total:114, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:40,appr:21,rej:19,other:0},{n:'Interior wipes',c:36,appr:20,rej:16,other:0},{n:'Cleaner',c:19,appr:8,rej:11,other:0},{n:'Beach',c:16,appr:10,rej:6,other:0},{n:'Refresh',c:12,appr:8,rej:4,other:0}]},
+  '2026-02': {total:274, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Sugar',c:104,appr:64,rej:40,other:0},{n:'Interior wipes',c:61,appr:38,rej:23,other:0},{n:'Interior',c:52,appr:30,rej:22,other:0},{n:'Cleaner',c:39,appr:26,rej:13,other:0},{n:'Refresh Wipes',c:29,appr:24,rej:5,other:0},{n:'Beach',c:25,appr:16,rej:9,other:0},{n:'Refresh',c:13,appr:12,rej:1,other:0}]},
+  '2026-03': {total:248, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Sugar',c:72,appr:50,rej:22,other:0},{n:'Interior wipes',c:58,appr:36,rej:22,other:0},{n:'Interior',c:54,appr:29,rej:24,other:1},{n:'Refresh Wipes',c:36,appr:27,rej:9,other:0},{n:'Cleaner',c:34,appr:25,rej:9,other:0},{n:'Beach',c:23,appr:17,rej:6,other:0},{n:'Refresh',c:13,appr:8,rej:5,other:0}]},
+  '2026-04': {total:85,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior wipes',c:31,appr:8,rej:23,other:0},{n:'Refresh Wipes',c:20,appr:10,rej:10,other:0},{n:'Cleaner',c:18,appr:9,rej:9,other:0},{n:'Interior',c:16,appr:8,rej:8,other:0},{n:'Refresh',c:5,appr:3,rej:2,other:0},{n:'Beach',c:5,appr:2,rej:3,other:0}]},
+  '2026-05': {total:0,   unspecified:{c:0,appr:0,rej:0,other:0}, items:[]},
+  '2026-06': {total:34,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:22,appr:8,rej:14,other:0},{n:'Sugar',c:12,appr:10,rej:2,other:0}]},
+  '2026-07': {total:48,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:37,appr:9,rej:28,other:0},{n:'Sugar',c:13,appr:6,rej:7,other:0}]},
+  '2026-08': {total:205, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:96,appr:52,rej:44,other:0},{n:'Interior wipes',c:74,appr:36,rej:38,other:0},{n:'Interior',c:23,appr:9,rej:14,other:0},{n:'Reflex',c:20,appr:7,rej:13,other:0},{n:'Sugar',c:10,appr:5,rej:5,other:0}]},
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (same 12/08-20/08/2026 sheet-date range as SAMPLE_LAST7D
-// above) rather than derived from the monthly buckets. NOTE: this total
-// (91 requests in-range) does not match SAMPLE_LAST7D.funnel.req (10) above —
-// that funnel number predates the sheet swap done for SAMPLE_MONTHS and
-// hasn't been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:91, unspecified:45, items:[{n:'Refresh Wipes',c:24},{n:'Interior wipes',c:15},{n:'Interior',c:4},{n:'Sugar',c:2},{n:'Reflex',c:1}]};
+// counted separately (14/08-20/08/2026 sheet-date range) rather than derived
+// from the monthly buckets. NOTE: this total (91 requests in-range) does not
+// match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
+// sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
+// sheet yet. Flagged to the user in the UI.
+const SAMPLE_PRODUCTS_LAST7D = {total:91, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:41,appr:19,rej:22,other:0},{n:'Interior wipes',c:39,appr:19,rej:20,other:0},{n:'Interior',c:10,appr:5,rej:5,other:0},{n:'Reflex',c:5,appr:2,rej:3,other:0},{n:'Sugar',c:4,appr:1,rej:3,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
   if(key==='all'){
-    const agg = {total:0, unspecified:0, items:[]};
+    const agg = {total:0, unspecified:{c:0,appr:0,rej:0,other:0}, items:[]};
     const counts = {};
     Object.values(SAMPLE_PRODUCTS).forEach(m=>{
-      agg.total += m.total; agg.unspecified += m.unspecified;
-      m.items.forEach(it => { counts[it.n] = (counts[it.n]||0) + it.c; });
+      agg.total += m.total;
+      agg.unspecified.c += m.unspecified.c; agg.unspecified.appr += m.unspecified.appr;
+      agg.unspecified.rej += m.unspecified.rej; agg.unspecified.other += m.unspecified.other;
+      m.items.forEach(it => {
+        if(!counts[it.n]) counts[it.n] = {c:0,appr:0,rej:0,other:0};
+        counts[it.n].c += it.c; counts[it.n].appr += it.appr; counts[it.n].rej += it.rej; counts[it.n].other += it.other;
+      });
     });
-    agg.items = Object.entries(counts).map(([n,c])=>({n,c})).sort((a,b)=>b.c-a.c);
+    agg.items = Object.entries(counts).map(([n,v])=>({n,...v})).sort((a,b)=>b.c-a.c);
     return agg;
   }
-  return SAMPLE_PRODUCTS[key] || {total:0, unspecified:0, items:[]};
+  return SAMPLE_PRODUCTS[key] || {total:0, unspecified:{c:0,appr:0,rej:0,other:0}, items:[]};
 }
 
 let activeSampleKey = SAMPLE_MONTHS[SAMPLE_MONTHS.length-1].key; // default: latest confirmed month
@@ -9519,21 +9527,22 @@ function renderSamples(){
   const prodBody = document.getElementById('samp-products-body');
   if(prodBody){
     if(!pd || pd.total===0){
-      prodBody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--t3)">ไม่มีข้อมูลคำขอในช่วงนี้</td></tr>`;
+      prodBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--t3)">ไม่มีข้อมูลคำขอในช่วงนี้</td></tr>`;
     } else {
       const rows = pd.items.map(it=>{
         const pct = pd.total>0 ? ((it.c/pd.total)*100).toFixed(1) : 0;
-        return `<tr><td>${it.n}</td><td>${it.c.toLocaleString()}</td><td>${pct}%</td></tr>`;
+        return `<tr><td>${it.n}</td><td>${it.c.toLocaleString()}</td><td style="color:var(--gn)">${it.appr.toLocaleString()}</td><td style="color:var(--rd)">${it.rej.toLocaleString()}</td><td>${pct}%</td></tr>`;
       }).join('');
-      const unspecPct = pd.total>0 ? ((pd.unspecified/pd.total)*100).toFixed(1) : 0;
-      const unspecRow = pd.unspecified>0 ? `<tr style="opacity:.6"><td>ไม่ระบุสินค้า (≈ คำขอที่ถูกปฏิเสธ)</td><td>${pd.unspecified.toLocaleString()}</td><td>${unspecPct}%</td></tr>` : '';
+      const u = pd.unspecified;
+      const unspecPct = pd.total>0 ? ((u.c/pd.total)*100).toFixed(1) : 0;
+      const unspecRow = u.c>0 ? `<tr style="opacity:.6"><td>ไม่ระบุสินค้าที่ขอ</td><td>${u.c.toLocaleString()}</td><td style="color:var(--gn)">${u.appr.toLocaleString()}</td><td style="color:var(--rd)">${u.rej.toLocaleString()}</td><td>${unspecPct}%</td></tr>` : '';
       prodBody.innerHTML = rows + unspecRow;
     }
   }
   const prodNote = document.getElementById('samp-products-note');
   if(prodNote){
-    let noteParts = [`ℹ️ นับจากคอลัมน์ "สินค้าที่ให้" ในชีต "ขอสินค้า" เดียวกับด้านบน — บางคำขอระบุมากกว่า 1 สินค้า (นับซ้ำได้ในแต่ละสินค้า) ผลรวมคอลัมน์สินค้าจึงอาจมากกว่าจำนวนคำขอทั้งหมด`,
-      `🔍 <strong>"ไม่ระบุสินค้า" คือคำขอที่ถูกปฏิเสธ (Reject) เป็นหลัก ไม่ใช่ข้อมูลขาดหาย:</strong> ทีมกรอกคอลัมน์ "สินค้าที่ให้" เฉพาะตอนอนุมัติและส่งสินค้าจริง คำขอที่ถูก Reject จึงไม่มีสินค้าระบุไว้โดยธรรมชาติ — ตรวจสอบแล้วทั้ง 9 เดือนที่มีข้อมูล ตัวเลข "ไม่ระบุสินค้า" ตรงกับจำนวนคำขอสถานะ Reject เกือบ 100% (เช่น ส.ค. 69: ไม่ระบุ 106 จาก Reject 107 รายการ) จึงควรอ่านแถวนี้ว่า "ถูกปฏิเสธ" ไม่ใช่ "ยังไม่มีข้อมูล"`];
+    let noteParts = [`ℹ️ นับจากคอลัมน์ "สินค้าที่ Creator ขอ" ในชีต "ขอสินค้า" (สินค้าที่ครีเอเตอร์ขอมา ไม่ใช่ "สินค้าที่ให้" ที่ทีมกรอกเฉพาะตอนอนุมัติ) จึงนับรวมทั้งคำขอที่อนุมัติและถูกปฏิเสธ — คอลัมน์ "คำขอทั้งหมด" คือทุกคำขอของสินค้านั้น แยกเป็น "อนุมัติ" กับ "ปฏิเสธ" ให้เห็นชัดเจน (คำขอสถานะอื่น เช่น On Process/Done/รอดำเนินการ จะนับรวมอยู่ใน "คำขอทั้งหมด" แต่ไม่ได้แยกไว้ในสองคอลัมน์นี้) · บางคำขอระบุมากกว่า 1 สินค้า (นับซ้ำได้ในแต่ละสินค้า) ผลรวมคอลัมน์สินค้าจึงอาจมากกว่าจำนวนคำขอทั้งหมด`,
+      `📌 <strong>"ไม่ระบุสินค้าที่ขอ"</strong> คือคำขอที่คอลัมน์นี้เองว่างไว้ (ทีมไม่ได้บันทึกว่าครีเอเตอร์ขอสินค้าอะไร) ไม่ได้แปลว่าถูกปฏิเสธเสมอไป — เกิดขึ้นเกือบทั้งหมดใน ต.ค.-พ.ย. 68 ก่อนเริ่มใช้คอลัมน์นี้จริงจัง เดือนหลังจากนั้นแทบไม่มีแถวนี้เหลือแล้ว`];
     if(activeSampleKey==='last7d'){
       noteParts.push(`⚠️ ตัวเลขคำขอรวมในตารางนี้ (${pd.total}) นับสดจากคอลัมน์วันที่ในชีตโดยตรง และ<strong>ไม่ตรงกับ "คำขอทั้งหมด" ในการ์ดด้านบน (${d.funnel.req})</strong> — การ์ดด้านบนยังเป็นตัวเลขเก่าจากก่อนเปลี่ยนมาใช้ชีตนี้ ยังไม่ได้อัปเดต`);
     }
