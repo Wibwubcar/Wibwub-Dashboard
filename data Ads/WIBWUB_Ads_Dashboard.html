@@ -1431,9 +1431,12 @@ const TK_BREAKDOWN = {
   },
   jul: {
     gmvLive: {
-      total:{spend:3200,orders:151,revenue:54434.78,views:6186,roi:17.01,cpa:21.19},
+      /* corrected 21 Aug 2026 — same date-range-scoping bug as Aug: original capture missed 2 of 3 July LIVE sessions (25.07.26/Live, live-15.07) and slightly undercounted 7.7Live duo's own orders/revenue. Re-verified against TikTok Ads Manager with URL-forced list_start_date/list_end_date = Jul 1-31 2026, all 4 campaign-list pages checked, no other July sessions found. */
+      total:{spend:4509.10,orders:212,revenue:81312.48,views:12367,roi:18.03,cpa:21.27},
       sessions:[
-        {name:"7.7Live duo",spend:3200,orders:151,revenue:54434.78,roi:17.01,views:6186}
+        {name:"7.7Live duo",spend:3200,orders:153,revenue:56481.10,roi:17.65,views:6186},
+        {name:"live-15.07",spend:700.80,orders:36,revenue:15554.86,roi:22.20,views:3476},
+        {name:"25.07.26/Live",spend:608.30,orders:23,revenue:9276.52,roi:15.25,views:2705}
       ]
     },
     gmvMax: {
@@ -1501,9 +1504,11 @@ const TK_BREAKDOWN = {
   },
   all: {
     gmvLive: {
-      total:{spend:56401.66,orders:1514,revenue:601747.81,views:108747,roi:10.67,cpa:37.25},
+      /* corrected 21 Aug 2026 — jul total/sessions replaced with re-verified Jul 1-31 data (see jul.gmvLive note); top-12 ranking recomputed, "7.7Live duo" now ranks #2 all-time and "live-15.07" (new, revenue 15,554.86) narrowly misses top-12 at #13 */
+      total:{spend:57710.76,orders:1575,revenue:628625.51,views:114928,roi:10.89,cpa:36.64},
       sessions:[
         {name:"06 1.2",spend:3855,orders:164,revenue:72592,roi:18.83,views:8803},
+        {name:"7.7Live duo",spend:3200,orders:153,revenue:56481.10,roi:17.65,views:6186},
         {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
         {name:"25.06.26/Liveแอ้นปาย",spend:942,orders:104,revenue:35593,roi:37.78,views:5893},
         {name:"4.4 Live_GMV",spend:1334,orders:56,revenue:30040,roi:22.52,views:2686},
@@ -1513,8 +1518,7 @@ const TK_BREAKDOWN = {
         {name:"08.08.26/Liveปาย+แอ้น",spend:442.24,orders:52,revenue:19428.72,roi:43.93,views:1716},
         {name:"01/06 - 1.2",spend:1146,orders:42,revenue:17904,roi:13.71,views:5815},
         {name:"05.05.26/GMVLive เก็บโค้ด5.5(2)",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
-        {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715},
-        {name:"25.05.26/คนรักรถ",spend:1404,orders:32,revenue:14021,roi:9.99,views:3462}
+        {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715}
       ]
     },
     gmvMax: {
