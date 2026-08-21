@@ -1475,15 +1475,15 @@ const TK_BREAKDOWN = {
   },
   aug: {
     gmvLive: {
-      /* Aug 1-21 (LIVE GMV Max campaign list, TikTok Ads Manager, fetched 2026-08-21) */
-      total:{spend:1209.59,orders:111,revenue:48182.59,views:7738,roi:39.83,cpa:10.9},
+      /* Aug 1-21 (LIVE GMV Max campaign list, TikTok Ads Manager, corrected 2026-08-21 — date range was previously scoped to default 2026-08-14~21, undercounting spend for sessions before Aug 14; re-extracted with "Last 30 days" filter) */
+      total:{spend:2450.66,orders:231,revenue:93781.03,views:14149,roi:38.27,cpa:10.61},
       sessions:[
         {name:"live 19.08.26",spend:623.86,orders:11,revenue:8179.94,roi:13.11,views:968},
-        {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
-        {name:"13.08.26Test/ROI",spend:0.11,orders:1,revenue:98.97,roi:899.73,views:7},
-        {name:"08.08.26/Liveแอ้นปายมืด",spend:0.0,orders:1,revenue:960.0,roi:0.0,views:0},
-        {name:"08.08.26/Liveปาย+แอ้นบ่าย",spend:0.0,orders:0,revenue:0.0,roi:0.0,views:0},
-        {name:"08.08.26/Liveปาย+แอ้น",spend:0.0,orders:0,revenue:0.0,roi:0.0,views:0}
+        {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.50,views:6763},
+        {name:"13.08.26Test/ROI",spend:96.91,orders:12,revenue:4193.76,roi:43.27,views:1179},
+        {name:"08.08.26/Liveแอ้นปายมืด",spend:315.64,orders:25,revenue:11595.95,roi:36.74,views:1859},
+        {name:"08.08.26/Liveปาย+แอ้นบ่าย",spend:386.39,orders:33,revenue:11438.98,roi:29.60,views:1664},
+        {name:"08.08.26/Liveปาย+แอ้น",spend:442.24,orders:52,revenue:19428.72,roi:43.93,views:1716}
       ]
     },
     gmvMax: {
@@ -1501,7 +1501,7 @@ const TK_BREAKDOWN = {
   },
   all: {
     gmvLive: {
-      total:{spend:55160.59,orders:1394,revenue:556149.37,views:102336,roi:10.08,cpa:39.57},
+      total:{spend:56401.66,orders:1514,revenue:601747.81,views:108747,roi:10.67,cpa:37.25},
       sessions:[
         {name:"06 1.2",spend:3855,orders:164,revenue:72592,roi:18.83,views:8803},
         {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
@@ -1510,11 +1510,11 @@ const TK_BREAKDOWN = {
         {name:"15/06 - 1.2",spend:1503,orders:64,revenue:25550,roi:17.01,views:6298},
         {name:"05.05.26/GMVLive เก็บโค้ด5.5(1)",spend:4580,orders:64,revenue:22705,roi:4.96,views:3538},
         {name:"25.04.26/Live GMV New",spend:3008,orders:47,revenue:22704,roi:7.55,views:3802},
+        {name:"08.08.26/Liveปาย+แอ้น",spend:442.24,orders:52,revenue:19428.72,roi:43.93,views:1716},
         {name:"01/06 - 1.2",spend:1146,orders:42,revenue:17904,roi:13.71,views:5815},
         {name:"05.05.26/GMVLive เก็บโค้ด5.5(2)",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
         {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715},
-        {name:"25.05.26/คนรักรถ",spend:1404,orders:32,revenue:14021,roi:9.99,views:3462},
-        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225(1)",spend:498,orders:31,revenue:12897,roi:25.9,views:1246}
+        {name:"25.05.26/คนรักรถ",spend:1404,orders:32,revenue:14021,roi:9.99,views:3462}
       ]
     },
     gmvMax: {
