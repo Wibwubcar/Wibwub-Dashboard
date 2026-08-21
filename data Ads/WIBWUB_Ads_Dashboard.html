@@ -447,7 +447,7 @@
 
   <!-- ── GMV Live ──────────────────────────────────────────────────────── -->
   <div id="tk-tab-gmvlive" class="tk-view">
-    <div class="section-hdr" style="margin-top:4px"><h2>📺 GMV Live — พ.ค. 2569</h2><span class="pill">1–25 พ.ค. · 10 sessions</span></div>
+    <div class="section-hdr" style="margin-top:4px"><h2>📺 GMV Live — <span id="tk-live-period-txt">ส.ค. 2569</span></h2><span class="pill" id="tk-live-period-pill">1–21 ส.ค. · 6 sessions</span></div>
     <div class="kpi-grid">
       <div class="kpi-card tiktok"><div class="kpi-label">Live Ads Spend</div><div class="kpi-value" id="tk-live-kpi-spend">฿18,986</div><div class="kpi-sub">1–25 พ.ค.</div></div>
       <div class="kpi-card green"><div class="kpi-label">Revenue จาก Live</div><div class="kpi-value" id="tk-live-kpi-rev">฿87,374</div><div class="kpi-sub">Ads-attributed</div></div>
@@ -1475,8 +1475,16 @@ const TK_BREAKDOWN = {
   },
   aug: {
     gmvLive: {
-      total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0},
-      sessions:[]
+      /* Aug 1-21 (LIVE GMV Max campaign list, TikTok Ads Manager, fetched 2026-08-21) */
+      total:{spend:1209.59,orders:111,revenue:48182.59,views:7738,roi:39.83,cpa:10.9},
+      sessions:[
+        {name:"live 19.08.26",spend:623.86,orders:11,revenue:8179.94,roi:13.11,views:968},
+        {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
+        {name:"13.08.26Test/ROI",spend:0.11,orders:1,revenue:98.97,roi:899.73,views:7},
+        {name:"08.08.26/Liveแอ้นปายมืด",spend:0.0,orders:1,revenue:960.0,roi:0.0,views:0},
+        {name:"08.08.26/Liveปาย+แอ้นบ่าย",spend:0.0,orders:0,revenue:0.0,roi:0.0,views:0},
+        {name:"08.08.26/Liveปาย+แอ้น",spend:0.0,orders:0,revenue:0.0,roi:0.0,views:0}
+      ]
     },
     gmvMax: {
       /* Aug 1-21 (Campaign overview data 20260801 - 20260821.xlsx, downloaded 2026-08-21 08:17 ICT) — Total row (By Day = '-') used directly; verified == sum of the daily rows (no double-count). No per-campaign breakdown available in this export format. NOTE: 21 Aug is a PARTIAL day (pulled 08:17 ICT; ฿3,092.70 / 44 orders / ฿7,704.97 revenue). 20 Aug now complete at ฿21,941.70 / 428 orders. */
@@ -1493,9 +1501,10 @@ const TK_BREAKDOWN = {
   },
   all: {
     gmvLive: {
-      total:{spend:53951,orders:1283,revenue:507966.78,views:94598,roi:9.42,cpa:42.05},
+      total:{spend:55160.59,orders:1394,revenue:556149.37,views:102336,roi:10.08,cpa:39.57},
       sessions:[
         {name:"06 1.2",spend:3855,orders:164,revenue:72592,roi:18.83,views:8803},
+        {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
         {name:"25.06.26/Liveแอ้นปาย",spend:942,orders:104,revenue:35593,roi:37.78,views:5893},
         {name:"4.4 Live_GMV",spend:1334,orders:56,revenue:30040,roi:22.52,views:2686},
         {name:"15/06 - 1.2",spend:1503,orders:64,revenue:25550,roi:17.01,views:6298},
@@ -1505,8 +1514,7 @@ const TK_BREAKDOWN = {
         {name:"05.05.26/GMVLive เก็บโค้ด5.5(2)",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
         {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715},
         {name:"25.05.26/คนรักรถ",spend:1404,orders:32,revenue:14021,roi:9.99,views:3462},
-        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225(1)",spend:498,orders:31,revenue:12897,roi:25.9,views:1246},
-        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225(2)",spend:500,orders:33,revenue:10803,roi:21.59,views:1662}
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225(1)",spend:498,orders:31,revenue:12897,roi:25.9,views:1246}
       ]
     },
     gmvMax: {
@@ -1625,6 +1633,8 @@ function renderLiveSessions(){
   set('tk-live-kpi-orders',fmt(lt.orders));
   set('tk-live-kpi-views',fmt(lt.views));
   set('tk-live-kpi-cpa','฿'+fmt(lt.cpa||0));
+  const ptxt=document.getElementById('tk-live-period-txt'); if(ptxt) ptxt.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
+  const ppill=document.getElementById('tk-live-period-pill'); if(ppill) ppill.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge+' · '+d.sessions.length+' sessions';
   if(!d.sessions.length){body.innerHTML='<tr><td colspan="7" style="text-align:center;color:#666;padding:20px">ไม่มีข้อมูล GMV Live ในช่วงนี้</td></tr>';return;}
   body.innerHTML = d.sessions.map((s,i)=>`<tr>
     <td>${i+1}</td>
