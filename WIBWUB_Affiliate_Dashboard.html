@@ -9526,7 +9526,7 @@ const SAMPLE_MONTHS = [
   {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:0,   appr:0,   shipped:0,   posted:0,    sale:0}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}, anomaly:'ทีมไม่ได้บันทึกคำขอสินค้าใหม่ในชีต "ขอสินค้า" เลยเดือนนี้ (0 แถว) — อาจเป็นช่วงหยุดพักการบันทึก ส่วน GMV/คลิปที่เกิดขึ้นจริง (คอลัมน์ขวา) มาจากคำขอเดือนก่อนหน้าที่ยังคงลงคอนเทนต์อยู่'},
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
-  {key:'2026-08', label:'ส.ค. 2569 (1-21)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 21/08/2026', funnel:{req:214, appr:101, shipped:101, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
+  {key:'2026-08', label:'ส.ค. 2569 (1-22)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 22/08/2026', funnel:{req:216, appr:103, shipped:103, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
 ];
 
 const SAMPLE_LAST7D = {
@@ -9561,16 +9561,16 @@ const SAMPLE_PRODUCTS = {
   '2026-05': {total:0,   unspecified:{c:0,appr:0,rej:0,other:0}, items:[]},
   '2026-06': {total:34,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:22,appr:8,rej:14,other:0},{n:'Sugar',c:12,appr:10,rej:2,other:0}]},
   '2026-07': {total:48,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:37,appr:9,rej:28,other:0},{n:'Sugar',c:13,appr:6,rej:7,other:0}]},
-  '2026-08': {total:214, unspecified:{c:1,appr:0,rej:0,other:1}, items:[{n:'Refresh Wipes',c:100,appr:53,rej:47,other:0},{n:'Interior wipes',c:77,appr:38,rej:39,other:0},{n:'Interior',c:24,appr:9,rej:15,other:0},{n:'Reflex',c:20,appr:7,rej:13,other:0},{n:'Sugar',c:10,appr:5,rej:5,other:0}]},
+  '2026-08': {total:216, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:103,appr:55,rej:48,other:0},{n:'Interior wipes',c:77,appr:38,rej:39,other:0},{n:'Interior',c:24,appr:9,rej:15,other:0},{n:'Reflex',c:20,appr:7,rej:13,other:0},{n:'Sugar',c:10,appr:5,rej:5,other:0}]},
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (15/08-21/08/2026 sheet-date range) rather than derived
-// from the monthly buckets. NOTE: this total (92 requests in-range) does not
+// counted separately (16/08-22/08/2026 sheet-date range) rather than derived
+// from the monthly buckets. NOTE: this total (94 requests in-range) does not
 // match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
 // sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
 // sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:92, unspecified:{c:1,appr:0,rej:0,other:1}, items:[{n:'Interior wipes',c:42,appr:21,rej:21,other:0},{n:'Refresh Wipes',c:42,appr:19,rej:23,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:4,appr:1,rej:3,other:0},{n:'Sugar',c:3,appr:1,rej:2,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:94, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:45,appr:21,rej:24,other:0},{n:'Interior wipes',c:42,appr:21,rej:21,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:4,appr:1,rej:3,other:0},{n:'Sugar',c:3,appr:1,rej:2,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
