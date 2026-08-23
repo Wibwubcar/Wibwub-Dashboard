@@ -9711,7 +9711,7 @@ const SAMPLE_MONTHS = [
   {key:'2026-05', label:'พ.ค. 2569',          short:'พ.ค.',       partial:false, range:'01/05/2026 - 31/05/2026', funnel:{req:0,   appr:0,   shipped:0,   posted:0,    sale:0}, perf:{shipped:85,  gmv:233770.14, cogs:8899.50,  content:123, roi:3.4183}, anomaly:'ทีมไม่ได้บันทึกคำขอสินค้าใหม่ในชีต "ขอสินค้า" เลยเดือนนี้ (0 แถว) — อาจเป็นช่วงหยุดพักการบันทึก ส่วน GMV/คลิปที่เกิดขึ้นจริง (คอลัมน์ขวา) มาจากคำขอเดือนก่อนหน้าที่ยังคงลงคอนเทนต์อยู่'},
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
-  {key:'2026-08', label:'ส.ค. 2569 (1-22)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 22/08/2026', funnel:{req:216, appr:103, shipped:103, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
+  {key:'2026-08', label:'ส.ค. 2569 (1-23)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 23/08/2026', funnel:{req:216, appr:103, shipped:103, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
 ];
 
 const SAMPLE_LAST7D = {
@@ -9750,7 +9750,7 @@ const SAMPLE_PRODUCTS = {
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (16/08-22/08/2026 sheet-date range) rather than derived
+// counted separately (17/08-23/08/2026 sheet-date range) rather than derived
 // from the monthly buckets. NOTE: this total (94 requests in-range) does not
 // match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
 // sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
