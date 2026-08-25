@@ -10099,12 +10099,12 @@ const SAMPLE_PRODUCTS = {
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (18/08-24/08/2026 sheet-date range) rather than derived
-// from the monthly buckets. NOTE: this total (90 requests in-range) does not
+// counted separately (19/08-25/08/2026 sheet-date range) rather than derived
+// from the monthly buckets. NOTE: this total (79 requests in-range) does not
 // match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
 // sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
 // sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:90, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:54,appr:26,rej:28,other:0},{n:'Interior wipes',c:28,appr:11,rej:17,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:6,appr:2,rej:4,other:0},{n:'Sugar',c:1,appr:0,rej:1,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:79, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:45,appr:22,rej:23,other:0},{n:'Interior wipes',c:25,appr:10,rej:15,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:6,appr:2,rej:4,other:0},{n:'Sugar',c:1,appr:0,rej:1,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
