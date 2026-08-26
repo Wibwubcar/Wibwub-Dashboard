@@ -1101,7 +1101,7 @@ function renderKPIs(){
 // ── Period switcher ────────────────────────────────────────────────
 // ── NEW: Dropdown Picker Functions ────────────────────────────────
 const ADS_PERIOD_LABELS = {
-  all: 'ทั้งหมด (ม.ค. – ส.ค. 2569, Shopee 1-25 ส.ค. · TikTok 1-26 ส.ค. (26 ส.ค. ยังไม่เต็มวัน))',
+  all: 'ทั้งหมด (ม.ค. – ส.ค. 2569, Shopee 1-26 ส.ค. · TikTok 1-26 ส.ค. (26 ส.ค. ยังไม่เต็มวัน))',
   jan: 'มกราคม 2569',
   feb: 'กุมภาพันธ์ 2569',
   mar: 'มีนาคม 2569',
@@ -1109,10 +1109,10 @@ const ADS_PERIOD_LABELS = {
   may: 'พฤษภาคม 2569 (1–31 พ.ค.)',
   jun: 'มิถุนายน 2569 (1–30 มิ.ย.)',
   jul: 'กรกฎาคม 2569 (TikTok ครบ 1-31 / Shopee ครบ 1-30 ก.ค.)',
-  aug: 'สิงหาคม 2569 (Shopee 1-25 ส.ค. · TikTok 1-26 ส.ค. (26 ส.ค. ยังไม่เต็มวัน))',
+  aug: 'สิงหาคม 2569 (Shopee 1-26 ส.ค. · TikTok 1-26 ส.ค. (26 ส.ค. ยังไม่เต็มวัน))',
 };
 const ADS_PERIOD_SUMMARY = {
-  all: 'Shopee ฿36.49M · TikTok ฿11.02M',
+  all: 'Shopee ฿36.64M · TikTok ฿11.02M',
   jan: 'Shopee ฿3.61M · TikTok ฿898K',
   feb: 'Shopee ฿3.75M · TikTok ฿1.04M',
   mar: 'Shopee ฿3.62M · TikTok ฿1.13M',
@@ -1120,7 +1120,7 @@ const ADS_PERIOD_SUMMARY = {
   may: 'Shopee ฿4.97M · TikTok ฿1.46M',
   jun: 'Shopee ฿5.05M · TikTok ฿1.23M (01-30 มิ.ย.)',
   jul: 'Shopee ฿5.87M · TikTok ฿2.03M (ครบ 1-31 ก.ค.)',
-  aug: 'Shopee ฿5.27M · TikTok ฿1.94M (Shopee 1-25 ส.ค. · TikTok 1-26 ส.ค. — 26 ส.ค. ยังไม่เต็มวัน)',
+  aug: 'Shopee ฿5.42M · TikTok ฿1.94M (Shopee 1-26 ส.ค. · TikTok 1-26 ส.ค. — 26 ส.ค. ยังไม่เต็มวัน)',
 };
 
 // ── Period Picker ─────────────────────────────────────────────────
@@ -1133,7 +1133,7 @@ const ADS_PERIOD_DEFS = {
   may: { keys:['may'],  label:'พ.ค. 2569 (1–31)',               badge:'พ.ค. (1–31) 2569' },
   jun: { keys:['jun'],  label:'มิ.ย. 2569 (1–30)',               badge:'มิ.ย. (1–30) 2569' },
   jul: { keys:['jul'],  label:'ก.ค. 2569 (ครบ 1-30)',  badge:'ก.ค. 2569 (ครบ 1-30)' },
-  aug: { keys:['aug'],  label:'ส.ค. 2569 (Shopee 1-25 · TikTok 1-26, 26 ส.ค. ยังไม่เต็มวัน)',  badge:'ส.ค. 2569 (Shopee 1-25 · TikTok 1-25)' },
+  aug: { keys:['aug'],  label:'ส.ค. 2569 (Shopee 1-26 · TikTok 1-26, 26 ส.ค. ยังไม่เต็มวัน)',  badge:'ส.ค. 2569 (Shopee 1-26 · TikTok 1-26)' },
 };
 let curPickedPeriod = 'aug'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
 
