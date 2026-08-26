@@ -10139,6 +10139,63 @@ function setRange(s,e){
   renderTier();
 }
 
+// cid = TikTok Affiliate back-end (seller-side) numeric creator id, used to link
+// straight to that creator's Creator Management detail page instead of their
+// public profile. Covers the highest-GMV creators (most likely to appear in
+// the Tier top-30 for any date range); creators without a known cid fall back
+// to the public TikTok profile link.
+const CREATOR_CID = {
+  "fahareejun":"7494006880929612831","pailong05":"7494006322476188911",".namoshop125":"7494004911005730778",
+  "noonjourneyyy":"7496086512203762002","rita.fe_":"7494031531040802682","papajate":"7493995364118202151",
+  "muchmai_mumi":"7494007865576883217","nnhtr_":"7494386609779411494","phuengthitii":"7494831297915619336",
+  "ralph.detailing8":"7495634924761483615","jarkkystory":"7494617543761234840","orion_risingstar":"7494478348507383894",
+  "phanuwatinsri":"7494032969025161196","plearntumarai":"7494023745994130516","rrak_kk":"7494004778486367550",
+  "ceo.blk.item":"7494252474647218581","rawinreview2465":"7495119910118852727","somkidkongchom":"7494181402104399322",
+  "evee.vespa":"7494832532175292968","ladyning_mar1984":"7495108215241083887","poppyme.6":"7496093016763763241",
+  "mushinyiwz":"7493994876006794258","saiinum.storry":"7495157021563062666","ploypimlaplus":"7494425321211726058",
+  "punch_chalita8":"7494007760234973069","tangkwaky":"7493992558426686482","aoohphonhan":"7495775722590210454",
+  "body.chaya9":"7495736505269259143","ap_review999":"7495890379524377207","wanchai_4343":"7494282381177817737",
+  "thekratae":"7494016272030532838","aornor.kd":"7494291531860444360","rouey_sook":"7495187537900046924",
+  "bifern_js":"7495479421863561372","auanphomreview899":"7495475739656686570","yuii24654":"7494920851630361545",
+  "ctl.mkzk":"7494004601039979825","suwit_deepal.khonkaen":"7494838060546033979","matenatthapong":"7494033469351691458",
+  "japann.story":"7494079362716370377","mamutchalin":"7494014912179504145","nipaashop":"7496035468710021454",
+  "nounkanokon":"7493994213161731625","mumdriving":"7494016823375005341","pannisa.m":"7494013751941825856",
+  "pkautocare168":"7494008152279254523","sun..fpv":"7494510444640700700","cherryreviewbeautys":"7493990193257743936",
+  "ativ_7798":"7495093801587345754","kkautohathairat":"7495743063559342135","dulfocus":"7494010820265346065",
+  "iceshop45_":"7495365671794346053","win_04_1":"7494010931087836875","ting_indie":"7494030706108695855",
+  "manutsananpibanwo":"7494009733826381137","money.online2568":"7495413262415202893","masaaki_gengo":"7494023350928245861",
+  "chayaanit_":"7494008542528177523","m.lifemedia":"7494504407222618814","seessoms":"7493990529464370571",
+  "frameck":"7494012419273426143","shop_amluxbank":"7494228131750381275","calvyn.s":"7494527456179882001",
+  "achichichira":"7494510337905887915","taddy_n2":"7494993394211261047","warista.studio":"7494625746540726844",
+  "mriderreview":"7494785506413348922","maynonjareview":"7494013163246552650","pployaugust":"7494584427292231892",
+  "g_gggguy":"7494822976774244854","sakkarinnn2006":"7493990293293925996","baijeoma":"7495069278800283653",
+  "jaykubtookwan":"7496262099948833371","mpnxezy":"7494009487279096848","fernnframe":"7494960453260053057",
+  "talk_shop":"7493992244225017047","phrim_p":"7494019754966747042","reallyjayyy":"7494014668449612950",
+  "krunid_":"7494004183694541840","thaipakbang":"7495766331381091207","tsc799":"7494063730402690930",
+  "mycarnooknook":"7494503430288411396","alina.daily6":"7494349194050372641","amore.eyewere":"7494530406898238631",
+  "gaem.9619":"7493994013061776997","makarmnongtaw":"7494820462103857694","wittayathongom":"7495843109767056149",
+  "mat_cy":"7494218247358680013","godofreviews":"7494078428399961864","detailist.888":"7496042432189205322",
+  "revieweverthingjingleble":"7494037903824684895","maimeee06":"7494006038262482405","nakwan789":"7494898584986355881",
+  "tonpalm__":"7493993756571699199","armmy2541_":"7495830313789589522",".brshop1":"7495035559728810107",
+  "ngaew.pharatthako":"7496025688701766623","jingrorreview":"7494758577059826249","fahfabulous":"7494061427283756084",
+  "i_naiart":"7495786340430088586","i.namthip_":"7494009719625253905","mameehappy":"7494049835818061085",
+  "papapae988":"7495802218095347989","amornyotklang":"7494238021283383546","zhang.lanxin":"7494030640258713377",
+  "dayzaza38":"7494185249172851457","chon_fe3889":"7494060468146833025","nb_shinelab":"7494519635297994516",
+  "honzo.zoto":"7495336867374926005","aut.atcharapan":"7494008328732116586","tiw.9200":"7494008273813341201",
+  "supathanes":"7495831180367988843","arsynfk1m":"7494322934140406241","antman2405":"7494165658570296204",
+  "classicmen42":"7495302492230814261","lung.kong":"7494033402947143615","m.n00123":"7494643803518830784",
+  "namehouse19":"7494274695632817149","fah_arraya":"7494009676946637917","gravyreviews":"7496048052213680951",
+  "ymfamily_review":"7494009401410553841","review_phatcha":"7494012642131805609","fang_y27":"7494014607249802745",
+  "znooq":"7494019908675077335","chit2209":"7494028862420190278","asas29804":"7494088158012212278",
+  "a.mor_":"7494052539853541012","armwcr59":"7494057476228219982","zhenzhumama":"7494262348814911229",
+  "pinkcar3682":"7494046803177932151","jufrommoon":"7494005860200843124","view.miipro":"7495853716541639475"
+};
+function tierCreatorUrl(name){
+  const cid = CREATOR_CID[name];
+  return cid
+    ? `https://affiliate.tiktok.com/affiliate/creator/detail?cid=${cid}&enter_from=affiliate_crm&shop_region=TH&shop_id=7494549095358892612&route_migration=1`
+    : `https://www.tiktok.com/@${encodeURIComponent(name)}`;
+}
 function renderTier(){
   if(!TIER_MONTH_COUNT) return;
   const s = activeFromIdx, e = activeToIdx;
@@ -10207,7 +10264,7 @@ function renderTier(){
       }
       return `<tr>
         <td>${rnk}</td>
-        <td><a href="https://www.tiktok.com/@${encodeURIComponent(r.name)}" target="_blank" rel="noopener" class="creator-chip" style="text-decoration:none;color:inherit;cursor:pointer" title="เปิดโปรไฟล์ TikTok ของ ${r.name}"><div class="creator-av">${getAv(r.name)}</div>${r.name}</a></td>
+        <td><a href="${tierCreatorUrl(r.name)}" target="_blank" rel="noopener" class="creator-chip" style="text-decoration:none;color:inherit;cursor:pointer" title="เปิดหน้าหลังบ้าน Affiliate ของ ${r.name}"><div class="creator-av">${getAv(r.name)}</div>${r.name}</a></td>
         <td><span class="tier-badge ${meta.cls}">${meta.label}</span></td>
         <td data-val="${r.gmv}">${fmtK(r.gmv)}</td>
         ${growthCell}
