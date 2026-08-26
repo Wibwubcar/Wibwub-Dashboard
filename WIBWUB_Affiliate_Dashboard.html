@@ -10002,7 +10002,7 @@ function renderTier(){
       }
       return `<tr>
         <td>${rnk}</td>
-        <td><div class="creator-chip"><div class="creator-av">${getAv(r.name)}</div>${r.name}</div></td>
+        <td><a href="https://www.tiktok.com/@${encodeURIComponent(r.name)}" target="_blank" rel="noopener" class="creator-chip" style="text-decoration:none;color:inherit;cursor:pointer" title="เปิดโปรไฟล์ TikTok ของ ${r.name}"><div class="creator-av">${getAv(r.name)}</div>${r.name}</a></td>
         <td><span class="tier-badge ${meta.cls}">${meta.label}</span></td>
         <td data-val="${r.gmv}">${fmtK(r.gmv)}</td>
         ${growthCell}
