@@ -302,6 +302,11 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">฿79.5K</div><div class="kks">ส.ค. 1-24 · 536 sessions</div></div>
   </div>
 
+  <div class="sec" style="margin-top:4px">📊 เปรียบเทียบยอดขายตามช่วงเดือน</div>
+  <div class="note">เลือกช่วงเดือน A เทียบกับช่วงเดือน B ได้อิสระ (เช่น เดือนนี้ vs เดือนที่แล้ว, 3 เดือนนี้ vs 3 เดือนก่อนหน้า) — GMV เป็นตัวเลขจริงสรุปจากทุกครีเอเตอร์ (ที่มา CREATOR_MONTHS เดียวกับแท็บ Tier) ส่วน Net GMV และค่าคอมมิชชั่นเป็น<strong>ตัวเลขประมาณการ</strong> จากอัตราเฉลี่ยคืนเงิน/ค่าคอมของครีเอเตอร์ที่มีข้อมูลละเอียด ไม่ใช่ตัวเลขจริงรายเดือน</div>
+  <div class="qpicker" id="comp-qpicker"></div>
+  <div class="kstrip" id="comp-kstrip"></div>
+
   <div class="sec" style="margin-top:4px">📌 เดือนนี้ KOL Insights</div>
   <div class="kstrip">
     <div class="kk"><div class="kkl">Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+122%</div><div class="kks">฿642K (มิ.ย.) → ฿1,425K (ก.ค. 1-30)</div></div>
@@ -10233,6 +10238,119 @@ function renderTier(){
 }
 
 // ══════════════════════════════════════════
+//  SALES COMPARISON (เปรียบเทียบยอดขายตามช่วงเดือน) — Overview tab
+//  GMV totals are EXACT: summed straight from CREATOR_MONTHS across every
+//  tracked creator (same source of truth as the Tier tab's rangeGMV()).
+//  Net GMV / Commission are NOT tracked per-creator per-month anywhere in
+//  this file — only as all-time totals in CREATORS (the ~300-creator
+//  "detailed" subset). So they're ESTIMATED here by applying that subset's
+//  overall average return-rate / commission-rate to each period's exact
+//  GMV. Always label these as ประมาณการ in the UI — never present as exact.
+//  Two independent free-form month ranges (A vs B) can be picked, plus
+//  presets that cover the two examples the user actually asked for:
+//  "เดือนนี้ vs เดือนที่แล้ว" and "3 เดือนนี้ vs 3 เดือนก่อนหน้า". A preset
+//  only appears once TIER_MONTH_COUNT has enough months for BOTH sides
+//  (n*2), so a "6 vs 6" option will show up on its own once enough months
+//  accumulate — no manual maintenance needed.
+// ══════════════════════════════════════════
+const MONTH_TOTALS_GMV = (function(){
+  const totals = new Array(TIER_MONTH_COUNT).fill(0);
+  Object.values(CREATOR_MONTHS).forEach(arr=>{
+    arr.forEach((v,i)=>{ if(i<totals.length) totals[i] += (v||0); });
+  });
+  return totals;
+})();
+
+function totalGMVRange(s,e){
+  let sum = 0;
+  for(let i=s; i<=e; i++) sum += (MONTH_TOTALS_GMV[i]||0);
+  return sum;
+}
+
+const AFF_AVG_RATES = (function(){
+  const sumGmv  = CREATORS.reduce((s,c)=>s+c.gmv,0) || 1;
+  const sumRet  = CREATORS.reduce((s,c)=>s+c.returns,0);
+  const sumComm = CREATORS.reduce((s,c)=>s+c.comm,0);
+  return { returnRate: sumRet/sumGmv, commRate: sumComm/sumGmv };
+})();
+
+let compA_s = Math.max(0, TIER_MONTH_COUNT-1), compA_e = TIER_MONTH_COUNT-1;
+let compB_s = Math.max(0, TIER_MONTH_COUNT-2), compB_e = Math.max(0, TIER_MONTH_COUNT-2);
+
+function renderCompPicker(){
+  const el = document.getElementById('comp-qpicker');
+  if(!el) return;
+  const opts = (selIdx)=> Array.from({length:TIER_MONTH_COUNT}, (_,i)=>
+    `<option value="${i}"${i===selIdx?' selected':''}>${monthMeta(i).label} ${monthMeta(i).year}</option>`
+  ).join('');
+  const presets = [
+    {n:1, label:'เดือนนี้ vs เดือนที่แล้ว'},
+    {n:3, label:'3 เดือนนี้ vs 3 เดือนก่อนหน้า'},
+    {n:6, label:'6 เดือนนี้ vs 6 เดือนก่อนหน้า'}
+  ].filter(p => TIER_MONTH_COUNT >= p.n*2);
+  el.innerHTML = `
+    <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px;width:100%">
+      ${presets.map(p=>{
+        const aS=TIER_MONTH_COUNT-p.n, aE=TIER_MONTH_COUNT-1, bS=aS-p.n, bE=aS-1;
+        const isActive = aS===compA_s && aE===compA_e && bS===compB_s && bE===compB_e;
+        return `<button class="qbtn${isActive?' active':''}" onclick="setCompRange(${aS},${aE},${bS},${bE})">${p.label}</button>`;
+      }).join('')}
+    </div>
+    <span class="qpicker-label">ช่วง A</span>
+    <select class="qsel" id="compA-from-sel" onchange="onCompSelChange()">${opts(compA_s)}</select>
+    <span class="qpicker-sep">ถึง</span>
+    <select class="qsel" id="compA-to-sel" onchange="onCompSelChange()">${opts(compA_e)}</select>
+    <span class="qpicker-divider"></span>
+    <span class="qpicker-label">เทียบกับช่วง B</span>
+    <select class="qsel" id="compB-from-sel" onchange="onCompSelChange()">${opts(compB_s)}</select>
+    <span class="qpicker-sep">ถึง</span>
+    <select class="qsel" id="compB-to-sel" onchange="onCompSelChange()">${opts(compB_e)}</select>
+  `;
+}
+
+function onCompSelChange(){
+  let as = parseInt(document.getElementById('compA-from-sel').value,10);
+  let ae = parseInt(document.getElementById('compA-to-sel').value,10);
+  let bs = parseInt(document.getElementById('compB-from-sel').value,10);
+  let be = parseInt(document.getElementById('compB-to-sel').value,10);
+  if(as>ae){ const t=as; as=ae; ae=t; }
+  if(bs>be){ const t=bs; bs=be; be=t; }
+  setCompRange(as,ae,bs,be);
+}
+
+function setCompRange(as,ae,bs,be){
+  compA_s=as; compA_e=ae; compB_s=bs; compB_e=be;
+  renderCompare();
+}
+
+function renderCompare(){
+  if(!TIER_MONTH_COUNT) return;
+  const gmvA = totalGMVRange(compA_s, compA_e);
+  const gmvB = totalGMVRange(compB_s, compB_e);
+  const netA = gmvA*(1-AFF_AVG_RATES.returnRate), netB = gmvB*(1-AFF_AVG_RATES.returnRate);
+  const commA = gmvA*AFF_AVG_RATES.commRate, commB = gmvB*AFF_AVG_RATES.commRate;
+  const labelA = rangeLabel(compA_s, compA_e), labelB = rangeLabel(compB_s, compB_e);
+  const isCurrentA = compA_e === TIER_MONTH_COUNT-1;
+
+  const pctChange = (a,b)=> b>0 ? Math.round(((a-b)/b)*100) : (a>0?100:0);
+  const pctGmv = pctChange(gmvA,gmvB), pctNet = pctChange(netA,netB), pctComm = pctChange(commA,commB);
+  const arrow = (p)=> p>0 ? `<span style="color:var(--green)">▲ +${p}%</span>`
+              : p<0 ? `<span style="color:var(--red)">▼ ${p}%</span>`
+              : `<span style="color:var(--t3)">± 0%</span>`;
+
+  const kEl = document.getElementById('comp-kstrip');
+  if(kEl){
+    kEl.innerHTML = `
+      <div class="kk"><div class="kkl">GMV รวม — ${labelA}${isCurrentA?' (กำลังนับ)':''}</div><div class="kkv teal">${fmtK(gmvA)}</div><div class="kks">${labelB}: ${fmtK(gmvB)} · ${arrow(pctGmv)}</div></div>
+      <div class="kk"><div class="kkl">Net GMV โดยประมาณ — ${labelA}</div><div class="kkv green">${fmtK(netA)}</div><div class="kks">${labelB}: ${fmtK(netB)} · ${arrow(pctNet)}</div></div>
+      <div class="kk"><div class="kkl">ค่าคอมโดยประมาณ — ${labelA}</div><div class="kkv" style="color:var(--pink)">${fmtK(commA)}</div><div class="kks">${labelB}: ${fmtK(commB)} · ${arrow(pctComm)}</div></div>
+    `;
+  }
+
+  renderCompPicker();
+}
+
+// ══════════════════════════════════════════
 //  SAMPLE REQUESTS (คำขอสินค้า)
 //  funnel.{req,appr,shipped} — sourced from the internal Google Sheet
 //  "Top 30 Affiliate" > tab "ขอสินค้า" (row-per-request log kept by the
@@ -11206,6 +11324,7 @@ renderCreatorList();
 const _clInit = document.getElementById('creator-list');
 if(_clInit) _clInit.dataset.init = '1';
 buildCharts();
+renderCompare(); // Overview tab is active by default — not lazy-loaded via switchTab
 
 // Make creator chips in the Creator tab jump to Profile tab
 document.querySelectorAll('#creators-body .creator-chip').forEach(chip=>{
