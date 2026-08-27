@@ -378,9 +378,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="hh-val">฿62.0M</div>
     <div class="hh-sub">124,156 unique orders · AOV ฿484</div>
     <div class="hh-grid">
-      <div class="hhg"><div class="hhg-v">฿40.3M</div><div class="hhg-l">Shopee</div></div>
-      <div class="hhg"><div class="hhg-v">฿11.6M</div><div class="hhg-l">TikTok</div></div>
-      <div class="hhg"><div class="hhg-v">฿1.02M</div><div class="hhg-l">Lazada</div></div>
+      <div class="hhg"><div class="hhg-v" id="hhg-sh">฿40.3M</div><div class="hhg-l">Shopee</div></div>
+      <div class="hhg"><div class="hhg-v" id="hhg-tk">฿11.8M</div><div class="hhg-l">TikTok</div></div>
+      <div class="hhg"><div class="hhg-v" id="hhg-lz">฿1.02M</div><div class="hhg-l">Lazada</div></div>
     </div>
   </div>
   <div class="card">
@@ -835,7 +835,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // ════════════════════════════════════════
 const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.","ส.ค."];
 const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,4787148];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,1790219.03];
+const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2057387.59];
 const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,84993.69];
 const FB_REV=[2152231,1328934,1061901,802047,980883,413040,413040,413040];
 const LINE_REV=[350828,459158,418472,397898,374817,153907,153907,153907];
@@ -845,19 +845,19 @@ const MKT_REV=[580,0,0,490,17365,0,0,0];
 const BEUK_REV=[0,0,0,0,365,0,0,0];
 const POS_REV=[435,548,2277,267,590,0,0,0];
 const SH_ORD=[7532,6580,6873,8128,9093,8895,10511,8361];
-const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,8575];
+const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,9846];
 const LZ_ORD=[236,176,255,161,157,158,146,146];
 const FB_ORD=[2987,2001,1575,1175,1479,649,649,649];
 const LINE_ORD=[325,466,345,381,343,152,152,152];
 const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,5.16,5.34,6.15];
-const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.67];
+const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.53];
 const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
 const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,796207.17];
 const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1434148];
-const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,473047];
-const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,516909];
-const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1172768];
-const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1151786];
+const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,549245];
+const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,620547];
+const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1375920];
+const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1352971];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
 const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,31.76];
 const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,9730];
@@ -1128,6 +1128,10 @@ function switchSv(pfx,i,el,tabsId){
 // HOME
 // ════════════════════════════════════════
 function initHome(){
+  // ยอดสะสมต่อ platform บน hero — คำนวณจาก array จริง ไม่ hardcode (กันค่าค้างหลัง sync)
+  const _sum=a=>a.reduce((s,v)=>s+v,0);
+  const _setM=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent='฿'+(v/1e6).toFixed(v/1e6>=10?1:2)+'M';};
+  _setM('hhg-sh',_sum(SH_REV)); _setM('hhg-tk',_sum(TK_REV)); _setM('hhg-lz',_sum(LZ_REV));
   const tot=CHANNELS.reduce((s,c)=>s+c.v,0);
   const maxV=CHANNELS[0].v;
   document.getElementById('home-ch').innerHTML=CHANNELS.map(c=>`
