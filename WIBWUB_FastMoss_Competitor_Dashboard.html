@@ -20,10 +20,8 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .sec .sub{font-weight:400;color:var(--sub);font-size:12px;margin-left:8px}
 
 /* Shop meta cards */
-.shop-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
 .shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
-.shop-card.wibwub{--c:var(--bl)}
-.shop-card.munwow{--c:var(--mw)}
 .shop-name{font-size:16px;font-weight:800}
 .shop-name a{color:inherit;text-decoration:none}
 .shop-name a:hover{text-decoration:underline}
@@ -31,18 +29,17 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .shop-meta b{color:var(--tx);font-weight:600}
 
 /* KPI comparison table */
-.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
-.cmp-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
+.cmp-table-wrap{overflow-x:auto}
+.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05);min-width:680px}
+.cmp-row{display:grid;grid-template-columns:1.4fr repeat(var(--n,2),1fr) 1.1fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px;gap:6px}
 .cmp-row:last-child{border-bottom:none}
 .cmp-row.head{background:var(--sf2);font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
 .cmp-label{color:var(--sub);font-size:12px}
-.cmp-val{font-weight:700;font-size:14px;text-align:center}
-.cmp-val.wibwub{color:var(--bl)}
-.cmp-val.munwow{color:var(--mw)}
+.cmp-val{font-weight:700;font-size:13.5px;text-align:center}
 .cmp-share{text-align:center}
-.share-bar{display:inline-flex;width:80px;height:6px;border-radius:4px;overflow:hidden;background:var(--sf2);vertical-align:middle;margin-right:6px}
+.share-bar{display:flex;width:76px;height:6px;border-radius:4px;overflow:hidden;background:var(--sf2);vertical-align:middle;margin:0 auto 3px}
 .share-bar div{height:100%}
-.share-txt{font-size:10.5px;color:var(--sub)}
+.share-txt{font-size:10px;color:var(--sub)}
 
 /* Charts */
 .chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
@@ -51,11 +48,9 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .cw{position:relative}
 
 /* Top products */
-.top-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.top-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .top-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
 .top-hd{padding:10px 16px;font-size:12px;font-weight:700;color:#fff}
-.top-hd.wibwub{background:var(--bl)}
-.top-hd.munwow{background:var(--mw)}
 .top-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bd);font-size:12.5px}
 .top-item:last-child{border-bottom:none}
 .top-rk{width:18px;height:18px;border-radius:50%;background:var(--sf2);color:var(--sub);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
@@ -74,7 +69,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .ins-list li:before{content:"› ";color:var(--bl);font-weight:700}
 
 .note{font-size:11px;color:var(--sub);margin-top:26px;padding:14px 16px;border-top:1px solid var(--bd);line-height:1.8}
-@media(max-width:760px){.shop-row,.chart-grid,.top-grid{grid-template-columns:1fr}.cmp-row{grid-template-columns:1.1fr 1fr 1fr .8fr;font-size:12px}}
+@media(max-width:760px){.shop-row,.chart-grid,.top-grid{grid-template-columns:1fr}.cmp-row{font-size:12px}}
 </style>
 </head>
 <body>
@@ -86,7 +81,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
     </div>
     <div class="hr">
       ข้อมูล ณ วันที่ <b id="snap-date">—</b><br>
-      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 04:39</span>
+      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 05:19</span>
     </div>
   </div>
 
@@ -94,10 +89,10 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
   <div class="shop-row" id="shop-cards"></div>
 
   <div class="sec">ยอดสะสมทั้งหมด <span class="sub">Cumulative (ตั้งแต่เปิดร้าน)</span></div>
-  <div class="cmp-table" id="cmp-cumulative"></div>
+  <div class="cmp-table-wrap"><div class="cmp-table" id="cmp-cumulative"></div></div>
 
   <div class="sec">แนวโน้มข้อมูล 28 วันล่าสุด <span class="sub" id="trend-range-label">28-day trend</span></div>
-  <div class="cmp-table" id="cmp-trend" style="margin-bottom:14px"></div>
+  <div class="cmp-table-wrap" style="margin-bottom:14px"><div class="cmp-table" id="cmp-trend"></div></div>
   <div class="chart-grid">
     <div class="cc">
       <div class="ct">เปรียบเทียบ 28 วันล่าสุด (Orders / Creators / Lives / Videos)</div>
@@ -146,6 +141,46 @@ const FASTMOSS_DATA = {
       "price_range": "฿0.9 - ฿11.1k",
       "listed_since": "2022-10-28",
       "color": "#c4406e"
+    },
+    "kake": {
+      "key": "kake",
+      "name": "KAKE Thailand",
+      "fastmoss_id": "7494663043828845142",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494663043828845142",
+      "category": "ยานยนต์และจักรยานยนต์ (~99.84%)",
+      "price_range": "฿1.22 - ฿688",
+      "listed_since": "2022-08-25",
+      "color": "#f59e0b"
+    },
+    "libitu": {
+      "key": "libitu",
+      "name": "Libitu Thailand",
+      "fastmoss_id": "7495528016171600174",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7495528016171600174",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿1-฿2.0k",
+      "listed_since": "2024-03-27",
+      "color": "#22c55e"
+    },
+    "glossycrazy": {
+      "key": "glossycrazy",
+      "name": "glossy crazy",
+      "fastmoss_id": "7494794468297050629",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494794468297050629",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿55 - ฿1.3k",
+      "listed_since": "2023-01-12",
+      "color": "#9333ea"
+    },
+    "dlabs": {
+      "key": "dlabs",
+      "name": "DLABs หัวเชื้อน้ำยาคาร์แคร์",
+      "fastmoss_id": "7494638107764885780",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494638107764885780",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿1.13-฿9.5k",
+      "listed_since": "2023-06-25",
+      "color": "#0891b2"
     }
   },
   "history": [
@@ -251,6 +286,210 @@ const FASTMOSS_DATA = {
               "name": "Munwow Leather clean",
               "orders": 857,
               "sales": 304500
+            }
+          ]
+        },
+        "kake": {
+          "cumulative": {
+            "orders_total": 1600000,
+            "sales_total": 235800000,
+            "products_active": 36,
+            "products_total": 68,
+            "country_rank": 662,
+            "category_rank": 10,
+            "rating": 4.9,
+            "overall_good_pct": 98,
+            "quality_score": 97,
+            "response_rate_24h": 74,
+            "shipping_rate_48h": 89
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 64900,
+            "sales": 6300000,
+            "creators": 930,
+            "lives": 962,
+            "videos": 2400,
+            "products_sold": 35
+          },
+          "top_products": [
+            {
+              "name": "[ 1แถม1 ] เคลือบมอไซค์ กันน้ำ Wax เงาฉ่ำ Car รถ เคลือบเงา KAKE คาร์เก้ KH",
+              "orders": 32300,
+              "sales": 3200000
+            },
+            {
+              "name": "เคลือบกระจกกันน้ำ KAKE ติดทน 120ml. สูตรเข้มข้น มีกลิ่นหอม KG",
+              "orders": 13600,
+              "sales": 810300
+            },
+            {
+              "name": "[1แถม1] เคลือบสีรถ สูตรกันน้ำ กันแดด เงาฉ่ำ ติดทน KAKE 250ml. KN",
+              "orders": 7500,
+              "sales": 899800
+            },
+            {
+              "name": "โปร เคลือบมอไซค์ 2 + ภายใน 1 บำรุง เบาะหนัง พลาสติก ยาง KAKE คาร์เก้ KH2T",
+              "orders": 3800,
+              "sales": 577400
+            },
+            {
+              "name": "KAKE สเปรย์เคลือบภายใน 250ml. สำหรับเบาะหนัง คอนโซล พลาสติก และยาง ลดฝุ่น กลิ่นหอม ติดทนนาน 1-2 เดือน",
+              "orders": 3000,
+              "sales": 222900
+            }
+          ]
+        },
+        "libitu": {
+          "cumulative": {
+            "orders_total": 3000000,
+            "sales_total": 354300000,
+            "products_active": 70,
+            "products_total": 76,
+            "country_rank": 133,
+            "category_rank": 1,
+            "rating": 5.0,
+            "overall_good_pct": 100,
+            "quality_score": 96,
+            "response_rate_24h": 99,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 219200,
+            "sales": 21800000,
+            "creators": 1700,
+            "lives": 1000,
+            "videos": 6100,
+            "products_sold": 62
+          },
+          "top_products": [
+            {
+              "name": "LIBITU VT5 น้ำยาขัดเงารถ",
+              "orders": 45700,
+              "sales": 4200000
+            },
+            {
+              "name": "Libitu Upgraded version หัวฉีด (สูตรใหม่ น้ำยาล้างหัวฉีด)",
+              "orders": 37700,
+              "sales": 5400000
+            },
+            {
+              "name": "Libitu G20 น้ำยาล้างหัวฉีด",
+              "orders": 32300,
+              "sales": 2000000
+            },
+            {
+              "name": "LIBITU 801E เคลือบกระจกไล่น้ำ",
+              "orders": 29800,
+              "sales": 1800000
+            },
+            {
+              "name": "LIBITU T505 เคลือบแก้ว",
+              "orders": 17800,
+              "sales": 2100000
+            }
+          ]
+        },
+        "glossycrazy": {
+          "cumulative": {
+            "orders_total": 410600,
+            "sales_total": 75400000,
+            "products_active": 22,
+            "products_total": 30,
+            "country_rank": 10000,
+            "category_rank": 968,
+            "rating": 4.9,
+            "overall_good_pct": 99,
+            "quality_score": 100,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 88
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 1700,
+            "sales": 194100,
+            "creators": 91,
+            "lives": 407,
+            "videos": 135,
+            "products_sold": 19
+          },
+          "top_products": [
+            {
+              "name": "เคลือบกระจกรถ น้ำเป็นเม็ด Glossy Crazy Clear ติดทนนาน",
+              "orders": 361,
+              "sales": 35700
+            },
+            {
+              "name": "เคลือบสีรถ เงาใส กัน UV สูตรคาร์นูบาสเปรย์ Glossy Crazy Sabi ปกป้องสีรถ",
+              "orders": 336,
+              "sales": 23100
+            },
+            {
+              "name": "เคลือบสีรถ ผิวลื่นมาก เงาฉ่ำ Glossy Crazy Enigma ไล่น้ำ",
+              "orders": 166,
+              "sales": 22500
+            },
+            {
+              "name": "เคลือบยางและพลาสติกรถ Glossy Crazy Onyx ดำเงา ไล่น้ำดี",
+              "orders": 152,
+              "sales": 15000
+            },
+            {
+              "name": "น้ำยาขจัดคราบน้ำ คราบหินปูน Glossy Crazy Homey",
+              "orders": 148,
+              "sales": 25000
+            }
+          ]
+        },
+        "dlabs": {
+          "cumulative": {
+            "orders_total": 52600,
+            "sales_total": 11600000,
+            "products_active": 66,
+            "products_total": 96,
+            "country_rank": 10000,
+            "category_rank": 798,
+            "rating": 5.0,
+            "overall_good_pct": 88,
+            "quality_score": 76,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 2500,
+            "sales": 371800,
+            "creators": 49,
+            "lives": 49,
+            "videos": 84,
+            "products_sold": 27
+          },
+          "top_products": [
+            {
+              "name": "168 หัวเชื้อโฟมล้างรถPREWASH เคลือบเงาในตัว โฟมแลนซ์1:9 [LAVA SPONGG BY DLABs]",
+              "orders": 1600,
+              "sales": 195600
+            },
+            {
+              "name": "239 น้ำยาสลายคราบยางมะตอย พร้อมใช้งาน [STUNNIN BY DLABs]",
+              "orders": 259,
+              "sales": 36200
+            },
+            {
+              "name": "499 หัวเชื้อซักผ้าไมโครไฟเบอร์ ขยายได้ 100ลิตร [FULLYBRAM BY DLABs]",
+              "orders": 195,
+              "sales": 27300
+            },
+            {
+              "name": "เซ็ตท์คอมโบเงาวาว 510&168",
+              "orders": 89,
+              "sales": 29200
+            },
+            {
+              "name": "ฟ็อกกี้ 510 น้ำยาเคลือบสีรถ \"เงา ฉ่ำ ลึก\" พร้อมใช้งาน [PS-510 BY DLABs]",
+              "orders": 59,
+              "sales": 12700
             }
           ]
         }
@@ -514,23 +753,24 @@ function render(){
   }
   const latest = history[history.length-1];
   const shopKeys = Object.keys(latest.shops);
-  // assume 2-shop comparison layout (wibwub + one competitor); if more are
-  // added later, the KPI/top-product sections below still render fine for
-  // exactly 2 keys — extend to a loop if a 3rd shop is added.
-  const [kA, kB] = shopKeys;
-  const sA = shops[kA], sB = shops[kB];
-  const dA = latest.shops[kA], dB = latest.shops[kB];
+  // shopList holds every shop being compared (wibwub + N competitors) — every
+  // section below loops over this instead of assuming exactly 2 shops, so
+  // adding/removing a competitor from fastmoss_history.json's metadata block
+  // is enough to update the whole dashboard.
+  const shopList = shopKeys.map(key => ({ key, s: shops[key], d: latest.shops[key] }));
+  const wibwub = shopList.find(sh => sh.key === 'wibwub') || shopList[0];
+  const competitors = shopList.filter(sh => sh.key !== wibwub.key);
 
   document.getElementById('snap-date').textContent = latest.date;
   const genTs = document.getElementById('gen-ts');
   if (genTs.textContent === '—') genTs.textContent = latest.date;
   document.getElementById('trend-range-label').textContent =
-    '(' + (dA.trend28d.range || '') + ')';
+    '(' + (wibwub.d.trend28d.range || '') + ')';
 
   // ---- shop cards ----
   const shopCardsEl = document.getElementById('shop-cards');
-  shopCardsEl.innerHTML = [[kA,sA],[kB,sB]].map(([key,s]) => `
-    <div class="shop-card ${key}">
+  shopCardsEl.innerHTML = shopList.map(({s}) => `
+    <div class="shop-card" style="--c:${s.color}">
       <div class="shop-name"><a href="${s.url}" target="_blank" rel="noopener">${s.name} ↗</a></div>
       <div class="shop-meta">
         หมวดหมู่: <b>${s.category}</b><br>
@@ -552,7 +792,9 @@ function render(){
     ['ตอบแชทภายใน 24 ชม.', 'response_rate_24h', v => v + '%'],
     ['จัดส่งภายใน 48 ชม.', 'shipping_rate_48h', v => v + '%'],
   ];
-  document.getElementById('cmp-cumulative').innerHTML = buildCmpTable(sA,sB,dA.cumulative,dB.cumulative,cumRows,true);
+  const cumTableEl = document.getElementById('cmp-cumulative');
+  cumTableEl.style.setProperty('--n', shopList.length);
+  cumTableEl.innerHTML = buildCmpTable(shopList, 'cumulative', cumRows, true);
 
   // ---- 28d trend comparison ----
   const trendRows = [
@@ -563,16 +805,16 @@ function render(){
     ['วิดีโอ (Videos)', 'videos', fmtN],
     ['สินค้าที่ขายได้ (Products sold)', 'products_sold', fmtN],
   ];
-  document.getElementById('cmp-trend').innerHTML = buildCmpTable(sA,sB,dA.trend28d,dB.trend28d,trendRows,true);
+  const trendTableEl = document.getElementById('cmp-trend');
+  trendTableEl.style.setProperty('--n', shopList.length);
+  trendTableEl.innerHTML = buildCmpTable(shopList, 'trend28d', trendRows, true);
 
   // special row: products active/total (not a share-bar metric)
-  const cumTableEl = document.getElementById('cmp-cumulative');
   const specialRow = document.createElement('div');
   specialRow.className = 'cmp-row';
   specialRow.innerHTML = `
     <div class="cmp-label">สินค้าที่ยังขายอยู่ / ทั้งหมด</div>
-    <div class="cmp-val wibwub">${dA.cumulative.products_active} / ${dA.cumulative.products_total}</div>
-    <div class="cmp-val munwow">${dB.cumulative.products_active} / ${dB.cumulative.products_total}</div>
+    ${shopList.map(({s,d}) => `<div class="cmp-val" style="color:${s.color}">${d.cumulative.products_active} / ${d.cumulative.products_total}</div>`).join('')}
     <div class="cmp-share"></div>`;
   // insert after "Orders" + "Sales" rows (head=0, orders=1, sales=2), before country rank
   cumTableEl.insertBefore(specialRow, cumTableEl.children[3]);
@@ -582,10 +824,11 @@ function render(){
     type: 'bar',
     data: {
       labels: ['Orders','Creators','Lives','Videos'],
-      datasets: [
-        {label: sA.name, backgroundColor: sA.color, data: [dA.trend28d.orders, dA.trend28d.creators, dA.trend28d.lives, dA.trend28d.videos]},
-        {label: sB.name, backgroundColor: sB.color, data: [dB.trend28d.orders, dB.trend28d.creators, dB.trend28d.lives, dB.trend28d.videos]},
-      ]
+      datasets: shopList.map(({s,d}) => ({
+        label: s.name,
+        backgroundColor: s.color,
+        data: [d.trend28d.orders, d.trend28d.creators, d.trend28d.lives, d.trend28d.videos]
+      }))
     },
     options: {
       responsive:true, maintainAspectRatio:false,
@@ -600,11 +843,11 @@ function render(){
     type: 'line',
     data: {
       labels: dates,
-      datasets: [kA,kB].map(k => ({
-        label: shops[k].name,
-        borderColor: shops[k].color,
-        backgroundColor: shops[k].color,
-        data: history.map(h => h.shops[k] ? h.shops[k].trend28d.sales : null),
+      datasets: shopList.map(({key,s}) => ({
+        label: s.name,
+        borderColor: s.color,
+        backgroundColor: s.color,
+        data: history.map(h => h.shops[key] ? h.shops[key].trend28d.sales : null),
         tension: .25,
         pointRadius: 4,
       }))
@@ -617,9 +860,9 @@ function render(){
   });
 
   // ---- top products ----
-  document.getElementById('top-products').innerHTML = [[kA,sA,dA],[kB,sB,dB]].map(([key,s,d]) => `
+  document.getElementById('top-products').innerHTML = shopList.map(({s,d}) => `
     <div class="top-card">
-      <div class="top-hd ${key}">${s.name}</div>
+      <div class="top-hd" style="background:${s.color}">${s.name}</div>
       ${d.top_products.map((p,i) => `
         <div class="top-item">
           <div class="top-rk ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
@@ -630,39 +873,59 @@ function render(){
     </div>
   `).join('');
 
-  // ---- insight ----
-  const orderShare = pct(dA.trend28d.orders, dB.trend28d.orders);
-  const salesShare = pct(dA.trend28d.sales, dB.trend28d.sales);
-  const productsSoldShare = pct(dA.trend28d.products_sold, dB.trend28d.products_sold);
-  const ratingDiff = (dA.cumulative.rating - dB.cumulative.rating).toFixed(1);
-  const qualityDiff = dA.cumulative.quality_score - dB.cumulative.quality_score;
+  // ---- insight (ranking-based so it scales to any number of competitors) ----
+  const rankBy = metric => {
+    const sorted = [...shopList].sort((a,b) => metric(b.d) - metric(a.d));
+    return { rank: sorted.findIndex(sh => sh.key === wibwub.key) + 1, sorted };
+  };
+  const avgOf = (list, metric) => list.reduce((sum,sh) => sum + metric(sh.d), 0) / (list.length || 1);
+
+  const salesRank = rankBy(d => d.trend28d.sales);
+  const ordersRank = rankBy(d => d.trend28d.orders);
+  const ratingRank = rankBy(d => d.cumulative.rating);
+  const topSalesShop = salesRank.sorted[0];
+
+  const avgCompSales = avgOf(competitors, d => d.trend28d.sales);
+  const avgCompOrders = avgOf(competitors, d => d.trend28d.orders);
+  const avgCompCreators = avgOf(competitors, d => d.trend28d.creators);
+  const avgCompLives = avgOf(competitors, d => d.trend28d.lives);
+
+  const salesVsAvgPct = pct(wibwub.d.trend28d.sales, avgCompSales);
+  const ordersVsAvgPct = pct(wibwub.d.trend28d.orders, avgCompOrders);
+  const salesVsTopPct = pct(wibwub.d.trend28d.sales, topSalesShop.d.trend28d.sales);
+
   document.getElementById('insight-box').innerHTML = `
-    ในช่วง 28 วันล่าสุด <b>${sA.name}</b> ทำยอดขายได้ <b>${salesShare}%</b> และคำสั่งซื้อ <b>${orderShare}%</b>
-    เมื่อเทียบกับ <b>${sB.name}</b>
+    ในช่วง 28 วันล่าสุด <b>${wibwub.s.name}</b> อยู่อันดับ <b>${salesRank.rank}</b> จากทั้งหมด ${shopList.length} ร้าน ด้านยอดขาย
+    และอันดับ <b>${ordersRank.rank}</b> ด้านคำสั่งซื้อ เมื่อเทียบกับคู่แข่งทั้งหมด (${competitors.length} ร้าน)
     <ul class="ins-list">
-      <li>ยอดขาย 28 วัน: ${sA.name} ${fmtBaht(dA.trend28d.sales)} vs ${sB.name} ${fmtBaht(dB.trend28d.sales)}</li>
-      <li>คำสั่งซื้อ 28 วัน: ${sA.name} ${fmtN(dA.trend28d.orders)} vs ${sB.name} ${fmtN(dB.trend28d.orders)}</li>
-      <li>${sA.name} ขายสินค้าได้หลากหลายกว่า: ${dA.trend28d.products_sold} SKU เทียบกับ ${dB.trend28d.products_sold} SKU (${productsSoldShare}%)</li>
-      <li>คะแนนรีวิวและคุณภาพร้าน: ${sA.name} ${dA.cumulative.rating}/5 (quality ${dA.cumulative.quality_score}) ${ratingDiff >= 0 ? 'สูงกว่า' : 'ต่ำกว่า'} ${sB.name} ${dB.cumulative.rating}/5 (quality ${dB.cumulative.quality_score}) อยู่ ${Math.abs(ratingDiff)} ดาว / ${Math.abs(qualityDiff)} คะแนน</li>
-      <li>${sB.name} มีครีเอเตอร์ทำคอนเทนต์ให้มากกว่า (${fmtN(dB.trend28d.creators)} vs ${fmtN(dA.trend28d.creators)} คน) และไลฟ์มากกว่า (${fmtN(dB.trend28d.lives)} vs ${fmtN(dA.trend28d.lives)} ครั้ง) — อาจเป็นโอกาสขยาย affiliate/live ของ ${sA.name}</li>
+      <li>ยอดขาย 28 วัน: ${wibwub.s.name} ${fmtBaht(wibwub.d.trend28d.sales)}${topSalesShop.key === wibwub.key ? ' — เป็นอันดับ 1' : ` เทียบกับอันดับ 1 (${topSalesShop.s.name}) ${fmtBaht(topSalesShop.d.trend28d.sales)} คิดเป็น ${salesVsTopPct}%`}</li>
+      <li>ยอดขายเฉลี่ยของคู่แข่งทั้งหมด: ${fmtBaht(avgCompSales)} — ${wibwub.s.name} ทำได้ ${salesVsAvgPct}% ของค่าเฉลี่ยนี้</li>
+      <li>คำสั่งซื้อเฉลี่ยของคู่แข่ง: ${fmtN(Math.round(avgCompOrders))} — ${wibwub.s.name} ทำได้ ${fmtN(wibwub.d.trend28d.orders)} คำสั่งซื้อ (${ordersVsAvgPct}% ของค่าเฉลี่ย)</li>
+      <li>คะแนนรีวิว/คุณภาพร้าน: ${wibwub.s.name} ${wibwub.d.cumulative.rating}/5 (quality ${wibwub.d.cumulative.quality_score}) — อันดับ ${ratingRank.rank} จาก ${shopList.length} ร้านด้านคะแนนรีวิว</li>
+      <li>ครีเอเตอร์/ไลฟ์ที่ทำคอนเทนต์ให้: ${wibwub.s.name} ${fmtN(wibwub.d.trend28d.creators)} คน / ${fmtN(wibwub.d.trend28d.lives)} ไลฟ์ เทียบกับค่าเฉลี่ยคู่แข่ง ${fmtN(Math.round(avgCompCreators))} คน / ${fmtN(Math.round(avgCompLives))} ไลฟ์ — ช่องว่างสำหรับขยาย affiliate/live</li>
     </ul>
   `;
 }
 
-function buildCmpTable(sA, sB, valsA, valsB, rows, withShare){
-  let html = `<div class="cmp-row head"><div>ตัวชี้วัด</div><div style="text-align:center">${sA.name}</div><div style="text-align:center">${sB.name}</div><div style="text-align:center">สัดส่วน</div></div>`;
+function buildCmpTable(shopList, metricKey, rows, withShare){
+  let html = `<div class="cmp-row head"><div>ตัวชี้วัด</div>${shopList.map(({s}) => `<div style="text-align:center">${s.name}</div>`).join('')}<div style="text-align:center">สัดส่วน</div></div>`;
   rows.forEach(([label, key, fmt]) => {
     if (!key) return; // special rows handled separately by caller
-    const a = valsA[key], b = valsB[key];
+    const vals = shopList.map(({d}) => d[metricKey][key]);
     let shareHtml = '';
-    if (withShare && typeof a === 'number' && typeof b === 'number' && (a+b) > 0){
-      const aPct = Math.round((a/(a+b))*100);
-      shareHtml = `<span class="share-bar"><div style="width:${aPct}%;background:${sA.color}"></div><div style="width:${100-aPct}%;background:${sB.color}"></div></span><span class="share-txt">${aPct}:${100-aPct}</span>`;
+    if (withShare){
+      const total = vals.reduce((sum,v) => sum + (typeof v === 'number' ? v : 0), 0);
+      if (total > 0){
+        shareHtml = '<span class="share-bar">' + shopList.map(({s},i) => {
+          const v = vals[i];
+          const p = typeof v === 'number' ? Math.round((v/total)*100) : 0;
+          return `<div style="width:${p}%;background:${s.color}" title="${s.name} ${p}%"></div>`;
+        }).join('') + '</span>';
+      }
     }
     html += `<div class="cmp-row">
       <div class="cmp-label">${label}</div>
-      <div class="cmp-val wibwub">${fmt(a)}</div>
-      <div class="cmp-val munwow">${fmt(b)}</div>
+      ${shopList.map(({s},i) => `<div class="cmp-val" style="color:${s.color}">${fmt(vals[i])}</div>`).join('')}
       <div class="cmp-share">${shareHtml}</div>
     </div>`;
   });
