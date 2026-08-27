@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB — FastMoss Competitor Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;
+--bl:#1A5CDB;--bl-bg:rgba(26,92,219,.08);--mw:#c4406e;--mw-bg:rgba(196,64,110,.08);
+--rd:#ef4444;--yl:#f59e0b;--or:#f97316;--gn:#22c55e}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
+.wrap{max-width:1160px;margin:0 auto}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:22px;flex-wrap:wrap}
+.logo{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--bl)}.logo span{color:var(--tx)}
+.pt{font-size:13px;color:var(--sub);margin-top:2px}
+.hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.7}
+.sec{font-size:14px;font-weight:700;margin:26px 0 12px;color:var(--tx)}
+.sec .sub{font-weight:400;color:var(--sub);font-size:12px;margin-left:8px}
+
+/* Shop meta cards */
+.shop-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
+.shop-card.wibwub{--c:var(--bl)}
+.shop-card.munwow{--c:var(--mw)}
+.shop-name{font-size:16px;font-weight:800}
+.shop-name a{color:inherit;text-decoration:none}
+.shop-name a:hover{text-decoration:underline}
+.shop-meta{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.8}
+.shop-meta b{color:var(--tx);font-weight:600}
+
+/* KPI comparison table */
+.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.cmp-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row.head{background:var(--sf2);font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.cmp-label{color:var(--sub);font-size:12px}
+.cmp-val{font-weight:700;font-size:14px;text-align:center}
+.cmp-val.wibwub{color:var(--bl)}
+.cmp-val.munwow{color:var(--mw)}
+.cmp-share{text-align:center}
+.share-bar{display:inline-flex;width:80px;height:6px;border-radius:4px;overflow:hidden;background:var(--sf2);vertical-align:middle;margin-right:6px}
+.share-bar div{height:100%}
+.share-txt{font-size:10.5px;color:var(--sub)}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+.ct{font-size:12.5px;font-weight:700;margin-bottom:10px;color:var(--tx)}
+.cw{position:relative}
+
+/* Top products */
+.top-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.top-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.top-hd{padding:10px 16px;font-size:12px;font-weight:700;color:#fff}
+.top-hd.wibwub{background:var(--bl)}
+.top-hd.munwow{background:var(--mw)}
+.top-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bd);font-size:12.5px}
+.top-item:last-child{border-bottom:none}
+.top-rk{width:18px;height:18px;border-radius:50%;background:var(--sf2);color:var(--sub);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.top-rk.r1{background:#fde68a;color:#92400e}
+.top-rk.r2{background:#e5e7eb;color:#374151}
+.top-rk.r3{background:#fed7aa;color:#9a3412}
+.top-name{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-nums{font-size:11px;color:var(--sub);white-space:nowrap;text-align:right}
+.top-nums b{color:var(--tx)}
+
+/* Insight */
+.ins-box{background:var(--bl-bg);border:1px solid rgba(26,92,219,.2);border-radius:10px;padding:14px 16px;font-size:12.5px;line-height:1.9;color:var(--tx)}
+.ins-box b{color:var(--bl)}
+.ins-list{margin-top:6px;padding-left:0;list-style:none}
+.ins-list li{padding:3px 0}
+.ins-list li:before{content:"› ";color:var(--bl);font-weight:700}
+
+.note{font-size:11px;color:var(--sub);margin-top:26px;padding:14px 16px;border-top:1px solid var(--bd);line-height:1.8}
+@media(max-width:760px){.shop-row,.chart-grid,.top-grid{grid-template-columns:1fr}.cmp-row{grid-template-columns:1.1fr 1fr 1fr .8fr;font-size:12px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div class="logo">WIB<span>WUB</span></div>
+      <div class="pt">FastMoss Competitor Dashboard — เปรียบเทียบคู่แข่งบน TikTok Shop</div>
+    </div>
+    <div class="hr">
+      ข้อมูล ณ วันที่ <b id="snap-date">—</b><br>
+      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 02:51</span>
+    </div>
+  </div>
+
+  <div class="sec">ร้านที่เปรียบเทียบ <span class="sub">Shop overview</span></div>
+  <div class="shop-row" id="shop-cards"></div>
+
+  <div class="sec">ยอดสะสมทั้งหมด <span class="sub">Cumulative (ตั้งแต่เปิดร้าน)</span></div>
+  <div class="cmp-table" id="cmp-cumulative"></div>
+
+  <div class="sec">แนวโน้มข้อมูล 28 วันล่าสุด <span class="sub" id="trend-range-label">28-day trend</span></div>
+  <div class="cmp-table" id="cmp-trend" style="margin-bottom:14px"></div>
+  <div class="chart-grid">
+    <div class="cc">
+      <div class="ct">เปรียบเทียบ 28 วันล่าสุด (Orders / Creators / Lives / Videos)</div>
+      <div class="cw" style="height:240px"><canvas id="trend-bar-chart"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">ยอดขาย 28 วัน ตามช่วงเวลา (Sales trend over time)</div>
+      <div class="cw" style="height:240px"><canvas id="sales-line-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec">สินค้าขายดี Top 5 (28 วันล่าสุด)</div>
+  <div class="top-grid" id="top-products"></div>
+
+  <div class="sec">Insight & ข้อสังเกต</div>
+  <div class="ins-box" id="insight-box"></div>
+
+  <div class="note">
+    แหล่งข้อมูล: <a href="https://www.fastmoss.com" target="_blank" rel="noopener">FastMoss.com</a> (TikTok Shop analytics) —
+    ตัวเลข "ยอดสะสมทั้งหมด" คือยอดตั้งแต่เปิดร้าน ส่วน "แนวโน้มข้อมูล 28 วันล่าสุด" คือยอดเฉพาะช่วง 28 วันที่ระบุไว้ด้านบนเท่านั้น
+    (สองชุดนี้ไม่ใช่ตัวเลขเดียวกัน อย่านำมาเทียบกันข้ามชุด) ·
+    แดชบอร์ดนี้อัปเดตข้อมูลอัตโนมัติผ่าน scheduled task ที่ดึงข้อมูลจาก FastMoss แล้ว regenerate ไฟล์นี้ทุกครั้ง —
+    ห้ามแก้ตัวเลขในไฟล์นี้ตรงๆ ให้แก้ที่ fastmoss_history.json แล้วรัน fastmoss_update.py แทน
+  </div>
+</div>
+
+<script>
+const FASTMOSS_DATA = {
+  "shops": {
+    "wibwub": {
+      "key": "wibwub",
+      "name": "WIBWUB",
+      "fastmoss_id": "7494549095358892612",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494549095358892612",
+      "category": "ยานยนต์และจักรยานยนต์ (~99.98%)",
+      "price_range": "฿50 - ฿3.0k",
+      "listed_since": "2022-10-04",
+      "color": "#1A5CDB"
+    },
+    "munwow": {
+      "key": "munwow",
+      "name": "munwow",
+      "fastmoss_id": "7494636213512539066",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494636213512539066",
+      "category": "ยานยนต์ฯ (40.85%) + ของใช้ในบ้าน (59.15%)",
+      "price_range": "฿0.9 - ฿11.1k",
+      "listed_since": "2022-10-28",
+      "color": "#c4406e"
+    }
+  },
+  "history": [
+    {
+      "date": "2026-08-26",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 94700,
+            "sales_total": 27900000,
+            "products_active": 87,
+            "products_total": 98,
+            "country_rank": 3900,
+            "category_rank": 163,
+            "rating": 5.0,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 10800,
+            "sales": 1500000,
+            "creators": 248,
+            "lives": 314,
+            "videos": 553,
+            "products_sold": 64
+          },
+          "top_products": [
+            {
+              "name": "WIBWUB Refresh Leather Wipes",
+              "orders": 5600,
+              "sales": 477800
+            },
+            {
+              "name": "WIBWUB Interior Wipes",
+              "orders": 1900,
+              "sales": 146200
+            },
+            {
+              "name": "WIBWUB Sugar V.3",
+              "orders": 1100,
+              "sales": 282400
+            },
+            {
+              "name": "WIBWUB Cleaner",
+              "orders": 312,
+              "sales": 55700
+            },
+            {
+              "name": "WIBWUB Spot Clean",
+              "orders": 232,
+              "sales": 67300
+            }
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 332900,
+            "sales_total": 71400000,
+            "products_active": 59,
+            "products_total": 60,
+            "country_rank": 924,
+            "category_rank": 23,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 35700,
+            "sales": 4500000,
+            "creators": 595,
+            "lives": 737,
+            "videos": 1400,
+            "products_sold": 50
+          },
+          "top_products": [
+            {
+              "name": "Munwow Nano fiber towel",
+              "orders": 20800,
+              "sales": 21400
+            },
+            {
+              "name": "Munwow All interior",
+              "orders": 5400,
+              "sales": 1600000
+            },
+            {
+              "name": "Good view (เคลือบกระจกไล่น้ำ)",
+              "orders": 1200,
+              "sales": 317100
+            },
+            {
+              "name": "Munwow sexy สเปรย์เคลือบสีรถ",
+              "orders": 1200,
+              "sales": 344500
+            },
+            {
+              "name": "Munwow Leather clean",
+              "orders": 857,
+              "sales": 304500
+            }
+          ]
+        }
+      }
+    }
+  ]
+};
+/*FASTMOSS_DATA_END*/
+
+// ---------- helpers ----------
+const fmtN = n => n == null ? '—' : Math.round(n).toLocaleString('en-US');
+const fmtBaht = n => {
+  if (n == null) return '—';
+  if (n >= 1e6) return '฿' + (n/1e6).toFixed(2) + 'M';
+  if (n >= 1e3) return '฿' + (n/1e3).toFixed(1) + 'K';
+  return '฿' + fmtN(n);
+};
+const fmtCompact = n => {
+  if (n == null) return '—';
+  if (n >= 1e3) return (n/1e3).toFixed(1).replace(/\.0$/,'') + 'K';
+  return fmtN(n);
+};
+const pct = (a,b) => (b === 0 || b == null) ? null : Math.round((a/b)*1000)/10;
+
+function render(){
+  const shops = FASTMOSS_DATA.shops || {};
+  const history = FASTMOSS_DATA.history || [];
+  if (!history.length){
+    document.getElementById('snap-date').textContent = 'ยังไม่มีข้อมูล';
+    return;
+  }
+  const latest = history[history.length-1];
+  const shopKeys = Object.keys(latest.shops);
+  // assume 2-shop comparison layout (wibwub + one competitor); if more are
+  // added later, the KPI/top-product sections below still render fine for
+  // exactly 2 keys — extend to a loop if a 3rd shop is added.
+  const [kA, kB] = shopKeys;
+  const sA = shops[kA], sB = shops[kB];
+  const dA = latest.shops[kA], dB = latest.shops[kB];
+
+  document.getElementById('snap-date').textContent = latest.date;
+  const genTs = document.getElementById('gen-ts');
+  if (genTs.textContent === '—') genTs.textContent = latest.date;
+  document.getElementById('trend-range-label').textContent =
+    '(' + (dA.trend28d.range || '') + ')';
+
+  // ---- shop cards ----
+  const shopCardsEl = document.getElementById('shop-cards');
+  shopCardsEl.innerHTML = [[kA,sA],[kB,sB]].map(([key,s]) => `
+    <div class="shop-card ${key}">
+      <div class="shop-name"><a href="${s.url}" target="_blank" rel="noopener">${s.name} ↗</a></div>
+      <div class="shop-meta">
+        หมวดหมู่: <b>${s.category}</b><br>
+        ช่วงราคา: <b>${s.price_range}</b><br>
+        เปิดร้านตั้งแต่: <b>${s.listed_since}</b>
+      </div>
+    </div>
+  `).join('');
+
+  // ---- cumulative comparison ----
+  const cumRows = [
+    ['ยอดคำสั่งซื้อรวม (Orders)', 'orders_total', fmtN],
+    ['ยอดขายรวม (Sales)', 'sales_total', fmtBaht],
+    ['สินค้าที่ยังขายอยู่ / ทั้งหมด', null, null], // special
+    ['อันดับประเทศ (ยิ่งน้อยยิ่งดี)', 'country_rank', fmtN],
+    ['อันดับหมวดหมู่ (ยิ่งน้อยยิ่งดี)', 'category_rank', fmtN],
+    ['คะแนนรีวิว (Rating)', 'rating', v => v.toFixed(1) + ' / 5'],
+    ['คุณภาพร้าน (Quality score)', 'quality_score', v => v + '/100'],
+    ['ตอบแชทภายใน 24 ชม.', 'response_rate_24h', v => v + '%'],
+    ['จัดส่งภายใน 48 ชม.', 'shipping_rate_48h', v => v + '%'],
+  ];
+  document.getElementById('cmp-cumulative').innerHTML = buildCmpTable(sA,sB,dA.cumulative,dB.cumulative,cumRows,true);
+
+  // ---- 28d trend comparison ----
+  const trendRows = [
+    ['คำสั่งซื้อ (Orders)', 'orders', fmtN],
+    ['ยอดขาย (Sales)', 'sales', fmtBaht],
+    ['ครีเอเตอร์ที่ขายสินค้า (Creators)', 'creators', fmtN],
+    ['ไลฟ์สด (Lives)', 'lives', fmtN],
+    ['วิดีโอ (Videos)', 'videos', fmtN],
+    ['สินค้าที่ขายได้ (Products sold)', 'products_sold', fmtN],
+  ];
+  document.getElementById('cmp-trend').innerHTML = buildCmpTable(sA,sB,dA.trend28d,dB.trend28d,trendRows,true);
+
+  // special row: products active/total (not a share-bar metric)
+  const cumTableEl = document.getElementById('cmp-cumulative');
+  const specialRow = document.createElement('div');
+  specialRow.className = 'cmp-row';
+  specialRow.innerHTML = `
+    <div class="cmp-label">สินค้าที่ยังขายอยู่ / ทั้งหมด</div>
+    <div class="cmp-val wibwub">${dA.cumulative.products_active} / ${dA.cumulative.products_total}</div>
+    <div class="cmp-val munwow">${dB.cumulative.products_active} / ${dB.cumulative.products_total}</div>
+    <div class="cmp-share"></div>`;
+  // insert after "Orders" + "Sales" rows (head=0, orders=1, sales=2), before country rank
+  cumTableEl.insertBefore(specialRow, cumTableEl.children[3]);
+
+  // ---- trend bar chart ----
+  new Chart(document.getElementById('trend-bar-chart'), {
+    type: 'bar',
+    data: {
+      labels: ['Orders','Creators','Lives','Videos'],
+      datasets: [
+        {label: sA.name, backgroundColor: sA.color, data: [dA.trend28d.orders, dA.trend28d.creators, dA.trend28d.lives, dA.trend28d.videos]},
+        {label: sB.name, backgroundColor: sB.color, data: [dB.trend28d.orders, dB.trend28d.creators, dB.trend28d.lives, dB.trend28d.videos]},
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},
+      scales:{y:{ticks:{callback:v=>fmtCompact(v)}}}
+    }
+  });
+
+  // ---- sales-over-time line chart ----
+  const dates = history.map(h => h.date);
+  new Chart(document.getElementById('sales-line-chart'), {
+    type: 'line',
+    data: {
+      labels: dates,
+      datasets: [kA,kB].map(k => ({
+        label: shops[k].name,
+        borderColor: shops[k].color,
+        backgroundColor: shops[k].color,
+        data: history.map(h => h.shops[k] ? h.shops[k].trend28d.sales : null),
+        tension: .25,
+        pointRadius: 4,
+      }))
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11}}}},
+      scales:{y:{ticks:{callback:v=>fmtBaht(v)}}}
+    }
+  });
+
+  // ---- top products ----
+  document.getElementById('top-products').innerHTML = [[kA,sA,dA],[kB,sB,dB]].map(([key,s,d]) => `
+    <div class="top-card">
+      <div class="top-hd ${key}">${s.name}</div>
+      ${d.top_products.map((p,i) => `
+        <div class="top-item">
+          <div class="top-rk ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+          <div class="top-name" title="${p.name}">${p.name}</div>
+          <div class="top-nums">${fmtN(p.orders)} ออเดอร์<br><b>${fmtBaht(p.sales)}</b></div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  // ---- insight ----
+  const orderShare = pct(dA.trend28d.orders, dB.trend28d.orders);
+  const salesShare = pct(dA.trend28d.sales, dB.trend28d.sales);
+  const productsSoldShare = pct(dA.trend28d.products_sold, dB.trend28d.products_sold);
+  const ratingDiff = (dA.cumulative.rating - dB.cumulative.rating).toFixed(1);
+  const qualityDiff = dA.cumulative.quality_score - dB.cumulative.quality_score;
+  document.getElementById('insight-box').innerHTML = `
+    ในช่วง 28 วันล่าสุด <b>${sA.name}</b> ทำยอดขายได้ <b>${salesShare}%</b> และคำสั่งซื้อ <b>${orderShare}%</b>
+    เมื่อเทียบกับ <b>${sB.name}</b>
+    <ul class="ins-list">
+      <li>ยอดขาย 28 วัน: ${sA.name} ${fmtBaht(dA.trend28d.sales)} vs ${sB.name} ${fmtBaht(dB.trend28d.sales)}</li>
+      <li>คำสั่งซื้อ 28 วัน: ${sA.name} ${fmtN(dA.trend28d.orders)} vs ${sB.name} ${fmtN(dB.trend28d.orders)}</li>
+      <li>${sA.name} ขายสินค้าได้หลากหลายกว่า: ${dA.trend28d.products_sold} SKU เทียบกับ ${dB.trend28d.products_sold} SKU (${productsSoldShare}%)</li>
+      <li>คะแนนรีวิวและคุณภาพร้าน: ${sA.name} ${dA.cumulative.rating}/5 (quality ${dA.cumulative.quality_score}) ${ratingDiff >= 0 ? 'สูงกว่า' : 'ต่ำกว่า'} ${sB.name} ${dB.cumulative.rating}/5 (quality ${dB.cumulative.quality_score}) อยู่ ${Math.abs(ratingDiff)} ดาว / ${Math.abs(qualityDiff)} คะแนน</li>
+      <li>${sB.name} มีครีเอเตอร์ทำคอนเทนต์ให้มากกว่า (${fmtN(dB.trend28d.creators)} vs ${fmtN(dA.trend28d.creators)} คน) และไลฟ์มากกว่า (${fmtN(dB.trend28d.lives)} vs ${fmtN(dA.trend28d.lives)} ครั้ง) — อาจเป็นโอกาสขยาย affiliate/live ของ ${sA.name}</li>
+    </ul>
+  `;
+}
+
+function buildCmpTable(sA, sB, valsA, valsB, rows, withShare){
+  let html = `<div class="cmp-row head"><div>ตัวชี้วัด</div><div style="text-align:center">${sA.name}</div><div style="text-align:center">${sB.name}</div><div style="text-align:center">สัดส่วน</div></div>`;
+  rows.forEach(([label, key, fmt]) => {
+    if (!key) return; // special rows handled separately by caller
+    const a = valsA[key], b = valsB[key];
+    let shareHtml = '';
+    if (withShare && typeof a === 'number' && typeof b === 'number' && (a+b) > 0){
+      const aPct = Math.round((a/(a+b))*100);
+      shareHtml = `<span class="share-bar"><div style="width:${aPct}%;background:${sA.color}"></div><div style="width:${100-aPct}%;background:${sB.color}"></div></span><span class="share-txt">${aPct}:${100-aPct}</span>`;
+    }
+    html += `<div class="cmp-row">
+      <div class="cmp-label">${label}</div>
+      <div class="cmp-val wibwub">${fmt(a)}</div>
+      <div class="cmp-val munwow">${fmt(b)}</div>
+      <div class="cmp-share">${shareHtml}</div>
+    </div>`;
+  });
+  return html;
+}
+
+render();
+</script>
+</body>
+</html>
