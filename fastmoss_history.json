@@ -19,6 +19,46 @@
       "price_range": "฿0.9 - ฿11.1k",
       "listed_since": "2022-10-28",
       "color": "#c4406e"
+    },
+    "kake": {
+      "key": "kake",
+      "name": "KAKE Thailand",
+      "fastmoss_id": "7494663043828845142",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494663043828845142",
+      "category": "ยานยนต์และจักรยานยนต์ (~99.84%)",
+      "price_range": "฿1.22 - ฿688",
+      "listed_since": "2022-08-25",
+      "color": "#f59e0b"
+    },
+    "libitu": {
+      "key": "libitu",
+      "name": "Libitu Thailand",
+      "fastmoss_id": "7495528016171600174",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7495528016171600174",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿1-฿2.0k",
+      "listed_since": "2024-03-27",
+      "color": "#22c55e"
+    },
+    "glossycrazy": {
+      "key": "glossycrazy",
+      "name": "glossy crazy",
+      "fastmoss_id": "7494794468297050629",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494794468297050629",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿55 - ฿1.3k",
+      "listed_since": "2023-01-12",
+      "color": "#9333ea"
+    },
+    "dlabs": {
+      "key": "dlabs",
+      "name": "DLABs หัวเชื้อน้ำยาคาร์แคร์",
+      "fastmoss_id": "7494638107764885780",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494638107764885780",
+      "category": "ยานยนต์และจักรยานยนต์",
+      "price_range": "฿1.13-฿9.5k",
+      "listed_since": "2023-06-25",
+      "color": "#0891b2"
     }
   },
   "history": [
@@ -124,6 +164,210 @@
               "name": "Munwow Leather clean",
               "orders": 857,
               "sales": 304500
+            }
+          ]
+        },
+        "kake": {
+          "cumulative": {
+            "orders_total": 1600000,
+            "sales_total": 235800000,
+            "products_active": 36,
+            "products_total": 68,
+            "country_rank": 662,
+            "category_rank": 10,
+            "rating": 4.9,
+            "overall_good_pct": 98,
+            "quality_score": 97,
+            "response_rate_24h": 74,
+            "shipping_rate_48h": 89
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 64900,
+            "sales": 6300000,
+            "creators": 930,
+            "lives": 962,
+            "videos": 2400,
+            "products_sold": 35
+          },
+          "top_products": [
+            {
+              "name": "[ 1แถม1 ] เคลือบมอไซค์ กันน้ำ Wax เงาฉ่ำ Car รถ เคลือบเงา KAKE คาร์เก้ KH",
+              "orders": 32300,
+              "sales": 3200000
+            },
+            {
+              "name": "เคลือบกระจกกันน้ำ KAKE ติดทน 120ml. สูตรเข้มข้น มีกลิ่นหอม KG",
+              "orders": 13600,
+              "sales": 810300
+            },
+            {
+              "name": "[1แถม1] เคลือบสีรถ สูตรกันน้ำ กันแดด เงาฉ่ำ ติดทน KAKE 250ml. KN",
+              "orders": 7500,
+              "sales": 899800
+            },
+            {
+              "name": "โปร เคลือบมอไซค์ 2 + ภายใน 1 บำรุง เบาะหนัง พลาสติก ยาง KAKE คาร์เก้ KH2T",
+              "orders": 3800,
+              "sales": 577400
+            },
+            {
+              "name": "KAKE สเปรย์เคลือบภายใน 250ml. สำหรับเบาะหนัง คอนโซล พลาสติก และยาง ลดฝุ่น กลิ่นหอม ติดทนนาน 1-2 เดือน",
+              "orders": 3000,
+              "sales": 222900
+            }
+          ]
+        },
+        "libitu": {
+          "cumulative": {
+            "orders_total": 3000000,
+            "sales_total": 354300000,
+            "products_active": 70,
+            "products_total": 76,
+            "country_rank": 133,
+            "category_rank": 1,
+            "rating": 5.0,
+            "overall_good_pct": 100,
+            "quality_score": 96,
+            "response_rate_24h": 99,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 219200,
+            "sales": 21800000,
+            "creators": 1700,
+            "lives": 1000,
+            "videos": 6100,
+            "products_sold": 62
+          },
+          "top_products": [
+            {
+              "name": "LIBITU VT5 น้ำยาขัดเงารถ",
+              "orders": 45700,
+              "sales": 4200000
+            },
+            {
+              "name": "Libitu Upgraded version หัวฉีด (สูตรใหม่ น้ำยาล้างหัวฉีด)",
+              "orders": 37700,
+              "sales": 5400000
+            },
+            {
+              "name": "Libitu G20 น้ำยาล้างหัวฉีด",
+              "orders": 32300,
+              "sales": 2000000
+            },
+            {
+              "name": "LIBITU 801E เคลือบกระจกไล่น้ำ",
+              "orders": 29800,
+              "sales": 1800000
+            },
+            {
+              "name": "LIBITU T505 เคลือบแก้ว",
+              "orders": 17800,
+              "sales": 2100000
+            }
+          ]
+        },
+        "glossycrazy": {
+          "cumulative": {
+            "orders_total": 410600,
+            "sales_total": 75400000,
+            "products_active": 22,
+            "products_total": 30,
+            "country_rank": 10000,
+            "category_rank": 968,
+            "rating": 4.9,
+            "overall_good_pct": 99,
+            "quality_score": 100,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 88
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 1700,
+            "sales": 194100,
+            "creators": 91,
+            "lives": 407,
+            "videos": 135,
+            "products_sold": 19
+          },
+          "top_products": [
+            {
+              "name": "เคลือบกระจกรถ น้ำเป็นเม็ด Glossy Crazy Clear ติดทนนาน",
+              "orders": 361,
+              "sales": 35700
+            },
+            {
+              "name": "เคลือบสีรถ เงาใส กัน UV สูตรคาร์นูบาสเปรย์ Glossy Crazy Sabi ปกป้องสีรถ",
+              "orders": 336,
+              "sales": 23100
+            },
+            {
+              "name": "เคลือบสีรถ ผิวลื่นมาก เงาฉ่ำ Glossy Crazy Enigma ไล่น้ำ",
+              "orders": 166,
+              "sales": 22500
+            },
+            {
+              "name": "เคลือบยางและพลาสติกรถ Glossy Crazy Onyx ดำเงา ไล่น้ำดี",
+              "orders": 152,
+              "sales": 15000
+            },
+            {
+              "name": "น้ำยาขจัดคราบน้ำ คราบหินปูน Glossy Crazy Homey",
+              "orders": 148,
+              "sales": 25000
+            }
+          ]
+        },
+        "dlabs": {
+          "cumulative": {
+            "orders_total": 52600,
+            "sales_total": 11600000,
+            "products_active": 66,
+            "products_total": 96,
+            "country_rank": 10000,
+            "category_rank": 798,
+            "rating": 5.0,
+            "overall_good_pct": 88,
+            "quality_score": 76,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 2500,
+            "sales": 371800,
+            "creators": 49,
+            "lives": 49,
+            "videos": 84,
+            "products_sold": 27
+          },
+          "top_products": [
+            {
+              "name": "168 หัวเชื้อโฟมล้างรถPREWASH เคลือบเงาในตัว โฟมแลนซ์1:9 [LAVA SPONGG BY DLABs]",
+              "orders": 1600,
+              "sales": 195600
+            },
+            {
+              "name": "239 น้ำยาสลายคราบยางมะตอย พร้อมใช้งาน [STUNNIN BY DLABs]",
+              "orders": 259,
+              "sales": 36200
+            },
+            {
+              "name": "499 หัวเชื้อซักผ้าไมโครไฟเบอร์ ขยายได้ 100ลิตร [FULLYBRAM BY DLABs]",
+              "orders": 195,
+              "sales": 27300
+            },
+            {
+              "name": "เซ็ตท์คอมโบเงาวาว 510&168",
+              "orders": 89,
+              "sales": 29200
+            },
+            {
+              "name": "ฟ็อกกี้ 510 น้ำยาเคลือบสีรถ \"เงา ฉ่ำ ลึก\" พร้อมใช้งาน [PS-510 BY DLABs]",
+              "orders": 59,
+              "sales": 12700
             }
           ]
         }
