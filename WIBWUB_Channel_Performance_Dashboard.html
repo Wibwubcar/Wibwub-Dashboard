@@ -155,15 +155,19 @@ select.snap-select{background:var(--sf2);border:1px solid var(--bd);color:var(--
 
   <div class="hdr">
     <div>
-      <h1>WIBWUB vs munwow — เปรียบเทียบคู่แข่ง & Channel Performance</h1>
+      <h1 id="hdr-title">WIBWUB vs คู่แข่ง — เปรียบเทียบคู่แข่ง & Channel Performance</h1>
       <div class="sub-line">เปรียบเทียบยอดขายทั้งระบบจาก FastMoss + วิเคราะห์ว่าแบรนด์ควรเน้นช่องทางไหนเพื่อตามให้ทัน</div>
     </div>
-    <div class="ts">อัปเดตล่าสุด<br><span id="gen-ts">2026-08-27 04:50</span></div>
+    <div class="ts">อัปเดตล่าสุด<br><span id="gen-ts">2026-08-27 06:26</span></div>
   </div>
 
   <div class="banner" id="data-banner"></div>
 
   <div class="filter-bar">
+    <div class="filter-group">
+      <label>🏁 คู่แข่งที่เทียบ</label>
+      <select class="snap-select" id="cmp-select" onchange="selectCompetitor(this.value)"></select>
+    </div>
     <div class="filter-group">
       <label>📅 Snapshot FastMoss (จะเลือกช่วงวันได้เมื่อมีข้อมูลหลายวัน)</label>
       <select class="snap-select" id="snap-select" onchange="selectSnapshot(this.value)"></select>
@@ -260,7 +264,7 @@ const CHANNEL_DATA = {
     "jul": "ก.ค.",
     "aug": "ส.ค."
   },
-  "generated": "2026-08-27 04:50",
+  "generated": "2026-08-27 06:26",
   "channels": {
     "video": {
       "mar": {
@@ -1335,6 +1339,46 @@ const CHANNEL_DATA = {
         "price_range": "฿0.9 - ฿11.1k",
         "listed_since": "2022-10-28",
         "color": "#c4406e"
+      },
+      "kake": {
+        "key": "kake",
+        "name": "KAKE Thailand",
+        "fastmoss_id": "7494663043828845142",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494663043828845142",
+        "category": "ยานยนต์และจักรยานยนต์ (~99.84%)",
+        "price_range": "฿1.22 - ฿688",
+        "listed_since": "2022-08-25",
+        "color": "#f59e0b"
+      },
+      "libitu": {
+        "key": "libitu",
+        "name": "Libitu Thailand",
+        "fastmoss_id": "7495528016171600174",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7495528016171600174",
+        "category": "ยานยนต์และจักรยานยนต์",
+        "price_range": "฿1-฿2.0k",
+        "listed_since": "2024-03-27",
+        "color": "#22c55e"
+      },
+      "glossycrazy": {
+        "key": "glossycrazy",
+        "name": "glossy crazy",
+        "fastmoss_id": "7494794468297050629",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494794468297050629",
+        "category": "ยานยนต์และจักรยานยนต์",
+        "price_range": "฿55 - ฿1.3k",
+        "listed_since": "2023-01-12",
+        "color": "#9333ea"
+      },
+      "dlabs": {
+        "key": "dlabs",
+        "name": "DLABs หัวเชื้อน้ำยาคาร์แคร์",
+        "fastmoss_id": "7494638107764885780",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494638107764885780",
+        "category": "ยานยนต์และจักรยานยนต์",
+        "price_range": "฿1.13-฿9.5k",
+        "listed_since": "2023-06-25",
+        "color": "#0891b2"
       }
     },
     "history": [
@@ -1440,6 +1484,210 @@ const CHANNEL_DATA = {
                 "name": "Munwow Leather clean",
                 "orders": 857,
                 "sales": 304500
+              }
+            ]
+          },
+          "kake": {
+            "cumulative": {
+              "orders_total": 1600000,
+              "sales_total": 235800000,
+              "products_active": 36,
+              "products_total": 68,
+              "country_rank": 662,
+              "category_rank": 10,
+              "rating": 4.9,
+              "overall_good_pct": 98,
+              "quality_score": 97,
+              "response_rate_24h": 74,
+              "shipping_rate_48h": 89
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 64900,
+              "sales": 6300000,
+              "creators": 930,
+              "lives": 962,
+              "videos": 2400,
+              "products_sold": 35
+            },
+            "top_products": [
+              {
+                "name": "[ 1แถม1 ] เคลือบมอไซค์ กันน้ำ Wax เงาฉ่ำ Car รถ เคลือบเงา KAKE คาร์เก้ KH",
+                "orders": 32300,
+                "sales": 3200000
+              },
+              {
+                "name": "เคลือบกระจกกันน้ำ KAKE ติดทน 120ml. สูตรเข้มข้น มีกลิ่นหอม KG",
+                "orders": 13600,
+                "sales": 810300
+              },
+              {
+                "name": "[1แถม1] เคลือบสีรถ สูตรกันน้ำ กันแดด เงาฉ่ำ ติดทน KAKE 250ml. KN",
+                "orders": 7500,
+                "sales": 899800
+              },
+              {
+                "name": "โปร เคลือบมอไซค์ 2 + ภายใน 1 บำรุง เบาะหนัง พลาสติก ยาง KAKE คาร์เก้ KH2T",
+                "orders": 3800,
+                "sales": 577400
+              },
+              {
+                "name": "KAKE สเปรย์เคลือบภายใน 250ml. สำหรับเบาะหนัง คอนโซล พลาสติก และยาง ลดฝุ่น กลิ่นหอม ติดทนนาน 1-2 เดือน",
+                "orders": 3000,
+                "sales": 222900
+              }
+            ]
+          },
+          "libitu": {
+            "cumulative": {
+              "orders_total": 3000000,
+              "sales_total": 354300000,
+              "products_active": 70,
+              "products_total": 76,
+              "country_rank": 133,
+              "category_rank": 1,
+              "rating": 5.0,
+              "overall_good_pct": 100,
+              "quality_score": 96,
+              "response_rate_24h": 99,
+              "shipping_rate_48h": 90
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 219200,
+              "sales": 21800000,
+              "creators": 1700,
+              "lives": 1000,
+              "videos": 6100,
+              "products_sold": 62
+            },
+            "top_products": [
+              {
+                "name": "LIBITU VT5 น้ำยาขัดเงารถ",
+                "orders": 45700,
+                "sales": 4200000
+              },
+              {
+                "name": "Libitu Upgraded version หัวฉีด (สูตรใหม่ น้ำยาล้างหัวฉีด)",
+                "orders": 37700,
+                "sales": 5400000
+              },
+              {
+                "name": "Libitu G20 น้ำยาล้างหัวฉีด",
+                "orders": 32300,
+                "sales": 2000000
+              },
+              {
+                "name": "LIBITU 801E เคลือบกระจกไล่น้ำ",
+                "orders": 29800,
+                "sales": 1800000
+              },
+              {
+                "name": "LIBITU T505 เคลือบแก้ว",
+                "orders": 17800,
+                "sales": 2100000
+              }
+            ]
+          },
+          "glossycrazy": {
+            "cumulative": {
+              "orders_total": 410600,
+              "sales_total": 75400000,
+              "products_active": 22,
+              "products_total": 30,
+              "country_rank": 10000,
+              "category_rank": 968,
+              "rating": 4.9,
+              "overall_good_pct": 99,
+              "quality_score": 100,
+              "response_rate_24h": 100,
+              "shipping_rate_48h": 88
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 1700,
+              "sales": 194100,
+              "creators": 91,
+              "lives": 407,
+              "videos": 135,
+              "products_sold": 19
+            },
+            "top_products": [
+              {
+                "name": "เคลือบกระจกรถ น้ำเป็นเม็ด Glossy Crazy Clear ติดทนนาน",
+                "orders": 361,
+                "sales": 35700
+              },
+              {
+                "name": "เคลือบสีรถ เงาใส กัน UV สูตรคาร์นูบาสเปรย์ Glossy Crazy Sabi ปกป้องสีรถ",
+                "orders": 336,
+                "sales": 23100
+              },
+              {
+                "name": "เคลือบสีรถ ผิวลื่นมาก เงาฉ่ำ Glossy Crazy Enigma ไล่น้ำ",
+                "orders": 166,
+                "sales": 22500
+              },
+              {
+                "name": "เคลือบยางและพลาสติกรถ Glossy Crazy Onyx ดำเงา ไล่น้ำดี",
+                "orders": 152,
+                "sales": 15000
+              },
+              {
+                "name": "น้ำยาขจัดคราบน้ำ คราบหินปูน Glossy Crazy Homey",
+                "orders": 148,
+                "sales": 25000
+              }
+            ]
+          },
+          "dlabs": {
+            "cumulative": {
+              "orders_total": 52600,
+              "sales_total": 11600000,
+              "products_active": 66,
+              "products_total": 96,
+              "country_rank": 10000,
+              "category_rank": 798,
+              "rating": 5.0,
+              "overall_good_pct": 88,
+              "quality_score": 76,
+              "response_rate_24h": 100,
+              "shipping_rate_48h": 90
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 2500,
+              "sales": 371800,
+              "creators": 49,
+              "lives": 49,
+              "videos": 84,
+              "products_sold": 27
+            },
+            "top_products": [
+              {
+                "name": "168 หัวเชื้อโฟมล้างรถPREWASH เคลือบเงาในตัว โฟมแลนซ์1:9 [LAVA SPONGG BY DLABs]",
+                "orders": 1600,
+                "sales": 195600
+              },
+              {
+                "name": "239 น้ำยาสลายคราบยางมะตอย พร้อมใช้งาน [STUNNIN BY DLABs]",
+                "orders": 259,
+                "sales": 36200
+              },
+              {
+                "name": "499 หัวเชื้อซักผ้าไมโครไฟเบอร์ ขยายได้ 100ลิตร [FULLYBRAM BY DLABs]",
+                "orders": 195,
+                "sales": 27300
+              },
+              {
+                "name": "เซ็ตท์คอมโบเงาวาว 510&168",
+                "orders": 89,
+                "sales": 29200
+              },
+              {
+                "name": "ฟ็อกกี้ 510 น้ำยาเคลือบสีรถ \"เงา ฉ่ำ ลึก\" พร้อมใช้งาน [PS-510 BY DLABs]",
+                "orders": 59,
+                "sales": 12700
               }
             ]
           }
@@ -1685,6 +1933,7 @@ const WB_COLOR = '#1A5CDB', MW_COLOR = '#c4406e';
 
 let curMonth = null;
 let curSnapIdx = 0;
+let curCompetitor = null;
 let trendChartInst = null, shareChartInst = null;
 
 /* month key (mar/apr/...) -> 2-digit month number, used to look up
@@ -1745,6 +1994,16 @@ function init(){
     document.getElementById('snap-select').innerHTML = '<option>— ไม่มีข้อมูล FastMoss —</option>';
   }
 
+  const competitorKeys = fm ? Object.keys(fm.shops || {}).filter(k => k !== 'wibwub') : [];
+  if (competitorKeys.length){
+    curCompetitor = competitorKeys.includes('munwow') ? 'munwow' : competitorKeys[0];
+    document.getElementById('cmp-select').innerHTML = competitorKeys.map(k =>
+      `<option value="${k}"${k===curCompetitor?' selected':''}>${fm.shops[k].name}</option>`
+    ).join('');
+  } else {
+    document.getElementById('cmp-select').innerHTML = '<option>— ไม่มีข้อมูลคู่แข่ง —</option>';
+  }
+
   renderBanner();
   renderTrendLegend();
   buildTrendChart();
@@ -1776,6 +2035,11 @@ function selectMonth(m, btn){
 
 function selectSnapshot(idxStr){
   curSnapIdx = parseInt(idxStr, 10) || 0;
+  renderFastmossAll();
+}
+
+function selectCompetitor(key){
+  curCompetitor = key;
   renderFastmossAll();
 }
 
@@ -1929,10 +2193,10 @@ function buildCmpTable(sA, sB, valsA, valsB, rows){
     const shareA = r.share === false ? null : pct(a, a+b);
     html += `<div class="cmp-row">
       <div class="cmp-label">${r.label}</div>
-      <div class="cmp-val wibwub">${r.fmt ? r.fmt(a) : fmtN(a)}</div>
-      <div class="cmp-val munwow">${r.fmt ? r.fmt(b) : fmtN(b)}</div>
+      <div class="cmp-val" style="color:${sA.color}">${r.fmt ? r.fmt(a) : fmtN(a)}</div>
+      <div class="cmp-val" style="color:${sB.color}">${r.fmt ? r.fmt(b) : fmtN(b)}</div>
       <div class="cmp-share">${shareA === null ? '—' : `
-        <div class="share-bar"><div style="width:${shareA}%;background:${WB_COLOR}"></div><div style="width:${100-shareA}%;background:${MW_COLOR}"></div></div>
+        <div class="share-bar"><div style="width:${shareA}%;background:${sA.color}"></div><div style="width:${100-shareA}%;background:${sB.color}"></div></div>
         <div class="share-txt">${shareA}% / ${100-shareA}%</div>`}</div>
     </div>`;
   });
@@ -1953,14 +2217,15 @@ function currentSnapshot(){
 function renderFastmossTrend(){
   const fm = CHANNEL_DATA.fastmoss;
   const snap = currentSnapshot();
-  if (!fm || !snap) return;
-  const sW = fm.shops.wibwub, sM = fm.shops.munwow;
-  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  if (!fm || !snap || !curCompetitor) return;
+  const sW = fm.shops.wibwub, sM = fm.shops[curCompetitor];
+  const dW = snap.shops.wibwub, dM = snap.shops[curCompetitor];
+  if (!sM || !dM) return;
   const monthly = monthlyFastmossFor(curMonth);
   const mlabel = (CHANNEL_DATA.month_labels_th||{})[curMonth] || curMonth || '';
 
-  if (monthly && monthly.shops.wibwub && monthly.shops.munwow){
-    const mW = monthly.shops.wibwub, mM = monthly.shops.munwow;
+  if (monthly && monthly.shops.wibwub && monthly.shops[curCompetitor]){
+    const mW = monthly.shops.wibwub, mM = monthly.shops[curCompetitor];
     const [y, num] = monthly.month.split('-');
     const full = mW.days_in_period >= daysInCalMonth(y, num);
     document.getElementById('fm-trend-title').textContent = `ข้อมูลรายเดือน (FastMoss) — ${mlabel}`;
@@ -1976,7 +2241,7 @@ function renderFastmossTrend(){
     ]);
     document.getElementById('fm-trend-note').innerHTML =
       `⚠️ "ใหม่ที่เพิ่มเดือนนี้" นับเฉพาะ creator/ไลฟ์/คลิปที่เพิ่งถูกเพิ่มเข้าตัวนับสะสมของ FastMoss ในเดือนนี้ — คนละความหมายกับ "แนวโน้ม 28 วันล่าสุด" ที่นับทุกคนที่ยังทำยอดอยู่ในช่วง 28 วัน ไม่ว่าเก่าหรือใหม่ ห้ามเทียบสองชุดนี้ตรงๆ กัน<br>
-      สินค้าที่ขายได้ไม่มีข้อมูลรายเดือน (FastMoss ไม่มี breakdown) จึงแสดงค่าแนวโน้ม 28 วันล่าสุดแทน: WIBWUB ${fmtN(dW.trend28d.products_sold)} · munwow ${fmtN(dM.trend28d.products_sold)}`;
+      สินค้าที่ขายได้ไม่มีข้อมูลรายเดือน (FastMoss ไม่มี breakdown) จึงแสดงค่าแนวโน้ม 28 วันล่าสุดแทน: WIBWUB ${fmtN(dW.trend28d.products_sold)} · ${sM.name} ${fmtN(dM.trend28d.products_sold)}`;
   } else {
     document.getElementById('fm-trend-title').textContent = 'แนวโน้ม 28 วันล่าสุด (FastMoss)';
     document.getElementById('fm-trend-range-label').textContent = `(${dW.trend28d.range})`;
@@ -1996,18 +2261,23 @@ function renderFastmossAll(){
   const fm = CHANNEL_DATA.fastmoss;
   const snap = currentSnapshot();
   const targets = ['fm-shop-cards','fm-cmp-cumulative','fm-cmp-trend','fm-top-products','fm-insight-box','gap-grid'];
-  if (!fm || !snap){
+  if (!fm || !snap || !curCompetitor){
     targets.forEach(id => document.getElementById(id).innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>');
     return;
   }
   const shopsMeta = fm.shops;
-  const sW = shopsMeta.wibwub, sM = shopsMeta.munwow;
-  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  const sW = shopsMeta.wibwub, sM = shopsMeta[curCompetitor];
+  const dW = snap.shops.wibwub, dM = snap.shops[curCompetitor];
+  if (!sM || !dM){
+    targets.forEach(id => document.getElementById(id).innerHTML = '<div class="empty-note">ไม่มีข้อมูล FastMoss สำหรับคู่แข่งที่เลือก</div>');
+    return;
+  }
 
+  document.getElementById('hdr-title').textContent = `WIBWUB vs ${sM.name} — เปรียบเทียบคู่แข่ง & Channel Performance`;
   document.getElementById('fm-snap-date').textContent = `— snapshot ${snap.date}`;
 
   document.getElementById('fm-shop-cards').innerHTML = `
-    <div class="shop-card wibwub">
+    <div class="shop-card" style="border-top:3px solid ${sW.color}">
       <div class="shop-name"><a href="${sW.url}" target="_blank" rel="noopener">${sW.name}</a></div>
       <div class="shop-meta">
         หมวดหมู่: <b>${sW.category}</b><br>
@@ -2017,7 +2287,7 @@ function renderFastmossAll(){
         เรตติ้ง: <b>${dW.cumulative.rating}</b> · คุณภาพร้าน: <b>${dW.cumulative.quality_score}</b>
       </div>
     </div>
-    <div class="shop-card munwow">
+    <div class="shop-card" style="border-top:3px solid ${sM.color}">
       <div class="shop-name"><a href="${sM.url}" target="_blank" rel="noopener">${sM.name}</a></div>
       <div class="shop-meta">
         หมวดหมู่: <b>${sM.category}</b><br>
@@ -2043,21 +2313,21 @@ function renderFastmossAll(){
 
   document.getElementById('fm-top-products').innerHTML = `
     <div class="top-card">
-      <div class="top-hd wibwub">${sW.name} — Top 5</div>
+      <div class="top-hd" style="background:${sW.color}22;color:${sW.color}">${sW.name} — Top 5</div>
       ${(dW.top_products||[]).map((p,i) => topRowHtml(i+1, p.name, `${fmtN(p.orders)} ออเดอร์`, fmtBaht(p.sales))).join('') || '<div class="empty-note">ไม่มีข้อมูล</div>'}
     </div>
     <div class="top-card">
-      <div class="top-hd munwow">${sM.name} — Top 5</div>
+      <div class="top-hd" style="background:${sM.color}22;color:${sM.color}">${sM.name} — Top 5</div>
       ${(dM.top_products||[]).map((p,i) => topRowHtml(i+1, p.name, `${fmtN(p.orders)} ออเดอร์`, fmtBaht(p.sales))).join('') || '<div class="empty-note">ไม่มีข้อมูล</div>'}
     </div>`;
 
   const salesShare = pct(dW.cumulative.sales_total, dW.cumulative.sales_total + dM.cumulative.sales_total);
   const trendShare = pct(dW.trend28d.sales, dW.trend28d.sales + dM.trend28d.sales);
   const insightItems = [
-    `ยอดขายสะสมของเราคิดเป็น ${salesShare}% ของยอดขายรวมสองร้าน (munwow ${100-salesShare}%)`,
+    `ยอดขายสะสมของเราคิดเป็น ${salesShare}% ของยอดขายรวมสองร้าน (${sM.name} ${100-salesShare}%)`,
     `ช่วง 28 วันล่าสุด สัดส่วนยอดขายของเราขยับเป็น ${trendShare}% — ${trendShare > salesShare ? 'ดีขึ้นเมื่อเทียบกับสัดส่วนสะสม' : trendShare < salesShare ? 'แย่ลงเมื่อเทียบกับสัดส่วนสะสม ควรจับตา' : 'ทรงตัวเมื่อเทียบกับสัดส่วนสะสม'}`,
     `ด้านคุณภาพร้าน เรตติ้ง ${dW.cumulative.rating} vs ${dM.cumulative.rating} และคะแนนคุณภาพ ${dW.cumulative.quality_score} vs ${dM.cumulative.quality_score} — ${dW.cumulative.quality_score >= dM.cumulative.quality_score ? 'เรานำด้านคุณภาพ ใช้เป็นจุดขายได้' : 'คู่แข่งนำด้านคุณภาพ ควรปรับปรุง'}`,
-    `จำนวนสินค้าที่ขายอยู่: เรา ${dW.cumulative.products_active} รายการ vs munwow ${dM.cumulative.products_active} รายการ — เรามีสินค้าหลากหลายกว่า แต่ยังแปลงเป็นยอดขายรวมได้น้อยกว่า`,
+    `จำนวนสินค้าที่ขายอยู่: เรา ${dW.cumulative.products_active} รายการ vs ${sM.name} ${dM.cumulative.products_active} รายการ — เรามีสินค้าหลากหลายกว่า แต่ยังแปลงเป็นยอดขายรวมได้น้อยกว่า`,
   ];
   document.getElementById('fm-insight-box').innerHTML = `<ul class="ins-list">${insightItems.map(i=>`<li>${i}</li>`).join('')}</ul>`;
 
@@ -2095,8 +2365,9 @@ function pctSafe(a,b){ return b ? a/b : 0; }
 
 function computeGapRows(){
   const snap = currentSnapshot();
-  if (!snap) return [];
-  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  if (!snap || !curCompetitor) return [];
+  const dW = snap.shops.wibwub, dM = snap.shops[curCompetitor];
+  if (!dM) return [];
   const monthly = monthlyFastmossFor(curMonth);
   const mlabel = (CHANNEL_DATA.month_labels_th||{})[curMonth] || curMonth || '';
   const rows = [
@@ -2108,8 +2379,8 @@ function computeGapRows(){
   // month-specific rows: use the real per-month FastMoss data when we have a
   // matching monthly_history entry for the selected month tab, otherwise
   // fall back to the old rolling-28-day group (which isn't tied to curMonth).
-  if (monthly && monthly.shops.wibwub && monthly.shops.munwow){
-    const mW = monthly.shops.wibwub, mM = monthly.shops.munwow;
+  if (monthly && monthly.shops.wibwub && monthly.shops[curCompetitor]){
+    const mW = monthly.shops.wibwub, mM = monthly.shops[curCompetitor];
     const g = `เดือน${mlabel}`;
     rows.push(
       { group: g, label: 'ยอดขายเดือนนี้', ours: mW.sales, theirs: mM.sales, higherBetter: true, fmt: fmtBaht },
@@ -2134,13 +2405,15 @@ function renderGapGrid(){
   const rows = computeGapRows();
   const el = document.getElementById('gap-grid');
   if (!rows.length){ el.innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>'; return; }
+  const fm = CHANNEL_DATA.fastmoss;
+  const sW = fm.shops.wibwub, sM = fm.shops[curCompetitor];
   el.innerHTML = rows.map(r => `
     <div class="gap-card ${r.flag}">
       <div class="gap-hd"><span>${gapFlagIcon(r.flag)}</span><span>${r.label}</span></div>
       <div class="gap-nums">
-        <div class="gap-num wibwub"><span class="gap-num-lbl">WIBWUB</span><span class="gap-num-val">${r.fmt(r.ours)}</span></div>
+        <div class="gap-num" style="color:${sW.color}"><span class="gap-num-lbl">WIBWUB</span><span class="gap-num-val">${r.fmt(r.ours)}</span></div>
         <div class="gap-vs">vs</div>
-        <div class="gap-num munwow"><span class="gap-num-lbl">munwow</span><span class="gap-num-val">${r.fmt(r.theirs)}</span></div>
+        <div class="gap-num" style="color:${sM.color}"><span class="gap-num-lbl">${sM.name}</span><span class="gap-num-val">${r.fmt(r.theirs)}</span></div>
       </div>
       <div class="gap-ratio">${gapRatioText(r.ours, r.theirs, r.higherBetter, r.flag)}</div>
     </div>`).join('');
@@ -2150,12 +2423,14 @@ function renderGapGrid(){
 function renderRecommendations(){
   const snap = currentSnapshot();
   const el = document.getElementById('reco-grid');
-  if (!snap){ el.innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>'; return; }
-  const dM = snap.shops.munwow.trend28d;
+  if (!snap || !curCompetitor || !snap.shops[curCompetitor]){ el.innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>'; return; }
+  const fm = CHANNEL_DATA.fastmoss;
+  const cmpName = (fm.shops[curCompetitor] || {}).name || curCompetitor;
+  const dM = snap.shops[curCompetitor].trend28d;
   const dW = snap.shops.wibwub.trend28d;
-  const cW = snap.shops.wibwub.cumulative, cM = snap.shops.munwow.cumulative;
+  const cW = snap.shops.wibwub.cumulative, cM = snap.shops[curCompetitor].cumulative;
   const monthly = monthlyFastmossFor(curMonth);
-  const mM_monthly = monthly && monthly.shops.munwow;
+  const mM_monthly = monthly && monthly.shops[curCompetitor];
 
   const vidCh = (CHANNEL_DATA.channels.video || {})[curMonth] || {};
   const afCh = (CHANNEL_DATA.channels.affiliate || {})[curMonth] || {};
@@ -2175,25 +2450,25 @@ function renderRecommendations(){
 
   cards.push({
     icon: '🤝', title: 'ขยายจำนวน Affiliate Creator',
-    body: `เดือนนี้เรามี creator ที่ทำยอด ${fmtN(afCh.creator_count||0)} คน ขณะที่ munwow มี creator${creatorBasis} ${fmtN(mwCreators)} คน (เรา ${pct(afCh.creator_count||0, mwCreators)}% ของคู่แข่ง)${mM_monthly ? ' — หมายเหตุ: ฝั่งเรานับ "ทำยอดจริง" ส่วนฝั่งคู่แข่งนับ "ใหม่ที่เพิ่ม" คนละฐาน ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เร่งเปิดรับ/กระตุ้น creator ใหม่เพื่อปิดช่องว่างนี้`,
+    body: `เดือนนี้เรามี creator ที่ทำยอด ${fmtN(afCh.creator_count||0)} คน ขณะที่ ${cmpName} มี creator${creatorBasis} ${fmtN(mwCreators)} คน (เรา ${pct(afCh.creator_count||0, mwCreators)}% ของคู่แข่ง)${mM_monthly ? ' — หมายเหตุ: ฝั่งเรานับ "ทำยอดจริง" ส่วนฝั่งคู่แข่งนับ "ใหม่ที่เพิ่ม" คนละฐาน ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เร่งเปิดรับ/กระตุ้น creator ใหม่เพื่อปิดช่องว่างนี้`,
   });
   cards.push({
     icon: '🔴', title: 'เพิ่มไลฟ์ขายสินค้าจาก Creator',
-    body: `เดือนนี้เรามีแคมเปญ GMV Live (บูสไลฟ์แบบเสียเงิน) ${fmtN(lvCh.session_count||0)} รอบ ส่วน FastMoss รายงานว่า munwow มีไลฟ์${liveBasis} ถึง ${fmtN(mwLives)} รอบ — ตัวเลขสองฝั่งนับคนละฐาน (ของเราคือแคมเปญโฆษณาเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator) เทียบเป็น% ตรงๆไม่ได้ แต่ส่วนต่างที่มากขนาดนี้บ่งชี้ว่าเรายังชวน creator ให้เปิดไลฟ์ขายสินค้าน้อยกว่าคู่แข่งมาก ควรเร่งดันให้ affiliate creator ไลฟ์บ่อยขึ้น ไม่ใช่แค่พึ่งแคมเปญโฆษณา`,
+    body: `เดือนนี้เรามีแคมเปญ GMV Live (บูสไลฟ์แบบเสียเงิน) ${fmtN(lvCh.session_count||0)} รอบ ส่วน FastMoss รายงานว่า ${cmpName} มีไลฟ์${liveBasis} ถึง ${fmtN(mwLives)} รอบ — ตัวเลขสองฝั่งนับคนละฐาน (ของเราคือแคมเปญโฆษณาเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator) เทียบเป็น% ตรงๆไม่ได้ แต่ส่วนต่างที่มากขนาดนี้บ่งชี้ว่าเรายังชวน creator ให้เปิดไลฟ์ขายสินค้าน้อยกว่าคู่แข่งมาก ควรเร่งดันให้ affiliate creator ไลฟ์บ่อยขึ้น ไม่ใช่แค่พึ่งแคมเปญโฆษณา`,
   });
   cards.push({
     icon: '🎬', title: 'เพิ่มจำนวนคลิป Shoppable Video',
-    body: `เดือนนี้เรามีคลิปที่มียอดขาย ${fmtN(vidCh.video_count||0)} คลิป vs munwow ${fmtN(mwVideos)} คลิป${videoBasis} (เรา ${pct(vidCh.video_count||0, mwVideos)}% ของคู่แข่ง)${mM_monthly ? ' — คนละฐานเช่นกัน (คลิปที่มียอดขายจริง vs คลิปใหม่ที่เพิ่ม) ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เพิ่มความถี่การโพสต์คลิปสินค้าใหม่ๆ`,
+    body: `เดือนนี้เรามีคลิปที่มียอดขาย ${fmtN(vidCh.video_count||0)} คลิป vs ${cmpName} ${fmtN(mwVideos)} คลิป${videoBasis} (เรา ${pct(vidCh.video_count||0, mwVideos)}% ของคู่แข่ง)${mM_monthly ? ' — คนละฐานเช่นกัน (คลิปที่มียอดขายจริง vs คลิปใหม่ที่เพิ่ม) ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เพิ่มความถี่การโพสต์คลิปสินค้าใหม่ๆ`,
   });
   cards.push({
     icon: '⭐', title: 'ใช้จุดแข็งด้านคุณภาพเป็นจุดขาย',
     body: cW.quality_score >= cM.quality_score
-      ? `เรามีคะแนนคุณภาพร้าน ${cW.quality_score} และเรตติ้ง ${cW.rating} สูงกว่า munwow (${cM.quality_score} / ${cM.rating}) — ใช้จุดนี้สื่อสารในครีเอทีฟ/แคปชั่นเพื่อสร้างความน่าเชื่อถือ`
-      : `munwow มีคะแนนคุณภาพร้าน ${cM.quality_score} สูงกว่าเรา (${cW.quality_score}) — ควรเร่งปรับปรุงเวลาตอบแชท/จัดส่งเพื่อดันคะแนนคุณภาพร้าน`,
+      ? `เรามีคะแนนคุณภาพร้าน ${cW.quality_score} และเรตติ้ง ${cW.rating} สูงกว่า ${cmpName} (${cM.quality_score} / ${cM.rating}) — ใช้จุดนี้สื่อสารในครีเอทีฟ/แคปชั่นเพื่อสร้างความน่าเชื่อถือ`
+      : `${cmpName} มีคะแนนคุณภาพร้าน ${cM.quality_score} สูงกว่าเรา (${cW.quality_score}) — ควรเร่งปรับปรุงเวลาตอบแชท/จัดส่งเพื่อดันคะแนนคุณภาพร้าน`,
   });
   cards.push({
     icon: '📈', title: 'เร่งปิดช่องว่างอันดับหมวดหมู่',
-    body: `อันดับหมวดหมู่ของเราอยู่ที่ #${fmtN(cW.category_rank)} ขณะที่ munwow อยู่ที่ #${fmtN(cM.category_rank)} — อันดับมักขยับตามยอดขาย/ออเดอร์สะสม การเพิ่ม creator+ไลฟ์+คลิปตามคำแนะนำด้านบนจะช่วยดันอันดับนี้ในระยะกลาง`,
+    body: `อันดับหมวดหมู่ของเราอยู่ที่ #${fmtN(cW.category_rank)} ขณะที่ ${cmpName} อยู่ที่ #${fmtN(cM.category_rank)} — อันดับมักขยับตามยอดขาย/ออเดอร์สะสม การเพิ่ม creator+ไลฟ์+คลิปตามคำแนะนำด้านบนจะช่วยดันอันดับนี้ในระยะกลาง`,
   });
 
   el.innerHTML = cards.map(c => `
