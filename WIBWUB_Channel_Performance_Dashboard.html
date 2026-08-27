@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WIBWUB — Channel Performance Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;
+--vd:#8b5cf6;--vd-bg:rgba(139,92,246,.08);--af:#1A5CDB;--af-bg:rgba(26,92,219,.08);
+--lv:#f97316;--lv-bg:rgba(249,115,22,.08);--ad:#22c55e;--ad-bg:rgba(34,197,94,.08);
+--rd:#ef4444;--yl:#f59e0b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
+.wrap{max-width:1200px;margin:0 auto}
+.hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.logo{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--af)}.logo span{color:var(--tx)}
+.pt{font-size:13px;color:var(--sub);margin-top:2px}
+.hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.7}
+.sec{font-size:14px;font-weight:700;margin:26px 0 12px;color:var(--tx)}
+.sec .sub{font-weight:400;color:var(--sub);font-size:12px;margin-left:8px}
+
+/* Month tabs */
+.mtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.mtab{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:7px 16px;font-size:12.5px;font-weight:600;color:var(--sub);cursor:pointer;transition:.15s}
+.mtab:hover{border-color:var(--af)}
+.mtab.active{background:var(--af);border-color:var(--af);color:#fff}
+
+/* KPI cards */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
+.kpi-card.video{--c:var(--vd)}.kpi-card.affiliate{--c:var(--af)}.kpi-card.live{--c:var(--lv)}.kpi-card.ads{--c:var(--ad)}
+.kpi-lbl{font-size:11.5px;color:var(--sub);font-weight:600;display:flex;align-items:center;gap:6px}
+.kpi-dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.kpi-val{font-size:22px;font-weight:800;margin-top:6px;color:var(--c)}
+.kpi-sub{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.6}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
+.ct{font-size:12.5px;font-weight:700;margin-bottom:10px;color:var(--tx);display:flex;align-items:center;justify-content:space-between}
+.cw{position:relative}
+.leg{display:flex;gap:14px;font-size:11px;color:var(--sub);margin-bottom:8px;flex-wrap:wrap}
+.leg span{display:flex;align-items:center;gap:5px}
+.leg i{width:9px;height:9px;border-radius:2px;display:inline-block}
+
+/* Top 10 grid */
+.top-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.top-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.top-hd{padding:10px 16px;font-size:12px;font-weight:700;color:#fff}
+.top-hd.video{background:var(--vd)}.top-hd.affiliate{background:var(--af)}.top-hd.live{background:var(--lv)}
+.top-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bd);font-size:12px}
+.top-item:last-child{border-bottom:none}
+.top-rk{width:18px;height:18px;border-radius:50%;background:var(--sf2);color:var(--sub);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.top-rk.r1{background:#fde68a;color:#92400e}
+.top-rk.r2{background:#e5e7eb;color:#374151}
+.top-rk.r3{background:#fed7aa;color:#9a3412}
+.top-body{flex:1;min-width:0}
+.top-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.top-sub{font-size:10.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
+.top-nums{font-size:11.5px;color:var(--sub);white-space:nowrap;text-align:right;flex-shrink:0}
+.top-nums b{color:var(--tx)}
+.empty-note{padding:16px;font-size:12px;color:var(--sub);text-align:center}
+
+/* Insight */
+.ins-box{background:var(--af-bg);border:1px solid rgba(26,92,219,.2);border-radius:10px;padding:14px 16px;font-size:12.5px;line-height:1.9;color:var(--tx)}
+.ins-box b{color:var(--af)}
+.ins-list{margin-top:6px;padding-left:0;list-style:none}
+.ins-list li{padding:3px 0}
+.ins-list li:before{content:"› ";color:var(--af);font-weight:700}
+
+.note{font-size:11px;color:var(--sub);margin-top:26px;padding:14px 16px;border-top:1px solid var(--bd);line-height:1.8}
+@media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.chart-grid,.top-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <div class="logo">WIB<span>WUB</span></div>
+      <div class="pt">Channel Performance Dashboard — เปรียบเทียบช่องทางการขายรายเดือน (Video / Affiliate / Live / Ads)</div>
+    </div>
+    <div class="hr">
+      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 03:23</span>
+    </div>
+  </div>
+
+  <div class="sec">เลือกเดือน <span class="sub">Month filter</span></div>
+  <div class="mtabs" id="month-tabs"></div>
+
+  <div class="sec" style="margin-top:18px">สรุปแต่ละช่องทาง <span class="sub" id="kpi-month-label"></span></div>
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="sec">เทรนด์รายเดือน (มี.ค.–ส.ค. 2569)</div>
+  <div class="chart-grid">
+    <div class="cc">
+      <div class="ct">ยอดขาย/รายได้แต่ละช่องทาง รายเดือน</div>
+      <div class="leg" id="trend-legend"></div>
+      <div class="cw" style="height:260px"><canvas id="trend-chart"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">สัดส่วนช่องทาง — เดือนที่เลือก</div>
+      <div class="cw" style="height:260px"><canvas id="share-chart"></canvas></div>
+    </div>
+  </div>
+
+  <div class="sec">Top 10 — เดือนที่เลือก <span class="sub" id="top10-month-label"></span></div>
+  <div class="top-grid">
+    <div class="top-card">
+      <div class="top-hd video">🎬 Video ยอดขายสูงสุด</div>
+      <div id="top-video"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-hd affiliate">🤝 Affiliate ครีเอเตอร์ยอดขายสูงสุด</div>
+      <div id="top-affiliate"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-hd live">📡 Live รายได้สูงสุด</div>
+      <div id="top-live"></div>
+    </div>
+  </div>
+
+  <div class="sec">Insight & ข้อสังเกต</div>
+  <div class="ins-box" id="insight-box"></div>
+
+  <div class="note">
+    <b>แหล่งข้อมูล:</b> Video &amp; Affiliate GMV มาจาก WIBWUB_Affiliate_Dashboard.html (VIDEOS / CREATOR_MONTHS) ·
+    Live &amp; Ads มาจาก data Ads/WIBWUB_Ads_Dashboard.html (TK_BREAKDOWN.gmvLive / gmvMax+bizAds) — ตัวเลขทั้งหมดดึงจากแดชบอร์ดที่มีอยู่แล้ว ไม่ใช่แหล่งข้อมูลใหม่<br>
+    <b>ข้อควรระวัง:</b> "Video" และ "Affiliate" ไม่ใช่ช่องทางที่แยกจากกันสนิท — Video คือยอดขายที่มาจากคลิปเดียว ส่วน Affiliate คือยอดขายรวมทุกคลิปของครีเอเตอร์คนนั้น (ห้ามนำสองยอดนี้มาบวกกันเป็นยอดใหม่ จะนับซ้ำ) ส่วน Live และ Ads เป็นช่องทางที่แยกกันจริง (ช่องทางที่บริษัทจ่ายเงินเอง) ·
+    "Ads" = GMV Max + Business Ads รวมกัน (Business Ads เป็นแบบจ่ายต่อการมองเห็น ไม่มียอดขาย/orders ของตัวเอง จึงนับเฉพาะ spend)<br>
+    แดชบอร์ดนี้อัปเดตข้อมูลอัตโนมัติทุกครั้งที่รัน channel_performance_update.py (ดึงข้อมูลใหม่จาก Affiliate/Ads Dashboard แล้ว regenerate ไฟล์นี้) —
+    ห้ามแก้ตัวเลขในไฟล์นี้ตรงๆ ให้แก้ที่ไฟล์ต้นทาง (Affiliate/Ads Dashboard) แล้วรันสคริปต์ใหม่แทน
+  </div>
+</div>
+
+<script>
+const CHANNEL_DATA = {
+  "months": [
+    "mar",
+    "apr",
+    "may",
+    "jun",
+    "jul",
+    "aug"
+  ],
+  "month_labels_th": {
+    "jan": "ม.ค.",
+    "feb": "ก.พ.",
+    "mar": "มี.ค.",
+    "apr": "เม.ย.",
+    "may": "พ.ค.",
+    "jun": "มิ.ย.",
+    "jul": "ก.ค.",
+    "aug": "ส.ค."
+  },
+  "generated": "2026-08-27 03:23",
+  "channels": {
+    "video": {
+      "mar": {
+        "gmv": 0,
+        "top10": []
+      },
+      "apr": {
+        "gmv": 0,
+        "top10": []
+      },
+      "may": {
+        "gmv": 0,
+        "top10": []
+      },
+      "jun": {
+        "gmv": 527326,
+        "top10": [
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "รถเงาเป็นลูกชุบ #คนรักรถ #wibwup #wibwubsugar #สเปรย์เคลือบเงา #เคลือบเงารถ",
+            "vid_id": "7645490747550010642",
+            "gmv": 29032,
+            "units": 34
+          },
+          {
+            "creator": "noonjourneyyy",
+            "product": "WIBWUB CLEANER",
+            "caption": "ใครโดนหลอกมาเยอะมาจบที่ตัวนี้ได้เลยลองมาให้แล้ว น้ำยาขัดลบรอย WIBWUB CLEANER #น้ำยาลบรอยขีดข่วน #น้ำยาขัดลบรอย #ลบรอยขีด",
+            "vid_id": "7599129746668031239",
+            "gmv": 24905,
+            "units": 66
+          },
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "ตอบกลับ @Arm Sookma  เงาเหมือนลูกชุบเลยครับ #สเปรย์เคลือบเงา #เคลือบเงารถ #เคลือบแก้ว #เคลือบสีรถ #คนรักรถ",
+            "vid_id": "7647069840611511559",
+            "gmv": 24526,
+            "units": 97
+          },
+          {
+            "creator": "fahareejun",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "คนรักรถถูกใจสิ่งนี้มากกกก✨",
+            "vid_id": "7631514449261628680",
+            "gmv": 21829,
+            "units": 1372
+          },
+          {
+            "creator": "rrak_kk",
+            "product": "WIBWUB Interior wipes",
+            "caption": "คนรักรถ ควรมีไว้ครอบครอง😍 #wibwub #carlifestyle #คนรักรถ #ลัทธิฮอนด้า #ขึ้นฟีดเถอะ",
+            "vid_id": "7556331624997211400",
+            "gmv": 15656,
+            "units": 32
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกเช็ดรถ พกพาง่าย เหมาะกับสายรักรถมากก#ทิชชู่เปียกเช็ดรถ #wibwub#wibwubinterior #ทิชชู่เปียกรถยนต์ #คนรักรถ",
+            "vid_id": "7617018768392260872",
+            "gmv": 14016,
+            "units": 261
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกที่ควรมีติดรถ ลดการจับตัวของฝุ่นและป้องกันรังสี uv ปลอดภัยต่อทุกชิ้นส่วนในรถ🚗#ทิชชู่เปียกเช็ดรถ #wibwub#wibwu",
+            "vid_id": "7647055918403800327",
+            "gmv": 12382,
+            "units": 390
+          },
+          {
+            "creator": "papajate",
+            "product": "WIBWUB Sugar",
+            "caption": "รถสวยเงาฉ่ำ ทำได้ง่ายๆ ใครมีรถต้องดู  #wibwub #wibwubsugar  #สเปรย์เคลือบเงา #คนรักรถ #papajatereview",
+            "vid_id": "7605205146968149256",
+            "gmv": 12278,
+            "units": 6
+          },
+          {
+            "creator": "orion_risingstar",
+            "product": "WIBWUB Interior wipes",
+            "caption": "รถใครฝุ่นห้ามเกาะ! ใครเป็นเหมือนกันมั่งงง 😽😾🙌🏻  . #รถคันแรก #yariscross #ผู้หญิงขับรถ #wibwub #ทิชชู่เปียกเช็ดรถ",
+            "vid_id": "7603325545362836743",
+            "gmv": 12119,
+            "units": 232
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกทำความสะอาดภายในรถ ช่วยถนอมวัสดุภายในรถ มีติดไว้ได้ใช้แน่นอนน #ทิชชู่เปียกเช็ดรถ #wibwub#wibwubinterior #ทิชช",
+            "vid_id": "7618508119617916181",
+            "gmv": 10103,
+            "units": 57
+          }
+        ]
+      },
+      "jul": {
+        "gmv": 1243970,
+        "top10": [
+          {
+            "creator": "fahareejun",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "คนรักรถถูกใจสิ่งนี้มากกกก✨",
+            "vid_id": "7631514449261628680",
+            "gmv": 140001,
+            "units": 1372
+          },
+          {
+            "creator": "noonjourneyyy",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "💯/10 ลบคราบฝังเบาะหนัง ทิชชู่แผ่นเดียวเอาอยู่⁉️ ทิชชู่เปียกสูตร Refresh WIBWUB #ทิชชู่เปียกเช็ดเครื่องหนัง ##ทิชชู่เปียก",
+            "vid_id": "7658242937444289799",
+            "gmv": 79122,
+            "units": 849
+          },
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "ตอบกลับ @สายหมอกฟ้า เงาฉ่ำเหมือนลูกชุบครับ #สเปรย์เคลือบเงา #คนรักรถ #เคลือบเงารถ #เคลือบสีรถ #เคลือบแก้ว",
+            "vid_id": "7655185084940619026",
+            "gmv": 66734,
+            "units": 97
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกที่ควรมีติดรถ ลดการจับตัวของฝุ่นและป้องกันรังสี uv ปลอดภัยต่อทุกชิ้นส่วนในรถ🚗#ทิชชู่เปียกเช็ดรถ #wibwub#wibwu",
+            "vid_id": "7647055918403800327",
+            "gmv": 60356,
+            "units": 390
+          },
+          {
+            "creator": "papajate",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "เก็บงานเนี้ยบ เรียบร้อยทุกจุด เหมือนใหม่",
+            "vid_id": "7641925575564627208",
+            "gmv": 58203,
+            "units": 619
+          },
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "ตอบกลับ @Arm Sookma  เงาเหมือนลูกชุบเลยครับ #สเปรย์เคลือบเงา #เคลือบเงารถ #เคลือบแก้ว #เคลือบสีรถ #คนรักรถ",
+            "vid_id": "7647069840611511559",
+            "gmv": 57585,
+            "units": 97
+          },
+          {
+            "creator": "phuengthitii",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "🧴🚗 ครีมที่ทาเลอะเบาะ สกปรก ลองใช้ทิชชู่ตัวนี้ดู ออกจริง แฟนชอบมากก! #ทิชชู่เปียกทําความสะอาดรถยนต์ #ทิชชู่เปียกเช็ดเบาะร",
+            "vid_id": "7636752833634684180",
+            "gmv": 45916,
+            "units": 468
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกเช็ดรถ พกพาง่าย เหมาะกับสายรักรถมากก#ทิชชู่เปียกเช็ดรถ #wibwub#wibwubinterior #ทิชชู่เปียกรถยนต์ #คนรักรถ",
+            "vid_id": "7617018768392260872",
+            "gmv": 37634,
+            "units": 261
+          },
+          {
+            "creator": "orion_risingstar",
+            "product": "WIBWUB Interior wipes",
+            "caption": "รถใครฝุ่นห้ามเกาะ! ใครเป็นเหมือนกันมั่งงง 😽😾🙌🏻  . #รถคันแรก #yariscross #ผู้หญิงขับรถ #wibwub #ทิชชู่เปียกเช็ดรถ",
+            "vid_id": "7603325545362836743",
+            "gmv": 32158,
+            "units": 232
+          },
+          {
+            "creator": "phanuwatinsri",
+            "product": "WIBWUB CLEANER",
+            "caption": "ของเค้าดีจริงใครเคยโดนหลอกมาเปิดใจใช้ตัวนี้เชื่อผม#ลบรอยขนแมว #รบรอยขีดข่วน #น้ํายาลบรอยขีดข่วน #น้ํายาลบรอยขีดข่วนรถยนต",
+            "vid_id": "7527954240350850312",
+            "gmv": 19942,
+            "units": 76
+          }
+        ]
+      },
+      "aug": {
+        "gmv": 1102788,
+        "top10": [
+          {
+            "creator": "papajate",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "เก็บงานเนี้ยบ เรียบร้อยทุกจุด เหมือนใหม่",
+            "vid_id": "7641925575564627208",
+            "gmv": 100798,
+            "units": 619
+          },
+          {
+            "creator": "noonjourneyyy",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "💯/10 ลบคราบฝังเบาะหนัง ทิชชู่แผ่นเดียวเอาอยู่⁉️ ทิชชู่เปียกสูตร Refresh WIBWUB #ทิชชู่เปียกเช็ดเครื่องหนัง ##ทิชชู่เปียก",
+            "vid_id": "7658242937444289799",
+            "gmv": 67958,
+            "units": 849
+          },
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "ตอบกลับ @สายหมอกฟ้า เงาฉ่ำเหมือนลูกชุบครับ #สเปรย์เคลือบเงา #คนรักรถ #เคลือบเงารถ #เคลือบสีรถ #เคลือบแก้ว",
+            "vid_id": "7655185084940619026",
+            "gmv": 56067,
+            "units": 97
+          },
+          {
+            "creator": ".namoshop125",
+            "product": "WIBWUB Sugar",
+            "caption": "ตอบกลับ @Arm Sookma  เงาเหมือนลูกชุบเลยครับ #สเปรย์เคลือบเงา #เคลือบเงารถ #เคลือบแก้ว #เคลือบสีรถ #คนรักรถ",
+            "vid_id": "7647069840611511559",
+            "gmv": 54105,
+            "units": 97
+          },
+          {
+            "creator": "fahareejun",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "คนรักรถถูกใจสิ่งนี้มากกกก✨",
+            "vid_id": "7631514449261628680",
+            "gmv": 46120,
+            "units": 1372
+          },
+          {
+            "creator": "ladyning_mar1984",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "คราบครีม ขี้ไคล โลชั่น คราบสกปรก เช็ดออกเกลี้ยง ไม่กัดเบาะ #ทิชชูเช็ดทำความสะอาดเบาะรถยนต์ #เช็ดเบาะรถยนต์ #ครีมพอกผิวติ",
+            "vid_id": "7641883995868859655",
+            "gmv": 33845,
+            "units": 69
+          },
+          {
+            "creator": "pailong05",
+            "product": "WIBWUB Interior wipes",
+            "caption": "ทิชชู่เปียกที่ควรมีติดรถ ลดการจับตัวของฝุ่นและป้องกันรังสี uv ปลอดภัยต่อทุกชิ้นส่วนในรถ🚗#ทิชชู่เปียกเช็ดรถ #wibwub#wibwu",
+            "vid_id": "7647055918403800327",
+            "gmv": 33059,
+            "units": 390
+          },
+          {
+            "creator": "phuengthitii",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "🧴🚗 ครีมที่ทาเลอะเบาะ สกปรก ลองใช้ทิชชู่ตัวนี้ดู ออกจริง แฟนชอบมากก! #ทิชชู่เปียกทําความสะอาดรถยนต์ #ทิชชู่เปียกเช็ดเบาะร",
+            "vid_id": "7636752833634684180",
+            "gmv": 31608,
+            "units": 468
+          },
+          {
+            "creator": "rawinreview2465",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "รถใครเป็นแบบนี้บ้างคะ คราบฉ่ำ #wipwup #ทําความสะอาดรถ #ทิชชู่เปียกทําความสะอาดรถยนต์ #ทํารักรถ",
+            "vid_id": "7619404140250434834",
+            "gmv": 31310,
+            "units": 163
+          },
+          {
+            "creator": "oldcarstorys",
+            "product": "WIBWUB Refresh Leather Wipes",
+            "caption": "อยากได้เบาะหนังเจี๊ยบลองเอาไปใช้ #รถเก่า #รถยนต์",
+            "vid_id": "7676351993912347925",
+            "gmv": 25079,
+            "units": 164
+          }
+        ]
+      }
+    },
+    "affiliate": {
+      "mar": {
+        "gmv": 655171,
+        "top10": [
+          {
+            "name": "rita.fe_",
+            "gmv": 77739,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 35420,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "muchmai_mumi",
+            "gmv": 32704,
+            "comm_rate": 13.2
+          },
+          {
+            "name": "jarkkystory",
+            "gmv": 30902,
+            "comm_rate": 12.8
+          },
+          {
+            "name": "phanuwatinsri",
+            "gmv": 20766,
+            "comm_rate": 9.2
+          },
+          {
+            "name": "ralph.detailing8",
+            "gmv": 19174,
+            "comm_rate": 13.4
+          },
+          {
+            "name": "orion_risingstar",
+            "gmv": 15587,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "pailong05",
+            "gmv": 15034,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "rrak_kk",
+            "gmv": 14408,
+            "comm_rate": 11.9
+          },
+          {
+            "name": "nnhtr_",
+            "gmv": 14338,
+            "comm_rate": 11.5
+          }
+        ]
+      },
+      "apr": {
+        "gmv": 724241,
+        "top10": [
+          {
+            "name": "pailong05",
+            "gmv": 67105,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "rita.fe_",
+            "gmv": 61407,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 44802,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "fahareejun",
+            "gmv": 29330,
+            "comm_rate": 9.4
+          },
+          {
+            "name": "muchmai_mumi",
+            "gmv": 26324,
+            "comm_rate": 13.2
+          },
+          {
+            "name": "nnhtr_",
+            "gmv": 24292,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "jarkkystory",
+            "gmv": 23876,
+            "comm_rate": 12.8
+          },
+          {
+            "name": "thekataecx30",
+            "gmv": 22890,
+            "comm_rate": 8.4
+          },
+          {
+            "name": "ralph.detailing8",
+            "gmv": 21248,
+            "comm_rate": 13.4
+          },
+          {
+            "name": "_ijstagram",
+            "gmv": 21179,
+            "comm_rate": 10.9
+          }
+        ]
+      },
+      "may": {
+        "gmv": 951158,
+        "top10": [
+          {
+            "name": "fahareejun",
+            "gmv": 228257,
+            "comm_rate": 9.4
+          },
+          {
+            "name": "pailong05",
+            "gmv": 73332,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "rita.fe_",
+            "gmv": 42307,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 36367,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "nnhtr_",
+            "gmv": 29269,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "phuengthitii",
+            "gmv": 27750,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "ceo.blk.item",
+            "gmv": 26761,
+            "comm_rate": 9.2
+          },
+          {
+            "name": "ralph.detailing8",
+            "gmv": 26070,
+            "comm_rate": 13.4
+          },
+          {
+            "name": "muchmai_mumi",
+            "gmv": 23219,
+            "comm_rate": 13.2
+          },
+          {
+            "name": "phanuwatinsri",
+            "gmv": 19537,
+            "comm_rate": 9.2
+          }
+        ]
+      },
+      "jun": {
+        "gmv": 660557,
+        "top10": [
+          {
+            "name": ".namoshop125",
+            "gmv": 65004,
+            "comm_rate": 12.1
+          },
+          {
+            "name": "pailong05",
+            "gmv": 44709,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 35831,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "papajate",
+            "gmv": 34964,
+            "comm_rate": 12.2
+          },
+          {
+            "name": "fahareejun",
+            "gmv": 27042,
+            "comm_rate": 9.4
+          },
+          {
+            "name": "rita.fe_",
+            "gmv": 24870,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "ralph.detailing8",
+            "gmv": 19979,
+            "comm_rate": 13.4
+          },
+          {
+            "name": "nnhtr_",
+            "gmv": 17076,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "rrak_kk",
+            "gmv": 16081,
+            "comm_rate": 11.9
+          },
+          {
+            "name": "muchmai_mumi",
+            "gmv": 15014,
+            "comm_rate": 13.2
+          }
+        ]
+      },
+      "jul": {
+        "gmv": 1452748,
+        "top10": [
+          {
+            "name": ".namoshop125",
+            "gmv": 157727,
+            "comm_rate": 12.1
+          },
+          {
+            "name": "fahareejun",
+            "gmv": 140167,
+            "comm_rate": 9.4
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 118312,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "pailong05",
+            "gmv": 114383,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "papajate",
+            "gmv": 81277,
+            "comm_rate": 12.2
+          },
+          {
+            "name": "phuengthitii",
+            "gmv": 52477,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "phinxlyz",
+            "gmv": 50198,
+            "comm_rate": 14
+          },
+          {
+            "name": "rita.fe_",
+            "gmv": 46160,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "orion_risingstar",
+            "gmv": 32333,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "muchmai_mumi",
+            "gmv": 23623,
+            "comm_rate": 13.2
+          }
+        ]
+      },
+      "aug": {
+        "gmv": 1313831,
+        "top10": [
+          {
+            "name": ".namoshop125",
+            "gmv": 141305,
+            "comm_rate": 12.1
+          },
+          {
+            "name": "papajate",
+            "gmv": 129809,
+            "comm_rate": 12.2
+          },
+          {
+            "name": "noonjourneyyy",
+            "gmv": 91960,
+            "comm_rate": 11.7
+          },
+          {
+            "name": "pailong05",
+            "gmv": 68350,
+            "comm_rate": 11.3
+          },
+          {
+            "name": "fahareejun",
+            "gmv": 46197,
+            "comm_rate": 9.4
+          },
+          {
+            "name": "phuengthitii",
+            "gmv": 38781,
+            "comm_rate": 10.8
+          },
+          {
+            "name": "ladyning_mar1984",
+            "gmv": 36255,
+            "comm_rate": 10.6
+          },
+          {
+            "name": "nnhtr_",
+            "gmv": 33469,
+            "comm_rate": 11.5
+          },
+          {
+            "name": "phinxlyz",
+            "gmv": 32230,
+            "comm_rate": 14
+          },
+          {
+            "name": "rawinreview2465",
+            "gmv": 31310,
+            "comm_rate": 8.9
+          }
+        ]
+      }
+    },
+    "live": {
+      "mar": {
+        "revenue": 23995,
+        "spend": 8009,
+        "orders": 62,
+        "roi": 3,
+        "views": 9181,
+        "top10": [
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 500,
+            "orders": 11,
+            "revenue": 3424,
+            "roi": 6.84,
+            "views": 789
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 500,
+            "orders": 4,
+            "revenue": 2396,
+            "roi": 4.79,
+            "views": 639
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 503,
+            "orders": 5,
+            "revenue": 2194,
+            "roi": 4.36,
+            "views": 497
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 496,
+            "orders": 4,
+            "revenue": 2037,
+            "roi": 4.11,
+            "views": 441
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 499,
+            "orders": 5,
+            "revenue": 1669,
+            "roi": 3.35,
+            "views": 502
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 483,
+            "orders": 4,
+            "revenue": 1631,
+            "roi": 3.38,
+            "views": 699
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 500,
+            "orders": 4,
+            "revenue": 1605,
+            "roi": 3.21,
+            "views": 508
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 0,
+            "orders": 4,
+            "revenue": 1404,
+            "roi": 0,
+            "views": 538
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 502,
+            "orders": 4,
+            "revenue": 1265,
+            "roi": 2.52,
+            "views": 410
+          },
+          {
+            "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
+            "spend": 502,
+            "orders": 3,
+            "revenue": 1078,
+            "roi": 2.15,
+            "views": 496
+          }
+        ]
+      },
+      "apr": {
+        "revenue": 61434,
+        "spend": 4504,
+        "orders": 119,
+        "roi": 13.64,
+        "views": 8460,
+        "top10": [
+          {
+            "name": "4.4 Live_GMV",
+            "spend": 1334,
+            "orders": 56,
+            "revenue": 30040,
+            "roi": 22.52,
+            "views": 2686
+          },
+          {
+            "name": "25.04.26/Live GMV New",
+            "spend": 3008,
+            "orders": 47,
+            "revenue": 22704,
+            "roi": 7.55,
+            "views": 3802
+          },
+          {
+            "name": "4.4 Live_GMV",
+            "spend": 162,
+            "orders": 16,
+            "revenue": 8690,
+            "roi": 53.65,
+            "views": 1972
+          }
+        ]
+      },
+      "may": {
+        "revenue": 128808,
+        "spend": 22453,
+        "orders": 331,
+        "roi": 5.74,
+        "views": 23121,
+        "top10": [
+          {
+            "name": "05.05.26/GMVLive เก็บโค้ด5.5(1)",
+            "spend": 4580,
+            "orders": 64,
+            "revenue": 22705,
+            "roi": 4.96,
+            "views": 3538
+          },
+          {
+            "name": "05.05.26/GMVLive เก็บโค้ด5.5(2)",
+            "spend": 4837,
+            "orders": 54,
+            "revenue": 15994,
+            "roi": 3.31,
+            "views": 3056
+          },
+          {
+            "name": "07.05.26/คนรักรถ(1)",
+            "spend": 1917,
+            "orders": 34,
+            "revenue": 15625,
+            "roi": 8.15,
+            "views": 1715
+          },
+          {
+            "name": "25.05.26/คนรักรถ",
+            "spend": 1404,
+            "orders": 32,
+            "revenue": 14021,
+            "roi": 9.99,
+            "views": 3462
+          },
+          {
+            "name": "28.05.26/คนรักรถ(1)",
+            "spend": 465,
+            "orders": 23,
+            "revenue": 10466,
+            "roi": 22.5,
+            "views": 1392
+          },
+          {
+            "name": "07.05.26/คนรักรถ(2)",
+            "spend": 2456,
+            "orders": 21,
+            "revenue": 10003,
+            "roi": 4.07,
+            "views": 1544
+          },
+          {
+            "name": "29.05.26/คนรักรถ(1)",
+            "spend": 899,
+            "orders": 13,
+            "revenue": 6591,
+            "roi": 7.33,
+            "views": 1021
+          },
+          {
+            "name": "15.05.26/คนรักรถ",
+            "spend": 616,
+            "orders": 16,
+            "revenue": 6073,
+            "roi": 9.87,
+            "views": 1799
+          },
+          {
+            "name": "08.05.26/คนรักรถ(1)",
+            "spend": 1000,
+            "orders": 18,
+            "revenue": 6054,
+            "roi": 6.05,
+            "views": 673
+          },
+          {
+            "name": "28.05.26/คนรักรถ(2)",
+            "spend": 265,
+            "orders": 12,
+            "revenue": 4666,
+            "roi": 17.63,
+            "views": 1223
+          }
+        ]
+      },
+      "jun": {
+        "revenue": 167787,
+        "spend": 8775,
+        "orders": 411,
+        "roi": 19.12,
+        "views": 30399,
+        "top10": [
+          {
+            "name": "06 1.2",
+            "spend": 3855,
+            "orders": 164,
+            "revenue": 72592,
+            "roi": 18.83,
+            "views": 8803
+          },
+          {
+            "name": "25.06.26/Liveแอ้นปาย",
+            "spend": 942,
+            "orders": 104,
+            "revenue": 35593,
+            "roi": 37.78,
+            "views": 5893
+          },
+          {
+            "name": "15/06 - 1.2",
+            "spend": 1503,
+            "orders": 64,
+            "revenue": 25550,
+            "roi": 17.01,
+            "views": 6298
+          },
+          {
+            "name": "01/06 - 1.2",
+            "spend": 1146,
+            "orders": 42,
+            "revenue": 17904,
+            "roi": 13.71,
+            "views": 5815
+          },
+          {
+            "name": "4/6 WIBWUB.CAR",
+            "spend": 391,
+            "orders": 9,
+            "revenue": 6790,
+            "roi": 17.37,
+            "views": 1173
+          },
+          {
+            "name": "07/06 - Wibwub",
+            "spend": 472,
+            "orders": 13,
+            "revenue": 3919,
+            "roi": 8.31,
+            "views": 1516
+          },
+          {
+            "name": "1.1 1.2",
+            "spend": 172,
+            "orders": 10,
+            "revenue": 3821,
+            "roi": 22.25,
+            "views": 427
+          },
+          {
+            "name": "11 WIBWUBCAR",
+            "spend": 294,
+            "orders": 5,
+            "revenue": 1618,
+            "roi": 5.5,
+            "views": 474
+          }
+        ]
+      },
+      "jul": {
+        "revenue": 81312.48,
+        "spend": 4509.1,
+        "orders": 212,
+        "roi": 18.03,
+        "views": 12367,
+        "top10": [
+          {
+            "name": "7.7Live duo",
+            "spend": 3200,
+            "orders": 153,
+            "revenue": 56481.1,
+            "roi": 17.65,
+            "views": 6186
+          },
+          {
+            "name": "live-15.07",
+            "spend": 700.8,
+            "orders": 36,
+            "revenue": 15554.86,
+            "roi": 22.2,
+            "views": 3476
+          },
+          {
+            "name": "25.07.26/Live",
+            "spend": 608.3,
+            "orders": 23,
+            "revenue": 9276.52,
+            "roi": 15.25,
+            "views": 2705
+          }
+        ]
+      },
+      "aug": {
+        "revenue": 93781.03,
+        "spend": 2450.66,
+        "orders": 231,
+        "roi": 38.27,
+        "views": 14149,
+        "top10": [
+          {
+            "name": "15.08.26/Live",
+            "spend": 585.62,
+            "orders": 98,
+            "revenue": 38943.68,
+            "roi": 66.5,
+            "views": 6763
+          },
+          {
+            "name": "08.08.26/Liveปาย+แอ้น",
+            "spend": 442.24,
+            "orders": 52,
+            "revenue": 19428.72,
+            "roi": 43.93,
+            "views": 1716
+          },
+          {
+            "name": "08.08.26/Liveแอ้นปายมืด",
+            "spend": 315.64,
+            "orders": 25,
+            "revenue": 11595.95,
+            "roi": 36.74,
+            "views": 1859
+          },
+          {
+            "name": "08.08.26/Liveปาย+แอ้นบ่าย",
+            "spend": 386.39,
+            "orders": 33,
+            "revenue": 11438.98,
+            "roi": 29.6,
+            "views": 1664
+          },
+          {
+            "name": "live 19.08.26",
+            "spend": 623.86,
+            "orders": 11,
+            "revenue": 8179.94,
+            "roi": 13.11,
+            "views": 968
+          },
+          {
+            "name": "13.08.26Test/ROI",
+            "spend": 96.91,
+            "orders": 12,
+            "revenue": 4193.76,
+            "roi": 43.27,
+            "views": 1179
+          }
+        ]
+      }
+    },
+    "ads": {
+      "mar": {
+        "spend": 240975,
+        "revenue": 1108895,
+        "orders": 3782,
+        "roi": 4.6,
+        "gmv_max_spend": 232841,
+        "gmv_max_revenue": 1108895,
+        "biz_ads_spend": 8134
+      },
+      "apr": {
+        "spend": 251665,
+        "revenue": 1223019,
+        "orders": 5080,
+        "roi": 4.86,
+        "gmv_max_spend": 243971,
+        "gmv_max_revenue": 1223019,
+        "biz_ads_spend": 7694
+      },
+      "may": {
+        "spend": 334844,
+        "revenue": 1461482,
+        "orders": 7520,
+        "roi": 4.36,
+        "gmv_max_spend": 290941,
+        "gmv_max_revenue": 1461482,
+        "biz_ads_spend": 43903
+      },
+      "jun": {
+        "spend": 248675,
+        "revenue": 1233228,
+        "orders": 4565,
+        "roi": 4.96,
+        "gmv_max_spend": 197390,
+        "gmv_max_revenue": 1233228,
+        "biz_ads_spend": 51285
+      },
+      "jul": {
+        "spend": 505720.06,
+        "revenue": 1977144.85,
+        "orders": 9971,
+        "roi": 3.91,
+        "gmv_max_spend": 491063.43,
+        "gmv_max_revenue": 1977144.85,
+        "biz_ads_spend": 14656.63
+      },
+      "aug": {
+        "spend": 563033.08,
+        "revenue": 2031831.5,
+        "orders": 9935,
+        "roi": 3.61,
+        "gmv_max_spend": 548503.17,
+        "gmv_max_revenue": 2031831.5,
+        "biz_ads_spend": 14529.91
+      }
+    }
+  }
+};
+/*CHANNEL_DATA_END*/
+
+const CH_COLOR = {video:'#8b5cf6', affiliate:'#1A5CDB', live:'#f97316', ads:'#22c55e'};
+const CH_LABEL = {video:'Video', affiliate:'Affiliate', live:'Live', ads:'Ads'};
+
+function fmtN(n){ n = Math.round(n||0); return n.toLocaleString('en-US'); }
+function fmtBaht(n){ return '฿' + fmtN(n); }
+function fmtCompact(n){
+  n = n||0;
+  if (Math.abs(n) >= 1e6) return '฿' + (n/1e6).toFixed(2) + 'M';
+  if (Math.abs(n) >= 1e3) return '฿' + (n/1e3).toFixed(1) + 'K';
+  return '฿' + fmtN(n);
+}
+
+let curMonth = null;
+let trendChartInst = null, shareChartInst = null;
+
+function init(){
+  document.getElementById('gen-ts').textContent = CHANNEL_DATA.generated || '—';
+  const months = CHANNEL_DATA.months || [];
+  if (!months.length) {
+    document.querySelector('.wrap').insertAdjacentHTML('beforeend', '<div class="empty-note">ยังไม่มีข้อมูล — รัน channel_performance_update.py ก่อน</div>');
+    return;
+  }
+  curMonth = months[months.length - 1];
+
+  const tabsEl = document.getElementById('month-tabs');
+  tabsEl.innerHTML = months.map(m =>
+    `<button class="mtab${m===curMonth?' active':''}" data-m="${m}" onclick="selectMonth('${m}',this)">${CHANNEL_DATA.month_labels_th[m]||m}</button>`
+  ).join('');
+
+  renderTrendLegend();
+  buildTrendChart();
+  render();
+}
+
+function selectMonth(m, btn){
+  curMonth = m;
+  document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function renderTrendLegend(){
+  const el = document.getElementById('trend-legend');
+  el.innerHTML = Object.keys(CH_LABEL).map(k =>
+    `<span><i style="background:${CH_COLOR[k]}"></i>${CH_LABEL[k]}</span>`
+  ).join('');
+}
+
+function metricFor(ch, m){
+  const d = (CHANNEL_DATA.channels[ch] || {})[m] || {};
+  if (ch === 'video' || ch === 'affiliate') return d.gmv || 0;
+  return d.revenue || 0; // live, ads
+}
+
+function buildTrendChart(){
+  const months = CHANNEL_DATA.months;
+  const labels = months.map(m => CHANNEL_DATA.month_labels_th[m] || m);
+  const datasets = Object.keys(CH_LABEL).map(ch => ({
+    label: CH_LABEL[ch],
+    data: months.map(m => metricFor(ch, m)),
+    borderColor: CH_COLOR[ch],
+    backgroundColor: CH_COLOR[ch] + '22',
+    tension: .3,
+    pointRadius: 3,
+    fill: false,
+  }));
+  const ctx = document.getElementById('trend-chart').getContext('2d');
+  trendChartInst = new Chart(ctx, {
+    type: 'line',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: { y: { ticks: { callback: v => fmtCompact(v) } } }
+    }
+  });
+}
+
+function buildShareChart(){
+  const vals = Object.keys(CH_LABEL).map(ch => metricFor(ch, curMonth));
+  const ctx = document.getElementById('share-chart').getContext('2d');
+  if (shareChartInst) shareChartInst.destroy();
+  shareChartInst = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels: Object.values(CH_LABEL),
+      datasets: [{ data: vals, backgroundColor: Object.keys(CH_LABEL).map(k => CH_COLOR[k]) }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
+    }
+  });
+}
+
+function kpiCardHtml(ch, m){
+  const d = (CHANNEL_DATA.channels[ch] || {})[m] || {};
+  const icon = {video:'🎬', affiliate:'🤝', live:'📡', ads:'📢'}[ch];
+  let val, sub;
+  if (ch === 'video') { val = fmtCompact(d.gmv); sub = `${(d.top10||[]).length} คลิปทำยอด`; }
+  else if (ch === 'affiliate') { val = fmtCompact(d.gmv); sub = `${(d.top10||[]).length}+ ครีเอเตอร์ทำยอด`; }
+  else if (ch === 'live') { val = fmtCompact(d.revenue); sub = `spend ${fmtCompact(d.spend)} · ROI ${d.roi||0}x · ${d.orders||0} orders`; }
+  else { val = fmtCompact(d.revenue); sub = `spend ${fmtCompact(d.spend)} · ROI ${d.roi||0}x · ${d.orders||0} orders`; }
+  return `<div class="kpi-card ${ch}">
+    <div class="kpi-lbl"><span class="kpi-dot"></span>${icon} ${CH_LABEL[ch]}</div>
+    <div class="kpi-val">${val}</div>
+    <div class="kpi-sub">${sub}</div>
+  </div>`;
+}
+
+function topRowHtml(rank, name, sub, valLabel){
+  const rc = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
+  return `<div class="top-item">
+    <div class="top-rk ${rc}">${rank}</div>
+    <div class="top-body">
+      <div class="top-name">${name}</div>
+      <div class="top-sub">${sub}</div>
+    </div>
+    <div class="top-nums"><b>${valLabel}</b></div>
+  </div>`;
+}
+
+function renderTopVideo(m){
+  const rows = ((CHANNEL_DATA.channels.video[m]||{}).top10)||[];
+  const el = document.getElementById('top-video');
+  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
+  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.creator, r.product, fmtCompact(r.gmv))).join('');
+}
+
+function renderTopAffiliate(m){
+  const rows = ((CHANNEL_DATA.channels.affiliate[m]||{}).top10)||[];
+  const el = document.getElementById('top-affiliate');
+  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
+  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.name, r.comm_rate ? `comm ${r.comm_rate}%` : '', fmtCompact(r.gmv))).join('');
+}
+
+function renderTopLive(m){
+  const rows = ((CHANNEL_DATA.channels.live[m]||{}).top10)||[];
+  const el = document.getElementById('top-live');
+  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
+  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.name, `ROI ${r.roi||0}x · ${r.orders||0} orders`, fmtCompact(r.revenue))).join('');
+}
+
+function renderInsight(m){
+  const label = CHANNEL_DATA.month_labels_th[m] || m;
+  const vals = Object.keys(CH_LABEL).map(ch => ({ch, v: metricFor(ch, m)}));
+  vals.sort((a,b) => b.v - a.v);
+  const best = vals[0], worst = vals[vals.length-1];
+  const months = CHANNEL_DATA.months;
+  const idx = months.indexOf(m);
+  const items = [];
+  items.push(`ช่องทางที่ทำยอดสูงสุดในเดือน${label} คือ <b>${CH_LABEL[best.ch]}</b> (${fmtCompact(best.v)}) ส่วนช่องทางที่ทำยอดต่ำสุดคือ <b>${CH_LABEL[worst.ch]}</b> (${fmtCompact(worst.v)}) — น่าจะเป็นจุดที่ควรปรับปรุงก่อน`);
+  if (idx > 0) {
+    const prevM = months[idx-1];
+    Object.keys(CH_LABEL).forEach(ch => {
+      const cur = metricFor(ch, m), prev = metricFor(ch, prevM);
+      if (prev > 0) {
+        const pct = Math.round((cur-prev)/prev*100);
+        if (Math.abs(pct) >= 20) {
+          items.push(`${CH_LABEL[ch]} ${pct>0?'เพิ่มขึ้น':'ลดลง'} ${Math.abs(pct)}% จากเดือน${CHANNEL_DATA.month_labels_th[prevM]}`);
+        }
+      }
+    });
+  }
+  const liveD = (CHANNEL_DATA.channels.live[m]||{});
+  const adsD = (CHANNEL_DATA.channels.ads[m]||{});
+  if (liveD.roi) items.push(`Live ROI เดือนนี้ = ${liveD.roi}x (ยิ่งสูงยิ่งคุ้ม) เทียบกับ Ads ROI = ${adsD.roi||0}x`);
+
+  document.getElementById('insight-box').innerHTML =
+    `🔍 <b>สรุปเดือน${label}:</b><ul class="ins-list">` + items.map(t => `<li>${t}</li>`).join('') + '</ul>';
+}
+
+function render(){
+  const label = CHANNEL_DATA.month_labels_th[curMonth] || curMonth;
+  document.getElementById('kpi-month-label').textContent = `— ${label} 2569`;
+  document.getElementById('top10-month-label').textContent = `(${label} 2569)`;
+
+  document.getElementById('kpi-row').innerHTML = Object.keys(CH_LABEL).map(ch => kpiCardHtml(ch, curMonth)).join('');
+
+  buildShareChart();
+  renderTopVideo(curMonth);
+  renderTopAffiliate(curMonth);
+  renderTopLive(curMonth);
+  renderInsight(curMonth);
+}
+
+init();
+</script>
+</body>
+</html>
