@@ -78,12 +78,18 @@ OUTPUT
       "month_labels_th": {"mar":"มี.ค.", ...},
       "generated": "YYYY-MM-DD HH:MM",
       "channels": {
-        "video":     {"mar": {"gmv":.., "top10":[{creator,product,caption,gmv,units,vid_id}]}, ...},
-        "affiliate": {"mar": {"gmv":.., "top10":[{name,gmv,orders,comm}]}, ...},
-        "live":      {"mar": {"revenue":.., "spend":.., "orders":.., "roi":.., "top10":[{name,revenue,orders,roi,views}]}, ...},
+        "video":     {"mar": {"gmv":.., "video_count":.., "top10":[{creator,product,caption,gmv,units,vid_id}]}, ...},
+        "affiliate": {"mar": {"gmv":.., "creator_count":.., "top10":[{name,gmv,orders,comm}]}, ...},
+        "live":      {"mar": {"revenue":.., "spend":.., "orders":.., "roi":.., "session_count":.., "top10":[{name,revenue,orders,roi,views}]}, ...},
         "ads":       {"mar": {"spend":.., "revenue":.., "roi":..}, ...}   // gmvMax+bizAds combined
       },
-      "fastmoss": { ... latest snapshot of fastmoss_history.json, or null if that file doesn't exist yet ... }
+      "fastmoss": { ... full fastmoss_history.json (all shops meta + ALL history[] snapshots, not just
+                     latest), or null if that file doesn't exist yet. video_count/creator_count/
+                     session_count above exist specifically so the dashboard can compare our own
+                     content-ops volume (per month) against munwow's trend28d creators/videos/lives
+                     from FastMoss — same "how much are we producing" question, two different
+                     measurement windows (calendar month vs trailing 28 days), so always label
+                     which window is which when comparing. ... }
     }
 
   WIBWUB_Channel_Performance_Dashboard.html — regenerated from the JSON via
@@ -257,7 +263,7 @@ def build_video_channel(videos):
                     "units": v.get("units"),
                 })
         rows.sort(key=lambda r: r["gmv"], reverse=True)
-        out[m] = {"gmv": round(total), "top10": rows[:10]}
+        out[m] = {"gmv": round(total), "video_count": len(rows), "top10": rows[:10]}
     return out
 
 
@@ -284,7 +290,7 @@ def build_affiliate_channel(creator_months, creators):
                     "comm_rate": meta.get("comm_rate"),
                 })
         rows.sort(key=lambda r: r["gmv"], reverse=True)
-        out[m] = {"gmv": round(total), "top10": rows[:10]}
+        out[m] = {"gmv": round(total), "creator_count": len(rows), "top10": rows[:10]}
     return out
 
 
@@ -302,6 +308,7 @@ def build_live_channel(tk_breakdown):
             "orders": total.get("orders", 0),
             "roi": total.get("roi", 0),
             "views": total.get("views", 0),
+            "session_count": len(sessions),
             "top10": rows,
         }
     return out
