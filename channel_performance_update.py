@@ -42,6 +42,17 @@ SOURCES (read-only — this script never edits these files)
                           (per-session revenue). gmvMax + bizAds together
                           are the "ads" channel (paid spend/revenue).
 
+  fastmoss_history.json (plain JSON — no extraction needed, just json.load)
+    - {"shops": {wibwub:{...}, munwow:{...}}, "history": [{"date":...,
+       "shops": {wibwub:{cumulative:{...}, trend28d:{...},
+       top_products:[...]}, munwow:{...}}}]}
+      This is the SAME file WIBWUB_FastMoss_Competitor_Dashboard.html and
+      fastmoss_update.py already maintain. This script only reads the
+      latest snapshot and embeds it as CHANNEL_DATA.fastmoss so the
+      Channel Performance Dashboard can show a "vs munwow" section next to
+      the internal channel breakdown. It's shop-level only (see caveat
+      below) — never merge these numbers with the channel totals above.
+
 EXTRACTION METHOD
 -------------------
 JS object/array literals in these files use unquoted keys, trailing
@@ -71,7 +82,8 @@ OUTPUT
         "affiliate": {"mar": {"gmv":.., "top10":[{name,gmv,orders,comm}]}, ...},
         "live":      {"mar": {"revenue":.., "spend":.., "orders":.., "roi":.., "top10":[{name,revenue,orders,roi,views}]}, ...},
         "ads":       {"mar": {"spend":.., "revenue":.., "roi":..}, ...}   // gmvMax+bizAds combined
-      }
+      },
+      "fastmoss": { ... latest snapshot of fastmoss_history.json, or null if that file doesn't exist yet ... }
     }
 
   WIBWUB_Channel_Performance_Dashboard.html — regenerated from the JSON via
@@ -98,6 +110,16 @@ content. Do not sum video + affiliate GMV together as if they were
 independent channels — that would double count. Treat them as two
 different lenses (by creator vs. by content) on the same affiliate
 program, and Live/Ads as the genuinely separate paid channels.
+
+CAVEAT — FastMoss comparison is shop-level, not channel-level
+------------------------------------------------------------
+The `fastmoss` section compares WIBWUB's WHOLE SHOP against munwow's whole
+shop (orders/sales/creators/lives/videos counts, rankings, top products).
+It is NOT a per-channel comparison, because FastMoss does not expose a $
+breakdown by video/affiliate/live/ads for any shop — not even ours. Do not
+try to reconcile or sum fastmoss numbers against the channels{} totals
+above; they answer different questions ("how do we compare to a
+competitor overall" vs. "which of our own channels performs best").
 """
 import json
 import re
@@ -110,6 +132,7 @@ from datetime import datetime
 BASE = Path(__file__).resolve().parent
 AFFILIATE_PATH = BASE / "WIBWUB_Affiliate_Dashboard.html"
 ADS_PATH = BASE / "data Ads" / "WIBWUB_Ads_Dashboard.html"
+FASTMOSS_PATH = BASE / "fastmoss_history.json"
 DATA_PATH = BASE / "channel_performance_data.json"
 DASHBOARD_PATH = BASE / "WIBWUB_Channel_Performance_Dashboard.html"
 
@@ -307,6 +330,25 @@ def build_ads_channel(tk_breakdown):
     return out
 
 
+def load_fastmoss():
+    """Load the FastMoss competitor snapshot (WIBWUB vs munwow). This is
+    plain JSON (unlike the dashboards above) since it's written directly by
+    fastmoss_update.py — no JS-literal extraction needed, just json.load().
+
+    This is SHOP-LEVEL data only: FastMoss never exposes a $ breakdown by
+    sales channel (video/affiliate/live/ads) for any shop, including our
+    own. So this section can only compare "whole shop vs whole shop" — it
+    complements, but can never replace or be merged numerically with, the
+    channel breakdown above (which IS ours, broken down by channel/clip/
+    creator). Returns None if the file doesn't exist yet so the dashboard
+    can render an empty-state instead of crashing.
+    """
+    if not FASTMOSS_PATH.exists():
+        return None
+    with open(FASTMOSS_PATH, encoding="utf-8") as f:
+        return json.load(f)
+
+
 def build_channel_data():
     affiliate_consts = extract_consts(AFFILIATE_PATH, ["CREATORS", "CREATOR_MONTHS", "VIDEOS"])
     ads_consts = extract_consts(ADS_PATH, ["TK_BREAKDOWN"])
@@ -323,6 +365,7 @@ def build_channel_data():
             "live": build_live_channel(ads_consts["TK_BREAKDOWN"]),
             "ads": build_ads_channel(ads_consts["TK_BREAKDOWN"]),
         },
+        "fastmoss": load_fastmoss(),
     }
     return data
 

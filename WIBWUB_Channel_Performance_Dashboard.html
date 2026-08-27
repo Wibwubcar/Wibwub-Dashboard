@@ -9,6 +9,7 @@
 :root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;
 --vd:#8b5cf6;--vd-bg:rgba(139,92,246,.08);--af:#1A5CDB;--af-bg:rgba(26,92,219,.08);
 --lv:#f97316;--lv-bg:rgba(249,115,22,.08);--ad:#22c55e;--ad-bg:rgba(34,197,94,.08);
+--mw:#c4406e;--mw-bg:rgba(196,64,110,.08);
 --rd:#ef4444;--yl:#f59e0b}
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
@@ -70,7 +71,32 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
 .ins-list li:before{content:"› ";color:var(--af);font-weight:700}
 
 .note{font-size:11px;color:var(--sub);margin-top:26px;padding:14px 16px;border-top:1px solid var(--bd);line-height:1.8}
+
+/* FastMoss competitor comparison */
+.shop-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
+.shop-card.wibwub{--c:var(--af)}.shop-card.munwow{--c:var(--mw)}
+.shop-name{font-size:16px;font-weight:800}
+.shop-name a{color:inherit;text-decoration:none}
+.shop-name a:hover{text-decoration:underline}
+.shop-meta{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.8}
+.shop-meta b{color:var(--tx);font-weight:600}
+.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
+.cmp-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row.head{background:var(--sf2);font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+.cmp-label{color:var(--sub);font-size:12px}
+.cmp-val{font-weight:700;font-size:14px;text-align:center}
+.cmp-val.wibwub{color:var(--af)}.cmp-val.munwow{color:var(--mw)}
+.cmp-share{text-align:center}
+.share-bar{display:inline-flex;width:80px;height:6px;border-radius:4px;overflow:hidden;background:var(--sf2);vertical-align:middle;margin-right:6px}
+.share-bar div{height:100%}
+.share-txt{font-size:10.5px;color:var(--sub)}
+.top-grid.two{grid-template-columns:1fr 1fr}
+.top-hd.wibwub{background:var(--af)}.top-hd.munwow{background:var(--mw)}
+
 @media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.chart-grid,.top-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.shop-row{grid-template-columns:1fr}.cmp-row{grid-template-columns:1.1fr 1fr 1fr .8fr;font-size:12px}}
 </style>
 </head>
 <body>
@@ -81,7 +107,7 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
       <div class="pt">Channel Performance Dashboard — เปรียบเทียบช่องทางการขายรายเดือน (Video / Affiliate / Live / Ads)</div>
     </div>
     <div class="hr">
-      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 03:23</span>
+      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 03:44</span>
     </div>
   </div>
 
@@ -123,13 +149,30 @@ body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-
   <div class="sec">Insight & ข้อสังเกต</div>
   <div class="ins-box" id="insight-box"></div>
 
+  <div class="sec" style="margin-top:34px">เทียบกับคู่แข่ง (FastMoss) <span class="sub">WIBWUB vs munwow — ข้อมูลระดับทั้งร้านจาก FastMoss.com <span id="fm-snap-date"></span></span></div>
+  <div class="shop-row" id="fm-shop-cards"></div>
+
+  <div class="sec" style="margin-top:14px">ยอดสะสมทั้งหมด <span class="sub">Cumulative ตั้งแต่เปิดร้าน</span></div>
+  <div class="cmp-table" id="fm-cmp-cumulative"></div>
+
+  <div class="sec">แนวโน้ม 28 วันล่าสุด <span class="sub" id="fm-trend-range-label"></span></div>
+  <div class="cmp-table" id="fm-cmp-trend" style="margin-bottom:14px"></div>
+
+  <div class="sec">สินค้าขายดี Top 5 (28 วันล่าสุด) — FastMoss</div>
+  <div class="top-grid two" id="fm-top-products"></div>
+
+  <div class="sec">Insight เทียบคู่แข่ง</div>
+  <div class="ins-box" id="fm-insight-box"></div>
+
   <div class="note">
     <b>แหล่งข้อมูล:</b> Video &amp; Affiliate GMV มาจาก WIBWUB_Affiliate_Dashboard.html (VIDEOS / CREATOR_MONTHS) ·
-    Live &amp; Ads มาจาก data Ads/WIBWUB_Ads_Dashboard.html (TK_BREAKDOWN.gmvLive / gmvMax+bizAds) — ตัวเลขทั้งหมดดึงจากแดชบอร์ดที่มีอยู่แล้ว ไม่ใช่แหล่งข้อมูลใหม่<br>
+    Live &amp; Ads มาจาก data Ads/WIBWUB_Ads_Dashboard.html (TK_BREAKDOWN.gmvLive / gmvMax+bizAds) — ตัวเลขทั้งหมดดึงจากแดชบอร์ดที่มีอยู่แล้ว ไม่ใช่แหล่งข้อมูลใหม่ ·
+    ส่วนเปรียบเทียบคู่แข่งด้านบนมาจาก fastmoss_history.json (FastMoss.com)<br>
     <b>ข้อควรระวัง:</b> "Video" และ "Affiliate" ไม่ใช่ช่องทางที่แยกจากกันสนิท — Video คือยอดขายที่มาจากคลิปเดียว ส่วน Affiliate คือยอดขายรวมทุกคลิปของครีเอเตอร์คนนั้น (ห้ามนำสองยอดนี้มาบวกกันเป็นยอดใหม่ จะนับซ้ำ) ส่วน Live และ Ads เป็นช่องทางที่แยกกันจริง (ช่องทางที่บริษัทจ่ายเงินเอง) ·
     "Ads" = GMV Max + Business Ads รวมกัน (Business Ads เป็นแบบจ่ายต่อการมองเห็น ไม่มียอดขาย/orders ของตัวเอง จึงนับเฉพาะ spend)<br>
-    แดชบอร์ดนี้อัปเดตข้อมูลอัตโนมัติทุกครั้งที่รัน channel_performance_update.py (ดึงข้อมูลใหม่จาก Affiliate/Ads Dashboard แล้ว regenerate ไฟล์นี้) —
-    ห้ามแก้ตัวเลขในไฟล์นี้ตรงๆ ให้แก้ที่ไฟล์ต้นทาง (Affiliate/Ads Dashboard) แล้วรันสคริปต์ใหม่แทน
+    <b>ข้อควรระวังของส่วน FastMoss:</b> ตัวเลขคู่แข่งเป็นระดับ "ทั้งร้าน" เท่านั้น FastMoss ไม่เปิดเผยยอดขายแยกตามช่องทาง (video/affiliate/live/ads) ของร้านใดเลย แม้แต่ของ WIBWUB เอง จึงนำมาเทียบแบบแยกช่องทางกับคู่แข่งไม่ได้ — ใช้เป็นภาพรวมระดับร้านเท่านั้น "ยอดสะสมทั้งหมด" กับ "แนวโน้ม 28 วัน" เป็นคนละชุดตัวเลข ห้ามนำมาเทียบข้ามชุดกัน<br>
+    แดชบอร์ดนี้อัปเดตข้อมูลอัตโนมัติทุกครั้งที่รัน channel_performance_update.py (ดึงข้อมูลใหม่จาก Affiliate/Ads Dashboard + fastmoss_history.json แล้ว regenerate ไฟล์นี้) —
+    ห้ามแก้ตัวเลขในไฟล์นี้ตรงๆ ให้แก้ที่ไฟล์ต้นทาง (Affiliate/Ads Dashboard หรือ fastmoss_history.json) แล้วรันสคริปต์ใหม่แทน
   </div>
 </div>
 
@@ -153,7 +196,7 @@ const CHANNEL_DATA = {
     "jul": "ก.ค.",
     "aug": "ส.ค."
   },
-  "generated": "2026-08-27 03:23",
+  "generated": "2026-08-27 03:44",
   "channels": {
     "video": {
       "mar": {
@@ -1188,6 +1231,139 @@ const CHANNEL_DATA = {
         "biz_ads_spend": 14529.91
       }
     }
+  },
+  "fastmoss": {
+    "shops": {
+      "wibwub": {
+        "key": "wibwub",
+        "name": "WIBWUB",
+        "fastmoss_id": "7494549095358892612",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494549095358892612",
+        "category": "ยานยนต์และจักรยานยนต์ (~99.98%)",
+        "price_range": "฿50 - ฿3.0k",
+        "listed_since": "2022-10-04",
+        "color": "#1A5CDB"
+      },
+      "munwow": {
+        "key": "munwow",
+        "name": "munwow",
+        "fastmoss_id": "7494636213512539066",
+        "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494636213512539066",
+        "category": "ยานยนต์ฯ (40.85%) + ของใช้ในบ้าน (59.15%)",
+        "price_range": "฿0.9 - ฿11.1k",
+        "listed_since": "2022-10-28",
+        "color": "#c4406e"
+      }
+    },
+    "history": [
+      {
+        "date": "2026-08-26",
+        "shops": {
+          "wibwub": {
+            "cumulative": {
+              "orders_total": 94700,
+              "sales_total": 27900000,
+              "products_active": 87,
+              "products_total": 98,
+              "country_rank": 3900,
+              "category_rank": 163,
+              "rating": 5.0,
+              "overall_good_pct": 100,
+              "quality_score": 98,
+              "response_rate_24h": 95,
+              "shipping_rate_48h": 94
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 10800,
+              "sales": 1500000,
+              "creators": 248,
+              "lives": 314,
+              "videos": 553,
+              "products_sold": 64
+            },
+            "top_products": [
+              {
+                "name": "WIBWUB Refresh Leather Wipes",
+                "orders": 5600,
+                "sales": 477800
+              },
+              {
+                "name": "WIBWUB Interior Wipes",
+                "orders": 1900,
+                "sales": 146200
+              },
+              {
+                "name": "WIBWUB Sugar V.3",
+                "orders": 1100,
+                "sales": 282400
+              },
+              {
+                "name": "WIBWUB Cleaner",
+                "orders": 312,
+                "sales": 55700
+              },
+              {
+                "name": "WIBWUB Spot Clean",
+                "orders": 232,
+                "sales": 67300
+              }
+            ]
+          },
+          "munwow": {
+            "cumulative": {
+              "orders_total": 332900,
+              "sales_total": 71400000,
+              "products_active": 59,
+              "products_total": 60,
+              "country_rank": 924,
+              "category_rank": 23,
+              "rating": 4.9,
+              "overall_good_pct": 91,
+              "quality_score": 94,
+              "response_rate_24h": 97,
+              "shipping_rate_48h": 93
+            },
+            "trend28d": {
+              "range": "2026-07-30 → 2026-08-26",
+              "orders": 35700,
+              "sales": 4500000,
+              "creators": 595,
+              "lives": 737,
+              "videos": 1400,
+              "products_sold": 50
+            },
+            "top_products": [
+              {
+                "name": "Munwow Nano fiber towel",
+                "orders": 20800,
+                "sales": 21400
+              },
+              {
+                "name": "Munwow All interior",
+                "orders": 5400,
+                "sales": 1600000
+              },
+              {
+                "name": "Good view (เคลือบกระจกไล่น้ำ)",
+                "orders": 1200,
+                "sales": 317100
+              },
+              {
+                "name": "Munwow sexy สเปรย์เคลือบสีรถ",
+                "orders": 1200,
+                "sales": 344500
+              },
+              {
+                "name": "Munwow Leather clean",
+                "orders": 857,
+                "sales": 304500
+              }
+            ]
+          }
+        }
+      }
+    ]
   }
 };
 /*CHANNEL_DATA_END*/
@@ -1224,6 +1400,7 @@ function init(){
   renderTrendLegend();
   buildTrendChart();
   render();
+  renderFastmoss();
 }
 
 function selectMonth(m, btn){
@@ -1376,6 +1553,114 @@ function render(){
   renderTopAffiliate(curMonth);
   renderTopLive(curMonth);
   renderInsight(curMonth);
+}
+
+const pct = (a,b) => (b === 0 || b == null) ? null : Math.round((a/b)*1000)/10;
+
+function buildCmpTable(sA, sB, valsA, valsB, rows){
+  let html = `<div class="cmp-row head"><div>ตัวชี้วัด</div><div style="text-align:center">${sA.name}</div><div style="text-align:center">${sB.name}</div><div style="text-align:center">สัดส่วน</div></div>`;
+  rows.forEach(([label, key, fmt]) => {
+    const a = valsA[key], b = valsB[key];
+    let shareHtml = '';
+    if (typeof a === 'number' && typeof b === 'number' && (a+b) > 0){
+      const aPct = Math.round((a/(a+b))*100);
+      shareHtml = `<span class="share-bar"><div style="width:${aPct}%;background:${sA.color}"></div><div style="width:${100-aPct}%;background:${sB.color}"></div></span><span class="share-txt">${aPct}:${100-aPct}</span>`;
+    }
+    html += `<div class="cmp-row">
+      <div class="cmp-label">${label}</div>
+      <div class="cmp-val wibwub">${fmt(a)}</div>
+      <div class="cmp-val munwow">${fmt(b)}</div>
+      <div class="cmp-share">${shareHtml}</div>
+    </div>`;
+  });
+  return html;
+}
+
+function renderFastmoss(){
+  const fm = CHANNEL_DATA.fastmoss;
+  const box = document.getElementById('fm-insight-box');
+  if (!fm || !fm.history || !fm.history.length){
+    document.getElementById('fm-shop-cards').innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss — รัน fastmoss_update.py แล้ว re-run channel_performance_update.py</div>';
+    return;
+  }
+  const shops = fm.shops || {};
+  const latest = fm.history[fm.history.length - 1];
+  const shopKeys = Object.keys(latest.shops);
+  const [kA, kB] = shopKeys;
+  const sA = shops[kA], sB = shops[kB];
+  const dA = latest.shops[kA], dB = latest.shops[kB];
+
+  document.getElementById('fm-snap-date').textContent = `(ข้อมูล ณ ${latest.date})`;
+  document.getElementById('fm-trend-range-label').textContent = `(${dA.trend28d.range || ''})`;
+
+  document.getElementById('fm-shop-cards').innerHTML = [[kA,sA],[kB,sB]].map(([key,s]) => `
+    <div class="shop-card ${key}">
+      <div class="shop-name"><a href="${s.url}" target="_blank" rel="noopener">${s.name} ↗</a></div>
+      <div class="shop-meta">
+        หมวดหมู่: <b>${s.category}</b><br>
+        ช่วงราคา: <b>${s.price_range}</b><br>
+        เปิดร้านตั้งแต่: <b>${s.listed_since}</b>
+      </div>
+    </div>
+  `).join('');
+
+  const cumRows = [
+    ['ยอดคำสั่งซื้อรวม (Orders)', 'orders_total', fmtN],
+    ['ยอดขายรวม (Sales)', 'sales_total', fmtBaht],
+    ['อันดับประเทศ (ยิ่งน้อยยิ่งดี)', 'country_rank', fmtN],
+    ['อันดับหมวดหมู่ (ยิ่งน้อยยิ่งดี)', 'category_rank', fmtN],
+    ['คะแนนรีวิว (Rating)', 'rating', v => v.toFixed(1) + ' / 5'],
+    ['คุณภาพร้าน (Quality score)', 'quality_score', v => v + '/100'],
+    ['ตอบแชทภายใน 24 ชม.', 'response_rate_24h', v => v + '%'],
+    ['จัดส่งภายใน 48 ชม.', 'shipping_rate_48h', v => v + '%'],
+  ];
+  const cumTableEl = document.getElementById('fm-cmp-cumulative');
+  cumTableEl.innerHTML = buildCmpTable(sA, sB, dA.cumulative, dB.cumulative, cumRows);
+  const specialRow = document.createElement('div');
+  specialRow.className = 'cmp-row';
+  specialRow.innerHTML = `
+    <div class="cmp-label">สินค้าที่ยังขายอยู่ / ทั้งหมด</div>
+    <div class="cmp-val wibwub">${dA.cumulative.products_active} / ${dA.cumulative.products_total}</div>
+    <div class="cmp-val munwow">${dB.cumulative.products_active} / ${dB.cumulative.products_total}</div>
+    <div class="cmp-share"></div>`;
+  cumTableEl.insertBefore(specialRow, cumTableEl.children[3]);
+
+  const trendRows = [
+    ['คำสั่งซื้อ (Orders)', 'orders', fmtN],
+    ['ยอดขาย (Sales)', 'sales', fmtBaht],
+    ['ครีเอเตอร์ที่ขายสินค้า (Creators)', 'creators', fmtN],
+    ['ไลฟ์สด (Lives)', 'lives', fmtN],
+    ['วิดีโอ (Videos)', 'videos', fmtN],
+    ['สินค้าที่ขายได้ (Products sold)', 'products_sold', fmtN],
+  ];
+  document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sA, sB, dA.trend28d, dB.trend28d, trendRows);
+
+  document.getElementById('fm-top-products').innerHTML = [[kA,sA,dA],[kB,sB,dB]].map(([key,s,d]) => `
+    <div class="top-card">
+      <div class="top-hd ${key}">${s.name}</div>
+      ${(d.top_products||[]).map((p,i) => `
+        <div class="top-item">
+          <div class="top-rk ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
+          <div class="top-body"><div class="top-name" title="${p.name}">${p.name}</div></div>
+          <div class="top-nums">${fmtN(p.orders)} ออเดอร์<br><b>${fmtBaht(p.sales)}</b></div>
+        </div>
+      `).join('')}
+    </div>
+  `).join('');
+
+  const orderShare = pct(dA.trend28d.orders, dB.trend28d.orders);
+  const salesShare = pct(dA.trend28d.sales, dB.trend28d.sales);
+  const ourVideoGmv = metricFor('video', curMonth), ourAffGmv = metricFor('affiliate', curMonth);
+  box.innerHTML = `
+    ในช่วง 28 วันล่าสุด <b>${sA.name}</b> ทำยอดขายได้เป็น <b>${salesShare}%</b> และคำสั่งซื้อเป็น <b>${orderShare}%</b> ของ <b>${sB.name}</b> (ระดับทั้งร้าน)
+    <ul class="ins-list">
+      <li>ยอดขาย 28 วัน: ${sA.name} ${fmtBaht(dA.trend28d.sales)} vs ${sB.name} ${fmtBaht(dB.trend28d.sales)}</li>
+      <li>คำสั่งซื้อ 28 วัน: ${sA.name} ${fmtN(dA.trend28d.orders)} vs ${sB.name} ${fmtN(dB.trend28d.orders)}</li>
+      <li>${sB.name} มีครีเอเตอร์ทำคอนเทนต์ให้มากกว่า (${fmtN(dB.trend28d.creators)} vs ${fmtN(dA.trend28d.creators)} คน) และไลฟ์มากกว่า (${fmtN(dB.trend28d.lives)} vs ${fmtN(dA.trend28d.lives)} ครั้ง) — สอดคล้องกับที่เห็นในตาราง Top 10 Video/Affiliate ด้านบนว่ายอด Video+Affiliate ของเราเดือนนี้ (${CHANNEL_DATA.month_labels_th[curMonth]}) อยู่ที่ Video ${fmtCompact(ourVideoGmv)} และ Affiliate ${fmtCompact(ourAffGmv)} — ยังมีพื้นที่ขยาย affiliate/live เพิ่มได้อีก</li>
+      <li>คะแนนรีวิวและคุณภาพร้าน: ${sA.name} ${dA.cumulative.rating}/5 (quality ${dA.cumulative.quality_score}) เทียบกับ ${sB.name} ${dB.cumulative.rating}/5 (quality ${dB.cumulative.quality_score})</li>
+      <li>หมายเหตุ: นี่เป็นตัวเลขระดับทั้งร้านจาก FastMoss เท่านั้น ไม่สามารถแยกได้ว่าคู่แข่งขายผ่าน video/affiliate/live/ads ช่องทางไหนเท่าไหร่ (FastMoss ไม่เปิดเผยข้อมูลนี้แม้แต่ของร้านเราเอง) — ส่วน breakdown รายช่องทาง/รายคลิป/รายครีเอเตอร์ด้านบนเป็นข้อมูลของ WIBWUB เองเท่านั้น</li>
+    </ul>
+  `;
 }
 
 init();
