@@ -10109,10 +10109,16 @@ const MONTH_ORDER    = ['mar','apr','may','jun','jul','aug','sep','oct','nov','d
 const MONTH_LABEL_TH = {mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.',oct:'ต.ค.',nov:'พ.ย.',dec:'ธ.ค.',jan:'ม.ค.',feb:'ก.พ.'};
 const TIER_BASE_YEAR_BE = 2569; // BE year of the first tracked month (มี.ค. 2569)
 
-// Manually maintained — update alongside every affiliate data sync so the
-// "current month in progress" coverage banner stays accurate (same
-// underlying figure as the "ส.ค. 1-14" note used elsewhere on this dashboard).
-const TIER_ASOF_LABEL = 'ส.ค. 1-14 2569';
+// Derived automatically from AF_MO's last entry (e.g. "ส.ค. (1-24)") so the
+// "current month in progress" coverage banner never goes stale after a data
+// sync — previously this was a manually-maintained string that drifted out
+// of date because nothing forced it to be updated alongside AF_MO.
+function tierAsofLabel(){
+  const lastMo = AF_MO[AF_MO.length-1];
+  const yr = monthMeta(TIER_MONTH_COUNT-1).year;
+  const m = lastMo.match(/^(\S+)\s*\(([\d\-]+)\)$/);
+  return m ? `${m[1]} ${m[2]} ${yr}` : `${lastMo} ${yr}`;
+}
 
 function monthCount(){
   return Object.values(CREATOR_MONTHS).reduce((max,v)=>Math.max(max,v.length),0);
@@ -10270,7 +10276,7 @@ function renderTier(){
   if(covEl){
     if(isCurrent){
       covEl.style.display = 'block';
-      covEl.textContent = `⚠️ เดือนล่าสุดในช่วงนี้ยังไม่จบ — ยอดคำนวณจากข้อมูลที่ซิงก์ล่าสุดถึง ${TIER_ASOF_LABEL} เท่านั้น อันดับและยอดจะขยับทุกครั้งที่ซิงก์ข้อมูลใหม่ (ทุกสัปดาห์)`;
+      covEl.textContent = `⚠️ เดือนล่าสุดในช่วงนี้ยังไม่จบ — ยอดคำนวณจากข้อมูลที่ซิงก์ล่าสุดถึง ${tierAsofLabel()} เท่านั้น อันดับและยอดจะขยับทุกครั้งที่ซิงก์ข้อมูลใหม่ (ทุกสัปดาห์)`;
     } else {
       covEl.style.display = 'none';
     }
