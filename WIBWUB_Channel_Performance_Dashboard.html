@@ -158,7 +158,7 @@ select.snap-select{background:var(--sf2);border:1px solid var(--bd);color:var(--
       <h1>WIBWUB vs munwow — เปรียบเทียบคู่แข่ง & Channel Performance</h1>
       <div class="sub-line">เปรียบเทียบยอดขายทั้งระบบจาก FastMoss + วิเคราะห์ว่าแบรนด์ควรเน้นช่องทางไหนเพื่อตามให้ทัน</div>
     </div>
-    <div class="ts">อัปเดตล่าสุด<br><span id="gen-ts">2026-08-27 04:03</span></div>
+    <div class="ts">อัปเดตล่าสุด<br><span id="gen-ts">2026-08-27 04:50</span></div>
   </div>
 
   <div class="banner" id="data-banner"></div>
@@ -184,8 +184,9 @@ select.snap-select{background:var(--sf2);border:1px solid var(--bd);color:var(--
   <div class="sec">ยอดสะสมทั้งหมด <span class="sub">Cumulative ตั้งแต่เปิดร้าน</span></div>
   <div class="cmp-table" id="fm-cmp-cumulative"></div>
 
-  <div class="sec">แนวโน้ม 28 วันล่าสุด (FastMoss) <span class="sub" id="fm-trend-range-label"></span></div>
-  <div class="cmp-table" id="fm-cmp-trend" style="margin-bottom:14px"></div>
+  <div class="sec"><span id="fm-trend-title">แนวโน้ม 28 วันล่าสุด (FastMoss)</span> <span class="sub" id="fm-trend-range-label"></span></div>
+  <div class="cmp-table" id="fm-cmp-trend" style="margin-bottom:6px"></div>
+  <div class="sub" id="fm-trend-note" style="display:block;margin-bottom:14px;line-height:1.5"></div>
 
   <div class="sec">สินค้าขายดี Top 5 (28 วันล่าสุด)</div>
   <div class="top-grid two" id="fm-top-products"></div>
@@ -259,7 +260,7 @@ const CHANNEL_DATA = {
     "jul": "ก.ค.",
     "aug": "ส.ค."
   },
-  "generated": "2026-08-27 04:03",
+  "generated": "2026-08-27 04:50",
   "channels": {
     "video": {
       "mar": {
@@ -1444,7 +1445,237 @@ const CHANNEL_DATA = {
           }
         }
       }
-    ]
+    ],
+    "monthly_history": [
+      {
+        "month": "2026-03",
+        "shops": {
+          "wibwub": {
+            "orders": 4655,
+            "sales": 1253364.59,
+            "creators_new": 197,
+            "videos_new": 153,
+            "lives_new": 97,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-03-31",
+              "orders_total": 44535,
+              "sales_total": 12761097.61,
+              "creators_total": 1669,
+              "videos_total": 4531,
+              "lives_total": 1556
+            }
+          },
+          "munwow": {
+            "orders": 32867,
+            "sales": 3956406.75,
+            "creators_new": 445,
+            "videos_new": 302,
+            "lives_new": 241,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-03-31",
+              "orders_total": 134943,
+              "sales_total": 34106424.1,
+              "creators_total": 1953,
+              "videos_total": 6847,
+              "lives_total": 2444
+            }
+          }
+        }
+      },
+      {
+        "month": "2026-04",
+        "shops": {
+          "wibwub": {
+            "orders": 8374,
+            "sales": 3521895.39,
+            "creators_new": 380,
+            "videos_new": 263,
+            "lives_new": 202,
+            "days_in_period": 30,
+            "cumulative_eom": {
+              "date": "2026-04-30",
+              "orders_total": 52909,
+              "sales_total": 16282993,
+              "creators_total": 1671,
+              "videos_total": 4545,
+              "lives_total": 1560
+            }
+          },
+          "munwow": {
+            "orders": 39605,
+            "sales": 6354328.89,
+            "creators_new": 1028,
+            "videos_new": 807,
+            "lives_new": 498,
+            "days_in_period": 30,
+            "cumulative_eom": {
+              "date": "2026-04-30",
+              "orders_total": 174548,
+              "sales_total": 40460752.99,
+              "creators_total": 1958,
+              "videos_total": 6878,
+              "lives_total": 2450
+            }
+          }
+        }
+      },
+      {
+        "month": "2026-05",
+        "shops": {
+          "wibwub": {
+            "orders": 13789,
+            "sales": 6203311.14,
+            "creators_new": 407,
+            "videos_new": 267,
+            "lives_new": 226,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-05-31",
+              "orders_total": 66698,
+              "sales_total": 22486304.14,
+              "creators_total": 1898,
+              "videos_total": 5235,
+              "lives_total": 1270
+            }
+          },
+          "munwow": {
+            "orders": 43246,
+            "sales": 9217426.9,
+            "creators_new": 725,
+            "videos_new": 463,
+            "lives_new": 478,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-05-31",
+              "orders_total": 217794,
+              "sales_total": 49678179.89,
+              "creators_total": 2514,
+              "videos_total": 8582,
+              "lives_total": 2485
+            }
+          }
+        }
+      },
+      {
+        "month": "2026-06",
+        "shops": {
+          "wibwub": {
+            "orders": 4451,
+            "sales": 1097793.16,
+            "creators_new": 270,
+            "videos_new": 108,
+            "lives_new": 262,
+            "days_in_period": 30,
+            "cumulative_eom": {
+              "date": "2026-06-30",
+              "orders_total": 71149,
+              "sales_total": 23584097.3,
+              "creators_total": 1966,
+              "videos_total": 5499,
+              "lives_total": 1444
+            }
+          },
+          "munwow": {
+            "orders": 38032,
+            "sales": 7866682.42,
+            "creators_new": 768,
+            "videos_new": 322,
+            "lives_new": 858,
+            "days_in_period": 30,
+            "cumulative_eom": {
+              "date": "2026-06-30",
+              "orders_total": 255826,
+              "sales_total": 57544862.31,
+              "creators_total": 2742,
+              "videos_total": 9497,
+              "lives_total": 3017
+            }
+          }
+        }
+      },
+      {
+        "month": "2026-07",
+        "shops": {
+          "wibwub": {
+            "orders": 10325,
+            "sales": 1904250.44,
+            "creators_new": 380,
+            "videos_new": 201,
+            "lives_new": 329,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-07-31",
+              "orders_total": 81474,
+              "sales_total": 25488347.74,
+              "creators_total": 2078,
+              "videos_total": 6006,
+              "lives_total": 1773
+            }
+          },
+          "munwow": {
+            "orders": 41376,
+            "sales": 7282859.8,
+            "creators_new": 1171,
+            "videos_new": 813,
+            "lives_new": 852,
+            "days_in_period": 31,
+            "cumulative_eom": {
+              "date": "2026-07-31",
+              "orders_total": 297202,
+              "sales_total": 64827722.11,
+              "creators_total": 3112,
+              "videos_total": 11603,
+              "lives_total": 3873
+            }
+          }
+        }
+      },
+      {
+        "month": "2026-08",
+        "shops": {
+          "wibwub": {
+            "orders": 10544,
+            "sales": 1406557.0,
+            "creators_new": 328,
+            "videos_new": 192,
+            "lives_new": 302,
+            "days_in_period": 26,
+            "cumulative_eom": {
+              "date": "2026-08-26",
+              "orders_total": 92018,
+              "sales_total": 26894904.74,
+              "creators_total": 2201,
+              "videos_total": 6588,
+              "lives_total": 2078
+            }
+          },
+          "munwow": {
+            "orders": 32501,
+            "sales": 4054798.82,
+            "creators_new": 790,
+            "videos_new": 481,
+            "lives_new": 668,
+            "days_in_period": 26,
+            "cumulative_eom": {
+              "date": "2026-08-26",
+              "orders_total": 329703,
+              "sales_total": 68882520.93,
+              "creators_total": 3402,
+              "videos_total": 13071,
+              "lives_total": 4546
+            }
+          }
+        }
+      }
+    ],
+    "monthly_history_notes": {
+      "orders_sales": "Accurate monthly sums, computed from FastMoss's daily 'Data Trends' export (delta columns), fully additive.",
+      "creators_new_videos_new_lives_new": "Count of NEWLY ADDED unique creators/videos/lives to FastMoss's all-time counter during that calendar month. This is NOT the same metric as trend28d.creators/videos/lives (which counts creators/videos/lives ACTIVE in a rolling 28-day window, including ones that existed before). Do not present these as equivalent in the UI — label clearly as 'ครีเอเตอร์/วิดีโอ/ไลฟ์ใหม่ที่เพิ่มในเดือนนี้' vs the 28-day snapshot's 'ที่ทำยอดใน 28 วัน'.",
+      "products_sold": "No daily/monthly breakdown exists for this metric in FastMoss's export — only the single latest 28-day trend value is available. Omitted from monthly_history entirely; UI should keep showing the trend28d value with a caveat rather than fabricate a monthly number.",
+      "source": "Derived from 180-day 'แนวโน้มข้อมูล' Data Trends daily export table (per shop), scraped 2026-08-27 covering 2026-02-28 to 2026-08-26."
+    }
   }
 };
 /*CHANNEL_DATA_END*/
@@ -1455,6 +1686,27 @@ const WB_COLOR = '#1A5CDB', MW_COLOR = '#c4406e';
 let curMonth = null;
 let curSnapIdx = 0;
 let trendChartInst = null, shareChartInst = null;
+
+/* month key (mar/apr/...) -> 2-digit month number, used to look up
+   fastmoss.monthly_history entries keyed "YYYY-MM" */
+const MONTH_NUM = {jan:'01',feb:'02',mar:'03',apr:'04',may:'05',jun:'06',jul:'07',aug:'08',sep:'09',oct:'10',nov:'11',dec:'12'};
+
+function monthlyFastmossFor(m){
+  const fm = CHANNEL_DATA.fastmoss;
+  const mh = (fm && fm.monthly_history) || [];
+  const num = MONTH_NUM[m];
+  if (!num || !mh.length) return null;
+  // year isn't tracked in the month-tab keys (mar/apr/...), so infer it
+  // from CHANNEL_DATA.generated — safe as long as the dashboard only spans
+  // a single year of data (true today; revisit if that ever changes).
+  const year = (CHANNEL_DATA.generated || '2026-01-01').slice(0, 4);
+  const key = `${year}-${num}`;
+  return mh.find(e => e.month === key) || null;
+}
+
+function daysInCalMonth(year, num){
+  return new Date(parseInt(year, 10), parseInt(num, 10), 0).getDate();
+}
 
 function fmtN(n){ n = n||0; return Math.round(n).toLocaleString('en-US'); }
 function fmtBaht(n){ n = n||0; return '฿' + Math.round(n).toLocaleString('en-US'); }
@@ -1517,6 +1769,7 @@ function selectMonth(m, btn){
   document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   render();
+  renderFastmossTrend();
   renderGapGrid();
   renderRecommendations();
 }
@@ -1692,6 +1945,53 @@ function currentSnapshot(){
   return history[curSnapIdx] || null;
 }
 
+/* renders the "แนวโน้ม 28 วันล่าสุด" section — becomes month-aware once a
+   matching monthly_history entry exists for curMonth, otherwise falls back
+   to the original rolling-28-day snapshot view. Called both on snapshot
+   change (renderFastmossAll) and on month-tab change (selectMonth), since
+   the two selectors are independent axes over the same FastMoss data. */
+function renderFastmossTrend(){
+  const fm = CHANNEL_DATA.fastmoss;
+  const snap = currentSnapshot();
+  if (!fm || !snap) return;
+  const sW = fm.shops.wibwub, sM = fm.shops.munwow;
+  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  const monthly = monthlyFastmossFor(curMonth);
+  const mlabel = (CHANNEL_DATA.month_labels_th||{})[curMonth] || curMonth || '';
+
+  if (monthly && monthly.shops.wibwub && monthly.shops.munwow){
+    const mW = monthly.shops.wibwub, mM = monthly.shops.munwow;
+    const [y, num] = monthly.month.split('-');
+    const full = mW.days_in_period >= daysInCalMonth(y, num);
+    document.getElementById('fm-trend-title').textContent = `ข้อมูลรายเดือน (FastMoss) — ${mlabel}`;
+    document.getElementById('fm-trend-range-label').textContent = full
+      ? `(${monthly.month} เต็มเดือน)`
+      : `(${monthly.month} · ข้อมูล ${mW.days_in_period} วันแรกของเดือน ยังไม่ครบเดือน)`;
+    document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sW, sM, mW, mM, [
+      { key: 'sales', label: 'ยอดขายเดือนนี้', fmt: fmtBaht },
+      { key: 'orders', label: 'ออเดอร์เดือนนี้', fmt: fmtN },
+      { key: 'creators_new', label: 'Creator ใหม่ที่เพิ่มเดือนนี้', fmt: fmtN },
+      { key: 'lives_new', label: 'ไลฟ์ใหม่ที่เพิ่มเดือนนี้', fmt: fmtN },
+      { key: 'videos_new', label: 'คลิปใหม่ที่เพิ่มเดือนนี้', fmt: fmtN },
+    ]);
+    document.getElementById('fm-trend-note').innerHTML =
+      `⚠️ "ใหม่ที่เพิ่มเดือนนี้" นับเฉพาะ creator/ไลฟ์/คลิปที่เพิ่งถูกเพิ่มเข้าตัวนับสะสมของ FastMoss ในเดือนนี้ — คนละความหมายกับ "แนวโน้ม 28 วันล่าสุด" ที่นับทุกคนที่ยังทำยอดอยู่ในช่วง 28 วัน ไม่ว่าเก่าหรือใหม่ ห้ามเทียบสองชุดนี้ตรงๆ กัน<br>
+      สินค้าที่ขายได้ไม่มีข้อมูลรายเดือน (FastMoss ไม่มี breakdown) จึงแสดงค่าแนวโน้ม 28 วันล่าสุดแทน: WIBWUB ${fmtN(dW.trend28d.products_sold)} · munwow ${fmtN(dM.trend28d.products_sold)}`;
+  } else {
+    document.getElementById('fm-trend-title').textContent = 'แนวโน้ม 28 วันล่าสุด (FastMoss)';
+    document.getElementById('fm-trend-range-label').textContent = `(${dW.trend28d.range})`;
+    document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sW, sM, dW.trend28d, dM.trend28d, [
+      { key: 'sales', label: 'ยอดขาย 28 วัน', fmt: fmtBaht },
+      { key: 'orders', label: 'ออเดอร์ 28 วัน', fmt: fmtN },
+      { key: 'creators', label: 'Creator ที่ทำยอด', fmt: fmtN },
+      { key: 'lives', label: 'จำนวนไลฟ์', fmt: fmtN },
+      { key: 'videos', label: 'จำนวนคลิป', fmt: fmtN },
+      { key: 'products_sold', label: 'สินค้าที่ขายได้', fmt: fmtN },
+    ]);
+    document.getElementById('fm-trend-note').innerHTML = `ℹ️ ยังไม่มีข้อมูลรายเดือนของ FastMoss สำหรับเดือนที่เลือก — แสดงแนวโน้ม 28 วันล่าสุดแทน (ไม่ผูกกับเดือนที่เลือกด้านบน)`;
+  }
+}
+
 function renderFastmossAll(){
   const fm = CHANNEL_DATA.fastmoss;
   const snap = currentSnapshot();
@@ -1739,15 +2039,7 @@ function renderFastmossAll(){
     { key: 'quality_score', label: 'คะแนนคุณภาพร้าน', fmt: v => v, share: false },
   ]);
 
-  document.getElementById('fm-trend-range-label').textContent = `(${dW.trend28d.range})`;
-  document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sW, sM, dW.trend28d, dM.trend28d, [
-    { key: 'sales', label: 'ยอดขาย 28 วัน', fmt: fmtBaht },
-    { key: 'orders', label: 'ออเดอร์ 28 วัน', fmt: fmtN },
-    { key: 'creators', label: 'Creator ที่ทำยอด', fmt: fmtN },
-    { key: 'lives', label: 'จำนวนไลฟ์', fmt: fmtN },
-    { key: 'videos', label: 'จำนวนคลิป', fmt: fmtN },
-    { key: 'products_sold', label: 'สินค้าที่ขายได้', fmt: fmtN },
-  ]);
+  renderFastmossTrend();
 
   document.getElementById('fm-top-products').innerHTML = `
     <div class="top-card">
@@ -1805,17 +2097,36 @@ function computeGapRows(){
   const snap = currentSnapshot();
   if (!snap) return [];
   const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  const monthly = monthlyFastmossFor(curMonth);
+  const mlabel = (CHANNEL_DATA.month_labels_th||{})[curMonth] || curMonth || '';
   const rows = [
     { group: 'สะสม', label: 'ยอดขายสะสม', ours: dW.cumulative.sales_total, theirs: dM.cumulative.sales_total, higherBetter: true, fmt: fmtBaht },
     { group: 'สะสม', label: 'ออเดอร์สะสม', ours: dW.cumulative.orders_total, theirs: dM.cumulative.orders_total, higherBetter: true, fmt: fmtN },
     { group: 'สะสม', label: 'อันดับหมวดหมู่', ours: dW.cumulative.category_rank, theirs: dM.cumulative.category_rank, higherBetter: false, fmt: v => '#'+fmtN(v) },
     { group: 'สะสม', label: 'สินค้าที่ขายอยู่', ours: dW.cumulative.products_active, theirs: dM.cumulative.products_active, higherBetter: true, fmt: fmtN },
-    { group: '28 วัน', label: 'ยอดขาย 28 วัน', ours: dW.trend28d.sales, theirs: dM.trend28d.sales, higherBetter: true, fmt: fmtBaht },
-    { group: '28 วัน', label: 'Creator ที่ทำยอด', ours: dW.trend28d.creators, theirs: dM.trend28d.creators, higherBetter: true, fmt: fmtN },
-    { group: '28 วัน', label: 'จำนวนไลฟ์', ours: dW.trend28d.lives, theirs: dM.trend28d.lives, higherBetter: true, fmt: fmtN },
-    { group: '28 วัน', label: 'จำนวนคลิป', ours: dW.trend28d.videos, theirs: dM.trend28d.videos, higherBetter: true, fmt: fmtN },
-    { group: '28 วัน', label: 'สินค้าที่ขายได้', ours: dW.trend28d.products_sold, theirs: dM.trend28d.products_sold, higherBetter: true, fmt: fmtN },
   ];
+  // month-specific rows: use the real per-month FastMoss data when we have a
+  // matching monthly_history entry for the selected month tab, otherwise
+  // fall back to the old rolling-28-day group (which isn't tied to curMonth).
+  if (monthly && monthly.shops.wibwub && monthly.shops.munwow){
+    const mW = monthly.shops.wibwub, mM = monthly.shops.munwow;
+    const g = `เดือน${mlabel}`;
+    rows.push(
+      { group: g, label: 'ยอดขายเดือนนี้', ours: mW.sales, theirs: mM.sales, higherBetter: true, fmt: fmtBaht },
+      { group: g, label: 'ออเดอร์เดือนนี้', ours: mW.orders, theirs: mM.orders, higherBetter: true, fmt: fmtN },
+      { group: g, label: 'Creator ใหม่เดือนนี้', ours: mW.creators_new, theirs: mM.creators_new, higherBetter: true, fmt: fmtN },
+      { group: g, label: 'ไลฟ์ใหม่เดือนนี้', ours: mW.lives_new, theirs: mM.lives_new, higherBetter: true, fmt: fmtN },
+      { group: g, label: 'คลิปใหม่เดือนนี้', ours: mW.videos_new, theirs: mM.videos_new, higherBetter: true, fmt: fmtN },
+    );
+  } else {
+    rows.push(
+      { group: '28 วัน', label: 'ยอดขาย 28 วัน', ours: dW.trend28d.sales, theirs: dM.trend28d.sales, higherBetter: true, fmt: fmtBaht },
+      { group: '28 วัน', label: 'Creator ที่ทำยอด', ours: dW.trend28d.creators, theirs: dM.trend28d.creators, higherBetter: true, fmt: fmtN },
+      { group: '28 วัน', label: 'จำนวนไลฟ์', ours: dW.trend28d.lives, theirs: dM.trend28d.lives, higherBetter: true, fmt: fmtN },
+      { group: '28 วัน', label: 'จำนวนคลิป', ours: dW.trend28d.videos, theirs: dM.trend28d.videos, higherBetter: true, fmt: fmtN },
+      { group: '28 วัน', label: 'สินค้าที่ขายได้', ours: dW.trend28d.products_sold, theirs: dM.trend28d.products_sold, higherBetter: true, fmt: fmtN },
+    );
+  }
   return rows.map(r => ({ ...r, flag: gapFlag(r.ours, r.theirs, r.higherBetter) }));
 }
 
@@ -1843,24 +2154,36 @@ function renderRecommendations(){
   const dM = snap.shops.munwow.trend28d;
   const dW = snap.shops.wibwub.trend28d;
   const cW = snap.shops.wibwub.cumulative, cM = snap.shops.munwow.cumulative;
+  const monthly = monthlyFastmossFor(curMonth);
+  const mM_monthly = monthly && monthly.shops.munwow;
 
   const vidCh = (CHANNEL_DATA.channels.video || {})[curMonth] || {};
   const afCh = (CHANNEL_DATA.channels.affiliate || {})[curMonth] || {};
   const lvCh = (CHANNEL_DATA.channels.live || {})[curMonth] || {};
 
+  // Competitor figures: use this month's real "new adds" whenever we have a
+  // monthly_history entry for curMonth, otherwise fall back to the rolling
+  // 28-day "active" snapshot (which isn't tied to the selected month).
+  const mwCreators = mM_monthly ? mM_monthly.creators_new : dM.creators;
+  const mwLives = mM_monthly ? mM_monthly.lives_new : dM.lives;
+  const mwVideos = mM_monthly ? mM_monthly.videos_new : dM.videos;
+  const creatorBasis = mM_monthly ? ' ใหม่ที่เพิ่มในเดือนนี้' : ' ที่ทำยอดใน 28 วันล่าสุด';
+  const liveBasis = mM_monthly ? ' ใหม่ที่เพิ่มในเดือนนี้ (นับรวมทุกครีเอเตอร์)' : ' ที่ขายสินค้าได้ใน 28 วันล่าสุด (รวมทุกครีเอเตอร์ ทั้ง organic+paid)';
+  const videoBasis = mM_monthly ? ' ใหม่ที่เพิ่มในเดือนนี้' : ' ใน 28 วันล่าสุด';
+
   const cards = [];
 
   cards.push({
     icon: '🤝', title: 'ขยายจำนวน Affiliate Creator',
-    body: `เดือนนี้เรามี creator ที่ทำยอด ${fmtN(afCh.creator_count||0)} คน ขณะที่ munwow มี creator ที่ทำยอด ${fmtN(dM.creators)} คนใน 28 วันล่าสุด (เรา ${pct(afCh.creator_count||0, dM.creators)}% ของคู่แข่ง) — เร่งเปิดรับ/กระตุ้น creator ใหม่เพื่อปิดช่องว่างนี้`,
+    body: `เดือนนี้เรามี creator ที่ทำยอด ${fmtN(afCh.creator_count||0)} คน ขณะที่ munwow มี creator${creatorBasis} ${fmtN(mwCreators)} คน (เรา ${pct(afCh.creator_count||0, mwCreators)}% ของคู่แข่ง)${mM_monthly ? ' — หมายเหตุ: ฝั่งเรานับ "ทำยอดจริง" ส่วนฝั่งคู่แข่งนับ "ใหม่ที่เพิ่ม" คนละฐาน ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เร่งเปิดรับ/กระตุ้น creator ใหม่เพื่อปิดช่องว่างนี้`,
   });
   cards.push({
     icon: '🔴', title: 'เพิ่มไลฟ์ขายสินค้าจาก Creator',
-    body: `เดือนนี้เรามีแคมเปญ GMV Live (บูสไลฟ์แบบเสียเงิน) ${fmtN(lvCh.session_count||0)} รอบ ส่วน FastMoss รายงานว่า munwow มีไลฟ์ที่ขายสินค้าได้ (รวมทุกครีเอเตอร์ ทั้ง organic+paid) ถึง ${fmtN(dM.lives)} รอบใน 28 วัน — ตัวเลขสองฝั่งนับคนละฐาน (ของเราคือแคมเปญโฆษณาเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator) เทียบเป็น% ตรงๆไม่ได้ แต่ส่วนต่างที่มากขนาดนี้บ่งชี้ว่าเรายังชวน creator ให้เปิดไลฟ์ขายสินค้าน้อยกว่าคู่แข่งมาก ควรเร่งดันให้ affiliate creator ไลฟ์บ่อยขึ้น ไม่ใช่แค่พึ่งแคมเปญโฆษณา`,
+    body: `เดือนนี้เรามีแคมเปญ GMV Live (บูสไลฟ์แบบเสียเงิน) ${fmtN(lvCh.session_count||0)} รอบ ส่วน FastMoss รายงานว่า munwow มีไลฟ์${liveBasis} ถึง ${fmtN(mwLives)} รอบ — ตัวเลขสองฝั่งนับคนละฐาน (ของเราคือแคมเปญโฆษณาเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator) เทียบเป็น% ตรงๆไม่ได้ แต่ส่วนต่างที่มากขนาดนี้บ่งชี้ว่าเรายังชวน creator ให้เปิดไลฟ์ขายสินค้าน้อยกว่าคู่แข่งมาก ควรเร่งดันให้ affiliate creator ไลฟ์บ่อยขึ้น ไม่ใช่แค่พึ่งแคมเปญโฆษณา`,
   });
   cards.push({
     icon: '🎬', title: 'เพิ่มจำนวนคลิป Shoppable Video',
-    body: `เดือนนี้เรามีคลิปที่มียอดขาย ${fmtN(vidCh.video_count||0)} คลิป vs munwow ${fmtN(dM.videos)} คลิปใน 28 วัน (เรา ${pct(vidCh.video_count||0, dM.videos)}% ของคู่แข่ง) — เพิ่มความถี่การโพสต์คลิปสินค้าใหม่ๆ`,
+    body: `เดือนนี้เรามีคลิปที่มียอดขาย ${fmtN(vidCh.video_count||0)} คลิป vs munwow ${fmtN(mwVideos)} คลิป${videoBasis} (เรา ${pct(vidCh.video_count||0, mwVideos)}% ของคู่แข่ง)${mM_monthly ? ' — คนละฐานเช่นกัน (คลิปที่มียอดขายจริง vs คลิปใหม่ที่เพิ่ม) ใช้เป็นสัญญาณทิศทางเท่านั้น' : ''} — เพิ่มความถี่การโพสต์คลิปสินค้าใหม่ๆ`,
   });
   cards.push({
     icon: '⭐', title: 'ใช้จุดแข็งด้านคุณภาพเป็นจุดขาย',
