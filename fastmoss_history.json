@@ -1,0 +1,93 @@
+{
+  "shops": {
+    "wibwub": {
+      "key": "wibwub",
+      "name": "WIBWUB",
+      "fastmoss_id": "7494549095358892612",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494549095358892612",
+      "category": "ยานยนต์และจักรยานยนต์ (~99.98%)",
+      "price_range": "฿50 - ฿3.0k",
+      "listed_since": "2022-10-04",
+      "color": "#1A5CDB"
+    },
+    "munwow": {
+      "key": "munwow",
+      "name": "munwow",
+      "fastmoss_id": "7494636213512539066",
+      "url": "https://www.fastmoss.com/th/shop-marketing/detail/7494636213512539066",
+      "category": "ยานยนต์ฯ (40.85%) + ของใช้ในบ้าน (59.15%)",
+      "price_range": "฿0.9 - ฿11.1k",
+      "listed_since": "2022-10-28",
+      "color": "#c4406e"
+    }
+  },
+  "history": [
+    {
+      "date": "2026-08-26",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 94700,
+            "sales_total": 27900000,
+            "products_active": 87,
+            "products_total": 98,
+            "country_rank": 3900,
+            "category_rank": 163,
+            "rating": 5.0,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 10800,
+            "sales": 1500000,
+            "creators": 248,
+            "lives": 314,
+            "videos": 553,
+            "products_sold": 64
+          },
+          "top_products": [
+            {"name": "WIBWUB Refresh Leather Wipes", "orders": 5600, "sales": 477800},
+            {"name": "WIBWUB Interior Wipes", "orders": 1900, "sales": 146200},
+            {"name": "WIBWUB Sugar V.3", "orders": 1100, "sales": 282400},
+            {"name": "WIBWUB Cleaner", "orders": 312, "sales": 55700},
+            {"name": "WIBWUB Spot Clean", "orders": 232, "sales": 67300}
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 332900,
+            "sales_total": 71400000,
+            "products_active": 59,
+            "products_total": 60,
+            "country_rank": 924,
+            "category_rank": 23,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-07-30 → 2026-08-26",
+            "orders": 35700,
+            "sales": 4500000,
+            "creators": 595,
+            "lives": 737,
+            "videos": 1400,
+            "products_sold": 50
+          },
+          "top_products": [
+            {"name": "Munwow Nano fiber towel", "orders": 20800, "sales": 21400},
+            {"name": "Munwow All interior", "orders": 5400, "sales": 1600000},
+            {"name": "Good view (เคลือบกระจกไล่น้ำ)", "orders": 1200, "sales": 317100},
+            {"name": "Munwow sexy สเปรย์เคลือบสีรถ", "orders": 1200, "sales": 344500},
+            {"name": "Munwow Leather clean", "orders": 857, "sales": 304500}
+          ]
+        }
+      }
+    }
+  ]
+}
