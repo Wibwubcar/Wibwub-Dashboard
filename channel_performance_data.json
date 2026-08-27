@@ -17,23 +17,27 @@
     "jul": "ก.ค.",
     "aug": "ส.ค."
   },
-  "generated": "2026-08-27 03:44",
+  "generated": "2026-08-27 04:03",
   "channels": {
     "video": {
       "mar": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "apr": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "may": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "jun": {
         "gmv": 527326,
+        "video_count": 440,
         "top10": [
           {
             "creator": ".namoshop125",
@@ -119,6 +123,7 @@
       },
       "jul": {
         "gmv": 1243970,
+        "video_count": 684,
         "top10": [
           {
             "creator": "fahareejun",
@@ -204,6 +209,7 @@
       },
       "aug": {
         "gmv": 1102788,
+        "video_count": 663,
         "top10": [
           {
             "creator": "papajate",
@@ -291,6 +297,7 @@
     "affiliate": {
       "mar": {
         "gmv": 655171,
+        "creator_count": 398,
         "top10": [
           {
             "name": "rita.fe_",
@@ -346,6 +353,7 @@
       },
       "apr": {
         "gmv": 724241,
+        "creator_count": 418,
         "top10": [
           {
             "name": "pailong05",
@@ -401,6 +409,7 @@
       },
       "may": {
         "gmv": 951158,
+        "creator_count": 558,
         "top10": [
           {
             "name": "fahareejun",
@@ -456,6 +465,7 @@
       },
       "jun": {
         "gmv": 660557,
+        "creator_count": 414,
         "top10": [
           {
             "name": ".namoshop125",
@@ -511,6 +521,7 @@
       },
       "jul": {
         "gmv": 1452748,
+        "creator_count": 720,
         "top10": [
           {
             "name": ".namoshop125",
@@ -566,6 +577,7 @@
       },
       "aug": {
         "gmv": 1313831,
+        "creator_count": 670,
         "top10": [
           {
             "name": ".namoshop125",
@@ -627,6 +639,7 @@
         "orders": 62,
         "roi": 3,
         "views": 9181,
+        "session_count": 21,
         "top10": [
           {
             "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
@@ -716,6 +729,7 @@
         "orders": 119,
         "roi": 13.64,
         "views": 8460,
+        "session_count": 3,
         "top10": [
           {
             "name": "4.4 Live_GMV",
@@ -749,6 +763,7 @@
         "orders": 331,
         "roi": 5.74,
         "views": 23121,
+        "session_count": 18,
         "top10": [
           {
             "name": "05.05.26/GMVLive เก็บโค้ด5.5(1)",
@@ -838,6 +853,7 @@
         "orders": 411,
         "roi": 19.12,
         "views": 30399,
+        "session_count": 8,
         "top10": [
           {
             "name": "06 1.2",
@@ -911,6 +927,7 @@
         "orders": 212,
         "roi": 18.03,
         "views": 12367,
+        "session_count": 3,
         "top10": [
           {
             "name": "7.7Live duo",
@@ -944,6 +961,7 @@
         "orders": 231,
         "roi": 38.27,
         "views": 14149,
+        "session_count": 6,
         "top10": [
           {
             "name": "15.08.26/Live",

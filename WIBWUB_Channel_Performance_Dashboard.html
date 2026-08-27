@@ -3,177 +3,240 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WIBWUB — Channel Performance Dashboard</title>
+<title>WIBWUB — Channel Performance & FastMoss Comparison</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-:root{--bg:#F8F9FB;--sf:#ffffff;--sf2:#f0f2f5;--bd:#e8e8e8;--tx:#0F0F0F;--sub:#999;
---vd:#8b5cf6;--vd-bg:rgba(139,92,246,.08);--af:#1A5CDB;--af-bg:rgba(26,92,219,.08);
---lv:#f97316;--lv-bg:rgba(249,115,22,.08);--ad:#22c55e;--ad-bg:rgba(34,197,94,.08);
---mw:#c4406e;--mw-bg:rgba(196,64,110,.08);
---rd:#ef4444;--yl:#f59e0b}
-*{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);color:var(--tx);font-family:'Segoe UI',sans-serif;min-height:100vh;padding:20px 16px 60px}
-.wrap{max-width:1200px;margin:0 auto}
-.hdr{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
-.logo{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--af)}.logo span{color:var(--tx)}
-.pt{font-size:13px;color:var(--sub);margin-top:2px}
-.hr{margin-left:auto;font-size:11px;color:var(--sub);text-align:right;line-height:1.7}
-.sec{font-size:14px;font-weight:700;margin:26px 0 12px;color:var(--tx)}
-.sec .sub{font-weight:400;color:var(--sub);font-size:12px;margin-left:8px}
+:root{
+  --bg:#0b0f17;--sf:#131a26;--sf2:#1a2333;--bd:#232d3f;--tx:#e8edf5;--sub:#8996ab;
+  --vd:#3b82f6;--vd-bg:rgba(59,130,246,.12);
+  --af:#a855f7;--af-bg:rgba(168,85,247,.12);
+  --lv:#ef4444;--lv-bg:rgba(239,68,68,.12);
+  --ad:#14b8a6;--ad-bg:rgba(20,184,166,.12);
+  --wb:#1A5CDB;--wb-bg:rgba(26,92,219,.12);
+  --mw:#c4406e;--mw-bg:rgba(196,64,110,.12);
+  --gn:#22c55e;--gn-bg:rgba(34,197,94,.12);
+  --yl:#f59e0b;--yl-bg:rgba(245,158,11,.12);
+  --rd:#ef4444;--rd-bg:rgba(239,68,68,.12);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:-apple-system,"Segoe UI",Roboto,"Noto Sans Thai",sans-serif;font-size:14px;line-height:1.5}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 16px 60px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.hdr h1{margin:0;font-size:22px}
+.hdr .sub-line{color:var(--sub);font-size:12.5px;margin-top:4px}
+.hdr .ts{color:var(--sub);font-size:12px;text-align:right}
+.banner{background:var(--yl-bg);border:1px solid rgba(245,158,11,.35);color:#facc84;border-radius:10px;padding:10px 14px;font-size:12.5px;margin:14px 0 20px;line-height:1.6}
+.banner b{color:var(--yl)}
+.sec{font-size:15px;font-weight:700;margin:30px 0 12px;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.sec .sub{font-size:12px;font-weight:400;color:var(--sub)}
 
-/* Month tabs */
-.mtabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
-.mtab{background:var(--sf);border:1px solid var(--bd);border-radius:20px;padding:7px 16px;font-size:12.5px;font-weight:600;color:var(--sub);cursor:pointer;transition:.15s}
-.mtab:hover{border-color:var(--af)}
-.mtab.active{background:var(--af);border-color:var(--af);color:#fff}
+/* filter bar */
+.filter-bar{display:flex;gap:22px;flex-wrap:wrap;align-items:flex-end;background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:14px 16px;margin-top:16px}
+.filter-group{display:flex;flex-direction:column;gap:6px}
+.filter-group label{font-size:11.5px;color:var(--sub);font-weight:600}
+.mtabs{display:flex;gap:6px;flex-wrap:wrap}
+.mtab{background:var(--sf2);border:1px solid var(--bd);color:var(--sub);padding:6px 13px;border-radius:20px;font-size:12.5px;cursor:pointer}
+.mtab:hover{border-color:var(--vd)}
+.mtab.active{background:var(--vd);border-color:var(--vd);color:#fff;font-weight:600}
+select.snap-select{background:var(--sf2);border:1px solid var(--bd);color:var(--tx);padding:7px 12px;border-radius:8px;font-size:12.5px;min-width:190px}
+.filter-note{color:var(--sub);font-size:11.5px;max-width:260px}
 
-/* KPI cards */
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
-.kpi-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
-.kpi-card.video{--c:var(--vd)}.kpi-card.affiliate{--c:var(--af)}.kpi-card.live{--c:var(--lv)}.kpi-card.ads{--c:var(--ad)}
-.kpi-lbl{font-size:11.5px;color:var(--sub);font-weight:600;display:flex;align-items:center;gap:6px}
+/* gap analysis scoreboard */
+.gap-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.gap-card{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--bd);border-radius:10px;padding:13px 14px}
+.gap-card.win{border-left-color:var(--gn)}
+.gap-card.warn{border-left-color:var(--yl)}
+.gap-card.lose{border-left-color:var(--rd)}
+.gap-hd{display:flex;align-items:center;gap:7px;margin-bottom:9px;font-size:12.5px;font-weight:700}
+.gap-nums{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.gap-num{flex:1;text-align:center}
+.gap-num-lbl{display:block;font-size:10px;color:var(--sub);margin-bottom:2px}
+.gap-num-val{display:block;font-size:15px;font-weight:700}
+.gap-num.wibwub .gap-num-val{color:var(--wb)}
+.gap-num.munwow .gap-num-val{color:var(--mw)}
+.gap-vs{font-size:10.5px;color:var(--sub)}
+.gap-ratio{font-size:11.5px;color:var(--sub);border-top:1px solid var(--bd);padding-top:7px}
+.gap-card.win .gap-ratio{color:var(--gn)}
+.gap-card.warn .gap-ratio{color:var(--yl)}
+.gap-card.lose .gap-ratio{color:#f19b9b}
+
+/* shop cards */
+.shop-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px}
+.shop-card.wibwub{border-top:3px solid var(--wb)}
+.shop-card.munwow{border-top:3px solid var(--mw)}
+.shop-name{font-size:15px;font-weight:700;margin-bottom:4px}
+.shop-name a{color:inherit;text-decoration:none;border-bottom:1px dashed var(--sub)}
+.shop-meta{font-size:11.5px;color:var(--sub);line-height:1.7}
+.shop-meta b{color:var(--tx)}
+
+/* cmp table */
+.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.cmp-row{display:grid;grid-template-columns:1.4fr 1fr 1fr .9fr;gap:8px;padding:10px 14px;border-bottom:1px solid var(--bd);align-items:center;font-size:12.5px}
+.cmp-row:last-child{border-bottom:none}
+.cmp-row.head{background:var(--sf2);color:var(--sub);font-size:11px;font-weight:700}
+.cmp-label{color:var(--sub)}
+.cmp-val{font-weight:700;text-align:right}
+.cmp-val.wibwub{color:var(--wb)}
+.cmp-val.munwow{color:var(--mw)}
+.cmp-share{display:flex;flex-direction:column;gap:3px}
+.share-bar{height:6px;background:var(--bd);border-radius:4px;overflow:hidden;display:flex}
+.share-bar div{height:100%}
+.share-txt{font-size:10px;color:var(--sub);text-align:right}
+
+/* top products / top10 */
+.top-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.top-grid.two{grid-template-columns:1fr 1fr}
+.top-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;overflow:hidden}
+.top-hd{padding:9px 13px;font-size:12.5px;font-weight:700;border-bottom:1px solid var(--bd)}
+.top-hd.video{background:var(--vd-bg);color:var(--vd)}
+.top-hd.affiliate{background:var(--af-bg);color:var(--af)}
+.top-hd.live{background:var(--lv-bg);color:var(--lv)}
+.top-hd.wibwub{background:var(--wb-bg);color:var(--wb)}
+.top-hd.munwow{background:var(--mw-bg);color:var(--mw)}
+.top-item{display:flex;align-items:center;gap:10px;padding:9px 13px;border-bottom:1px solid var(--bd)}
+.top-item:last-child{border-bottom:none}
+.top-rk{width:20px;height:20px;border-radius:50%;background:var(--sf2);color:var(--sub);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.top-rk.r1{background:#f5c542;color:#3a2e00}
+.top-rk.r2{background:#c7ccd6;color:#2a2e36}
+.top-rk.r3{background:#c98a4b;color:#2e1c08}
+.top-body{flex:1;min-width:0}
+.top-name{font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-sub{font-size:10.5px;color:var(--sub)}
+.top-nums{font-size:12px;font-weight:700;text-align:right;flex-shrink:0}
+.empty-note{color:var(--sub);font-size:12.5px;padding:14px;text-align:center}
+
+/* insight & reco */
+.ins-box{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px}
+.ins-list{margin:0;padding:0;list-style:none}
+.ins-list li{padding:6px 0 6px 18px;position:relative;font-size:12.5px;color:var(--tx)}
+.ins-list li:before{content:"▸";position:absolute;left:0;color:var(--vd)}
+.reco-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.reco-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.reco-card .reco-icon{font-size:18px;margin-bottom:6px}
+.reco-card .reco-title{font-size:13px;font-weight:700;margin-bottom:5px}
+.reco-card .reco-body{font-size:12px;color:var(--sub);line-height:1.55}
+
+/* kpi + charts (internal channel breakdown) */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.kpi-card{background:var(--sf);border:1px solid var(--bd);border-left:4px solid var(--c);border-radius:10px;padding:13px 14px}
+.kpi-card.video{--c:var(--vd)}
+.kpi-card.affiliate{--c:var(--af)}
+.kpi-card.live{--c:var(--lv)}
+.kpi-card.ads{--c:var(--ad)}
+.kpi-lbl{font-size:11.5px;color:var(--sub);display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .kpi-dot{width:8px;height:8px;border-radius:50%;background:var(--c)}
-.kpi-val{font-size:22px;font-weight:800;margin-top:6px;color:var(--c)}
-.kpi-sub{font-size:11px;color:var(--sub);margin-top:4px;line-height:1.6}
-
-/* Charts */
-.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.cc{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px}
-.ct{font-size:12.5px;font-weight:700;margin-bottom:10px;color:var(--tx);display:flex;align-items:center;justify-content:space-between}
+.kpi-val{font-size:19px;font-weight:700}
+.kpi-sub{font-size:11px;color:var(--sub);margin-top:3px}
+.chart-grid{display:grid;grid-template-columns:2fr 1fr;gap:12px}
+.cc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px}
+.ct{font-size:12.5px;font-weight:700;margin-bottom:10px}
 .cw{position:relative}
-.leg{display:flex;gap:14px;font-size:11px;color:var(--sub);margin-bottom:8px;flex-wrap:wrap}
+.leg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:8px;font-size:11px;color:var(--sub)}
 .leg span{display:flex;align-items:center;gap:5px}
 .leg i{width:9px;height:9px;border-radius:2px;display:inline-block}
 
-/* Top 10 grid */
-.top-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-.top-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
-.top-hd{padding:10px 16px;font-size:12px;font-weight:700;color:#fff}
-.top-hd.video{background:var(--vd)}.top-hd.affiliate{background:var(--af)}.top-hd.live{background:var(--lv)}
-.top-item{display:flex;align-items:center;gap:10px;padding:9px 16px;border-bottom:1px solid var(--bd);font-size:12px}
-.top-item:last-child{border-bottom:none}
-.top-rk{width:18px;height:18px;border-radius:50%;background:var(--sf2);color:var(--sub);font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.top-rk.r1{background:#fde68a;color:#92400e}
-.top-rk.r2{background:#e5e7eb;color:#374151}
-.top-rk.r3{background:#fed7aa;color:#9a3412}
-.top-body{flex:1;min-width:0}
-.top-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
-.top-sub{font-size:10.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px}
-.top-nums{font-size:11.5px;color:var(--sub);white-space:nowrap;text-align:right;flex-shrink:0}
-.top-nums b{color:var(--tx)}
-.empty-note{padding:16px;font-size:12px;color:var(--sub);text-align:center}
+.note{margin-top:36px;padding-top:16px;border-top:1px solid var(--bd);color:var(--sub);font-size:11.5px;line-height:1.7}
 
-/* Insight */
-.ins-box{background:var(--af-bg);border:1px solid rgba(26,92,219,.2);border-radius:10px;padding:14px 16px;font-size:12.5px;line-height:1.9;color:var(--tx)}
-.ins-box b{color:var(--af)}
-.ins-list{margin-top:6px;padding-left:0;list-style:none}
-.ins-list li{padding:3px 0}
-.ins-list li:before{content:"› ";color:var(--af);font-weight:700}
-
-.note{font-size:11px;color:var(--sub);margin-top:26px;padding:14px 16px;border-top:1px solid var(--bd);line-height:1.8}
-
-/* FastMoss competitor comparison */
-.shop-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.shop-card{background:var(--sf);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;border-top:4px solid var(--c)}
-.shop-card.wibwub{--c:var(--af)}.shop-card.munwow{--c:var(--mw)}
-.shop-name{font-size:16px;font-weight:800}
-.shop-name a{color:inherit;text-decoration:none}
-.shop-name a:hover{text-decoration:underline}
-.shop-meta{font-size:11.5px;color:var(--sub);margin-top:6px;line-height:1.8}
-.shop-meta b{color:var(--tx);font-weight:600}
-.cmp-table{background:var(--sf);border:1px solid var(--bd);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.05)}
-.cmp-row{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;align-items:center;padding:10px 16px;border-bottom:1px solid var(--bd);font-size:13px}
-.cmp-row:last-child{border-bottom:none}
-.cmp-row.head{background:var(--sf2);font-size:11px;color:var(--sub);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
-.cmp-label{color:var(--sub);font-size:12px}
-.cmp-val{font-weight:700;font-size:14px;text-align:center}
-.cmp-val.wibwub{color:var(--af)}.cmp-val.munwow{color:var(--mw)}
-.cmp-share{text-align:center}
-.share-bar{display:inline-flex;width:80px;height:6px;border-radius:4px;overflow:hidden;background:var(--sf2);vertical-align:middle;margin-right:6px}
-.share-bar div{height:100%}
-.share-txt{font-size:10.5px;color:var(--sub)}
-.top-grid.two{grid-template-columns:1fr 1fr}
-.top-hd.wibwub{background:var(--af)}.top-hd.munwow{background:var(--mw)}
-
-@media(max-width:900px){.kpi-row{grid-template-columns:1fr 1fr}.chart-grid,.top-grid{grid-template-columns:1fr}}
-@media(max-width:760px){.shop-row{grid-template-columns:1fr}.cmp-row{grid-template-columns:1.1fr 1fr 1fr .8fr;font-size:12px}}
+@media(max-width:900px){
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .chart-grid{grid-template-columns:1fr}
+  .top-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  .shop-row{grid-template-columns:1fr}
+  .cmp-row{grid-template-columns:1.1fr 1fr 1fr .8fr;font-size:12px}
+  .top-grid.two{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
+
   <div class="hdr">
     <div>
-      <div class="logo">WIB<span>WUB</span></div>
-      <div class="pt">Channel Performance Dashboard — เปรียบเทียบช่องทางการขายรายเดือน (Video / Affiliate / Live / Ads)</div>
+      <h1>WIBWUB vs munwow — เปรียบเทียบคู่แข่ง & Channel Performance</h1>
+      <div class="sub-line">เปรียบเทียบยอดขายทั้งระบบจาก FastMoss + วิเคราะห์ว่าแบรนด์ควรเน้นช่องทางไหนเพื่อตามให้ทัน</div>
     </div>
-    <div class="hr">
-      อัปเดตล่าสุด (regenerated): <span id="gen-ts">2026-08-27 03:44</span>
-    </div>
+    <div class="ts">อัปเดตล่าสุด<br><span id="gen-ts">2026-08-27 04:03</span></div>
   </div>
 
-  <div class="sec">เลือกเดือน <span class="sub">Month filter</span></div>
-  <div class="mtabs" id="month-tabs"></div>
+  <div class="banner" id="data-banner"></div>
 
-  <div class="sec" style="margin-top:18px">สรุปแต่ละช่องทาง <span class="sub" id="kpi-month-label"></span></div>
-  <div class="kpi-row" id="kpi-row"></div>
-
-  <div class="sec">เทรนด์รายเดือน (มี.ค.–ส.ค. 2569)</div>
-  <div class="chart-grid">
-    <div class="cc">
-      <div class="ct">ยอดขาย/รายได้แต่ละช่องทาง รายเดือน</div>
-      <div class="leg" id="trend-legend"></div>
-      <div class="cw" style="height:260px"><canvas id="trend-chart"></canvas></div>
+  <div class="filter-bar">
+    <div class="filter-group">
+      <label>📅 Snapshot FastMoss (จะเลือกช่วงวันได้เมื่อมีข้อมูลหลายวัน)</label>
+      <select class="snap-select" id="snap-select" onchange="selectSnapshot(this.value)"></select>
     </div>
-    <div class="cc">
-      <div class="ct">สัดส่วนช่องทาง — เดือนที่เลือก</div>
-      <div class="cw" style="height:260px"><canvas id="share-chart"></canvas></div>
+    <div class="filter-group">
+      <label>🗓 เดือน (ข้อมูล Channel ภายในของเรา)</label>
+      <div class="mtabs" id="month-tabs"></div>
     </div>
+    <div class="filter-note" id="filter-note"></div>
   </div>
 
-  <div class="sec">Top 10 — เดือนที่เลือก <span class="sub" id="top10-month-label"></span></div>
-  <div class="top-grid">
-    <div class="top-card">
-      <div class="top-hd video">🎬 Video ยอดขายสูงสุด</div>
-      <div id="top-video"></div>
-    </div>
-    <div class="top-card">
-      <div class="top-hd affiliate">🤝 Affiliate ครีเอเตอร์ยอดขายสูงสุด</div>
-      <div id="top-affiliate"></div>
-    </div>
-    <div class="top-card">
-      <div class="top-hd live">📡 Live รายได้สูงสุด</div>
-      <div id="top-live"></div>
-    </div>
-  </div>
+  <div class="sec">สรุปช่องว่างกับคู่แข่ง <span class="sub">เรานำ / ใกล้เคียง / ตามหลัง ในแต่ละมิติ</span></div>
+  <div class="gap-grid" id="gap-grid"></div>
 
-  <div class="sec">Insight & ข้อสังเกต</div>
-  <div class="ins-box" id="insight-box"></div>
-
-  <div class="sec" style="margin-top:34px">เทียบกับคู่แข่ง (FastMoss) <span class="sub">WIBWUB vs munwow — ข้อมูลระดับทั้งร้านจาก FastMoss.com <span id="fm-snap-date"></span></span></div>
+  <div class="sec" style="margin-top:26px">ข้อมูลร้านค้าจาก FastMoss <span class="sub" id="fm-snap-date"></span></div>
   <div class="shop-row" id="fm-shop-cards"></div>
 
-  <div class="sec" style="margin-top:14px">ยอดสะสมทั้งหมด <span class="sub">Cumulative ตั้งแต่เปิดร้าน</span></div>
+  <div class="sec">ยอดสะสมทั้งหมด <span class="sub">Cumulative ตั้งแต่เปิดร้าน</span></div>
   <div class="cmp-table" id="fm-cmp-cumulative"></div>
 
-  <div class="sec">แนวโน้ม 28 วันล่าสุด <span class="sub" id="fm-trend-range-label"></span></div>
+  <div class="sec">แนวโน้ม 28 วันล่าสุด (FastMoss) <span class="sub" id="fm-trend-range-label"></span></div>
   <div class="cmp-table" id="fm-cmp-trend" style="margin-bottom:14px"></div>
 
-  <div class="sec">สินค้าขายดี Top 5 (28 วันล่าสุด) — FastMoss</div>
+  <div class="sec">สินค้าขายดี Top 5 (28 วันล่าสุด)</div>
   <div class="top-grid two" id="fm-top-products"></div>
 
   <div class="sec">Insight เทียบคู่แข่ง</div>
   <div class="ins-box" id="fm-insight-box"></div>
 
-  <div class="note">
-    <b>แหล่งข้อมูล:</b> Video &amp; Affiliate GMV มาจาก WIBWUB_Affiliate_Dashboard.html (VIDEOS / CREATOR_MONTHS) ·
-    Live &amp; Ads มาจาก data Ads/WIBWUB_Ads_Dashboard.html (TK_BREAKDOWN.gmvLive / gmvMax+bizAds) — ตัวเลขทั้งหมดดึงจากแดชบอร์ดที่มีอยู่แล้ว ไม่ใช่แหล่งข้อมูลใหม่ ·
-    ส่วนเปรียบเทียบคู่แข่งด้านบนมาจาก fastmoss_history.json (FastMoss.com)<br>
-    <b>ข้อควรระวัง:</b> "Video" และ "Affiliate" ไม่ใช่ช่องทางที่แยกจากกันสนิท — Video คือยอดขายที่มาจากคลิปเดียว ส่วน Affiliate คือยอดขายรวมทุกคลิปของครีเอเตอร์คนนั้น (ห้ามนำสองยอดนี้มาบวกกันเป็นยอดใหม่ จะนับซ้ำ) ส่วน Live และ Ads เป็นช่องทางที่แยกกันจริง (ช่องทางที่บริษัทจ่ายเงินเอง) ·
-    "Ads" = GMV Max + Business Ads รวมกัน (Business Ads เป็นแบบจ่ายต่อการมองเห็น ไม่มียอดขาย/orders ของตัวเอง จึงนับเฉพาะ spend)<br>
-    <b>ข้อควรระวังของส่วน FastMoss:</b> ตัวเลขคู่แข่งเป็นระดับ "ทั้งร้าน" เท่านั้น FastMoss ไม่เปิดเผยยอดขายแยกตามช่องทาง (video/affiliate/live/ads) ของร้านใดเลย แม้แต่ของ WIBWUB เอง จึงนำมาเทียบแบบแยกช่องทางกับคู่แข่งไม่ได้ — ใช้เป็นภาพรวมระดับร้านเท่านั้น "ยอดสะสมทั้งหมด" กับ "แนวโน้ม 28 วัน" เป็นคนละชุดตัวเลข ห้ามนำมาเทียบข้ามชุดกัน<br>
-    แดชบอร์ดนี้อัปเดตข้อมูลอัตโนมัติทุกครั้งที่รัน channel_performance_update.py (ดึงข้อมูลใหม่จาก Affiliate/Ads Dashboard + fastmoss_history.json แล้ว regenerate ไฟล์นี้) —
-    ห้ามแก้ตัวเลขในไฟล์นี้ตรงๆ ให้แก้ที่ไฟล์ต้นทาง (Affiliate/Ads Dashboard หรือ fastmoss_history.json) แล้วรันสคริปต์ใหม่แทน
+  <div class="sec" style="margin-top:30px">แบรนด์ควรเน้นตรงไหนเพื่อตามให้ทัน</div>
+  <div class="reco-grid" id="reco-grid"></div>
+
+  <div class="sec" style="margin-top:34px">รายละเอียด Channel ภายในของเรา <span class="sub">Video / Affiliate / Live / Ads — เดือน<span id="ch-month-label"></span></span></div>
+  <div class="kpi-row" id="kpi-row"></div>
+
+  <div class="chart-grid" style="margin-top:12px">
+    <div class="cc">
+      <div class="ct">แนวโน้มยอดขายรายเดือนต่อ Channel</div>
+      <div class="leg" id="trend-legend"></div>
+      <div class="cw" style="height:230px"><canvas id="trend-chart"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">สัดส่วน Channel เดือนนี้</div>
+      <div class="cw" style="height:230px"><canvas id="share-chart"></canvas></div>
+    </div>
   </div>
+
+  <div class="sec">Top 10 — เดือนนี้</div>
+  <div class="top-grid">
+    <div class="top-card">
+      <div class="top-hd video">🎬 Video</div>
+      <div id="top-video"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-hd affiliate">🤝 Affiliate Creator</div>
+      <div id="top-affiliate"></div>
+    </div>
+    <div class="top-card">
+      <div class="top-hd live">🔴 Live</div>
+      <div id="top-live"></div>
+    </div>
+  </div>
+
+  <div class="sec">Insight — Channel ภายใน</div>
+  <div class="ins-box" id="insight-box"></div>
+
+  <div class="note">
+    <b>แหล่งข้อมูล:</b> Channel breakdown (Video/Affiliate/Live/Ads) ดึงจาก WIBWUB_Affiliate_Dashboard.html และ data Ads/WIBWUB_Ads_Dashboard.html รายเดือน · ข้อมูลคู่แข่งดึงจาก fastmoss_history.json (FastMoss.com)<br>
+    <b>ข้อจำกัดสำคัญ:</b> FastMoss แสดงข้อมูลระดับ "ทั้งร้าน" เท่านั้น ไม่สามารถแยกยอดขายเป็นรายช่องทาง (video/affiliate/live/ads) ของคู่แข่งได้ — ตัวเลข "Creator/Live/Video" ที่เห็นในฝั่ง FastMoss คือจำนวนกิจกรรม (รวมทุกครีเอเตอร์ ทั้ง organic+paid) ที่ขับยอดขาย ไม่ใช่ breakdown เป็นเงินบาท<br>
+    ตัวเลข video_count/creator_count ฝั่งเราใกล้เคียงกันในความหมาย (นับคลิป/ครีเอเตอร์ที่ทำยอดในเดือนนั้น) จึงเทียบสัดส่วนได้พอสมควร แต่ <b>session_count (ไลฟ์)</b> ฝั่งเรานับเฉพาะแคมเปญ GMV Live ที่เสียเงินบูสเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator จึงมีฐานต่างจากตัวเลข "lives" ของ FastMoss มาก ห้ามเทียบเป็น% ตรงๆ ใช้เป็นสัญญาณเชิงทิศทางเท่านั้น และทุกคู่ยังเทียบกันคนละช่วงเวลาด้วย (เดือนปฏิทินของเรา vs trailing 28 วันของคู่แข่ง)<br>
+    <b>Snapshot เดียว ณ ตอนนี้:</b> ระบบเก็บข้อมูล FastMoss แบบ snapshot อัตโนมัติ ตอนนี้มีแค่วันเดียว การเทียบ "ช่วงวันที่" (เช่น ต้นเดือน vs ปลายเดือน) จะทำได้แม่นยำขึ้นเมื่อมีหลาย snapshot สะสม — ตัวเลือกวันที่ด้านบนถูกออกแบบให้รองรับหลาย snapshot ไว้ล่วงหน้าแล้ว
+  </div>
+
 </div>
 
 <script>
@@ -196,23 +259,27 @@ const CHANNEL_DATA = {
     "jul": "ก.ค.",
     "aug": "ส.ค."
   },
-  "generated": "2026-08-27 03:44",
+  "generated": "2026-08-27 04:03",
   "channels": {
     "video": {
       "mar": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "apr": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "may": {
         "gmv": 0,
+        "video_count": 0,
         "top10": []
       },
       "jun": {
         "gmv": 527326,
+        "video_count": 440,
         "top10": [
           {
             "creator": ".namoshop125",
@@ -298,6 +365,7 @@ const CHANNEL_DATA = {
       },
       "jul": {
         "gmv": 1243970,
+        "video_count": 684,
         "top10": [
           {
             "creator": "fahareejun",
@@ -383,6 +451,7 @@ const CHANNEL_DATA = {
       },
       "aug": {
         "gmv": 1102788,
+        "video_count": 663,
         "top10": [
           {
             "creator": "papajate",
@@ -470,6 +539,7 @@ const CHANNEL_DATA = {
     "affiliate": {
       "mar": {
         "gmv": 655171,
+        "creator_count": 398,
         "top10": [
           {
             "name": "rita.fe_",
@@ -525,6 +595,7 @@ const CHANNEL_DATA = {
       },
       "apr": {
         "gmv": 724241,
+        "creator_count": 418,
         "top10": [
           {
             "name": "pailong05",
@@ -580,6 +651,7 @@ const CHANNEL_DATA = {
       },
       "may": {
         "gmv": 951158,
+        "creator_count": 558,
         "top10": [
           {
             "name": "fahareejun",
@@ -635,6 +707,7 @@ const CHANNEL_DATA = {
       },
       "jun": {
         "gmv": 660557,
+        "creator_count": 414,
         "top10": [
           {
             "name": ".namoshop125",
@@ -690,6 +763,7 @@ const CHANNEL_DATA = {
       },
       "jul": {
         "gmv": 1452748,
+        "creator_count": 720,
         "top10": [
           {
             "name": ".namoshop125",
@@ -745,6 +819,7 @@ const CHANNEL_DATA = {
       },
       "aug": {
         "gmv": 1313831,
+        "creator_count": 670,
         "top10": [
           {
             "name": ".namoshop125",
@@ -806,6 +881,7 @@ const CHANNEL_DATA = {
         "orders": 62,
         "roi": 3,
         "views": 9181,
+        "session_count": 21,
         "top10": [
           {
             "name": "LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",
@@ -895,6 +971,7 @@ const CHANNEL_DATA = {
         "orders": 119,
         "roi": 13.64,
         "views": 8460,
+        "session_count": 3,
         "top10": [
           {
             "name": "4.4 Live_GMV",
@@ -928,6 +1005,7 @@ const CHANNEL_DATA = {
         "orders": 331,
         "roi": 5.74,
         "views": 23121,
+        "session_count": 18,
         "top10": [
           {
             "name": "05.05.26/GMVLive เก็บโค้ด5.5(1)",
@@ -1017,6 +1095,7 @@ const CHANNEL_DATA = {
         "orders": 411,
         "roi": 19.12,
         "views": 30399,
+        "session_count": 8,
         "top10": [
           {
             "name": "06 1.2",
@@ -1090,6 +1169,7 @@ const CHANNEL_DATA = {
         "orders": 212,
         "roi": 18.03,
         "views": 12367,
+        "session_count": 3,
         "top10": [
           {
             "name": "7.7Live duo",
@@ -1123,6 +1203,7 @@ const CHANNEL_DATA = {
         "orders": 231,
         "roi": 38.27,
         "views": 14149,
+        "session_count": 6,
         "top10": [
           {
             "name": "15.08.26/Live",
@@ -1367,187 +1448,217 @@ const CHANNEL_DATA = {
   }
 };
 /*CHANNEL_DATA_END*/
-
-const CH_COLOR = {video:'#8b5cf6', affiliate:'#1A5CDB', live:'#f97316', ads:'#22c55e'};
+const CH_COLOR = {video:'#3b82f6', affiliate:'#a855f7', live:'#ef4444', ads:'#14b8a6'};
 const CH_LABEL = {video:'Video', affiliate:'Affiliate', live:'Live', ads:'Ads'};
-
-function fmtN(n){ n = Math.round(n||0); return n.toLocaleString('en-US'); }
-function fmtBaht(n){ return '฿' + fmtN(n); }
-function fmtCompact(n){
-  n = n||0;
-  if (Math.abs(n) >= 1e6) return '฿' + (n/1e6).toFixed(2) + 'M';
-  if (Math.abs(n) >= 1e3) return '฿' + (n/1e3).toFixed(1) + 'K';
-  return '฿' + fmtN(n);
-}
+const WB_COLOR = '#1A5CDB', MW_COLOR = '#c4406e';
 
 let curMonth = null;
+let curSnapIdx = 0;
 let trendChartInst = null, shareChartInst = null;
 
+function fmtN(n){ n = n||0; return Math.round(n).toLocaleString('en-US'); }
+function fmtBaht(n){ n = n||0; return '฿' + Math.round(n).toLocaleString('en-US'); }
+function fmtCompact(n){
+  n = n||0;
+  if (Math.abs(n) >= 1e6) return (n/1e6).toFixed(n>=1e7?0:1) + 'M';
+  if (Math.abs(n) >= 1e3) return (n/1e3).toFixed(n>=1e4?0:1) + 'K';
+  return fmtN(n);
+}
+
 function init(){
-  document.getElementById('gen-ts').textContent = CHANNEL_DATA.generated || '—';
+  document.getElementById('gen-ts').textContent = CHANNEL_DATA.generated || '-';
+
   const months = CHANNEL_DATA.months || [];
-  if (!months.length) {
-    document.querySelector('.wrap').insertAdjacentHTML('beforeend', '<div class="empty-note">ยังไม่มีข้อมูล — รัน channel_performance_update.py ก่อน</div>');
-    return;
+  if (months.length){
+    curMonth = months[months.length - 1];
+    const mlabels = CHANNEL_DATA.month_labels_th || {};
+    document.getElementById('month-tabs').innerHTML = months.map(m =>
+      `<button class="mtab${m===curMonth?' active':''}" onclick="selectMonth('${m}',this)">${mlabels[m]||m}</button>`
+    ).join('');
+  } else {
+    document.getElementById('month-tabs').innerHTML = '<span class="empty-note">ไม่มีข้อมูล</span>';
   }
-  curMonth = months[months.length - 1];
 
-  const tabsEl = document.getElementById('month-tabs');
-  tabsEl.innerHTML = months.map(m =>
-    `<button class="mtab${m===curMonth?' active':''}" data-m="${m}" onclick="selectMonth('${m}',this)">${CHANNEL_DATA.month_labels_th[m]||m}</button>`
-  ).join('');
+  const fm = CHANNEL_DATA.fastmoss;
+  const history = (fm && fm.history) || [];
+  if (history.length){
+    curSnapIdx = history.length - 1;
+    document.getElementById('snap-select').innerHTML = history.map((h,i) =>
+      `<option value="${i}"${i===curSnapIdx?' selected':''}>${h.date}</option>`
+    ).join('');
+    document.getElementById('filter-note').textContent = history.length === 1
+      ? 'ตอนนี้มี 1 snapshot — ระบบจะเก็บเพิ่มอัตโนมัติทุกวัน'
+      : `มี ${history.length} snapshot สะสม`;
+  } else {
+    document.getElementById('snap-select').innerHTML = '<option>— ไม่มีข้อมูล FastMoss —</option>';
+  }
 
+  renderBanner();
   renderTrendLegend();
   buildTrendChart();
   render();
-  renderFastmoss();
+  renderFastmossAll();
 }
 
+function renderBanner(){
+  const fm = CHANNEL_DATA.fastmoss;
+  const history = (fm && fm.history) || [];
+  const el = document.getElementById('data-banner');
+  if (!history.length){
+    el.innerHTML = '⚠️ <b>ยังไม่มีข้อมูล FastMoss</b> — ส่วนเปรียบเทียบคู่แข่งด้านล่างจะว่างจนกว่าจะมี fastmoss_history.json';
+    return;
+  }
+  el.innerHTML = `ℹ️ ข้อมูลคู่แข่งจาก FastMoss ปัจจุบันมี <b>${history.length} snapshot</b> (ล่าสุด ${history[history.length-1].date}) — เป็นข้อมูลระดับ "ทั้งร้าน" เท่านั้น (ไม่แยกช่องทาง) เมื่อระบบเก็บ snapshot สะสมมากขึ้น จะสามารถเลือกเทียบช่วงวันที่ได้แม่นยำขึ้น ตอนนี้ให้ดูภาพรวมยอดสะสม + แนวโน้ม 28 วันล่าสุดจาก FastMoss เป็นหลัก`;
+}
+
+/* ---------- month tabs (internal channel) ---------- */
 function selectMonth(m, btn){
   curMonth = m;
   document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   render();
+  renderGapGrid();
+  renderRecommendations();
+}
+
+function selectSnapshot(idxStr){
+  curSnapIdx = parseInt(idxStr, 10) || 0;
+  renderFastmossAll();
 }
 
 function renderTrendLegend(){
   const el = document.getElementById('trend-legend');
-  el.innerHTML = Object.keys(CH_LABEL).map(k =>
-    `<span><i style="background:${CH_COLOR[k]}"></i>${CH_LABEL[k]}</span>`
+  el.innerHTML = Object.keys(CH_LABEL).map(ch =>
+    `<span><i style="background:${CH_COLOR[ch]}"></i>${CH_LABEL[ch]}</span>`
   ).join('');
 }
 
 function metricFor(ch, m){
   const d = (CHANNEL_DATA.channels[ch] || {})[m] || {};
-  if (ch === 'video' || ch === 'affiliate') return d.gmv || 0;
-  return d.revenue || 0; // live, ads
+  if (ch === 'video') return d.gmv || 0;
+  if (ch === 'affiliate') return d.gmv || 0;
+  if (ch === 'live') return d.revenue || 0;
+  if (ch === 'ads') return d.revenue || 0;
+  return 0;
 }
 
 function buildTrendChart(){
-  const months = CHANNEL_DATA.months;
-  const labels = months.map(m => CHANNEL_DATA.month_labels_th[m] || m);
-  const datasets = Object.keys(CH_LABEL).map(ch => ({
-    label: CH_LABEL[ch],
-    data: months.map(m => metricFor(ch, m)),
-    borderColor: CH_COLOR[ch],
-    backgroundColor: CH_COLOR[ch] + '22',
-    tension: .3,
-    pointRadius: 3,
-    fill: false,
-  }));
-  const ctx = document.getElementById('trend-chart').getContext('2d');
+  const months = CHANNEL_DATA.months || [];
+  const mlabels = CHANNEL_DATA.month_labels_th || {};
+  const ctx = document.getElementById('trend-chart');
+  if (!ctx) return;
+  if (trendChartInst) trendChartInst.destroy();
   trendChartInst = new Chart(ctx, {
     type: 'line',
-    data: { labels, datasets },
+    data: {
+      labels: months.map(m => mlabels[m] || m),
+      datasets: Object.keys(CH_LABEL).map(ch => ({
+        label: CH_LABEL[ch],
+        data: months.map(m => metricFor(ch, m)),
+        borderColor: CH_COLOR[ch],
+        backgroundColor: CH_COLOR[ch] + '22',
+        tension: .3,
+        pointRadius: 3,
+      })),
+    },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: { legend: { display: false } },
-      scales: { y: { ticks: { callback: v => fmtCompact(v) } } }
-    }
+      scales: {
+        x: { ticks: { color: '#8996ab' }, grid: { color: '#232d3f' } },
+        y: { ticks: { color: '#8996ab', callback: v => fmtCompact(v) }, grid: { color: '#232d3f' } },
+      },
+    },
   });
 }
 
 function buildShareChart(){
-  const vals = Object.keys(CH_LABEL).map(ch => metricFor(ch, curMonth));
-  const ctx = document.getElementById('share-chart').getContext('2d');
+  const ctx = document.getElementById('share-chart');
+  if (!ctx) return;
   if (shareChartInst) shareChartInst.destroy();
+  const chs = Object.keys(CH_LABEL);
+  const vals = chs.map(ch => metricFor(ch, curMonth));
   shareChartInst = new Chart(ctx, {
     type: 'doughnut',
     data: {
-      labels: Object.values(CH_LABEL),
-      datasets: [{ data: vals, backgroundColor: Object.keys(CH_LABEL).map(k => CH_COLOR[k]) }]
+      labels: chs.map(ch => CH_LABEL[ch]),
+      datasets: [{ data: vals, backgroundColor: chs.map(ch => CH_COLOR[ch]), borderWidth: 0 }],
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } }
-    }
+      plugins: { legend: { position: 'bottom', labels: { color: '#8996ab', boxWidth: 10, padding: 12 } } },
+    },
   });
 }
 
 function kpiCardHtml(ch, m){
   const d = (CHANNEL_DATA.channels[ch] || {})[m] || {};
-  const icon = {video:'🎬', affiliate:'🤝', live:'📡', ads:'📢'}[ch];
   let val, sub;
-  if (ch === 'video') { val = fmtCompact(d.gmv); sub = `${(d.top10||[]).length} คลิปทำยอด`; }
-  else if (ch === 'affiliate') { val = fmtCompact(d.gmv); sub = `${(d.top10||[]).length}+ ครีเอเตอร์ทำยอด`; }
-  else if (ch === 'live') { val = fmtCompact(d.revenue); sub = `spend ${fmtCompact(d.spend)} · ROI ${d.roi||0}x · ${d.orders||0} orders`; }
-  else { val = fmtCompact(d.revenue); sub = `spend ${fmtCompact(d.spend)} · ROI ${d.roi||0}x · ${d.orders||0} orders`; }
+  if (ch === 'video'){ val = fmtBaht(d.gmv); sub = `${d.video_count||0} คลิปที่มียอด`; }
+  else if (ch === 'affiliate'){ val = fmtBaht(d.gmv); sub = `${d.creator_count||0} creator ที่ทำยอด`; }
+  else if (ch === 'live'){ val = fmtBaht(d.revenue); sub = `${d.session_count||0} รอบไลฟ์ · ROI ${d.roi||0}x`; }
+  else { val = fmtBaht(d.revenue); sub = `Spend ${fmtBaht(d.spend)} · ROI ${d.roi||0}x`; }
   return `<div class="kpi-card ${ch}">
-    <div class="kpi-lbl"><span class="kpi-dot"></span>${icon} ${CH_LABEL[ch]}</div>
+    <div class="kpi-lbl"><span class="kpi-dot"></span>${CH_LABEL[ch]}</div>
     <div class="kpi-val">${val}</div>
     <div class="kpi-sub">${sub}</div>
   </div>`;
 }
 
 function topRowHtml(rank, name, sub, valLabel){
-  const rc = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
+  const rkCls = rank === 1 ? 'r1' : rank === 2 ? 'r2' : rank === 3 ? 'r3' : '';
   return `<div class="top-item">
-    <div class="top-rk ${rc}">${rank}</div>
+    <div class="top-rk ${rkCls}">${rank}</div>
     <div class="top-body">
       <div class="top-name">${name}</div>
       <div class="top-sub">${sub}</div>
     </div>
-    <div class="top-nums"><b>${valLabel}</b></div>
+    <div class="top-nums">${valLabel}</div>
   </div>`;
 }
 
 function renderTopVideo(m){
-  const rows = ((CHANNEL_DATA.channels.video[m]||{}).top10)||[];
+  const rows = ((CHANNEL_DATA.channels.video || {})[m] || {}).top10 || [];
   const el = document.getElementById('top-video');
-  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
-  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.creator, r.product, fmtCompact(r.gmv))).join('');
+  el.innerHTML = rows.length ? rows.map((r,i) =>
+    topRowHtml(i+1, r.product || r.caption || '-', r.creator || '', fmtBaht(r.gmv))
+  ).join('') : '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>';
 }
 
 function renderTopAffiliate(m){
-  const rows = ((CHANNEL_DATA.channels.affiliate[m]||{}).top10)||[];
+  const rows = ((CHANNEL_DATA.channels.affiliate || {})[m] || {}).top10 || [];
   const el = document.getElementById('top-affiliate');
-  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
-  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.name, r.comm_rate ? `comm ${r.comm_rate}%` : '', fmtCompact(r.gmv))).join('');
+  el.innerHTML = rows.length ? rows.map((r,i) =>
+    topRowHtml(i+1, r.name, r.comm_rate ? `ค่าคอม ${r.comm_rate}%` : '', fmtBaht(r.gmv))
+  ).join('') : '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>';
 }
 
 function renderTopLive(m){
-  const rows = ((CHANNEL_DATA.channels.live[m]||{}).top10)||[];
+  const rows = ((CHANNEL_DATA.channels.live || {})[m] || {}).top10 || [];
   const el = document.getElementById('top-live');
-  if (!rows.length) { el.innerHTML = '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>'; return; }
-  el.innerHTML = rows.map((r,i) => topRowHtml(i+1, r.name, `ROI ${r.roi||0}x · ${r.orders||0} orders`, fmtCompact(r.revenue))).join('');
+  el.innerHTML = rows.length ? rows.map((r,i) =>
+    topRowHtml(i+1, r.name || '-', `ROI ${r.roi||0}x`, fmtBaht(r.revenue))
+  ).join('') : '<div class="empty-note">ไม่มีข้อมูลเดือนนี้</div>';
 }
 
 function renderInsight(m){
-  const label = CHANNEL_DATA.month_labels_th[m] || m;
-  const vals = Object.keys(CH_LABEL).map(ch => ({ch, v: metricFor(ch, m)}));
+  const chs = Object.keys(CH_LABEL);
+  const vals = chs.map(ch => ({ ch, v: metricFor(ch, m) }));
   vals.sort((a,b) => b.v - a.v);
-  const best = vals[0], worst = vals[vals.length-1];
-  const months = CHANNEL_DATA.months;
-  const idx = months.indexOf(m);
-  const items = [];
-  items.push(`ช่องทางที่ทำยอดสูงสุดในเดือน${label} คือ <b>${CH_LABEL[best.ch]}</b> (${fmtCompact(best.v)}) ส่วนช่องทางที่ทำยอดต่ำสุดคือ <b>${CH_LABEL[worst.ch]}</b> (${fmtCompact(worst.v)}) — น่าจะเป็นจุดที่ควรปรับปรุงก่อน`);
-  if (idx > 0) {
-    const prevM = months[idx-1];
-    Object.keys(CH_LABEL).forEach(ch => {
-      const cur = metricFor(ch, m), prev = metricFor(ch, prevM);
-      if (prev > 0) {
-        const pct = Math.round((cur-prev)/prev*100);
-        if (Math.abs(pct) >= 20) {
-          items.push(`${CH_LABEL[ch]} ${pct>0?'เพิ่มขึ้น':'ลดลง'} ${Math.abs(pct)}% จากเดือน${CHANNEL_DATA.month_labels_th[prevM]}`);
-        }
-      }
-    });
-  }
-  const liveD = (CHANNEL_DATA.channels.live[m]||{});
-  const adsD = (CHANNEL_DATA.channels.ads[m]||{});
-  if (liveD.roi) items.push(`Live ROI เดือนนี้ = ${liveD.roi}x (ยิ่งสูงยิ่งคุ้ม) เทียบกับ Ads ROI = ${adsD.roi||0}x`);
-
-  document.getElementById('insight-box').innerHTML =
-    `🔍 <b>สรุปเดือน${label}:</b><ul class="ins-list">` + items.map(t => `<li>${t}</li>`).join('') + '</ul>';
+  const top = vals[0], bottom = vals[vals.length-1];
+  const total = vals.reduce((s,x) => s+x.v, 0) || 1;
+  const items = [
+    `${CH_LABEL[top.ch]} เป็นช่องทางที่ทำยอดสูงสุดเดือนนี้ (${fmtBaht(top.v)}, ${Math.round(top.v/total*100)}% ของยอดรวม 4 ช่องทาง)`,
+    `${CH_LABEL[bottom.ch]} ทำยอดต่ำสุด (${fmtBaht(bottom.v)}) — ลองพิจารณาว่าควรเพิ่มงบ/ความถี่ หรือช่องทางนี้ไม่เหมาะกับสินค้ากลุ่มนี้`,
+  ];
+  const live = (CHANNEL_DATA.channels.live||{})[m] || {};
+  if (live.roi) items.push(`Live เดือนนี้ ROI ${live.roi}x จาก ${live.session_count||0} รอบ — เฉลี่ย ${fmtBaht((live.revenue||0)/(live.session_count||1))}/รอบ`);
+  document.getElementById('insight-box').innerHTML = `<ul class="ins-list">${items.map(i=>`<li>${i}</li>`).join('')}</ul>`;
 }
 
 function render(){
-  const label = CHANNEL_DATA.month_labels_th[curMonth] || curMonth;
-  document.getElementById('kpi-month-label').textContent = `— ${label} 2569`;
-  document.getElementById('top10-month-label').textContent = `(${label} 2569)`;
-
+  document.getElementById('ch-month-label').textContent = ' ' + ((CHANNEL_DATA.month_labels_th||{})[curMonth] || curMonth || '-');
   document.getElementById('kpi-row').innerHTML = Object.keys(CH_LABEL).map(ch => kpiCardHtml(ch, curMonth)).join('');
-
   buildShareChart();
   renderTopVideo(curMonth);
   renderTopAffiliate(curMonth);
@@ -1555,112 +1666,219 @@ function render(){
   renderInsight(curMonth);
 }
 
-const pct = (a,b) => (b === 0 || b == null) ? null : Math.round((a/b)*1000)/10;
+/* ---------- FastMoss comparison ---------- */
+const pct = (a,b) => b ? Math.round(a/b*100) : 0;
 
 function buildCmpTable(sA, sB, valsA, valsB, rows){
-  let html = `<div class="cmp-row head"><div>ตัวชี้วัด</div><div style="text-align:center">${sA.name}</div><div style="text-align:center">${sB.name}</div><div style="text-align:center">สัดส่วน</div></div>`;
-  rows.forEach(([label, key, fmt]) => {
-    const a = valsA[key], b = valsB[key];
-    let shareHtml = '';
-    if (typeof a === 'number' && typeof b === 'number' && (a+b) > 0){
-      const aPct = Math.round((a/(a+b))*100);
-      shareHtml = `<span class="share-bar"><div style="width:${aPct}%;background:${sA.color}"></div><div style="width:${100-aPct}%;background:${sB.color}"></div></span><span class="share-txt">${aPct}:${100-aPct}</span>`;
-    }
+  let html = `<div class="cmp-row head"><div></div><div style="text-align:right">${sA.name}</div><div style="text-align:right">${sB.name}</div><div style="text-align:right">สัดส่วน</div></div>`;
+  rows.forEach(r => {
+    const a = valsA[r.key], b = valsB[r.key];
+    const shareA = r.share === false ? null : pct(a, a+b);
     html += `<div class="cmp-row">
-      <div class="cmp-label">${label}</div>
-      <div class="cmp-val wibwub">${fmt(a)}</div>
-      <div class="cmp-val munwow">${fmt(b)}</div>
-      <div class="cmp-share">${shareHtml}</div>
+      <div class="cmp-label">${r.label}</div>
+      <div class="cmp-val wibwub">${r.fmt ? r.fmt(a) : fmtN(a)}</div>
+      <div class="cmp-val munwow">${r.fmt ? r.fmt(b) : fmtN(b)}</div>
+      <div class="cmp-share">${shareA === null ? '—' : `
+        <div class="share-bar"><div style="width:${shareA}%;background:${WB_COLOR}"></div><div style="width:${100-shareA}%;background:${MW_COLOR}"></div></div>
+        <div class="share-txt">${shareA}% / ${100-shareA}%</div>`}</div>
     </div>`;
   });
   return html;
 }
 
-function renderFastmoss(){
+function currentSnapshot(){
   const fm = CHANNEL_DATA.fastmoss;
-  const box = document.getElementById('fm-insight-box');
-  if (!fm || !fm.history || !fm.history.length){
-    document.getElementById('fm-shop-cards').innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss — รัน fastmoss_update.py แล้ว re-run channel_performance_update.py</div>';
+  const history = (fm && fm.history) || [];
+  return history[curSnapIdx] || null;
+}
+
+function renderFastmossAll(){
+  const fm = CHANNEL_DATA.fastmoss;
+  const snap = currentSnapshot();
+  const targets = ['fm-shop-cards','fm-cmp-cumulative','fm-cmp-trend','fm-top-products','fm-insight-box','gap-grid'];
+  if (!fm || !snap){
+    targets.forEach(id => document.getElementById(id).innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>');
     return;
   }
-  const shops = fm.shops || {};
-  const latest = fm.history[fm.history.length - 1];
-  const shopKeys = Object.keys(latest.shops);
-  const [kA, kB] = shopKeys;
-  const sA = shops[kA], sB = shops[kB];
-  const dA = latest.shops[kA], dB = latest.shops[kB];
+  const shopsMeta = fm.shops;
+  const sW = shopsMeta.wibwub, sM = shopsMeta.munwow;
+  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
 
-  document.getElementById('fm-snap-date').textContent = `(ข้อมูล ณ ${latest.date})`;
-  document.getElementById('fm-trend-range-label').textContent = `(${dA.trend28d.range || ''})`;
+  document.getElementById('fm-snap-date').textContent = `— snapshot ${snap.date}`;
 
-  document.getElementById('fm-shop-cards').innerHTML = [[kA,sA],[kB,sB]].map(([key,s]) => `
-    <div class="shop-card ${key}">
-      <div class="shop-name"><a href="${s.url}" target="_blank" rel="noopener">${s.name} ↗</a></div>
+  document.getElementById('fm-shop-cards').innerHTML = `
+    <div class="shop-card wibwub">
+      <div class="shop-name"><a href="${sW.url}" target="_blank" rel="noopener">${sW.name}</a></div>
       <div class="shop-meta">
-        หมวดหมู่: <b>${s.category}</b><br>
-        ช่วงราคา: <b>${s.price_range}</b><br>
-        เปิดร้านตั้งแต่: <b>${s.listed_since}</b>
+        หมวดหมู่: <b>${sW.category}</b><br>
+        ช่วงราคา: <b>${sW.price_range}</b><br>
+        เปิดร้านตั้งแต่: <b>${sW.listed_since}</b><br>
+        อันดับประเทศ: <b>#${fmtN(dW.cumulative.country_rank)}</b> · อันดับหมวดหมู่: <b>#${fmtN(dW.cumulative.category_rank)}</b><br>
+        เรตติ้ง: <b>${dW.cumulative.rating}</b> · คุณภาพร้าน: <b>${dW.cumulative.quality_score}</b>
       </div>
     </div>
-  `).join('');
+    <div class="shop-card munwow">
+      <div class="shop-name"><a href="${sM.url}" target="_blank" rel="noopener">${sM.name}</a></div>
+      <div class="shop-meta">
+        หมวดหมู่: <b>${sM.category}</b><br>
+        ช่วงราคา: <b>${sM.price_range}</b><br>
+        เปิดร้านตั้งแต่: <b>${sM.listed_since}</b><br>
+        อันดับประเทศ: <b>#${fmtN(dM.cumulative.country_rank)}</b> · อันดับหมวดหมู่: <b>#${fmtN(dM.cumulative.category_rank)}</b><br>
+        เรตติ้ง: <b>${dM.cumulative.rating}</b> · คุณภาพร้าน: <b>${dM.cumulative.quality_score}</b>
+      </div>
+    </div>`;
 
-  const cumRows = [
-    ['ยอดคำสั่งซื้อรวม (Orders)', 'orders_total', fmtN],
-    ['ยอดขายรวม (Sales)', 'sales_total', fmtBaht],
-    ['อันดับประเทศ (ยิ่งน้อยยิ่งดี)', 'country_rank', fmtN],
-    ['อันดับหมวดหมู่ (ยิ่งน้อยยิ่งดี)', 'category_rank', fmtN],
-    ['คะแนนรีวิว (Rating)', 'rating', v => v.toFixed(1) + ' / 5'],
-    ['คุณภาพร้าน (Quality score)', 'quality_score', v => v + '/100'],
-    ['ตอบแชทภายใน 24 ชม.', 'response_rate_24h', v => v + '%'],
-    ['จัดส่งภายใน 48 ชม.', 'shipping_rate_48h', v => v + '%'],
-  ];
-  const cumTableEl = document.getElementById('fm-cmp-cumulative');
-  cumTableEl.innerHTML = buildCmpTable(sA, sB, dA.cumulative, dB.cumulative, cumRows);
-  const specialRow = document.createElement('div');
-  specialRow.className = 'cmp-row';
-  specialRow.innerHTML = `
-    <div class="cmp-label">สินค้าที่ยังขายอยู่ / ทั้งหมด</div>
-    <div class="cmp-val wibwub">${dA.cumulative.products_active} / ${dA.cumulative.products_total}</div>
-    <div class="cmp-val munwow">${dB.cumulative.products_active} / ${dB.cumulative.products_total}</div>
-    <div class="cmp-share"></div>`;
-  cumTableEl.insertBefore(specialRow, cumTableEl.children[3]);
+  document.getElementById('fm-cmp-cumulative').innerHTML = buildCmpTable(sW, sM, dW.cumulative, dM.cumulative, [
+    { key: 'sales_total', label: 'ยอดขายสะสม', fmt: fmtBaht },
+    { key: 'orders_total', label: 'ออเดอร์สะสม', fmt: fmtN },
+    { key: 'products_active', label: 'สินค้าที่ขายอยู่', fmt: fmtN },
+    { key: 'products_total', label: 'สินค้าทั้งหมด', fmt: fmtN },
+    { key: 'country_rank', label: 'อันดับประเทศ (ยิ่งน้อยยิ่งดี)', fmt: v => '#'+fmtN(v), share: false },
+    { key: 'category_rank', label: 'อันดับหมวดหมู่ (ยิ่งน้อยยิ่งดี)', fmt: v => '#'+fmtN(v), share: false },
+    { key: 'rating', label: 'เรตติ้ง', fmt: v => v, share: false },
+    { key: 'quality_score', label: 'คะแนนคุณภาพร้าน', fmt: v => v, share: false },
+  ]);
 
-  const trendRows = [
-    ['คำสั่งซื้อ (Orders)', 'orders', fmtN],
-    ['ยอดขาย (Sales)', 'sales', fmtBaht],
-    ['ครีเอเตอร์ที่ขายสินค้า (Creators)', 'creators', fmtN],
-    ['ไลฟ์สด (Lives)', 'lives', fmtN],
-    ['วิดีโอ (Videos)', 'videos', fmtN],
-    ['สินค้าที่ขายได้ (Products sold)', 'products_sold', fmtN],
-  ];
-  document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sA, sB, dA.trend28d, dB.trend28d, trendRows);
+  document.getElementById('fm-trend-range-label').textContent = `(${dW.trend28d.range})`;
+  document.getElementById('fm-cmp-trend').innerHTML = buildCmpTable(sW, sM, dW.trend28d, dM.trend28d, [
+    { key: 'sales', label: 'ยอดขาย 28 วัน', fmt: fmtBaht },
+    { key: 'orders', label: 'ออเดอร์ 28 วัน', fmt: fmtN },
+    { key: 'creators', label: 'Creator ที่ทำยอด', fmt: fmtN },
+    { key: 'lives', label: 'จำนวนไลฟ์', fmt: fmtN },
+    { key: 'videos', label: 'จำนวนคลิป', fmt: fmtN },
+    { key: 'products_sold', label: 'สินค้าที่ขายได้', fmt: fmtN },
+  ]);
 
-  document.getElementById('fm-top-products').innerHTML = [[kA,sA,dA],[kB,sB,dB]].map(([key,s,d]) => `
+  document.getElementById('fm-top-products').innerHTML = `
     <div class="top-card">
-      <div class="top-hd ${key}">${s.name}</div>
-      ${(d.top_products||[]).map((p,i) => `
-        <div class="top-item">
-          <div class="top-rk ${i===0?'r1':i===1?'r2':i===2?'r3':''}">${i+1}</div>
-          <div class="top-body"><div class="top-name" title="${p.name}">${p.name}</div></div>
-          <div class="top-nums">${fmtN(p.orders)} ออเดอร์<br><b>${fmtBaht(p.sales)}</b></div>
-        </div>
-      `).join('')}
+      <div class="top-hd wibwub">${sW.name} — Top 5</div>
+      ${(dW.top_products||[]).map((p,i) => topRowHtml(i+1, p.name, `${fmtN(p.orders)} ออเดอร์`, fmtBaht(p.sales))).join('') || '<div class="empty-note">ไม่มีข้อมูล</div>'}
     </div>
-  `).join('');
+    <div class="top-card">
+      <div class="top-hd munwow">${sM.name} — Top 5</div>
+      ${(dM.top_products||[]).map((p,i) => topRowHtml(i+1, p.name, `${fmtN(p.orders)} ออเดอร์`, fmtBaht(p.sales))).join('') || '<div class="empty-note">ไม่มีข้อมูล</div>'}
+    </div>`;
 
-  const orderShare = pct(dA.trend28d.orders, dB.trend28d.orders);
-  const salesShare = pct(dA.trend28d.sales, dB.trend28d.sales);
-  const ourVideoGmv = metricFor('video', curMonth), ourAffGmv = metricFor('affiliate', curMonth);
-  box.innerHTML = `
-    ในช่วง 28 วันล่าสุด <b>${sA.name}</b> ทำยอดขายได้เป็น <b>${salesShare}%</b> และคำสั่งซื้อเป็น <b>${orderShare}%</b> ของ <b>${sB.name}</b> (ระดับทั้งร้าน)
-    <ul class="ins-list">
-      <li>ยอดขาย 28 วัน: ${sA.name} ${fmtBaht(dA.trend28d.sales)} vs ${sB.name} ${fmtBaht(dB.trend28d.sales)}</li>
-      <li>คำสั่งซื้อ 28 วัน: ${sA.name} ${fmtN(dA.trend28d.orders)} vs ${sB.name} ${fmtN(dB.trend28d.orders)}</li>
-      <li>${sB.name} มีครีเอเตอร์ทำคอนเทนต์ให้มากกว่า (${fmtN(dB.trend28d.creators)} vs ${fmtN(dA.trend28d.creators)} คน) และไลฟ์มากกว่า (${fmtN(dB.trend28d.lives)} vs ${fmtN(dA.trend28d.lives)} ครั้ง) — สอดคล้องกับที่เห็นในตาราง Top 10 Video/Affiliate ด้านบนว่ายอด Video+Affiliate ของเราเดือนนี้ (${CHANNEL_DATA.month_labels_th[curMonth]}) อยู่ที่ Video ${fmtCompact(ourVideoGmv)} และ Affiliate ${fmtCompact(ourAffGmv)} — ยังมีพื้นที่ขยาย affiliate/live เพิ่มได้อีก</li>
-      <li>คะแนนรีวิวและคุณภาพร้าน: ${sA.name} ${dA.cumulative.rating}/5 (quality ${dA.cumulative.quality_score}) เทียบกับ ${sB.name} ${dB.cumulative.rating}/5 (quality ${dB.cumulative.quality_score})</li>
-      <li>หมายเหตุ: นี่เป็นตัวเลขระดับทั้งร้านจาก FastMoss เท่านั้น ไม่สามารถแยกได้ว่าคู่แข่งขายผ่าน video/affiliate/live/ads ช่องทางไหนเท่าไหร่ (FastMoss ไม่เปิดเผยข้อมูลนี้แม้แต่ของร้านเราเอง) — ส่วน breakdown รายช่องทาง/รายคลิป/รายครีเอเตอร์ด้านบนเป็นข้อมูลของ WIBWUB เองเท่านั้น</li>
-    </ul>
-  `;
+  const salesShare = pct(dW.cumulative.sales_total, dW.cumulative.sales_total + dM.cumulative.sales_total);
+  const trendShare = pct(dW.trend28d.sales, dW.trend28d.sales + dM.trend28d.sales);
+  const insightItems = [
+    `ยอดขายสะสมของเราคิดเป็น ${salesShare}% ของยอดขายรวมสองร้าน (munwow ${100-salesShare}%)`,
+    `ช่วง 28 วันล่าสุด สัดส่วนยอดขายของเราขยับเป็น ${trendShare}% — ${trendShare > salesShare ? 'ดีขึ้นเมื่อเทียบกับสัดส่วนสะสม' : trendShare < salesShare ? 'แย่ลงเมื่อเทียบกับสัดส่วนสะสม ควรจับตา' : 'ทรงตัวเมื่อเทียบกับสัดส่วนสะสม'}`,
+    `ด้านคุณภาพร้าน เรตติ้ง ${dW.cumulative.rating} vs ${dM.cumulative.rating} และคะแนนคุณภาพ ${dW.cumulative.quality_score} vs ${dM.cumulative.quality_score} — ${dW.cumulative.quality_score >= dM.cumulative.quality_score ? 'เรานำด้านคุณภาพ ใช้เป็นจุดขายได้' : 'คู่แข่งนำด้านคุณภาพ ควรปรับปรุง'}`,
+    `จำนวนสินค้าที่ขายอยู่: เรา ${dW.cumulative.products_active} รายการ vs munwow ${dM.cumulative.products_active} รายการ — เรามีสินค้าหลากหลายกว่า แต่ยังแปลงเป็นยอดขายรวมได้น้อยกว่า`,
+  ];
+  document.getElementById('fm-insight-box').innerHTML = `<ul class="ins-list">${insightItems.map(i=>`<li>${i}</li>`).join('')}</ul>`;
+
+  renderGapGrid();
+  renderRecommendations();
+}
+
+/* ---------- gap analysis ---------- */
+function gapFlag(ours, theirs, higherBetter){
+  if (higherBetter){
+    if (ours >= theirs) return 'win';
+    const r = theirs ? ours/theirs : 1;
+    return r >= 0.6 ? 'warn' : 'lose';
+  } else {
+    if (ours <= theirs) return 'win';
+    const r = ours ? theirs/ours : 1;
+    return r >= 0.6 ? 'warn' : 'lose';
+  }
+}
+function gapFlagIcon(f){ return f === 'win' ? '🟢' : f === 'warn' ? '🟡' : '🔴'; }
+function gapRatioText(ours, theirs, higherBetter, flag){
+  if (flag === 'win'){
+    if (!higherBetter) return `เรานำอยู่ (อันดับดีกว่า)`;
+    const extra = theirs ? Math.round((ours/theirs - 1) * 100) : 0;
+    return `เรานำอยู่ ${extra > 0 ? '+' + extra + '%' : ''}`.trim();
+  }
+  if (!higherBetter){
+    return `อันดับเราตามหลังอยู่ (#${fmtN(ours)} vs #${fmtN(theirs)})`;
+  }
+  const share = theirs ? Math.round(ours/theirs*100) : 0;
+  const times = ours ? (theirs/ours) : 0;
+  return `เราทำได้ ${share}% ของคู่แข่ง — ตามหลัง ${times.toFixed(1)} เท่า`;
+}
+function pctSafe(a,b){ return b ? a/b : 0; }
+
+function computeGapRows(){
+  const snap = currentSnapshot();
+  if (!snap) return [];
+  const dW = snap.shops.wibwub, dM = snap.shops.munwow;
+  const rows = [
+    { group: 'สะสม', label: 'ยอดขายสะสม', ours: dW.cumulative.sales_total, theirs: dM.cumulative.sales_total, higherBetter: true, fmt: fmtBaht },
+    { group: 'สะสม', label: 'ออเดอร์สะสม', ours: dW.cumulative.orders_total, theirs: dM.cumulative.orders_total, higherBetter: true, fmt: fmtN },
+    { group: 'สะสม', label: 'อันดับหมวดหมู่', ours: dW.cumulative.category_rank, theirs: dM.cumulative.category_rank, higherBetter: false, fmt: v => '#'+fmtN(v) },
+    { group: 'สะสม', label: 'สินค้าที่ขายอยู่', ours: dW.cumulative.products_active, theirs: dM.cumulative.products_active, higherBetter: true, fmt: fmtN },
+    { group: '28 วัน', label: 'ยอดขาย 28 วัน', ours: dW.trend28d.sales, theirs: dM.trend28d.sales, higherBetter: true, fmt: fmtBaht },
+    { group: '28 วัน', label: 'Creator ที่ทำยอด', ours: dW.trend28d.creators, theirs: dM.trend28d.creators, higherBetter: true, fmt: fmtN },
+    { group: '28 วัน', label: 'จำนวนไลฟ์', ours: dW.trend28d.lives, theirs: dM.trend28d.lives, higherBetter: true, fmt: fmtN },
+    { group: '28 วัน', label: 'จำนวนคลิป', ours: dW.trend28d.videos, theirs: dM.trend28d.videos, higherBetter: true, fmt: fmtN },
+    { group: '28 วัน', label: 'สินค้าที่ขายได้', ours: dW.trend28d.products_sold, theirs: dM.trend28d.products_sold, higherBetter: true, fmt: fmtN },
+  ];
+  return rows.map(r => ({ ...r, flag: gapFlag(r.ours, r.theirs, r.higherBetter) }));
+}
+
+function renderGapGrid(){
+  const rows = computeGapRows();
+  const el = document.getElementById('gap-grid');
+  if (!rows.length){ el.innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>'; return; }
+  el.innerHTML = rows.map(r => `
+    <div class="gap-card ${r.flag}">
+      <div class="gap-hd"><span>${gapFlagIcon(r.flag)}</span><span>${r.label}</span></div>
+      <div class="gap-nums">
+        <div class="gap-num wibwub"><span class="gap-num-lbl">WIBWUB</span><span class="gap-num-val">${r.fmt(r.ours)}</span></div>
+        <div class="gap-vs">vs</div>
+        <div class="gap-num munwow"><span class="gap-num-lbl">munwow</span><span class="gap-num-val">${r.fmt(r.theirs)}</span></div>
+      </div>
+      <div class="gap-ratio">${gapRatioText(r.ours, r.theirs, r.higherBetter, r.flag)}</div>
+    </div>`).join('');
+}
+
+/* ---------- recommendations (ties competitor gap to our own channel levers) ---------- */
+function renderRecommendations(){
+  const snap = currentSnapshot();
+  const el = document.getElementById('reco-grid');
+  if (!snap){ el.innerHTML = '<div class="empty-note">ยังไม่มีข้อมูล FastMoss</div>'; return; }
+  const dM = snap.shops.munwow.trend28d;
+  const dW = snap.shops.wibwub.trend28d;
+  const cW = snap.shops.wibwub.cumulative, cM = snap.shops.munwow.cumulative;
+
+  const vidCh = (CHANNEL_DATA.channels.video || {})[curMonth] || {};
+  const afCh = (CHANNEL_DATA.channels.affiliate || {})[curMonth] || {};
+  const lvCh = (CHANNEL_DATA.channels.live || {})[curMonth] || {};
+
+  const cards = [];
+
+  cards.push({
+    icon: '🤝', title: 'ขยายจำนวน Affiliate Creator',
+    body: `เดือนนี้เรามี creator ที่ทำยอด ${fmtN(afCh.creator_count||0)} คน ขณะที่ munwow มี creator ที่ทำยอด ${fmtN(dM.creators)} คนใน 28 วันล่าสุด (เรา ${pct(afCh.creator_count||0, dM.creators)}% ของคู่แข่ง) — เร่งเปิดรับ/กระตุ้น creator ใหม่เพื่อปิดช่องว่างนี้`,
+  });
+  cards.push({
+    icon: '🔴', title: 'เพิ่มไลฟ์ขายสินค้าจาก Creator',
+    body: `เดือนนี้เรามีแคมเปญ GMV Live (บูสไลฟ์แบบเสียเงิน) ${fmtN(lvCh.session_count||0)} รอบ ส่วน FastMoss รายงานว่า munwow มีไลฟ์ที่ขายสินค้าได้ (รวมทุกครีเอเตอร์ ทั้ง organic+paid) ถึง ${fmtN(dM.lives)} รอบใน 28 วัน — ตัวเลขสองฝั่งนับคนละฐาน (ของเราคือแคมเปญโฆษณาเท่านั้น ยังไม่รวมไลฟ์ organic ของ creator) เทียบเป็น% ตรงๆไม่ได้ แต่ส่วนต่างที่มากขนาดนี้บ่งชี้ว่าเรายังชวน creator ให้เปิดไลฟ์ขายสินค้าน้อยกว่าคู่แข่งมาก ควรเร่งดันให้ affiliate creator ไลฟ์บ่อยขึ้น ไม่ใช่แค่พึ่งแคมเปญโฆษณา`,
+  });
+  cards.push({
+    icon: '🎬', title: 'เพิ่มจำนวนคลิป Shoppable Video',
+    body: `เดือนนี้เรามีคลิปที่มียอดขาย ${fmtN(vidCh.video_count||0)} คลิป vs munwow ${fmtN(dM.videos)} คลิปใน 28 วัน (เรา ${pct(vidCh.video_count||0, dM.videos)}% ของคู่แข่ง) — เพิ่มความถี่การโพสต์คลิปสินค้าใหม่ๆ`,
+  });
+  cards.push({
+    icon: '⭐', title: 'ใช้จุดแข็งด้านคุณภาพเป็นจุดขาย',
+    body: cW.quality_score >= cM.quality_score
+      ? `เรามีคะแนนคุณภาพร้าน ${cW.quality_score} และเรตติ้ง ${cW.rating} สูงกว่า munwow (${cM.quality_score} / ${cM.rating}) — ใช้จุดนี้สื่อสารในครีเอทีฟ/แคปชั่นเพื่อสร้างความน่าเชื่อถือ`
+      : `munwow มีคะแนนคุณภาพร้าน ${cM.quality_score} สูงกว่าเรา (${cW.quality_score}) — ควรเร่งปรับปรุงเวลาตอบแชท/จัดส่งเพื่อดันคะแนนคุณภาพร้าน`,
+  });
+  cards.push({
+    icon: '📈', title: 'เร่งปิดช่องว่างอันดับหมวดหมู่',
+    body: `อันดับหมวดหมู่ของเราอยู่ที่ #${fmtN(cW.category_rank)} ขณะที่ munwow อยู่ที่ #${fmtN(cM.category_rank)} — อันดับมักขยับตามยอดขาย/ออเดอร์สะสม การเพิ่ม creator+ไลฟ์+คลิปตามคำแนะนำด้านบนจะช่วยดันอันดับนี้ในระยะกลาง`,
+  });
+
+  el.innerHTML = cards.map(c => `
+    <div class="reco-card">
+      <div class="reco-icon">${c.icon}</div>
+      <div class="reco-title">${c.title}</div>
+      <div class="reco-body">${c.body}</div>
+    </div>`).join('');
 }
 
 init();
