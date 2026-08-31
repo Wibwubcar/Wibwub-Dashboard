@@ -375,8 +375,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 <div class="page active" id="pg-home">
   <div class="home-hero">
     <div class="hh-lbl">ยอดขายรวม ม.ค.–ส.ค. 2569</div>
-    <div class="hh-val">฿62.0M</div>
-    <div class="hh-sub">124,156 unique orders · AOV ฿484</div>
+    <div class="hh-val">฿65.7M</div>
+    <div class="hh-sub">133,036 unique orders · AOV ฿494</div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v" id="hhg-sh">฿40.3M</div><div class="hhg-l">Shopee</div></div>
       <div class="hhg"><div class="hhg-v" id="hhg-tk">฿11.8M</div><div class="hhg-l">TikTok</div></div>
@@ -834,9 +834,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // RAW DATA
 // ════════════════════════════════════════
 const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.","ส.ค."];
-const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,4787148];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2057387.59];
-const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,84993.69];
+const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,6386494];
+const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2435767.68];
+const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,106902.09];
 const FB_REV=[2152231,1328934,1061901,802047,980883,413040,413040,413040];
 const LINE_REV=[350828,459158,418472,397898,374817,153907,153907,153907];
 const WEB_REV=[4568,1760,11754,3060,4468,1355,1355,1355];
@@ -844,23 +844,23 @@ const CARE_REV=[84069,90135,70707,92509,98307,0,0,0];
 const MKT_REV=[580,0,0,490,17365,0,0,0];
 const BEUK_REV=[0,0,0,0,365,0,0,0];
 const POS_REV=[435,548,2277,267,590,0,0,0];
-const SH_ORD=[7532,6580,6873,8128,9093,8895,10511,8361];
-const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,9846];
+const SH_ORD=[7532,6580,6873,8128,9093,8895,10511,11292];
+const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,11498];
 const LZ_ORD=[236,176,255,161,157,158,146,146];
 const FB_ORD=[2987,2001,1575,1175,1479,649,649,649];
 const LINE_ORD=[325,466,345,381,343,152,152,152];
-const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,5.16,5.34,6.15];
+const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.78];
 const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.53];
 const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
-const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,866977];
-const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1434148];
-const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,549245];
-const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,620547];
-const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1375920];
-const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1352971];
+const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,1151359.93];
+const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1913393.60];
+const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,660748];
+const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,719330];
+const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1526564];
+const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1502415];
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
-const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,31.76];
-const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,9730];
+const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,30.75];
+const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,11080];
 const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]);
 const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]);
 
@@ -1154,9 +1154,9 @@ function initHome(){
 let sMo=0;
 function initSalesOv(){
   document.getElementById('s-ov-kpi').innerHTML=`
-    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–ส.ค.)</div><div class="kc-val">฿61.9M</div><div class="kc-sub">ทุก Platform</div></div>
-    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">124,156</div><div class="kc-sub">unique orders</div></div>
-    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿482</div><div class="kc-sub">ต่อออเดอร์</div></div>
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–ส.ค.)</div><div class="kc-val">฿65.7M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">133,036</div><div class="kc-sub">unique orders</div></div>
+    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿494</div><div class="kc-sub">ต่อออเดอร์</div></div>
     <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
   setSMo(0,document.querySelector('#s-mo-tabs .mtab'));
   // Rev bars
