@@ -1538,7 +1538,7 @@ function go(id, el) {
 }
 
 // ── RAW DATA (from spreadsheets) ──
-const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.","ส.ค."];
+const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค."];
 // Source of truth: วันสุดท้ายที่มีข้อมูลจริงของเดือนล่าสุด แยกตามแพลตฟอร์ม (row สุดท้ายใน Google Sheet
 // ของแต่ละ platform). อัปเดตพร้อมกับ SH_/TK_/LZ_ arrays ทุกครั้งที่ sync — ห้ามเขียน "MTD ถึง XX ส.ค."
 // เป็น text ตายตัวที่อื่นอีก ให้เรียก mtdCoverageLabel() แทน (ดู skill wibwub-avoid-stale-hardcoded-labels)
