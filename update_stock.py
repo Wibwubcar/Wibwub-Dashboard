@@ -98,6 +98,15 @@ else:
     d7_start  = (today_dt - timedelta(days=7)).date()   # ขาย 7 วันเต็มล่าสุด (ไม่รวมวันนี้)
     d14_start = (today_dt - timedelta(days=14)).date()  # ขาย 14 วันเต็มล่าสุด (ไม่รวมวันนี้)
     total_rows_seen = 0
+    # กัน double-count ข้ามไฟล์: เมื่อเปลี่ยนเดือน ไฟล์ของเดือนใหม่ที่ export ตอนต้นเดือนมากๆ
+    # (เช่น Data_01-09-2026.xlsx) บางครั้ง Shipnity ยังไม่รีเซ็ต ทำให้ไฟล์นั้นมีข้อมูลของ
+    # "ทั้งเดือนก่อนหน้า" ติดมาด้วย (ไม่ใช่แค่เดือนใหม่ตามชื่อไฟล์) — พบเจอจริง 1 ก.ย. 2569:
+    # Data_01-09-2026.xlsx มี date range 01-31 ส.ค. ทับซ้อนกับ Data_31-08-2026.xlsx ทั้งไฟล์
+    # ผลคือทุกวันที่ในเดือน ส.ค. ถูกนับซ้ำ 2 เท่า (sold7d/14d/burn และ HIST_DAILY พองตัวเป็น 2x)
+    # แก้ด้วยการ dedupe รายแถวด้วยคีย์ (เลขที่ออเดอร์, sku) แบบ global ทั้ง run — ถ้าออเดอร์+sku
+    # คู่นี้เคยถูกนับจากไฟล์ก่อนหน้าไปแล้ว (ไม่ว่าจะไฟล์ไหน) ให้ข้าม ไม่บวกซ้ำ
+    seen_order_sku = set()
+    dupe_skipped = 0
     for order_file in selected_files:
         print(f"🧾 ใช้ไฟล์ order-level: {os.path.basename(order_file)} (แก้ไขล่าสุด {datetime.fromtimestamp(os.path.getmtime(order_file)).strftime('%d/%m/%Y %H:%M')})")
         wb = openpyxl.load_workbook(order_file, read_only=True, data_only=True)
@@ -109,6 +118,7 @@ else:
             sku = str(row[0])
             prod_name = row[1]
             qty = row[3] or 0
+            order_no = row[4]
             created_raw = row[19]
             if not created_raw:
                 continue
@@ -120,6 +130,11 @@ else:
             except Exception:
                 continue
             rows_seen += 1
+            dedup_key = (order_no, sku)
+            if dedup_key in seen_order_sku:
+                dupe_skipped += 1
+                continue
+            seen_order_sku.add(dedup_key)
             if created_date < today_date and created_date >= d14_start:
                 sold14_map[sku] = sold14_map.get(sku, 0) + qty
                 if created_date >= d7_start:
@@ -133,6 +148,8 @@ else:
         wb.close()
         print(f"   อ่าน {rows_seen} แถวจากไฟล์นี้")
         total_rows_seen += rows_seen
+    if dupe_skipped:
+        print(f"   ⚠️  ข้าม {dupe_skipped} แถวซ้ำ (ออเดอร์+sku ซ้ำข้ามไฟล์/ในไฟล์เดียวกัน) กัน double-count")
     print(f"   รวมทุกไฟล์ ({total_rows_seen} แถว) → sold7d: {len(sold7_map)} SKU, sold14d: {len(sold14_map)} SKU, {len(day_sku_qty)} วันที่มีข้อมูล")
 
 # ─── อ่าน Procurement_Dashboard.html ─────────────────────────────────────────
