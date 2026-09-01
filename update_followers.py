@@ -98,14 +98,27 @@ if jan_count:
 else:
     delta_str = None
 
-# เดือนปัจจุบัน (index ใน array)
-cur_month = datetime.now().month  # 6 = มิ.ย.
+# เดือนของ "ข้อมูลแถวล่าสุด" (ไม่ใช่ datetime.now()) — TikTok export มัก lag
+# 1–2 วัน ดังนั้นวันที่ 1 ของเดือนใหม่ ข้อมูลล่าสุดยังเป็นของเดือนก่อน ถ้าใช้
+# datetime.now().month จะไปเขียนค่าเดือนก่อนลงช่องเดือนใหม่ที่ยังไม่มีข้อมูลจริง
+_latest_d = parse_thai_date(latest_date)
+cur_month = _latest_d.month if _latest_d else datetime.now().month
 # soc_follow data: [ม.ค., ก.พ., มี.ค., เม.ย., พ.ค., มิ.ย.]
 # index = cur_month - 1 (0-indexed)
 cur_idx = cur_month - 1
 
 # ── อัปเดต WIBWUB_Dashboard.html ─────────────────────────────────────────
 dash = DASH.read_text(encoding='utf-8')
+
+# fallback: CSV ครอบคลุมแค่ 60 วัน จึงไม่มี ม.ค. — ดึงค่า ม.ค. จาก soc_follow
+# array ใน Dashboard แทน (index 0) เพื่อไม่ให้ label "จาก ม.ค." ค้างเป็นค่าเก่า
+if not delta_str:
+    _m = re.search(r"\{label:'TikTok',data:\[\s*([0-9.]+)", dash)
+    if _m:
+        _jan_k = float(_m.group(1))
+        _delta_k = round(latest_k - _jan_k, 1)
+        delta_str = f"+{_delta_k}K จาก ม.ค."
+        print(f"   Delta ม.ค. (จาก dashboard array): {delta_str}")
 
 # อัปเดต TikTok dataset ใน soc_follow chart (แทนค่าในเดือนปัจจุบัน)
 def update_tiktok_array(html, new_val, idx):
