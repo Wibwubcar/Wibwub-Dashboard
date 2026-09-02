@@ -973,6 +973,7 @@
           <thead>
             <tr>
               <th></th>
+              <th>อันดับ</th>
               <th>ชื่อสินค้า</th>
               <th>ยอดขายจริง (GMV)</th>
               <th>จำนวนที่ขายได้จริง</th>
@@ -2082,11 +2083,11 @@ function tkpRenderSkuRows(pid){
     }
   });
   if(!found){
-    return `<tr class="tkp-sub-row"><td></td><td colspan="7" style="color:var(--muted);font-size:12px;padding:8px 12px">— ยังไม่มีข้อมูลระดับช้อยสินค้า (SKU) สำหรับช่วงวันที่เลือก จะเริ่มสะสมข้อมูลตั้งแต่วันที่ระบบดึงข้อมูลรายวันอัตโนมัติเริ่มทำงาน —</td></tr>`;
+    return `<tr class="tkp-sub-row"><td></td><td colspan="8" style="color:var(--muted);font-size:12px;padding:8px 12px">— ยังไม่มีข้อมูลระดับช้อยสินค้า (SKU) สำหรับช่วงวันที่เลือก จะเริ่มสะสมข้อมูลตั้งแต่วันที่ระบบดึงข้อมูลรายวันอัตโนมัติเริ่มทำงาน —</td></tr>`;
   }
   let h='';
   Object.values(skuAgg).sort((a,b)=>b.gmv-a.gmv).forEach(s=>{
-    h += `<tr class="tkp-sub-row" style="background:var(--bg)"><td></td><td style="padding-left:24px;color:var(--muted)">↳ ${s.prop}</td><td>${tkpFmtBaht(s.gmv)}</td><td>${tkpFmtNum(s.items)}</td><td colspan="4"></td></tr>`;
+    h += `<tr class="tkp-sub-row" style="background:var(--bg)"><td></td><td></td><td style="padding-left:24px;color:var(--muted)">↳ ${s.prop}</td><td>${tkpFmtBaht(s.gmv)}</td><td>${tkpFmtNum(s.items)}</td><td colspan="4"></td></tr>`;
   });
   return h;
 }
@@ -2099,6 +2100,11 @@ function tkpRender(){
   if(lbl) lbl.textContent = tkpRangeLabel(tkpRangeStart,tkpRangeEnd) + ` (${tkpDatesInRange().length} วัน)`;
 
   let rows = tkpAggregate();
+
+  // อันดับสินค้าขายดี — อิงจำนวนที่ขายได้จริงเสมอ ไม่ขึ้นกับการเรียงลำดับที่แสดงในตาราง
+  const rankMap = {};
+  [...rows].sort((a,b)=>b.items-a.items).forEach((r,i)=>{ rankMap[r.pid] = i+1; });
+
   rows.sort((a,b)=>{
     if(tkpSort==='items') return b.items-a.items;
     if(tkpSort==='name') return (TK_PROD_DATA.names[a.pid]||'').localeCompare(TK_PROD_DATA.names[b.pid]||'','th');
@@ -2117,8 +2123,12 @@ function tkpRender(){
   rows.forEach(r=>{
     const name = TK_PROD_DATA.names[r.pid] || r.pid;
     const isOpen = !!tkpExpanded[r.pid];
+    const rk = rankMap[r.pid];
+    const rkColor = rk===1?'#f59e0b':rk===2?'#94a3b8':rk===3?'#b45309':'var(--muted)';
+    const rkWeight = rk<=3?'700':'500';
     h += `<tr class="tkp-row" style="cursor:pointer" onclick="tkpToggleExpand('${r.pid}')">
       <td style="width:20px;color:var(--muted)">${isOpen?'▾':'▸'}</td>
+      <td style="text-align:center;font-weight:${rkWeight};color:${rkColor}">${rk<=3?'🏆 ':''}${rk}</td>
       <td>${name}</td>
       <td>${tkpFmtBaht(r.gmv)}</td>
       <td>${tkpFmtNum(r.items)}</td>
@@ -2129,7 +2139,7 @@ function tkpRender(){
     </tr>`;
     if(isOpen) h += tkpRenderSkuRows(r.pid);
   });
-  if(rows.length===0) h = `<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:20px">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>`;
+  if(rows.length===0) h = `<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:20px">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>`;
   tbody.innerHTML = h;
 }
 tkpInit();
