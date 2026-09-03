@@ -152,6 +152,28 @@ if delta_str:
         rf'\g<1>{delta_str}\g<2>', mobile, flags=re.DOTALL
     )
 
+# อัปเดต TK_FOL (array ยอด follower ปลายเดือน ที่ Mobile ใช้วาดกราฟ + คำนวณ
+# folCur/folMoM/folTotal) — เดิม script ไม่เคยแตะ array นี้ ทำให้ Mobile ค้างที่
+# ค่าที่กรอกมือครั้งสุดท้าย และไม่ตรงกับ soc_follow ใน Dashboard
+TH_ABBR_ALL = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
+_m_fol = re.search(r'const TK_FOL=\[([^\]]*)\];', mobile)
+if _m_fol:
+    _vals = [v.strip() for v in _m_fol.group(1).split(',') if v.strip()]
+    while len(_vals) <= cur_idx:
+        _vals.append('0')
+    # เดือนที่มีข้อมูลครบใน CSV → เขียนทับด้วยค่าปลายเดือนจริง
+    for _mo, _cnt in by_month.items():
+        _i = _mo - 1
+        if _i < len(_vals):
+            _vals[_i] = str(_cnt)
+    _vals[cur_idx] = str(latest_count)
+    mobile = re.sub(r'const TK_FOL=\[[^\]]*\];',
+                    'const TK_FOL=[' + ','.join(_vals) + '];', mobile)
+    mobile = re.sub(r"const FOL_M=\[[^\]]*\];",
+                    "const FOL_M=[" + ",".join(f"'{m}'" for m in TH_ABBR_ALL[:len(_vals)]) + "];",
+                    mobile)
+    print(f"✅ TK_FOL อัปเดตแล้ว ({len(_vals)} เดือน, ล่าสุด {latest_count:,})")
+
 MOBILE.write_text(mobile, encoding='utf-8')
 print("✅ WIBWUB_Mobile.html อัปเดตแล้ว")
 
