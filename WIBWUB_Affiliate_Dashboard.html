@@ -11449,16 +11449,16 @@ const SAMPLE_PRODUCTS = {
   '2026-06': {total:34,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:22,appr:8,rej:14,other:0},{n:'Sugar',c:12,appr:10,rej:2,other:0}]},
   '2026-07': {total:48,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:37,appr:9,rej:28,other:0},{n:'Sugar',c:13,appr:6,rej:7,other:0}]},
   '2026-08': {total:336, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:165,appr:81,rej:84,other:0},{n:'Interior wipes',c:113,appr:49,rej:64,other:0},{n:'Interior',c:36,appr:14,rej:22,other:0},{n:'Reflex',c:35,appr:12,rej:23,other:0},{n:'Sugar',c:11,appr:5,rej:6,other:0}]},
-  '2026-09': {total:15,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:7,appr:2,rej:5,other:0},{n:'Interior',c:5,appr:1,rej:4,other:0},{n:'Interior wipes',c:2,appr:0,rej:2,other:0},{n:'Sugar',c:2,appr:1,rej:1,other:0}]},
+  '2026-09': {total:15,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:7,appr:2,rej:5,other:0},{n:'Interior',c:5,appr:1,rej:4,other:0},{n:'Sugar',c:2,appr:1,rej:1,other:0},{n:'Interior wipes',c:2,appr:0,rej:2,other:0}]},
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (27/08-02/09/2026 sheet-date range) rather than derived
-// from the monthly buckets. NOTE: this total (68 requests in-range) does not
+// counted separately (28/08-03/09/2026 sheet-date range) rather than derived
+// from the monthly buckets. NOTE: this total (64 requests in-range) does not
 // match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
 // sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
 // sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:68, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:29,appr:7,rej:22,other:0},{n:'Interior wipes',c:22,appr:6,rej:16,other:0},{n:'Interior',c:10,appr:3,rej:7,other:0},{n:'Reflex',c:9,appr:1,rej:8,other:0},{n:'Sugar',c:3,appr:1,rej:2,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:64, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:27,appr:7,rej:20,other:0},{n:'Interior wipes',c:20,appr:6,rej:14,other:0},{n:'Interior',c:9,appr:3,rej:6,other:0},{n:'Reflex',c:9,appr:1,rej:8,other:0},{n:'Sugar',c:3,appr:1,rej:2,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
