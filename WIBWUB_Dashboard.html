@@ -1357,6 +1357,7 @@
             <button onclick="showFollowerMonth(5)" class="fol-btn" id="fbtn-5">มิ.ย.</button>
             <button onclick="showFollowerMonth(6)" class="fol-btn" id="fbtn-6">ก.ค.</button>
             <button onclick="showFollowerMonth(7)" class="fol-btn" id="fbtn-7">ส.ค.</button>
+            <button onclick="showFollowerMonth(8)" class="fol-btn" id="fbtn-8">ก.ย.</button>
           </div>
         </div>
         <div style="font-size:.75rem;color:#888;margin-bottom:10px" id="fol-chart-sub">มกราคม 2569 · เริ่ม 22,458 → จบ 23,404 · +946 คน (+4.21%)</div>
@@ -1396,13 +1397,17 @@
          col:'#1A5CDB',
          days:["1 ส.ค.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31 ส.ค."],
          vals:[27843,27885,27912,27942,27962,27977,27996,28032,28062,28078,28097,28113,28146,28172,28208,28235,28254,28275,28303,28317,28329,28346,28375,28412,28443,28479,28500,28539,28598,28649,28684]},
+        {label:'กันยายน 2569',start:28684,end:28715,net:31,pct:0.11,sub:'กันยายน 2569 · เริ่ม 28,684 → ล่าสุด 28,715 · +31 คน (+0.11%) (ข้อมูลรายวัน 1–1 ก.ย.)',
+         col:'#1A5CDB',
+         days:["1 ก.ย."],
+         vals:[28715]},
       ];
       let folChart = null;
       function showFollowerMonth(idx){
         document.querySelectorAll('.fol-btn').forEach((b,i)=>b.classList.toggle('fol-active',i===idx));
         document.getElementById('fol-chart-sub').textContent = FOL_DATA[idx].sub;
-        const color = idx===7?'#1A5CDB':idx===0?'#ff6b2b':'#111';
-        const bg = idx===7?'rgba(26,92,219,.08)':idx===0?'rgba(255,107,43,.08)':'rgba(17,17,17,.06)';
+        const color = idx>=7?'#1A5CDB':idx===0?'#ff6b2b':'#111';
+        const bg = idx>=7?'rgba(26,92,219,.08)':idx===0?'rgba(255,107,43,.08)':'rgba(17,17,17,.06)';
         if(folChart){folChart.destroy();}
         folChart = new Chart('fol_daily',{
           type:'line',
@@ -1415,7 +1420,7 @@
             scales:{y:{ticks:{callback:v=>v.toLocaleString()}}}}
         });
       }
-      setTimeout(()=>showFollowerMonth(7), 300);
+      setTimeout(()=>showFollowerMonth(FOL_DATA.length-1), 300);
       </script>
 
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border);background:#fff">
@@ -1773,7 +1778,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,28.712],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,28.715],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Instagram',data:[35,36,37,38,39,40,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
