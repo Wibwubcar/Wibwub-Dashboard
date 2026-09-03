@@ -741,26 +741,65 @@
         </div>
       </div>
 
-      <div id="sh-live-section">
-        <div class="sec-label" style="color:var(--shopee)">📺 Shopee Live — เม.ย. 2569</div>
-        <div class="kpi-grid-3">
-          <div class="kpi sh-c"><div class="kpi-label">ยอดรวมไลฟ์</div><div class="kpi-val" style="color:var(--shopee)">฿114,738</div><div class="kpi-sub">3 ไลฟ์ในเดือน เม.ย.</div></div>
-          <div class="kpi gr"><div class="kpi-label">ยอดไลฟ์สูงสุด</div><div class="kpi-val">฿56,891</div><div class="kpi-sub">4 เม.ย. · 2,706 คนชม</div></div>
-          <div class="kpi bl"><div class="kpi-label">ผู้ชมรวม</div><div class="kpi-val">~5,053</div><div class="kpi-sub">เฉลี่ย 1,684/ไลฟ์</div></div>
+      <div class="sec-label" id="lbl-shl" style="color:var(--shopee);margin-top:20px">📺 ยอดขายไลฟ์สดรายวัน — Shopee Live</div>
+      <div class="month-bar" style="position:static;border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:12px">
+        <span class="month-bar-label">📅 ช่วง:</span>
+        <div class="shl-presets" style="display:flex;gap:6px;flex-wrap:wrap">
+          <button class="mpc-pill active" id="shlPill-all" onclick="shlPresetRelative('all')">ทั้งหมด</button>
+          <button class="mpc-pill" id="shlPill-30d" onclick="shlPresetRelative('30d')">30 วันล่าสุด</button>
+          <button class="mpc-pill" id="shlPill-7d" onclick="shlPresetRelative('7d')">7 วันล่าสุด</button>
+          <button class="mpc-pill" id="shlPill-today" onclick="shlPresetRelative('today')">วันล่าสุด</button>
+          <div class="mpicker-wrap">
+            <div class="mrange-btn" id="shlBtnCustom" onclick="toggleShlPicker()">
+              <span>📅 กำหนดเอง</span><span class="caret">▾</span>
+            </div>
+            <div class="mpicker-backdrop" id="shlBackdrop" onclick="closeShlPicker()"></div>
+            <div class="mpicker-panel" id="shlPickerPanel">
+              <div class="mpc-cals">
+                <div class="mpc-cals-row">
+                  <div class="mpc-cal" id="shlCalLeft"></div>
+                  <div class="mpc-cal" id="shlCalRight"></div>
+                </div>
+                <div class="mpc-hint" id="shlHint">คลิกเลือกวันเริ่ม</div>
+                <div class="mpc-footer">
+                  <button class="mpc-cancel" onclick="closeShlPicker()">ยกเลิก</button>
+                  <button class="mpc-apply" onclick="shlApplyRange()">ใช้ช่วงนี้ ✓</button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="tbl-wrap">
-          <div class="tbl-head"><h3>📺 Shopee Live — เม.ย. 2569</h3></div>
-          <table>
-            <thead><tr><th>วันที่</th><th>รายการ</th><th>ยอดขาย</th><th>จำนวนผู้ชม</th><th>แอดมิน</th><th>ชม.</th></tr></thead>
-            <tbody>
-              <tr><td>04-04-2026 0:27</td><td>ไลฟ์ + Flash Sale 4.4</td><td>฿23,086</td><td>572</td><td>พี่เจา</td><td>1:00</td></tr>
-              <tr><td>04-04-2026 19:57</td><td>ลดสูงสุด 44% 4 นาทีแรกเท่านั้น</td><td>฿56,891</td><td>2,706</td><td>แอ้น+พี่เจา</td><td>4:08</td></tr>
-              <tr><td>25-04-2026 19:54</td><td>เก็บโค้ด Payday กันครับ</td><td>฿34,760</td><td>1,775</td><td>ปาย+พี่เจา</td><td>3:13</td></tr>
-            </tbody>
-          </table>
+        <div class="month-summary" id="shlRangeLabel" style="font-size:11px;color:var(--muted)"></div>
+      </div>
+
+      <div class="kpi-grid-3">
+        <div class="kpi sh-c">
+          <div class="kpi-label">ยอดขายไลฟ์รวม</div>
+          <div class="kpi-val" id="shl-kpi-gmv" style="color:var(--shopee)">—</div>
+          <div class="kpi-sub" id="shl-kpi-gmv-sub"></div>
+        </div>
+        <div class="kpi gr">
+          <div class="kpi-label">ยอดไลฟ์เฉลี่ย/ครั้ง</div>
+          <div class="kpi-val" id="shl-kpi-avg">—</div>
+          <div class="kpi-sub" id="shl-kpi-avg-sub"></div>
+        </div>
+        <div class="kpi bl">
+          <div class="kpi-label">ผู้ชมรวม</div>
+          <div class="kpi-val" id="shl-kpi-viewers">—</div>
+          <div class="kpi-sub" id="shl-kpi-viewers-sub"></div>
         </div>
       </div>
-      <div id="sh-live-note" class="info-note" style="display:none;">ℹ️ ข้อมูล Shopee Live มีเฉพาะเดือน เม.ย. 2569 เลือกเดือน เม.ย. เพื่อดูตาราง Live</div>
+
+      <div class="tbl-wrap">
+        <div class="tbl-head"><h3>📺 รายละเอียด Shopee Live รายวัน</h3></div>
+        <table>
+          <thead><tr><th>วันที่</th><th>ยอดขาย (ยืนยันแล้ว)</th><th>คำสั่งซื้อ</th><th>ผู้ชมทั้งหมด</th><th>ผู้ติดตามใหม่</th></tr></thead>
+          <tbody id="shl-tbody"></tbody>
+        </table>
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:6px;line-height:1.6" id="shl-note">
+        ข้อมูล Shopee Live ดึงจาก Shopee Seller Centre (Live Analysis Export) ครอบคลุมตั้งแต่ 1 เม.ย. 2569 เป็นต้นไป — ยอดขายใช้ยอด "ยืนยันแล้ว" เพื่อความสอดคล้องกับยอดขายที่ปิดจริง วันที่ไม่มีไลฟ์จะไม่แสดงในตาราง
+      </div>
 
       <div class="tbl-wrap">
         <div class="tbl-head"><h3>🎯 Campaign — เม.ย. 2569 (ข้อมูล 2568)</h3></div>
@@ -2307,6 +2346,161 @@ function tklRender(){
 tklInit();
 tklRender();
 
+// ── SHOPEE LIVE รายวัน SECTION ──
+const SH_LIVE_DAILY = {"dates":["2026-04-01","2026-04-02","2026-04-03","2026-04-04","2026-04-05","2026-04-06","2026-04-07","2026-04-08","2026-04-09","2026-04-10","2026-04-11","2026-04-12","2026-04-13","2026-04-14","2026-04-15","2026-04-16","2026-04-17","2026-04-18","2026-04-19","2026-04-20","2026-04-21","2026-04-22","2026-04-23","2026-04-24","2026-04-25","2026-04-26","2026-04-27","2026-04-28","2026-04-29","2026-04-30","2026-05-01","2026-05-02","2026-05-03","2026-05-04","2026-05-05","2026-05-06","2026-05-07","2026-05-08","2026-05-09","2026-05-10","2026-05-11","2026-05-12","2026-05-13","2026-05-14","2026-05-15","2026-05-16","2026-05-17","2026-05-18","2026-05-19","2026-05-20","2026-05-21","2026-05-22","2026-05-23","2026-05-24","2026-05-25","2026-05-26","2026-05-27","2026-05-28","2026-05-29","2026-05-30","2026-05-31","2026-06-01","2026-06-02","2026-06-03","2026-06-04","2026-06-05","2026-06-06","2026-06-07","2026-06-08","2026-06-09","2026-06-10","2026-06-11","2026-06-12","2026-06-13","2026-06-14","2026-06-15","2026-06-16","2026-06-17","2026-06-18","2026-06-19","2026-06-20","2026-06-21","2026-06-22","2026-06-23","2026-06-24","2026-06-25","2026-06-26","2026-06-27","2026-06-28","2026-06-29","2026-06-30","2026-07-01","2026-07-02","2026-07-03","2026-07-04","2026-07-05","2026-07-06","2026-07-07","2026-07-08","2026-07-09","2026-07-10","2026-07-11","2026-07-12","2026-07-13","2026-07-14","2026-07-15","2026-07-16","2026-07-17","2026-07-18","2026-07-19","2026-07-20","2026-07-21","2026-07-22","2026-07-23","2026-07-24","2026-07-25","2026-07-26","2026-07-27","2026-07-28","2026-07-29","2026-07-30","2026-07-31","2026-08-01","2026-08-02","2026-08-03","2026-08-04","2026-08-05","2026-08-06","2026-08-07","2026-08-08","2026-08-09","2026-08-10","2026-08-11","2026-08-12","2026-08-13","2026-08-14","2026-08-15","2026-08-16","2026-08-17","2026-08-18","2026-08-19","2026-08-20","2026-08-21","2026-08-22","2026-08-23","2026-08-24","2026-08-25","2026-08-26","2026-08-27","2026-08-28","2026-08-29","2026-08-30","2026-08-31","2026-09-01","2026-09-02"],"daily":{"2026-04-01":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-02":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-03":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-04":{"gmv":79977.28,"orders":131,"viewers":4700,"newFollowers":30},"2026-04-05":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-06":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-07":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-08":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-09":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-10":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-11":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-12":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-13":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-14":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-15":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-16":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-17":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-18":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-19":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-20":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-21":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-22":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-23":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-24":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-25":{"gmv":38140.45,"orders":54,"viewers":2519,"newFollowers":13},"2026-04-26":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-27":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-28":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-29":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-04-30":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-01":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-02":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-03":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-04":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-05":{"gmv":48351.46,"orders":66,"viewers":2961,"newFollowers":27},"2026-05-06":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-07":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-08":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-09":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-10":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-11":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-12":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-13":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-14":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-15":{"gmv":30791.93,"orders":37,"viewers":2533,"newFollowers":17},"2026-05-16":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-17":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-18":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-19":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-20":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-21":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-22":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-23":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-24":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-25":{"gmv":28120.77,"orders":38,"viewers":1943,"newFollowers":29},"2026-05-26":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-27":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-28":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-29":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-30":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-05-31":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-01":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-02":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-03":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-04":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-05":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-06":{"gmv":67020.0,"orders":87,"viewers":2786,"newFollowers":19},"2026-06-07":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-08":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-09":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-10":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-11":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-12":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-13":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-14":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-15":{"gmv":22036.0,"orders":26,"viewers":2060,"newFollowers":25},"2026-06-16":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-17":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-18":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-19":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-20":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-21":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-22":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-23":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-24":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-25":{"gmv":28770.34,"orders":41,"viewers":1446,"newFollowers":15},"2026-06-26":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-27":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-28":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-29":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-06-30":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-01":{"gmv":20734.0,"orders":27,"viewers":1867,"newFollowers":18},"2026-07-02":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-03":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-04":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-05":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-06":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-07":{"gmv":53453.0,"orders":84,"viewers":1921,"newFollowers":19},"2026-07-08":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-09":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-10":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-11":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-12":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-13":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-14":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-15":{"gmv":15743.0,"orders":32,"viewers":1890,"newFollowers":28},"2026-07-16":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-17":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-18":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-19":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-20":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-21":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-22":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-23":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-24":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-25":{"gmv":14767.0,"orders":30,"viewers":3657,"newFollowers":106},"2026-07-26":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-27":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-28":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-29":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-30":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-07-31":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-01":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-02":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-03":{"gmv":9756.0,"orders":27,"viewers":2340,"newFollowers":13},"2026-08-04":{"gmv":3871.0,"orders":8,"viewers":815,"newFollowers":12},"2026-08-05":{"gmv":13377.0,"orders":30,"viewers":3571,"newFollowers":38},"2026-08-06":{"gmv":12531.0,"orders":23,"viewers":1216,"newFollowers":12},"2026-08-07":{"gmv":12261.0,"orders":23,"viewers":1366,"newFollowers":12},"2026-08-08":{"gmv":45305.0,"orders":86,"viewers":2460,"newFollowers":50},"2026-08-09":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-10":{"gmv":6578.0,"orders":17,"viewers":2329,"newFollowers":16},"2026-08-11":{"gmv":14047.0,"orders":20,"viewers":2091,"newFollowers":15},"2026-08-12":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-13":{"gmv":12458.0,"orders":23,"viewers":1532,"newFollowers":10},"2026-08-14":{"gmv":8542.0,"orders":13,"viewers":1365,"newFollowers":10},"2026-08-15":{"gmv":20741.0,"orders":29,"viewers":2535,"newFollowers":35},"2026-08-16":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-17":{"gmv":2687.0,"orders":10,"viewers":1845,"newFollowers":14},"2026-08-18":{"gmv":7978.0,"orders":19,"viewers":1808,"newFollowers":12},"2026-08-19":{"gmv":12709.0,"orders":26,"viewers":1924,"newFollowers":10},"2026-08-20":{"gmv":7773.0,"orders":25,"viewers":1505,"newFollowers":8},"2026-08-21":{"gmv":10455.0,"orders":20,"viewers":1703,"newFollowers":12},"2026-08-22":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-23":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-24":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-25":{"gmv":16615.0,"orders":33,"viewers":2530,"newFollowers":32},"2026-08-26":{"gmv":27239.0,"orders":43,"viewers":4130,"newFollowers":42},"2026-08-27":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-28":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-29":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-30":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-08-31":{"gmv":0,"orders":0,"viewers":0,"newFollowers":0},"2026-09-01":{"gmv":10151.0,"orders":21,"viewers":1890,"newFollowers":12},"2026-09-02":{"gmv":8218.0,"orders":16,"viewers":3457,"newFollowers":30}}};
+
+let shlDraftStart = SH_LIVE_DAILY.dates[0], shlDraftEnd = SH_LIVE_DAILY.dates[SH_LIVE_DAILY.dates.length-1];
+let shlRangeStart = shlDraftStart, shlRangeEnd = shlDraftEnd;
+let shlPickStep = 0;
+let shlCalLeft = {y:0,m:0}, shlCalRight = {y:0,m:0};
+
+function shlParseDate(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d);}
+function shlFmtDate(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function shlFmtThai(s){const d=shlParseDate(s);return d.getDate()+' '+MP_THAI_MONTHS[d.getMonth()]+' '+(d.getFullYear()+543);}
+function shlRangeLabel(s,e){return s===e?shlFmtThai(s):shlFmtThai(s)+' – '+shlFmtThai(e);}
+
+function shlInit(){
+  const sd = shlParseDate(shlDraftStart);
+  shlCalLeft = {y:sd.getFullYear(), m:sd.getMonth()};
+  shlCalRight = {y:sd.getFullYear(), m:sd.getMonth()};
+  if(shlCalRight.m>11){shlCalRight.m=0;shlCalRight.y++;}
+}
+
+function shlRenderCal(cid,cal){
+  const el=document.getElementById(cid);if(!el)return;
+  const{y,m}=cal;
+  const minD=shlParseDate(SH_LIVE_DAILY.dates[0]),maxD=shlParseDate(SH_LIVE_DAILY.dates[SH_LIVE_DAILY.dates.length-1]);
+  const selS=shlDraftStart?shlParseDate(shlDraftStart):null;
+  const selE=shlDraftEnd?shlParseDate(shlDraftEnd):null;
+  let h=`<div class="mpc-cal-head"><button class="mpc-cal-nav" onclick="shlNavCal('${cid}',-1)">&#8249;</button><span class="mpc-cal-title">${MP_THAI_MONTHS[m]} ${y+543}</span><button class="mpc-cal-nav" onclick="shlNavCal('${cid}',1)">&#8250;</button></div><div class="mpc-cal-grid">`;
+  MP_DOW.forEach(d=>{h+=`<div class="mpc-dow">${d}</div>`;});
+  const fd=new Date(y,m,1).getDay(),dim=new Date(y,m+1,0).getDate();
+  for(let i=0;i<fd;i++)h+=`<div class="mpc-day mpc-empty"></div>`;
+  for(let d=1;d<=dim;d++){
+    const cur=new Date(y,m,d),cs=shlFmtDate(cur);
+    const dis=cur<minD||cur>maxD;
+    let cls='mpc-day';
+    if(dis)cls+=' mpc-disabled';
+    else if(selS&&selE){
+      if(cs===shlDraftStart)cls+=' mpc-sel-start';
+      else if(cs===shlDraftEnd)cls+=' mpc-sel-end';
+      else if(cur>selS&&cur<selE)cls+=' mpc-in-range';
+    }else if(selS&&cs===shlDraftStart)cls+=' mpc-sel-start';
+    const cl=dis?'':`onclick="shlDayClick('${cs}')"`;
+    h+=`<div class="${cls}" ${cl}>${d}</div>`;
+  }
+  h+='</div>';
+  el.innerHTML=h;
+}
+function shlNavCal(cid,dir){
+  const c=cid==='shlCalLeft'?shlCalLeft:shlCalRight;
+  c.m+=dir;if(c.m<0){c.m=11;c.y--;}if(c.m>11){c.m=0;c.y++;}
+  shlRenderCals();
+}
+function shlRenderCals(){shlRenderCal('shlCalLeft',shlCalLeft);shlRenderCal('shlCalRight',shlCalRight);}
+
+function shlDayClick(ds){
+  const minD=shlParseDate(SH_LIVE_DAILY.dates[0]),maxD=shlParseDate(SH_LIVE_DAILY.dates[SH_LIVE_DAILY.dates.length-1]),d=shlParseDate(ds);
+  if(d<minD||d>maxD)return;
+  if(shlPickStep===0){shlDraftStart=ds;shlDraftEnd=ds;shlPickStep=1;}
+  else{
+    if(ds<shlDraftStart){shlDraftEnd=shlDraftStart;shlDraftStart=ds;}
+    else shlDraftEnd=ds;
+    shlPickStep=0;
+  }
+  const hint=document.getElementById('shlHint');
+  if(hint)hint.textContent=shlPickStep===0?shlRangeLabel(shlDraftStart,shlDraftEnd):'คลิกเลือกวันสิ้นสุด';
+  document.querySelectorAll('.shl-presets .mpc-pill').forEach(b=>b.classList.remove('active'));
+  shlRenderCals();
+}
+function shlPresetRelative(type){
+  const dates=SH_LIVE_DAILY.dates;
+  const minD=dates[0], maxD=dates[dates.length-1];
+  let s,e;
+  if(type==='today'){s=e=maxD;}
+  else if(type==='7d'){s=dates[Math.max(0,dates.length-7)];e=maxD;}
+  else if(type==='30d'){s=dates[Math.max(0,dates.length-30)];e=maxD;}
+  else {s=minD;e=maxD;}
+  shlDraftStart=s;shlDraftEnd=e;
+  shlPickStep=0;
+  document.querySelectorAll('.shl-presets .mpc-pill').forEach(b=>b.classList.remove('active'));
+  document.getElementById('shlPill-'+type)?.classList.add('active');
+  shlApplyRange();
+}
+function toggleShlPicker(){
+  const panel=document.getElementById('shlPickerPanel');
+  const backdrop=document.getElementById('shlBackdrop');
+  const isOpen=panel.classList.contains('open');
+  panel.classList.toggle('open',!isOpen);
+  backdrop.classList.toggle('open',!isOpen);
+  if(!isOpen){
+    shlPickStep=0;
+    shlInit();
+    document.querySelectorAll('.shl-presets .mpc-pill').forEach(b=>b.classList.remove('active'));
+    const hint=document.getElementById('shlHint');
+    if(hint)hint.textContent=shlRangeLabel(shlDraftStart,shlDraftEnd);
+    shlRenderCals();
+  }
+}
+function closeShlPicker(){
+  document.getElementById('shlPickerPanel').classList.remove('open');
+  document.getElementById('shlBackdrop').classList.remove('open');
+  shlPickStep=0;
+}
+function shlApplyRange(){
+  shlRangeStart=shlDraftStart; shlRangeEnd=shlDraftEnd;
+  closeShlPicker();
+  shlRender();
+}
+function shlDatesInRange(){
+  return SH_LIVE_DAILY.dates.filter(d=>d>=shlRangeStart&&d<=shlRangeEnd);
+}
+function shlFmtBaht(n){return '฿'+Math.round(n).toLocaleString('th-TH');}
+function shlFmtNum(n){return Math.round(n).toLocaleString('th-TH');}
+
+function shlRender(){
+  const lbl=document.getElementById('shlRangeLabel');
+  const ds = shlDatesInRange();
+  const liveDays = ds.filter(d=>{const v=SH_LIVE_DAILY.daily[d];return v&&(v.gmv>0||v.orders>0);});
+  if(lbl) lbl.textContent = shlRangeLabel(shlRangeStart,shlRangeEnd) + ` (${liveDays.length} ไลฟ์)`;
+
+  let totGmv=0, totOrders=0, totViewers=0, totNewFollowers=0;
+  liveDays.forEach(d=>{
+    const v = SH_LIVE_DAILY.daily[d];
+    totGmv += v.gmv||0;
+    totOrders += v.orders||0;
+    totViewers += v.viewers||0;
+    totNewFollowers += v.newFollowers||0;
+  });
+  const avgGmv = liveDays.length>0 ? totGmv/liveDays.length : 0;
+  const avgViewers = liveDays.length>0 ? totViewers/liveDays.length : 0;
+
+  const kg=document.getElementById('shl-kpi-gmv'); if(kg) kg.textContent = shlFmtBaht(totGmv);
+  const kgs=document.getElementById('shl-kpi-gmv-sub'); if(kgs) kgs.textContent = `${liveDays.length} ไลฟ์ในช่วงนี้`;
+  const ka=document.getElementById('shl-kpi-avg'); if(ka) ka.textContent = shlFmtBaht(avgGmv);
+  const kas=document.getElementById('shl-kpi-avg-sub'); if(kas) kas.textContent = `จาก ${liveDays.length} วันที่ไลฟ์`;
+  const kv=document.getElementById('shl-kpi-viewers'); if(kv) kv.textContent = '~'+shlFmtNum(totViewers);
+  const kvs=document.getElementById('shl-kpi-viewers-sub'); if(kvs) kvs.textContent = `เฉลี่ย ${shlFmtNum(avgViewers)}/ไลฟ์ · ผู้ติดตามใหม่ ${shlFmtNum(totNewFollowers)}`;
+
+  const tbody=document.getElementById('shl-tbody');
+  if(!tbody) return;
+  let h='';
+  [...liveDays].reverse().forEach(d=>{
+    const v = SH_LIVE_DAILY.daily[d] || {gmv:0,orders:0,viewers:0,newFollowers:0};
+    h += `<tr>
+      <td>${shlFmtThai(d)}</td>
+      <td>${shlFmtBaht(v.gmv)}</td>
+      <td>${shlFmtNum(v.orders)}</td>
+      <td>${shlFmtNum(v.viewers)}</td>
+      <td>${shlFmtNum(v.newFollowers)}</td>
+    </tr>`;
+  });
+  if(liveDays.length===0) h = `<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px">ไม่มีไลฟ์ในช่วงที่เลือก</td></tr>`;
+  tbody.innerHTML = h;
+}
+shlInit();
+shlRender();
+
 
 function setMonth(idx) { setMonthRange(idx, idx); }
 
@@ -2455,8 +2649,6 @@ function setMonthRange(s, e) {
   set('v-sh-cost-pct', fp(shCostPct));
   set('v-sh-new', fn(shNew)); set('s-sh-new', `${fp(shOrd>0?shNew/shOrd*100:0)} ของออเดอร์`);
   set('v-sh-old', fn(sum(SH_OLD))); set('s-sh-old', `${fp(shOrd>0?sum(SH_OLD)/shOrd*100:0)} ของออเดอร์`);
-  document.getElementById('sh-live-section').style.display = (!isRange && s===3) ? '' : 'none';
-  document.getElementById('sh-live-note').style.display    = (!isRange && s===3) ? 'none' : '';
 
   // ── TIKTOK ──
   set('lbl-tk', `🎵 ยอดรายเดือน TikTok Shop — ${MN} 2569`);
