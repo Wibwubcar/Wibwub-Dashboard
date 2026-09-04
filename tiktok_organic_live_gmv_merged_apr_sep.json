@@ -1,0 +1,1116 @@
+{
+  "coverage": "2026-04-01 to 2026-09-01",
+  "note": "Apr-Jul sourced from TikTok Seller Center Compass Live Analysis export (gmv_live = direct GMV from LIVE, all sources). Aug 1 onward sourced from TK_PROD_DATA in WIBWUB_Dashboard.html by summing selfLive+affLive per product per day (same underlying concept: GMV attributed to LIVE sessions, self-broadcast + affiliate creator lives combined).",
+  "daily": {
+    "2026-04-01": {
+      "gmv_live": "3135.93",
+      "gmv_live_indirect": "0",
+      "livestreams": "16",
+      "live_views": "13297",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-02": {
+      "gmv_live": "5298.87",
+      "gmv_live_indirect": "1068.6",
+      "livestreams": "21",
+      "live_views": "15199",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-03": {
+      "gmv_live": "605.8",
+      "gmv_live_indirect": "0",
+      "livestreams": "18",
+      "live_views": "11338",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-04": {
+      "gmv_live": "33872.48",
+      "gmv_live_indirect": "2548.06",
+      "livestreams": "26",
+      "live_views": "37750",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-05": {
+      "gmv_live": "6067.9",
+      "gmv_live_indirect": "1034.99",
+      "livestreams": "21",
+      "live_views": "26723",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-06": {
+      "gmv_live": "3228",
+      "gmv_live_indirect": "319.8",
+      "livestreams": "12",
+      "live_views": "14245",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-07": {
+      "gmv_live": "7250.72",
+      "gmv_live_indirect": "970",
+      "livestreams": "25",
+      "live_views": "19940",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-08": {
+      "gmv_live": "1957.83",
+      "gmv_live_indirect": "2098",
+      "livestreams": "19",
+      "live_views": "21013",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-09": {
+      "gmv_live": "740",
+      "gmv_live_indirect": "540",
+      "livestreams": "17",
+      "live_views": "15315",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-10": {
+      "gmv_live": "6666.15",
+      "gmv_live_indirect": "1048.9",
+      "livestreams": "14",
+      "live_views": "14433",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-11": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "181",
+      "livestreams": "9",
+      "live_views": "7190",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-12": {
+      "gmv_live": "181",
+      "gmv_live_indirect": "181",
+      "livestreams": "11",
+      "live_views": "13797",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-13": {
+      "gmv_live": "4954",
+      "gmv_live_indirect": "450",
+      "livestreams": "10",
+      "live_views": "11248",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-14": {
+      "gmv_live": "667.53",
+      "gmv_live_indirect": "0",
+      "livestreams": "5",
+      "live_views": "8317",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-15": {
+      "gmv_live": "700",
+      "gmv_live_indirect": "0",
+      "livestreams": "10",
+      "live_views": "12925",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-16": {
+      "gmv_live": "753",
+      "gmv_live_indirect": "416.5",
+      "livestreams": "8",
+      "live_views": "8042",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-17": {
+      "gmv_live": "5330.4",
+      "gmv_live_indirect": "363",
+      "livestreams": "17",
+      "live_views": "15322",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-18": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "0",
+      "livestreams": "13",
+      "live_views": "12713",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-19": {
+      "gmv_live": "390",
+      "gmv_live_indirect": "351.5",
+      "livestreams": "13",
+      "live_views": "24701",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-20": {
+      "gmv_live": "14648.93",
+      "gmv_live_indirect": "1445.39",
+      "livestreams": "11",
+      "live_views": "13506",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-21": {
+      "gmv_live": "746.2",
+      "gmv_live_indirect": "1849.2",
+      "livestreams": "10",
+      "live_views": "7879",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-22": {
+      "gmv_live": "679.15",
+      "gmv_live_indirect": "1420.4",
+      "livestreams": "18",
+      "live_views": "10843",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-23": {
+      "gmv_live": "7441.15",
+      "gmv_live_indirect": "293.28",
+      "livestreams": "25",
+      "live_views": "12909",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-24": {
+      "gmv_live": "293.28",
+      "gmv_live_indirect": "0",
+      "livestreams": "18",
+      "live_views": "10855",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-25": {
+      "gmv_live": "17730.08",
+      "gmv_live_indirect": "1100.8",
+      "livestreams": "12",
+      "live_views": "16252",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-26": {
+      "gmv_live": "2827.8",
+      "gmv_live_indirect": "1034.85",
+      "livestreams": "15",
+      "live_views": "19025",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-27": {
+      "gmv_live": "2269.96",
+      "gmv_live_indirect": "2123.2",
+      "livestreams": "26",
+      "live_views": "24154",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-28": {
+      "gmv_live": "3640.78",
+      "gmv_live_indirect": "375.72",
+      "livestreams": "23",
+      "live_views": "20838",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-29": {
+      "gmv_live": "1123.88",
+      "gmv_live_indirect": "0",
+      "livestreams": "24",
+      "live_views": "24870",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-30": {
+      "gmv_live": "3751.3",
+      "gmv_live_indirect": "1526.58",
+      "livestreams": "26",
+      "live_views": "28904",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-01": {
+      "gmv_live": "916.65",
+      "gmv_live_indirect": "482.98",
+      "livestreams": "21",
+      "live_views": "39150",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-02": {
+      "gmv_live": "4620.86",
+      "gmv_live_indirect": "5053.76",
+      "livestreams": "18",
+      "live_views": "40668",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-03": {
+      "gmv_live": "1849.66",
+      "gmv_live_indirect": "991.22",
+      "livestreams": "13",
+      "live_views": "23193",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-04": {
+      "gmv_live": "749.06",
+      "gmv_live_indirect": "0",
+      "livestreams": "20",
+      "live_views": "36496",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-05": {
+      "gmv_live": "28113.56",
+      "gmv_live_indirect": "2079.32",
+      "livestreams": "24",
+      "live_views": "26956",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-06": {
+      "gmv_live": "1799.46",
+      "gmv_live_indirect": "385",
+      "livestreams": "17",
+      "live_views": "24975",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-07": {
+      "gmv_live": "19529.15",
+      "gmv_live_indirect": "1692.55",
+      "livestreams": "18",
+      "live_views": "17943",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-08": {
+      "gmv_live": "15383.02",
+      "gmv_live_indirect": "1108.33",
+      "livestreams": "26",
+      "live_views": "30963",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-09": {
+      "gmv_live": "2129.3",
+      "gmv_live_indirect": "515.5",
+      "livestreams": "20",
+      "live_views": "20251",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-10": {
+      "gmv_live": "3691.34",
+      "gmv_live_indirect": "390",
+      "livestreams": "22",
+      "live_views": "20576",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-11": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "311.61",
+      "livestreams": "12",
+      "live_views": "8095",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-12": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "718",
+      "livestreams": "16",
+      "live_views": "9587",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-13": {
+      "gmv_live": "6465.93",
+      "gmv_live_indirect": "2118.03",
+      "livestreams": "23",
+      "live_views": "15035",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-14": {
+      "gmv_live": "1359",
+      "gmv_live_indirect": "0",
+      "livestreams": "16",
+      "live_views": "12123",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-15": {
+      "gmv_live": "5299.57",
+      "gmv_live_indirect": "181",
+      "livestreams": "17",
+      "live_views": "13147",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-16": {
+      "gmv_live": "153.06",
+      "gmv_live_indirect": "0",
+      "livestreams": "15",
+      "live_views": "6583",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-17": {
+      "gmv_live": "181",
+      "gmv_live_indirect": "1605",
+      "livestreams": "14",
+      "live_views": "13807",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-18": {
+      "gmv_live": "5924.83",
+      "gmv_live_indirect": "396.33",
+      "livestreams": "18",
+      "live_views": "29269",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-19": {
+      "gmv_live": "1890.26",
+      "gmv_live_indirect": "372",
+      "livestreams": "18",
+      "live_views": "34682",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-20": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "0",
+      "livestreams": "15",
+      "live_views": "16339",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-21": {
+      "gmv_live": "2868.06",
+      "gmv_live_indirect": "190",
+      "livestreams": "15",
+      "live_views": "25706",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-22": {
+      "gmv_live": "1030",
+      "gmv_live_indirect": "171",
+      "livestreams": "16",
+      "live_views": "16283",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-23": {
+      "gmv_live": "763.8",
+      "gmv_live_indirect": "89",
+      "livestreams": "15",
+      "live_views": "16980",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-24": {
+      "gmv_live": "1302",
+      "gmv_live_indirect": "0",
+      "livestreams": "20",
+      "live_views": "35146",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-25": {
+      "gmv_live": "11402.71",
+      "gmv_live_indirect": "2583.19",
+      "livestreams": "25",
+      "live_views": "27010",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-26": {
+      "gmv_live": "458.9",
+      "gmv_live_indirect": "1201.05",
+      "livestreams": "18",
+      "live_views": "15143",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-27": {
+      "gmv_live": "808.6",
+      "gmv_live_indirect": "0",
+      "livestreams": "14",
+      "live_views": "21104",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-28": {
+      "gmv_live": "12611.56",
+      "gmv_live_indirect": "3065.44",
+      "livestreams": "16",
+      "live_views": "17702",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-29": {
+      "gmv_live": "10258.4",
+      "gmv_live_indirect": "587.08",
+      "livestreams": "16",
+      "live_views": "31579",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-30": {
+      "gmv_live": "2023.96",
+      "gmv_live_indirect": "516.45",
+      "livestreams": "12",
+      "live_views": "11779",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-31": {
+      "gmv_live": "4700.7",
+      "gmv_live_indirect": "2333.55",
+      "livestreams": "19",
+      "live_views": "33733",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-01": {
+      "gmv_live": "13406.9",
+      "gmv_live_indirect": "1556.58",
+      "livestreams": "20",
+      "live_views": "32911",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-02": {
+      "gmv_live": "451",
+      "gmv_live_indirect": "349",
+      "livestreams": "10",
+      "live_views": "34160",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-03": {
+      "gmv_live": "3485.79",
+      "gmv_live_indirect": "860.14",
+      "livestreams": "18",
+      "live_views": "37739",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-04": {
+      "gmv_live": "8923.82",
+      "gmv_live_indirect": "659.68",
+      "livestreams": "19",
+      "live_views": "31552",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-05": {
+      "gmv_live": "1727.42",
+      "gmv_live_indirect": "1032.47",
+      "livestreams": "22",
+      "live_views": "24728",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-06": {
+      "gmv_live": "50338.35",
+      "gmv_live_indirect": "4278.08",
+      "livestreams": "17",
+      "live_views": "40835",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-07": {
+      "gmv_live": "4501.46",
+      "gmv_live_indirect": "1011.96",
+      "livestreams": "13",
+      "live_views": "32261",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-08": {
+      "gmv_live": "4322.65",
+      "gmv_live_indirect": "337.41",
+      "livestreams": "20",
+      "live_views": "37253",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-09": {
+      "gmv_live": "1725.99",
+      "gmv_live_indirect": "757.5",
+      "livestreams": "11",
+      "live_views": "14054",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-10": {
+      "gmv_live": "1231",
+      "gmv_live_indirect": "0",
+      "livestreams": "13",
+      "live_views": "21241",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-11": {
+      "gmv_live": "2033.69",
+      "gmv_live_indirect": "640",
+      "livestreams": "11",
+      "live_views": "14809",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-12": {
+      "gmv_live": "1287.41",
+      "gmv_live_indirect": "1562",
+      "livestreams": "15",
+      "live_views": "23203",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-13": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "0",
+      "livestreams": "19",
+      "live_views": "20189",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-14": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "220",
+      "livestreams": "9",
+      "live_views": "12298",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-15": {
+      "gmv_live": "18444.9",
+      "gmv_live_indirect": "1736.66",
+      "livestreams": "14",
+      "live_views": "20968",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-16": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "0",
+      "livestreams": "13",
+      "live_views": "21228",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-17": {
+      "gmv_live": "853.45",
+      "gmv_live_indirect": "1902.4",
+      "livestreams": "17",
+      "live_views": "19623",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-18": {
+      "gmv_live": "4642.07",
+      "gmv_live_indirect": "372",
+      "livestreams": "15",
+      "live_views": "16049",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-19": {
+      "gmv_live": "901.37",
+      "gmv_live_indirect": "0",
+      "livestreams": "14",
+      "live_views": "21718",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-20": {
+      "gmv_live": "0",
+      "gmv_live_indirect": "0",
+      "livestreams": "17",
+      "live_views": "20376",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-21": {
+      "gmv_live": "4545.74",
+      "gmv_live_indirect": "0",
+      "livestreams": "14",
+      "live_views": "25335",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-22": {
+      "gmv_live": "6300.7",
+      "gmv_live_indirect": "590",
+      "livestreams": "18",
+      "live_views": "16843",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-23": {
+      "gmv_live": "1007.33",
+      "gmv_live_indirect": "599.99",
+      "livestreams": "13",
+      "live_views": "12307",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-24": {
+      "gmv_live": "225",
+      "gmv_live_indirect": "0",
+      "livestreams": "17",
+      "live_views": "21605",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-25": {
+      "gmv_live": "26439.09",
+      "gmv_live_indirect": "1510.58",
+      "livestreams": "24",
+      "live_views": "26489",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-26": {
+      "gmv_live": "2631.84",
+      "gmv_live_indirect": "499.66",
+      "livestreams": "19",
+      "live_views": "32463",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-27": {
+      "gmv_live": "1199.58",
+      "gmv_live_indirect": "473.71",
+      "livestreams": "21",
+      "live_views": "19347",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-28": {
+      "gmv_live": "737.4",
+      "gmv_live_indirect": "0",
+      "livestreams": "24",
+      "live_views": "31106",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-29": {
+      "gmv_live": "1309.97",
+      "gmv_live_indirect": "2013",
+      "livestreams": "24",
+      "live_views": "29677",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-30": {
+      "gmv_live": "4674.76",
+      "gmv_live_indirect": "400",
+      "livestreams": "22",
+      "live_views": "20509",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-01": {
+      "gmv_live": "1873.79",
+      "gmv_live_indirect": "526",
+      "livestreams": "23",
+      "live_views": "29899",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-02": {
+      "gmv_live": "9201.69",
+      "gmv_live_indirect": "1093.37",
+      "livestreams": "27",
+      "live_views": "28660",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-03": {
+      "gmv_live": "3968.28",
+      "gmv_live_indirect": "424.37",
+      "livestreams": "20",
+      "live_views": "20717",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-04": {
+      "gmv_live": "5345.79",
+      "gmv_live_indirect": "926.41",
+      "livestreams": "22",
+      "live_views": "21983",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-05": {
+      "gmv_live": "4147.81",
+      "gmv_live_indirect": "1559.11",
+      "livestreams": "26",
+      "live_views": "29077",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-06": {
+      "gmv_live": "7040.85",
+      "gmv_live_indirect": "88",
+      "livestreams": "27",
+      "live_views": "27203",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-07": {
+      "gmv_live": "34860.99",
+      "gmv_live_indirect": "5488.02",
+      "livestreams": "30",
+      "live_views": "36331",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-08": {
+      "gmv_live": "7879.16",
+      "gmv_live_indirect": "225.16",
+      "livestreams": "20",
+      "live_views": "16825",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-09": {
+      "gmv_live": "881.59",
+      "gmv_live_indirect": "371",
+      "livestreams": "18",
+      "live_views": "16531",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-10": {
+      "gmv_live": "11323.85",
+      "gmv_live_indirect": "2294",
+      "livestreams": "18",
+      "live_views": "13634",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-11": {
+      "gmv_live": "1636.48",
+      "gmv_live_indirect": "479",
+      "livestreams": "22",
+      "live_views": "19209",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-12": {
+      "gmv_live": "3423.63",
+      "gmv_live_indirect": "984.46",
+      "livestreams": "17",
+      "live_views": "19518",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-13": {
+      "gmv_live": "4000.31",
+      "gmv_live_indirect": "376",
+      "livestreams": "23",
+      "live_views": "16201",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-14": {
+      "gmv_live": "9264.88",
+      "gmv_live_indirect": "1065.29",
+      "livestreams": "28",
+      "live_views": "16964",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-15": {
+      "gmv_live": "15564.83",
+      "gmv_live_indirect": "377.31",
+      "livestreams": "22",
+      "live_views": "13551",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-16": {
+      "gmv_live": "5317.92",
+      "gmv_live_indirect": "334.8",
+      "livestreams": "17",
+      "live_views": "11821",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-17": {
+      "gmv_live": "13924.36",
+      "gmv_live_indirect": "1546.69",
+      "livestreams": "21",
+      "live_views": "13324",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-18": {
+      "gmv_live": "8236.92",
+      "gmv_live_indirect": "340.4",
+      "livestreams": "18",
+      "live_views": "10563",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-19": {
+      "gmv_live": "6506.98",
+      "gmv_live_indirect": "1730.4",
+      "livestreams": "15",
+      "live_views": "12888",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-20": {
+      "gmv_live": "3758.91",
+      "gmv_live_indirect": "946.6",
+      "livestreams": "12",
+      "live_views": "10556",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-21": {
+      "gmv_live": "15991.44",
+      "gmv_live_indirect": "1655.8",
+      "livestreams": "27",
+      "live_views": "18782",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-22": {
+      "gmv_live": "16010.79",
+      "gmv_live_indirect": "2613.3",
+      "livestreams": "18",
+      "live_views": "15213",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-23": {
+      "gmv_live": "8364.3",
+      "gmv_live_indirect": "2037.4",
+      "livestreams": "14",
+      "live_views": "13011",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-24": {
+      "gmv_live": "8623.92",
+      "gmv_live_indirect": "1738.8",
+      "livestreams": "23",
+      "live_views": "16474",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-25": {
+      "gmv_live": "10836.21",
+      "gmv_live_indirect": "2282.77",
+      "livestreams": "24",
+      "live_views": "17219",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-26": {
+      "gmv_live": "13378.49",
+      "gmv_live_indirect": "1158.15",
+      "livestreams": "23",
+      "live_views": "19517",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-27": {
+      "gmv_live": "12112.87",
+      "gmv_live_indirect": "2740.38",
+      "livestreams": "19",
+      "live_views": "17866",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-28": {
+      "gmv_live": "8425.73",
+      "gmv_live_indirect": "737.06",
+      "livestreams": "20",
+      "live_views": "25722",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-29": {
+      "gmv_live": "7690.25",
+      "gmv_live_indirect": "1704.89",
+      "livestreams": "14",
+      "live_views": "11944",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-30": {
+      "gmv_live": "19284.25",
+      "gmv_live_indirect": "2156.96",
+      "livestreams": "15",
+      "live_views": "14428",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-31": {
+      "gmv_live": "10381.01",
+      "gmv_live_indirect": "1212.25",
+      "livestreams": "18",
+      "live_views": "11552",
+      "source": "compass_live_analysis_export"
+    },
+    "2026-08-01": {
+      "gmv_live": 7569.07,
+      "gmv_live_self": 3470.9,
+      "gmv_live_affiliate": 4098.17,
+      "total_gmv": 50505.5,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-02": {
+      "gmv_live": 23684.0,
+      "gmv_live_self": 11750.95,
+      "gmv_live_affiliate": 11933.05,
+      "total_gmv": 76198.41,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-03": {
+      "gmv_live": 19706.22,
+      "gmv_live_self": 8987.72,
+      "gmv_live_affiliate": 10718.5,
+      "total_gmv": 94929.31,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-04": {
+      "gmv_live": 19317.02,
+      "gmv_live_self": 12221.72,
+      "gmv_live_affiliate": 7095.3,
+      "total_gmv": 94701.74,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-05": {
+      "gmv_live": 10684.43,
+      "gmv_live_self": 6690.76,
+      "gmv_live_affiliate": 3993.67,
+      "total_gmv": 83135.99,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-06": {
+      "gmv_live": 11250.99,
+      "gmv_live_self": 10115.17,
+      "gmv_live_affiliate": 1135.82,
+      "total_gmv": 79104.59,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-07": {
+      "gmv_live": 8623.36,
+      "gmv_live_self": 6206.53,
+      "gmv_live_affiliate": 2416.83,
+      "total_gmv": 79061.71,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-08": {
+      "gmv_live": 40242.43,
+      "gmv_live_self": 36237.86,
+      "gmv_live_affiliate": 4004.57,
+      "total_gmv": 110338.82,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-09": {
+      "gmv_live": 13238.87,
+      "gmv_live_self": 11201.71,
+      "gmv_live_affiliate": 2037.16,
+      "total_gmv": 85260.29,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-10": {
+      "gmv_live": 6462.89,
+      "gmv_live_self": 3481.61,
+      "gmv_live_affiliate": 2981.28,
+      "total_gmv": 84634.57,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-11": {
+      "gmv_live": 8702.55,
+      "gmv_live_self": 7681.75,
+      "gmv_live_affiliate": 1020.8,
+      "total_gmv": 65356.01,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-12": {
+      "gmv_live": 4241.54,
+      "gmv_live_self": 1907.2,
+      "gmv_live_affiliate": 2334.34,
+      "total_gmv": 71550.35,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-13": {
+      "gmv_live": 12100.18,
+      "gmv_live_self": 11290.83,
+      "gmv_live_affiliate": 809.35,
+      "total_gmv": 68493.83,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-14": {
+      "gmv_live": 9040.28,
+      "gmv_live_self": 7784.17,
+      "gmv_live_affiliate": 1256.11,
+      "total_gmv": 65241.99,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-15": {
+      "gmv_live": 13779.17,
+      "gmv_live_self": 11815.35,
+      "gmv_live_affiliate": 1963.82,
+      "total_gmv": 73365.84,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-16": {
+      "gmv_live": 7909.82,
+      "gmv_live_self": 4535.83,
+      "gmv_live_affiliate": 3373.99,
+      "total_gmv": 68687.95,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-17": {
+      "gmv_live": 10112.87,
+      "gmv_live_self": 7984.51,
+      "gmv_live_affiliate": 2128.36,
+      "total_gmv": 74839.48,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-18": {
+      "gmv_live": 11643.83,
+      "gmv_live_self": 7507.12,
+      "gmv_live_affiliate": 4136.71,
+      "total_gmv": 76307.48,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-19": {
+      "gmv_live": 18116.78,
+      "gmv_live_self": 14291.79,
+      "gmv_live_affiliate": 3824.99,
+      "total_gmv": 89547.38,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-20": {
+      "gmv_live": 10992.8,
+      "gmv_live_self": 8488.86,
+      "gmv_live_affiliate": 2503.94,
+      "total_gmv": 78807.41,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-21": {
+      "gmv_live": 6056.48,
+      "gmv_live_self": 4003.71,
+      "gmv_live_affiliate": 2052.77,
+      "total_gmv": 52659.69,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-22": {
+      "gmv_live": 1543.94,
+      "gmv_live_self": 0,
+      "gmv_live_affiliate": 1543.94,
+      "total_gmv": 62839.46,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-23": {
+      "gmv_live": 8391.33,
+      "gmv_live_self": 6860.88,
+      "gmv_live_affiliate": 1530.45,
+      "total_gmv": 104651.23,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-24": {
+      "gmv_live": 8343.65,
+      "gmv_live_self": 7757.65,
+      "gmv_live_affiliate": 586,
+      "total_gmv": 95392.06,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-25": {
+      "gmv_live": 13607.02,
+      "gmv_live_self": 12592.53,
+      "gmv_live_affiliate": 1014.49,
+      "total_gmv": 86370.15,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-26": {
+      "gmv_live": 16654.5,
+      "gmv_live_self": 14883.93,
+      "gmv_live_affiliate": 1770.57,
+      "total_gmv": 85406.35,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-27": {
+      "gmv_live": 7635.69,
+      "gmv_live_self": 3342.83,
+      "gmv_live_affiliate": 4292.86,
+      "total_gmv": 70315.05,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-28": {
+      "gmv_live": 10710.02,
+      "gmv_live_self": 9583.75,
+      "gmv_live_affiliate": 1126.27,
+      "total_gmv": 79556.62,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-29": {
+      "gmv_live": 20344.38,
+      "gmv_live_self": 15115.76,
+      "gmv_live_affiliate": 5228.62,
+      "total_gmv": 106127.73,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-30": {
+      "gmv_live": 13958.47,
+      "gmv_live_self": 12326.99,
+      "gmv_live_affiliate": 1631.48,
+      "total_gmv": 122380.69,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-31": {
+      "gmv_live": 18992.5,
+      "gmv_live_self": 16651.54,
+      "gmv_live_affiliate": 2340.96,
+      "total_gmv": 86547.78,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-09-01": {
+      "gmv_live": 15057.53,
+      "gmv_live_self": 12166.2,
+      "gmv_live_affiliate": 2891.33,
+      "total_gmv": 79972.66,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    }
+  }
+}

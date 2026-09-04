@@ -1,0 +1,1238 @@
+{
+  "coverage": "2026-04-01 to 2026-09-01",
+  "description": "Daily TikTok Shop LIVE performance for WIBWUB: organic GMV from LIVE sessions (self-broadcast + affiliate creator lives) paired with paid-ads spend/revenue that ran during a live on that day. Days with ads_campaigns=0 had organic-only lives (no paid ads running).",
+  "daily": {
+    "2026-04-01": {
+      "gmv_live": 3135.93,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-02": {
+      "gmv_live": 5298.87,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 21,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-03": {
+      "gmv_live": 605.8,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-04": {
+      "gmv_live": 33872.48,
+      "ads_cost": 1495.6,
+      "ads_rev": 38729.82,
+      "ads_campaigns": 1,
+      "livestreams": 26,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-05": {
+      "gmv_live": 6067.9,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 21,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-06": {
+      "gmv_live": 3228.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 12,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-07": {
+      "gmv_live": 7250.72,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 25,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-08": {
+      "gmv_live": 1957.83,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-09": {
+      "gmv_live": 740.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-10": {
+      "gmv_live": 6666.15,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-11": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 9,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-12": {
+      "gmv_live": 181.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 11,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-13": {
+      "gmv_live": 4954.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 10,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-14": {
+      "gmv_live": 667.53,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 5,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-15": {
+      "gmv_live": 700.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 10,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-16": {
+      "gmv_live": 753.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 8,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-17": {
+      "gmv_live": 5330.4,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-18": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-19": {
+      "gmv_live": 390.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-20": {
+      "gmv_live": 14648.93,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 11,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-21": {
+      "gmv_live": 746.2,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 10,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-22": {
+      "gmv_live": 679.15,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-23": {
+      "gmv_live": 7441.15,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 25,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-24": {
+      "gmv_live": 293.28,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-25": {
+      "gmv_live": 17730.08,
+      "ads_cost": 3007.61,
+      "ads_rev": 23347.66,
+      "ads_campaigns": 1,
+      "livestreams": 12,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-26": {
+      "gmv_live": 2827.8,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-27": {
+      "gmv_live": 2269.96,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 26,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-28": {
+      "gmv_live": 3640.78,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-29": {
+      "gmv_live": 1123.88,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-04-30": {
+      "gmv_live": 3751.3,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 26,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-01": {
+      "gmv_live": 916.65,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 21,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-02": {
+      "gmv_live": 4620.86,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-03": {
+      "gmv_live": 1849.66,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-04": {
+      "gmv_live": 749.06,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-05": {
+      "gmv_live": 28113.56,
+      "ads_cost": 9417.84,
+      "ads_rev": 39047.99,
+      "ads_campaigns": 2,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-06": {
+      "gmv_live": 1799.46,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-07": {
+      "gmv_live": 19529.15,
+      "ads_cost": 4373.3,
+      "ads_rev": 25627.96,
+      "ads_campaigns": 2,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-08": {
+      "gmv_live": 15383.02,
+      "ads_cost": 4579.91,
+      "ads_rev": 16330.97,
+      "ads_campaigns": 4,
+      "livestreams": 26,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-09": {
+      "gmv_live": 2129.3,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-10": {
+      "gmv_live": 3691.34,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-11": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 12,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-12": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-13": {
+      "gmv_live": 6465.93,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-14": {
+      "gmv_live": 1359.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-15": {
+      "gmv_live": 5299.57,
+      "ads_cost": 615.51,
+      "ads_rev": 6073.43,
+      "ads_campaigns": 1,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-16": {
+      "gmv_live": 153.06,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-17": {
+      "gmv_live": 181.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-18": {
+      "gmv_live": 5924.83,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-19": {
+      "gmv_live": 1890.26,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-20": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-21": {
+      "gmv_live": 2868.06,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-22": {
+      "gmv_live": 1030.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-23": {
+      "gmv_live": 763.8,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-24": {
+      "gmv_live": 1302.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-25": {
+      "gmv_live": 11402.71,
+      "ads_cost": 1403.79,
+      "ads_rev": 15300.53,
+      "ads_campaigns": 1,
+      "livestreams": 25,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-26": {
+      "gmv_live": 458.9,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-27": {
+      "gmv_live": 808.6,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-28": {
+      "gmv_live": 12611.56,
+      "ads_cost": 729.83,
+      "ads_rev": 15380.35,
+      "ads_campaigns": 1,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-29": {
+      "gmv_live": 10258.4,
+      "ads_cost": 1332.88,
+      "ads_rev": 12279.81,
+      "ads_campaigns": 3,
+      "livestreams": 16,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-30": {
+      "gmv_live": 2023.96,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 12,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-05-31": {
+      "gmv_live": 4700.7,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-01": {
+      "gmv_live": 13406.9,
+      "ads_cost": 1477.42,
+      "ads_rev": 21725.3,
+      "ads_campaigns": 2,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-02": {
+      "gmv_live": 451.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 10,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-03": {
+      "gmv_live": 3485.79,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-04": {
+      "gmv_live": 8923.82,
+      "ads_cost": 390.86,
+      "ads_rev": 6789.64,
+      "ads_campaigns": 1,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-05": {
+      "gmv_live": 1727.42,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-06": {
+      "gmv_live": 50338.35,
+      "ads_cost": 3854.6,
+      "ads_rev": 72591.63,
+      "ads_campaigns": 1,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-07": {
+      "gmv_live": 4501.46,
+      "ads_cost": 471.78,
+      "ads_rev": 3918.99,
+      "ads_campaigns": 1,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-08": {
+      "gmv_live": 4322.65,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-09": {
+      "gmv_live": 1725.99,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 11,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-10": {
+      "gmv_live": 1231.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-11": {
+      "gmv_live": 2033.69,
+      "ads_cost": 294.02,
+      "ads_rev": 1617.52,
+      "ads_campaigns": 1,
+      "livestreams": 11,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-12": {
+      "gmv_live": 1287.41,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-13": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-14": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 9,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-15": {
+      "gmv_live": 18444.9,
+      "ads_cost": 1502.51,
+      "ads_rev": 25550.35,
+      "ads_campaigns": 1,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-16": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-17": {
+      "gmv_live": 853.45,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-18": {
+      "gmv_live": 4642.07,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-19": {
+      "gmv_live": 901.37,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-20": {
+      "gmv_live": 0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-21": {
+      "gmv_live": 4545.74,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-22": {
+      "gmv_live": 6300.7,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-23": {
+      "gmv_live": 1007.33,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 13,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-24": {
+      "gmv_live": 225.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-25": {
+      "gmv_live": 26439.09,
+      "ads_cost": 942.11,
+      "ads_rev": 36915.81,
+      "ads_campaigns": 1,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-26": {
+      "gmv_live": 2631.84,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-27": {
+      "gmv_live": 1199.58,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 21,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-28": {
+      "gmv_live": 737.4,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-29": {
+      "gmv_live": 1309.97,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-06-30": {
+      "gmv_live": 4674.76,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-01": {
+      "gmv_live": 1873.79,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-02": {
+      "gmv_live": 9201.69,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 27,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-03": {
+      "gmv_live": 3968.28,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-04": {
+      "gmv_live": 5345.79,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-05": {
+      "gmv_live": 4147.81,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 26,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-06": {
+      "gmv_live": 7040.85,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 27,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-07": {
+      "gmv_live": 34860.99,
+      "ads_cost": 3200.0,
+      "ads_rev": 57058.32,
+      "ads_campaigns": 1,
+      "livestreams": 30,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-08": {
+      "gmv_live": 7879.16,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-09": {
+      "gmv_live": 881.59,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-10": {
+      "gmv_live": 11323.85,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-11": {
+      "gmv_live": 1636.48,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-12": {
+      "gmv_live": 3423.63,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-13": {
+      "gmv_live": 4000.31,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-14": {
+      "gmv_live": 9264.88,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 28,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-15": {
+      "gmv_live": 15564.83,
+      "ads_cost": 700.8,
+      "ads_rev": 15849.86,
+      "ads_campaigns": 1,
+      "livestreams": 22,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-16": {
+      "gmv_live": 5317.92,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 17,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-17": {
+      "gmv_live": 13924.36,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 21,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-18": {
+      "gmv_live": 8236.92,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-19": {
+      "gmv_live": 6506.98,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-20": {
+      "gmv_live": 3758.91,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 12,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-21": {
+      "gmv_live": 15991.44,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 27,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-22": {
+      "gmv_live": 16010.79,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-23": {
+      "gmv_live": 8364.3,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-24": {
+      "gmv_live": 8623.92,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-25": {
+      "gmv_live": 10836.21,
+      "ads_cost": 608.3,
+      "ads_rev": 9276.52,
+      "ads_campaigns": 1,
+      "livestreams": 24,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-26": {
+      "gmv_live": 13378.49,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 23,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-27": {
+      "gmv_live": 12112.87,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 19,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-28": {
+      "gmv_live": 8425.73,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 20,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-29": {
+      "gmv_live": 7690.25,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 14,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-30": {
+      "gmv_live": 19284.25,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 15,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-07-31": {
+      "gmv_live": 10381.01,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": 18,
+      "source": "compass_live_analysis_export"
+    },
+    "2026-08-01": {
+      "gmv_live": 7569.07,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-02": {
+      "gmv_live": 23684.0,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-03": {
+      "gmv_live": 19706.22,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-04": {
+      "gmv_live": 19317.02,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-05": {
+      "gmv_live": 10684.43,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-06": {
+      "gmv_live": 11250.99,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-07": {
+      "gmv_live": 8623.36,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-08": {
+      "gmv_live": 40242.43,
+      "ads_cost": 1144.27,
+      "ads_rev": 44670.65,
+      "ads_campaigns": 3,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-09": {
+      "gmv_live": 13238.87,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-10": {
+      "gmv_live": 6462.89,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-11": {
+      "gmv_live": 8702.55,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-12": {
+      "gmv_live": 4241.54,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-13": {
+      "gmv_live": 12100.18,
+      "ads_cost": 96.91,
+      "ads_rev": 4193.76,
+      "ads_campaigns": 1,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-14": {
+      "gmv_live": 9040.28,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-15": {
+      "gmv_live": 13779.17,
+      "ads_cost": 585.62,
+      "ads_rev": 40044.97,
+      "ads_campaigns": 1,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-16": {
+      "gmv_live": 7909.82,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-17": {
+      "gmv_live": 10112.87,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-18": {
+      "gmv_live": 11643.83,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-19": {
+      "gmv_live": 18116.78,
+      "ads_cost": 623.86,
+      "ads_rev": 8179.94,
+      "ads_campaigns": 1,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-20": {
+      "gmv_live": 10992.8,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-21": {
+      "gmv_live": 6056.48,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-22": {
+      "gmv_live": 1543.94,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-23": {
+      "gmv_live": 8391.33,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-24": {
+      "gmv_live": 8343.65,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-25": {
+      "gmv_live": 13607.02,
+      "ads_cost": 367.69,
+      "ads_rev": 8154.46,
+      "ads_campaigns": 1,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-26": {
+      "gmv_live": 16654.5,
+      "ads_cost": 201.0,
+      "ads_rev": 11746.82,
+      "ads_campaigns": 1,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-27": {
+      "gmv_live": 7635.69,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-28": {
+      "gmv_live": 10710.02,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-29": {
+      "gmv_live": 20344.38,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-30": {
+      "gmv_live": 13958.47,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-08-31": {
+      "gmv_live": 18992.5,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    },
+    "2026-09-01": {
+      "gmv_live": 15057.53,
+      "ads_cost": 0,
+      "ads_rev": 0,
+      "ads_campaigns": 0,
+      "livestreams": null,
+      "source": "tk_prod_data_selflive_afflive_sum"
+    }
+  }
+}
