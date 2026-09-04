@@ -2,8 +2,9 @@ import zipfile, re, os, glob
 from collections import Counter
 from datetime import date
 
-VID_DIR='/sessions/beautiful-ecstatic-ride/mnt/All/Data Affiliate/วีดีโอ/'
-HTML='/sessions/beautiful-ecstatic-ride/mnt/All/WIBWUB_Affiliate_Dashboard.html'
+_BASE=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+VID_DIR=os.path.join(_BASE,'Data Affiliate','วีดีโอ')+'/'
+HTML=os.path.join(_BASE,'WIBWUB_Affiliate_Dashboard.html')
 fpath=sorted(glob.glob(VID_DIR+'*.xlsx'), key=os.path.getmtime, reverse=True)[0]
 print("Using:", os.path.basename(fpath))
 
@@ -46,7 +47,13 @@ schema_keys=re.findall(r'([a-z]+):', fm.group(1)) if fm else []
 print("schema:", schema_keys)
 MONTH_KEY={1:'jan',2:'feb',3:'mar',4:'apr',5:'may',6:'jun',7:'jul',8:'aug',9:'sep',10:'oct',11:'nov',12:'dec'}
 THAI={'jan':'ม.ค.','feb':'ก.พ.','mar':'มี.ค.','apr':'เม.ย.','may':'พ.ค.','jun':'มิ.ย.','jul':'ก.ค.','aug':'ส.ค.','sep':'ก.ย.','oct':'ต.ค.','nov':'พ.ย.','dec':'ธ.ค.'}
-cur_key=MONTH_KEY[date.today().month]
+_dm=re.search(r'(\d{8})-(\d{8})', os.path.basename(fpath))
+if _dm:
+    cur_key=MONTH_KEY[int(_dm.group(2)[4:6])]
+    print("month key from filename:", cur_key)
+else:
+    cur_key=MONTH_KEY[date.today().month]
+    print("WARNING: no date range in filename, falling back to today ->", cur_key)
 if cur_key not in schema_keys:
     last=schema_keys[-1]
     block,n=re.subn(r"("+last+r":[\d.]+)\}", r"\1,"+cur_key+r":0}", block)

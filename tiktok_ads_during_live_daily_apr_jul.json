@@ -1,0 +1,167 @@
+{
+  "source": "tiktok_gmv_live_all_campaigns_2026-09-02.json (TikTok Ads Manager - GMV Live campaigns), aggregated by day",
+  "note": "Only days where at least one paid ads campaign ran during a livestream appear here. Days with organic-only lives (no ads) are absent - treat as ads_cost=0 for those days when joining with organic live GMV data.",
+  "coverage": "2026-04-01 to 2026-07-31",
+  "daily": {
+    "2026-04-04": {
+      "ads_cost": 1495.6,
+      "ads_rev": 38729.82,
+      "campaigns": 1,
+      "campaign_names": [
+        "4.4 Live_GMV"
+      ]
+    },
+    "2026-04-25": {
+      "ads_cost": 3007.61,
+      "ads_rev": 23347.66,
+      "campaigns": 1,
+      "campaign_names": [
+        "25.04.26/Live GMV New"
+      ]
+    },
+    "2026-05-05": {
+      "ads_cost": 9417.84,
+      "ads_rev": 39047.99,
+      "campaigns": 2,
+      "campaign_names": [
+        "05.05.26/GMVLive ปาย",
+        "05.05.26/GMVLive"
+      ]
+    },
+    "2026-05-07": {
+      "ads_cost": 4373.3,
+      "ads_rev": 25627.96,
+      "campaigns": 2,
+      "campaign_names": [
+        "07.05.26/GMVLive แอ้น",
+        "07.06.26/GMVLive แอ้น"
+      ]
+    },
+    "2026-05-08": {
+      "ads_cost": 4579.91,
+      "ads_rev": 16330.97,
+      "campaigns": 4,
+      "campaign_names": [
+        "08.05.26/GMVLive ปาย04",
+        "08.05.26/GMVLive ปาย03",
+        "08.05.26/GMVLiveปายรอบสอง",
+        "08.05.26/GMVLiveปาย"
+      ]
+    },
+    "2026-05-15": {
+      "ads_cost": 615.51,
+      "ads_rev": 6073.43,
+      "campaigns": 1,
+      "campaign_names": [
+        "15 1.2"
+      ]
+    },
+    "2026-05-25": {
+      "ads_cost": 1403.79,
+      "ads_rev": 15300.53,
+      "campaigns": 1,
+      "campaign_names": [
+        "25 1.3"
+      ]
+    },
+    "2026-05-28": {
+      "ads_cost": 729.83,
+      "ads_rev": 15380.35,
+      "campaigns": 1,
+      "campaign_names": [
+        "28D Wibwub.car"
+      ]
+    },
+    "2026-05-29": {
+      "ads_cost": 1332.88,
+      "ads_rev": 12279.81,
+      "campaigns": 3,
+      "campaign_names": [
+        "29.3 1.1",
+        "29.2 wibwub",
+        "29D wibwub"
+      ]
+    },
+    "2026-06-01": {
+      "ads_cost": 1477.42,
+      "ads_rev": 21725.3,
+      "campaigns": 2,
+      "campaign_names": [
+        "1.1 1.2",
+        "01/06 - 1.2"
+      ]
+    },
+    "2026-06-04": {
+      "ads_cost": 390.86,
+      "ads_rev": 6789.64,
+      "campaigns": 1,
+      "campaign_names": [
+        "4/6 WIBWUB.CAR"
+      ]
+    },
+    "2026-06-06": {
+      "ads_cost": 3854.6,
+      "ads_rev": 72591.63,
+      "campaigns": 1,
+      "campaign_names": [
+        "06 1.2"
+      ]
+    },
+    "2026-06-07": {
+      "ads_cost": 471.78,
+      "ads_rev": 3918.99,
+      "campaigns": 1,
+      "campaign_names": [
+        "07/06 - Wibwub"
+      ]
+    },
+    "2026-06-11": {
+      "ads_cost": 294.02,
+      "ads_rev": 1617.52,
+      "campaigns": 1,
+      "campaign_names": [
+        "11 WIBWUBCAR"
+      ]
+    },
+    "2026-06-15": {
+      "ads_cost": 1502.51,
+      "ads_rev": 25550.35,
+      "campaigns": 1,
+      "campaign_names": [
+        "15/06 - 1.2"
+      ]
+    },
+    "2026-06-25": {
+      "ads_cost": 942.11,
+      "ads_rev": 36915.81,
+      "campaigns": 1,
+      "campaign_names": [
+        "25.06.26/Liveแอ้นปาย"
+      ]
+    },
+    "2026-07-07": {
+      "ads_cost": 3200.0,
+      "ads_rev": 57058.32,
+      "campaigns": 1,
+      "campaign_names": [
+        "7.7Live duo"
+      ]
+    },
+    "2026-07-15": {
+      "ads_cost": 700.8,
+      "ads_rev": 15849.86,
+      "campaigns": 1,
+      "campaign_names": [
+        "live-15.07"
+      ]
+    },
+    "2026-07-25": {
+      "ads_cost": 608.3,
+      "ads_rev": 9276.52,
+      "campaigns": 1,
+      "campaign_names": [
+        "25.07.26/Live"
+      ]
+    }
+  }
+}
