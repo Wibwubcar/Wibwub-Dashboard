@@ -11878,12 +11878,19 @@ const SAMPLE_PRODUCTS = {
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
-// counted separately (29/08-04/09/2026 sheet-date range) rather than derived
-// from the monthly buckets. NOTE: this total (92 requests in-range) does not
-// match SAMPLE_LAST7D.funnel.req (10) above — that funnel number predates the
-// sheet swap done for SAMPLE_MONTHS and hasn't been recomputed from this
-// sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:92, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:41,appr:11,rej:30,other:0},{n:'Interior wipes',c:31,appr:10,rej:21,other:0},{n:'Reflex',c:12,appr:3,rej:9,other:0},{n:'Interior',c:10,appr:3,rej:7,other:0},{n:'Sugar',c:4,appr:2,rej:2,other:0}]};
+// counted separately (rolling 7 calendar days ending today) rather than
+// derived from the monthly buckets. Recomputed on every scheduled sync, so
+// `window`/`total` below always describe the same run — read the range from
+// SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
+// belongs to the unrelated TikTok-Insights perf source and is stale).
+// Current window 01/09/2026 - 07/09/2026 → 54 requests in-range. The last
+// row actually present in the sheet is dated 04/09/2026, so the final 3 days
+// of this window contribute nothing; the drop vs. the previous 92 reflects
+// the window sliding forward past the busy late-Aug days, not lost data.
+// NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
+// that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
+// not been recomputed from this sheet yet. Flagged to the user in the UI.
+const SAMPLE_PRODUCTS_LAST7D = {total:54, window:'01/09/2026 - 07/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:26,appr:7,rej:19,other:0},{n:'Interior wipes',c:18,appr:5,rej:13,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:4,appr:2,rej:2,other:0},{n:'Sugar',c:3,appr:2,rej:1,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
