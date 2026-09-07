@@ -336,9 +336,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <img src="logo-header.png" style="height:28px;filter:brightness(0)invert(1);display:block;" alt="WIBWUB">
     <div class="hdr-sub">Hyper Cleaning Car</div>
   </div>
-  <div class="hdr-right" id="mob-hdr-right" data-updated="31 ส.ค. 2569">
+  <div class="hdr-right" id="mob-hdr-right" data-updated="">
     <div id="hdrDate" class="hdr-date"></div>
-    <div>ม.ค. – ส.ค. 2569</div>
+    <div class="rng-lbl"></div>
     <div id="hdrUser" style="display:none;text-align:right;margin-top:4px;">
       <span id="hdrUserName" class="hdr-user-name"></span>
       <button onclick="showChangePasswordModal()" style="padding:2px 7px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25);border-radius:5px;color:rgba(255,255,255,.8);font-size:10px;cursor:pointer;margin-right:4px;">🔑</button>
@@ -374,9 +374,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 <!-- ─── HOME ─── -->
 <div class="page active" id="pg-home">
   <div class="home-hero">
-    <div class="hh-lbl">ยอดขายรวม ม.ค.–ส.ค. 2569</div>
-    <div class="hh-val">฿66.0M</div>
-    <div class="hh-sub">133,036 unique orders · AOV ฿496</div>
+    <div class="hh-lbl" id="hh-lbl"></div>
+    <div class="hh-val" id="hh-val"></div>
+    <div class="hh-sub" id="hh-sub"></div>
     <div class="hh-grid">
       <div class="hhg"><div class="hhg-v" id="hhg-sh">฿40.3M</div><div class="hhg-l">Shopee</div></div>
       <div class="hhg"><div class="hhg-v" id="hhg-tk">฿11.8M</div><div class="hhg-l">TikTok</div></div>
@@ -413,13 +413,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="kgrid" id="s-ov-kpi"></div>
     <div class="card">
       <div class="sec-title">เลือกเดือน</div>
-      <div class="mtabs" id="s-mo-tabs">
-        <div class="mtab active" onclick="setSMo(0,this)">ม.ค.</div>
-        <div class="mtab" onclick="setSMo(1,this)">ก.พ.</div>
-        <div class="mtab" onclick="setSMo(2,this)">มี.ค.</div>
-        <div class="mtab" onclick="setSMo(3,this)">เม.ย.</div>
-        <div class="mtab" onclick="setSMo(4,this)">พ.ค.*</div>
-      </div>
+      <div class="mtabs" id="s-mo-tabs"></div>
       <div class="kgrid kgrid3" id="s-mo-kpi"></div>
     </div>
     <div class="card"><div class="sec-title">ยอดขายรายเดือน</div><div id="s-rev-bars"></div></div>
@@ -430,16 +424,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="sv" id="s-sv-1">
     <div class="card" style="padding-bottom:6px">
       <div class="sec-title">เลือกเดือน</div>
-      <div class="mtabs" id="s-plt-tabs">
-        <div class="mtab active" onclick="setSPlt(0,this)">ม.ค.</div>
-        <div class="mtab" onclick="setSPlt(1,this)">ก.พ.</div>
-        <div class="mtab" onclick="setSPlt(2,this)">มี.ค.</div>
-        <div class="mtab" onclick="setSPlt(3,this)">เม.ย.</div>
-        <div class="mtab" onclick="setSPlt(4,this)">พ.ค.*</div>
-      </div>
+      <div class="mtabs" id="s-plt-tabs"></div>
     </div>
     <div id="s-plt-list"></div>
-    <div class="inote">* พ.ค. 2569 ข้อมูล ครบเดือน (1–31 พ.ค.)</div>
+    <div class="inote pmo-note"></div>
   </div>
 
   <!-- Products -->
@@ -495,7 +483,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
         <tbody id="mo-tb-lz"></tbody>
       </table></div>
     </div>
-    <div class="inote">* พ.ค. 2569 ข้อมูล ครบเดือน (1–31 พ.ค.)</div>
+    <div class="inote pmo-note"></div>
   </div>
 </div>
 
@@ -551,13 +539,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
   <div class="sv" id="m-sv-2">
     <div class="card" style="padding-bottom:8px">
       <div class="sec-title">เลือกเดือน</div>
-      <div class="mtabs" id="ads-mo-tabs">
-        <div class="mtab active" onclick="setAdsMo(0,this)">ม.ค.</div>
-        <div class="mtab" onclick="setAdsMo(1,this)">ก.พ.</div>
-        <div class="mtab" onclick="setAdsMo(2,this)">มี.ค.</div>
-        <div class="mtab" onclick="setAdsMo(3,this)">เม.ย.</div>
-        <div class="mtab" onclick="setAdsMo(4,this)">พ.ค.*</div>
-      </div>
+      <div class="mtabs" id="ads-mo-tabs"></div>
     </div>
     <div id="ads-mo-detail" style="margin-bottom:2px"></div>
     <div class="ads-pill-row">
@@ -833,37 +815,51 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
 // ════════════════════════════════════════
 // RAW DATA
 // ════════════════════════════════════════
-const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค."];
-const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604];
-const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21];
-const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,119349.79];
-const FB_REV=[2152231,1328934,1061901,802047,980883,413040,413040,413040];
-const LINE_REV=[350828,459158,418472,397898,374817,153907,153907,153907];
-const WEB_REV=[4568,1760,11754,3060,4468,1355,1355,1355];
-const CARE_REV=[84069,90135,70707,92509,98307,0,0,0];
-const MKT_REV=[580,0,0,490,17365,0,0,0];
-const BEUK_REV=[0,0,0,0,365,0,0,0];
-const POS_REV=[435,548,2277,267,590,0,0,0];
-const SH_ORD=[7532,6580,6873,8128,9093,8895,10511,11292];
-const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,11498];
-const LZ_ORD=[236,176,255,161,157,158,146,146];
-const FB_ORD=[2987,2001,1575,1175,1479,649,649,649];
-const LINE_ORD=[325,466,345,381,343,152,152,152];
-const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.78];
-const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.53];
-const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
+const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.","ก.ย."];
+// วันสุดท้ายของข้อมูลยอดขายที่ซิงก์แล้ว (เดือนล่าสุดใน M5 = MTD ถึงวันนี้)
+// ทุก label ที่พูดถึง "ข้อมูลถึงวันที่" ให้ derive จากตรงนี้ ห้าม hardcode ซ้ำ
+// (ดู skill: wibwub-avoid-stale-hardcoded-labels)
+const SALES_ASOF = '2026-09-06';
+function salesAsofTH(){
+  const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const p=SALES_ASOF.split('-');
+  return `${+p[2]} ${TH[+p[1]-1]} ${+p[0]+543}`;
+}
+function salesRangeTH(){ return `ม.ค. – ${M5[M5.length-1]} ${new Date(SALES_ASOF).getFullYear()+543}`; }
+function salesPartialNote(){
+  const p=SALES_ASOF.split('-');
+  return `* ${M5[M5.length-1]} ${+p[0]+543} เป็นข้อมูลบางส่วน (1–${+p[2]} ${M5[M5.length-1]})`;
+}
+const SH_REV=[4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604,1212856];
+const TK_REV=[1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21,587423.12];
+const LZ_REV=[179084,120948,183370,110531,129523,118094.7,95770.98,119349.79,15785.40];
+const FB_REV=[2152231,1328934,1061901,802047,980883,413040,413040,413040,413040];
+const LINE_REV=[350828,459158,418472,397898,374817,153907,153907,153907,153907];
+const WEB_REV=[4568,1760,11754,3060,4468,1355,1355,1355,1355];
+const CARE_REV=[84069,90135,70707,92509,98307,0,0,0,0];
+const MKT_REV=[580,0,0,490,17365,0,0,0,0];
+const BEUK_REV=[0,0,0,0,365,0,0,0,0];
+const POS_REV=[435,548,2277,267,590,0,0,0,0];
+const SH_ORD=[7532,6580,6873,8128,9093,8895,10511,11689,2231];
+const TK_ORD=[3204,3652,3934,5032,7543,4260,10094,11498,2570];
+const LZ_ORD=[236,176,255,161,157,158,146,146,146];
+const FB_ORD=[2987,2001,1575,1175,1479,649,649,649,649];
+const LINE_ORD=[325,466,345,381,343,152,152,152,152];
+const SH_CANCEL=[4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.89,5.65];
+const TK_CANCEL=[9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.53,6.26];
+const LZ_CANCEL=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92];
 // SH_ADS = ค่าโฆษณา/การตลาด Shopee ทั้งหมดจาก Google Sheet (sales sync) — กว้างกว่ารายงาน Shopee Ads portal
 // ห้าม overwrite ด้วยยอด spend จาก Shopee Ads report (ส.ค. 2569: Sheet 1,185,609.37 vs Ads report 974,764.42)
-// index อ้างอิง array M5 ซึ่งยังจบที่ ส.ค. — ก.ย. จะเพิ่มเมื่อ sales sync มีข้อมูลเดือน ก.ย. (2026-09-01)
-const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,1185609.37];
-const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1978739.36];
-const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,682200];
-const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,719330];
-const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1526564];
-const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1502415];
-const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92];
-const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,29.67];
-const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,11333];
+// index อ้างอิง array M5 ซึ่งจบที่ ก.ย. (MTD 1–6 ก.ย. 2569) — เดือนถัดไปจะเพิ่มเมื่อ sales sync มีข้อมูล
+const SH_ADS=[575400,559100,589300,795300,826300,885100,942122.40,1185609.37,202487.77];
+const SH_FEE=[911498,944144,1046921,1225115,1433217,1506562,1774741.72,1978739.36,363371.66];
+const TK_ADSSPEND = [164956,202579,249294,256168,357295,249628,508456,682200,155820];
+const TK_FEECOMM = [271216,267255,270719,294223,402802,291455,613482,742365,177061];
+const TK_AFI=[460976,550756,655259,724120,948916,642235,1453863,1526564,226551];
+const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1502415,223134];
+const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92];
+const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,29.67,29.20];
+const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,11333,1550];
 const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]);
 const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]);
 
@@ -1128,13 +1124,35 @@ function switchSv(pfx,i,el,tabsId){
 }
 
 // ════════════════════════════════════════
+// DERIVED LABELS / MONTH TABS
+// สร้าง tab เดือนจาก M5 โดยตรง เพื่อไม่ให้ tab ค้างอยู่ที่เดือนเก่าหลัง sync
+// (เคยค้างที่ พ.ค. ทั้งที่ข้อมูลถึง ส.ค. แล้ว)
+// ════════════════════════════════════════
+function buildMoTabs(){
+  const last=M5.length-1;
+  [['s-mo-tabs','setSMo'],['s-plt-tabs','setSPlt'],['ads-mo-tabs','setAdsMo']].forEach(([id,fn])=>{
+    const c=document.getElementById(id); if(!c) return;
+    c.innerHTML=M5.map((m,i)=>`<div class="mtab${i===0?' active':''}" onclick="${fn}(${i},this)">${m}${i===last?'*':''}</div>`).join('');
+  });
+  document.querySelectorAll('.rng-lbl').forEach(n=>{ n.textContent=salesRangeTH(); });
+  document.querySelectorAll('.pmo-note').forEach(n=>{ n.textContent=salesPartialNote(); });
+  const h=document.getElementById('mob-hdr-right'); if(h) h.setAttribute('data-updated',salesAsofTH());
+}
+
+// ════════════════════════════════════════
 // HOME
 // ════════════════════════════════════════
 function initHome(){
+  buildMoTabs();
   // ยอดสะสมต่อ platform บน hero — คำนวณจาก array จริง ไม่ hardcode (กันค่าค้างหลัง sync)
   const _sum=a=>a.reduce((s,v)=>s+v,0);
   const _setM=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent='฿'+(v/1e6).toFixed(v/1e6>=10?1:2)+'M';};
   _setM('hhg-sh',_sum(SH_REV)); _setM('hhg-tk',_sum(TK_REV)); _setM('hhg-lz',_sum(LZ_REV));
+  const _tr=_sum(TOTAL_REV), _to=_sum(TOTAL_ORD);
+  const _t=(id,v)=>{const e=document.getElementById(id); if(e) e.textContent=v;};
+  _t('hh-lbl',`ยอดขายรวม ${salesRangeTH()}`);
+  _t('hh-val','฿'+(_tr/1e6).toFixed(1)+'M');
+  _t('hh-sub',`${_to.toLocaleString()} unique orders · AOV ฿${Math.round(_tr/_to).toLocaleString()}`);
   const tot=CHANNELS.reduce((s,c)=>s+c.v,0);
   const maxV=CHANNELS[0].v;
   document.getElementById('home-ch').innerHTML=CHANNELS.map(c=>`
@@ -1156,20 +1174,22 @@ function initHome(){
 // ════════════════════════════════════════
 let sMo=0;
 function initSalesOv(){
+  const _tr=TOTAL_REV.reduce((s,v)=>s+v,0), _to=TOTAL_ORD.reduce((s,v)=>s+v,0);
   document.getElementById('s-ov-kpi').innerHTML=`
-    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–ส.ค.)</div><div class="kc-val">฿66.0M</div><div class="kc-sub">ทุก Platform</div></div>
-    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">133,036</div><div class="kc-sub">unique orders</div></div>
-    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿496</div><div class="kc-sub">ต่อออเดอร์</div></div>
-    <div class="kc"><div class="kc-lbl">สินค้า/ออเดอร์</div><div class="kc-val">131K</div><div class="kc-sub">รายการสั่งซื้อ</div></div>`;
+    <div class="kc"><div class="kc-lbl">ยอดขายรวม (ม.ค.–${M5[M5.length-1]})</div><div class="kc-val">฿${(_tr/1e6).toFixed(1)}M</div><div class="kc-sub">ทุก Platform</div></div>
+    <div class="kc"><div class="kc-lbl">ออเดอร์รวม</div><div class="kc-val">${_to.toLocaleString()}</div><div class="kc-sub">unique orders</div></div>
+    <div class="kc"><div class="kc-lbl">AOV เฉลี่ย</div><div class="kc-val">฿${Math.round(_tr/_to).toLocaleString()}</div><div class="kc-sub">ต่อออเดอร์</div></div>
+    <div class="kc"><div class="kc-lbl">ยอดขายเดือนล่าสุด</div><div class="kc-val">${fmtB(TOTAL_REV[TOTAL_REV.length-1])}</div><div class="kc-sub">${M5[M5.length-1]} (ถึง ${salesAsofTH()})</div></div>`;
+  buildMoTabs();
   setSMo(0,document.querySelector('#s-mo-tabs .mtab'));
   // Rev bars
   const maxR=Math.max(...TOTAL_REV);
   document.getElementById('s-rev-bars').innerHTML=M5.map((m,i)=>`
     <div style="margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-        <span style="font-weight:600">${m}${i===7?' *':''}</span><span style="font-weight:700;color:var(--bl)">${fmtB(TOTAL_REV[i])}</span>
+        <span style="font-weight:600">${m}${i===M5.length-1?' *':''}</span><span style="font-weight:700;color:var(--bl)">${fmtB(TOTAL_REV[i])}</span>
       </div>
-      <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TOTAL_REV[i]/maxR*100)}%;background:${i===7?'var(--green)':'var(--bl)'}"></div></div>
+      <div class="bar-bg" style="height:8px"><div class="bar-fill" style="width:${Math.round(TOTAL_REV[i]/maxR*100)}%;background:${i===M5.length-1?'var(--green)':'var(--bl)'}"></div></div>
       <div style="font-size:10px;color:var(--muted);margin-top:2px">SH ${fmtB(SH_REV[i])} · TK ${fmtB(TK_REV[i])} · LZ ${fmtB(LZ_REV[i])}</div>
     </div>`).join('');
   // Ord bars
@@ -1178,7 +1198,7 @@ function initSalesOv(){
     const tot=SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i];
     return`<div style="margin-bottom:8px">
       <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px">
-        <span>${m}${i===7?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
+        <span>${m}${i===M5.length-1?' *':''}</span><span style="font-weight:700">${tot.toLocaleString()} orders</span>
       </div>
       <div style="height:8px;background:#f0f0f0;border-radius:4px;overflow:hidden;display:flex">
         <div style="width:${Math.round(SH_ORD[i]/maxO*100)}%;background:var(--sh)"></div>
@@ -1328,16 +1348,16 @@ function initMoTables(){
     const aov=Math.round(rev/ord);
     const prev=i>0?(SH_REV[i-1]+TK_REV[i-1]+LZ_REV[i-1]):null;
     const mo=prev?`<span style="${pctColor(rev,prev)}">${pct(rev,prev)}</span>`:'—';
-    return`<tr${i===7?' class="hl"':''}><td>${m}${i===7?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
+    return`<tr${i===M5.length-1?' class="hl"':''}><td>${m}${i===M5.length-1?' *':''}</td><td>${fmtB(rev)}</td><td>${ord.toLocaleString()}</td><td>฿${aov.toLocaleString()}</td><td>${mo}</td></tr>`;
   }).join('');
   document.getElementById('mo-tb-sh').innerHTML=M5.map((m,i)=>
-    `<tr${i===7?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-tk').innerHTML=M5.map((m,i)=>
-    `<tr${i===7?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-lz').innerHTML=M5.map((m,i)=>
-    `<tr${i===7?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`
   ).join('');
 }
 
@@ -1457,7 +1477,7 @@ function renderAdsMo(){
   const tkMoM=i>0?`<span style="font-size:10px;${pctColor(TK_REV[i],TK_REV[i-1])}">${pct(TK_REV[i],TK_REV[i-1])}</span>`:'—';
   document.getElementById('ads-mo-detail').innerHTML=`
     <div style="background:#fff;border-radius:14px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.06)">
-      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">${m}${i===7?' *':''} — Ads Detail</div>
+      <div style="font-size:12px;font-weight:700;color:var(--muted);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px">${m}${i===M5.length-1?' *':''} — Ads Detail</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
         <div style="background:#fff4f2;border-radius:10px;padding:10px;border-left:3px solid var(--sh)">
           <div style="font-size:10px;font-weight:700;color:var(--sh);margin-bottom:6px">🧡 SHOPEE</div>
@@ -1511,7 +1531,7 @@ function initAds(){
       <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(SH_ADS[i])} → Rev ${fmtB(SH_REV[i])}</div>
     </div>`).join('');
   document.getElementById('sh-ads-tb').innerHTML=M5.map((m,i)=>
-    `<tr${i===7?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_ADS[i])}</td><td>${fmtB(SH_FEE[i])}</td><td style="color:var(--sh)">${shR[i]}×</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_ADS[i])}</td><td>${fmtB(SH_FEE[i])}</td><td style="color:var(--sh)">${shR[i]}×</td></tr>`
   ).join('');
   document.getElementById('tk-roas-bars').innerHTML=M5.map((m,i)=>`
     <div style="margin-bottom:7px">
@@ -1522,7 +1542,7 @@ function initAds(){
       <div style="font-size:10px;color:var(--muted);margin-top:1px">Spend ${fmtB(TK_ADSSPEND[i])} → Rev ${fmtB(TK_REV[i])}</div>
     </div>`).join('');
   document.getElementById('tk-ads-tb').innerHTML=M5.map((m,i)=>
-    `<tr${i===7?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${fmtB(TK_FEECOMM[i])}</td><td>${tkR[i]}×</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${fmtB(TK_FEECOMM[i])}</td><td>${tkR[i]}×</td></tr>`
   ).join('');
   const combR=SH_REV.map((v,i)=>+((v+TK_REV[i])/(SH_ADS[i]+TK_ADSSPEND[i])).toFixed(2));
   const maxC=Math.max(...combR);
