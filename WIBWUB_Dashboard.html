@@ -1436,10 +1436,10 @@
          col:'#1A5CDB',
          days:["1 ส.ค.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31 ส.ค."],
          vals:[27843,27885,27912,27942,27962,27977,27996,28032,28062,28078,28097,28113,28146,28172,28208,28235,28254,28275,28303,28317,28329,28346,28375,28412,28443,28479,28500,28539,28598,28649,28684]},
-        {label:'กันยายน 2569',start:28684,end:28753,net:69,pct:0.24,sub:'กันยายน 2569 · เริ่ม 28,684 → ล่าสุด 28,753 · +69 คน (+0.24%) (ข้อมูลรายวัน 1–2 ก.ย.)',
+        {label:'กันยายน 2569',start:28684,end:28957,net:273,pct:0.95,sub:'กันยายน 2569 · เริ่ม 28,684 → ล่าสุด 28,957 · +273 คน (+0.95%) (ข้อมูลรายวัน 1–5 ก.ย.)',
          col:'#1A5CDB',
-         days:["1 ก.ย.","2 ก.ย."],
-         vals:[28715,28753]},
+         days:["1 ก.ย.","2","3","4","5 ก.ย."],
+         vals:[28715,28753,28863,28914,28957]},
       ];
       let folChart = null;
       function showFollowerMonth(idx){
@@ -1817,7 +1817,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,28.908],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,28.957],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Instagram',data:[35,36,37,38,39,40,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
