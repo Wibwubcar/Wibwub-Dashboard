@@ -12094,7 +12094,7 @@ const SAMPLE_MONTHS = [
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
   {key:'2026-08', label:'ส.ค. 2569 (1-31)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 31/08/2026', funnel:{req:336, appr:146, shipped:146, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
-  {key:'2026-09', label:'ก.ย. 2569 (1-4)',    short:'ก.ย.',       partial:true,  range:'01/09/2026 - 04/09/2026', funnel:{req:54,  appr:17,  shipped:17,  posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
+  {key:'2026-09', label:'ก.ย. 2569 (1-8)',    short:'ก.ย.',       partial:true,  range:'01/09/2026 - 08/09/2026', funnel:{req:55,  appr:17,  shipped:17,  posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
 ];
 
 const SAMPLE_LAST7D = {
@@ -12130,7 +12130,7 @@ const SAMPLE_PRODUCTS = {
   '2026-06': {total:34,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:22,appr:8,rej:14,other:0},{n:'Sugar',c:12,appr:10,rej:2,other:0}]},
   '2026-07': {total:48,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:37,appr:9,rej:28,other:0},{n:'Sugar',c:13,appr:6,rej:7,other:0}]},
   '2026-08': {total:336, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:165,appr:81,rej:84,other:0},{n:'Interior wipes',c:113,appr:49,rej:64,other:0},{n:'Interior',c:36,appr:14,rej:22,other:0},{n:'Reflex',c:35,appr:12,rej:23,other:0},{n:'Sugar',c:11,appr:5,rej:6,other:0}]},
-  '2026-09': {total:54,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:26,appr:7,rej:19,other:0},{n:'Interior wipes',c:18,appr:5,rej:13,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:4,appr:2,rej:2,other:0},{n:'Sugar',c:3,appr:2,rej:1,other:0}]},
+  '2026-09': {total:55,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:27,appr:7,rej:20,other:0},{n:'Interior wipes',c:19,appr:5,rej:14,other:0},{n:'Interior',c:7,appr:2,rej:5,other:0},{n:'Reflex',c:4,appr:2,rej:2,other:0},{n:'Sugar',c:3,appr:2,rej:1,other:0}]},
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
@@ -12139,14 +12139,13 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 02/09/2026 - 08/09/2026 → 40 requests in-range. The last
-// row actually present in the sheet is dated 04/09/2026, so the final 4 days
-// of this window contribute nothing; the drop vs. the previous 54 reflects
-// the window sliding forward past 01/09 (14 rows), not lost data.
+// Current window 02/09/2026 - 08/09/2026 → 41 requests in-range. The sheet now
+// carries rows through 08/09/2026, so the window is fully covered. The gap vs.
+// the month total (55) is the 14 rows dated 01/09 that fall outside the window.
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:40, window:'02/09/2026 - 08/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:19,appr:5,rej:14,other:0},{n:'Interior wipes',c:17,appr:5,rej:12,other:0},{n:'Reflex',c:4,appr:2,rej:2,other:0},{n:'Interior',c:2,appr:1,rej:1,other:0},{n:'Sugar',c:1,appr:1,rej:0,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:41, window:'02/09/2026 - 08/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:20,appr:5,rej:15,other:0},{n:'Interior wipes',c:18,appr:5,rej:13,other:0},{n:'Reflex',c:4,appr:2,rej:2,other:0},{n:'Interior',c:2,appr:1,rej:1,other:0},{n:'Sugar',c:1,appr:1,rej:0,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
