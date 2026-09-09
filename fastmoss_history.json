@@ -1228,6 +1228,113 @@
           ]
         }
       }
+    },
+    {
+      "date": "2026-09-09",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 100800,
+            "sales_total": 28900000,
+            "products_active": 88,
+            "products_total": 99,
+            "country_rank": 3400,
+            "category_rank": 149,
+            "rating": 4.9,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-08-12 → 2026-09-08",
+            "orders": 11900,
+            "sales": 1700000,
+            "creators": 313,
+            "lives": 407,
+            "videos": 644,
+            "products_sold": 63
+          },
+          "top_products": [
+            {
+              "name": "WIBWUB Refresh Leather Wipes",
+              "orders": 6300,
+              "sales": 556200
+            },
+            {
+              "name": "WIBWUB Interior Wipes",
+              "orders": 2100,
+              "sales": 172900
+            },
+            {
+              "name": "WIBWUB Sugar V.3",
+              "orders": 1300,
+              "sales": 358600
+            },
+            {
+              "name": "WIBWUB Cleaner",
+              "orders": 252,
+              "sales": 44600
+            },
+            {
+              "name": "WIBWUB Interior",
+              "orders": 225,
+              "sales": 63000
+            }
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 350200,
+            "sales_total": 74000000,
+            "products_active": 59,
+            "products_total": 60,
+            "country_rank": 1000,
+            "category_rank": 28,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-08-12 → 2026-09-08",
+            "orders": 33900,
+            "sales": 4600000,
+            "creators": 613,
+            "lives": 903,
+            "videos": 1300,
+            "products_sold": 52
+          },
+          "top_products": [
+            {
+              "name": "Munwow Nano fiber towel (ผ้าไมโครไฟเบอร์ไร้ขอบ)",
+              "orders": 19000,
+              "sales": 18000
+            },
+            {
+              "name": "Munwow All interior",
+              "orders": 5100,
+              "sales": 1500000
+            },
+            {
+              "name": "Munwow sexy สเปรย์แว็กซ์เคลือบสี",
+              "orders": 1700,
+              "sales": 499600
+            },
+            {
+              "name": "Munwow Soft Pad (ฟองน้ำขัด/ลงแว็กซ์)",
+              "orders": 1100,
+              "sales": 103300
+            },
+            {
+              "name": "Good view (เคลือบกระจกไล่น้ำ)",
+              "orders": 1000,
+              "sales": 316000
+            }
+          ]
+        }
+      }
     }
   ],
   "monthly_history": [
