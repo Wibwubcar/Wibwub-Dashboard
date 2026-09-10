@@ -643,7 +643,7 @@ const DATA_PERIODS = {
     tiktok:{spend:682333.01,revenue:2463893.09,orders:11947,imp:0,clicks:0,roas:3.61,ctr:0,cvr:0,cpa:57.11,top5:[],worst5:[],all:[]}
   },
   sep: {
-    /* Sep 1-10 PARTIAL (month in progress). Shopee: official Shopee Ads export ข้อมูล-Shopee-Ads-01_09_2026-10_09_2026.csv (report generated 10/09/2026 20:10, report_type=new_cpc_homepage__overall — ไฟล์นี้รวม CPC/product ads 39 แคมเปญ + search/shop ads 4 แคมเปญ = 43 แคมเปญไว้ในไฟล์เดียว จึงไม่ต้องใช้ Shop-Ads-Overall แยกอีกในรอบนี้) — ครอบคลุมถึง 10 ก.ย. เก็บถึง ~20:10 ICT (วันที่ 10 ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป; รอบ 9 ก.ย. 19:32 รวม 370,195.47 -> รอบเช้า 10 ก.ย. 09:56 รวม 413,756.10 -> รอบนี้ 437,070.27). ดึงโดย scheduled wibwub-download-shopee-ads 10 ก.ย. 2569 ~20:10 ICT. ⚠️ ยืนยันบทเรียนเดิมซ้ำอีกรอบ: การกด "ดาวน์โหลดข้อมูล > ภาพรวมข้อมูลโฆษณา" จากหน้า Shopee Ads ตอนที่แท็บตารางอยู่ที่ "โฆษณาสินค้า" จะยิง trigger ด้วย report_type=product_homepage_v2__overall ซึ่งได้แค่ 39 แคมเปญ (product ads) ขาด search/shop ads 4 แคมเปญ (รอบนี้ต่างกัน spend 397,062.63 -> 437,070.27). ต้องยิง API ตรงด้วย POST /api/pas/v1/report/export_job/trigger/ {language:"th",report_type:"new_cpc_homepage__overall",start_time,end_time} จึงจะได้ครบ 43 แคมเปญ. หมายเหตุ: ถ้ายิง trigger ถี่เกินจะได้ code:200 "too many export requests" — รอ ~60 วิ แล้วยิงใหม่. TikTok: รีเฟรชล่าสุด 2026-09-10 ~20:10 ICT โดย scheduled wibwub-download-tiktok-ads run (ทับรอบเช้า 10 ก.ย. 09:45) — ครอบคลุมวันที่ 1-10 ก.ย. โดย 1-9 ก.ย. ปิดวันแล้ว และ 10 ก.ย. เก็บถึง ~20:10 (ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป: 22,279.74 / 373 ออเดอร์ / 86,114.00 · ROI 3.87). ไฮไลต์รอบนี้: 9 ก.ย. ยังเป็นวันที่ดีที่สุดของเดือนแบบทิ้งห่างที่ 43,334.47 / 812 ออเดอร์ / 237,251.49 · ROI 5.47. ข้อควรระวัง: 9 ก.ย. ที่รอบเช้ารายงานว่า "ปิดวันแล้ว" ยัง restate เล็กน้อยอีก (43,334.34 → 43,334.47 spend / 237,351.30 → 237,251.49 revenue) ส่วน 1-8 ก.ย. เท่าเดิมทุกวัน — ยืนยันกฎ ~48 ชม. อีกครั้ง. tiktok.spend = gmvMax 276,306.10 + bizAds 9,048.69 = 285,354.79; ROAS 3.96 · CPA 61.67. ดาวน์โหลด xlsx ครบทั้ง 2 ไฟล์ และ verify ผลรวมกับแถว Total ของแต่ละไฟล์แล้วตรงทุกตัว. revenue/orders มาจาก GMV Max Overview เท่านั้น (bizAds เป็น impression-based ไม่มี revenue/orders). gmvLive ไม่ถูกบวกซ้ำเข้ามาที่นี่ เพราะอยู่ใน GMV Max Overview export อยู่แล้ว (ดู TK_BREAKDOWN.aug) — ค่า 0 ใน TK_BREAKDOWN.sep.gmvLive แปลว่า "ยังไม่เก็บ" ไม่ใช่ "ไม่มีไลฟ์". imp/clicks/ctr/cvr ปล่อยเป็น 0 ตาม convention ของเดือนก่อน ๆ (GMV Max Overview export ไม่มีคอลัมน์เหล่านี้) — ดูตัวเลข impression/click จริงของ bizAds ได้ที่ TK_BREAKDOWN.sep.bizAds. */
+    /* Sep 1-10 PARTIAL (month in progress). Shopee: official Shopee Ads export ข้อมูล-Shopee-Ads-01_09_2026-10_09_2026.csv (report generated 10/09/2026 09:56, report_type=new_cpc_homepage__overall — ไฟล์นี้รวม CPC/product ads 39 แคมเปญ + search/shop ads 4 แคมเปญ = 43 แคมเปญไว้ในไฟล์เดียว จึงไม่ต้องใช้ Shop-Ads-Overall แยกอีกในรอบนี้) — ครอบคลุมถึง 10 ก.ย. เก็บถึง ~09:56 ICT (วันที่ 10 ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป; รอบ 9 ก.ย. 19:32 รวม 370,195.47 -> รอบนี้ 413,756.10). ดึงโดย scheduled wibwub-download-shopee-ads 10 ก.ย. 2569 ~09:56 ICT. ⚠️ บทเรียนรอบนี้: การกด "ดาวน์โหลดข้อมูล > ภาพรวมข้อมูลโฆษณา" จากหน้า Shopee Ads ตอนที่แท็บตารางอยู่ที่ "โฆษณาสินค้า" จะยิง trigger ด้วย report_type=product_homepage_v2__overall ซึ่งได้แค่ 39 แคมเปญ (product ads) ขาด search/shop ads 4 แคมเปญ (spend ~29.6k-37k). ต้องยิง API ตรงด้วย POST /api/pas/v1/report/export_job/trigger/ {language:"th",report_type:"new_cpc_homepage__overall",start_time,end_time} จึงจะได้ครบ 43 แคมเปญตาม convention ของเดือนก่อน ๆ. TikTok: รีเฟรชล่าสุด 2026-09-10 ~20:10 ICT โดย scheduled wibwub-download-tiktok-ads run (ทับรอบเช้า 10 ก.ย. 09:45) — ครอบคลุมวันที่ 1-10 ก.ย. โดย 1-9 ก.ย. ปิดวันแล้ว และ 10 ก.ย. เก็บถึง ~20:10 (ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป: 22,279.74 / 373 ออเดอร์ / 86,114.00 · ROI 3.87). ไฮไลต์รอบนี้: 9 ก.ย. ยังเป็นวันที่ดีที่สุดของเดือนแบบทิ้งห่างที่ 43,334.47 / 812 ออเดอร์ / 237,251.49 · ROI 5.47. ข้อควรระวัง: 9 ก.ย. ที่รอบเช้ารายงานว่า "ปิดวันแล้ว" ยัง restate เล็กน้อยอีก (43,334.34 → 43,334.47 spend / 237,351.30 → 237,251.49 revenue) ส่วน 1-8 ก.ย. เท่าเดิมทุกวัน — ยืนยันกฎ ~48 ชม. อีกครั้ง. tiktok.spend = gmvMax 276,306.10 + bizAds 9,048.69 = 285,354.79; ROAS 3.96 · CPA 61.67. ดาวน์โหลด xlsx ครบทั้ง 2 ไฟล์ และ verify ผลรวมกับแถว Total ของแต่ละไฟล์แล้วตรงทุกตัว. revenue/orders มาจาก GMV Max Overview เท่านั้น (bizAds เป็น impression-based ไม่มี revenue/orders). gmvLive ไม่ถูกบวกซ้ำเข้ามาที่นี่ เพราะอยู่ใน GMV Max Overview export อยู่แล้ว (ดู TK_BREAKDOWN.aug) — ค่า 0 ใน TK_BREAKDOWN.sep.gmvLive แปลว่า "ยังไม่เก็บ" ไม่ใช่ "ไม่มีไลฟ์". imp/clicks/ctr/cvr ปล่อยเป็น 0 ตาม convention ของเดือนก่อน ๆ (GMV Max Overview export ไม่มีคอลัมน์เหล่านี้) — ดูตัวเลข impression/click จริงของ bizAds ได้ที่ TK_BREAKDOWN.sep.bizAds. */
     /* SINGLE SOURCE OF TRUTH for the ก.ย. coverage-day labels (see skill: wibwub-avoid-stale-hardcoded-labels).
        Every 'Shopee ถึง N ก.ย. · TikTok ถึง M ก.ย.' string in the page is re-derived from this object at load time
        by adsSyncCoverageLabels(), so a data sync that bumps these numbers updates every label for free. */
@@ -1140,6 +1140,46 @@ function adsSyncCoverageLabels(){
   if (lab) lab.textContent = ADS_PERIOD_DEFS[curPickedPeriod] ? ADS_PERIOD_DEFS[curPickedPeriod].label : lab.textContent;
   const upd = document.getElementById('ads-updated');
   if (upd) upd.textContent = `อัปเดต Shopee ถึง ${c.shopeeDay} ก.ย. 2569 (ดึง ${c.shopeePull}) · TikTok ถึง ${c.tiktokDay} ก.ย. 2569 (ดึง ${c.tiktokPull})`;
+  adsSyncPeriodBtnMoney();
+}
+
+/* Derived from DATA_PERIODS revenue — the "Shopee ฿X · TikTok ฿Y" money line and the
+   current-month day range inside each period button used to be hand-typed literals that
+   nothing forced to stay in sync with the data arrays (see skill
+   wibwub-avoid-stale-hardcoded-labels). They are now recomputed at call-time, so a data
+   sync that only touches DATA_PERIODS updates every button label for free. */
+function adsFmtMoney(v){
+  v = Number(v) || 0;
+  return v >= 1e6 ? '฿' + (v/1e6).toFixed(2) + 'M' : '฿' + Math.round(v/1000) + 'K';
+}
+function adsSyncPeriodBtnMoney(){
+  const c = adsCover();
+  const rxMoney = /Shopee ฿[\d.]+[KM] · TikTok ฿[\d.]+[KM]/;
+  const line = (sh, tk) => `Shopee ${adsFmtMoney(sh)} · TikTok ${adsFmtMoney(tk)}`;
+  Object.keys(DATA_PERIODS).forEach(k => {
+    const btn = document.getElementById('adsPeriodBtn-' + k);
+    if (!btn) return;
+    const sub = btn.querySelector('.pb-sub');
+    if (!sub) return;
+    const p = DATA_PERIODS[k];
+    let html = sub.innerHTML.replace(rxMoney, line(p.shopee.revenue, p.tiktok.revenue));
+    /* current (partial) month: keep the "01–NN ก.ย." range honest too */
+    html = html.replace(/01–\d+ ก\.ย\./, '01–' + adsCoverMaxDay() + ' ก.ย.');
+    sub.innerHTML = html;
+  });
+  const allBtn = document.getElementById('adsPeriodBtn-all');
+  if (allBtn) {
+    const sub = allBtn.querySelector('.pb-sub');
+    if (sub) {
+      let sh = 0, tk = 0;
+      ADS_PERIOD_DEFS.all.keys.forEach(k => {
+        if (!DATA_PERIODS[k]) return;
+        sh += DATA_PERIODS[k].shopee.revenue || 0;
+        tk += DATA_PERIODS[k].tiktok.revenue  || 0;
+      });
+      sub.innerHTML = sub.innerHTML.replace(rxMoney, line(sh, tk));
+    }
+  }
 }
 
 // ── Period Picker ─────────────────────────────────────────────────
@@ -1190,12 +1230,6 @@ function adsSyncPickerSubs(){
     sub.innerHTML = sub.innerHTML.replace(
       /Shopee ฿[\d.]+[MK] · TikTok ฿[\d.]+[MK]/,
       'Shopee ' + adsFmtRev(sh) + ' · TikTok ' + adsFmtRev(tk)
-    ).replace(
-      /* current (partial) month: the "01–NN ก.ย." range was the one literal in these
-         buttons still hand-typed, so it drifted (showed 01–09 while data covered 10).
-         Derived from DATA_PERIODS.sep.cover now, like every other coverage label. */
-      /01–\d+ ก\.ย\./,
-      '01–' + adsCoverMaxDay() + ' ก.ย.'
     );
   };
   let sr = 0, tr = 0;
