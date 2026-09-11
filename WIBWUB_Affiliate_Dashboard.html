@@ -12366,13 +12366,14 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 04/09/2026 - 10/09/2026 → 138 requests in-range. The sheet now
-// carries rows through 10/09/2026, so the window is fully covered. The gap vs.
-// the month total (159) is the 21 rows dated 01/09-03/09 outside the window.
+// Current window 05/09/2026 - 11/09/2026 → 105 requests in-range. The sheet
+// carries rows through 10/09/2026 only (nothing logged yet for 11/09), so the
+// last day of the window is empty. The gap vs. the month total (159) is the 54
+// rows dated 01/09-04/09 that fell out of the window.
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:138, window:'04/09/2026 - 10/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:75,appr:35,rej:40,other:0},{n:'Interior wipes',c:44,appr:20,rej:24,other:0},{n:'Reflex',c:12,appr:9,rej:3,other:0},{n:'Interior',c:11,appr:5,rej:6,other:0},{n:'Sugar',c:5,appr:4,rej:1,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:105, window:'05/09/2026 - 11/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:60,appr:31,rej:29,other:0},{n:'Interior wipes',c:30,appr:15,rej:15,other:0},{n:'Interior',c:9,appr:4,rej:5,other:0},{n:'Reflex',c:9,appr:7,rej:2,other:0},{n:'Sugar',c:4,appr:3,rej:1,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
