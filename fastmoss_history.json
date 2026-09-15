@@ -1860,6 +1860,317 @@
           ]
         }
       }
+    },
+    {
+      "date": "2026-09-15",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 104200,
+            "sales_total": 29600000,
+            "products_active": 88,
+            "products_total": 99,
+            "country_rank": 3400,
+            "category_rank": 149,
+            "rating": 4.9,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 13000,
+            "sales": 2100000,
+            "creators": 344,
+            "lives": 472,
+            "videos": 697,
+            "products_sold": 65
+          },
+          "top_products": [
+            {
+              "name": "WIBWUB Refresh Leather Wipes",
+              "orders": 6400,
+              "sales": 580200
+            },
+            {
+              "name": "WIBWUB Interior Wipes",
+              "orders": 2100,
+              "sales": 190800
+            },
+            {
+              "name": "WIBWUB Sugar V.3",
+              "orders": 1700,
+              "sales": 478500
+            },
+            {
+              "name": "WIBWUB Reflex V.2",
+              "orders": 296,
+              "sales": 125900
+            },
+            {
+              "name": "WIBWUB Interior",
+              "orders": 257,
+              "sales": 82300
+            }
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 357900,
+            "sales_total": 75400000,
+            "products_active": 60,
+            "products_total": 61,
+            "country_rank": 1000,
+            "category_rank": 28,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 34400,
+            "sales": 5100000,
+            "creators": 633,
+            "lives": 1000,
+            "videos": 1400,
+            "products_sold": 54
+          },
+          "top_products": [
+            {
+              "name": "Munwow Nano fiber towel",
+              "orders": 18500,
+              "sales": 16800
+            },
+            {
+              "name": "Munwow All interior",
+              "orders": 5000,
+              "sales": 1600000
+            },
+            {
+              "name": "Munwow sexy สเปรย์แว็กซ์เคลือบสีเพิ่มความเงาฉ่ำให้สีรถ",
+              "orders": 1900,
+              "sales": 588700
+            },
+            {
+              "name": "Munwow Soft Pad",
+              "orders": 1300,
+              "sales": 129700
+            },
+            {
+              "name": "Good view",
+              "orders": 1100,
+              "sales": 347400
+            }
+          ]
+        },
+        "kake": {
+          "cumulative": {
+            "orders_total": 1600000,
+            "sales_total": 240600000,
+            "products_active": 36,
+            "products_total": 68,
+            "country_rank": 719,
+            "category_rank": 15,
+            "rating": 5.0,
+            "overall_good_pct": 98,
+            "quality_score": 97,
+            "response_rate_24h": 74,
+            "shipping_rate_48h": 89
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 62500,
+            "sales": 6700000,
+            "creators": 975,
+            "lives": 1100,
+            "videos": 2400,
+            "products_sold": 33
+          },
+          "top_products": [
+            {
+              "name": "[ 1แถม1 ] เคลือบมอไซค์ กันน้ำ Wax เงาฉ่ำ Car รถ เคลือบเงา KAKE คาร์เก้ KH",
+              "orders": 30400,
+              "sales": 3100000
+            },
+            {
+              "name": "เคลือบกระจกกันน้ำ KAKE ติดทน 120ml. สูตรเข้มข้น มีกลิ่นหอม KG",
+              "orders": 11300,
+              "sales": 746100
+            },
+            {
+              "name": "[1แถม1] เคลือบสีรถ สูตรกันน้ำ กันแดด เงาฉ่ำ ติดทน KAKE 250ml. KN",
+              "orders": 8500,
+              "sales": 1000000
+            },
+            {
+              "name": "โปร เคลือบมอไซค์ 2 + ภายใน 1 บำรุง เบาะหนัง พลาสติก ยาง KAKE คาร์เก้ KH2T",
+              "orders": 3900,
+              "sales": 628800
+            },
+            {
+              "name": "KAKE สเปรย์เคลือบภายใน 250ml. สำหรับเบาะหนัง คอนโซล พลาสติก และยาง ลดฝุ่น กลิ่นหอม ติดทนนาน 1-2 เดือน",
+              "orders": 3300,
+              "sales": 269800
+            }
+          ]
+        },
+        "libitu": {
+          "cumulative": {
+            "orders_total": 3100000,
+            "sales_total": 371600000,
+            "products_active": 71,
+            "products_total": 76,
+            "country_rank": 140,
+            "category_rank": 2,
+            "rating": 5.0,
+            "overall_good_pct": 100,
+            "quality_score": 96,
+            "response_rate_24h": 99,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 215100,
+            "sales": 23100000,
+            "creators": 1700,
+            "lives": 1400,
+            "videos": 6000,
+            "products_sold": 62
+          },
+          "top_products": [
+            {
+              "name": "LIBITU VT5 น้ำยาขัดเงารถ น้ำยาเคลือบเงา น้ำยาเช็ดรถ น้ำยาขัดยางดำ น้ำยาเช็ดยางดำ น้ำยาทายางดำ น้ำยาเคือบแก้ว ยางดำ รถยนต์ รถจักร Car",
+              "orders": 45100,
+              "sales": 4400000
+            },
+            {
+              "name": "Libitu Upgraded version สูตรใหม่ประสิทธิภาพสูง น้ำยาล้างหัวฉีด สำหรับรถยนต์ดีเซลและเบนซิน",
+              "orders": 33100,
+              "sales": 5000000
+            },
+            {
+              "name": "Libitu G20 น้ำยาล้างหัวฉีดน้ำมันเชื้อเพลิงรถจักรยานยนต์",
+              "orders": 32100,
+              "sales": 2100000
+            },
+            {
+              "name": "LIBITU 801E น้ำยาเคลือบกระจกไล่น้ำ 120มล สูตรเข้มข้นเซรามิกพรีเมี่ยม",
+              "orders": 22800,
+              "sales": 1500000
+            },
+            {
+              "name": "LIBITU T505 เคลือบแก้ว แถมผ้า1ผืน น้ำยาเคลือบแก้ว น้ำยาขัดเงารถ น้ำยาเคลือบรถ เคลือบเงารถ น้ำยาเคลือบสีรถ",
+              "orders": 12800,
+              "sales": 1500000
+            }
+          ]
+        },
+        "glossycrazy": {
+          "cumulative": {
+            "orders_total": 412000,
+            "sales_total": 75700000,
+            "products_active": 22,
+            "products_total": 30,
+            "country_rank": 10000,
+            "category_rank": 1300,
+            "rating": 5.0,
+            "overall_good_pct": 99,
+            "quality_score": 100,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 88
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 1900,
+            "sales": 285500,
+            "creators": 94,
+            "lives": 401,
+            "videos": 136,
+            "products_sold": 20
+          },
+          "top_products": [
+            {
+              "name": "น้ำยาเคลือบกระจก Glossy Crazy Clear สูตร Silica สร้างชั้นฟิล์ม ผิวกระจกลื่น น้ำกลิ้งไว ติดทน 3-6 เดือนขึ้นไป",
+              "orders": 420,
+              "sales": 46800
+            },
+            {
+              "name": "เคลือบสีรถ เงาใส Glossy Crazy Sabi สูตรคานุบา + ซิลิโคน ควอท ผิวลื่น ไล่น้ำแบบ Hydrophilic กัน UV ใช้แบบ Waterless ได้",
+              "orders": 350,
+              "sales": 32900
+            },
+            {
+              "name": "เคลือบสีรถ เงาฉ่ำ ใช้ตอนรถเปียกได้เลย Glossy Crazy Supernova ไล่น้ำ Hydrophobic น้ำเป็นเม็ดกลมมาก สูตร Silica (SiO₂) + Polymer + Resin กัน UV ติดทนมาก",
+              "orders": 202,
+              "sales": 52500
+            },
+            {
+              "name": "เคลือบสีรถ ผิวลื่นมาก เงาฉ่ำ Glossy Crazy Enigma ไล่น้ำ Hydrophobic น้ำเป็นเม็ดกลมมาก สูตร Silica (SiO₂) + Polymer กัน UV ติดทนนาน",
+              "orders": 177,
+              "sales": 40100
+            },
+            {
+              "name": "เจลเคลือบยางและพลาสติก ใช้ได้ทั้งภายนอกและภายใน Glossy Crazy Onyx ดำเงาฉ่ำ กันน้ำ สูตร Multi & Modified Silicone",
+              "orders": 171,
+              "sales": 18900
+            }
+          ]
+        },
+        "dlabs": {
+          "cumulative": {
+            "orders_total": 54700,
+            "sales_total": 11900000,
+            "products_active": 66,
+            "products_total": 96,
+            "country_rank": 10000,
+            "category_rank": 733,
+            "rating": 4.8,
+            "overall_good_pct": 88,
+            "quality_score": 76,
+            "response_rate_24h": 100,
+            "shipping_rate_48h": 90
+          },
+          "trend28d": {
+            "range": "2026-08-18 - 2026-09-14",
+            "orders": 2800,
+            "sales": 461700,
+            "creators": 46,
+            "lives": 70,
+            "videos": 76,
+            "products_sold": 31
+          },
+          "top_products": [
+            {
+              "name": "168 หัวเชื้อโฟมล้างรถPREWASH เคลือบเงาในตัว โฟมแลนซ์1:9 [LAVA SPONGG BY DLABs]",
+              "orders": 2100,
+              "sales": 308700
+            },
+            {
+              "name": "239 น้ำยาสลายคราบยางมะตอย พร้อมใช้งาน [STUNNIN BY DLABs]",
+              "orders": 186,
+              "sales": 29700
+            },
+            {
+              "name": "499 หัวเชื้อซักผ้าไมโครไฟเบอร์ ขยายได้ 100ลิตร [FULLYBRAM BY DLABs]",
+              "orders": 180,
+              "sales": 29400
+            },
+            {
+              "name": "เซ็ตท์คอมโบเงาวาว 510&168",
+              "orders": 60,
+              "sales": 19800
+            },
+            {
+              "name": "749 หัวเชื้อสลายคราบAPC ขยายได้ 20ลิตร [EVERYTHING ALL CLEAN]",
+              "orders": 43,
+              "sales": 12700
+            }
+          ]
+        }
+      }
     }
   ],
   "monthly_history": [
