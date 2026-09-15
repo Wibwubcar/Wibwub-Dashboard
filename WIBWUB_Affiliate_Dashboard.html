@@ -260,7 +260,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="hdr-logo">WIB<span>WUB</span></div>
     <div class="hdr-sub">Affiliate Analytics Dashboard</div>
   </div>
-  <div class="hdr-badge" id="aff-updated">📅 ส.ค. เต็มเดือน + ก.ย. (1-11) 2569 · อัปเดต 14 ก.ย. 2569</div>
+  <div class="hdr-badge" id="aff-updated">📅 ส.ค. เต็มเดือน + ก.ย. (1-13) 2569 · อัปเดต 15 ก.ย. 2569</div>
 </div>
 
 <div class="nav">
@@ -12749,13 +12749,13 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 08/09/2026 - 14/09/2026 → 130 requests in-range. The gap vs.
-// the month total (184) is the 54 rows dated 01/09-07/09 that fell out of the
-// window.
+// Current window 09/09/2026 - 15/09/2026 → 51 requests in-range. The gap vs.
+// the month total (185) is the 134 rows dated 01/09-08/09 that fell out of the
+// window (day 08/09 alone logged 80 rows, a bulk-entry burst).
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:131, window:'08/09/2026 - 14/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:76,appr:33,rej:43,other:0},{n:'Interior wipes',c:36,appr:17,rej:19,other:0},{n:'Reflex',c:10,appr:7,rej:3,other:0},{n:'Interior',c:9,appr:4,rej:5,other:0},{n:'Sugar',c:6,appr:5,rej:1,other:0},{n:'Beach',c:1,appr:1,rej:0,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:51, window:'09/09/2026 - 15/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:28,appr:12,rej:16,other:0},{n:'Interior wipes',c:11,appr:5,rej:6,other:0},{n:'Sugar',c:5,appr:4,rej:1,other:0},{n:'Interior',c:3,appr:0,rej:3,other:0},{n:'Reflex',c:3,appr:2,rej:1,other:0},{n:'Beach',c:1,appr:1,rej:0,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
@@ -13336,11 +13336,11 @@ function buildCharts(){
 // ══════════════════════════════════════════
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
-const AF_MO  = ["ม.ค.", "ก.พ.", "มี.ค. (1-31)", "เม.ย. (1-30)", "พ.ค. (1-31)", "มิ.ย. (1-30)", "ก.ค. (1-31)", "ส.ค. (1-31)", "ก.ย. (1-12)"];
-const AF_GMV = [0,0,655171,724241,951158,660557,1452748,1730666,829411];
-const AF_NET = [0,0,642865,708855,937203,650042,1428498,1701769,817577];
-const AF_COM = [0,0,82699,69021,104772,79293,169224,198783,93068];
-const AF_CR = [0,0,398,418,558,414,720,853,535];
+const AF_MO  = ["ม.ค.", "ก.พ.", "มี.ค. (1-31)", "เม.ย. (1-30)", "พ.ค. (1-31)", "มิ.ย. (1-30)", "ก.ค. (1-31)", "ส.ค. (1-31)", "ก.ย. (1-13)"];
+const AF_GMV = [0,0,655171,724241,951158,660557,1452748,1730666,908625];
+const AF_NET = [0,0,642865,708855,937203,650042,1428498,1701769,842024];
+const AF_COM = [0,0,82699,69021,104772,79293,169224,198783,101829];
+const AF_CR = [0,0,398,418,558,414,720,853,568];
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
