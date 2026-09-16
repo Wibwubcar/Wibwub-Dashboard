@@ -1386,16 +1386,18 @@
       <div style="background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px">
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px">
           <div style="font-size:.82rem;font-weight:700;color:#111">📈 Follower รายวัน — เลือกเดือน</div>
-          <div style="display:flex;gap:6px;flex-wrap:wrap" id="fol-month-btns">
-            <button onclick="showFollowerMonth(0)" class="fol-btn" id="fbtn-0">ม.ค.</button>
-            <button onclick="showFollowerMonth(1)" class="fol-btn" id="fbtn-1">ก.พ.</button>
-            <button onclick="showFollowerMonth(2)" class="fol-btn" id="fbtn-2">มี.ค.</button>
-            <button onclick="showFollowerMonth(3)" class="fol-btn" id="fbtn-3">เม.ย.</button>
-            <button onclick="showFollowerMonth(4)" class="fol-btn" id="fbtn-4">พ.ค.</button>
-            <button onclick="showFollowerMonth(5)" class="fol-btn" id="fbtn-5">มิ.ย.</button>
-            <button onclick="showFollowerMonth(6)" class="fol-btn" id="fbtn-6">ก.ค.</button>
-            <button onclick="showFollowerMonth(7)" class="fol-btn" id="fbtn-7">ส.ค.</button>
-            <button onclick="showFollowerMonth(8)" class="fol-btn" id="fbtn-8">ก.ย.</button>
+          <div class="mpicker-wrap">
+            <div class="mrange-btn" id="socBtn" onclick="socToggle()">
+              <span id="soc-label">กันยายน 2569</span>
+              <span class="caret">▾</span>
+            </div>
+            <div class="mpicker-backdrop" id="socBackdrop" onclick="socClose()"></div>
+            <div class="mpicker-panel soc-panel" id="socPanel">
+              <div class="mpc-cals" style="padding:16px">
+                <div class="mpc-side-title">เลือกเดือน 2569</div>
+                <div class="soc-month-grid" id="socGrid"></div>
+              </div>
+            </div>
           </div>
         </div>
         <div style="font-size:.75rem;color:#888;margin-bottom:10px" id="fol-chart-sub">มกราคม 2569 · เริ่ม 22,458 → จบ 23,404 · +946 คน (+4.21%)</div>
@@ -1403,9 +1405,13 @@
       </div>
 
       <style>
-        .fol-btn{padding:4px 12px;border-radius:20px;border:1.5px solid #ddd;background:#f8f8f8;font-size:.75rem;font-weight:600;cursor:pointer;color:#555;transition:all .15s}
-        .fol-btn:hover{border-color:#111;color:#111}
-        .fol-btn.fol-active{background:#111;color:#fff;border-color:#111}
+        .soc-panel{min-width:280px;display:none}
+        .soc-panel.open{display:block}
+        .soc-month-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:8px}
+        .soc-month-cell{padding:14px 6px;border-radius:10px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;border:1.5px solid var(--border);color:var(--text);transition:all .15s}
+        .soc-month-cell:hover:not(.soc-disabled){border-color:#1A5CDB;color:#1A5CDB;background:var(--orange-lt)}
+        .soc-month-cell.soc-active{background:#1A5CDB;color:#fff;border-color:#1A5CDB}
+        .soc-month-cell.soc-disabled{color:#d1d5db;cursor:default;background:#fafafa}
       </style>
       <script>
       const FOL_DATA = [
@@ -1440,9 +1446,35 @@
          days:["1 ก.ย.","2","3","4","5","6","7","8","9","10","11","12 ก.ย."],
          vals:[28715,28753,28863,28914,28957,29025,29075,29147,29229,29271,29307,29363]},
       ];
+      const SOC_MONTH_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
       let folChart = null;
+      function socToggle(){
+        const open = document.getElementById('socPanel').classList.toggle('open');
+        document.getElementById('socBackdrop').classList.toggle('open', open);
+        document.getElementById('socBtn').classList.toggle('open', open);
+      }
+      function socClose(){
+        document.getElementById('socPanel').classList.remove('open');
+        document.getElementById('socBackdrop').classList.remove('open');
+        document.getElementById('socBtn').classList.remove('open');
+      }
+      function socRenderGrid(activeIdx){
+        let h = '';
+        for(let i=0;i<12;i++){
+          const has = i < FOL_DATA.length;
+          const cls = 'soc-month-cell' + (i===activeIdx?' soc-active':'') + (!has?' soc-disabled':'');
+          const click = has ? ` onclick="socSelectMonth(${i})"` : '';
+          h += `<div class="${cls}"${click}>${SOC_MONTH_ABBR[i]}</div>`;
+        }
+        document.getElementById('socGrid').innerHTML = h;
+      }
+      function socSelectMonth(idx){
+        showFollowerMonth(idx);
+        socClose();
+      }
       function showFollowerMonth(idx){
-        document.querySelectorAll('.fol-btn').forEach((b,i)=>b.classList.toggle('fol-active',i===idx));
+        document.getElementById('soc-label').textContent = FOL_DATA[idx].label;
+        socRenderGrid(idx);
         document.getElementById('fol-chart-sub').textContent = FOL_DATA[idx].sub;
         const color = idx>=7?'#1A5CDB':idx===0?'#ff6b2b':'#111';
         const bg = idx>=7?'rgba(26,92,219,.08)':idx===0?'rgba(255,107,43,.08)':'rgba(17,17,17,.06)';
@@ -1458,6 +1490,7 @@
             scales:{y:{ticks:{callback:v=>v.toLocaleString()}}}}
         });
       }
+      socRenderGrid(FOL_DATA.length-1);
       setTimeout(()=>showFollowerMonth(FOL_DATA.length-1), 300);
       </script>
 
