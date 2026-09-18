@@ -889,7 +889,17 @@ def update_html(sales, aff, posts, shipnity):
             posts = []
     if posts:
         def jsv(v):
-            if isinstance(v, str): return "'" + v.replace("'", "\\'") + "'"
+            # หมายเหตุ: ต้อง escape \, ', \n, \r ทั้งหมดก่อนใส่ใน single-quoted JS string
+            # literal — แคปชั่น TikTok มักมีการขึ้นบรรทัดใหม่จริง (raw newline) ซึ่งถ้าไม่ escape
+            # จะทำให้ '<script>' ทั้งก้อนพัง (SyntaxError) และปุ่มเลือกเดือนกดไม่ได้ทั้งหมด —
+            # บั๊กนี้เคยเกิดซ้ำมาแล้วหลายรอบ (823904a, 52c984a) เพราะ jsv() เดิม escape แค่ ' ตัวเดียว
+            if isinstance(v, str):
+                s = (v.replace('\\', '\\\\')
+                      .replace("'", "\\'")
+                      .replace('\r\n', '\\n')
+                      .replace('\n', '\\n')
+                      .replace('\r', '\\n'))
+                return "'" + s + "'"
             return str(v)
         entries = ['  {' + ','.join(f'{k}:{jsv(p[k])}'
                    for k in ['lbl','day','month','pillar','content',
