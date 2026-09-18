@@ -3794,13 +3794,13 @@ const CREATOR_MONTHS = {
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:1310071,units:9957,cr:317,vid:253,monthly:{mar:25400,apr:134300,may:393400,jun:7146,jul:460227,aug:48243,sep:230207},ret:{mar:178,apr:1500,may:2900,jun:179,jul:20192,aug:1998}},
-  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:828215,units:6412,cr:160,vid:143,monthly:{mar:36100,apr:162600,may:168300,jun:105801,jul:257081,aug:19588,sep:86946},ret:{mar:246,apr:2200,may:1100,jun:678,jul:13170,aug:1220}},
-  {name:'WIBWUB Sugar',short:'Sugar',gmv:1014452,units:2242,cr:156,vid:124,monthly:{mar:39000,apr:147300,may:119400,jun:131398,jul:334926,aug:62533,sep:214193},ret:{mar:732,apr:4200,may:3100,jun:2440,jul:28535,aug:4905}},
-  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:321016,units:1675,cr:23,vid:16,monthly:{mar:31900,apr:69400,may:67500,jun:64597,jul:76425,aug:10957,sep:12934},ret:{mar:567,apr:1700,may:2200,jun:768,jul:4100,aug:1508}},
-  {name:'WIBWUB Interior',short:'Interior',gmv:276487,units:657,cr:41,vid:62,monthly:{mar:25800,apr:54500,may:59000,jun:34281,jul:68139,aug:14307,sep:27841},ret:{mar:744,apr:2300,may:350,jun:398,jul:7010,aug:2306}},
+  {name:'WIBWUB Refresh Leather Wipes',short:'Leather Wipes',gmv:1310071,units:9957,cr:370,vid:289,monthly:{mar:25400,apr:134300,may:393400,jun:7146,jul:460227,aug:48243,sep:230207},ret:{mar:178,apr:1500,may:2900,jun:179,jul:20192,aug:1998}},
+  {name:'WIBWUB Interior wipes',short:'Interior Wipes',gmv:828215,units:6412,cr:169,vid:148,monthly:{mar:36100,apr:162600,may:168300,jun:105801,jul:257081,aug:19588,sep:86946},ret:{mar:246,apr:2200,may:1100,jun:678,jul:13170,aug:1220}},
+  {name:'WIBWUB Sugar',short:'Sugar',gmv:1014452,units:2242,cr:159,vid:130,monthly:{mar:39000,apr:147300,may:119400,jun:131398,jul:334926,aug:62533,sep:214193},ret:{mar:732,apr:4200,may:3100,jun:2440,jul:28535,aug:4905}},
+  {name:'WIBWUB CLEANER',short:'Cleaner',gmv:321016,units:1675,cr:26,vid:17,monthly:{mar:31900,apr:69400,may:67500,jun:64597,jul:76425,aug:10957,sep:12934},ret:{mar:567,apr:1700,may:2200,jun:768,jul:4100,aug:1508}},
+  {name:'WIBWUB Interior',short:'Interior',gmv:276487,units:657,cr:46,vid:66,monthly:{mar:25800,apr:54500,may:59000,jun:34281,jul:68139,aug:14307,sep:27841},ret:{mar:744,apr:2300,may:350,jun:398,jul:7010,aug:2306}},
   {name:'WIBWUB Refresh',short:'Refresh',gmv:211253,units:469,cr:0,vid:0,monthly:{mar:25400,apr:49600,may:40400,jun:28414,jul:58577,aug:0,sep:18976},ret:{mar:1200,apr:1400,may:355,jun:355,jul:5628,aug:0}},
-  {name:'WIBWUB Visible',short:'Visible',gmv:49241,units:160,cr:9,vid:14,monthly:{mar:3700,apr:15900,may:10200,jun:7679,jul:8952,aug:2692,sep:2597},ret:{mar:0,apr:230,may:539,jun:0,jul:443,aug:311}},
+  {name:'WIBWUB Visible',short:'Visible',gmv:49241,units:160,cr:9,vid:15,monthly:{mar:3700,apr:15900,may:10200,jun:7679,jul:8952,aug:2692,sep:2597},ret:{mar:0,apr:230,may:539,jun:0,jul:443,aug:311}},
 ];
 const VIDEOS = [
   {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'คนรักรถถูกใจสิ่งนี้มากกกก✨',gmv:249783.97,units:1394,date:'ส.ค.–ก.ย.',monthly:{mar:0,apr:0,may:0,jun:21829,jul:140001,aug:58946,sep:29007.97}},
@@ -13516,9 +13516,9 @@ function buildCharts(){
 //  MONTHLY TREND DATA (ม.ค.–มิ.ย. 2026)
 // ══════════════════════════════════════════
 const AF_MO  = ["ม.ค.", "ก.พ.", "มี.ค. (1-31)", "เม.ย. (1-30)", "พ.ค. (1-31)", "มิ.ย. (1-30)", "ก.ค. (1-31)", "ส.ค. (1-31)", "ก.ย. (1-16)"];
-const AF_GMV = [0,0,655171,724241,951158,660557,1452748,1730666,1140058];
-const AF_NET = [0,0,642865,708855,937203,650042,1428498,1701769,1057329];
-const AF_COM = [0,0,82699,69021,104772,79293,169224,198783,125843];
+const AF_GMV = [0,0,655171,724241,951158,660557,1452748,1730666,1140248];
+const AF_NET = [0,0,642865,708855,937203,650042,1428498,1701769,1057024];
+const AF_COM = [0,0,82699,69021,104772,79293,169224,198783,126202];
 const AF_CR = [0,0,398,418,558,414,720,853,676];
 
 function buildTrendCharts(){
