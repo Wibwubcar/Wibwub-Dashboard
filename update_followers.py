@@ -156,7 +156,7 @@ if delta_str:
 # folCur/folMoM/folTotal) — เดิม script ไม่เคยแตะ array นี้ ทำให้ Mobile ค้างที่
 # ค่าที่กรอกมือครั้งสุดท้าย และไม่ตรงกับ soc_follow ใน Dashboard
 TH_ABBR_ALL = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
-_m_fol = re.search(r'const TK_FOL=\[([^\]]*)\];', mobile)
+_m_fol = re.search(r'const TK_FOL\s*=\s*\[([^\]]*)\];', mobile)
 if _m_fol:
     _vals = [v.strip() for v in _m_fol.group(1).split(',') if v.strip()]
     while len(_vals) <= cur_idx:
@@ -167,8 +167,8 @@ if _m_fol:
         if _i < len(_vals):
             _vals[_i] = str(_cnt)
     _vals[cur_idx] = str(latest_count)
-    mobile = re.sub(r'const TK_FOL=\[[^\]]*\];',
-                    'const TK_FOL=[' + ','.join(_vals) + '];', mobile)
+    mobile = re.sub(r'const TK_FOL\s*=\s*\[[^\]]*\];',
+                    'const TK_FOL = [' + ','.join(_vals) + '];', mobile)
     mobile = re.sub(r"const FOL_M=\[[^\]]*\];",
                     "const FOL_M=[" + ",".join(f"'{m}'" for m in TH_ABBR_ALL[:len(_vals)]) + "];",
                     mobile)
