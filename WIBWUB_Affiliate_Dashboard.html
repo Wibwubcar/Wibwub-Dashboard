@@ -13512,7 +13512,7 @@ const SAMPLE_MONTHS = [
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
   {key:'2026-08', label:'ส.ค. 2569 (1-31)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 31/08/2026', funnel:{req:336, appr:146, shipped:146, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
-  {key:'2026-09', label:'ก.ย. 2569 (1-18)',   short:'ก.ย.',       partial:true,  range:'01/09/2026 - 18/09/2026', funnel:{req:300, appr:130, shipped:130, posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
+  {key:'2026-09', label:'ก.ย. 2569 (1-21)',   short:'ก.ย.',       partial:true,  range:'01/09/2026 - 21/09/2026', funnel:{req:313, appr:137, shipped:137, posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
 ];
 
 const SAMPLE_LAST7D = {
@@ -13548,7 +13548,7 @@ const SAMPLE_PRODUCTS = {
   '2026-06': {total:34,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:22,appr:8,rej:14,other:0},{n:'Sugar',c:12,appr:10,rej:2,other:0}]},
   '2026-07': {total:48,  unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Interior',c:37,appr:9,rej:28,other:0},{n:'Sugar',c:13,appr:6,rej:7,other:0}]},
   '2026-08': {total:336, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:165,appr:81,rej:84,other:0},{n:'Interior wipes',c:113,appr:49,rej:64,other:0},{n:'Interior',c:36,appr:14,rej:22,other:0},{n:'Reflex',c:35,appr:12,rej:23,other:0},{n:'Sugar',c:11,appr:5,rej:6,other:0}]},
-  '2026-09': {total:300, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:175,appr:69,rej:106,other:0},{n:'Interior wipes',c:88,appr:36,rej:52,other:0},{n:'Interior',c:22,appr:9,rej:13,other:0},{n:'Sugar',c:15,appr:11,rej:4,other:0},{n:'Reflex',c:14,appr:9,rej:5,other:0},{n:'Beach',c:1,appr:1,rej:0,other:0}]},
+  '2026-09': {total:313, unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:179,appr:70,rej:109,other:0},{n:'Interior wipes',c:96,appr:41,rej:55,other:0},{n:'Interior',c:23,appr:10,rej:13,other:0},{n:'Sugar',c:15,appr:11,rej:4,other:0},{n:'Reflex',c:14,appr:9,rej:5,other:0},{n:'Beach',c:1,appr:1,rej:0,other:0}]},
 };
 
 // last7d is a rolling window that cuts across month boundaries, so it's
@@ -13557,14 +13557,14 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 14/09/2026 - 20/09/2026 → 116 requests in-range. The gap vs.
-// the month total (300) is the 184 rows dated 01/09-13/09 that fell out of the
-// window as it rolled forward. (No new sheet rows since the last sync — the
-// underlying counts are unchanged from the prior run, only the window shifted.)
+// Current window 15/09/2026 - 21/09/2026 → 76 requests in-range. The gap vs.
+// the month total (313) is the rows dated 01/09-14/09 that fell out of the
+// window as it rolled forward, plus the fact staff log rows in batches (no
+// entries at all on 15/17/19/20/09 — only 16/18/21/09 have rows this window).
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:116, window:'14/09/2026 - 20/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:74,appr:29,rej:45,other:0},{n:'Interior wipes',c:34,appr:14,rej:20,other:0},{n:'Sugar',c:6,appr:4,rej:2,other:0},{n:'Interior',c:6,appr:3,rej:3,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:76, window:'15/09/2026 - 21/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:46,appr:18,rej:28,other:0},{n:'Interior wipes',c:23,appr:9,rej:14,other:0},{n:'Interior',c:6,appr:4,rej:2,other:0},{n:'Sugar',c:3,appr:2,rej:1,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
