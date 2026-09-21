@@ -809,6 +809,23 @@ def update_html(sales, aff, posts, shipnity):
                 rf'\g<1>{badge_str}',
                 html
             )
+            # อัปเดต KPI sub-label 2 จุดใน section #products ("ม.ค. – D ก.ย. YYYY" และ
+            # "ข้อมูลจาก Shipnity ม.ค.–D ก.ย.") ให้ตรงกับวันที่ fetch สำเร็จจริง (ตัวเดียวกับ
+            # badge_str/_now ด้านบน) — เดิม 2 สตริงนี้ hardcode แยกจาก dash-updated โดยสิ้นเชิง
+            # (grep ยืนยันว่า wibwub_update.py ไม่เคยแตะ pattern "ม.ค. – " หรือ "Shipnity ม.ค" มาก่อน)
+            # ทำให้ค้างวันเก่าเงียบๆ แม้ badge บนสุดจะอัปเดตถูกต้องแล้วก็ตาม (บั๊กที่เคยเกิดจริง
+            # กับ dashboard อื่นๆ ใน WIBWUB — ดู skill "wibwub-avoid-stale-hardcoded-labels")
+            end_lbl = f'{_now.day} {THAI_M[_now.month]}'
+            html = re.sub(
+                r'(class="kpi-sub neutral">)ม\.ค\.\s*–\s*\d{1,2}\s*\S+\s*\d{4}(?=</div>)',
+                rf'\g<1>ม.ค. – {end_lbl} {_now.year + 543}',
+                html
+            )
+            html = re.sub(
+                r'(ข้อมูลจาก Shipnity ม\.ค\.)–\d{1,2}\s*\S+(?=</div>)',
+                rf'\g<1>–{end_lbl}',
+                html
+            )
             write_if_changed(fp, html, fname)
 
     # B. Affiliate Dashboard
