@@ -13651,7 +13651,7 @@ const SAMPLE_MONTHS = [
   {key:'2026-06', label:'มิ.ย. 2569',         short:'มิ.ย.',      partial:false, range:'01/06/2026 - 30/06/2026', funnel:{req:34,  appr:18,  shipped:18,  posted:18,   sale:0}, perf:{shipped:16,  gmv:217890.01, cogs:1801.50,  content:37,  roi:1.0093}},
   {key:'2026-07', label:'ก.ค. 2569',          short:'ก.ค.',       partial:false, range:'01/07/2026 - 31/07/2026', funnel:{req:48,  appr:15,  shipped:15,  posted:14,   sale:0}, perf:{shipped:22,  gmv:316572.79, cogs:2387.10,  content:15,  roi:0.7968}},
   {key:'2026-08', label:'ส.ค. 2569 (1-31)',   short:'ส.ค.',       partial:true,  range:'01/08/2026 - 31/08/2026', funnel:{req:336, appr:146, shipped:146, posted:35,   sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
-  {key:'2026-09', label:'ก.ย. 2569 (1-22)',   short:'ก.ย.',       partial:true,  range:'01/09/2026 - 22/09/2026', funnel:{req:389, appr:177, shipped:177, posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
+  {key:'2026-09', label:'ก.ย. 2569 (1-23)',   short:'ก.ย.',       partial:true,  range:'01/09/2026 - 23/09/2026', funnel:{req:389, appr:177, shipped:177, posted:null, sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
 ];
 
 const SAMPLE_LAST7D = {
@@ -13696,14 +13696,14 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 16/09/2026 - 22/09/2026 → 152 requests in-range. The gap vs.
-// the month total (389) is the rows dated 01/09-15/09 that fell out of the
+// Current window 17/09/2026 - 23/09/2026 → 118 requests in-range. The gap vs.
+// the month total (389) is the rows dated 01/09-16/09 that fell out of the
 // window as it rolled forward, plus the fact staff log rows in batches (no
-// entries at all on 17/19/20/09 — only 16/18/21/22/09 have rows this window).
+// entries at all on 17/19/20/23/09 — only 18/21/22/09 have rows this window).
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:152, window:'16/09/2026 - 22/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:101,appr:48,rej:53,other:0},{n:'Interior wipes',c:41,appr:17,rej:24,other:0},{n:'Interior',c:9,appr:5,rej:4,other:0},{n:'Sugar',c:6,appr:5,rej:1,other:0},{n:'Banyakart',c:1,appr:1,rej:0,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:118, window:'17/09/2026 - 23/09/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Refresh Wipes',c:77,appr:39,rej:38,other:0},{n:'Interior wipes',c:35,appr:15,rej:20,other:0},{n:'Interior',c:7,appr:3,rej:4,other:0},{n:'Sugar',c:3,appr:3,rej:0,other:0},{n:'Banyakart',c:1,appr:1,rej:0,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
