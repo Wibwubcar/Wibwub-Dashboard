@@ -330,7 +330,7 @@
     </div>
     <div class="tb-right">
       <div class="notif-btn">🔔<span class="ndot"></span></div>
-      <span id="dash-updated" style="font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px">อัปเดต 22 ก.ย. 2569</span>
+      <span id="dash-updated" style="font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px">อัปเดต 23 ก.ย. 2569</span>
       <button class="btn btn-ghost" onclick="doExport()">⬇ Export</button>
       <button class="btn btn-primary" onclick="doAddData()">+ เพิ่มข้อมูล</button>
     </div>
@@ -1185,9 +1185,9 @@
 
       <!-- KPI row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">ยอดขายรวม ม.ค.–ก.ย.</div><div class="kpi-val">฿72.25M</div><div class="kpi-sub neutral">ม.ค. – 22 ก.ย. 2569</div><div class="kpi-ico">💰</div></div>
+        <div class="kpi or"><div class="kpi-label">ยอดขายรวม ม.ค.–ก.ย.</div><div class="kpi-val">฿72.25M</div><div class="kpi-sub neutral">ม.ค. – 23 ก.ย. 2569</div><div class="kpi-ico">💰</div></div>
         <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val">Sugar 500ml</div><div class="kpi-sub up">฿6.45M · 20,911 ชิ้น</div><div class="kpi-ico">🏆</div></div>
-        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val">290K ชิ้น</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity ม.ค.–22 ก.ย.</div><div class="kpi-ico">📦</div></div>
+        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val">290K ชิ้น</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity ม.ค.–23 ก.ย.</div><div class="kpi-ico">📦</div></div>
         <div class="kpi yw"><div class="kpi-label">ช่องทางหลัก</div><div class="kpi-val">Shopee 59%</div><div class="kpi-sub neutral">Facebook 13% · TikTok 19%</div><div class="kpi-ico">🛒</div></div>
       </div>
 
@@ -1441,10 +1441,10 @@
          col:'#1A5CDB',
          days:["1 ส.ค.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31 ส.ค."],
          vals:[27843,27885,27912,27942,27962,27977,27996,28032,28062,28078,28097,28113,28146,28172,28208,28235,28254,28275,28303,28317,28329,28346,28375,28412,28443,28479,28500,28539,28598,28649,28684]},
-        {label:'กันยายน 2569',start:28684,end:29702,net:1018,pct:3.55,sub:'กันยายน 2569 · เริ่ม 28,684 → ล่าสุด 29,702 · +1,018 คน (+3.55%) (ข้อมูลรายวัน 1–20 ก.ย.)',
+        {label:'กันยายน 2569',start:28649,end:29757,net:1108,pct:3.87,sub:'กันยายน 2569 · เริ่ม 28,649 → ล่าสุด 29,757 · +1,108 คน (+3.87%) (ข้อมูลรายวัน 1–22 ก.ย.)',
          col:'#1A5CDB',
-         days:["1 ก.ย.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20 ก.ย."],
-         vals:[28715,28753,28863,28914,28957,29025,29075,29147,29229,29271,29307,29363,29415,29474,29520,29557,29594,29614,29661,29702]},
+         days:["1 ก.ย.","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22 ก.ย."],
+         vals:[28684,28715,28753,28863,28914,28957,29025,29075,29147,29229,29271,29307,29363,29415,29474,29520,29557,29594,29614,29661,29702,29757]},
       ];
       const SOC_MONTH_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
       let folChart = null;
@@ -1517,7 +1517,7 @@
 
       <div style="border-radius:12px;overflow:hidden;border:1px solid var(--border)">
         <iframe
-          src="WIBWUB_Affiliate_Dashboard.html?v=393"
+          src="WIBWUB_Affiliate_Dashboard.html?v=394"
           style="width:100%;height:960px;border:none;display:block"
           title="Affiliate Dashboard"
         ></iframe>
@@ -1852,7 +1852,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,29.702],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,3,6]},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,29.757],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Instagram',data:[35,36,37,38,39,40,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
