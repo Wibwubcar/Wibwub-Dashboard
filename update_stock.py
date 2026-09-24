@@ -212,10 +212,40 @@ for p in products:
 print(f"✅ อัปเดตสต๊อก {updated}/{len(products)} SKUs")
 
 # ─── เช็ค SKU ที่มีใน Shipnity แต่ยังไม่ถูก track ใน Dashboard ─────────────────────
+# เดิมจุดนี้แค่ print คำเตือนเฉยๆ ไม่เคยเพิ่มสินค้าใหม่เข้า PRODUCTS จริง — ทำให้สินค้าที่
+# เพิ่มใหม่ใน Shipnity (เช่น SKU ตัวเลือกใหม่ของสินค้าเดิม หรือสินค้าใหม่ทั้งตัว) ไม่โผล่ใน
+# Dashboard เลยแม้จะรัน update_stock.py ทุกวัน (เจอบั๊กนี้ 24 ก.ย. 2569 — 18 SKU ใหม่หายไป)
+# ตอนนี้เพิ่มอัตโนมัติ แต่กรองเฉพาะ code ที่ "มีตัวเลขอยู่ด้วย" เพราะ Shipnity GraphQL คืนทั้ง
+# parent (family, code มักเป็นชื่อล้วนไม่มีเลข เช่น "Sugar"/"APC"/"Bucket" — เป็นแค่ยอด rollup
+# ของ subproducts ซ้ำกับที่ track แยกอยู่แล้ว) และ subproduct (SKU จริง เช่น "SSUG010024")
+# ปนกันมาในไฟล์เดียว — เพิ่มเฉพาะตัวหลังเท่านั้น กัน parent-rollup ทำให้สต๊อกนับซ้ำ
 tracked_skus = {p.get("sku", "") for p in products}
 missing_skus = [code for code in ship_map if code not in tracked_skus]
-if missing_skus:
-    print(f"⚠️  พบ {len(missing_skus)} SKU ใน Shipnity ที่ยังไม่มีใน PRODUCTS (ไม่ถูกอัปเดต): {', '.join(missing_skus[:20])}{' ...' if len(missing_skus) > 20 else ''}")
+real_new_skus = [code for code in missing_skus if any(ch.isdigit() for ch in code)]
+skipped_placeholder_skus = [code for code in missing_skus if code not in real_new_skus]
+
+added_new = 0
+for code in real_new_skus:
+    ship = ship_map[code]
+    avail = ship.get("available", 0) or 0
+    name = ship.get("name") or code  # ต้อง fix Step2/3 ของ wibwub-daily-stock ให้เก็บ "name" ลง snapshot ด้วย ไม่งั้นได้แค่ sku แทนชื่อจริง
+    if avail <= 0:
+        days, stockout, status = 0, today.strftime("%Y-%m-%d"), "oos"
+    else:
+        days, stockout, status = 999, "2099-12-31", "ok"
+    products.append({
+        "sku": code, "name": name, "price": 0,
+        "stock": (avail + (ship.get("reserved", 0) or 0)), "reserved": ship.get("reserved", 0) or 0,
+        "avail": avail, "burn": 0.0, "days": days, "stockout": stockout, "status": status,
+        "cat": "สินค้า", "sold7d": 0, "sold14d": 0,
+    })
+    added_new += 1
+
+if added_new:
+    print(f"🆕 เพิ่มสินค้าใหม่อัตโนมัติ {added_new} SKU ที่เพิ่งเจอใน Shipnity: {', '.join(real_new_skus)}")
+    print(f"   ⚠️  ชื่อ/ราคา/หมวดหมู่ อาจไม่ถูกต้อง 100% (snapshot ไม่มีชื่อสินค้า) — ควรตรวจสอบและแก้ไขด้วยมือภายหลัง")
+if skipped_placeholder_skus:
+    print(f"ℹ️  ข้าม {len(skipped_placeholder_skus)} code ที่ไม่มีตัวเลข (คาดว่าเป็น parent/family rollup ไม่ใช่ SKU จริง): {', '.join(skipped_placeholder_skus[:20])}{' ...' if len(skipped_placeholder_skus) > 20 else ''}")
 
 # ─── สถิติสรุป ─────────────────────────────────────────────────────────────────
 urgent = sum(1 for p in products if p["status"] == "urgent")
