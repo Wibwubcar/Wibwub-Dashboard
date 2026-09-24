@@ -221,7 +221,7 @@ print(f"✅ อัปเดตสต๊อก {updated}/{len(products)} SKUs")
 # ปนกันมาในไฟล์เดียว — เพิ่มเฉพาะตัวหลังเท่านั้น กัน parent-rollup ทำให้สต๊อกนับซ้ำ
 tracked_skus = {p.get("sku", "") for p in products}
 missing_skus = [code for code in ship_map if code not in tracked_skus]
-real_new_skus = [code for code in missing_skus if any(ch.isdigit() for ch in code)]
+real_new_skus = [code for code in missing_skus if any(ch.isdigit() for ch in code) and len(code) >= 3]
 skipped_placeholder_skus = [code for code in missing_skus if code not in real_new_skus]
 
 added_new = 0
