@@ -1,6 +1,10 @@
 #!/bin/bash
 cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 rm -f .git/index.lock .git/HEAD.lock
+if [ -n "$(git status --porcelain)" ]; then
+  git add -A
+  git commit -m "auto-update: manual push $(date +%Y-%m-%d\ %H:%M)"
+fi
 echo "🔄 กำลัง pull ข้อมูลล่าสุดจาก GitHub ก่อน push..."
 git pull --no-edit origin main
 if [ $? -ne 0 ]; then
