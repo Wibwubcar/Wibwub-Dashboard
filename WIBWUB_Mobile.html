@@ -388,7 +388,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div id="home-ch"></div>
   </div>
   <div class="mks-grid">
-    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val">฿1,570K</div><div class="mks-sub">876 creators · กย.69 (1-22) — ส.ค. เต็มเดือน ฿1,731K</div></div>
+    <div class="mks"><div class="mks-ic">🤝</div><div class="mks-lbl">Affiliate GMV</div><div class="mks-val" id="mks-affgmv-val">–</div><div class="mks-sub" id="mks-affgmv-sub">–</div></div>
     <div class="mks"><div class="mks-ic">🎯</div><div class="mks-lbl">Ads ROAS รวม</div><div class="mks-val">6.3×</div><div class="mks-sub">Shopee+TikTok</div></div>
     <div class="mks"><div class="mks-ic">🎵</div><div class="mks-lbl">TikTok Clips</div><div class="mks-val">102 คลิป</div><div class="mks-sub">มี.ค.–ก.ค. 2569</div></div>
     <div class="mks"><div class="mks-ic">📺</div><div class="mks-lbl">TK Followers</div><div class="mks-val">30.1K</div><div class="mks-sub">+6.7K จาก ม.ค.</div></div>
@@ -876,6 +876,7 @@ const AFI_MONTHS=['พย.68','ธค.68','มค.69','กพ.69','มีนา.
 const AFI_GMV=[0,0,0,0,655171,724241,951158,660557,1452748,1730666,1645130];
 const AFI_NET=[0,0,0,0,642865,708855,937203,650042,1428498,1701769,1618154];
 const AFI_COMM=[0,0,0,0,82699,69021,104772,79293,169224,198783,181915];
+const AFI_CR=[0,0,0,0,398,418,558,414,720,853,901]; // derived from AF_CR in WIBWUB_Affiliate_Dashboard.html (kept in sync manually at each affiliate data sync)
 const TK_FOL = [23375,24159,24863,25575,26320,26989,27834,28684,30054];
 const FOL_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.'];
 
@@ -1168,6 +1169,22 @@ function initHome(){
       <div class="prod-name">${p.n}</div>
       <div class="prod-right"><div class="prod-val">${fmtB(p.v)}</div><div class="prod-q">${p.q.toLocaleString()} pcs</div></div>
     </div>`).join('');
+  // Affiliate GMV mks-grid tile — derived from AFI_MONTHS/AFI_GMV/AFI_CR (not hardcoded)
+  // so this never goes stale after a data sync the way a manually-maintained string would.
+  (function(){
+    const li = AFI_MONTHS.length-1;
+    const curLabel = AFI_MONTHS[li];
+    const curGmv = AFI_GMV[li];
+    const curCr = AFI_CR[li];
+    // find the most recent prior month whose label has no "(1-XX)" partial-range suffix,
+    // i.e. a completed full month, to show as the comparison figure.
+    let cmpIdx = -1;
+    for(let i=li-1;i>=0;i--){ if(!/\(1-\d+\)/.test(AFI_MONTHS[i])){ cmpIdx=i; break; } }
+    _t('mks-affgmv-val', '฿'+Math.round(curGmv/1000).toLocaleString()+'K');
+    const cmpMoName = cmpIdx>=0 ? AFI_MONTHS[cmpIdx].replace(/\s*\(.*\)/,'') : '';
+    const cmpSub = cmpIdx>=0 ? ` — ${cmpMoName} เต็มเดือน ฿${Math.round(AFI_GMV[cmpIdx]/1000).toLocaleString()}K` : '';
+    _t('mks-affgmv-sub', `${curCr.toLocaleString()} creators · ${curLabel}${cmpSub}`);
+  })();
 }
 
 // ════════════════════════════════════════
