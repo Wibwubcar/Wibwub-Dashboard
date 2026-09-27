@@ -3310,33 +3310,23 @@ async function loadAdminUsers(){
   }
 }
 
-// ── "อัปเดต" badge (topbar) — derived automatically from the freshest daily-synced
-// data source (TK_PROD_DATA.dates, scraped every day by the wibwub-tiktok-product-daily
-// schedule) instead of a manually-maintained hardcoded string. Previously this badge
-// (#dash-updated) was a frozen literal that nothing ever touched, so it silently drifted
-// out of date (confirmed stale at "24 ก.ย." while other parts of the app — and other
-// WIBWUB dashboards — had already moved on). See wibwub-avoid-stale-hardcoded-labels skill.
+// ── "อัปเดต" badge (topbar) — set to today's actual date every time the page loads,
+// instead of a manually-maintained hardcoded string. Previously this badge (#dash-updated)
+// was a frozen literal that nothing ever touched, so it silently drifted out of date
+// (confirmed stale at "24 ก.ย." — a recurring bug, it froze at "29 มิ.ย." once before too).
+// An earlier fix here derived the date from TK_PROD_DATA.dates (the daily TikTok-product
+// scrape), but that array intentionally excludes "today" (same as Procurement Dashboard's
+// sold7d/14d logic — today is a partial day), so it always trails one day behind and kept
+// looking "wrong" next to Procurement Dashboard's badge, which shows the date the stock
+// snapshot file was last written (usually today). Showing today's real calendar date here
+// avoids that off-by-one confusion and needs no data array to stay in sync.
+// See wibwub-avoid-stale-hardcoded-labels skill.
 (function(){
   const THAI_MONTHS_SHORT = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  function thaiShortDate(iso){
-    const [y,m,d] = iso.split('-').map(Number);
-    return `${d} ${THAI_MONTHS_SHORT[m-1]} ${y+543}`; // AD -> BE
-  }
-  try {
-    const candidates = [];
-    if (typeof TK_PROD_DATA !== 'undefined' && TK_PROD_DATA.dates && TK_PROD_DATA.dates.length) {
-      candidates.push(TK_PROD_DATA.dates[TK_PROD_DATA.dates.length-1]);
-    }
-    if (typeof TK_PROD_SKU !== 'undefined') {
-      const skuDates = Object.keys(TK_PROD_SKU);
-      if (skuDates.length) candidates.push(skuDates.sort().pop());
-    }
-    if (candidates.length) {
-      const latest = candidates.sort().pop();
-      const el = document.getElementById('dash-updated');
-      if (el) el.textContent = 'อัปเดต ' + thaiShortDate(latest);
-    }
-  } catch(e){ /* leave badge as-is if any source array is missing/malformed */ }
+  const now = new Date();
+  const thaiDate = `${now.getDate()} ${THAI_MONTHS_SHORT[now.getMonth()]} ${now.getFullYear()+543}`;
+  const el = document.getElementById('dash-updated');
+  if (el) el.textContent = 'อัปเดต ' + thaiDate;
 })();
 </script>
 
