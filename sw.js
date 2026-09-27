@@ -1,5 +1,5 @@
 // WIBWUB Service Worker — auto-update on new version
-const CACHE = 'wibwub-v1273';
+const CACHE = 'wibwub-v1274';
 const FILES = [
   '/Wibwub-Dashboard/WIBWUB_Mobile.html',
   '/Wibwub-Dashboard/manifest.json',
@@ -44,8 +44,18 @@ self.addEventListener('fetch', e => {
     url.includes('identitytoolkit')
   ) return; // let browser handle directly, no service worker interference
 
+  // IMPORTANT: force bypass of the browser's HTTP disk cache on every fetch.
+  // Without {cache:'no-store'} here, a plain fetch(e.request) still honors
+  // normal HTTP caching rules (e.g. GitHub Pages' Cache-Control: max-age),
+  // so even "network-first" can silently return a stale disk-cached response
+  // instead of hitting the network — and a user's hard-refresh (Cmd+Shift+R)
+  // does NOT force this internal fetch() to bypass cache, because the browser's
+  // hard-reload signal doesn't propagate through the service worker's fetch
+  // interception. This was the root cause of dashboards looking "stuck" on old
+  // data even after every device did a manual hard refresh.
+  const freshRequest = new Request(e.request, { cache: 'no-store' });
   e.respondWith(
-    fetch(e.request)
+    fetch(freshRequest)
       .then(res => {
         if (res && res.status === 200 && res.type !== 'opaque') {
           const clone = res.clone();
