@@ -1,0 +1,3 @@
+#!/bin/bash
+cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+git push origin main && echo "✅ Push สำเร็จ (commit 5e81660 - TikTok Ads evening sync)" || echo "❌ Push ล้มเหลว"

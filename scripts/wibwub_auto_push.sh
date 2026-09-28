@@ -16,7 +16,7 @@ if [ "$UNPUSHED" -gt "0" ]; then
   # ถ้า local ตามหลัง remote ด้วย (diverged) ต้อง pull/merge ก่อน ไม่งั้น push จะถูก reject วนไปเรื่อยๆ
   BEHIND=$(git log HEAD..origin/main --oneline 2>/dev/null | wc -l | tr -d ' ')
   if [ "$BEHIND" -gt "0" ]; then
-    git pull --no-edit origin main >> "$REPO/scripts/auto_push.log" 2>&1
+    git pull --no-edit --no-rebase origin main >> "$REPO/scripts/auto_push.log" 2>&1
     if [ $? -ne 0 ]; then
       echo "$(date '+%Y-%m-%d %H:%M') ⚠️ pull failed (conflict?) — skipping push, needs manual fix" >> "$REPO/scripts/auto_push.log"
       exit 0

@@ -1,0 +1,1249 @@
+
+// ══════════════════════════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════════════════════════
+const DATA_PERIODS = {
+  jan: {shopee:{spend:575353,revenue:3609487,orders:8456,imp:2650523,clicks:73989,roas:6.27,ctr:2.79,cvr:11.43,cpa:68.04,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:18500,revenue:194472,orders:388,imp:87098,clicks:1954,roas:10.51,ctr:2.24,cvr:19.86,cpa:47.68},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9974,revenue:88040,orders:176,imp:29314,clicks:722,roas:8.83,ctr:2.46,cvr:24.38,cpa:56.67},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:56546,revenue:467654,orders:1319,imp:343386,clicks:6291,roas:8.27,ctr:1.83,cvr:20.97,cpa:42.87},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:12247,revenue:92729,orders:155,imp:58052,clicks:939,roas:7.57,ctr:1.62,cvr:16.51,cpa:79.01},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20529,revenue:143566,orders:338,imp:70180,clicks:1164,roas:6.99,ctr:1.66,cvr:29.04,cpa:60.74}],worst5:[{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:7919,revenue:20004,orders:75,imp:53748,clicks:931,roas:2.53,ctr:1.73,cvr:8.06,cpa:105.59},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:20751,revenue:90893,orders:216,imp:85362,clicks:1692,roas:4.38,ctr:1.98,cvr:12.77,cpa:96.07},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:27806,revenue:124727,orders:270,imp:96679,clicks:20660,roas:4.49,ctr:21.37,cvr:1.31,cpa:102.99},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:3100,revenue:14411,orders:86,imp:50800,clicks:603,roas:4.65,ctr:1.19,cvr:14.26,cpa:36.05},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:3100,revenue:14937,orders:86,imp:43085,clicks:630,roas:4.82,ctr:1.46,cvr:13.65,cpa:36.05}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:83293,revenue:533906,orders:920,imp:256158,clicks:5704,roas:6.41,ctr:2.23,cvr:16.13,cpa:90.54},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:56546,revenue:467654,orders:1319,imp:343386,clicks:6291,roas:8.27,ctr:1.83,cvr:20.97,cpa:42.87},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:47800,revenue:320477,orders:674,imp:211885,clicks:4397,roas:6.7,ctr:2.08,cvr:15.33,cpa:70.92},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:41856,revenue:220700,orders:580,imp:235116,clicks:3723,roas:5.27,ctr:1.58,cvr:15.58,cpa:72.17},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:39162,revenue:248585,orders:622,imp:188372,clicks:4302,roas:6.35,ctr:2.28,cvr:14.46,cpa:62.96},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:34300,revenue:170564,orders:417,imp:170165,clicks:4056,roas:4.97,ctr:2.38,cvr:10.28,cpa:82.25},{name:"Shop GMV Max",spend:28000,revenue:167684,orders:427,imp:178274,clicks:4396,roas:5.99,ctr:2.47,cvr:9.71,cpa:65.57},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:27806,revenue:124727,orders:270,imp:96679,clicks:20660,roas:4.49,ctr:21.37,cvr:1.31,cpa:102.99},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:21691,revenue:129235,orders:304,imp:108670,clicks:2295,roas:5.96,ctr:2.11,cvr:13.25,cpa:71.35},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:20751,revenue:90893,orders:216,imp:85362,clicks:1692,roas:4.38,ctr:1.98,cvr:12.77,cpa:96.07},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20529,revenue:143566,orders:338,imp:70180,clicks:1164,roas:6.99,ctr:1.66,cvr:29.04,cpa:60.74},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:18500,revenue:194472,orders:388,imp:87098,clicks:1954,roas:10.51,ctr:2.24,cvr:19.86,cpa:47.68},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:15800,revenue:94835,orders:243,imp:55062,clicks:1494,roas:6.0,ctr:2.71,cvr:16.27,cpa:65.02},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:15137,revenue:93983,orders:247,imp:57923,clicks:1206,roas:6.21,ctr:2.08,cvr:20.48,cpa:61.28},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:14499,revenue:88571,orders:194,imp:48303,clicks:1130,roas:6.11,ctr:2.34,cvr:17.17,cpa:74.74},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:13204,revenue:69659,orders:175,imp:64681,clicks:1836,roas:5.28,ctr:2.84,cvr:9.53,cpa:75.46},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:12315,revenue:68504,orders:173,imp:43658,clicks:1302,roas:5.56,ctr:2.98,cvr:13.29,cpa:71.19},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:12247,revenue:92729,orders:155,imp:58052,clicks:939,roas:7.57,ctr:1.62,cvr:16.51,cpa:79.01},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9974,revenue:88040,orders:176,imp:29314,clicks:722,roas:8.83,ctr:2.46,cvr:24.38,cpa:56.67},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:8833,revenue:44487,orders:120,imp:47730,clicks:844,roas:5.04,ctr:1.77,cvr:14.22,cpa:73.61},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:7919,revenue:20004,orders:75,imp:53748,clicks:931,roas:2.53,ctr:1.73,cvr:8.06,cpa:105.59},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:7900,revenue:43722,orders:81,imp:21483,clicks:580,roas:5.53,ctr:2.7,cvr:13.97,cpa:97.53},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:6200,revenue:37528,orders:112,imp:28520,clicks:721,roas:6.05,ctr:2.53,cvr:15.53,cpa:55.36},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:4884,revenue:25614,orders:58,imp:16819,clicks:417,roas:5.24,ctr:2.48,cvr:13.91,cpa:84.21},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:3100,revenue:14411,orders:86,imp:50800,clicks:603,roas:4.65,ctr:1.19,cvr:14.26,cpa:36.05},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:3100,revenue:14937,orders:86,imp:43085,clicks:630,roas:4.82,ctr:1.46,cvr:13.65,cpa:36.05}]},tiktok:{spend:150133,revenue:897521,orders:2614,imp:1323590,clicks:46354,roas:5.98,ctr:3.5,cvr:5.64,cpa:57.43,top5:[{name:"Sugar",spend:31579,revenue:210407,orders:626,imp:199595,clicks:6970,roas:6.66,ctr:3.49,cvr:8.98,cpa:50.45},{name:"26.01.26/Reflex",spend:1251,revenue:7752,orders:18,imp:6231,clicks:266,roas:6.2,ctr:4.27,cvr:6.77,cpa:69.5},{name:"20.11.25/All",spend:43005,revenue:265249,orders:909,imp:764447,clicks:25444,roas:6.17,ctr:3.33,cvr:3.57,cpa:47.31},{name:"Interior/reflex",spend:15972,revenue:97096,orders:218,imp:91327,clicks:2832,roas:6.08,ctr:3.1,cvr:7.7,cpa:73.27},{name:"22.12.25/ไม้ปัด",spend:26476,revenue:155719,orders:284,imp:67749,clicks:3598,roas:5.88,ctr:5.31,cvr:7.89,cpa:93.23}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.02.26/Refresh",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}],all:[{name:"20.11.25/All",spend:43005,revenue:265249,orders:909,imp:764447,clicks:25444,roas:6.17,ctr:3.33,cvr:3.57,cpa:47.31},{name:"Sugar",spend:31579,revenue:210407,orders:626,imp:199595,clicks:6970,roas:6.66,ctr:3.49,cvr:8.98,cpa:50.45},{name:"22.12.25/ไม้ปัด",spend:26476,revenue:155719,orders:284,imp:67749,clicks:3598,roas:5.88,ctr:5.31,cvr:7.89,cpa:93.23},{name:"Interior/reflex",spend:15972,revenue:97096,orders:218,imp:91327,clicks:2832,roas:6.08,ctr:3.1,cvr:7.7,cpa:73.27},{name:"18.11.25/Refresh",spend:11093,revenue:60094,orders:139,imp:30256,clicks:1424,roas:5.42,ctr:4.71,cvr:9.76,cpa:79.81},{name:"Cleaner",spend:9232,revenue:50664,orders:254,imp:104691,clicks:3677,roas:5.49,ctr:3.51,cvr:6.91,cpa:36.35},{name:"Spot",spend:7012,revenue:31786,orders:66,imp:23429,clicks:800,roas:4.53,ctr:3.41,cvr:8.25,cpa:106.25},{name:"09.08.25/Beach",spend:1977,revenue:5669,orders:12,imp:10025,clicks:371,roas:2.87,ctr:3.7,cvr:3.23,cpa:164.75},{name:"29.01.26/Interior wipe - refresh wipe",spend:1817,revenue:10084,orders:82,imp:23356,clicks:860,roas:5.55,ctr:3.68,cvr:9.53,cpa:22.16},{name:"26.01.26/Reflex",spend:1251,revenue:7752,orders:18,imp:6231,clicks:266,roas:6.2,ctr:4.27,cvr:6.77,cpa:69.5},{name:"26.01.26/Mind",spend:716,revenue:2996,orders:6,imp:2484,clicks:112,roas:4.18,ctr:4.51,cvr:5.36,cpa:119.45},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.02.26/Refresh",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  feb: {shopee:{spend:559144,revenue:3752124,orders:8904,imp:3258623,clicks:98587,roas:6.71,ctr:3.03,cvr:9.03,cpa:62.8,top5:[{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:5008,revenue:106125,orders:591,imp:331110,clicks:776,roas:21.19,ctr:0.23,cvr:76.16,cpa:8.47},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4165,revenue:60142,orders:329,imp:135551,clicks:687,roas:14.44,ctr:0.51,cvr:47.89,cpa:12.66},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:20297,revenue:195597,orders:286,imp:98028,clicks:2061,roas:9.64,ctr:2.1,cvr:13.88,cpa:70.97},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:9948,revenue:95823,orders:228,imp:40085,clicks:1145,roas:9.63,ctr:2.86,cvr:19.91,cpa:43.63},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:8300,revenue:79433,orders:141,imp:25525,clicks:578,roas:9.57,ctr:2.26,cvr:24.39,cpa:58.87}],worst5:[{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:15736,revenue:47080,orders:162,imp:94798,clicks:1634,roas:2.99,ctr:1.72,cvr:9.91,cpa:97.14},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:54063,revenue:258070,orders:663,imp:322143,clicks:4866,roas:4.77,ctr:1.51,cvr:13.63,cpa:81.54},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:25247,revenue:120761,orders:275,imp:121020,clicks:2288,roas:4.78,ctr:1.89,cvr:12.02,cpa:91.81},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:35487,revenue:176296,orders:414,imp:152049,clicks:45485,roas:4.97,ctr:29.91,cvr:0.91,cpa:85.72},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:22091,revenue:116335,orders:284,imp:131582,clicks:3047,roas:5.27,ctr:2.32,cvr:9.32,cpa:77.79}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:72753,revenue:515157,orders:868,imp:290186,clicks:5535,roas:7.08,ctr:1.91,cvr:15.68,cpa:83.82},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:54063,revenue:258070,orders:663,imp:322143,clicks:4866,roas:4.77,ctr:1.51,cvr:13.63,cpa:81.54},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:42545,revenue:349922,orders:992,imp:246599,clicks:4236,roas:8.22,ctr:1.72,cvr:23.42,cpa:42.89},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:37259,revenue:295042,orders:589,imp:212909,clicks:3359,roas:7.92,ctr:1.58,cvr:17.53,cpa:63.26},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:35487,revenue:176296,orders:414,imp:152049,clicks:45485,roas:4.97,ctr:29.91,cvr:0.91,cpa:85.72},{name:"Shop GMV Max",spend:33000,revenue:179345,orders:436,imp:240550,clicks:5393,roas:5.43,ctr:2.24,cvr:8.08,cpa:75.69},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27506,revenue:145261,orders:261,imp:112159,clicks:1660,roas:5.28,ctr:1.48,cvr:15.72,cpa:105.39},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:25247,revenue:120761,orders:275,imp:121020,clicks:2288,roas:4.78,ctr:1.89,cvr:12.02,cpa:91.81},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:22206,revenue:137267,orders:341,imp:107996,clicks:3033,roas:6.18,ctr:2.81,cvr:11.24,cpa:65.12},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:22091,revenue:116335,orders:284,imp:131582,clicks:3047,roas:5.27,ctr:2.32,cvr:9.32,cpa:77.79},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20793,revenue:157840,orders:357,imp:89948,clicks:2094,roas:7.59,ctr:2.33,cvr:17.05,cpa:58.25},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:20297,revenue:195597,orders:286,imp:98028,clicks:2061,roas:9.64,ctr:2.1,cvr:13.88,cpa:70.97},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:17774,revenue:111034,orders:256,imp:95021,clicks:1965,roas:6.25,ctr:2.07,cvr:13.03,cpa:69.43},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:15865,revenue:139576,orders:322,imp:85291,clicks:1522,roas:8.8,ctr:1.78,cvr:21.16,cpa:49.27},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:15736,revenue:47080,orders:162,imp:94798,clicks:1634,roas:2.99,ctr:1.72,cvr:9.91,cpa:97.14},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:12793,revenue:74928,orders:212,imp:52703,clicks:1395,roas:5.86,ctr:2.65,cvr:15.2,cpa:60.35},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:12462,revenue:72667,orders:152,imp:44690,clicks:987,roas:5.83,ctr:2.21,cvr:15.4,cpa:81.99},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:11134,revenue:71881,orders:184,imp:61375,clicks:1359,roas:6.46,ctr:2.21,cvr:13.54,cpa:60.51},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:9948,revenue:95823,orders:228,imp:40085,clicks:1145,roas:9.63,ctr:2.86,cvr:19.91,cpa:43.63},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:9646,revenue:66909,orders:158,imp:56830,clicks:816,roas:6.94,ctr:1.44,cvr:19.36,cpa:61.05},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:9536,revenue:71050,orders:166,imp:43198,clicks:1062,roas:7.45,ctr:2.46,cvr:15.63,cpa:57.45},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:8367,revenue:62442,orders:122,imp:38141,clicks:929,roas:7.46,ctr:2.44,cvr:13.13,cpa:68.59},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:8300,revenue:79433,orders:141,imp:25525,clicks:578,roas:9.57,ctr:2.26,cvr:24.39,cpa:58.87},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:5150,revenue:46130,orders:115,imp:29136,clicks:675,roas:8.96,ctr:2.32,cvr:17.04,cpa:44.79},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:5008,revenue:106125,orders:591,imp:331110,clicks:776,roas:21.19,ctr:0.23,cvr:76.16,cpa:8.47},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4165,revenue:60142,orders:329,imp:135551,clicks:687,roas:14.44,ctr:0.51,cvr:47.89,cpa:12.66}]},tiktok:{spend:190270,revenue:1035055,orders:3523,imp:1507768,clicks:44698,roas:5.44,ctr:2.96,cvr:7.88,cpa:54.01,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:12489,revenue:115019,orders:997,imp:170839,clicks:5650,roas:9.21,ctr:3.31,cvr:17.65,cpa:12.53},{name:"Cleaner",spend:14377,revenue:82333,orders:404,imp:127604,clicks:3568,roas:5.73,ctr:2.8,cvr:11.32,cpa:35.59},{name:"26.01.26/Reflex",spend:7528,revenue:42625,orders:95,imp:36990,clicks:1515,roas:5.66,ctr:4.1,cvr:6.27,cpa:79.25},{name:"26.01.26/Mind",spend:5856,revenue:30553,orders:60,imp:22139,clicks:833,roas:5.22,ctr:3.76,cvr:7.2,cpa:97.61},{name:"Sugar",spend:42983,revenue:220853,orders:672,imp:267743,clicks:7364,roas:5.14,ctr:2.75,cvr:9.13,cpa:63.96}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"Spot",spend:3635,revenue:13675,orders:32,imp:9983,clicks:349,roas:3.76,ctr:3.5,cvr:9.17,cpa:113.61}],all:[{name:"Sugar",spend:42983,revenue:220853,orders:672,imp:267743,clicks:7364,roas:5.14,ctr:2.75,cvr:9.13,cpa:63.96},{name:"20.11.25/All",spend:38008,revenue:192781,orders:501,imp:599092,clicks:17717,roas:5.07,ctr:2.96,cvr:2.83,cpa:75.86},{name:"22.12.25/ไม้ปัด",spend:28158,revenue:133792,orders:249,imp:98535,clicks:3527,roas:4.75,ctr:3.58,cvr:7.06,cpa:113.08},{name:"Interior/reflex",spend:17678,revenue:82258,orders:188,imp:116420,clicks:2443,roas:4.65,ctr:2.1,cvr:7.7,cpa:94.03},{name:"Cleaner",spend:14377,revenue:82333,orders:404,imp:127604,clicks:3568,roas:5.73,ctr:2.8,cvr:11.32,cpa:35.59},{name:"29.01.26/Interior wipe - refresh wipe",spend:12489,revenue:115019,orders:997,imp:170839,clicks:5650,roas:9.21,ctr:3.31,cvr:17.65,cpa:12.53},{name:"26.01.26/Reflex",spend:7528,revenue:42625,orders:95,imp:36990,clicks:1515,roas:5.66,ctr:4.1,cvr:6.27,cpa:79.25},{name:"18.11.25/Refresh",spend:6510,revenue:25197,orders:60,imp:18294,clicks:827,roas:3.87,ctr:4.52,cvr:7.26,cpa:108.51},{name:"12.02.26/Refresh",spend:6033,revenue:24457,orders:56,imp:40129,clicks:905,roas:4.05,ctr:2.26,cvr:6.19,cpa:107.74},{name:"26.01.26/Mind",spend:5856,revenue:30553,orders:60,imp:22139,clicks:833,roas:5.22,ctr:3.76,cvr:7.2,cpa:97.61},{name:"Spot",spend:3635,revenue:13675,orders:32,imp:9983,clicks:349,roas:3.76,ctr:3.5,cvr:9.17,cpa:113.61},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  mar: {shopee:{spend:589252,revenue:3624621,orders:8270,imp:3782507,clicks:88073,roas:6.15,ctr:2.33,cvr:9.39,cpa:71.25,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14683,revenue:164666,orders:224,imp:81799,clicks:1659,roas:11.21,ctr:2.03,cvr:13.5,cpa:65.55},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4766,revenue:46876,orders:237,imp:145108,clicks:987,roas:9.83,ctr:0.68,cvr:24.01,cpa:20.11},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:10426,revenue:92318,orders:452,imp:397414,clicks:2083,roas:8.85,ctr:0.52,cvr:21.7,cpa:23.07},{name:"Shop GMV Max",spend:37839,revenue:309164,orders:749,imp:373469,clicks:8617,roas:8.17,ctr:2.31,cvr:8.69,cpa:50.52},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:11620,revenue:83396,orders:187,imp:59678,clicks:1684,roas:7.18,ctr:2.82,cvr:11.1,cpa:62.14}],worst5:[{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:17814,revenue:73716,orders:169,imp:89630,clicks:1920,roas:4.14,ctr:2.14,cvr:8.8,cpa:105.41},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:9427,revenue:42694,orders:134,imp:48991,clicks:1034,roas:4.53,ctr:2.11,cvr:12.96,cpa:70.35},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27061,revenue:124013,orders:239,imp:133328,clicks:1978,roas:4.58,ctr:1.48,cvr:12.08,cpa:113.23},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10653,revenue:49608,orders:111,imp:60703,clicks:1355,roas:4.66,ctr:2.23,cvr:8.19,cpa:95.98},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:10603,revenue:51542,orders:89,imp:41363,clicks:877,roas:4.86,ctr:2.12,cvr:10.15,cpa:119.14}],all:[{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:95881,revenue:546537,orders:875,imp:392480,clicks:6973,roas:5.7,ctr:1.78,cvr:12.55,cpa:109.58},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:55926,revenue:302125,orders:748,imp:353824,clicks:5221,roas:5.4,ctr:1.48,cvr:14.33,cpa:74.77},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:45361,revenue:293371,orders:811,imp:363733,clicks:6867,roas:6.47,ctr:1.89,cvr:11.81,cpa:55.93},{name:"Shop GMV Max",spend:37839,revenue:309164,orders:749,imp:373469,clicks:8617,roas:8.17,ctr:2.31,cvr:8.69,cpa:50.52},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:32574,revenue:201265,orders:417,imp:195351,clicks:3201,roas:6.18,ctr:1.64,cvr:13.03,cpa:78.12},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:31224,revenue:181093,orders:428,imp:82747,clicks:20462,roas:5.8,ctr:24.73,cvr:2.09,cpa:72.95},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:30019,revenue:193411,orders:504,imp:169308,clicks:5288,roas:6.44,ctr:3.12,cvr:9.53,cpa:59.56},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:27061,revenue:124013,orders:239,imp:133328,clicks:1978,roas:4.58,ctr:1.48,cvr:12.08,cpa:113.23},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:23946,revenue:159748,orders:342,imp:134550,clicks:3570,roas:6.67,ctr:2.65,cvr:9.58,cpa:70.02},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:17814,revenue:73716,orders:169,imp:89630,clicks:1920,roas:4.14,ctr:2.14,cvr:8.8,cpa:105.41},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:17300,revenue:113612,orders:263,imp:104725,clicks:1902,roas:6.57,ctr:1.82,cvr:13.83,cpa:65.78},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:16679,revenue:84565,orders:174,imp:95740,clicks:2260,roas:5.07,ctr:2.36,cvr:7.7,cpa:95.86},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:15900,revenue:97085,orders:218,imp:102578,clicks:2092,roas:6.11,ctr:2.04,cvr:10.42,cpa:72.94},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14683,revenue:164666,orders:224,imp:81799,clicks:1659,roas:11.21,ctr:2.03,cvr:13.5,cpa:65.55},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:13915,revenue:78283,orders:203,imp:70805,clicks:1446,roas:5.63,ctr:2.04,cvr:14.04,cpa:68.55},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:13543,revenue:82296,orders:171,imp:78269,clicks:1514,roas:6.08,ctr:1.93,cvr:11.29,cpa:79.2},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:12306,revenue:70705,orders:146,imp:60258,clicks:1672,roas:5.75,ctr:2.77,cvr:8.73,cpa:84.29},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:11620,revenue:83396,orders:187,imp:59678,clicks:1684,roas:7.18,ctr:2.82,cvr:11.1,cpa:62.14},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:10653,revenue:49608,orders:111,imp:60703,clicks:1355,roas:4.66,ctr:2.23,cvr:8.19,cpa:95.98},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:10603,revenue:51542,orders:89,imp:41363,clicks:877,roas:4.86,ctr:2.12,cvr:10.15,cpa:119.14},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:10426,revenue:92318,orders:452,imp:397414,clicks:2083,roas:8.85,ctr:0.52,cvr:21.7,cpa:23.07},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:10414,revenue:56803,orders:98,imp:46176,clicks:1056,roas:5.45,ctr:2.29,cvr:9.28,cpa:106.27},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9712,revenue:57665,orders:115,imp:46087,clicks:1091,roas:5.94,ctr:2.37,cvr:10.54,cpa:84.46},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:9648,revenue:68055,orders:166,imp:54393,clicks:1264,roas:7.05,ctr:2.32,cvr:13.13,cpa:58.12},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:9427,revenue:42694,orders:134,imp:48991,clicks:1034,roas:4.53,ctr:2.11,cvr:12.96,cpa:70.35},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:4766,revenue:46876,orders:237,imp:145108,clicks:987,roas:9.83,ctr:0.68,cvr:24.01,cpa:20.11}]},tiktok:{spend:240851,revenue:1132888,orders:3844,imp:1616237,clicks:51133,roas:4.7,ctr:3.16,cvr:7.52,cpa:62.66,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:20871,revenue:180813,orders:1408,imp:260575,clicks:7504,roas:8.66,ctr:2.88,cvr:18.76,cpa:14.82},{name:"26.01.26/Reflex",spend:9685,revenue:48881,orders:84,imp:44982,clicks:1736,roas:5.05,ctr:3.86,cvr:4.84,cpa:115.3},{name:"22.12.25/ไม้ปัด",spend:31002,revenue:150650,orders:249,imp:105026,clicks:2865,roas:4.86,ctr:2.73,cvr:8.69,cpa:124.51},{name:"20.11.25/All",spend:42229,revenue:203392,orders:493,imp:489376,clicks:14892,roas:4.82,ctr:3.04,cvr:3.31,cpa:85.66},{name:"12.02.26/Refresh",spend:17674,revenue:78682,orders:180,imp:82842,clicks:2117,roas:4.45,ctr:2.56,cvr:8.5,cpa:98.19}],worst5:[{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"15.03.26/X-Glass",spend:1618,revenue:5384,orders:12,imp:4713,clicks:159,roas:3.33,ctr:3.37,cvr:7.55,cpa:134.91}],all:[{name:"Sugar",spend:50730,revenue:204674,orders:566,imp:288936,clicks:9858,roas:4.03,ctr:3.41,cvr:5.74,cpa:89.63},{name:"20.11.25/All",spend:42229,revenue:203392,orders:493,imp:489376,clicks:14892,roas:4.82,ctr:3.04,cvr:3.31,cpa:85.66},{name:"22.12.25/ไม้ปัด",spend:31002,revenue:150650,orders:249,imp:105026,clicks:2865,roas:4.86,ctr:2.73,cvr:8.69,cpa:124.51},{name:"Cleaner",spend:24750,revenue:102272,orders:499,imp:175439,clicks:6905,roas:4.13,ctr:3.94,cvr:7.23,cpa:49.6},{name:"Interior/reflex",spend:23137,revenue:87980,orders:196,imp:117736,clicks:3281,roas:3.8,ctr:2.79,cvr:5.97,cpa:118.05},{name:"29.01.26/Interior wipe - refresh wipe",spend:20871,revenue:180813,orders:1408,imp:260575,clicks:7504,roas:8.66,ctr:2.88,cvr:18.76,cpa:14.82},{name:"12.02.26/Refresh",spend:17674,revenue:78682,orders:180,imp:82842,clicks:2117,roas:4.45,ctr:2.56,cvr:8.5,cpa:98.19},{name:"26.01.26/Reflex",spend:9685,revenue:48881,orders:84,imp:44982,clicks:1736,roas:5.05,ctr:3.86,cvr:4.84,cpa:115.3},{name:"26.01.26/Mind",spend:8660,revenue:36697,orders:71,imp:38251,clicks:1507,roas:4.24,ctr:3.94,cvr:4.71,cpa:121.98},{name:"15.03.26/spot",spend:2480,revenue:9464,orders:24,imp:8361,clicks:309,roas:3.82,ctr:3.7,cvr:7.77,cpa:103.37},{name:"15.03.26/X-Glass",spend:1618,revenue:5384,orders:12,imp:4713,clicks:159,roas:3.33,ctr:3.37,cvr:7.55,cpa:134.91},{name:"12.04.26/Interior",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"12.04.26/Reflex",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"16.04.26/XGlass-Spot",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  apr: {shopee:{spend:795272,revenue:4338779,orders:10351,imp:4843206,clicks:140824,roas:5.46,ctr:2.91,cvr:7.35,cpa:76.83,top5:[{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14722,revenue:123732,orders:179,imp:69022,clicks:1269,roas:8.4,ctr:1.84,cvr:14.11,cpa:82.25},{name:"Shop GMV Max",spend:83400,revenue:580840,orders:1467,imp:648359,clicks:13936,roas:6.96,ctr:2.15,cvr:10.53,cpa:56.85},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:10022,revenue:64441,orders:134,imp:57081,clicks:1301,roas:6.43,ctr:2.28,cvr:10.3,cpa:74.8},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:23757,revenue:141893,orders:791,imp:565934,clicks:4973,roas:5.97,ctr:0.88,cvr:15.91,cpa:30.03},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:17452,revenue:101792,orders:241,imp:75223,clicks:1800,roas:5.83,ctr:2.39,cvr:13.39,cpa:72.42}],worst5:[{name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0},{name:"int06-04-26",spend:7354,revenue:9281,orders:22,imp:7087,clicks:210,roas:1.26,ctr:2.96,cvr:10.48,cpa:334.31},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:11173,revenue:35095,orders:66,imp:49165,clicks:899,roas:3.14,ctr:1.83,cvr:7.34,cpa:169.29},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:14240,revenue:67518,orders:442,imp:242622,clicks:2894,roas:4.74,ctr:1.19,cvr:15.27,cpa:32.22},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:31648,revenue:150593,orders:402,imp:166651,clicks:4809,roas:4.76,ctr:2.89,cvr:8.36,cpa:78.73}],all:[{name:"Shop GMV Max",spend:83400,revenue:580840,orders:1467,imp:648359,clicks:13936,roas:6.96,ctr:2.15,cvr:10.53,cpa:56.85},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:82102,revenue:453797,orders:724,imp:335323,clicks:5547,roas:5.53,ctr:1.65,cvr:13.05,cpa:113.4},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:57031,revenue:299938,orders:666,imp:203122,clicks:57372,roas:5.26,ctr:28.25,cvr:1.16,cpa:85.63},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:55126,revenue:297377,orders:795,imp:395231,clicks:7259,roas:5.39,ctr:1.84,cvr:10.95,cpa:69.34},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:51168,revenue:247735,orders:629,imp:373351,clicks:5283,roas:4.84,ctr:1.42,cvr:11.91,cpa:81.35},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:37403,revenue:213410,orders:431,imp:180165,clicks:2982,roas:5.71,ctr:1.66,cvr:14.45,cpa:86.78},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:33520,revenue:173822,orders:335,imp:189956,clicks:4288,roas:5.19,ctr:2.26,cvr:7.81,cpa:100.06},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:31648,revenue:150593,orders:402,imp:166651,clicks:4809,roas:4.76,ctr:2.89,cvr:8.36,cpa:78.73},{name:"shop 06.04.26",spend:28720,revenue:159766,orders:376,imp:23543,clicks:1667,roas:5.56,ctr:7.08,cvr:22.56,cpa:76.38},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:27649,revenue:148645,orders:320,imp:151231,clicks:2562,roas:5.38,ctr:1.69,cvr:12.49,cpa:86.4},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:23757,revenue:141893,orders:791,imp:565934,clicks:4973,roas:5.97,ctr:0.88,cvr:15.91,cpa:30.03},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:23556,revenue:128408,orders:189,imp:82551,clicks:1716,roas:5.45,ctr:2.08,cvr:11.01,cpa:124.64},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:23462,revenue:113015,orders:203,imp:127082,clicks:1815,roas:4.82,ctr:1.43,cvr:11.18,cpa:115.58},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:21912,revenue:113063,orders:237,imp:104931,clicks:1764,roas:5.16,ctr:1.68,cvr:13.44,cpa:92.46},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:21288,revenue:110178,orders:279,imp:128469,clicks:2387,roas:5.18,ctr:1.86,cvr:11.69,cpa:76.3},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:20956,revenue:108889,orders:252,imp:80832,clicks:2156,roas:5.2,ctr:2.67,cvr:11.69,cpa:83.16},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:20431,revenue:104749,orders:257,imp:100349,clicks:2554,roas:5.13,ctr:2.55,cvr:10.06,cpa:79.5},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:18628,revenue:98727,orders:209,imp:119736,clicks:2358,roas:5.3,ctr:1.97,cvr:8.86,cpa:89.13},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:17452,revenue:101792,orders:241,imp:75223,clicks:1800,roas:5.83,ctr:2.39,cvr:13.39,cpa:72.42},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:15591,revenue:78505,orders:186,imp:114836,clicks:2026,roas:5.04,ctr:1.76,cvr:9.18,cpa:83.83},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:15413,revenue:75143,orders:142,imp:72481,clicks:1409,roas:4.88,ctr:1.94,cvr:10.08,cpa:108.55},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14722,revenue:123732,orders:179,imp:69022,clicks:1269,roas:8.4,ctr:1.84,cvr:14.11,cpa:82.25},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:14240,revenue:67518,orders:442,imp:242622,clicks:2894,roas:4.74,ctr:1.19,cvr:15.27,cpa:32.22},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:13942,revenue:71129,orders:178,imp:105639,clicks:2060,roas:5.1,ctr:1.95,cvr:8.64,cpa:78.33},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:13595,revenue:67285,orders:199,imp:73232,clicks:1528,roas:4.95,ctr:2.09,cvr:13.02,cpa:68.32},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:11173,revenue:35095,orders:66,imp:49165,clicks:899,roas:3.14,ctr:1.83,cvr:7.34,cpa:169.29},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:10022,revenue:64441,orders:134,imp:57081,clicks:1301,roas:6.43,ctr:2.28,cvr:10.3,cpa:74.8},{name:"int06-04-26",spend:7354,revenue:9281,orders:22,imp:7087,clicks:210,roas:1.26,ctr:2.96,cvr:10.48,cpa:334.31},{name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0}]},tiktok:{spend:248473,revenue:1284452,orders:5199,imp:1825735,clicks:64017,roas:5.17,ctr:3.51,cvr:8.12,cpa:47.79,top5:[{name:"29.01.26/Interior wipe - refresh wipe",spend:50285,revenue:345243,orders:2800,imp:535594,clicks:21425,roas:6.87,ctr:4.0,cvr:13.07,cpa:17.96},{name:"16.04.26/XGlass-Spot",spend:11297,revenue:65008,orders:156,imp:44379,clicks:2268,roas:5.75,ctr:5.11,cvr:6.88,cpa:72.42},{name:"12.02.26/Refresh",spend:14150,revenue:73137,orders:166,imp:47681,clicks:1741,roas:5.17,ctr:3.65,cvr:9.53,cpa:85.25},{name:"15.03.26/spot",spend:925,revenue:4687,orders:12,imp:2975,clicks:104,roas:5.06,ctr:3.5,cvr:11.54,cpa:77.16},{name:"Sugar",spend:44332,revenue:213710,orders:533,imp:218397,clicks:7761,roas:4.82,ctr:3.55,cvr:6.87,cpa:83.18}],worst5:[{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0},{name:"06.04.26/All GMV",spend:999,revenue:440,orders:2,imp:13471,clicks:363,roas:0.44,ctr:2.69,cvr:0.55,cpa:499.99},{name:"26.01.26/Reflex",spend:1529,revenue:3590,orders:7,imp:6732,clicks:224,roas:2.35,ctr:3.33,cvr:3.12,cpa:218.56},{name:"15.03.26/X-Glass",spend:651,revenue:2258,orders:5,imp:1588,clicks:55,roas:3.47,ctr:3.46,cvr:9.09,cpa:130.25},{name:"06.04.26/All GMV1",spend:1948,revenue:6900,orders:20,imp:16755,clicks:432,roas:3.54,ctr:2.58,cvr:4.63,cpa:97.41}],all:[{name:"29.01.26/Interior wipe - refresh wipe",spend:50285,revenue:345243,orders:2800,imp:535594,clicks:21425,roas:6.87,ctr:4.0,cvr:13.07,cpa:17.96},{name:"Sugar",spend:44332,revenue:213710,orders:533,imp:218397,clicks:7761,roas:4.82,ctr:3.55,cvr:6.87,cpa:83.18},{name:"20.11.25/All",spend:35786,revenue:170249,orders:450,imp:568500,clicks:16825,roas:4.76,ctr:2.96,cvr:2.67,cpa:79.53},{name:"Cleaner",spend:22896,revenue:93494,orders:459,imp:152005,clicks:5938,roas:4.08,ctr:3.91,cvr:7.73,cpa:49.88},{name:"22.12.25/ไม้ปัด",spend:21518,revenue:87943,orders:160,imp:57428,clicks:1916,roas:4.09,ctr:3.34,cvr:8.35,cpa:134.49},{name:"12.02.26/Refresh",spend:14150,revenue:73137,orders:166,imp:47681,clicks:1741,roas:5.17,ctr:3.65,cvr:9.53,cpa:85.25},{name:"12.04.26/Interior",spend:13395,revenue:54395,orders:124,imp:70803,clicks:2068,roas:4.06,ctr:2.92,cvr:6.0,cpa:108.03},{name:"16.04.26/XGlass-Spot",spend:11297,revenue:65008,orders:156,imp:44379,clicks:2268,roas:5.75,ctr:5.11,cvr:6.88,cpa:72.42},{name:"Interior/reflex",spend:11156,revenue:40633,orders:80,imp:43658,clicks:1310,roas:3.64,ctr:3.0,cvr:6.11,cpa:139.46},{name:"26.01.26/Mind",spend:6860,revenue:32942,orders:61,imp:23132,clicks:778,roas:4.8,ctr:3.36,cvr:7.84,cpa:112.47},{name:"12.04.26/Reflex",spend:6234,revenue:28381,orders:45,imp:22637,clicks:809,roas:4.55,ctr:3.57,cvr:5.56,cpa:138.54},{name:"06.04.26/All GMV1",spend:1948,revenue:6900,orders:20,imp:16755,clicks:432,roas:3.54,ctr:2.58,cvr:4.63,cpa:97.41},{name:"26.01.26/Reflex",spend:1529,revenue:3590,orders:7,imp:6732,clicks:224,roas:2.35,ctr:3.33,cvr:3.12,cpa:218.56},{name:"06.04.26/All GMV",spend:999,revenue:440,orders:2,imp:13471,clicks:363,roas:0.44,ctr:2.69,cvr:0.55,cpa:499.99},{name:"15.03.26/spot",spend:925,revenue:4687,orders:12,imp:2975,clicks:104,roas:5.06,ctr:3.5,cvr:11.54,cpa:77.16},{name:"15.03.26/X-Glass",spend:651,revenue:2258,orders:5,imp:1588,clicks:55,roas:3.47,ctr:3.46,cvr:9.09,cpa:130.25},{name:"6.6 ห้ามปิด เปิดยาว ",spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0}]}},
+  may: {shopee:{spend:826262,revenue:4971774,orders:11977,imp:5921275,clicks:223415,roas:6.02,ctr:3.77,cvr:5.36,cpa:68.99,top5:[{name:"Shop GMV Max",spend:97400,revenue:723472,orders:1816,imp:1104696,clicks:22097,roas:7.43,ctr:2.0,cvr:8.22,cpa:53.63},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:59317,revenue:380231,orders:867,imp:424884,clicks:10195,roas:6.41,ctr:2.4,cvr:8.5,cpa:68.42},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:47552,revenue:305850,orders:739,imp:363627,clicks:6639,roas:6.43,ctr:1.83,cvr:11.13,cpa:64.35},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:48535,revenue:285876,orders:438,imp:243900,clicks:3900,roas:5.89,ctr:1.6,cvr:11.23,cpa:110.81},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:64328,revenue:258047,orders:655,imp:365821,clicks:112945,roas:4.01,ctr:30.87,cvr:0.58,cpa:98.21}],worst5:[{name:"int06-04-26",spend:6161,revenue:5759,orders:19,imp:3803,clicks:154,roas:0.93,ctr:4.05,cvr:12.34,cpa:324.27},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:16334,revenue:50765,orders:106,imp:72787,clicks:1434,roas:3.11,ctr:1.97,cvr:7.39,cpa:154.09},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:64328,revenue:258047,orders:655,imp:365821,clicks:112945,roas:4.01,ctr:30.87,cvr:0.58,cpa:98.21},{name:"shop 06.04.26",spend:30474,revenue:151870,orders:353,imp:31468,clicks:1899,roas:4.98,ctr:6.03,cvr:18.59,cpa:86.33},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:26138,revenue:140327,orders:366,imp:136866,clicks:3732,roas:5.37,ctr:2.73,cvr:9.81,cpa:71.42}],all:[{name:"Shop GMV Max",spend:97400,revenue:723472,orders:1816,imp:1104696,clicks:22097,roas:7.43,ctr:2.0,cvr:8.22,cpa:53.63},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:59317,revenue:380231,orders:867,imp:424884,clicks:10195,roas:6.41,ctr:2.4,cvr:8.5,cpa:68.42},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:47552,revenue:305850,orders:739,imp:363627,clicks:6639,roas:6.43,ctr:1.83,cvr:11.13,cpa:64.35},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:48535,revenue:285876,orders:438,imp:243900,clicks:3900,roas:5.89,ctr:1.6,cvr:11.23,cpa:110.81},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:64328,revenue:258047,orders:655,imp:365821,clicks:112945,roas:4.01,ctr:30.87,cvr:0.58,cpa:98.21},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:32409,revenue:213439,orders:402,imp:200187,clicks:3641,roas:6.59,ctr:1.82,cvr:11.04,cpa:80.62},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:30403,revenue:191106,orders:458,imp:209656,clicks:4510,roas:6.29,ctr:2.15,cvr:10.16,cpa:66.38},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:33180,revenue:189856,orders:414,imp:178162,clicks:3440,roas:5.72,ctr:1.93,cvr:12.03,cpa:80.14},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:30098,revenue:181893,orders:459,imp:184650,clicks:4705,roas:6.04,ctr:2.55,cvr:9.76,cpa:65.57},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:22285,revenue:169789,orders:932,imp:515876,clicks:5652,roas:7.62,ctr:1.1,cvr:16.49,cpa:23.91},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:28140,revenue:164710,orders:377,imp:174132,clicks:3104,roas:5.85,ctr:1.78,cvr:12.15,cpa:74.64},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:25751,revenue:157387,orders:289,imp:173944,clicks:4098,roas:6.11,ctr:2.36,cvr:7.05,cpa:89.1},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:23540,revenue:156549,orders:243,imp:120802,clicks:2103,roas:6.65,ctr:1.74,cvr:11.55,cpa:96.87},{name:"shop 06.04.26",spend:30474,revenue:151870,orders:353,imp:31468,clicks:1899,roas:4.98,ctr:6.03,cvr:18.59,cpa:86.33},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:24178,revenue:150183,orders:328,imp:113293,clicks:2614,roas:6.21,ctr:2.31,cvr:12.55,cpa:73.71},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:26138,revenue:140327,orders:366,imp:136866,clicks:3732,roas:5.37,ctr:2.73,cvr:9.81,cpa:71.42},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:21986,revenue:127519,orders:279,imp:157892,clicks:3363,roas:5.8,ctr:2.13,cvr:8.3,cpa:78.8},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:17608,revenue:123432,orders:322,imp:84080,clicks:2149,roas:7.01,ctr:2.56,cvr:14.98,cpa:54.68},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:22393,revenue:121185,orders:164,imp:95308,clicks:2200,roas:5.41,ctr:2.31,cvr:7.45,cpa:136.54},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:16636,revenue:116447,orders:131,imp:88969,clicks:1880,roas:7.0,ctr:2.11,cvr:6.97,cpa:127.0},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:20283,revenue:110608,orders:221,imp:157879,clicks:3230,roas:5.45,ctr:2.05,cvr:6.84,cpa:91.78},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:17977,revenue:104597,orders:269,imp:151778,clicks:2814,roas:5.82,ctr:1.85,cvr:9.56,cpa:66.83},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:16190,revenue:104251,orders:704,imp:277710,clicks:4060,roas:6.44,ctr:1.46,cvr:17.34,cpa:23.0},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:16364,revenue:90861,orders:154,imp:79538,clicks:1826,roas:5.55,ctr:2.3,cvr:8.43,cpa:106.26},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:14570,revenue:83181,orders:261,imp:89031,clicks:1962,roas:5.71,ctr:2.2,cvr:13.3,cpa:55.83},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:9071,revenue:68989,orders:107,imp:62012,clicks:1409,roas:7.61,ctr:2.27,cvr:7.59,cpa:84.77},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:16334,revenue:50765,orders:106,imp:72787,clicks:1434,roas:3.11,ctr:1.97,cvr:7.39,cpa:154.09},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:6961,revenue:43595,orders:104,imp:58524,clicks:1660,roas:6.26,ctr:2.84,cvr:6.27,cpa:66.93},{name:"int06-04-26",spend:6161,revenue:5759,orders:19,imp:3803,clicks:154,roas:0.93,ctr:4.05,cvr:12.34,cpa:324.27}]},tiktok:{spend:290941,revenue:1461482,orders:7520,imp:2573993,clicks:87816,roas:5.02,ctr:3.41,cvr:8.56,cpa:38.69,top5:[{name:"6.6 ห้ามปิด  จำกัด 10000",spend:120241,revenue:625477,orders:3270,imp:1308504,clicks:42703,roas:5.2,ctr:3.26,cvr:7.66,cpa:36.77},{name:"29.01.26/Interior wipe - refresh wipe",spend:59119,revenue:340485,orders:2937,imp:561344,clicks:21860,roas:5.76,ctr:3.89,cvr:13.44,cpa:20.13},{name:"Sugar",spend:23697,revenue:126396,orders:321,imp:106164,clicks:4277,roas:5.33,ctr:4.03,cvr:7.51,cpa:73.82},{name:"20.11.25/All",spend:20114,revenue:104218,orders:276,imp:309999,clicks:9020,roas:5.18,ctr:2.91,cvr:3.06,cpa:72.88},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.43}],worst5:[{name:"26.01.26/Mind",spend:7001,revenue:21558,orders:45,imp:20113,clicks:608,roas:3.08,ctr:3.02,cvr:7.4,cpa:155.58},{name:"12.02.26/Refresh",spend:10596,revenue:37101,orders:83,imp:34185,clicks:1097,roas:3.5,ctr:3.21,cvr:7.57,cpa:127.66},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.43},{name:"22.12.25/ไม้ปัด",spend:6882,revenue:26628,orders:44,imp:16976,clicks:642,roas:3.87,ctr:3.78,cvr:6.85,cpa:156.41},{name:"Cleaner",spend:13685,revenue:53571,orders:268,imp:84807,clicks:3488,roas:3.91,ctr:4.11,cvr:7.68,cpa:51.06}],all:[{name:"6.6 ห้ามปิด  จำกัด 10000",spend:120241,revenue:625477,orders:3270,imp:1308504,clicks:42703,roas:5.2,ctr:3.26,cvr:7.66,cpa:36.77},{name:"29.01.26/Interior wipe - refresh wipe",spend:59119,revenue:340485,orders:2937,imp:561344,clicks:21860,roas:5.76,ctr:3.89,cvr:13.44,cpa:20.13},{name:"Sugar",spend:23697,revenue:126396,orders:321,imp:106164,clicks:4277,roas:5.33,ctr:4.03,cvr:7.51,cpa:73.82},{name:"20.11.25/All",spend:20114,revenue:104218,orders:276,imp:309999,clicks:9020,roas:5.18,ctr:2.91,cvr:3.06,cpa:72.88},{name:"12.04.26/Interior",spend:15019,revenue:53659,orders:129,imp:78011,clicks:2098,roas:3.57,ctr:2.69,cvr:6.15,cpa:116.43},{name:"Cleaner",spend:13685,revenue:53571,orders:268,imp:84807,clicks:3488,roas:3.91,ctr:4.11,cvr:7.68,cpa:51.06},{name:"16.04.26/XGlass-Spot",spend:9216,revenue:44043,orders:102,imp:35963,clicks:1331,roas:4.78,ctr:3.7,cvr:7.66,cpa:90.35},{name:"12.02.26/Refresh",spend:10596,revenue:37101,orders:83,imp:34185,clicks:1097,roas:3.5,ctr:3.21,cvr:7.57,cpa:127.66},{name:"12.04.26/Reflex",spend:5371,revenue:28346,orders:45,imp:17927,clicks:692,roas:5.28,ctr:3.86,cvr:6.5,cpa:119.36},{name:"22.12.25/ไม้ปัด",spend:6882,revenue:26628,orders:44,imp:16976,clicks:642,roas:3.87,ctr:3.78,cvr:6.85,cpa:156.41},{name:"26.01.26/Mind",spend:7001,revenue:21558,orders:45,imp:20113,clicks:608,roas:3.08,ctr:3.02,cvr:7.4,cpa:155.58}]}},
+
+  jun: {
+    shopee:{spend:885137,revenue:5053225,orders:11550,imp:4623650,clicks:190086,roas:5.71,ctr:4.11,cvr:6.08,cpa:76.64,top5:[{name:"Shop GMV Max",spend:105000,revenue:715174,orders:1604,imp:787914,clicks:18496,roas:6.81,ctr:2.35,cvr:8.67,cpa:65.46},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:67361,revenue:418530,orders:1035,imp:382942,clicks:9691,roas:6.21,ctr:2.53,cvr:10.68,cpa:65.08},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:93358,revenue:392929,orders:803,imp:297809,clicks:84364,roas:4.21,ctr:28.33,cvr:0.95,cpa:116.26},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:56455,revenue:324553,orders:801,imp:304546,clicks:7232,roas:5.75,ctr:2.37,cvr:11.08,cpa:70.48},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:50805,revenue:277538,orders:448,imp:191048,clicks:3843,roas:5.46,ctr:2.01,cvr:11.66,cpa:113.4}],worst5:[{name:"int06-04-26",spend:6494,revenue:4178,orders:15,imp:11783,clicks:333,roas:0.64,ctr:2.83,cvr:4.5,cpa:432.96},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:14054,revenue:27202,orders:55,imp:56860,clicks:1321,roas:1.94,ctr:2.32,cvr:4.16,cpa:255.53},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:93358,revenue:392929,orders:803,imp:297809,clicks:84364,roas:4.21,ctr:28.33,cvr:0.95,cpa:116.26},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:16925,revenue:87703,orders:230,imp:85655,clicks:2667,roas:5.18,ctr:3.11,cvr:8.62,cpa:73.59},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:22675,revenue:118348,orders:249,imp:111599,clicks:2379,roas:5.22,ctr:2.13,cvr:10.47,cpa:91.06}],all:[{name:"Shop GMV Max",spend:105000,revenue:715174,orders:1604,imp:787914,clicks:18496,roas:6.81,ctr:2.35,cvr:8.67,cpa:65.46},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:67361,revenue:418530,orders:1035,imp:382942,clicks:9691,roas:6.21,ctr:2.53,cvr:10.68,cpa:65.08},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:93358,revenue:392929,orders:803,imp:297809,clicks:84364,roas:4.21,ctr:28.33,cvr:0.95,cpa:116.26},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:56455,revenue:324553,orders:801,imp:304546,clicks:7232,roas:5.75,ctr:2.37,cvr:11.08,cpa:70.48},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:50805,revenue:277538,orders:448,imp:191048,clicks:3843,roas:5.46,ctr:2.01,cvr:11.66,cpa:113.4},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:39474,revenue:234667,orders:497,imp:183418,clicks:4312,roas:5.94,ctr:2.35,cvr:11.53,cpa:79.42},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:35149,revenue:209458,orders:505,imp:174542,clicks:4447,roas:5.96,ctr:2.55,cvr:11.36,cpa:69.6},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:37346,revenue:201770,orders:509,imp:188582,clicks:5466,roas:5.4,ctr:2.9,cvr:9.31,cpa:73.37},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:33111,revenue:186352,orders:339,imp:157762,clicks:3378,roas:5.63,ctr:2.14,cvr:10.04,cpa:97.67},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:33398,revenue:182915,orders:271,imp:122168,clicks:2808,roas:5.48,ctr:2.3,cvr:9.65,cpa:123.24},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:28875,revenue:182064,orders:440,imp:162477,clicks:4054,roas:6.31,ctr:2.5,cvr:10.85,cpa:65.62},{name:"shop 06.04.26",spend:33772,revenue:178023,orders:443,imp:61511,clicks:2737,roas:5.27,ctr:4.45,cvr:16.19,cpa:76.23},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:27666,revenue:163074,orders:296,imp:158493,clicks:4511,roas:5.89,ctr:2.85,cvr:6.56,cpa:93.47},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:22256,revenue:154805,orders:849,imp:281014,clicks:5891,roas:6.96,ctr:2.1,cvr:14.41,cpa:26.21},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:24221,revenue:142667,orders:323,imp:119312,clicks:3192,roas:5.89,ctr:2.68,cvr:10.12,cpa:74.99},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:19282,revenue:127659,orders:149,imp:91161,clicks:1932,roas:6.62,ctr:2.12,cvr:7.71,cpa:129.41},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:22675,revenue:118348,orders:249,imp:111599,clicks:2379,roas:5.22,ctr:2.13,cvr:10.47,cpa:91.06},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:19201,revenue:115236,orders:190,imp:76498,clicks:1762,roas:6.0,ctr:2.3,cvr:10.78,cpa:101.06},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:16603,revenue:107786,orders:239,imp:77455,clicks:2096,roas:6.49,ctr:2.71,cvr:11.4,cpa:69.47},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:17984,revenue:101596,orders:192,imp:134893,clicks:3184,roas:5.65,ctr:2.36,cvr:6.03,cpa:93.67},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:17841,revenue:98101,orders:252,imp:113305,clicks:2318,roas:5.5,ctr:2.05,cvr:10.87,cpa:70.8},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:16925,revenue:87703,orders:230,imp:85655,clicks:2667,roas:5.18,ctr:3.11,cvr:8.62,cpa:73.59},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:10432,revenue:82398,orders:253,imp:64776,clicks:1725,roas:7.9,ctr:2.66,cvr:14.67,cpa:41.23},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:13286,revenue:74238,orders:110,imp:62449,clicks:1473,roas:5.59,ctr:2.36,cvr:7.47,cpa:120.78},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:8803,revenue:56284,orders:98,imp:55966,clicks:1464,roas:6.39,ctr:2.62,cvr:6.69,cpa:89.83},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:6792,revenue:47708,orders:131,imp:55647,clicks:1413,roas:7.02,ctr:2.54,cvr:9.27,cpa:51.85},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:6518,revenue:40268,orders:224,imp:52065,clicks:1597,roas:6.18,ctr:3.07,cvr:14.03,cpa:29.1},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:14054,revenue:27202,orders:55,imp:56860,clicks:1321,roas:1.94,ctr:2.32,cvr:4.16,cpa:255.53},{name:"int06-04-26",spend:6494,revenue:4178,orders:15,imp:11783,clicks:333,roas:0.64,ctr:2.83,cvr:4.5,cpa:432.96}]},
+    tiktok:{spend:258404,revenue:1233228,orders:4565,imp:5444142,clicks:73668,roas:4.94,ctr:1.35,cvr:6.2,cpa:54.68,top5:[],worst5:[],all:[]}
+  },
+  jul: {
+    /* Jul coverage: Shopee full month 1-31 Jul (complete, no gaps) — days 1-30 via ข้อมูล-Shopee-Ads-30_06_2026-30_07_2026.csv (cumulative export, fetched 31 Jul), day 31 merged in from ข้อมูล-Shopee-Ads-31_07_2026-31_07_2026.csv (fetched 1 Aug). TikTok: GMV Max + Business Ads full 1-30 Jul totals from cumulative exports; GMV Live unchanged (no fresh July export available, still from 7 Jul session). */
+    shopee:{spend:972771.65,revenue:5866551,orders:14902,imp:6043120,clicks:222238,roas:6.03,ctr:3.68,cvr:6.71,cpa:65.28,top5:[{name:"Shop GMV Max",spend:112000,revenue:801133.58,orders:1900,imp:889279,clicks:20508,roas:7.15,ctr:2.31,cvr:9.26,cpa:58.95},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:83993.28,revenue:500192.99,orders:1246,imp:501470,clicks:13274,roas:5.96,ctr:2.65,cvr:9.39,cpa:67.41},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:70036.71,revenue:415146.94,orders:1028,imp:432271,clicks:9983,roas:5.93,ctr:2.31,cvr:10.3,cpa:68.13},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:53894.81,revenue:316173,orders:502,imp:219500,clicks:4754,roas:5.87,ctr:2.17,cvr:10.56,cpa:107.36},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:53725.09,revenue:345854.77,orders:1907,imp:515462,clicks:11328,roas:6.44,ctr:2.2,cvr:16.83,cpa:28.17}],worst5:[{name:"int06-04-26",spend:186.82,revenue:0,orders:0,imp:147,clicks:9,roas:0,ctr:6.12,cvr:0,cpa:0},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [3]",spend:1430.96,revenue:4347,orders:17,imp:20557,clicks:464,roas:3.04,ctr:2.26,cvr:3.66,cpa:84.17},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:12623.45,revenue:39503,orders:71,imp:59006,clicks:1496,roas:3.13,ctr:2.54,cvr:4.75,cpa:177.8},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [2]",spend:5643.78,revenue:24659,orders:94,imp:72518,clicks:1280,roas:4.37,ctr:1.77,cvr:7.34,cpa:60.04},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:41480.33,revenue:210942,orders:516,imp:291531,clicks:82672,roas:5.09,ctr:28.36,cvr:0.62,cpa:80.39}],all:[{name:"Shop GMV Max",spend:112000,revenue:801133.58,orders:1900,imp:889279,clicks:20508,roas:7.15,ctr:2.31,cvr:9.26,cpa:58.95},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:83993.28,revenue:500192.99,orders:1246,imp:501470,clicks:13274,roas:5.96,ctr:2.65,cvr:9.39,cpa:67.41},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:70036.71,revenue:415146.94,orders:1028,imp:432271,clicks:9983,roas:5.93,ctr:2.31,cvr:10.3,cpa:68.13},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:53725.09,revenue:345854.77,orders:1907,imp:515462,clicks:11328,roas:6.44,ctr:2.2,cvr:16.83,cpa:28.17},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:53894.81,revenue:316173,orders:502,imp:219500,clicks:4754,roas:5.87,ctr:2.17,cvr:10.56,cpa:107.36},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:49772.87,revenue:289580,orders:736,imp:250903,clicks:6868,roas:5.82,ctr:2.74,cvr:10.72,cpa:67.63},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:44569.33,revenue:249513,orders:428,imp:276122,clicks:7666,roas:5.6,ctr:2.78,cvr:5.58,cpa:104.13},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:41195.19,revenue:243178.38,orders:592,imp:253973,clicks:6570,roas:5.9,ctr:2.59,cvr:9.01,cpa:69.59},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:42396.84,revenue:243026,orders:564,imp:285004,clicks:6698,roas:5.73,ctr:2.35,cvr:8.42,cpa:75.17},{name:"shop 06.04.26",spend:34044.14,revenue:235386.89,orders:592,imp:11716,clicks:1936,roas:6.91,ctr:16.52,cvr:30.58,cpa:57.51},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:41480.33,revenue:210942,orders:516,imp:291531,clicks:82672,roas:5.09,ctr:28.36,cvr:0.62,cpa:80.39},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:28452.17,revenue:187942.13,orders:399,imp:168357,clicks:4358,roas:6.61,ctr:2.59,cvr:9.16,cpa:71.31},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:30062.33,revenue:180877.95,orders:364,imp:142086,clicks:3705,roas:6.02,ctr:2.61,cvr:9.82,cpa:82.59},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:30915.06,revenue:169136.01,orders:324,imp:145690,clicks:3297,roas:5.47,ctr:2.26,cvr:9.83,cpa:95.42},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:25023.26,revenue:155247,orders:1051,imp:219559,clicks:6095,roas:6.2,ctr:2.78,cvr:17.24,cpa:23.81},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:26789.8,revenue:159137.79,orders:237,imp:108151,clicks:2387,roas:5.94,ctr:2.21,cvr:9.93,cpa:113.04},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:23489.23,revenue:136018,orders:278,imp:134117,clicks:2748,roas:5.79,ctr:2.05,cvr:10.12,cpa:84.49},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:20625.31,revenue:120367.11,orders:247,imp:165760,clicks:4082,roas:5.84,ctr:2.46,cvr:6.05,cpa:83.5},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:20235.2,revenue:115065,orders:181,imp:111089,clicks:2433,roas:5.69,ctr:2.19,cvr:7.44,cpa:111.8},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:20804.42,revenue:107880.37,orders:243,imp:107916,clicks:2443,roas:5.19,ctr:2.26,cvr:9.95,cpa:85.61},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:17830.21,revenue:104557,orders:244,imp:97648,clicks:2950,roas:5.86,ctr:3.02,cvr:8.27,cpa:73.07},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:18788.32,revenue:99299.25,orders:241,imp:137025,clicks:2689,roas:5.29,ctr:1.96,cvr:8.96,cpa:77.96},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:14674.88,revenue:90796,orders:100,imp:90607,clicks:1817,roas:6.19,ctr:2.01,cvr:5.5,cpa:146.75},{name:"แชมพูล้างรถสูตรผสมเซรามิค(Quartz Shampoo) [6]",spend:11642.11,revenue:99548,orders:252,imp:93052,clicks:1847,roas:8.55,ctr:1.98,cvr:13.64,cpa:46.2},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:10614.2,revenue:59450,orders:93,imp:50403,clicks:1226,roas:5.6,ctr:2.43,cvr:7.59,cpa:114.13},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:7257.49,revenue:52827.84,orders:167,imp:59254,clicks:1414,roas:7.28,ctr:2.39,cvr:11.81,cpa:43.46},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:8490.82,revenue:51029,orders:173,imp:65518,clicks:1627,roas:6.01,ctr:2.48,cvr:10.63,cpa:49.08},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:7660.74,revenue:45758,orders:79,imp:56499,clicks:1266,roas:5.97,ctr:2.24,cvr:6.24,cpa:96.97},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:12623.45,revenue:39503,orders:71,imp:59006,clicks:1496,roas:3.13,ctr:2.54,cvr:4.75,cpa:177.8},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [2]",spend:5643.78,revenue:24659,orders:94,imp:72518,clicks:1280,roas:4.37,ctr:1.77,cvr:7.34,cpa:60.04},{name:"โฆษณาคำค้นหา 21-07-2026",spend:2422.5,revenue:12978,orders:36,imp:10930,clicks:348,roas:5.36,ctr:3.18,cvr:10.34,cpa:67.29},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [3]",spend:1430.96,revenue:4347,orders:17,imp:20557,clicks:464,roas:3.04,ctr:2.26,cvr:3.66,cpa:84.17},{name:"int06-04-26",spend:186.82,revenue:0,orders:0,imp:147,clicks:9,roas:0,ctr:6.12,cvr:0,cpa:0}]},
+    tiktok:{spend:508920.06,revenue:2031579.63,orders:10122,imp:0,clicks:0,roas:3.99,ctr:0,cvr:0,cpa:50.28,top5:[{name:"Refreshwipes",spend:41887.31,revenue:154270.79,orders:1353,imp:0,clicks:0,roas:3.61,ctr:0,cvr:0,cpa:30.96},{name:"Sugar",spend:17463.47,revenue:90787.34,orders:223,imp:0,clicks:0,roas:5.11,ctr:0,cvr:0,cpa:78.31},{name:"Interiorwipes",spend:20198.81,revenue:72250.74,orders:589,imp:0,clicks:0,roas:3.49,ctr:0,cvr:0,cpa:34.29},{name:"AllProduct",spend:12147.83,revenue:59066.73,orders:140,imp:0,clicks:0,roas:4.76,ctr:0,cvr:0,cpa:86.77},{name:"Cleaner",spend:8689.33,revenue:31599.56,orders:154,imp:0,clicks:0,roas:3.51,ctr:0,cvr:0,cpa:56.42}],worst5:[{name:"interior (03.07.26)",spend:5731.79,revenue:18176.87,orders:46,imp:0,clicks:0,roas:3.04,ctr:0,cvr:0,cpa:124.6},{name:"Interiorwipes",spend:20198.81,revenue:72250.74,orders:589,imp:0,clicks:0,roas:3.49,ctr:0,cvr:0,cpa:34.29},{name:"Cleaner",spend:8689.33,revenue:31599.56,orders:154,imp:0,clicks:0,roas:3.51,ctr:0,cvr:0,cpa:56.42},{name:"mind.waterless (paused)",spend:1705.54,revenue:6065.47,orders:10,imp:0,clicks:0,roas:3.56,ctr:0,cvr:0,cpa:170.55},{name:"Refreshwipes",spend:41887.31,revenue:154270.79,orders:1353,imp:0,clicks:0,roas:3.61,ctr:0,cvr:0,cpa:30.96}],all:[]}
+  },
+  aug: {
+    /* Shopee: official Shopee Ads exports ข้อมูล-Shopee-Ads-fresh-01_09_2026.csv (CPC/product ads, 39 campaigns, report generated 01/09/2026 08:12) + Shop-Ads-Overall-Data-fresh-01_09_2026.csv (search/shop ads, 4 campaigns, report generated 01/09/2026 08:14) = 43 campaigns, ช่วง 01/08/2026-31/08/2026 (เดือนสมบูรณ์) */
+    shopee:{spend:974764.42,revenue:6669158.00,orders:16170,imp:8739420,clicks:396600,roas:6.84,ctr:4.54,cvr:4.08,cpa:60.28,top5:[{name:"shop 06.04.26",spend:3410.61,revenue:48235.00,orders:110,imp:3169,clicks:461,roas:14.14,ctr:14.55,cvr:23.86,cpa:31.01},{name:"GMV Max ร้านค้า",spend:133265.00,revenue:1142333.00,orders:2323,imp:1692970,clicks:36265,roas:8.57,ctr:2.14,cvr:6.41,cpa:57.37},{name:"แชมพูล้างรถสูตรผสมเซรามิค(Quartz Shampoo) [6]",spend:35271.39,revenue:293470.00,orders:706,imp:286458,clicks:6244,roas:8.32,ctr:2.18,cvr:11.31,cpa:49.96},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:5571.67,revenue:46131.00,orders:132,imp:59391,clicks:1409,roas:8.28,ctr:2.37,cvr:9.37,cpa:42.21},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:33388.77,revenue:257296.00,orders:587,imp:255057,clicks:6910,roas:7.71,ctr:2.71,cvr:8.49,cpa:56.88}],worst5:[{name:"น้ำยาทำความสะอาดยางโดยเฉพาะพร้อมแปรง (WIBWUB Tire Clean + Tire Brush)",spend:881.66,revenue:1222.00,orders:2,imp:7309,clicks:106,roas:1.39,ctr:1.45,cvr:1.89,cpa:440.83},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray พร้อมผ้า Polisher( WIBWUB Reflex+ผ้า Polisher )",spend:4375.91,revenue:15692.00,orders:26,imp:55857,clicks:880,roas:3.59,ctr:1.58,cvr:2.95,cpa:168.30},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ พร้อมผ้า martini (WIBWUB Sugar+ผ้า martini)",spend:6174.97,revenue:23811.00,orders:44,imp:81462,clicks:1228,roas:3.86,ctr:1.51,cvr:3.58,cpa:140.34},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [3]",spend:7389.86,revenue:33370.00,orders:136,imp:124689,clicks:2996,roas:4.52,ctr:2.40,cvr:4.54,cpa:54.34},{name:"ผลิตภัณฑ์ภัณฑ์ขจัดคราบผงเบรก (WIBWUB Steel)",spend:4794.36,revenue:21758.00,orders:36,imp:42721,clicks:668,roas:4.54,ctr:1.56,cvr:5.39,cpa:133.18}],all:[{name:"GMV Max ร้านค้า",spend:133265.00,revenue:1142333.00,orders:2323,imp:1692970,clicks:36265,roas:8.57,ctr:2.14,cvr:6.41,cpa:57.37},{name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:73719.89,revenue:401564.00,orders:1075,imp:692044,clicks:210677,roas:5.45,ctr:30.44,cvr:0.51,cpa:68.58},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:73006.32,revenue:547252.00,orders:1354,imp:478403,clicks:14634,roas:7.50,ctr:3.06,cvr:9.25,cpa:53.92},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:58145.89,revenue:436016.00,orders:1030,imp:486666,clicks:11181,roas:7.50,ctr:2.30,cvr:9.21,cpa:56.45},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:41042.65,revenue:271844.00,orders:1500,imp:569843,clicks:11399,roas:6.62,ctr:2.00,cvr:13.16,cpa:27.36},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:38592.87,revenue:279988.00,orders:657,imp:265916,clicks:7027,roas:7.25,ctr:2.64,cvr:9.35,cpa:58.74},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:36574.75,revenue:276792.00,orders:435,imp:208726,clicks:3979,roas:7.57,ctr:1.91,cvr:10.93,cpa:84.08},{name:"แชมพูล้างรถสูตรผสมเซรามิค(Quartz Shampoo) [6]",spend:35271.39,revenue:293470.00,orders:706,imp:286458,clicks:6244,roas:8.32,ctr:2.18,cvr:11.31,cpa:49.96},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:34266.75,revenue:208033.00,orders:1399,imp:381518,clicks:10564,roas:6.07,ctr:2.77,cvr:13.24,cpa:24.49},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:33388.77,revenue:257296.00,orders:587,imp:255057,clicks:6910,roas:7.71,ctr:2.71,cvr:8.49,cpa:56.88},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:31260.53,revenue:215660.00,orders:418,imp:197811,clicks:4854,roas:6.90,ctr:2.45,cvr:8.61,cpa:74.79},{name:"โฆษณาคำค้นหา 21-07-2026",spend:30926.38,revenue:142850.00,orders:381,imp:176805,clicks:5823,roas:4.62,ctr:3.29,cvr:6.54,cpa:81.17},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:29481.93,revenue:204535.00,orders:360,imp:232317,clicks:7344,roas:6.94,ctr:3.16,cvr:4.90,cpa:81.89},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:28925.38,revenue:192056.00,orders:458,imp:249421,clicks:6177,roas:6.64,ctr:2.48,cvr:7.41,cpa:63.16},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:23142.84,revenue:137578.00,orders:282,imp:173087,clicks:3329,roas:5.94,ctr:1.92,cvr:8.47,cpa:82.07},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:23081.85,revenue:149147.00,orders:182,imp:114076,clicks:2320,roas:6.46,ctr:2.03,cvr:7.84,cpa:126.82},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:19154.13,revenue:124066.00,orders:211,imp:142606,clicks:2487,roas:6.48,ctr:1.74,cvr:8.48,cpa:90.78},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:18915.04,revenue:138024.00,orders:276,imp:150069,clicks:4097,roas:7.30,ctr:2.73,cvr:6.74,cpa:68.53},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:17136.45,revenue:99202.00,orders:134,imp:137237,clicks:2843,roas:5.79,ctr:2.07,cvr:4.71,cpa:127.88},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:16295.51,revenue:104778.00,orders:92,imp:118595,clicks:2214,roas:6.43,ctr:1.87,cvr:4.16,cpa:177.13},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:15873.70,revenue:94045.00,orders:222,imp:135515,clicks:2746,roas:5.92,ctr:2.03,cvr:8.08,cpa:71.50},{name:"น้ำยาทำความสะอาดกระจก (WIBWUB Visible V.2 )",spend:14261.09,revenue:89141.00,orders:260,imp:137088,clicks:3737,roas:6.25,ctr:2.73,cvr:6.96,cpa:54.85},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:13614.25,revenue:72709.00,orders:138,imp:156325,clicks:4024,roas:5.34,ctr:2.57,cvr:3.43,cpa:98.65},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:13088.88,revenue:78284.00,orders:148,imp:74267,clicks:1739,roas:5.98,ctr:2.34,cvr:8.51,cpa:88.44},{name:"ทิชชู่เปียกเช็ดภายในรถ (WIBWUB Interior Wipes 3 ซอง + Refresh wipes 3 ซอง )",spend:12525.22,revenue:79488.00,orders:184,imp:133766,clicks:2104,roas:6.35,ctr:1.57,cvr:8.75,cpa:68.07},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:11573.39,revenue:70935.00,orders:78,imp:66337,clicks:1138,roas:6.13,ctr:1.72,cvr:6.85,cpa:148.38},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบพร้อมผ้า perfect( WIBWUB Interior+ผ้าperfect )",spend:10010.04,revenue:49325.00,orders:79,imp:120236,clicks:1878,roas:4.93,ctr:1.56,cvr:4.21,cpa:126.71},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:9459.50,revenue:57522.00,orders:105,imp:75306,clicks:1920,roas:6.08,ctr:2.55,cvr:5.47,cpa:90.09},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:8857.98,revenue:55161.00,orders:133,imp:70678,clicks:2015,roas:6.23,ctr:2.85,cvr:6.60,cpa:66.60},{name:"น้ำยาขจัดคราบยางมะตอย  (WIBWUB Brown V.2 )",spend:7829.96,revenue:44214.00,orders:95,imp:42759,clicks:864,roas:5.65,ctr:2.02,cvr:11.00,cpa:82.42},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [3]",spend:7389.86,revenue:33370.00,orders:136,imp:124689,clicks:2996,roas:4.52,ctr:2.40,cvr:4.54,cpa:54.34},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:6593.40,revenue:43156.00,orders:54,imp:75644,clicks:1455,roas:6.55,ctr:1.92,cvr:3.71,cpa:122.10},{name:"ผ้าไมโครไฟเบอร์เนื้อขนแกะ BOA ไร้ขอบ 500 gsm (WIBWUB Perfect) ผลิตจากเกาหลี [5]",spend:6486.54,revenue:33582.00,orders:111,imp:48072,clicks:1206,roas:5.18,ctr:2.51,cvr:9.20,cpa:58.44},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ พร้อมผ้า martini (WIBWUB Sugar+ผ้า martini)",spend:6174.97,revenue:23811.00,orders:44,imp:81462,clicks:1228,roas:3.86,ctr:1.51,cvr:3.58,cpa:140.34},{name:"น้ำยาทำความสะอาดกระจกพร้อมผ้า Polisher (WIBWUB Visible+ ผ้า Polisher )",spend:5629.42,revenue:26296.00,orders:52,imp:58889,clicks:896,roas:4.67,ctr:1.52,cvr:5.80,cpa:108.26},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:5571.67,revenue:46131.00,orders:132,imp:59391,clicks:1409,roas:8.28,ctr:2.37,cvr:9.37,cpa:42.21},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:5388.12,revenue:35543.00,orders:105,imp:65973,clicks:1546,roas:6.60,ctr:2.34,cvr:6.79,cpa:51.32},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน พร้อมผ้า Margarita (WIBWUB MIND + ผ้า Margarita)",spend:5379.57,revenue:27054.00,orders:60,imp:94337,clicks:1216,roas:5.03,ctr:1.29,cvr:4.93,cpa:89.66},{name:"ผลิตภัณฑ์ภัณฑ์ขจัดคราบผงเบรก (WIBWUB Steel)",spend:4794.36,revenue:21758.00,orders:36,imp:42721,clicks:668,roas:4.54,ctr:1.56,cvr:5.39,cpa:133.18},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray พร้อมผ้า Polisher( WIBWUB Reflex+ผ้า Polisher )",spend:4375.91,revenue:15692.00,orders:26,imp:55857,clicks:880,roas:3.59,ctr:1.58,cvr:2.95,cpa:168.30},{name:"shop 06.04.26",spend:3410.61,revenue:48235.00,orders:110,imp:3169,clicks:461,roas:14.14,ctr:14.55,cvr:23.86,cpa:31.01},{name:"น้ำยาทำความสะอาดยางโดยเฉพาะพร้อมแปรง (WIBWUB Tire Clean + Tire Brush)",spend:881.66,revenue:1222.00,orders:2,imp:7309,clicks:106,roas:1.39,ctr:1.45,cvr:1.89,cpa:440.83},{name:"int06-04-26",spend:0.00,revenue:0.00,orders:0,imp:5,clicks:0,roas:0.00,ctr:0.00,cvr:0.00,cpa:0.00}]},
+    tiktok:{spend:682333.01,revenue:2463893.09,orders:11947,imp:0,clicks:0,roas:3.61,ctr:0,cvr:0,cpa:57.11,top5:[],worst5:[],all:[]}
+  },
+  sep: {
+    /* AUDIT NOTE 2026-09-21 (19:12 ICT, scheduled wibwub-download-shopee-ads): shopee totals below re-synced from official Shopee Ads export ข้อมูล-Shopee-Ads-01_09_2026-20_09_2026.csv (39 product/CPC campaigns, report generated 21/09/2026 19:12, covers 01-20 ก.ย. — first file to include 20 ก.ย. data). Recomputed totals directly from the CSV (index 11=imp, 12=clicks, 16=orders, 24=revenue, 26=spend, 27=roas verified against header row): spend 714,615.75 / revenue 4,508,945.00 / orders 10,773 / imp 5,907,530 / clicks 144,968 / ROAS 6.31 (up from 01-19 ก.ย. cumulative 681,897.88 spend / 4,282,422.00 revenue / 10,227 orders — day 20 ก.ย. alone contributed 32,717.87 spend / 226,523.00 revenue / 546 orders / 280,153 imp / 8,296 clicks). Per-campaign top5/worst5/all recomputed directly from this file's 39 rows (same 39 campaign names as prior rounds, no new campaigns). cover.shopeeDay bumped 19 → 20. Still product/CPC ads only (39 campaigns) — search/shop ads (4 campaigns) NOT included this round, same known caveat as prior rounds. SH_ADS in WIBWUB_Dashboard.html / WIBWUB_Mobile.html updated this round to match the new spend total per user instruction (normally sourced from the Google Sheet sales sync, not the Ads-report spend figure — flagged as a deviation from the usual rule). */
+    /* Sep 1-10 (Shopee: วันที่ 1-10 ปิดวันครบแล้ว). Shopee: official Shopee Ads export ข้อมูล-Shopee-Ads-01_09_2026-10_09_2026.csv (39 product/CPC campaigns, report generated 11/09/2026 08:12, report_type=product_homepage_v2__overall) + Shop-Ads-Overall-Data-01_09_2026-10_09_2026.csv (4 search/shop-ads campaigns, report generated 11/09/2026 08:16) รวมกันเป็น 43 แคมเปญ — รอบนี้ดึงจาก UI สองแท็บ (โฆษณาสินค้า + โฆษณาคำค้นหา) แล้ว merge แทนการยิง trigger API ตรง ได้ผลเท่ากัน. รอบก่อน (10 ก.ย. 20:10) ใช้ไฟล์เดียว report_type=new_cpc_homepage__overall — ไฟล์นี้รวม CPC/product ads 39 แคมเปญ + search/shop ads 4 แคมเปญ = 43 แคมเปญไว้ในไฟล์เดียว จึงไม่ต้องใช้ Shop-Ads-Overall แยกอีกในรอบนี้) — ครอบคลุมถึง 10 ก.ย. เก็บถึง ~20:10 ICT (วันที่ 10 ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป; รอบ 9 ก.ย. 19:32 รวม 370,195.47 -> รอบเช้า 10 ก.ย. 09:56 รวม 413,756.10 -> 10 ก.ย. 20:10 รวม 437,070.27 -> รอบนี้ 11 ก.ย. 08:15 (วันที่ 10 ปิดวันแล้ว) รวม 443,986.80). ดึงโดย scheduled wibwub-download-shopee-ads 10 ก.ย. 2569 ~20:10 ICT. ⚠️ ยืนยันบทเรียนเดิมซ้ำอีกรอบ: การกด "ดาวน์โหลดข้อมูล > ภาพรวมข้อมูลโฆษณา" จากหน้า Shopee Ads ตอนที่แท็บตารางอยู่ที่ "โฆษณาสินค้า" จะยิง trigger ด้วย report_type=product_homepage_v2__overall ซึ่งได้แค่ 39 แคมเปญ (product ads) ขาด search/shop ads 4 แคมเปญ (รอบนี้ต่างกัน spend 397,062.63 -> 437,070.27). ต้องยิง API ตรงด้วย POST /api/pas/v1/report/export_job/trigger/ {language:"th",report_type:"new_cpc_homepage__overall",start_time,end_time} จึงจะได้ครบ 43 แคมเปญ. หมายเหตุ: ถ้ายิง trigger ถี่เกินจะได้ code:200 "too many export requests" — รอ ~60 วิ แล้วยิงใหม่. TikTok: รีเฟรชล่าสุด 2026-09-10 ~20:10 ICT โดย scheduled wibwub-download-tiktok-ads run (ทับรอบเช้า 10 ก.ย. 09:45) — ครอบคลุมวันที่ 1-10 ก.ย. โดย 1-9 ก.ย. ปิดวันแล้ว และ 10 ก.ย. เก็บถึง ~20:10 (ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate ในรอบถัดไป: 22,279.74 / 373 ออเดอร์ / 86,114.00 · ROI 3.87). ไฮไลต์รอบนี้: 9 ก.ย. ยังเป็นวันที่ดีที่สุดของเดือนแบบทิ้งห่างที่ 43,334.47 / 812 ออเดอร์ / 237,251.49 · ROI 5.47. ข้อควรระวัง: 9 ก.ย. ที่รอบเช้ารายงานว่า "ปิดวันแล้ว" ยัง restate เล็กน้อยอีก (43,334.34 → 43,334.47 spend / 237,351.30 → 237,251.49 revenue) ส่วน 1-8 ก.ย. เท่าเดิมทุกวัน — ยืนยันกฎ ~48 ชม. อีกครั้ง. tiktok.spend = gmvMax 276,306.10 + bizAds 9,048.69 = 285,354.79; ROAS 3.96 · CPA 61.67. ดาวน์โหลด xlsx ครบทั้ง 2 ไฟล์ และ verify ผลรวมกับแถว Total ของแต่ละไฟล์แล้วตรงทุกตัว. revenue/orders มาจาก GMV Max Overview เท่านั้น (bizAds เป็น impression-based ไม่มี revenue/orders). gmvLive ไม่ถูกบวกซ้ำเข้ามาที่นี่ เพราะอยู่ใน GMV Max Overview export อยู่แล้ว (ดู TK_BREAKDOWN.aug) — ค่า 0 ใน TK_BREAKDOWN.sep.gmvLive แปลว่า "ยังไม่เก็บ" ไม่ใช่ "ไม่มีไลฟ์". imp/clicks/ctr/cvr ปล่อยเป็น 0 ตาม convention ของเดือนก่อน ๆ (GMV Max Overview export ไม่มีคอลัมน์เหล่านี้) — ดูตัวเลข impression/click จริงของ bizAds ได้ที่ TK_BREAKDOWN.sep.bizAds. */
+    /* SINGLE SOURCE OF TRUTH for the ก.ย. coverage-day labels (see skill: wibwub-avoid-stale-hardcoded-labels).
+       Every 'Shopee ถึง N ก.ย. · TikTok ถึง M ก.ย.' string in the page is re-derived from this object at load time
+       by adsSyncCoverageLabels(), so a data sync that bumps these numbers updates every label for free. */
+        /* AUDIT NOTE 2026-09-21 (08:12 ICT, scheduled wibwub-download-shopee-ads): re-pull attempted via the "รายงานล่าสุด" quick-report panel + fetch/Blob download-workaround (native window.open button is popup-blocked under automation; captured the export_job/get_download_url XHR + export_job/direct_download window.open call, then re-issued the fetch with credentials to get a real file). Downloaded ข้อมูล-Shopee-Ads-13_09_2026-19_09_2026.csv (23,474 bytes) but its "รายงานถูกสร้างเมื่อ" timestamp is still 20/09/2026 23:21 and period is still 13/09/2026 - 19/09/2026 — i.e. this is byte-identical in coverage to the report already merged into the 01-19 Sep cumulative figures below by the 2026-09-20 23:35 run (commit 956b690). Recomputed totals from this file directly (39 product/CPC campaigns, imp 1,843,624 / clicks 48,246 / orders 3,259 / revenue ฿1,367,423.00 / spend ฿214,393.82 / ROAS 6.38 for the 13-19 ก.ย. window) — consistent with prior overlap, confirming no new day (20 ก.ย. or later) has been published by Shopee yet. No numeric change made to shopee{} below since there is nothing new to sync; cover.shopeeDay intentionally left at 19 (not bumped to 20) since no 20 ก.ย. data exists yet — bumping it would misstate coverage per the wibwub-avoid-stale-hardcoded-labels rule. SH_ADS in WIBWUB_Dashboard.html / WIBWUB_Mobile.html also left untouched this round (sourced from the Google Sheet sales sync, not the Ads-report spend figure). */
+        /* AUDIT NOTE 2026-09-19 (05:36 ICT, scheduled wibwub-download-shopee-ads): pulled two reports via the "รายงานล่าสุด" quick-report panel + fetch/Blob download-workaround (native window.open button is popup-blocked under automation; intercepted the export_job trigger/list/get_single_result XHR responses to capture the real direct-download URL, then window.open on click, then re-issued fetch with credentials to get the actual file). Downloaded ข้อมูล-Shopee-Ads-01_09_2026-17_09_2026.csv (23,711 bytes, 39 product/CPC campaigns, report generated 18/09/2026 08:19, totals byte-for-byte identical to the already-synced 2026-09-18 figures — confirmed via full recomputation, no change) AND ข้อมูล-Shopee-Ads-18_09_2026-18_09_2026.csv (23,006 bytes, same 39 campaigns, report generated 19/09/2026 12:34, covers 18 ก.ย. only — spend 24,060.11 / revenue 162,742.00 / orders 390 / imp 216,340 / clicks 5,712). Merged the 18 ก.ย. single-day file into the existing 01-17 ก.ย. cumulative totals by summing per-campaign spend/revenue/orders/imp/clicks (same 39 campaign names in both files, no new campaigns) and recomputing roas/ctr/cvr/cpa per campaign and in aggregate. New shopee{} totals: spend 653,306.13 / revenue 4,097,870.00 / orders 9,805 / imp 5,364,491 / clicks 129,835 / ROAS 6.27. cover.shopeeDay bumped 17 → 18. Still product/CPC ads only (39 campaigns) — search/shop ads (4 campaigns) NOT included this round, same known caveat as prior rounds. SH_ADS left untouched per the 2026-09-17 audit note (sourced from Google Sheet sales sync, not from this Ads-report spend figure). */
+    /* AUDIT NOTE 2026-09-20 (23:22 ICT, scheduled wibwub-download-shopee-ads): downloaded ข้อมูล-Shopee-Ads-13_09_2026-19_09_2026.csv (39 campaigns, product/CPC ads only, via "รายงานล่าสุด" quick-report panel + fetch/Blob download-workaround). This file is a 7-day window (13-19 Sep) that overlaps days 13-18 already baked into the prior 01-18 Sep cumulative, so it was NOT added directly. Instead: existing 01-18 Sep cumulative (653,306.13 spend, verified against ข้อมูล-Shopee-Ads-01_09_2026-17_09_2026.csv + ข้อมูล-Shopee-Ads-18_09_2026-18_09_2026.csv summing to the same 653,306.13) + ข้อมูล-Shopee-Ads-19_09_2026-19_09_2026.csv (single-day file, already downloaded this morning 08:18 ICT but not yet merged in: spend 28,591.75 / revenue 184,552.00 / orders 422 / imp 262,886 / clicks 6,837) = new 01-19 Sep cumulative: spend 681,897.88, revenue 4,282,422.00, orders 10,227, imp 5,627,377, clicks 136,672, roas 6.28. Per-campaign top5/worst5/all re-aggregated by summing (01-17 cumulative + day18 + day19) matched by campaign name, same 39 campaigns throughout, no new campaigns. */
+    /* AUDIT NOTE 2026-09-17 (08:27 ICT, scheduled wibwub-download-shopee-ads): re-pull attempted via the "รายงานล่าสุด" quick-report panel + fetch/Blob download-workaround (native window.open button is popup-blocked under automation; captured the export_job/get_download_url XHR + export_job/direct_download window.open call, then re-issued the fetch with credentials to get a real file). Downloaded ข้อมูล-Shopee-Ads-01_09_2026-16_09_2026.csv (23,693 bytes) but its "รายงานถูกสร้างเมื่อ" timestamp is still 16/09/2026 08:27 — i.e. Shopee had NOT generated a fresh export as of this run (the quick-report list only ever showed the existing 16/09-16/09, 01/09-16/09, and 16/08-16/09 rows; no new "กำลังดำเนินการ" entry ever appeared despite re-triggering the "ภาพรวมข้อมูลโฆษณา" dropdown and switching the date filter). Parsed totals (impressions 4,631,968 / clicks 111,681 / orders 8,671 / revenue ฿3,622,445.00 / spend ฿580,237.48 / ROAS 6.24, 39 product/CPC campaigns) are byte-for-byte identical to the already-synced 2026-09-16 figures below — confirmed via full recomputation from the CSV, not just a metadata check. No numeric change made to shopee{} below since there is nothing new to sync; cover.shopeeDay intentionally left at 16 (not bumped to 17) since no 17 ก.ย. data exists yet — bumping it would misstate coverage per the wibwub-avoid-stale-hardcoded-labels rule. Also confirmed per WIBWUB_Dashboard.html's own comment that SH_ADS is sourced from the Google Sheet sales sync and must NOT be overwritten with the Ads-report spend figure, so SH_ADS was left untouched this round. Next round should retry the direct POST /api/pas/v1/report/export_job/trigger/ approach (report_type=new_cpc_homepage__overall) if a same-day close-out figure for 16 ก.ย. or fresh 17 ก.ย. data is needed sooner than Shopee's own refresh cadence. */
+        /* AUDIT NOTE 2026-09-16 (08:27 ICT, scheduled wibwub-download-shopee-ads): shopee totals below re-synced from ข้อมูล-Shopee-Ads-01_09_2026-16_09_2026.csv (custom date-range export via calendar day-cell click automation, since the built-in "1 เดือน" preset only offers a rolling 30-day window spanning two months; CPC/product ads export, 39 campaigns, report generated 16/09/2026 08:27, covers 1-16 ก.ย.). Verified against the live overview cards on screen (impressions 4.6m / clicks 111.7k / orders 8.9k / revenue ฿3,622,445.00 / spend ฿580,237.50 / ROAS 6.24) — exact match. This round used ONLY the "ภาพรวมข้อมูลโฆษณา" download flow per the scheduled task's instructions — it did NOT separately re-pull the "โฆษณาคำค้นหา" (search/shop-ads) export, so the same known caveat applies: the 4 search/shop-ads campaigns are NOT included here (product/CPC ads only, 39 campaigns). 16 ก.ย. is still an open day (not yet closed) so today's figures will be restated in the next round per the ~48h close-out rule. */
+    /* AUDIT NOTE 2026-09-15 (08:20 ICT, scheduled wibwub-download-shopee-ads): shopee totals below re-synced from ข้อมูล-Shopee-Ads-01_09_2026-15_09_2026.csv (CPC/product ads export, 39 campaigns, report generated 15/09/2026 08:16, covers 1-15 ก.ย.). This round used ONLY the "ภาพรวมข้อมูลโฆษณา" download flow per the scheduled task's instructions — it did NOT separately re-pull the "โฆษณาคำค้นหา" (search/shop-ads) export, so the 4 search/shop-ads campaigns that were merged into the 14 ก.ย. total (last known: 52,424.03 spend / 268,828 revenue / 691 orders, per 14 ก.ย. 19:20 pull) are NOT included here. Totals below (534,438.19 spend / 3,375,636 revenue / 8,099 orders / ROAS 6.32) therefore cover product/CPC ads only and are not directly comparable to the 14 ก.ย. 43-campaign figure (563,133.77 spend) — the apparent decrease is due to scope (39 vs 43 campaigns), not an actual spend drop. Next round that also pulls the search/shop-ads export should merge both again to restore the full 43-campaign total. */
+    cover:{ shopeeDay:20, tiktokDay:20, shopeePull:'21 ก.ย. 19:12 น. (รายงาน 01-20 ก.ย., official Shopee Ads export ข้อมูล-Shopee-Ads-01_09_2026-20_09_2026.csv, 39 แคมเปญ product/CPC ads เท่านั้น — ยังไม่รวม search/shop ads 4 แคมเปญ)', tiktokPull:'20 ก.ย. 23:55 น. (scheduled wibwub-download-tiktok-ads: GMV Max Total row Sep 1-20 spend 561,712.59 / 9,887 ออเดอร์ / revenue 2,158,341.70 / ROI 3.84 / CPA 56.81; Business Ads รวม 97 แคมเปญ spend 16,563.89 / imp 240,378 / clicks 2,904 / CPM 68.91 / CTR 1.21% — ผลรวม 6 แคมเปญ spend>0 ตรงกับแถว Total of 97 results ทุกตัว. 15 ก.ย. restate เล็กน้อย revenue 111,886.20→111,780.87; 16 ก.ย. ปิดวันแล้วเต็มที่ 32,338.31/637/112,514.65 (จากบางส่วน 4,473.01/98/18,317.96). 20 ก.ย. ยังเป็นวันเปิดอยู่ ตัวเลขจะถูก restate รอบถัดไป)' },
+    /* AUDIT FIX 2026-09-14 (round 2, 19:20 ICT): shopee totals below re-synced using BOTH exports fresh through day 14 — ข้อมูล-Shopee-Ads-01_09_2026-14_09_2026.csv (CPC/product ads, 39 campaigns, report generated 14/09/2026 19:11, covers 1-14 ก.ย.) merged with Shop-Ads-Overall-Data-01_09_2026-14_09_2026.csv (search/shop ads, 4 campaigns, report generated 14/09/2026 19:20, covers 1-14 ก.ย.) = 43 campaigns total. This closes the gap noted in the previous audit note (round 1 above used a stale 1-10 ก.ย. search/shop-ads file); both segments now share the same 1-14 ก.ย. coverage window. Verified: combined revenue 3,490,170 / spend 563,133.77 / orders 8,439 / imp 4,649,175 / clicks 198,063 / ROAS 6.20 — product-ads-only totals (510,709.74 spend / 3,221,342 revenue / 7,748 orders) cross-checked against the live "โฆษณาสินค้า" tab overview cards on screen; search/shop-ads-only totals (52,424.03 spend / 268,828 revenue / 691 orders) cross-checked against the live "โฆษณาคำค้นหา" tab overview cards. */
+    shopee:{spend:714615.75,revenue:4508945,orders:10773,imp:5907530,clicks:144968,roas:6.31,ctr:2.45,cvr:7.43,cpa:66.33,top5:[{name:"GMV Max ร้านค้า",spend:135091.44,revenue:980116.0,orders:1911,imp:1393688,clicks:33172,roas:7.26,ctr:2.38,cvr:5.76,cpa:70.69},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:52476.68,revenue:350821.0,orders:826,imp:342597,clicks:10541,roas:6.69,ctr:3.08,cvr:7.84,cpa:63.53},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:37943.82,revenue:243576.0,orders:577,imp:276213,clicks:7139,roas:6.42,ctr:2.58,cvr:8.08,cpa:65.76},{name:"แชมพูล้างรถสูตรผสมเซรามิค(Quartz Shampoo) [6]",spend:32100.24,revenue:219621.0,orders:544,imp:212276,clicks:5027,roas:6.84,ctr:2.37,cvr:10.82,cpa:59.01},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:29030.93,revenue:186587.0,orders:1068,imp:326445,clicks:7857,roas:6.43,ctr:2.41,cvr:13.59,cpa:27.18}],worst5:[{name:"น้ำยาทำความสะอาดยางโดยเฉพาะพร้อมแปรง (WIBWUB Tire Clean + Tire Brush)",spend:2189.84,revenue:4737.0,orders:9,imp:22631,clicks:384,roas:2.16,ctr:1.7,cvr:2.34,cpa:243.32},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray พร้อมผ้า Polisher( WIBWUB Reflex+ผ้า Polisher )",spend:6578.13,revenue:25248.0,orders:38,imp:58222,clicks:1256,roas:3.84,ctr:2.16,cvr:3.03,cpa:173.11},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ พร้อมผ้า martini (WIBWUB Sugar+ผ้า martini)",spend:9007.58,revenue:35701.0,orders:71,imp:90059,clicks:1584,roas:3.96,ctr:1.76,cvr:4.48,cpa:126.87},{name:"น้ำยาทำความสะอาดกระจกพร้อมผ้า Polisher (WIBWUB Visible+ ผ้า Polisher )",spend:5713.88,revenue:22962.0,orders:54,imp:57491,clicks:872,roas:4.02,ctr:1.52,cvr:6.19,cpa:105.81},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบพร้อมผ้า perfect( WIBWUB Interior+ผ้าperfect )",spend:12856.88,revenue:56806.0,orders:112,imp:122908,clicks:2130,roas:4.42,ctr:1.73,cvr:5.26,cpa:114.79}],all:[{name:"GMV Max ร้านค้า",spend:135091.44,revenue:980116.0,orders:1911,imp:1393688,clicks:33172,roas:7.26,ctr:2.38,cvr:5.76,cpa:70.69},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:52476.68,revenue:350821.0,orders:826,imp:342597,clicks:10541,roas:6.69,ctr:3.08,cvr:7.84,cpa:63.53},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:37943.82,revenue:243576.0,orders:577,imp:276213,clicks:7139,roas:6.42,ctr:2.58,cvr:8.08,cpa:65.76},{name:"แชมพูล้างรถสูตรผสมเซรามิค(Quartz Shampoo) [6]",spend:32100.24,revenue:219621.0,orders:544,imp:212276,clicks:5027,roas:6.84,ctr:2.37,cvr:10.82,cpa:59.01},{name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:29030.93,revenue:186587.0,orders:1068,imp:326445,clicks:7857,roas:6.43,ctr:2.41,cvr:13.59,cpa:27.18},{name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:27104.12,revenue:175286.0,orders:405,imp:162329,clicks:4882,roas:6.47,ctr:3.01,cvr:8.3,cpa:66.92},{name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:26531.08,revenue:178159.0,orders:406,imp:154707,clicks:4640,roas:6.72,ctr:3,cvr:8.75,cpa:65.35},{name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:25592.85,revenue:144722.0,orders:930,imp:280485,clicks:7672,roas:5.65,ctr:2.74,cvr:12.12,cpa:27.52},{name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:24290.7,revenue:149800.0,orders:297,imp:148308,clicks:3893,roas:6.17,ctr:2.62,cvr:7.63,cpa:81.79},{name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:23209.92,revenue:148124.0,orders:355,imp:174544,clicks:4943,roas:6.38,ctr:2.83,cvr:7.18,cpa:65.38},{name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:22206.72,revenue:141657.0,orders:219,imp:115818,clicks:2311,roas:6.38,ctr:2,cvr:9.48,cpa:101.4},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:20632.59,revenue:136414.0,orders:239,imp:167347,clicks:5087,roas:6.61,ctr:3.04,cvr:4.7,cpa:86.33},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:18575.75,revenue:122943.0,orders:161,imp:86671,clicks:2169,roas:6.62,ctr:2.5,cvr:7.42,cpa:115.38},{name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:18322.97,revenue:109976.0,orders:216,imp:141732,clicks:3840,roas:6,ctr:2.71,cvr:5.62,cpa:84.83},{name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:15027.85,revenue:84543.0,orders:172,imp:100572,clicks:2182,roas:5.63,ctr:2.17,cvr:7.88,cpa:87.37},{name:"น้ำยาขจัดคราบยางมะตอย  (WIBWUB Brown V.2 )",spend:14702.99,revenue:84647.0,orders:198,imp:78135,clicks:1785,roas:5.76,ctr:2.28,cvr:11.09,cpa:74.26},{name:"ผ้าไมโครไฟเบอร์เนื้อขนแกะ BOA ไร้ขอบ 500 gsm (WIBWUB Perfect) ผลิตจากเกาหลี [5]",spend:13830.8,revenue:66198.0,orders:220,imp:97830,clicks:2396,roas:4.79,ctr:2.45,cvr:9.18,cpa:62.87},{name:"ทิชชู่เปียกเช็ดภายในรถ (WIBWUB Interior Wipes 3 ซอง + Refresh wipes 3 ซอง )",spend:13350.96,revenue:80040.0,orders:202,imp:129787,clicks:2352,roas:6,ctr:1.81,cvr:8.59,cpa:66.09},{name:"น้ำยาทำความสะอาดกระจก (WIBWUB Visible V.2 )",spend:13234.03,revenue:79484.0,orders:238,imp:116587,clicks:3330,roas:6.01,ctr:2.86,cvr:7.15,cpa:55.61},{name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบพร้อมผ้า perfect( WIBWUB Interior+ผ้าperfect )",spend:12856.88,revenue:56806.0,orders:112,imp:122908,clicks:2130,roas:4.42,ctr:1.73,cvr:5.26,cpa:114.79},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:11923.05,revenue:70820.0,orders:124,imp:90579,clicks:1732,roas:5.94,ctr:1.91,cvr:7.16,cpa:96.15},{name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:10829.38,revenue:58638.0,orders:76,imp:74389,clicks:1605,roas:5.41,ctr:2.16,cvr:4.74,cpa:142.49},{name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:10565.09,revenue:64423.0,orders:150,imp:86059,clicks:1858,roas:6.1,ctr:2.16,cvr:8.07,cpa:70.43},{name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:9160.57,revenue:66363.0,orders:59,imp:78496,clicks:1546,roas:7.24,ctr:1.97,cvr:3.82,cpa:155.26},{name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:9021.15,revenue:52973.0,orders:102,imp:52748,clicks:1404,roas:5.87,ctr:2.66,cvr:7.26,cpa:88.44},{name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ พร้อมผ้า martini (WIBWUB Sugar+ผ้า martini)",spend:9007.58,revenue:35701.0,orders:71,imp:90059,clicks:1584,roas:3.96,ctr:1.76,cvr:4.48,cpa:126.87},{name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:8412.69,revenue:47968.0,orders:55,imp:49237,clicks:947,roas:5.7,ctr:1.92,cvr:5.81,cpa:152.96},{name:"ผลิตภัณฑ์ภัณฑ์ขจัดคราบผงเบรก (WIBWUB Steel)",spend:8261.97,revenue:41856.0,orders:63,imp:70588,clicks:1171,roas:5.07,ctr:1.66,cvr:5.38,cpa:131.14},{name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:7532.36,revenue:41335.0,orders:78,imp:107198,clicks:2900,roas:5.49,ctr:2.71,cvr:2.69,cpa:96.57},{name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:7281.39,revenue:41045.0,orders:76,imp:56917,clicks:1524,roas:5.64,ctr:2.68,cvr:4.99,cpa:95.81},{name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน พร้อมผ้า Margarita (WIBWUB MIND + ผ้า Margarita)",spend:6682.67,revenue:34195.0,orders:67,imp:86807,clicks:1178,roas:5.12,ctr:1.36,cvr:5.69,cpa:99.74},{name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray พร้อมผ้า Polisher( WIBWUB Reflex+ผ้า Polisher )",spend:6578.13,revenue:25248.0,orders:38,imp:58222,clicks:1256,roas:3.84,ctr:2.16,cvr:3.03,cpa:173.11},{name:"น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER ) [3]",spend:6345.32,revenue:32938.0,orders:141,imp:108705,clicks:2807,roas:5.19,ctr:2.58,cvr:5.02,cpa:45},{name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:5960.94,revenue:38008.0,orders:95,imp:56419,clicks:1577,roas:6.38,ctr:2.8,cvr:6.02,cpa:62.75},{name:"น้ำยาทำความสะอาดกระจกพร้อมผ้า Polisher (WIBWUB Visible+ ผ้า Polisher )",spend:5713.88,revenue:22962.0,orders:54,imp:57491,clicks:872,roas:4.02,ctr:1.52,cvr:6.19,cpa:105.81},{name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:4956.26,revenue:35163.0,orders:106,imp:44095,clicks:1202,roas:7.09,ctr:2.73,cvr:8.82,cpa:46.76},{name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:4890.54,revenue:33679.0,orders:45,imp:44953,clicks:1010,roas:6.89,ctr:2.25,cvr:4.46,cpa:108.68},{name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:3189.62,revenue:21373.0,orders:68,imp:42958,clicks:1063,roas:6.7,ctr:2.47,cvr:6.4,cpa:46.91},{name:"น้ำยาทำความสะอาดยางโดยเฉพาะพร้อมแปรง (WIBWUB Tire Clean + Tire Brush)",spend:2189.84,revenue:4737.0,orders:9,imp:22631,clicks:384,roas:2.16,ctr:1.7,cvr:2.34,cpa:243.32}]},
+    tiktok:{spend:578276.48,revenue:2158341.70,orders:9887,imp:0,clicks:0,roas:3.73,ctr:0,cvr:0,cpa:58.49,top5:[],worst5:[],all:[]}
+  }
+};
+
+let curPeriod = 'sep'; // legacy compat — default = current month, not "all"
+let curPeriodKeys = ['sep']; // default: current month only (was bug: defaulted to all months summed)
+
+// Combine multiple period snapshots for a platform
+function getCombinedPlatform(keys, platform) {
+  const datasets = keys.map(k => DATA_PERIODS[k][platform]).filter(Boolean);
+  if (!datasets.length) return DATA[platform];
+  if (datasets.length === 1) return datasets[0];
+  const spend   = datasets.reduce((a,d)=>a+d.spend,0);
+  const revenue = datasets.reduce((a,d)=>a+d.revenue,0);
+  const orders  = datasets.reduce((a,d)=>a+d.orders,0);
+  const imp     = datasets.reduce((a,d)=>a+d.imp,0);
+  const clicks  = datasets.reduce((a,d)=>a+d.clicks,0);
+  const roas = spend  ? revenue/spend      : 0;
+  const ctr  = imp    ? clicks/imp*100     : 0;
+  const cvr  = clicks ? orders/clicks*100  : 0;
+  const cpa  = orders ? spend/orders       : 0;
+  // Ad-level lists: use all-period as fallback (can't properly merge per-ad across periods)
+  const listSrc = DATA[platform] || datasets[datasets.length-1];
+  return {spend,revenue,orders,imp,clicks,roas,ctr,cvr,cpa,
+          top5:listSrc.top5, worst5:listSrc.worst5, all:listSrc.all};
+}
+function getSH(){ return getCombinedPlatform(curPeriodKeys,'shopee'); }
+function getTK(){ return getCombinedPlatform(curPeriodKeys,'tiktok'); }
+
+
+const DATA = {
+  /* ── "all" cumulative running-total object (used as the merged top5/worst5/all list fallback and as the base when getCombinedPlatform() has no matching period). Updated 2569-07-29: added the incremental NEW-period data not previously captured — Shopee 21,22,25,26,27 Jul (+spend 151,553.69/+revenue 858,312/+orders 2,068/+imp 865,111/+clicks 40,060) and TikTok GMV Max+BizAds 20-29 Jul (+spend 140,362.61/+revenue 526,307.51/+orders 2,190). CAVEAT: this object already carried an unexplained ~1.3M-baht drift vs the sum of the monthly DATA_PERIODS entries (27.18M vs 28.49M) predating this update — that pre-existing drift was NOT reconciled here (no way to isolate which month it belongs to from this flat object); only the genuinely new incremental days were added on top. TikTok imp/clicks left unchanged (no impression/click data available for the 20-29 Jul GMV Max export), so TikTok CTR is unchanged and CVR is mildly overstated (more orders over the same click base) — flag this if precision matters. */
+  shopee: {
+    spend:4685720.31,revenue:28038714,clicks:895814,imp:27330465,orders:66232,
+    roas:5.98,ctr:3.28,cvr:7.39,cpa:70.75,
+    top5:[
+      {name:"Shop GMV Max",spend:384639,revenue:2675679,orders:6499,imp:3333262,clicks:72935,roas:6.96,ctr:2.19,cvr:8.91,cpa:59.18},
+      {name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:433369,revenue:2612811,orders:4273,imp:1709095,clicks:31502,roas:6.03,ctr:1.84,cvr:13.56,cpa:101.42},
+      {name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:326256,revenue:2207085,orders:5819,imp:2156775,clicks:44539,roas:6.76,ctr:2.07,cvr:13.06,cpa:56.07},
+      {name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:307020,revenue:1659033,orders:4160,imp:1952607,clicks:32964,roas:5.4,ctr:1.69,cvr:12.62,cpa:73.8},
+      {name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:309234,revenue:1433030,orders:3236,imp:1198227,clicks:341288,roas:4.63,ctr:28.48,cvr:0.95,cpa:95.56}
+    ],
+    worst5:[
+      {name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0},
+      {name:"int06-04-26",spend:20009,revenue:19218,orders:56,imp:22673,clicks:697,roas:0.96,ctr:3.07,cvr:8.03,cpa:357.3},
+      {name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:74954,revenue:303379,orders:679,imp:347394,clicks:7907,roas:4.05,ctr:2.28,cvr:8.59,cpa:110.39},
+      {name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:68039,revenue:307952,orders:962,imp:415447,clicks:8502,roas:4.53,ctr:2.05,cvr:11.31,cpa:70.73},
+      {name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:309234,revenue:1433030,orders:3236,imp:1198227,clicks:341288,roas:4.63,ctr:28.48,cvr:0.95,cpa:95.56}
+    ],
+    all:[
+      {name:"Shop GMV Max",spend:384639,revenue:2675679,orders:6499,imp:3333262,clicks:72935,roas:6.96,ctr:2.19,cvr:8.91,cpa:59.18},
+      {name:"ไม้ปัดฝุ่นขนแกะแท้ สำหรับใช้กับรถยนต์โดยเฉพาะ (WIBWUB Wool Duster) [6]",spend:433369,revenue:2612811,orders:4273,imp:1709095,clicks:31502,roas:6.03,ctr:1.84,cvr:13.56,cpa:101.42},
+      {name:"น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar V.3) [5]",spend:326256,revenue:2207085,orders:5819,imp:2156775,clicks:44539,roas:6.76,ctr:2.07,cvr:13.06,cpa:56.07},
+      {name:"สเปรย์ทำความสะอาดเช็ดเก็บฝุ่นภายในรถ แบบไม่เงา ไม่เหนียว ไม่ทิ้งคราบ( WIBWUB Interior ) [3]",spend:307020,revenue:1659033,orders:4160,imp:1952607,clicks:32964,roas:5.4,ctr:1.69,cvr:12.62,cpa:73.8},
+      {name:"โฆษณาร้านค้า (ตั้งราคาประมูลอัตโนมัติ)",spend:309234,revenue:1433030,orders:3236,imp:1198227,clicks:341288,roas:4.63,ctr:28.48,cvr:0.95,cpa:95.56},
+      {name:"สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB MIND Detailer) [5]",spend:220556,revenue:1429985,orders:2852,imp:1158259,clicks:20958,roas:6.48,ctr:1.81,cvr:13.61,cpa:77.33},
+      {name:"ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh ) [2]",spend:190479,revenue:1113519,orders:2837,imp:1005559,clicks:27603,roas:5.85,ctr:2.75,cvr:10.28,cpa:67.14},
+      {name:"สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray ( WIBWUB Reflex V.2 ) [5]",spend:152205,revenue:955437,orders:1957,imp:817071,clicks:19725,roas:6.28,ctr:2.41,cvr:9.92,cpa:77.77},
+      {name:"ชุดทำความสะอาดและเคลือบภายในแบบครบจบ (Interior set) [3]",spend:104120,revenue:922573,orders:1357,imp:516077,clicks:10755,roas:8.86,ctr:2.08,cvr:12.62,cpa:76.73},
+      {name:"เจลเคลือบยางและฟื้นฟูพลาสติก สูตรเซรามิค (WIBWUB Tire & Trim Super Shine V.2 ) [3]",spend:148605,revenue:920339,orders:2063,imp:760750,clicks:14944,roas:6.19,ctr:1.96,cvr:13.8,cpa:72.03},
+      {name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบซับได้ทั้ง 2 ด้านขนาด 70*90 (WIBWUB Monster) [2]",spend:147214,revenue:814482,orders:1372,imp:673591,clicks:11303,roas:5.53,ctr:1.68,cvr:12.14,cpa:107.3},
+      {name:"เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",spend:125735,revenue:718686,orders:1594,imp:672622,clicks:13021,roas:5.72,ctr:1.94,cvr:12.24,cpa:78.88},
+      {name:"น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean) [4]",spend:115285,revenue:681548,orders:1661,imp:657121,clicks:14023,roas:5.91,ctr:2.13,cvr:11.84,cpa:69.41},
+      {name:"ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes) [2]",spend:86832,revenue:679341,orders:3701,imp:2142148,clicks:19978,roas:7.82,ctr:0.93,cvr:18.53,cpa:23.46},
+      {name:"น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat) [2]",spend:126928,revenue:662173,orders:1474,imp:805095,clicks:17803,roas:5.22,ctr:2.21,cvr:8.28,cpa:86.11},
+      {name:"โฟมขจัดคราบฝังลึก (WIBWUB Deep clean V.2) [4]",spend:128647,revenue:654283,orders:1471,imp:692952,clicks:14813,roas:5.09,ctr:2.14,cvr:9.93,cpa:87.46},
+      {name:"ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry doubleside )ซับได้ทั้ง 2 ด้าน [6]",spend:95620,revenue:614581,orders:1407,imp:415001,clicks:10997,roas:6.43,ctr:2.65,cvr:12.79,cpa:67.96},
+      {name:"น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner) [5]",spend:104393,revenue:573247,orders:1454,imp:490893,clicks:13514,roas:5.49,ctr:2.75,cvr:10.76,cpa:71.8},
+      {name:"เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home) [4]",spend:91764,revenue:544787,orders:863,imp:347541,clicks:7892,roas:5.94,ctr:2.27,cvr:10.94,cpa:106.33},
+      {name:"shop 06.04.26",spend:92966,revenue:489659,orders:1172,imp:116522,clicks:6303,roas:5.27,ctr:5.41,cvr:18.59,cpa:79.32},
+      {name:"สเปรย์ปรับสภาพกลิ่นภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",spend:85627,revenue:487280,orders:1221,imp:582405,clicks:11487,roas:5.69,ctr:1.97,cvr:10.63,cpa:70.13},
+      {name:"น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep V.2)",spend:66490,revenue:459335,orders:1209,imp:336128,clicks:8334,roas:6.91,ctr:2.48,cvr:14.51,cpa:55.0},
+      {name:"เซททำความสะอาดเบาะหนัง (Leather cleaner set)",spend:82627,revenue:453022,orders:841,imp:348824,clicks:7702,roas:5.48,ctr:2.21,cvr:10.92,cpa:98.25},
+      {name:"เซททำความสะอาดคราบน้ำ (Spot clean set)",spend:55949,revenue:397861,orders:752,imp:288601,clicks:6916,roas:7.11,ctr:2.4,cvr:10.87,cpa:74.4},
+      {name:"ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes) [2]",spend:48979,revenue:333992,orders:2022,imp:896141,clicks:10855,roas:6.82,ctr:1.21,cvr:18.63,cpa:24.22},
+      {name:"สเปรย์เคลือบป้องกันรังสี UV สำหรับภายในรถ (WIBWUB UV protect) [2]",spend:68039,revenue:307952,orders:962,imp:415447,clicks:8502,roas:4.53,ctr:2.05,cvr:11.31,cpa:70.73},
+      {name:"เซทแปรง detailing 3 ชิ้น (Detailing brush set) [4]",spend:74954,revenue:303379,orders:679,imp:347394,clicks:7907,roas:4.05,ctr:2.28,cvr:8.59,cpa:110.39},
+      {name:"น้ำยาเคลือบกระจก (WIBWUB X-Glass Shield V.2)",spend:35836,revenue:225659,orders:544,imp:221001,clicks:5714,roas:6.3,ctr:2.59,cvr:9.52,cpa:65.88},
+      {name:"int06-04-26",spend:20009,revenue:19218,orders:56,imp:22673,clicks:697,roas:0.96,ctr:3.07,cvr:8.03,cpa:357.3},
+      {name:"เซทแปรงทำความสะอาด (Promotion WIBWUB Brush) [3]",spend:0,revenue:0,orders:0,imp:2,clicks:0,roas:0,ctr:0.0,cvr:0,cpa:0}
+    ]
+  },
+  tiktok: {
+    spend:1390577.27,revenue:6895674.87,clicks:294018,imp:8847323,orders:27713,
+    roas:4.96,ctr:3.32,cvr:9.42,cpa:50.18,
+    top5:[
+      {name:"4.4 Live_GMV",spend:1496,revenue:38730,roas:25.9,ctr:0,cvr:0,cpa:21},
+      {name:"07.06.26/GMVLive แอ้น",spend:1917,revenue:15625,roas:8.15,ctr:0,cvr:0,cpa:56},
+      {name:"25.04.26/Live GMV New",spend:3008,revenue:23348,roas:7.76,ctr:0,cvr:0,cpa:63},
+      {name:"29.01.26/Interior wipe - refresh wipe",spend:133240,revenue:926794,roas:6.96,ctr:2.52,cvr:17.41,cpa:17},
+      {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:15022,revenue:95501,roas:6.36,ctr:0,cvr:0,cpa:55}
+    ],
+    worst5:[
+      {name:"06.04.26/All GMV",spend:1000,revenue:440,roas:0.44,ctr:4.57,cvr:16.67,cpa:500},
+      {name:"08.05.26/GMVLiveปาย",spend:1507,revenue:2527,roas:1.68,ctr:0,cvr:0,cpa:215},
+      {name:"09.08.25/Beach",spend:1977,revenue:5669,roas:2.87,ctr:6.34,cvr:5.95,cpa:165},
+      {name:"08.05.26/GMVLive ปาย03",spend:1373,revenue:4166,roas:3.03,ctr:0,cvr:0,cpa:125},
+      {name:"05.05.26/GMVLive",spend:4837,revenue:15994,roas:3.31,ctr:0,cvr:0,cpa:90}
+    ],
+    all:[
+      {name:"Sugar",spend:189425,revenue:962763,roas:5.08,ctr:3.55,cvr:11.13,cpa:71},
+      {name:"20.11.25/All",spend:175464,revenue:918475,roas:5.23,ctr:4.82,cvr:10.5,cpa:68},
+      {name:"29.01.26/Interior wipe - refresh wipe",spend:133240,revenue:926794,roas:6.96,ctr:2.52,cvr:17.41,cpa:17},
+      {name:"22.12.25/ไม้ปัด",spend:113297,revenue:551813,roas:4.87,ctr:4.6,cvr:19.86,cpa:115},
+      {name:"Cleaner",spend:83167,revenue:373438,roas:4.49,ctr:3.35,cvr:13.99,cpa:45},
+      {name:"Interior/reflex",spend:67944,revenue:307969,roas:4.53,ctr:3.02,cvr:14.88,cpa:100},
+      {name:"12.02.26/Refresh",spend:46002,revenue:202496,roas:4.4,ctr:3.71,cvr:17.22,cpa:100},
+      {name:"26.01.26/Mind",spend:28096,revenue:119803,roas:4.26,ctr:6.74,cvr:7.91,cpa:121},
+      {name:"12.04.26/Interior",spend:26799,revenue:102268,roas:3.82,ctr:4.22,cvr:9.38,cpa:113},
+      {name:"26.01.26/Reflex",spend:19995,revenue:102850,roas:5.14,ctr:4.04,cvr:6.01,cpa:98},
+      {name:"16.04.26/XGlass-Spot",spend:18735,revenue:99899,roas:5.33,ctr:4.8,cvr:8.94,cpa:79},
+      {name:"18.11.25/Refresh",spend:17604,revenue:85292,roas:4.85,ctr:4.82,cvr:6.83,cpa:88},
+      {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:15022,revenue:95501,roas:6.36,ctr:0,cvr:0,cpa:55},
+      {name:"Spot",spend:10648,revenue:45463,roas:4.27,ctr:3.64,cvr:5.79,cpa:109},
+      {name:"12.04.26/Reflex",spend:10538,revenue:51033,roas:4.84,ctr:6.71,cvr:11.3,cpa:129},
+      {name:"05.05.26/GMVLive",spend:4837,revenue:15994,roas:3.31,ctr:0,cvr:0,cpa:90},
+      {name:"05.05.26/GMVLive ปาย",spend:4580,revenue:22705,roas:4.96,ctr:0,cvr:0,cpa:72},
+      {name:"15.03.26/spot",spend:3407,revenue:14152,roas:4.15,ctr:5.22,cvr:20.45,cpa:95},
+      {name:"25.04.26/Live GMV New",spend:3008,revenue:23348,roas:7.76,ctr:0,cvr:0,cpa:63},
+      {name:"07.05.26/GMVLive แอ้น",spend:2456,revenue:10003,roas:4.07,ctr:0,cvr:0,cpa:117},
+      {name:"15.03.26/X-Glass",spend:2270,revenue:7643,roas:3.37,ctr:7.16,cvr:8.98,cpa:134},
+      {name:"09.08.25/Beach",spend:1977,revenue:5669,roas:2.87,ctr:6.34,cvr:5.95,cpa:165},
+      {name:"06.04.26/All GMV1",spend:1948,revenue:6900,roas:3.54,ctr:7.14,cvr:15.04,cpa:97},
+      {name:"07.06.26/GMVLive แอ้น",spend:1917,revenue:15625,roas:8.15,ctr:0,cvr:0,cpa:56},
+      {name:"08.05.26/GMVLiveปาย",spend:1507,revenue:2527,roas:1.68,ctr:0,cvr:0,cpa:215},
+      {name:"4.4 Live_GMV",spend:1496,revenue:38730,roas:25.9,ctr:0,cvr:0,cpa:21},
+      {name:"08.05.26/GMVLive ปาย03",spend:1373,revenue:4166,roas:3.03,ctr:0,cvr:0,cpa:125},
+      {name:"06.04.26/All GMV",spend:1000,revenue:440,roas:0.44,ctr:4.57,cvr:16.67,cpa:500},
+      {name:"08.05.26/GMVLiveปายรอบสอง",spend:1000,revenue:6054,roas:6.05,ctr:0,cvr:0,cpa:56},
+      {name:"08.05.26/GMVLive ปาย04",spend:700,revenue:3408,roas:4.87,ctr:0,cvr:0,cpa:78}
+    ]
+  }
+};
+
+const addedEntries = [];
+
+// ── Sort state ─────────────────────────────────────────────────────
+const sortState = {
+  shopee: { col: null, dir: 'desc' },
+  tiktok: { col: null, dir: 'desc' }
+};
+
+function sortTable(platform, col) {
+  const state = sortState[platform];
+  if (state.col === col) {
+    state.dir = state.dir === 'desc' ? 'asc' : 'desc';
+  } else {
+    state.col = col;
+    // ชื่อ → A-Z ascending เป็น default, ตัวเลข → มากไปน้อย
+    state.dir = col === 'name' ? 'asc' : 'desc';
+  }
+
+  const src = platform === 'shopee' ? getSH() : getTK();
+  const sorted = [...src.all].sort((a, b) => {
+    const va = a[col], vb = b[col];
+    if (typeof va === 'string') {
+      const cmp = va.localeCompare(vb, 'th');
+      return state.dir === 'asc' ? cmp : -cmp;
+    }
+    return state.dir === 'asc' ? va - vb : vb - va;
+  });
+
+  buildAllTable(platform + '-all-body', sorted);
+
+  // อัปเดต icon บน header
+  const tableId = platform + '-all-table';
+  document.querySelectorAll('#' + tableId + ' th.sortable').forEach(th => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (th.dataset.col === col) {
+      th.classList.add(state.dir === 'asc' ? 'sort-asc' : 'sort-desc');
+    }
+  });
+}
+
+// ── Helpers ───────────────────────────────────────────────────────
+const fmt = n => n?.toLocaleString('th-TH',{maximumFractionDigits:0}) ?? '—';
+const fmtD = (n,d=2) => n?.toFixed(d) ?? '—';
+function roasClass(r){ return r>=6?'roas-high':r>=4?'roas-mid':'roas-low'; }
+
+// ── Tab switching ─────────────────────────────────────────────────
+function showTab(name, evt){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  const clickedTab = evt ? evt.target : (event && event.target);
+  if (clickedTab) clickedTab.classList.add('active');
+  // If switching to overview and charts were updated while hidden, re-render now
+  if (name === 'overview' && _chartsNeedsUpdate) {
+    initCharts();
+    _chartsNeedsUpdate = false;
+  }
+}
+
+// ── Comparison rows ───────────────────────────────────────────────
+function buildCmp(containerId, d, colorClass){
+  const metrics = [
+    {label:'Spend',sv:d.spend,fmt:'฿'+fmt(d.spend)},
+    {label:'Revenue',sv:d.revenue,fmt:'฿'+fmt(d.revenue)},
+    {label:'ROAS',sv:d.roas,fmt:fmtD(d.roas)+'x'},
+    {label:'CTR',sv:d.ctr,fmt:fmtD(d.ctr)+'%'},
+    {label:'CVR',sv:d.cvr,fmt:fmtD(d.cvr)+'%'},
+    {label:'CPA',sv:d.cpa,fmt:'฿'+fmtD(d.cpa)},
+    {label:'Orders',sv:d.orders,fmt:fmt(d.orders)},
+    {label:'Impressions',sv:d.imp,fmt:fmt(d.imp)},
+  ];
+  const el = document.getElementById(containerId);
+  el.innerHTML = metrics.map(m=>`
+    <div class="cmp-row">
+      <div class="cmp-label">${m.label}</div>
+      <div class="cmp-val" style="color:var(--${colorClass})">${m.fmt}</div>
+    </div>`).join('');
+}
+
+// ── Top 5 rows ────────────────────────────────────────────────────
+function buildTop5(containerId, arr, isBest){
+  const medals = isBest ? ['🥇','🥈','🥉','4️⃣','5️⃣'] : ['❌','❌','❌','❌','❌'];
+  const el = document.getElementById(containerId);
+  el.innerHTML = arr.map((a,i)=>`
+    <div class="top-row">
+      <div style="font-size:18px;width:28px;flex-shrink:0">${medals[i]}</div>
+      <div>
+        <div class="top-name" title="${a.name}">${a.name}</div>
+        <div class="top-sub">Spend ฿${fmt(a.spend)} · Revenue ฿${fmt(a.revenue)}</div>
+      </div>
+      <div style="text-align:right;flex-shrink:0">
+        <div class="top-roas ${roasClass(a.roas)}">${fmtD(a.roas)}x</div>
+        <div class="top-sub">CTR ${fmtD(a.ctr)}% · CVR ${fmtD(a.cvr)}%</div>
+      </div>
+    </div>`).join('');
+}
+
+// ── All ads table ─────────────────────────────────────────────────
+function buildAllTable(tbodyId, arr){
+  const tbody = document.getElementById(tbodyId);
+  tbody.innerHTML = arr.map((a,i)=>`
+    <tr>
+      <td style="color:var(--muted);font-weight:700">${i+1}</td>
+      <td class="ad-name" title="${a.name}">${a.name}</td>
+      <td style="color:var(--gray)">฿${fmt(a.spend)}</td>
+      <td style="color:var(--green)">฿${fmt(a.revenue)}</td>
+      <td><span class="roas-badge ${roasClass(a.roas)}">${fmtD(a.roas)}x</span></td>
+      <td style="color:var(--blue)">${fmtD(a.ctr)}%</td>
+      <td style="color:var(--yellow)">${fmtD(a.cvr)}%</td>
+      <td style="color:#1A5CDB">฿${fmt(a.cpa)}</td>
+    </tr>`).join('');
+}
+
+// ── Charts ────────────────────────────────────────────────────────
+const chartDefaults = {
+  plugins:{legend:{labels:{color:'#9CA3AF',font:{family:'Segoe UI'}}},tooltip:{backgroundColor:'#1F1F1F',titleColor:'#E5E7EB',bodyColor:'#9CA3AF',borderColor:'rgba(249,115,22,.4)',borderWidth:1,padding:12}},
+  scales:{x:{ticks:{color:'#6B7280',maxRotation:30},grid:{color:'rgba(255,255,255,.04)'}},y:{ticks:{color:'#6B7280'},grid:{color:'rgba(255,255,255,.06)'}}}
+};
+
+
+// ── updateCharts: update chart data without full re-init ──────────
+let _chartsInited = false;
+let _chartsNeedsUpdate = false;
+
+function updateCharts(sh, tk){
+  // Only render charts if the overview tab is currently visible
+  const overviewVisible = document.getElementById('tab-overview').classList.contains('active');
+  if (overviewVisible) {
+    initCharts();
+    _chartsInited = true;
+    _chartsNeedsUpdate = false;
+  } else {
+    // Defer until user navigates to overview
+    _chartsNeedsUpdate = true;
+  }
+}
+
+function initCharts(){
+  ['chartROAS','chartSpendRev','chartCTRCVR','chartOrderCPA'].forEach(id=>{
+    const canvas = document.getElementById(id);
+    if (!canvas) return;
+    const existing = Chart.getChart(canvas);
+    if (existing) existing.destroy();
+  });
+
+  const months = ['jan','feb','mar','apr','may','jun'];
+  const mLabels = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.'];
+  const shRevArr   = months.map(m => DATA_PERIODS[m].shopee.revenue);
+  const tkRevArr   = months.map(m => DATA_PERIODS[m].tiktok.revenue);
+  const shSpendArr = months.map(m => DATA_PERIODS[m].shopee.spend);
+  const tkSpendArr = months.map(m => DATA_PERIODS[m].tiktok.spend);
+  const shROASArr  = months.map(m => DATA_PERIODS[m].shopee.roas);
+  const tkROASArr  = months.map(m => DATA_PERIODS[m].tiktok.roas);
+  const shOrdArr   = months.map(m => DATA_PERIODS[m].shopee.orders);
+  const tkOrdArr   = months.map(m => DATA_PERIODS[m].tiktok.orders);
+
+  const shColor = '#EE4D2D', tkColor = '#2DD4CF';
+  const shBg = 'rgba(238,77,45,.15)', tkBg = 'rgba(45,212,191,.12)';
+
+  // Revenue Trend (line)
+  new Chart(document.getElementById('chartROAS'),{
+    type:'line',
+    data:{
+      labels:mLabels,
+      datasets:[
+        {label:'Shopee Revenue',data:shRevArr,borderColor:shColor,backgroundColor:shBg,fill:true,tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+        {label:'TikTok Revenue',data:tkRevArr,borderColor:tkColor,backgroundColor:tkBg,fill:true,tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+      ]
+    },
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>'฿'+ctx.parsed.y.toLocaleString('th-TH')}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>'฿'+(v/1e6).toFixed(1)+'M'}}}}
+  });
+
+  // Spend Trend (bar)
+  new Chart(document.getElementById('chartSpendRev'),{
+    type:'bar',
+    data:{
+      labels:mLabels,
+      datasets:[
+        {label:'Shopee Spend',data:shSpendArr,backgroundColor:'rgba(238,77,45,.7)',borderColor:shColor,borderWidth:2,borderRadius:4},
+        {label:'TikTok Spend',data:tkSpendArr,backgroundColor:'rgba(45,212,191,.7)',borderColor:tkColor,borderWidth:2,borderRadius:4},
+      ]
+    },
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>'฿'+ctx.parsed.y.toLocaleString('th-TH')}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>'฿'+(v/1e3).toFixed(0)+'K'}}}}
+  });
+
+  // ROAS Trend (line)
+  new Chart(document.getElementById('chartCTRCVR'),{
+    type:'line',
+    data:{
+      labels:mLabels,
+      datasets:[
+        {label:'Shopee ROAS',data:shROASArr,borderColor:shColor,backgroundColor:'transparent',tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+        {label:'TikTok ROAS',data:tkROASArr,borderColor:tkColor,backgroundColor:'transparent',tension:0.4,pointRadius:5,pointHoverRadius:7,borderWidth:2},
+      ]
+    },
+    options:{...chartDefaults,
+      plugins:{...chartDefaults.plugins,tooltip:{...chartDefaults.plugins.tooltip,callbacks:{label:ctx=>ctx.parsed.y.toFixed(2)+'x'}}},
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,suggestedMin:3,suggestedMax:8,ticks:{color:'#6B7280',callback:v=>v+'x'}}}}
+  });
+
+  // Orders Trend (bar)
+  new Chart(document.getElementById('chartOrderCPA'),{
+    type:'bar',
+    data:{
+      labels:mLabels,
+      datasets:[
+        {label:'Shopee Orders',data:shOrdArr,backgroundColor:'rgba(238,77,45,.7)',borderColor:shColor,borderWidth:2,borderRadius:4},
+        {label:'TikTok Orders',data:tkOrdArr,backgroundColor:'rgba(45,212,191,.7)',borderColor:tkColor,borderWidth:2,borderRadius:4},
+      ]
+    },
+    options:{...chartDefaults,
+      scales:{x:chartDefaults.scales.x,y:{...chartDefaults.scales.y,ticks:{color:'#6B7280',callback:v=>v.toLocaleString('th-TH')}}}}
+  });
+}
+
+// ── Add data form ─────────────────────────────────────────────────
+function addEntry(){
+  const platform = document.getElementById('f-platform').value;
+  const name = document.getElementById('f-name').value.trim();
+  const period = document.getElementById('f-period').value.trim();
+  const spend = parseFloat(document.getElementById('f-spend').value)||0;
+  const revenue = parseFloat(document.getElementById('f-revenue').value)||0;
+  const imp = parseFloat(document.getElementById('f-imp').value)||0;
+  const clicks = parseFloat(document.getElementById('f-clicks').value)||0;
+  const orders = parseFloat(document.getElementById('f-orders').value)||0;
+
+  if(!name||!spend){
+    alert('กรุณากรอกชื่อ Ads และ Spend');return;
+  }
+
+  const entry = {
+    platform, name, period,
+    spend, revenue,
+    roas: spend ? +(revenue/spend).toFixed(2) : 0,
+    ctr: imp ? +((clicks/imp)*100).toFixed(2) : 0,
+    cvr: clicks ? +((orders/clicks)*100).toFixed(2) : 0,
+    cpa: orders ? +(spend/orders).toFixed(2) : 0,
+  };
+  addedEntries.push(entry);
+  renderAddedTable();
+  clearForm();
+  const t = document.getElementById('success-toast');
+  t.style.display='block';
+  setTimeout(()=>t.style.display='none',3000);
+}
+
+function renderAddedTable(){
+  const tbody = document.getElementById('added-body');
+  if(!addedEntries.length){
+    tbody.innerHTML='<tr><td colspan="10" style="text-align:center;color:var(--muted);padding:24px">ยังไม่มีข้อมูล</td></tr>';
+    return;
+  }
+  const plat = {Shopee:'badge-shopee',TikTok:'badge-tiktok',Meta:'badge-tiktok',Google:'badge-shopee'};
+  tbody.innerHTML = addedEntries.map((e,i)=>`
+    <tr>
+      <td><span class="${plat[e.platform]||'badge-tiktok'}">${e.platform}</span></td>
+      <td class="ad-name">${e.name}</td>
+      <td style="color:var(--muted)">${e.period||'—'}</td>
+      <td>฿${fmt(e.spend)}</td>
+      <td style="color:var(--green)">฿${fmt(e.revenue)}</td>
+      <td><span class="roas-badge ${roasClass(e.roas)}">${e.roas}x</span></td>
+      <td style="color:var(--blue)">${e.ctr}%</td>
+      <td style="color:var(--yellow)">${e.cvr}%</td>
+      <td style="color:#1A5CDB">฿${e.cpa}</td>
+      <td><button onclick="removeEntry(${i})" style="background:rgba(239,68,68,.15);color:var(--red);border:none;border-radius:4px;padding:4px 8px;cursor:pointer;font-size:11px">ลบ</button></td>
+    </tr>`).join('');
+}
+
+function removeEntry(i){ addedEntries.splice(i,1); renderAddedTable(); }
+
+function clearForm(){
+  ['f-name','f-period','f-spend','f-revenue','f-imp','f-clicks','f-orders']
+    .forEach(id=>document.getElementById(id).value='');
+}
+
+function exportCSV(){
+  if(!addedEntries.length){alert('ไม่มีข้อมูลให้ Export');return;}
+  const headers = ['Platform','Name','Period','Spend','Revenue','ROAS','CTR','CVR','CPA'];
+  const rows = addedEntries.map(e=>[e.platform,`"${e.name}"`,e.period,e.spend,e.revenue,e.roas,e.ctr,e.cvr,e.cpa]);
+  const csv = [headers.join(','),...rows.map(r=>r.join(','))].join('\n');
+  const blob = new Blob(['﻿'+csv],{type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href=url; a.download='WIBWUB_Ads_Added.csv'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+// ── Render KPI cards ──────────────────────────────────────────────
+function renderKPIs(){
+  const sh=getSH(), tk=getTK();
+  const bSpend=sh.spend+tk.spend, bRev=sh.revenue+tk.revenue;
+  const bOrd=sh.orders+tk.orders, bImp=sh.imp+tk.imp;
+  const bRoas=bSpend?bRev/bSpend:0, bCpa=bOrd?bSpend/bOrd:0;
+  const fmtM=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n);
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('kpi-blend-spend','฿'+fmt(bSpend));
+  set('kpi-blend-rev','฿'+fmt(bRev));
+  set('kpi-blend-roas',fmtD(bRoas)+'x');
+  set('kpi-blend-orders',fmt(bOrd));
+  set('kpi-blend-cpa','฿'+fmtD(bCpa));
+  set('kpi-blend-imp',fmtM(bImp));
+  set('sh-kpi-spend','฿'+fmt(sh.spend));
+  set('sh-kpi-rev','฿'+fmt(sh.revenue));
+  set('sh-kpi-roas',fmtD(sh.roas)+'x');
+  set('sh-kpi-ctr',fmtD(sh.ctr)+'%');
+  set('sh-kpi-cvr',fmtD(sh.cvr)+'%');
+  set('sh-kpi-cpa','฿'+fmtD(sh.cpa));
+  set('sh-kpi-orders',fmt(sh.orders));
+  set('sh-kpi-imp',fmtM(sh.imp));
+  // GMV Max KPIs — use TK_BREAKDOWN (actual creative data xlsx), not DATA_PERIODS
+  const mx = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.total;
+  const fmtM2=n=>n>=1e6?(n/1e6).toFixed(2)+'M':n>=1e3?(n/1e3).toFixed(1)+'K':fmt(n);
+  set('tk-kpi-spend','฿'+fmt(mx.spend));
+  set('tk-kpi-rev','฿'+fmt(mx.revenue));
+  set('tk-kpi-roas',fmtD(mx.roi)+'x');
+  set('tk-kpi-ctr',fmtD(mx.ctr||0)+'%');
+  set('tk-kpi-cvr',fmtD(mx.cvr||0)+'%');
+  set('tk-kpi-cpa','฿'+fmtD(mx.cpa||0));
+  set('tk-kpi-orders',fmt(mx.orders));
+  set('tk-kpi-imp',fmtM2(mx.imp||0));
+  const pb=document.getElementById('period-badge-txt');
+  if(pb)pb.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
+}
+
+// ── Period switcher ────────────────────────────────────────────────
+// ── NEW: Dropdown Picker Functions ────────────────────────────────
+// NOTE: ADS_PERIOD_LABELS / ADS_PERIOD_SUMMARY were deleted 2026-08-29 — they were unreferenced
+// dead constants that duplicated the coverage strings already held in ADS_PERIOD_DEFS and in the
+// .pb-sub markup, and they had silently drifted stale (see skill: wibwub-avoid-stale-hardcoded-labels).
+// ADS_PERIOD_DEFS below is the single source of truth for period label/badge text.
+
+// ── Coverage-day labels (derived, never hand-typed) ───────────────
+// DATA_PERIODS.sep.cover is the ONLY place the "ข้อมูลถึงวันที่" days live. Everything below
+// reads from it, so bumping cover.shopeeDay / cover.tiktokDay during a data sync updates the
+// period picker, the header badge and every .pb-sub at once. See skill:
+// wibwub-avoid-stale-hardcoded-labels.
+function adsCover(){ return (DATA_PERIODS.sep && DATA_PERIODS.sep.cover) || {shopeeDay:0,tiktokDay:0}; }
+function adsCoverMaxDay(){ const c=adsCover(); return Math.max(c.shopeeDay, c.tiktokDay); }
+function adsCoverPhrase(){ const c=adsCover(); const sp=c.shopeePull?` ${String(c.shopeePull).replace(/^\d+ ก\.ย\. /,'')}`:''; const tp=c.tiktokPull?` ${String(c.tiktokPull).replace(/^\d+ ก\.ย\. /,'')}`:''; return `Shopee ถึง ${c.shopeeDay} ก.ย.${sp} · TikTok ถึง ${c.tiktokDay} ก.ย.${tp}`; }
+function adsCoverPhraseShort(){ const c=adsCover(); return `Shopee 1-${c.shopeeDay} ก.ย. · TikTok 1-${c.tiktokDay} ก.ย.`; }
+function adsSyncCoverageLabels(){
+  const c = adsCover();
+  /* matches both 'Shopee ถึง 9 ก.ย. · TikTok ถึง 9 ก.ย.' and the variant that carries pull times
+     ('Shopee ถึง 9 ก.ย. 19:32 น. · TikTok ถึง 9 ก.ย. 19:27 น.') so neither can go stale. */
+  const rxLong  = /Shopee ถึง \d+ ก\.ย\.(?: \d{1,2}:\d{2} น\.)? · TikTok ถึง \d+ ก\.ย\.(?: \d{1,2}:\d{2} น\.)?/g;
+  document.querySelectorAll('.pb-sub').forEach(el => {
+    if (rxLong.test(el.innerHTML)) el.innerHTML = el.innerHTML.replace(rxLong, adsCoverPhrase());
+    rxLong.lastIndex = 0;
+  });
+  const lab = document.getElementById('adsPeriodLabel');
+  if (lab) lab.textContent = ADS_PERIOD_DEFS[curPickedPeriod] ? ADS_PERIOD_DEFS[curPickedPeriod].label : lab.textContent;
+  const upd = document.getElementById('ads-updated');
+  if (upd) upd.textContent = `อัปเดต Shopee ถึง ${c.shopeeDay} ก.ย. 2569 (ดึง ${c.shopeePull}) · TikTok ถึง ${c.tiktokDay} ก.ย. 2569 (ดึง ${c.tiktokPull})`;
+}
+
+// ── Period Picker ─────────────────────────────────────────────────
+const ADS_PERIOD_DEFS = {
+  all: { keys:['jan','feb','mar','apr','may','jun','jul','aug','sep'],  label:'ทั้งหมด (ม.ค. – ก.ย. 2569)', badge:`1 ม.ค. – ${adsCoverMaxDay()} ก.ย. 2569` },
+  jan: { keys:['jan'],  label:'มกราคม 2569',                    badge:'ม.ค. 2569' },
+  feb: { keys:['feb'],  label:'กุมภาพันธ์ 2569',                badge:'ก.พ. 2569' },
+  mar: { keys:['mar'],  label:'มีนาคม 2569',                    badge:'มี.ค. 2569' },
+  apr: { keys:['apr'],  label:'เมษายน 2569',                    badge:'เม.ย. 2569' },
+  may: { keys:['may'],  label:'พ.ค. 2569 (1–31)',               badge:'พ.ค. (1–31) 2569' },
+  jun: { keys:['jun'],  label:'มิ.ย. 2569 (1–30)',               badge:'มิ.ย. (1–30) 2569' },
+  jul: { keys:['jul'],  label:'ก.ค. 2569 (ครบ 1-30)',  badge:'ก.ค. 2569 (ครบ 1-30)' },
+  aug: { keys:['aug'],  label:'ส.ค. 2569 (เต็มเดือน · Shopee 1-31 · TikTok 1-31)',  badge:'ส.ค. 2569 (Shopee 1-31 · TikTok 1-31)' },
+  // label/badge derived from DATA_PERIODS.sep.cover — never hand-type the coverage days here.
+  sep: { keys:['sep'],  label:`ก.ย. 2569 (บางส่วน · ${adsCoverPhrase()})`,  badge:`ก.ย. 2569 (${adsCoverPhraseShort()})` },
+};
+let curPickedPeriod = 'sep'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
+
+function adsPickPeriod(key, btn){
+  curPickedPeriod = key;
+  curPeriodKeys = ADS_PERIOD_DEFS[key].keys;
+  document.querySelectorAll('.ads-period-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('adsPeriodLabel').textContent = ADS_PERIOD_DEFS[key].label;
+  document.getElementById('period-badge-txt').textContent = ADS_PERIOD_DEFS[key].badge;
+  adsClosePicker();
+  renderDashboard();
+}
+
+// ── Derived period-picker revenue subtitles ────────────────────────────────
+// The "Shopee ฿X · TikTok ฿Y" figures inside every .pb-sub used to be hand-typed
+// literals that duplicated DATA_PERIODS[*].{shopee,tiktok}.revenue. Nothing forced
+// them to be updated during a data sync, so they silently went stale (confirmed:
+// the ก.ย. button still read "Shopee ฿0.29M · TikTok ฿0.08M" long after DATA_PERIODS.sep
+// had been resynced). They are now recomputed from DATA_PERIODS on load — see the
+// wibwub-avoid-stale-hardcoded-labels skill. The literals left in the HTML are only
+// a no-JS fallback; DATA_PERIODS is the single source of truth.
+function adsFmtRev(v){
+  return v >= 1e6 ? '฿' + (v/1e6).toFixed(2) + 'M' : '฿' + Math.round(v/1000) + 'K';
+}
+function adsSyncPickerSubs(){
+  const months = ['jan','feb','mar','apr','may','jun','jul','aug','sep'];
+  const put = (key, sh, tk) => {
+    const btn = document.getElementById('adsPeriodBtn-' + key);
+    if (!btn) return;
+    const sub = btn.querySelector('.pb-sub');
+    if (!sub) return;
+    sub.innerHTML = sub.innerHTML.replace(
+      /Shopee ฿[\d.]+[MK] · TikTok ฿[\d.]+[MK]/,
+      'Shopee ' + adsFmtRev(sh) + ' · TikTok ' + adsFmtRev(tk)
+    ).replace(
+      /* current (partial) month: the "01–NN ก.ย." range was the one literal in these
+         buttons still hand-typed, so it drifted (showed 01–09 while data covered 10).
+         Derived from DATA_PERIODS.sep.cover now, like every other coverage label. */
+      /01–\d+ ก\.ย\./,
+      '01–' + adsCoverMaxDay() + ' ก.ย.'
+    );
+  };
+  let sr = 0, tr = 0;
+  months.forEach(m => {
+    const d = DATA_PERIODS[m];
+    if (!d) return;
+    sr += d.shopee.revenue; tr += d.tiktok.revenue;
+    put(m, d.shopee.revenue, d.tiktok.revenue);
+  });
+  put('all', sr, tr);
+}
+function adsSyncDerivedLabels(){ adsSyncPickerSubs(); adsSyncCoverageLabels(); }
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', adsSyncDerivedLabels);
+} else {
+  adsSyncDerivedLabels();
+}
+
+function adsTogglePicker(){
+  const panel=document.getElementById('adsMPickerPanel');
+  const btn=document.getElementById('adsMRangeBtn');
+  const bd=document.getElementById('adsBackdrop');
+  const open=panel.classList.contains('open');
+  panel.classList.toggle('open',!open);
+  btn.classList.toggle('open',!open);
+  bd.classList.toggle('open',!open);
+}
+function adsClosePicker(){
+  document.getElementById('adsMPickerPanel').classList.remove('open');
+  document.getElementById('adsMRangeBtn').classList.remove('open');
+  document.getElementById('adsBackdrop').classList.remove('open');
+}
+function adsPeriodSelect(){}  // legacy no-op
+
+
+// Legacy setPeriod kept for backward compat
+function setPeriod(key, btn){
+  curPeriod=key;
+  renderDashboard();
+}
+
+
+// ── TikTok Breakdown Data (Jan–May 2026) ──────────────────────────────
+const TK_BREAKDOWN = {
+  jan: {
+    gmvLive: {
+      total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0},
+      sessions:[
+
+      ]
+    },
+    gmvMax: {
+      total:{spend:150134,orders:2614,revenue:897521,imp:1323590,clicks:46354,roi:5.98,ctr:3.5,cvr:5.64,cpa:57.43},
+      campaigns:[
+        {name:"20.11.25/All",spend:43006,orders:909,revenue:265250,roi:6.17,cpa:47.31,ctr:3.33,cvr:3.57},
+        {name:"Sugar",spend:31580,orders:626,revenue:210407,roi:6.66,cpa:50.45,ctr:3.49,cvr:8.98},
+        {name:"22.12.25/ไม้ปัด",spend:26476,orders:284,revenue:155719,roi:5.88,cpa:93.23,ctr:5.31,cvr:7.89},
+        {name:"Interior/reflex",spend:15972,orders:218,revenue:97096,roi:6.08,cpa:73.27,ctr:3.1,cvr:7.7},
+        {name:"18.11.25/Refresh",spend:11093,orders:139,revenue:60095,roi:5.42,cpa:79.81,ctr:4.71,cvr:9.76},
+        {name:"Cleaner",spend:9232,orders:254,revenue:50664,roi:5.49,cpa:36.35,ctr:3.51,cvr:6.91},
+        {name:"Spot",spend:7013,orders:66,revenue:31787,roi:4.53,cpa:106.25,ctr:3.41,cvr:8.25},
+        {name:"09.08.25/Beach",spend:1977,orders:12,revenue:5669,roi:2.87,cpa:164.75,ctr:3.7,cvr:3.23},
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:1817,orders:82,revenue:10084,roi:5.55,cpa:22.16,ctr:3.68,cvr:9.53},
+        {name:"26.01.26/Reflex",spend:1251,orders:18,revenue:7753,roi:6.2,cpa:69.5,ctr:4.27,cvr:6.77},
+        {name:"26.01.26/Mind",spend:717,orders:6,revenue:2997,roi:4.18,cpa:119.45,ctr:4.51,cvr:5.36},
+        {name:"6.6 ห้ามปิด เปิดยาว ",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.04.26/Interior",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.02.26/Refresh",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.04.26/Reflex",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"16.04.26/XGlass-Spot",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      total:{spend:14822,imp:404763,clicks:83454,cpm:36.62,ctr:20.618},
+      campaigns:[
+        {name:"clay&waterless/b/05.10.24",spend:7421,imp:55848,clicks:1479,cpm:132.87,ctr:2.648},
+        {name:"24.12.25/โมเน่",spend:4328,imp:206663,clicks:47522,cpm:20.94,ctr:22.995},
+        {name:"27.12.25/Trafficinshop",spend:2101,imp:94861,clicks:23821,cpm:22.15,ctr:25.111},
+        {name:"26.01.26/พี่ยิว",spend:972,imp:47391,clicks:10632,cpm:20.52,ctr:22.435}
+      ]
+    }
+  },
+  feb: {
+    gmvLive: {
+      total:{spend:7010,orders:209,revenue:71508,views:17251,roi:10.2,cpa:34},
+      sessions:[
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:498,orders:31,revenue:12897,roi:25.9,views:1246},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:33,revenue:10803,roi:21.59,views:1662},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:501,orders:34,revenue:10604,roi:21.17,views:2208},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:16,revenue:5381,roi:10.76,views:1143},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:17,revenue:4869,roi:9.73,views:1217},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:492,orders:13,revenue:4863,roi:9.89,views:2112},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:502,orders:12,revenue:4157,roi:8.28,views:862},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:499,orders:8,revenue:3475,roi:6.97,views:739},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:11,revenue:3236,roi:6.47,views:891},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:509,orders:9,revenue:3172,roi:6.23,views:911},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:507,orders:9,revenue:3079,roi:6.07,views:1209},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:5,revenue:1682,roi:0,views:1308},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:501,orders:6,revenue:1557,roi:3.1,views:653},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:501,orders:3,revenue:1259,roi:2.51,views:1012},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:2,revenue:474,roi:0.95,views:78},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:0,revenue:0,roi:0.0,views:0},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:0,revenue:0,roi:0.0,views:0}
+      ]
+    },
+    gmvMax: {
+      total:{spend:183259,orders:3314,revenue:963548,imp:1507768,clicks:44698,roi:5.26,ctr:2.96,cvr:7.41,cpa:55.3},
+      campaigns:[
+        {name:"Sugar",spend:42984,orders:672,revenue:220854,roi:5.14,cpa:63.96,ctr:2.75,cvr:9.13},
+        {name:"20.11.25/All",spend:38008,orders:501,revenue:192781,roi:5.07,cpa:75.86,ctr:2.96,cvr:2.83},
+        {name:"22.12.25/ไม้ปัด",spend:28158,orders:249,revenue:133793,roi:4.75,cpa:113.08,ctr:3.58,cvr:7.06},
+        {name:"Interior/reflex",spend:17678,orders:188,revenue:82258,roi:4.65,cpa:94.03,ctr:2.1,cvr:7.7},
+        {name:"Cleaner",spend:14378,orders:404,revenue:82333,roi:5.73,cpa:35.59,ctr:2.8,cvr:11.32},
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:12489,orders:997,revenue:115019,roi:9.21,cpa:12.53,ctr:3.31,cvr:17.65},
+        {name:"26.01.26/Reflex",spend:7528,orders:95,revenue:42626,roi:5.66,cpa:79.25,ctr:4.1,cvr:6.27},
+        {name:"18.11.25/Refresh",spend:6511,orders:60,revenue:25197,roi:3.87,cpa:108.51,ctr:4.52,cvr:7.26},
+        {name:"12.02.26/Refresh",spend:6033,orders:56,revenue:24457,roi:4.05,cpa:107.74,ctr:2.26,cvr:6.19},
+        {name:"26.01.26/Mind",spend:5857,orders:60,revenue:30554,roi:5.22,cpa:97.61,ctr:3.76,cvr:7.2},
+        {name:"Spot",spend:3635,orders:32,revenue:13676,roi:3.76,cpa:113.61,ctr:3.5,cvr:9.17},
+        {name:"6.6 ห้ามปิด เปิดยาว ",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.04.26/Interior",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"16.04.26/XGlass-Spot",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.04.26/Reflex",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      total:{spend:12308,imp:360954,clicks:55611,cpm:34.1,ctr:15.407},
+      campaigns:[
+        {name:"clay&waterless/b/05.10.24",spend:6426,imp:29162,clicks:1072,cpm:220.37,ctr:3.676},
+        {name:"26.01.26/พี่ยิว",spend:4423,imp:261415,clicks:54539,cpm:16.92,ctr:20.863},
+        {name:"05.02.26/_mmchyy",spend:1459,imp:70377,clicks:0,cpm:20.73,ctr:0.0}
+      ]
+    }
+  },
+  mar: {
+    gmvLive: {
+      total:{spend:8009,orders:62,revenue:23995,views:9181,roi:3.0,cpa:129},
+      sessions:[
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:11,revenue:3424,roi:6.84,views:789},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:4,revenue:2396,roi:4.79,views:639},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:503,orders:5,revenue:2194,roi:4.36,views:497},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:496,orders:4,revenue:2037,roi:4.11,views:441},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:499,orders:5,revenue:1669,roi:3.35,views:502},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:483,orders:4,revenue:1631,roi:3.38,views:699},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:4,revenue:1605,roi:3.21,views:508},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:4,revenue:1404,roi:0,views:538},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:502,orders:4,revenue:1265,roi:2.52,views:410},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:502,orders:3,revenue:1078,roi:2.15,views:496},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:499,orders:3,revenue:1074,roi:2.15,views:551},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:3,revenue:956,roi:1.91,views:860},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:503,orders:2,revenue:905,roi:1.8,views:300},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:2,revenue:679,roi:1.36,views:519},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:23,orders:1,revenue:649,roi:27.71,views:42},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:1,revenue:390,roi:6500.0,views:57},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:500,orders:1,revenue:350,roi:0.7,views:372},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:501,orders:1,revenue:289,roi:0.58,views:482},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:3,orders:0,revenue:0,roi:0.0,views:23},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:0,orders:0,revenue:0,roi:0.0,views:0},
+        {name:"LIVE GMV Max_Gross revenue_WIBWUBCAR_20260202195225",spend:495,orders:0,revenue:0,roi:0.0,views:456}
+      ]
+    },
+    gmvMax: {
+      total:{spend:232841,orders:3782,revenue:1108895,imp:1616237,clicks:51133,roi:4.76,ctr:3.16,cvr:7.4,cpa:61.57},
+      campaigns:[
+        {name:"Sugar",spend:50730,orders:566,revenue:204674,roi:4.03,cpa:89.63,ctr:3.41,cvr:5.74},
+        {name:"20.11.25/All",spend:42230,orders:493,revenue:203393,roi:4.82,cpa:85.66,ctr:3.04,cvr:3.31},
+        {name:"22.12.25/ไม้ปัด",spend:31003,orders:249,revenue:150650,roi:4.86,cpa:124.51,ctr:2.73,cvr:8.69},
+        {name:"Cleaner",spend:24750,orders:499,revenue:102273,roi:4.13,cpa:49.6,ctr:3.94,cvr:7.23},
+        {name:"Interior/reflex",spend:23137,orders:196,revenue:87981,roi:3.8,cpa:118.05,ctr:2.79,cvr:5.97},
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:20871,orders:1408,revenue:180813,roi:8.66,cpa:14.82,ctr:2.88,cvr:18.76},
+        {name:"12.02.26/Refresh",spend:17674,orders:180,revenue:78683,roi:4.45,cpa:98.19,ctr:2.56,cvr:8.5},
+        {name:"26.01.26/Reflex",spend:9686,orders:84,revenue:48881,roi:5.05,cpa:115.3,ctr:3.86,cvr:4.84},
+        {name:"26.01.26/Mind",spend:8660,orders:71,revenue:36698,roi:4.24,cpa:121.98,ctr:3.94,cvr:4.71},
+        {name:"15.03.26/spot",spend:2481,orders:24,revenue:9465,roi:3.82,cpa:103.37,ctr:3.7,cvr:7.77},
+        {name:"15.03.26/X-Glass",spend:1619,orders:12,revenue:5384,roi:3.33,cpa:134.91,ctr:3.37,cvr:7.55},
+        {name:"12.04.26/Interior",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"6.6 ห้ามปิด เปิดยาว ",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"12.04.26/Reflex",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0},
+        {name:"16.04.26/XGlass-Spot",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      total:{spend:8134,imp:38960,clicks:1348,cpm:208.78,ctr:3.46},
+      campaigns:[
+        {name:"clay&waterless/b/05.10.24",spend:8134,imp:38960,clicks:1348,cpm:208.79,ctr:3.46}
+      ]
+    }
+  },
+  apr: {
+    gmvLive: {
+      total:{spend:4504,orders:119,revenue:61434,views:8460,roi:13.64,cpa:38},
+      sessions:[
+        {name:"4.4 Live_GMV",spend:1334,orders:56,revenue:30040,roi:22.52,views:2686},
+        {name:"25.04.26/Live GMV New",spend:3008,orders:47,revenue:22704,roi:7.55,views:3802},
+        {name:"4.4 Live_GMV",spend:162,orders:16,revenue:8690,roi:53.65,views:1972}
+      ]
+    },
+    gmvMax: {
+      total:{spend:243971,orders:5080,revenue:1223019,imp:1825735,clicks:64017,roi:5.01,ctr:3.51,cvr:7.94,cpa:48.03},
+      campaigns:[
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:50286,orders:2800,revenue:345244,roi:6.87,cpa:17.96,ctr:4.0,cvr:13.07},
+        {name:"Sugar",spend:44333,orders:533,revenue:213711,roi:4.82,cpa:83.18,ctr:3.55,cvr:6.87},
+        {name:"20.11.25/All",spend:35787,orders:450,revenue:170250,roi:4.76,cpa:79.53,ctr:2.96,cvr:2.67},
+        {name:"Cleaner",spend:22896,orders:459,revenue:93495,roi:4.08,cpa:49.88,ctr:3.91,cvr:7.73},
+        {name:"22.12.25/ไม้ปัด",spend:21518,orders:160,revenue:87943,roi:4.09,cpa:134.49,ctr:3.34,cvr:8.35},
+        {name:"12.02.26/Refresh",spend:14151,orders:166,revenue:73137,roi:5.17,cpa:85.25,ctr:3.65,cvr:9.53},
+        {name:"12.04.26/Interior",spend:13396,orders:124,revenue:54396,roi:4.06,cpa:108.03,ctr:2.92,cvr:6.0},
+        {name:"16.04.26/XGlass-Spot",spend:11297,orders:156,revenue:65009,roi:5.75,cpa:72.42,ctr:5.11,cvr:6.88},
+        {name:"Interior/reflex",spend:11157,orders:80,revenue:40633,roi:3.64,cpa:139.46,ctr:3.0,cvr:6.11},
+        {name:"26.01.26/Mind",spend:6861,orders:61,revenue:32943,roi:4.8,cpa:112.47,ctr:3.36,cvr:7.84},
+        {name:"12.04.26/Reflex",spend:6234,orders:45,revenue:28381,roi:4.55,cpa:138.54,ctr:3.57,cvr:5.56},
+        {name:"06.04.26/All GMV1",spend:1948,orders:20,revenue:6900,roi:3.54,cpa:97.41,ctr:2.58,cvr:4.63},
+        {name:"26.01.26/Reflex",spend:1530,orders:7,revenue:3591,roi:2.35,cpa:218.56,ctr:3.33,cvr:3.12},
+        {name:"06.04.26/All GMV",spend:1000,orders:2,revenue:440,roi:0.44,cpa:499.99,ctr:2.69,cvr:0.55},
+        {name:"15.03.26/spot",spend:926,orders:12,revenue:4687,roi:5.06,cpa:77.16,ctr:3.5,cvr:11.54},
+        {name:"15.03.26/X-Glass",spend:651,orders:5,revenue:2259,roi:3.47,cpa:130.25,ctr:3.46,cvr:9.09},
+        {name:"6.6 ห้ามปิด เปิดยาว ",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      total:{spend:7694,imp:122446,clicks:2803,cpm:62.84,ctr:2.289},
+      campaigns:[
+        {name:"23.04.26/CadsTopSaleCreator",spend:4003,imp:82365,clicks:1875,cpm:48.6,ctr:2.276},
+        {name:"clay&waterless/b/05.10.24",spend:1354,imp:5996,clicks:220,cpm:225.84,ctr:3.669},
+        {name:"27.04.26/CAdsCreator",spend:1207,imp:23672,clicks:458,cpm:50.98,ctr:1.935},
+        {name:"22.04.26/follow",spend:630,imp:612,clicks:2,cpm:1030.15,ctr:0.327},
+        {name:"09.04.26/Consi",spend:500,imp:9801,clicks:248,cpm:51.02,ctr:2.53}
+      ]
+    }
+  },
+  may: {
+    gmvLive: {
+      total:{spend:22453,orders:331,revenue:128808,views:23121,roi:5.74,cpa:67.8},
+      sessions:[
+        {name:"05.05.26/GMVLive เก็บโค้ด5.5(1)",spend:4580,orders:64,revenue:22705,roi:4.96,views:3538},
+        {name:"05.05.26/GMVLive เก็บโค้ด5.5(2)",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
+        {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715},
+        {name:"25.05.26/คนรักรถ",spend:1404,orders:32,revenue:14021,roi:9.99,views:3462},
+        {name:"28.05.26/คนรักรถ(1)",spend:465,orders:23,revenue:10466,roi:22.50,views:1392},
+        {name:"07.05.26/คนรักรถ(2)",spend:2456,orders:21,revenue:10003,roi:4.07,views:1544},
+        {name:"29.05.26/คนรักรถ(1)",spend:899,orders:13,revenue:6591,roi:7.33,views:1021},
+        {name:"15.05.26/คนรักรถ",spend:616,orders:16,revenue:6073,roi:9.87,views:1799},
+        {name:"08.05.26/คนรักรถ(1)",spend:1000,orders:18,revenue:6054,roi:6.05,views:673},
+        {name:"28.05.26/คนรักรถ(2)",spend:265,orders:12,revenue:4666,roi:17.63,views:1223},
+        {name:"08.05.26/คนรักรถ(2)",spend:1372,orders:11,revenue:4166,roi:3.04,views:799},
+        {name:"08.05.26/คนรักรถ(3)",spend:700,orders:9,revenue:3408,roi:4.87,views:725},
+        {name:"08.05.26/คนรักรถ(4)",spend:1505,orders:8,revenue:2703,roi:1.80,views:773},
+        {name:"29.05.26/คนรักรถ(2)",spend:50,orders:6,revenue:2258,roi:45.56,views:589},
+        {name:"29.05.26/คนรักรถ(3)",spend:109,orders:4,revenue:1393,roi:12.74,views:445},
+        {name:"29.05.26/คนรักรถ(4)",spend:1,orders:2,revenue:1110,roi:1423.53,views:36},
+        {name:"29.05.26/คนรักรถ(5)",spend:274,orders:3,revenue:928,roi:3.38,views:331},
+        {name:"25.04.26/GMVLive payday",spend:0,orders:1,revenue:643,roi:0,views:0}
+      ]
+    },
+    gmvMax: {
+      total:{spend:290941,orders:7520,revenue:1461482,imp:2573993,clicks:87816,roi:5.02,ctr:3.41,cvr:8.56,cpa:38.69},
+      campaigns:[
+        {name:"6.6 ห้ามปิด  จำกัด 10000",spend:120241,orders:3270,revenue:625477,roi:5.2,cpa:36.77,ctr:3.26,cvr:7.66},
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:59119,orders:2937,revenue:340485,roi:5.76,cpa:20.13,ctr:3.89,cvr:13.44},
+        {name:"Sugar",spend:23697,orders:321,revenue:126396,roi:5.33,cpa:73.82,ctr:4.03,cvr:7.51},
+        {name:"20.11.25/All",spend:20114,orders:276,revenue:104218,roi:5.18,cpa:72.88,ctr:2.91,cvr:3.06},
+        {name:"12.04.26/Interior",spend:15019,orders:129,revenue:53659,roi:3.57,cpa:116.43,ctr:2.69,cvr:6.15},
+        {name:"Cleaner",spend:13685,orders:268,revenue:53571,roi:3.91,cpa:51.06,ctr:4.11,cvr:7.68},
+        {name:"16.04.26/XGlass-Spot",spend:9216,orders:102,revenue:44043,roi:4.78,cpa:90.35,ctr:3.7,cvr:7.66},
+        {name:"12.02.26/Refresh",spend:10596,orders:83,revenue:37101,roi:3.5,cpa:127.66,ctr:3.21,cvr:7.57},
+        {name:"12.04.26/Reflex",spend:5371,orders:45,revenue:28346,roi:5.28,cpa:119.36,ctr:3.86,cvr:6.5},
+        {name:"22.12.25/ไม้ปัด",spend:6882,orders:44,revenue:26628,roi:3.87,cpa:156.41,ctr:3.78,cvr:6.85},
+        {name:"26.01.26/Mind",spend:7001,orders:45,revenue:21558,roi:3.08,cpa:155.58,ctr:3.02,cvr:7.4}
+      ]
+    },
+    bizAds: {
+      total:{spend:43903,imp:1343695,clicks:11816,cpm:32.67,ctr:0.88},
+      campaigns:[
+        {name:"23.04.26/CadsTopSaleCreator",spend:19702,imp:226535,clicks:6980,cpm:86.97,ctr:3.08},
+        {name:"Reach Nickynachat",spend:10004,imp:723747,clicks:0,cpm:13.82,ctr:0.0},
+        {name:"27.04.26/CAdsCreator",spend:7379,imp:104395,clicks:3392,cpm:70.68,ctr:3.25},
+        {name:"Nickynachat VIEW",spend:2500,imp:185492,clicks:0,cpm:13.48,ctr:0.0},
+        {name:"C-Ads Nicky",spend:1517,imp:43967,clicks:0,cpm:34.50,ctr:0.0},
+        {name:"C-Ads แคมเปญที่1",spend:1400,imp:35736,clicks:868,cpm:39.19,ctr:2.43},
+        {name:"C-Ads แคมเปญที่2",spend:1401,imp:23823,clicks:576,cpm:58.79,ctr:2.42}
+      ]
+    }
+  },
+  jun: {
+    gmvLive: {
+      total:{spend:8775,orders:411,revenue:167787,views:30399,roi:19.12,cpa:21.35},
+      sessions:[{name:"25.06.26/Liveแอ้นปาย",spend:942,orders:104,revenue:35593,roi:37.78,views:5893},{name:"15/06 - 1.2",spend:1503,orders:64,revenue:25550,roi:17.01,views:6298},{name:"11 WIBWUBCAR",spend:294,orders:5,revenue:1618,roi:5.5,views:474},{name:"07/06 - Wibwub",spend:472,orders:13,revenue:3919,roi:8.31,views:1516},{name:"06 1.2",spend:3855,orders:164,revenue:72592,roi:18.83,views:8803},{name:"4/6 WIBWUB.CAR",spend:391,orders:9,revenue:6790,roi:17.37,views:1173},{name:"1.1 1.2",spend:172,orders:10,revenue:3821,roi:22.25,views:427},{name:"01/06 - 1.2",spend:1146,orders:42,revenue:17904,roi:13.71,views:5815}]
+    },
+    gmvMax: {
+      total:{spend:197390,orders:4565,revenue:1233228,imp:0,clicks:0,roi:6.25,ctr:0,cvr:0,cpa:43.24},
+      top5:[{name:"ห้ามปิด จำกัด 10000",spend:88511,revenue:513295,orders:1987,imp:0,clicks:0,roi:5.8,ctr:0,cvr:0,cpa:44.54},{name:"20.06.26/Sugar",spend:17811,revenue:98806,orders:248,imp:0,clicks:0,roi:5.55,ctr:0,cvr:0,cpa:71.82},{name:"17.06.26/AllProduct",spend:12913,revenue:77310,orders:182,imp:0,clicks:0,roi:5.99,ctr:0,cvr:0,cpa:70.95},{name:"22.06.26/Refreshwipes",spend:14174,revenue:73363,orders:662,imp:0,clicks:0,roi:5.18,ctr:0,cvr:0,cpa:21.41},{name:"16.06.26/interior.refresh",spend:14010,revenue:67408,orders:161,imp:0,clicks:0,roi:4.81,ctr:0,cvr:0,cpa:87.02}],
+      worst5:[{name:"16.06.26/mind.waterless.ไม้ปัด",spend:6360,revenue:29344,orders:56,imp:0,clicks:0,roi:4.61,ctr:0,cvr:0,cpa:113.58},{name:"16.06.26/interior.refresh",spend:14010,revenue:67408,orders:161,imp:0,clicks:0,roi:4.81,ctr:0,cvr:0,cpa:87.02},{name:"22.06.26/Refreshwipes",spend:14174,revenue:73363,orders:662,imp:0,clicks:0,roi:5.18,ctr:0,cvr:0,cpa:21.41},{name:"16.06.26/sugar.reflex.beach",spend:8908,revenue:47574,orders:114,imp:0,clicks:0,roi:5.34,ctr:0,cvr:0,cpa:78.14},{name:"20.06.26/Sugar",spend:17811,revenue:98806,orders:248,imp:0,clicks:0,roi:5.55,ctr:0,cvr:0,cpa:71.82}],
+      campaigns:[{name:"ห้ามปิด จำกัด 10000",spend:88511,revenue:513295,orders:1987,imp:0,clicks:0,roi:5.8,ctr:0,cvr:0,cpa:44.54},{name:"20.06.26/Sugar",spend:17811,revenue:98806,orders:248,imp:0,clicks:0,roi:5.55,ctr:0,cvr:0,cpa:71.82},{name:"22.06.26/Refreshwipes",spend:14174,revenue:73363,orders:662,imp:0,clicks:0,roi:5.18,ctr:0,cvr:0,cpa:21.41},{name:"16.06.26/interior.refresh",spend:14010,revenue:67408,orders:161,imp:0,clicks:0,roi:4.81,ctr:0,cvr:0,cpa:87.02},{name:"17.06.26/AllProduct",spend:12913,revenue:77310,orders:182,imp:0,clicks:0,roi:5.99,ctr:0,cvr:0,cpa:70.95},{name:"16.06.26/sugar.reflex.beach",spend:8908,revenue:47574,orders:114,imp:0,clicks:0,roi:5.34,ctr:0,cvr:0,cpa:78.14},{name:"22.06.26/Interiorwipes",spend:8472,revenue:51293,orders:407,imp:0,clicks:0,roi:6.05,ctr:0,cvr:0,cpa:20.82},{name:"16.06.26/Xglass.Spot.Visible",spend:6908,revenue:39391,orders:102,imp:0,clicks:0,roi:5.7,ctr:0,cvr:0,cpa:67.72},{name:"16.06.26/mind.waterless.ไม้ปัด",spend:6360,revenue:29344,orders:56,imp:0,clicks:0,roi:4.61,ctr:0,cvr:0,cpa:113.58},{name:"16.06.26/Cleaner",spend:6163,revenue:37057,orders:185,imp:0,clicks:0,roi:6.01,ctr:0,cvr:0,cpa:33.31},{name:"20.06.26/reflex.beach",spend:4227,revenue:29047,orders:46,imp:0,clicks:0,roi:6.87,ctr:0,cvr:0,cpa:91.88}]
+    },
+    bizAds: {
+      total:{spend:51285,imp:0,clicks:0,cpm:0,ctr:0},
+      campaigns:[]
+    }
+  },
+  jul: {
+    gmvLive: {
+      /* corrected 21 Aug 2026 — same date-range-scoping bug as Aug: original capture missed 2 of 3 July LIVE sessions (25.07.26/Live, live-15.07) and slightly undercounted 7.7Live duo's own orders/revenue. Re-verified against TikTok Ads Manager with URL-forced list_start_date/list_end_date = Jul 1-31 2026, all 4 campaign-list pages checked, no other July sessions found. */
+      total:{spend:4509.10,orders:212,revenue:81312.48,views:12367,roi:18.03,cpa:21.27},
+      sessions:[
+        {name:"7.7Live duo",spend:3200,orders:153,revenue:56481.10,roi:17.65,views:6186},
+        {name:"live-15.07",spend:700.80,orders:36,revenue:15554.86,roi:22.20,views:3476},
+        {name:"25.07.26/Live",spend:608.30,orders:23,revenue:9276.52,roi:15.25,views:2705}
+      ]
+    },
+    gmvMax: {
+      /* total = full 1-31 Jul cumulative daily-totals export (Campaign overview data 20260701 - 20260801.xlsx, fetched 31 Jul). top5/worst5/campaigns below still reflect only the 1-19 baseline - no campaign-level breakdown available in the daily-totals export. */
+      total:{spend:491063.43,orders:9971,revenue:1977144.85,imp:0,clicks:0,roi:4.03,ctr:0,cvr:0,cpa:49.25},
+      top5:[
+        {name:"20.06.26/reflex.beach",spend:3035.21,orders:27,revenue:16440.16,roi:5.07,cpa:120.18,ctr:0,cvr:0},
+        {name:"20.06.26/Sugar",spend:17651.28,orders:226,revenue:92183.30,roi:4.99,cpa:81.73,ctr:0,cvr:0},
+        {name:"16.06.26/Xglass.Spot.Visible",spend:4751.05,orders:62,revenue:24438.13,roi:4.95,cpa:79.59,ctr:0,cvr:0},
+        {name:"17.06.26/AllProduct",spend:12299.27,orders:146,revenue:61342.50,roi:4.82,cpa:87.23,ctr:0,cvr:0},
+        {name:"03.07.26/refresh",spend:5223.52,orders:46,revenue:21609.02,roi:3.80,cpa:123.57,ctr:0,cvr:0}
+      ],
+      worst5:[
+        {name:"03.07.26/interior",spend:5961.00,orders:47,revenue:18524.72,roi:3.03,cpa:130.26,ctr:0,cvr:0},
+        {name:"22.06.26/Interiorwipes",spend:20451.83,orders:614,revenue:75183.91,roi:3.49,cpa:35.11,ctr:0,cvr:0},
+        {name:"16.06.26/Cleaner",spend:9010.22,orders:157,revenue:32191.60,roi:3.53,cpa:58.05,ctr:0,cvr:0},
+        {name:"16.06.26/mind.waterless.ไม้ปัด",spend:1705.54,orders:10,revenue:6065.47,roi:3.56,cpa:170.55,ctr:0,cvr:0},
+        {name:"22.06.26/Refreshwipes",spend:42427.75,orders:1418,revenue:161172.54,roi:3.61,cpa:31.52,ctr:0,cvr:0}
+      ],
+      campaigns:[
+        {name:"22.06.26/Refreshwipes",spend:42427.75,orders:1418,revenue:161172.54,roi:3.61,cpa:31.52,ctr:0,cvr:0},
+        {name:"22.06.26/Interiorwipes",spend:20451.83,orders:614,revenue:75183.91,roi:3.49,cpa:35.11,ctr:0,cvr:0},
+        {name:"20.06.26/Sugar",spend:17651.28,orders:226,revenue:92183.30,roi:4.99,cpa:81.73,ctr:0,cvr:0},
+        {name:"17.06.26/AllProduct",spend:12299.27,orders:146,revenue:61342.50,roi:4.82,cpa:87.23,ctr:0,cvr:0},
+        {name:"16.06.26/Cleaner",spend:9010.22,orders:157,revenue:32191.60,roi:3.53,cpa:58.05,ctr:0,cvr:0},
+        {name:"03.07.26/interior",spend:5961.00,orders:47,revenue:18524.72,roi:3.03,cpa:130.26,ctr:0,cvr:0},
+        {name:"03.07.26/refresh",spend:5223.52,orders:46,revenue:21609.02,roi:3.80,cpa:123.57,ctr:0,cvr:0},
+        {name:"16.06.26/Xglass.Spot.Visible",spend:4751.05,orders:62,revenue:24438.13,roi:4.95,cpa:79.59,ctr:0,cvr:0},
+        {name:"20.06.26/reflex.beach",spend:3035.21,orders:27,revenue:16440.16,roi:5.07,cpa:120.18,ctr:0,cvr:0},
+        {name:"16.06.26/interior.refresh",spend:2945.76,orders:26,revenue:11201.34,roi:3.80,cpa:113.30,ctr:0,cvr:0},
+        {name:"16.06.26/mind.waterless.ไม้ปัด",spend:1705.54,orders:10,revenue:6065.47,roi:3.56,cpa:170.55,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      /* total = full 1-31 Jul cumulative (WIBWUBCAR-Campaign Report-2026-07-01 to 2026-07-31.xlsx), 91 campaigns aggregated. clicks field = Clicks (destination) this run (export template did not include Clicks (all)). */
+      total:{spend:14656.63,imp:227883,clicks:7291,cpm:64.32,ctr:3.2},
+      campaigns:[{name:"C-Ads TOP CREATOR",spend:14459.09,imp:227642,clicks:7290,cpm:63.52,ctr:3.2},{name:"30.06.26/Follower",spend:197.54,imp:241,clicks:1,cpm:819.67,ctr:0.41}]
+    }
+  },
+  aug: {
+    gmvLive: {
+      /* Aug 1-29, re-read 2026-08-29 ~08:21 ICT from the LIVE GMV Max campaign list (GMV Max > Campaigns > LIVE GMV Max, date range 2026-08-01 to 2026-08-29). All 10 LIVE campaigns in the range were read again directly from the campaign table (Net Cost / Gross revenue / SKU orders / LIVE views columns) and every figure is IDENTICAL to the Aug 1-28 snapshot — no new LIVE session ran on 28-29 Aug and no revenue was re-attributed, so the totals below are unchanged and were re-verified by summing the listed sessions (3,019.35 spend / 285 orders / 114,541.60 revenue / 18,077 views). The two zero-spend legacy campaigns 25.07.26/Live (all zero) and live-15.07 (0 spend, 1 order, ฿295 revenue) are folded into the total but only live-15.07 is listed. NOTE: gmvLive is already contained inside the GMV Max Overview export that feeds gmvMax.total, so it is shown separately here but is deliberately NOT added again into DATA_PERIODS.aug.tiktok. */
+      total:{spend:3019.35,orders:285,revenue:114541.60,views:18077,roi:37.94,cpa:10.59},
+      sessions:[
+        {name:"26.08.26/Liveปายปืน",spend:201.00,orders:24,revenue:10380.82,roi:51.65,views:1325},
+        {name:"25.08.26/Liveน้องปาย",spend:367.69,orders:23,revenue:8154.46,roi:22.18,views:2603},
+        {name:"live 19.08.26",spend:623.86,orders:11,revenue:8179.94,roi:13.11,views:968},
+        {name:"15.08.26/Live",spend:585.62,orders:102,revenue:40044.97,roi:68.38,views:6763},
+        {name:"13.08.26Test/ROI",spend:96.91,orders:12,revenue:4193.76,roi:43.27,views:1179},
+        {name:"08.08.26/Liveแอ้นปายมืด",spend:315.64,orders:25,revenue:11595.95,roi:36.74,views:1859},
+        {name:"08.08.26/Liveปาย+แอ้นบ่าย",spend:386.39,orders:35,revenue:12267.98,roi:31.75,views:1664},
+        {name:"08.08.26/Liveปาย+แอ้น",spend:442.24,orders:52,revenue:19428.72,roi:43.93,views:1716},
+        {name:"live-15.07",spend:0.00,orders:1,revenue:295.00,roi:0.00,views:0}
+      ]
+    },
+    gmvMax: {
+      /* Aug 1-31 FINAL — month is now CLOSED. Refreshed 2026-09-01 ~08:20 ICT by the scheduled wibwub-download-tiktok-ads run. JUDGEMENT CALL: the run fired on the 1st of a new month, so pulling "the current month" (September) would have returned only a few hours of data; August was pulled instead to finalise it. This matches the Shopee refresh that ran at 08:12-08:14 ICT the same morning. A `sep` period block still needs to be created on a future run. SOURCE: xlsx export "Campaign overview data 20260801 - 20260831.xlsx" (GMV Max > Overview > Export data, date range 2026-08-01 to 2026-08-31), archived to data Ads/TikTok/GMV Max/. Values are taken STRAIGHT FROM the file's own final Total row (day = "-"): 663056.25 spend / 11947 orders / 2463893.09 revenue / ROI 3.72 / cost-per-order 55.50 — that row is already the sum of the 31 daily rows, so the daily rows are NOT re-summed (doing so would double-count). Closing days: 29 ส.ค. ฿26,094.88 / 472 orders / ฿95,653.03 (ROI 3.67); 30 ส.ค. ฿31,930.91 / 521 orders / ฿123,232.28 (ROI 3.86); 31 ส.ค. CLOSED at ฿20,631.06 / 418 orders / ฿78,681.73 (ROI 3.81) — this supersedes the partial ฿17,578.48 / 342 orders recorded by the 2026-08-31 14:40 run. This Overview export is shop-wide GMV Max and therefore already includes the LIVE GMV Max spend shown in gmvLive. The campaigns[] list below comes from the separate creative-data export and was NOT refreshed in this run. */
+      total:{spend:663056.25,orders:11947,revenue:2463893.09,imp:0,clicks:0,roi:3.72,ctr:0,cvr:0,cpa:55.50},
+      top5:[],
+      worst5:[],
+      campaigns:[]
+    },
+    bizAds: {
+      /* Aug 1-31 FINAL (month closed), refreshed 2026-09-01 ~11:05 ICT (scheduled wibwub-download-tiktok-ads run on the 1st, pulling August to finalise it). SOURCE: xlsx export "WIBWUBCAR-Campaign Report-2026-08-01 to 2026-08-31.xlsx" (Campaigns > More > Export data, date range Aug 1-31 2026), archived to data Ads/TikTok/Business Ads/. NOTE on the automation: the "More" dropdown ignores raw coordinate clicks — resolve BOTH the "More options" button and the "Export data" menu item by element ref (find tool) and click by ref, not by pixel; a fresh tab makes this far more reliable. Also note: Chrome saves these exports to ~/Downloads and the com.wibwub.download-mover LaunchAgent immediately moves them to "data Ads/Tiktok/" (the folder ROOT), NOT into the GMV Max/ or Business Ads/ subfolders — so look for the file there and cp it into the subfolder. FORMAT WARNING: this export has NO Campaign ID column and one row per campaign (not per campaign-per-day), so parse by header NAME, not by fixed column index. Figures below aggregate the 94 real campaign rows only (the pinned "Total of 94 results" row is excluded from the campaign list); that pinned row was used purely to VERIFY: sum(campaigns) = 19276.76 spend / 348927 imp / 5849 clicks matches the Total row exactly. CPM 55.25 and CTR 1.68% recompute from those. Still only 4 of 94 campaigns carry nonzero spend; the two view-objective campaigns (27.08.26/ViewsEp1, 27.08.26/ViewEip2) still report 0 destination clicks. bizAds is impression-based — no revenue/orders, so it contributes spend only to the TikTok totals. */
+      total:{spend:19276.76,imp:348927,clicks:5849,cpm:55.25,ctr:1.68},
+      campaigns:[{name:"C-Ads TOP  CREATOR",spend:16300.70,imp:216008,clicks:5561,cpm:75.46,ctr:2.57},{name:"27.08.26/ViewEip2",spend:1001.51,imp:59652,clicks:0,cpm:16.79,ctr:0},{name:"27.08.26/ViewsEp1",spend:1001.48,imp:57435,clicks:0,cpm:17.44,ctr:0},{name:"CAdsnicky",spend:973.07,imp:15832,clicks:288,cpm:61.46,ctr:1.82}]
+    }
+  },
+  sep: {
+    gmvLive: {
+      /* Sep 1 — LIVE GMV Max campaign list was NOT scraped in this run (the scheduled task only exports the GMV Max Overview + Business Ads Campaign Report). Values left at 0 = "ไม่ได้เก็บ", NOT "ไม่มีไลฟ์". Note the same convention as aug: gmvLive is already contained inside the GMV Max Overview export that feeds gmvMax.total, so even once filled it must NOT be added again into DATA_PERIODS.sep.tiktok. */
+      total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0},
+      sessions:[]
+    },
+    gmvMax: {
+      /* Sep 1-16 (refreshed 2026-09-16 ~08:30 ICT scheduled wibwub-download-tiktok-ads run). Downloaded xlsx "Campaign overview data 20260901 - 20260916.xlsx" (16 daily rows + Total row) — used the Total row VERBATIM per convention: spend 423,693.69 / orders 7,243 / revenue 1,677,111.54 / ROI 3.96 / cost-per-order 58.50. Daily: 1 ก.ย. 17,786.86/287/64,987.29 · 2 ก.ย. 24,876.20/447/89,291.19 · 3 ก.ย. 23,646.63/432/95,661.55 · 4 ก.ย. 22,373.82/361/83,387.96 · 5 ก.ย. 30,969.47/499/124,694.38 · 6 ก.ย. 30,712.26/490/114,840.92 · 7 ก.ย. 31,253.67/496/116,957.75 · 8 ก.ย. 29,072.98/430/117,173.01 · 9 ก.ย. 43,334.47/812/237,251.49 (best day of month) · 10 ก.ย. 28,284.96/448/104,595.82 · 11 ก.ย. 22,953.01/364/81,314.39 · 12 ก.ย. 27,711.74/467/100,944.96 · 13 ก.ย. 29,756.45/531/108,393.45 · 14 ก.ย. 28,840.00/484/107,413.23 (restated -5.08 revenue vs previous round) · 15 ก.ย. 27,648.16/597/111,886.20 (closed; previous round's 3,890.58/84/14,377.97 was a partial read, now fully restated) · 16 ก.ย. 4,473.01/98/18,317.96 (partial, still open ~08:30 ICT — will restate next round). campaigns[]/top5/worst5 left empty this round — GMV Max Overview export has no per-campaign breakdown, consistent with prior months. Overview already includes LIVE GMV Max — do not add gmvLive on top when computing DATA_PERIODS.sep.tiktok. */
+      total:{spend:561712.59,orders:9887,revenue:2158341.70,imp:0,clicks:0,roi:3.84,ctr:0,cvr:0,cpa:56.81},
+      top5:[],
+      worst5:[],
+      campaigns:[]
+    },
+    bizAds: {
+      /* Sep 1-16 (refreshed 2026-09-16 ~08:30 ICT scheduled wibwub-download-tiktok-ads run). Used Campaigns list page > More > "Export data" (all 95 campaigns) per the methodology fix established 15 ก.ย. — exports "WIBWUBCAR-Campaign Report-2026-09-01 to 2026-09-16.xlsx" aggregated per campaign (not per-day) with a "Total of 95 results" row. VERIFICATION: sum of the 4 nonzero campaigns (8,353.28 + 4,130.05 + 440.59 + 438.69 = 13,362.61 spend; 128,214 + 16,439 + 19,914 + 23,387 = 187,954 imp; 2,092 + 48 + 0 + 0 = 2,140 clicks(destination)) matches the platform’s "Total of 95 results" row exactly on all three metrics. 03.09.26/Follower grew from 4,125.00 (15 ก.ย.) to 4,130.05; C-Ads TOP  CREATOR grew from 7,815.30 to 8,353.28; the two paused view-objective campaigns (27.08.26/ViewEip2, 27.08.26/ViewsEp1) remain frozen at 440.59 / 438.69. bizAds is impression-based — no revenue/orders, contributes spend only to TikTok totals. */
+      total:{spend:16563.89,imp:240378,clicks:2904,cpm:68.91,ctr:1.21},
+      campaigns:[{name:"C-Ads TOP  CREATOR",spend:10994.87,imp:172527,clicks:2743,cpm:63.73,ctr:1.59},{name:"03.09.26/Follower",spend:4203.94,imp:16837,clicks:60,cpm:249.68,ctr:0.36},{name:"19.09.26/C-adsพี่เป๊ก",spend:400.25,imp:7110,clicks:97,cpm:56.29,ctr:1.36},{name:"18.09.26/Followerพี่เป๊ก",spend:85.55,imp:603,clicks:4,cpm:141.87,ctr:0.66},{name:"27.08.26/ViewEip2",spend:440.59,imp:19914,clicks:0,cpm:22.12,ctr:0},{name:"27.08.26/ViewsEp1",spend:438.69,imp:23387,clicks:0,cpm:18.76,ctr:0}]
+    }
+  },
+  all: {
+    gmvLive: {
+      /* corrected 21 Aug 2026 — jul total/sessions replaced with re-verified Jul 1-31 data (see jul.gmvLive note); top-12 ranking recomputed, "7.7Live duo" now ranks #2 all-time and "live-15.07" (new, revenue 15,554.86) narrowly misses top-12 at #13 */
+      total:{spend:57710.76,orders:1575,revenue:628625.51,views:114928,roi:10.89,cpa:36.64},
+      sessions:[
+        {name:"06 1.2",spend:3855,orders:164,revenue:72592,roi:18.83,views:8803},
+        {name:"7.7Live duo",spend:3200,orders:153,revenue:56481.10,roi:17.65,views:6186},
+        {name:"15.08.26/Live",spend:585.62,orders:98,revenue:38943.68,roi:66.5,views:6763},
+        {name:"25.06.26/Liveแอ้นปาย",spend:942,orders:104,revenue:35593,roi:37.78,views:5893},
+        {name:"4.4 Live_GMV",spend:1334,orders:56,revenue:30040,roi:22.52,views:2686},
+        {name:"15/06 - 1.2",spend:1503,orders:64,revenue:25550,roi:17.01,views:6298},
+        {name:"05.05.26/GMVLive เก็บโค้ด5.5(1)",spend:4580,orders:64,revenue:22705,roi:4.96,views:3538},
+        {name:"25.04.26/Live GMV New",spend:3008,orders:47,revenue:22704,roi:7.55,views:3802},
+        {name:"08.08.26/Liveปาย+แอ้น",spend:442.24,orders:52,revenue:19428.72,roi:43.93,views:1716},
+        {name:"01/06 - 1.2",spend:1146,orders:42,revenue:17904,roi:13.71,views:5815},
+        {name:"05.05.26/GMVLive เก็บโค้ด5.5(2)",spend:4837,orders:54,revenue:15994,roi:3.31,views:3056},
+        {name:"07.05.26/คนรักรถ(1)",spend:1917,orders:34,revenue:15625,roi:8.15,views:1715}
+      ]
+    },
+    gmvMax: {
+      total:{spend:2372470.81,orders:47374,revenue:11017748.82,imp:0,clicks:0,roi:4.64,ctr:0,cvr:0,cpa:50.08},
+      campaigns:[
+        {name:"29.01.26/Interior wipe - refresh wipe",spend:144582,orders:8224,revenue:991645,roi:6.86,cpa:17.58,ctr:0,cvr:0},
+        {name:"Sugar",spend:193324,orders:2718,revenue:976042,roi:5.05,cpa:71.13,ctr:0,cvr:0},
+        {name:"20.11.25/All",spend:179145,orders:2629,revenue:935892,roi:5.22,cpa:68.14,ctr:0,cvr:0},
+        {name:"6.6 ห้ามปิด  จำกัด 10000",spend:120241,orders:3270,revenue:625477,roi:5.2,cpa:36.77,ctr:0,cvr:0},
+        {name:"22.12.25/ไม้ปัด",spend:114037,orders:986,revenue:554733,roi:4.86,cpa:115.66,ctr:0,cvr:0},
+        {name:"ห้ามปิด จำกัด 10000",spend:88511,orders:1987,revenue:513295,roi:5.8,cpa:44.55,ctr:0,cvr:0},
+        {name:"Cleaner",spend:84941,orders:1884,revenue:382336,roi:4.5,cpa:45.09,ctr:0,cvr:0},
+        {name:"Interior/reflex",spend:67944,orders:682,revenue:307968,roi:4.53,cpa:99.62,ctr:0,cvr:0},
+        {name:"12.02.26/Refresh",spend:48454,orders:485,revenue:213378,roi:4.4,cpa:99.91,ctr:0,cvr:0},
+        {name:"26.01.26/Mind",spend:29096,orders:243,revenue:124750,roi:4.29,cpa:119.74,ctr:0,cvr:0},
+        {name:"16.04.26/XGlass-Spot",spend:20513,orders:258,revenue:109052,roi:5.32,cpa:79.51,ctr:0,cvr:0},
+        {name:"12.04.26/Interior",spend:28415,orders:253,revenue:108055,roi:3.8,cpa:112.31,ctr:0,cvr:0},
+        {name:"26.01.26/Reflex",spend:19995,orders:204,revenue:102851,roi:5.14,cpa:98.01,ctr:0,cvr:0},
+        {name:"20.06.26/Sugar",spend:17811,orders:248,revenue:98806,roi:5.55,cpa:71.82,ctr:0,cvr:0},
+        {name:"18.11.25/Refresh",spend:17604,orders:199,revenue:85292,roi:4.85,cpa:88.46,ctr:0,cvr:0},
+        {name:"17.06.26/AllProduct",spend:12913,orders:182,revenue:77310,roi:5.99,cpa:70.95,ctr:0,cvr:0},
+        {name:"22.06.26/Refreshwipes",spend:14174,orders:662,revenue:73363,roi:5.18,cpa:21.41,ctr:0,cvr:0},
+        {name:"16.06.26/interior.refresh",spend:14010,orders:161,revenue:67408,roi:4.81,cpa:87.02,ctr:0,cvr:0},
+        {name:"12.04.26/Reflex",spend:11605,orders:90,revenue:56727,roi:4.89,cpa:128.94,ctr:0,cvr:0},
+        {name:"22.06.26/Interiorwipes",spend:8472,orders:407,revenue:51293,roi:6.05,cpa:20.82,ctr:0,cvr:0},
+        {name:"16.06.26/sugar.reflex.beach",spend:8908,orders:114,revenue:47574,roi:5.34,cpa:78.14,ctr:0,cvr:0},
+        {name:"Spot",spend:10648,orders:98,revenue:45463,roi:4.27,cpa:108.65,ctr:0,cvr:0},
+        {name:"16.06.26/Xglass.Spot.Visible",spend:6908,orders:102,revenue:39391,roi:5.7,cpa:67.73,ctr:0,cvr:0},
+        {name:"16.06.26/Cleaner",spend:6163,orders:185,revenue:37057,roi:6.01,cpa:33.31,ctr:0,cvr:0},
+        {name:"16.06.26/mind.waterless.ไม้ปัด",spend:6360,orders:56,revenue:29344,roi:4.61,cpa:113.57,ctr:0,cvr:0},
+        {name:"20.06.26/reflex.beach",spend:4227,orders:46,revenue:29047,roi:6.87,cpa:91.89,ctr:0,cvr:0},
+        {name:"15.03.26/spot",spend:3407,orders:36,revenue:14152,roi:4.15,cpa:94.64,ctr:0,cvr:0},
+        {name:"15.03.26/X-Glass",spend:2270,orders:17,revenue:7643,roi:3.37,cpa:133.53,ctr:0,cvr:0},
+        {name:"06.04.26/All GMV1",spend:1948,orders:20,revenue:6900,roi:3.54,cpa:97.4,ctr:0,cvr:0},
+        {name:"09.08.25/Beach",spend:1977,orders:12,revenue:5669,roi:2.87,cpa:164.75,ctr:0,cvr:0},
+        {name:"06.04.26/All GMV",spend:1000,orders:2,revenue:440,roi:0.44,cpa:500.0,ctr:0,cvr:0},
+        {name:"6.6 ห้ามปิด เปิดยาว ",spend:0,orders:0,revenue:0,roi:0,cpa:0,ctr:0,cvr:0}
+      ]
+    },
+    bizAds: {
+      total:{spend:168505.65,imp:2732288,clicks:167792,cpm:61.67,ctr:6.14},
+      campaigns:[
+        {name:"clay&waterless/b/05.10.24",spend:23335,imp:129966,clicks:4119,cpm:179.55,ctr:3.169},
+        {name:"24.12.25/โมเน่",spend:4328,imp:206663,clicks:47522,cpm:20.94,ctr:22.995},
+        {name:"27.12.25/Trafficinshop",spend:2101,imp:94861,clicks:23821,cpm:22.15,ctr:25.111},
+        {name:"26.01.26/พี่ยิว",spend:5395,imp:308806,clicks:65171,cpm:17.47,ctr:21.104},
+        {name:"05.02.26/_mmchyy",spend:1459,imp:70377,clicks:0,cpm:20.73,ctr:0.0},
+        {name:"23.04.26/CadsTopSaleCreator",spend:23705,imp:308900,clicks:8855,cpm:76.74,ctr:2.867},
+        {name:"27.04.26/CAdsCreator",spend:8586,imp:128067,clicks:3850,cpm:67.04,ctr:3.006},
+        {name:"22.04.26/follow",spend:630,imp:612,clicks:2,cpm:1029.41,ctr:0.327},
+        {name:"09.04.26/Consi",spend:500,imp:9801,clicks:248,cpm:51.02,ctr:2.53},
+        {name:"Reach Nickynachat",spend:10004,imp:723747,clicks:0,cpm:13.82,ctr:0.0},
+        {name:"Nickynachat VIEW",spend:2500,imp:185492,clicks:0,cpm:13.48,ctr:0.0},
+        {name:"C-Ads Nicky",spend:1517,imp:43967,clicks:0,cpm:34.5,ctr:0.0},
+        {name:"C-Ads แคมเปญที่1",spend:1400,imp:35736,clicks:868,cpm:39.18,ctr:2.429},
+        {name:"C-Ads แคมเปญที่2",spend:1401,imp:23823,clicks:576,cpm:58.81,ctr:2.418}
+      ]
+    }
+  }
+};
+
+// Safe empty template — used when a period has no TK_BREAKDOWN entry yet,
+// so a missing month shows zeros instead of silently falling back to the
+// whole-history "all" aggregate (root cause of a past bug).
+const EMPTY_TK_PERIOD = {
+  gmvLive: { total:{spend:0,orders:0,revenue:0,views:0,roi:0,cpa:0}, sessions:[] },
+  gmvMax: { total:{spend:0,orders:0,revenue:0,imp:0,clicks:0,roi:0,ctr:0,cvr:0,cpa:0}, top5:[], worst5:[], campaigns:[] },
+  bizAds: { total:{spend:0,imp:0,clicks:0,cpm:0,ctr:0}, campaigns:[] }
+};
+
+// ── TikTok Sub-tab switcher ────────────────────────────────────────────
+function getTkPeriod(){ return TK_BREAKDOWN[curPickedPeriod] || EMPTY_TK_PERIOD; }
+
+function showTkTab(key, el){
+  document.querySelectorAll('.tk-subtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tk-view').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('tk-tab-'+key).classList.add('active');
+  if(key==='gmvlive') renderLiveChart();
+  if(key==='overview') renderTkOverview();
+}
+
+// ── TikTok Overview (dynamic per period) ─────────────────────────────
+function renderTkOverview(){
+  const d = getTkPeriod();
+  const lt=d.gmvLive.total, mt=d.gmvMax.total, bt=d.bizAds.total;
+  const totalSpend=lt.spend+mt.spend+bt.spend;
+  const totalRev=lt.revenue+mt.revenue;
+  const totalOrd=lt.orders+mt.orders;
+  const blendedRoas=totalSpend?totalRev/totalSpend:0;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('tk-ov-spend','฿'+fmt(totalSpend));
+  set('tk-ov-rev','฿'+fmt(totalRev));
+  set('tk-ov-orders',fmt(totalOrd));
+  set('tk-ov-roas',blendedRoas.toFixed(2)+'x');
+  // Summary table
+  const tb=document.getElementById('tk-ov-tbody');
+  if(tb) tb.innerHTML=`
+    <tr><td>🎬 GMV Max</td><td>${fmt(mt.spend)}</td><td>${fmt(mt.revenue)}</td><td>${fmt(mt.orders)}</td><td>${mt.roi}x</td><td>Product / Video campaigns</td></tr>
+    <tr><td>📺 GMV Live</td><td>${fmt(lt.spend)}</td><td>${fmt(lt.revenue)}</td><td>${fmt(lt.orders)}</td><td>${lt.roi||'—'}x</td><td>Live Shopping Ads</td></tr>
+    <tr><td>📢 Business Ads</td><td>${fmt(bt.spend)}</td><td>—</td><td>—</td><td>—</td><td>Brand Awareness / Reach</td></tr>
+    <tr><td>🧮 รวม</td><td>${fmt(totalSpend)}</td><td>${fmt(totalRev)}</td><td>${fmt(totalOrd)}</td><td>${blendedRoas.toFixed(2)}x</td><td></td></tr>`;
+  renderTkDonutCharts();
+}
+
+// ── Live Sessions table ────────────────────────────────────────────────
+function renderLiveSessions(){
+  const d = getTkPeriod().gmvLive;
+  const body = document.getElementById('tk-live-body');
+  if(!body) return;
+  const lt=d.total;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('tk-live-kpi-spend','฿'+fmt(lt.spend));
+  set('tk-live-kpi-rev','฿'+fmt(lt.revenue));
+  set('tk-live-kpi-roi',(lt.roi||0).toFixed(2)+'x');
+  set('tk-live-kpi-orders',fmt(lt.orders));
+  set('tk-live-kpi-views',fmt(lt.views));
+  set('tk-live-kpi-cpa','฿'+fmt(lt.cpa||0));
+  const ptxt=document.getElementById('tk-live-period-txt'); if(ptxt) ptxt.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge;
+  const ppill=document.getElementById('tk-live-period-pill'); if(ppill) ppill.textContent=(ADS_PERIOD_DEFS[curPickedPeriod]||ADS_PERIOD_DEFS.all).badge+' · '+d.sessions.length+' sessions';
+  if(!d.sessions.length){body.innerHTML='<tr><td colspan="7" style="text-align:center;color:#666;padding:20px">ไม่มีข้อมูล GMV Live ในช่วงนี้</td></tr>';return;}
+  body.innerHTML = d.sessions.map((s,i)=>`<tr>
+    <td>${i+1}</td>
+    <td style="max-width:220px;word-break:break-word">${s.name}</td>
+    <td>${fmt(s.spend)}</td>
+    <td>${fmt(s.revenue)}</td>
+    <td>${s.orders}</td>
+    <td style="color:${s.roi>=4?'#4ade80':s.roi>=2?'#facc15':'#f87171'}">${s.roi.toFixed(2)}x</td>
+    <td>${fmt(s.views)}</td>
+  </tr>`).join('');
+}
+
+// ── Business Ads table ────────────────────────────────────────────────
+function renderBizTable(){
+  const d = getTkPeriod().bizAds;
+  const bt=d.total;
+  const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+  set('tk-biz-kpi-spend','฿'+fmt(bt.spend));
+  set('tk-biz-kpi-imp',fmt(bt.imp));
+  set('tk-biz-kpi-clicks',fmt(bt.clicks));
+  set('tk-biz-kpi-cpm','฿'+bt.cpm.toFixed(2));
+  set('tk-biz-kpi-ctr',bt.ctr.toFixed(2)+'%');
+  const body = document.getElementById('tk-biz-body');
+  if(!body) return;
+  body.innerHTML = d.campaigns.map((c,i)=>`<tr>
+    <td>${i+1}</td>
+    <td style="max-width:220px;word-break:break-word">${c.name}</td>
+    <td>${fmt(c.spend)}</td>
+    <td>${fmt(c.imp)}</td>
+    <td>${fmt(c.clicks)}</td>
+    <td>${c.cpm.toFixed(2)}</td>
+    <td>${c.ctr.toFixed(2)}%</td>
+  </tr>`).join('');
+}
+
+// ── Live comparison bar chart ─────────────────────────────────────────
+let liveChart=null;
+function renderLiveChart(){
+  renderLiveSessions();
+  const ctx=document.getElementById('tk-live-compare');
+  if(!ctx) return;
+  const sessions=getTkPeriod().gmvLive.sessions.filter(s=>s.spend>0||s.revenue>0);
+  if(!sessions.length){if(liveChart){liveChart.destroy();liveChart=null;}return;}
+  const labels=sessions.map(s=>s.name.length>22?s.name.slice(0,22)+'…':s.name);
+  if(liveChart) liveChart.destroy();
+  liveChart=new Chart(ctx,{
+    type:'bar',
+    data:{labels,datasets:[
+      {label:'Ads Spend (฿)',data:sessions.map(s=>s.spend),backgroundColor:'rgba(45,212,191,0.7)',borderRadius:5},
+      {label:'Revenue (฿)',data:sessions.map(s=>s.revenue),backgroundColor:'rgba(74,222,128,0.7)',borderRadius:5}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{labels:{color:'#ccc',font:{size:11}}},tooltip:{callbacks:{label:c=>'฿'+fmt(c.raw)}}},
+      scales:{
+        x:{ticks:{color:'#999',font:{size:10},maxRotation:35},grid:{color:'rgba(255,255,255,0.04)'}},
+        y:{ticks:{color:'#999',callback:v=>'฿'+fmt(v)},grid:{color:'rgba(255,255,255,0.07)'}}
+      }}
+  });
+}
+
+// ── TikTok Overview donut charts ──────────────────────────────────────
+let tkSpendChart=null, tkRevChart=null;
+function renderTkDonutCharts(){
+  const d=getTkPeriod();
+  const lt=d.gmvLive.total, mt=d.gmvMax.total, bt=d.bizAds.total;
+  const totalSpend=lt.spend+mt.spend+bt.spend;
+  const totalRev=lt.revenue+mt.revenue;
+  const spendCtx=document.getElementById('tk-spend-donut');
+  const revCtx=document.getElementById('tk-rev-donut');
+  if(!spendCtx||!revCtx) return;
+  const colors=['rgba(45,212,191,0.8)','rgba(99,102,241,0.8)','rgba(245,158,11,0.8)'];
+  if(tkSpendChart) tkSpendChart.destroy();
+  tkSpendChart=new Chart(spendCtx,{type:'doughnut',data:{
+    labels:['GMV Max','Business Ads','GMV Live'],
+    datasets:[{data:[mt.spend,bt.spend,lt.spend],backgroundColor:colors,borderWidth:1,borderColor:'#1a1a1a'}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{color:'#ccc',font:{size:11},padding:10}},
+      tooltip:{callbacks:{label:c=>`฿${fmt(c.raw)} (${totalSpend?(c.raw/totalSpend*100).toFixed(1):0}%)`}}}}});
+  if(tkRevChart) tkRevChart.destroy();
+  tkRevChart=new Chart(revCtx,{type:'doughnut',data:{
+    labels:['GMV Max','GMV Live','Business Ads'],
+    datasets:[{data:[mt.revenue,lt.revenue,0],backgroundColor:colors,borderWidth:1,borderColor:'#1a1a1a'}]
+  },options:{responsive:true,maintainAspectRatio:false,cutout:'62%',
+    plugins:{legend:{position:'bottom',labels:{color:'#ccc',font:{size:11},padding:10}},
+      tooltip:{callbacks:{label:c=>c.raw>0?`฿${fmt(c.raw)} (${totalRev?(c.raw/totalRev*100).toFixed(1):0}%)`:'ไม่มีข้อมูล'}}}}});
+}
+
+// ── renderDashboard: re-render everything ──────────────────────────
+function renderDashboard(){
+  const sh=getSH(), tk=getTK();
+  renderKPIs();
+  buildCmp('shopee-cmp', sh, 'shopee');
+  buildCmp('tiktok-cmp', tk, 'tiktok');
+  buildTop5('shopee-top5-best', sh.top5, true);
+  buildTop5('shopee-top5-worst', sh.worst5, false);
+  // GMV Max top5/worst5 from TK_BREAKDOWN (sorted by roi)
+  const mxAll = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.campaigns;
+  const mxSorted = [...mxAll].sort((a,b)=>b.roi-a.roi);
+  const mxTop5 = mxSorted.slice(0,5).map(c=>({...c,roas:c.roi}));
+  const mxWorst5 = [...mxSorted].reverse().slice(0,5).map(c=>({...c,roas:c.roi}));
+  buildTop5('tiktok-top5-best', mxTop5, true);
+  buildTop5('tiktok-top5-worst', mxWorst5, false);
+  buildAllTable('shopee-all-body', sh.all);
+  // GMV Max table — build from TK_BREAKDOWN campaign list
+  const mxCamps = (TK_BREAKDOWN[curPickedPeriod]||EMPTY_TK_PERIOD).gmvMax.campaigns;
+  const mxRows = mxCamps.map(c=>({...c, roas:c.roi}));  // alias roi→roas for buildAllTable
+  buildAllTable('tiktok-all-body', mxRows);
+  updateCharts(sh, tk);
+  renderLiveSessions();
+  renderBizTable();
+  renderTkOverview();
+}
+
+// ── Init ───────────────────────────────────────────────────────────
+renderDashboard();
+
+// ── Expose functions to global scope ──────────────────────────────
+window.showTab = showTab;
+window.showTkTab = showTkTab;
+window.adsPickPeriod = adsPickPeriod;
+window.adsTogglePicker = adsTogglePicker;
+window.adsClosePicker = adsClosePicker;
+window.sortTable = sortTable;
+window.addEntry = addEntry;
+
+// ── Bind tab events using addEventListener (works in all contexts) ──
+document.querySelectorAll('[data-tab]').forEach(function(el) {
+  el.addEventListener('click', function(e) {
+    showTab(this.getAttribute('data-tab'), e);
+  });
+});
