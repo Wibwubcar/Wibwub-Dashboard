@@ -1,0 +1,8 @@
+{
+  "source": "seller.shopee.co.th /api/supply/lm/sellercenter/overview/v3?timeDim=1d",
+  "captured": "2026-09-09",
+  "days": {
+    "2026-09-08": {"confirmedGmv": 6012, "confirmedOrder": 15, "totalViewer": 1210, "totalViews": 1922, "newFollower": 7, "totalSessionCnt": 1},
+    "2026-09-09": {"note": "no live session yet as of 08:40 GMT+7", "confirmedGmv": 0, "confirmedOrder": 0, "totalViewer": 0, "newFollower": 0}
+  }
+}

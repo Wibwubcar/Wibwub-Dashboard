@@ -1,0 +1,37 @@
+{
+  "source": "seller.shopee.co.th /creator-center/insight/live — API /api/supply/lm/sellercenter/overview/v3 (D-1 aggregate, confirmed orders) + /api/supply/lm/sellercenter/realtime/sessionList",
+  "captured": "2026-09-11T10:01:46+07:00",
+  "status": "NOT_WRITTEN_TO_DASHBOARD",
+  "reason": "Shopee D-1 overview aggregation for 2026-09-10 was still empty at capture time (overview/v3?endDate=2026-09-10 returned all-null data with code 0, polled ~4 times over 3 minutes). Dashboard SH_LIVE_DAILY uses CONFIRMED overview figures, which run ~4% above the realtime sessionList numbers (2026-09-09: realtime 68,602 vs confirmed 71,485). Writing realtime figures would understate the series, so 2026-09-10 was left for the next scheduled run.",
+  "days": {
+    "2026-09-10": {
+      "realtime_sessionList": {
+        "sessionId": 27256278,
+        "title": "9.9 โค้ดเช้ากันค้า",
+        "startTimeLocal": "2026-09-10 09:00 (GMT+7)",
+        "confirmedSales": 13628,
+        "confirmedOrders": 27,
+        "placedSales": 16202,
+        "placedOrders": 29,
+        "viewers": 1026,
+        "views": 1636,
+        "followersGrowth": 10,
+        "comments": 14,
+        "atc": 144,
+        "likes": 219,
+        "peakViewers": 12,
+        "avgViewsDurationMs": 34597.47,
+        "sessionCount": 1
+      },
+      "overview_confirmed": null
+    },
+    "2026-09-11": {
+      "note": "no live session found in realtime sessionList as of 10:01 GMT+7 — either not started yet or no live scheduled"
+    }
+  },
+  "crosscheck_2026_09_09": {
+    "dashboard_confirmed": {"gmv": 71485, "orders": 78, "viewers": 2757, "newFollowers": 20},
+    "realtime_sessionList": {"confirmedSales": 68602, "confirmedOrders": 82, "viewers": 2785, "followersGrowth": 20}
+  },
+  "next_run_action": "Fetch overview/v3?endDate=2026-09-10&timeDim=1d and overview/v3?endDate=2026-09-11&timeDim=1d, then append both days to SH_LIVE_DAILY."
+}

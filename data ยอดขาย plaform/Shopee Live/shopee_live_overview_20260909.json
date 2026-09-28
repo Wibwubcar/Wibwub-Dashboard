@@ -1,0 +1,9 @@
+{
+  "source": "seller.shopee.co.th /creator-center/insight/live — ข้อมูลโดยรวม, ช่วง 'เมื่อวาน' = 09-09-2026, ประเภทคำสั่งซื้อ = คำสั่งซื้อที่ยืนยันแล้ว",
+  "captured": "2026-09-10",
+  "days": {
+    "2026-09-09": {"confirmedGmv": 71485, "confirmedOrder": 78, "totalViewer": 2757, "newFollower": 20, "totalSessionCnt": 1, "unitsSold": 146},
+    "2026-09-10": {"note": "live still in progress at capture time (09:33 GMT+7); Shopee overview has no T0 data — not written to dashboard, will be picked up next run", "realtimeGmv": 1930, "realtimeOrder": 3, "realtimeViewer": 236}
+  },
+  "crosscheck_realtime_live_list": {"2026-09-09": {"gmv": 68602, "orders": 82, "viewers": 2785}}
+}

@@ -1,0 +1,9 @@
+{
+  "source": "seller.shopee.co.th /creator-center/insight/live — ข้อมูลโดยรวม, ช่วง 'เมื่อวาน' = 15-09-2026, ประเภทคำสั่งซื้อ = คำสั่งซื้อที่ยืนยันแล้ว",
+  "captured": "2026-09-16T09:14:00+07:00",
+  "days": {
+    "2026-09-15": {"confirmedGmv": 36591, "confirmedOrder": 56, "totalViewer": 1987, "newFollower": 239, "totalSessionCnt": 2, "unitsSold": 87},
+    "2026-09-16": {"note": "no live session yet as of 09:14 GMT+7", "confirmedGmv": 0, "confirmedOrder": 0, "totalViewer": 0, "newFollower": 0}
+  },
+  "crosscheck_realtime_live_list": {"2026-09-15": {"gmv_sum_of_2_sessions": 25673, "orders_sum": 42, "viewers_sum": 1978}}
+}
