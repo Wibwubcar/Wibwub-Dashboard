@@ -1676,7 +1676,7 @@ function go(id, el) {
 }
 
 // ── RAW DATA (from spreadsheets) ──
-const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย."];
+const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "มิ.ย.", "ก.ค.", "ส.ค.", "ก.ย.", "ต.ค."];
 // Source of truth: วันสุดท้ายที่มีข้อมูลจริงของเดือนล่าสุด แยกตามแพลตฟอร์ม (row สุดท้ายใน Google Sheet
 // ของแต่ละ platform). อัปเดตพร้อมกับ SH_/TK_/LZ_ arrays ทุกครั้งที่ sync — ห้ามเขียน "MTD ถึง XX ส.ค."
 // เป็น text ตายตัวที่อื่นอีก ให้เรียก mtdCoverageLabel() แทน (ดู skill wibwub-avoid-stale-hardcoded-labels)
@@ -1852,7 +1852,7 @@ new Chart('pr_channel',{
   options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
 });
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
-  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,30.46,30.511],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,3,6]},
+  {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,30.46,30.488],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
   {label:'Instagram',data:[35,36,37,38,39,40,40],borderColor:'#e1306c',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},
 ]},options:{...BASE,scales:{y:{ticks:{callback:v=>v+'K'}}}}});
