@@ -1315,7 +1315,7 @@ function renderPlt(idx){
 // PRODUCTS
 // ════════════════════════════════════════
 let prodShown=7,prodMoIdx=-1;
-const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค. (1-31)','ก.ย. (1-30)','ต.ค. (1)'];
+const PROD_MO_LBL=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค. (1-31)','ก.ย. (1-30)','ต.ค. (1-2)'];
 function setProdMo(idx,el){
   prodMoIdx=idx;prodShown=7;
   document.querySelectorAll('#prod-mo-tabs .mtab').forEach(t=>t.classList.remove('active'));
