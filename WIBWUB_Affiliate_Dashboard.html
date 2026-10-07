@@ -15161,13 +15161,13 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 30/09/2026 - 06/10/2026 → 204 requests in-range (30/09:31,
-// 01/10:5, 06/10:168; no rows logged 02-05/10). Staff log rows
+// Current window 01/10/2026 - 07/10/2026 → 173 requests in-range (01/10:5,
+// 06/10:168; no rows logged 02-05/10 or 07/10 yet). Staff log rows
 // in batches, so day-to-day totals are lumpy.
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:204, window:'30/09/2026 - 06/10/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Banyakart',c:62,appr:44,rej:18,other:0},{n:'Refresh Wipes',c:62,appr:34,rej:28,other:0},{n:'Interior wipes',c:57,appr:28,rej:29,other:0},{n:'Reflex',c:18,appr:10,rej:8,other:0},{n:'Interior',c:14,appr:7,rej:7,other:0},{n:'Sugar',c:6,appr:4,rej:2,other:0},{n:'Waterless',c:2,appr:2,rej:0,other:0},{n:'Beach',c:2,appr:1,rej:1,other:0},{n:'Spot Clean',c:2,appr:2,rej:0,other:0},{n:'Quart Shampoo',c:1,appr:1,rej:0,other:0},{n:'X gkass',c:1,appr:1,rej:0,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:173, window:'01/10/2026 - 07/10/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Banyakart',c:53,appr:36,rej:17,other:0},{n:'Refresh Wipes',c:51,appr:26,rej:25,other:0},{n:'Interior wipes',c:49,appr:24,rej:25,other:0},{n:'Reflex',c:18,appr:10,rej:8,other:0},{n:'Interior',c:11,appr:6,rej:5,other:0},{n:'Sugar',c:5,appr:4,rej:1,other:0},{n:'Waterless',c:2,appr:2,rej:0,other:0},{n:'Beach',c:2,appr:1,rej:1,other:0},{n:'Spot Clean',c:2,appr:2,rej:0,other:0},{n:'Quart Shampoo',c:1,appr:1,rej:0,other:0},{n:'X gkass',c:1,appr:1,rej:0,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
