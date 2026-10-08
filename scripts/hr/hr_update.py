@@ -20,6 +20,8 @@ Commands (run from anywhere; paths are resolved from this file):
 import argparse, datetime as dt, hashlib, json, os, re, subprocess, sys
 from pathlib import Path
 
+from zoneinfo import ZoneInfo
+BKK = ZoneInfo("Asia/Bangkok")  # the Mac bridge VM runs in UTC
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parent.parent
 PAGE = REPO / "WIBWUB_HR_Attendance.html"
@@ -94,7 +96,7 @@ require('fs').writeFileSync(process.argv[2], JSON.stringify({LAST, LAST_DATE, MO
 def cmd_state(a):
     t, month, rin, rout = read_page()
     last = max([day(l) for l in rin + rout] or [0])
-    today = dt.date.today()
+    today = dt.datetime.now(BKK).date()
     cur = today.strftime("%Y-%m")
     new_month = cur != month
     since = 1 if new_month else max(1, last - 1)
@@ -171,7 +173,7 @@ def cmd_commit(a):
     if "const CACHE = 'wibwub-v" not in SW.read_text(encoding="utf-8").split("\n")[1]: die("sw.js line 2 broken after bump")
     git("add", "WIBWUB_HR_Attendance.html", "sw.js")
     name = git("log", "-1", "--format=%an"); mail = git("log", "-1", "--format=%ae")
-    now = dt.datetime.now().strftime("%Y-%m-%d %H:%M")
+    now = dt.datetime.now(BKK).strftime("%Y-%m-%d %H:%M")
     git("-c", f"user.name={name}", "-c", f"user.email={mail}", "commit", "-q", "-m", f"auto-update: HR attendance {now} — Discord")
     head = git("show", "HEAD:WIBWUB_HR_Attendance.html")
     ok = head.strip() == PAGE.read_text(encoding="utf-8").strip()
