@@ -49,6 +49,7 @@ input[type=search]{width:150px}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
 td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+td.late{color:var(--warn);font-weight:600} td.otv{color:var(--ot);font-weight:600}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
 tbody tr:nth-child(even) td{background:var(--row)}
 .t{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
@@ -100,8 +101,7 @@ tbody tr:nth-child(even) td{background:var(--row)}
     <section class="panel">
       <div class="bar">
         <div class="tabs" role="tablist">
-          <button class="tab" role="tab" data-tab="in" type="button"><span class="dot" style="background:var(--ok)"></span>บันทึกเข้างาน</button>
-          <button class="tab" role="tab" data-tab="out" type="button"><span class="dot" style="background:var(--bad)"></span>บันทึกออกงาน</button>
+          <button class="tab" role="tab" data-tab="day" type="button">บันทึกเข้า-ออกงาน</button>
           <button class="tab" role="tab" data-tab="sum" type="button">สรุปรายคน</button>
           <button class="tab" role="tab" data-tab="emp" type="button">รายชื่อ &amp; ชื่อเล่น</button>
         </div>
@@ -479,112 +479,108 @@ function calcOT(dept,date,outMin){
   return outMin-17*60;
 }
 
-// ---------- เช็คอิน: ทุกรายการ ----------
-const seenIn={};
-const IN=INR.map(r=>{const x={...r,real:r.emp?r.emp.real:"ไม่พบชื่อในรายชื่อ",dept:r.emp?r.emp.dept:"–"};
-  x.lateMin=Math.max(0,toMin(r.time)-8*60);
-  if(r.emp){const k=r.date+"|"+r.emp.real;x.dup=!!seenIn[k];seenIn[k]=true}
-  x.flags=[];
-  if(!r.emp)x.flags.push(["p-bad","ไม่พบชื่อ"]);
-  if(r.fuzzy)x.flags.push(["p-warn",`พิมพ์ผิด? → ${r.fuzzy}`]);
-  if(x.dup)x.flags.push(["p-mute","เช็คอินซ้ำ"]);
-  if(r.emp&&!x.dup)x.flags.push(x.lateMin?["p-warn",`สาย ${dur(x.lateMin)}`]:["p-ok","ตรงเวลา"]);
-  if(r.loc==="WFH")x.flags.push(["p-ot","WFH"]);
-  if(r.dist!=null&&r.dist>100)x.flags.push(["p-bad","นอกพื้นที่"]);
-  x.issue=!r.emp;
-  return x});
-
-// ---------- ออกงาน: จับคู่ต่อคนต่อวัน ----------
+// ---------- รวมเข้า-ออกงาน: 1 แถว ต่อ 1 คน ต่อ 1 วัน ----------
 const shifts={};
 const key=(e,d)=>e.real+"|"+d;
-INR.filter(r=>r.emp).forEach(r=>{const k=key(r.emp,r.date);(shifts[k]=shifts[k]||{emp:r.emp,date:r.date,ins:[],outs:[]}).ins.push(r)});
-const unknownOut=[];
+const unknownRecs=[];
+INR.forEach(r=>{if(!r.emp){unknownRecs.push({...r,ch:"เข้างาน"});return}
+  const k=key(r.emp,r.date);(shifts[k]=shifts[k]||{emp:r.emp,date:r.date,ins:[],outs:[]}).ins.push(r)});
 OUTR.forEach(r=>{
-  if(!r.emp){unknownOut.push(r);return}
+  if(!r.emp){unknownRecs.push({...r,ch:"ออกงาน"});return}
   let d=r.date,m=toMin(r.time);
   if(m<5*60){d=addDay(d,-1);m+=1440} // ออกหลังเที่ยงคืน = กะของเมื่อวาน
   const k=key(r.emp,d);(shifts[k]=shifts[k]||{emp:r.emp,date:d,ins:[],outs:[]}).outs.push({...r,m});
 });
-const OUT=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
+const DAY=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
   const e=s.emp,sc=schedule(e.dept,s.date);
   const inR=s.ins.sort((a,b)=>a.time.localeCompare(b.time))[0]||null;
   const outsAfter=s.outs.filter(o=>!inR||o.m>toMin(inR.time));
   const outR=(outsAfter.length?outsAfter:s.outs).sort((a,b)=>b.m-a.m)[0]||null;
-  const x={date:s.date,emp:e,real:e.real,dept:e.dept,nick:outR?outR.nick:(inR?inR.nick:"–"),
-    inTime:inR?inR.time:null,outTime:outR?hm(outR.m%1440)+(outR.m>=1440?" (+1)":""):null,outMin:outR?outR.m:null,loc:outR?outR.loc:"–",
-    extraOut:s.outs.length-1};
+  const nicks=[...new Set([...s.ins,...s.outs].map(r=>r.nick))];
+  const x={date:s.date,emp:e,real:e.real,dept:e.dept,nick:nicks.join(" / "),
+    inTime:inR?inR.time:null,inLoc:inR?inR.loc:null,inDist:inR?inR.dist:null,
+    outTime:outR?hm(outR.m%1440)+(outR.m>=1440?" (+1)":""):null,outMin:outR?outR.m:null,outLoc:outR?outR.loc:null,
+    lateMin:inR?Math.max(0,toMin(inR.time)-8*60):0};
   x.stay=(inR&&outR)?outR.m-toMin(inR.time):null;
   x.otMin=calcOT(e.dept,s.date,x.outMin);
-  x.flags=[];x.issue=false;
-  if(!outR){ if(s.date===LAST_DATE){x.flags.push(["p-mute","ยังไม่เช็คเอาท์"])}else{x.flags.push(["p-bad","ลืมเช็คเอาท์"]);x.issue=true} }
-  if(!inR){x.flags.push(["p-bad","ไม่มีเช็คอิน"]);x.issue=true}
-  if(outR&&x.outMin<sc.end){x.flags.push(["p-warn",`ออกก่อนเวลา ${dur(sc.end-x.outMin)}`])}
-  if(x.otMin>0)x.flags.push(["p-ot",`OT ${dur(x.otMin)}`]);
-  else if(outR&&DEPTS[e.dept].ot&&x.outMin>=sc.end&&x.outMin<sc.end+30&&x.outMin>sc.end)x.flags.push(["p-mute","ไม่ถึงเกณฑ์ OT"]);
-  if(outR&&!x.flags.some(f=>f[0]!=="p-mute"&&!f[1].startsWith("พิมพ์ผิด")))x.flags.unshift(["p-ok","ปกติ"]);
-  if(x.extraOut>0)x.flags.push(["p-mute",`กดออกงาน ${s.outs.length} ครั้ง`]);
-  if(outR&&outR.fuzzy)x.flags.push(["p-warn",`พิมพ์ผิด? → ${outR.fuzzy}`]);
-  if(dow(s.date)===0)x.flags.push(["p-mute","วันอาทิตย์"]);
+  const F=[];let issue=false;
+  if(!inR){F.push(["p-bad","ไม่มีเช็คอิน"]);issue=true}
+  else if(x.lateMin)F.push(["p-warn",`สาย ${dur(x.lateMin)}`]);
+  if(!outR){ if(s.date===LAST_DATE)F.push(["p-mute","ยังไม่เช็คเอาท์"]);else{F.push(["p-bad","ลืมเช็คเอาท์"]);issue=true} }
+  else if(x.outMin<sc.end)F.push(["p-warn",`ออกก่อน ${dur(sc.end-x.outMin)}`]);
+  if(x.otMin>0)F.push(["p-ot",`OT ${dur(x.otMin)}`]);
+  else if(outR&&DEPTS[e.dept].ot&&x.outMin>sc.end&&x.outMin<sc.end+30)F.push(["p-mute","ไม่ถึงเกณฑ์ OT"]);
+  if(x.inLoc==="WFH"||x.outLoc==="WFH")F.push(["p-ot","WFH"]);
+  if((x.inDist!=null&&x.inDist>100)||(outR&&outR.dist!=null&&outR.dist>100)){F.push(["p-bad","นอกพื้นที่"]);issue=true}
+  const fz=[...new Set([...s.ins,...s.outs].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy}`))];
+  fz.forEach(f=>F.push(["p-warn",`พิมพ์ผิด? ${f}`]));
+  if(s.ins.length>1)F.push(["p-mute",`เช็คอิน ${s.ins.length} ครั้ง`]);
+  if(s.outs.length>1)F.push(["p-mute",`เช็คเอาท์ ${s.outs.length} ครั้ง`]);
+  if(dow(s.date)===0)F.push(["p-mute","วันอาทิตย์"]);
+  if(inR&&outR&&!F.some(f=>["p-bad","p-warn"].includes(f[0])&&!f[1].startsWith("พิมพ์ผิด")))F.unshift(["p-ok","ปกติ"]);
+  x.flags=F;x.issue=issue;x.fuzzy=fz.length>0;
   return x});
-unknownOut.forEach(r=>OUT.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,inTime:null,outTime:r.time,outMin:toMin(r.time),loc:r.loc,stay:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
-IN.sort((a,b)=>b.date.localeCompare(a.date)||a.time.localeCompare(b.time));
-OUT.sort((a,b)=>b.date.localeCompare(a.date)||((a.outMin??9999)-(b.outMin??9999)));
+unknownRecs.forEach(r=>DAY.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,
+  inTime:r.ch==="เข้างาน"?r.time:null,inLoc:r.ch==="เข้างาน"?r.loc:null,inDist:r.dist,outTime:r.ch==="ออกงาน"?r.time:null,outMin:null,outLoc:r.ch==="ออกงาน"?r.loc:null,
+  lateMin:0,stay:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
+DAY.sort((a,b)=>b.date.localeCompare(a.date)||(a.inTime||"99").localeCompare(b.inTime||"99"));
 
 // ---------- UI ----------
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pills=f=>f.map(([c,l])=>`<span class="pill ${c}">${esc(l)}</span>`).join("");
-let tab="in";
-try{const t=localStorage.getItem("hrTab2");if(["in","out","sum","emp"].includes(t))tab=t}catch(e){}
+let tab="day";
+try{const t=localStorage.getItem("hrTab3");if(["day","sum","emp"].includes(t))tab=t}catch(e){}
 $("fDept").innerHTML=["ทุกแผนก",...Object.keys(DEPTS)].map(d=>`<option>${esc(d)}</option>`).join("");
 $("fFrom").value=MONTH+"-01";$("fTo").value=LAST_DATE;
 $("asof").textContent=`ข้อมูลถึง ${thDate(LAST_DATE)} เวลา ${LAST.slice(10)} น. · เข้างาน ${INR.length} รายการ · ออกงาน ${OUTR.length} รายการ`;
 
 function filt(rows,isEmp){const f=$("fFrom").value,t=$("fTo").value,d=$("fDept").value,q=$("fName").value.trim().toLowerCase(),iss=$("fIssue").checked;
   return rows.filter(r=>(isEmp||((!f||r.date>=f)&&(!t||r.date<=t)))&&(d==="ทุกแผนก"||r.dept===d)&&
-    (!q||r.real.toLowerCase().includes(q)||(r.nick||"").toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q))))&&(!iss||r.issue))}
+    (!q||r.real.toLowerCase().includes(q)||(r.nick||"").toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q))))&&(!iss||r.issue||r.fuzzy))}
 
-function summary(fi,fo){
-  const S={};EMP.forEach(e=>S[e.real]={emp:e,days:new Set(),late:0,lateMin:0,wfh:0,ot:0,forgot:0,early:0});
-  fi.filter(r=>r.emp&&!r.dup).forEach(r=>{const s=S[r.real];s.days.add(r.date);if(r.lateMin){s.late++;s.lateMin+=r.lateMin}if(r.loc==="WFH")s.wfh++});
-  fo.filter(r=>r.emp).forEach(r=>{const s=S[r.real];s.ot+=r.otMin;if(r.flags.some(f=>f[1]==="ลืมเช็คเอาท์"))s.forgot++;if(r.flags.some(f=>f[1].startsWith("ออกก่อนเวลา")))s.early++});
+function summary(fd){
+  const S={};EMP.forEach(e=>S[e.real]={emp:e,days:0,late:0,lateMin:0,wfh:0,ot:0,forgot:0,early:0});
+  fd.filter(r=>r.emp).forEach(r=>{const s=S[r.real];if(r.inTime)s.days++;if(r.lateMin){s.late++;s.lateMin+=r.lateMin}
+    if(r.inLoc==="WFH")s.wfh++;s.ot+=r.otMin;if(r.flags.some(f=>f[1]==="ลืมเช็คเอาท์"))s.forgot++;if(r.flags.some(f=>f[1].startsWith("ออกก่อน")))s.early++});
   return Object.values(S);
 }
+const locTxt=r=>{const a=r.inLoc,b=r.outLoc;if(!a&&!b)return"–";if(!a||!b||a===b)return a||b;return`${a} → ${b}`};
 
 function render(){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
-  const fi=filt(IN),fo=filt(OUT);
-  const lastIns=IN.filter(r=>r.date===LAST_DATE&&r.emp);
-  $("k1").textContent=`${new Set(lastIns.map(r=>r.real)).size} คน`;
+  const fd=filt(DAY);
+  const lastDay=DAY.filter(r=>r.date===LAST_DATE&&r.emp&&r.inTime);
+  $("k1").textContent=`${lastDay.length} คน`;
   $("k1s").textContent=`${thDate(LAST_DATE)} · ทั้งหมด ${EMP.length} คน`;
-  const lates=fi.filter(r=>r.emp&&!r.dup&&r.lateMin>0);
+  const lates=fd.filter(r=>r.emp&&r.lateMin>0);
   $("k2").textContent=lates.length+" ครั้ง";$("k2s").textContent=`${new Set(lates.map(r=>r.real)).size} คน · รวม ${dur(lates.reduce((s,r)=>s+r.lateMin,0))}`;
-  const ot=fo.reduce((s,r)=>s+r.otMin,0);
-  $("k3").textContent=dur(ot);$("k3s").textContent=`${fo.filter(r=>r.otMin>0).length} รายการ · ผลิต + แพ็ก`;
-  const unk=fi.filter(r=>!r.emp).length+fo.filter(r=>!r.emp).length,miss=fo.filter(r=>r.flags.some(f=>f[1]==="ลืมเช็คเอาท์")).length,noin=fo.filter(r=>r.flags.some(f=>f[1]==="ไม่มีเช็คอิน")).length;
-  $("k4").textContent=unk+miss+noin;$("k4s").textContent=`ไม่พบชื่อ ${unk} · ลืมเช็คเอาท์ ${miss} · ไม่มีเช็คอิน ${noin}`;
+  const ot=fd.reduce((s,r)=>s+r.otMin,0);
+  $("k3").textContent=dur(ot);$("k3s").textContent=`${fd.filter(r=>r.otMin>0).length} รายการ · ผลิต + แพ็ก`;
+  const unk=fd.filter(r=>!r.emp).length,miss=fd.filter(r=>r.flags.some(f=>f[1]==="ลืมเช็คเอาท์")).length,noin=fd.filter(r=>r.flags.some(f=>f[1]==="ไม่มีเช็คอิน")).length,fz=fd.filter(r=>r.fuzzy).length;
+  $("k4").textContent=unk+miss+noin;$("k4s").textContent=`ลืมเช็คเอาท์ ${miss} · ไม่มีเช็คอิน ${noin} · ไม่พบชื่อ ${unk}${fz?` · พิมพ์ผิด ${fz}`:""}`;
   let h="",n=0;
-  if(tab==="in"){n=fi.length;
-    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่เช็คอิน</th><th>แผนก</th><th>เวลาเข้า</th><th>สถานที่</th><th class="num">ระยะห่าง</th><th>สถานะ</th></tr></thead><tbody>`+
-    fi.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td><td class="t">${r.time}</td><td>${esc(r.loc)}</td><td class="num t">${r.dist!=null?r.dist+" ม.":"–"}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
-  }else if(tab==="out"){n=fo.length;
-    h=`<thead><tr><th>วันที่ (กะ)</th><th>ชื่อจริง</th><th>ชื่อที่เช็คเอาท์</th><th>แผนก</th><th>เวลาเข้า</th><th>เวลาออก</th><th class="num">อยู่ในงาน</th><th class="num">OT</th><th>สถานะ</th></tr></thead><tbody>`+
-    fo.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td><td class="t">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num">${dur(r.stay)}</td><td class="num">${r.otMin?dur(r.otMin):"–"}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
-  }else if(tab==="sum"){const S=summary(fi,fo).filter(s=>filt([{...s.emp,date:"",nick:s.emp.nick.join(" "),issue:s.forgot>0,emp:s.emp}],true).length);n=S.length;
+  if(tab==="day"){n=fd.length;
+    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่ใช้</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th class="num">อยู่ในงาน</th><th class="num">สาย</th><th class="num">OT</th><th>สถานที่</th><th>สถานะ</th></tr></thead><tbody>`+
+    fd.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td>`+
+      `<td class="t${r.lateMin?" late":""}">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num">${dur(r.stay)}</td>`+
+      `<td class="num">${r.lateMin?dur(r.lateMin):"–"}</td><td class="num${r.otMin?" otv":""}">${r.otMin?dur(r.otMin):"–"}</td><td>${esc(locTxt(r))}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
+  }else if(tab==="sum"){const S=summary(fd).filter(s=>filt([{...s.emp,date:"",nick:s.emp.nick.join(" "),issue:s.forgot>0,emp:s.emp}],true).length);n=S.length;
     h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
-    S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days.size}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
+    S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
   }else{const E=EMP.filter(e=>filt([{...e,date:"",nick:e.nick.join(" "),issue:false,emp:e}],true).length);
     const unkNames=[...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))];
-    const fz=[...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy} (${r.emp.real})`))];n=E.length;
+    const fzs=[...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy} (${r.emp.real})`))];n=E.length;
     h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่นที่ระบบรู้จัก</th><th>แผนก</th><th>OT</th></tr></thead><tbody>`+
     E.map(e=>`<tr><td>${esc(e.real)}</td><td class="nick">${esc(e.nick.join(", "))}</td><td>${esc(e.dept)}</td><td>${DEPTS[e.dept].ot?'<span class="pill p-ot">มี OT</span>':'<span class="pill p-mute">ไม่มี</span>'}</td></tr>`).join("")+
-    (fz.length?`<tr><td style="color:var(--warn);font-weight:600">พิมพ์ผิดที่ระบบเดาให้</td><td colspan="3">${esc(fz.join(" · "))}</td></tr>`:"")+(unkNames.length&&!$("fIssue").checked?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
+    (fzs.length?`<tr><td style="color:var(--warn);font-weight:600">พิมพ์ผิดที่ระบบเดาให้</td><td colspan="3">${esc(fzs.join(" · "))}</td></tr>`:"")+
+    (unkNames.length?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
   }
   $("tbl").innerHTML=n?h:`<tbody><tr><td class="empty">ไม่มีรายการตามตัวกรองนี้ ลองขยายช่วงวันที่ หรือเลือก "ทุกแผนก"</td></tr></tbody>`;
   $("count").textContent=`แสดง ${n} รายการ`;
 }
 ["fFrom","fTo","fDept","fName","fIssue"].forEach(id=>$(id).addEventListener("input",render));
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{localStorage.setItem("hrTab2",tab)}catch(e){}render()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{localStorage.setItem("hrTab3",tab)}catch(e){}render()});
 render();
 
 // ---------- Export Excel ----------
@@ -594,17 +590,17 @@ let dl=null;
 const plain=f=>f.map(x=>x[1]).join(", ");
 $("exportBtn").onclick=async()=>{
   if(typeof XLSX==="undefined"){toast("โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้า");return}
-  const fi=filt(IN),fo=filt(OUT);
-  const s1=fi.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คอิน":r.nick,"แผนก":r.dept,"เวลาเข้า":r.time,"สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??"","สาย (นาที)":r.emp&&!r.dup?r.lateMin:"","สถานะ":plain(r.flags)}));
-  const s2=fo.map(r=>({"วันที่ (กะ)":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คเอาท์":r.nick,"แผนก":r.dept,"เวลาเข้า":r.inTime||"","เวลาออก":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานะ":plain(r.flags)}));
-  const s3=summary(fi,fo).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days.size,"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
-  const s4=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(r=>!r.emp||r.fuzzy).map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"ระบบจับคู่เป็น":r.emp?`${r.emp.real} (${r.fuzzy})`:"ไม่พบ","สถานที่":r.loc}));
+  const fd=filt(DAY),f=$("fFrom").value,t=$("fTo").value;
+  const inRange=r=>(!f||r.date>=f)&&(!t||r.date<=t);
+  const s1=fd.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่ใช้":r.nick,"แผนก":r.dept,"เข้างาน":r.inTime||"","ออกงาน":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","สาย (นาที)":r.lateMin,"OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานที่":locTxt(r),"ระยะห่างตอนเข้า (ม.)":r.inDist??"","สถานะ":plain(r.flags)}));
+  const s2=summary(fd).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days,"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
+  const raw=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(inRange).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
+  const s3=raw.map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"ระบบจับคู่เป็น":r.emp?r.emp.real:"ไม่พบ","พิมพ์ผิด?":r.fuzzy?`→ ${r.fuzzy}`:"","สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??""}));
   const wb=XLSX.utils.book_new();
   const add=(rows,name,w)=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
-  add(s3,"สรุปรายคน",[14,24,16,14,12,14,12,14,12,12,12]);
-  add(s1,"บันทึกเข้างาน",[12,6,14,20,16,10,12,12,10,28]);
-  add(s2,"บันทึกออกงาน",[12,6,14,20,16,10,12,16,10,10,36]);
-  add(s4,"ชื่อที่ต้องตรวจ",[10,12,8,20,26,12]);
+  add(s1,"เข้า-ออกงาน",[12,6,14,20,16,10,12,14,10,10,10,22,12,40]);
+  add(s2,"สรุปรายคน",[14,24,16,14,12,14,12,14,12,12,12]);
+  add(s3,"ข้อมูลดิบจาก Discord",[10,12,8,22,14,14,12,12]);
   const fname=`WIBWUB_HR_${$("fFrom").value}_ถึง_${$("fTo").value}.xlsx`;
   if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
