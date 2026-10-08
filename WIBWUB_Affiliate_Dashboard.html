@@ -239,6 +239,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 .tier-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
 .tier-badge.tier-core{background:rgba(245,158,11,.15);color:#f59e0b;border:1px solid rgba(245,158,11,.35)}
 .tier-badge.tier-growth{background:rgba(20,184,166,.15);color:#14b8a6;border:1px solid rgba(20,184,166,.35)}
+.tier-badge.tier-none{background:rgba(148,163,184,.06);color:#94a3b8;border:1px dashed rgba(148,163,184,.3)}
 .tier-badge.tier-rising{background:rgba(148,163,184,.12);color:#94a3b8;border:1px solid rgba(148,163,184,.3)}
 .tier-badge.tier-special{background:linear-gradient(90deg,rgba(236,72,153,.18),rgba(139,92,246,.18));color:#ec4899;border:1px solid rgba(236,72,153,.4)}
 .tier-legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin-bottom:20px}
@@ -366,7 +367,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <!-- ════ TIER RANKING ════ -->
 <div id="tab-tier" class="panel">
-  <div class="note">🏆 จัดอันดับ Top 30 ครีเอเตอร์ตามยอด GMV รวมของ<strong>ช่วงเดือนที่เลือกเอง</strong> — เลือกเดือนเริ่มต้นและสิ้นสุดได้อิสระ (1 เดือนขึ้นไป) เกณฑ์ Tier ใช้ตัวเลข ฿45,000 / ฿30,000 ตรงๆ กับยอดรวมของช่วงที่เลือก ไม่ปรับตามจำนวนเดือน ถ้าช่วงที่เลือกรวมเดือนล่าสุดที่กำลังนับอยู่ ยอดจะอัปเดตทุกครั้งที่ซิงก์ข้อมูล Affiliate ใหม่ (ทุกสัปดาห์)</div>
+  <div class="note">🏆 จัดอันดับ Top 30 ครีเอเตอร์ตามยอด GMV รวมของ<strong>ช่วงเดือนที่เลือกเอง</strong> — เลือกเดือนเริ่มต้นและสิ้นสุดได้อิสระ (1 เดือนขึ้นไป) เกณฑ์ Tier: Core &gt; ฿90,000 / Growth &gt; ฿60,000 / Rising Star ≥ ฿30,000 ใช้ตัวเลขตรงๆ กับยอดรวมของช่วงที่เลือก ไม่ปรับตามจำนวนเดือน ถ้าช่วงที่เลือกรวมเดือนล่าสุดที่กำลังนับอยู่ ยอดจะอัปเดตทุกครั้งที่ซิงก์ข้อมูล Affiliate ใหม่ (ทุกสัปดาห์)</div>
 
   <div class="qpicker" id="tier-qpicker"></div>
 
@@ -375,9 +376,9 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="kstrip" id="tier-kstrip"></div>
 
   <div class="tier-legend">
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-core">🥇 Core Partner</span><span class="tier-lcard-cnt" id="tl-core-cnt">–</span></div><div class="tier-lcard-sub">GMV ไตรมาส ≥ ฿45,000</div></div>
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-growth">🌱 Growth Partner</span><span class="tier-lcard-cnt" id="tl-growth-cnt">–</span></div><div class="tier-lcard-sub">GMV ไตรมาส ≥ ฿30,000</div></div>
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-rising">🌤 Rising Partner</span><span class="tier-lcard-cnt" id="tl-rising-cnt">–</span></div><div class="tier-lcard-sub">มียอดแต่ยังไม่ถึง ฿30,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-core">🥇 Core Partner</span><span class="tier-lcard-cnt" id="tl-core-cnt">–</span></div><div class="tier-lcard-sub">GMV &gt; ฿90,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-growth">🌱 Growth Partner</span><span class="tier-lcard-cnt" id="tl-growth-cnt">–</span></div><div class="tier-lcard-sub">GMV &gt; ฿60,000</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-rising">🌤 Rising Star</span><span class="tier-lcard-cnt" id="tl-rising-cnt">–</span></div><div class="tier-lcard-sub">GMV ไม่ต่ำกว่า ฿30,000 (ต่ำกว่านี้ไม่ติด Tier)</div></div>
     <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-special">✨ Special Partner</span><span class="tier-lcard-cnt" id="tl-special-cnt">–</span></div><div class="tier-lcard-sub">ยอดพุ่งเกิน 2 เท่าของอันดับ 1 ช่วงก่อนหน้า (ยาวเท่ากัน)</div></div>
   </div>
 
@@ -14852,7 +14853,7 @@ function cpGMV(creatorName, productName){
 // ══════════════════════════════════════════
 //  TIER RANKING — free-form month range (user-selected, replaces the earlier
 //  fixed-quarter design). Pick any start/end month; GMV is summed over that
-//  range and tier thresholds (฿45,000 core / ฿30,000 growth) are applied
+//  range and tier thresholds (฿90,000 core / ฿60,000 growth / ฿30,000 rising) are applied
 //  as-is, NOT scaled by range length (explicit user decision — a 1-month
 //  range uses the same ฿45k/30k cutoffs as a 6-month range).
 //  Growth% / Special-Partner benchmark compare against the immediately
@@ -14906,15 +14907,17 @@ function rangeGMV(creatorName, s, e){
 
 function tierOf(gmv, specialThreshold){
   if(specialThreshold && gmv > specialThreshold) return 'special';
-  if(gmv >= 45000) return 'core';
-  if(gmv >= 30000) return 'growth';
-  return 'rising';
+  if(gmv > 90000) return 'core';
+  if(gmv > 60000) return 'growth';
+  if(gmv >= 30000) return 'rising';
+  return 'none';
 }
 
 const TIER_META = {
   core:    {label:'🥇 Core Partner',    cls:'tier-core'},
   growth:  {label:'🌱 Growth Partner',  cls:'tier-growth'},
-  rising:  {label:'🌤 Rising Partner',  cls:'tier-rising'},
+  rising:  {label:'🌤 Rising Star',     cls:'tier-rising'},
+  none:    {label:'— ต่ำกว่าเกณฑ์',    cls:'tier-none'},
   special: {label:'✨ Special Partner', cls:'tier-special'}
 };
 
@@ -15062,7 +15065,7 @@ function renderTier(){
   CREATORS.forEach(c=>{ ordersByName[c.name] = c.orders; });
 
   const tbody = document.getElementById('tier-body');
-  const counts = {core:0, growth:0, rising:0, special:0};
+  const counts = {core:0, growth:0, rising:0, special:0, none:0};
   if(tbody){
     tbody.innerHTML = top30.map((r,i)=>{
       const t = tierOf(r.gmv, specialThr);
