@@ -150,7 +150,7 @@ const EMP=[
  ["พงศภัค","แพ็ก",["กอล์ฟช"]],
  ["พัชรวรรณ","แอดมิน",["จ๋า","Jah","พัชรวรรณ","พัชรวรรณ รินทะรักษ์"]],
  ["เจนจิรา","แอดมิน",["ปาย"]],
- ["ฐานวีร์","แอดมิน",["Ant","atn","at","an","ฐานวีร์"]],
+ ["ฐานวีร์","แอดมิน",["Ant","atn","at","an","Anr","ฐานวีร์"]],
  ["อลงกรณ์","แอดมิน",["ปืน","อลงกรณ์","อลงกรณ์ อาวุธ"]],
  ["ปัทมพร","แอดมิน",["มิ้นท์"]],
  ["วรกานต์","Marketing & HR",["aiime","worakarn","Worakarn Wuthiveth"]],
@@ -562,6 +562,40 @@ unknownRecs.forEach(r=>DAY.push({date:r.date,emp:null,real:"ไม่พบช�
 const ORDER=r=>r.emp?EMP.indexOf(EMP.find(e=>e.real===r.real)):999;
 DAY.sort((a,b)=>b.date.localeCompare(a.date)||ORDER(a)-ORDER(b));
 
+// ---------- ตาราง HR (MON YY) : ใช้ร่วมกันทั้ง Export และสคริปต์ที่เขียน Google Sheet ----------
+// รูปแบบตามที่ HR บันทึกเอง: ไม่มีเวลาเข้า/ออก = "หยุด"; ออกงานหลังเที่ยงคืน (กะดึก) = ลงในช่อง "ออก" ของวันถัดไป
+// และช่อง "ออก" ของวันที่เข้ากะเป็น "หยุด" (ยกเว้นวันถัดไปมีเวลาออกของตัวเองอยู่แล้ว หรือเป็นวันสุดท้ายของเดือน = ลงวันเดิม)
+function gridRow(e,dates,today,byKey){
+  const T=s=>{const m=String(s).match(/^(\d+):(\d+)/);return m?`${+m[1]}:${m[2]}`:s};
+  const R=dates.map(d=>byKey[e.real+"|"+d]);
+  const late=i=>R[i]&&R[i].outTime&&R[i].outMin>=1440;          // ออกหลังเที่ยงคืน
+  const moved=new Array(dates.length).fill(false);
+  for(let i=dates.length-2;i>=0;i--){                             // ตัดสินจากท้ายเดือนย้อนขึ้นมา
+    if(!late(i)||dates[i+1]>=today)continue;                       // วันถัดไปยังไม่จบ: รอรอบหน้า
+    const n=R[i+1],free=!(n&&n.outTime)||moved[i+1];
+    if(free)moved[i]=true;
+  }
+  const out=[];
+  dates.forEach((d,i)=>{
+    if(d>today){out.push("","");return}
+    const r=R[i],off=dow(d)===0||(dow(d)===6&&e.dept!=="แอดมิน");
+    let a,b;
+    if(!r){a=b=off?"หยุด":""}
+    else{
+      a=r.inTime?T(r.inTime):"หยุด";
+      if(!r.outTime)b=d===today?"":"หยุด";
+      else if(moved[i])b="หยุด";
+      else if(late(i)&&i<dates.length-1&&dates[i+1]>=today)b="";  // รอดูวันถัดไปก่อน
+      else b=T(r.outTime);
+    }
+    if(i>0&&moved[i-1])b=T(R[i-1].outTime);                        // รับเวลาออกกะดึกของเมื่อวาน
+    out.push(a,b);
+  });
+  return out;
+}
+const monthDates=m=>{const a=[];for(let d=m+"-01";d.slice(0,7)===m;d=addDay(d,1))a.push(d);return a};
+const BKK_TODAY=()=>new Date(Date.now()+7*3600e3).toISOString().slice(0,10);
+
 // ---------- UI ----------
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
@@ -659,10 +693,7 @@ $("exportBtn").onclick=async()=>{
   const dept=$("fDept").value,people=EMP.filter(e=>dept==="ทุกแผนก"||e.dept===dept);
   const byKey={};DAY.forEach(r=>{if(r.emp)byKey[r.real+"|"+r.date]=r});
   const g=[["",...dates.flatMap(d=>[TH_DOW_FULL[dow(d)],""])],["ชื่อ",...dates.flatMap(d=>[+d.slice(8),+d.slice(8)])],["",...dates.flatMap(()=>["เข้า","ออก"])]];
-  people.forEach(e=>g.push([e.real,...dates.flatMap(d=>{const r=byKey[e.real+"|"+d];
-    if(!r)return dow(d)===0?["หยุด","หยุด"]:["",""];
-    const out=r.outTime?hrT(r.outTime.replace(" (+1)","")):(d===LAST_DATE?"":"ลืมสแกน");
-    return[r.inTime?hrT(r.inTime):"ลืมสแกน",out]})]));
+  people.forEach(e=>g.push([e.real,...gridRow(e,dates,BKK_TODAY(),byKey)]));
   const wsG=XLSX.utils.aoa_to_sheet(g);wsG["!cols"]=[{wch:12},...dates.flatMap(()=>[{wch:6},{wch:6}])];
   // confirm ot: ซ้าย = OT (เฉพาะผลิต/แพ็ก), ขวา = สาย
   const L=[],R=[];
