@@ -447,7 +447,16 @@ const RAW_OUT=`1|12:01|มีนา|W|26
 7|23:16|มิ้นท์|WFH|
 7|23:38|อลงกรณ์ อาวุธ|WFH|
 8|00:07|Ant|WFH|
-8|15:46|ริน|W|17`;
+8|15:46|ริน|W|17
+8|17:00|ฟี|W|12
+8|17:00|กอล์ฟ|W|23
+8|17:01|Baitong|W|4
+8|17:01|เติ้ล|W|16
+8|17:01|มีนา|W|7
+8|17:04|Fon|W|2
+8|17:08|ธนาทรัพย์|W|9
+8|17:13|ปีโป้|WFH|
+8|17:31|พลอย|W|5`;
 const LOC={W:"Warehouse",WFH:"WFH",NEWGARAGE:"New Garage"};
 const parseRaw=s=>s.trim().split("\n").map((l,i)=>{const[d,t,n,loc,dist]=l.split("|");const f=findEmp(n);
   return{i,date:`${MONTH}-${d.padStart(2,"0")}`,time:t,nick:n,loc:LOC[loc]||loc,dist:dist?+dist:null,emp:realOf(f),fuzzy:f&&f.fuzzyFrom?f.fuzzyTo:null}});
