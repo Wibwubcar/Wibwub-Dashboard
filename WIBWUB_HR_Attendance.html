@@ -80,8 +80,9 @@ tbody tr:nth-child(even) td{background:var(--row)}
     <details class="rules">
       <summary>กฎเวลางานและ OT แต่ละแผนก</summary>
       <div class="rulegrid">
-        <div><b>ผลิต · มี OT</b>จ–ศ 08:00–17:00 · ส 08:00–12:00<br>OT จ–ศ: ออกตั้งแต่ 17:30 นับตั้งแต่ 17:00</div>
-        <div><b>แพ็ก · มี OT</b>จ–ศ 08:00–17:00 · ส 08:00–12:00<br>OT ส: นับตั้งแต่ 12:00 · ถ้าอยู่ถึง 17:00 หักพัก 1 ชม.</div>
+        <div><b>ผลิต และ แพ็ก · มี OT</b>จ–ศ 08:00–17:00 · ส 08:00–12:00</div>
+        <div><b>OT จ–ศ</b>ออกตั้งแต่ 17:30 นับ OT ตั้งแต่ 17:00</div>
+        <div><b>OT วันเสาร์</b>ออกตั้งแต่ 12:30 นับ OT ตั้งแต่ 12:00 · ถ้าอยู่ถึง 17:00 หักพัก 1 ชม.</div>
         <div><b>แอดมิน · ไม่มี OT</b>08:00–23:00 · 4 วัน/สัปดาห์<br>เช็คเอาท์หลังเที่ยงคืน (ก่อน 05:00) นับเป็นกะของวันก่อน</div>
         <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
         <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
@@ -124,8 +125,7 @@ const DEPTS={
   "ผลิต":{ot:true,days:[1,2,3,4,5,6]},
   "แพ็ก":{ot:true,days:[1,2,3,4,5,6]},
   "แอดมิน":{ot:false,days:null},
-  "Marketing & HR":{ot:false,days:[1,2,3,4,5]},
-  "ยังไม่ระบุแผนก":{ot:false,days:[1,2,3,4,5]}
+  "Marketing & HR":{ot:false,days:[1,2,3,4,5]}
 };
 const EMP=[
  ["อุบลรัตน์","ผลิต",["Tuy"]],
@@ -153,7 +153,7 @@ const EMP=[
  ["ฐิติพร","Marketing & HR",["Baitong","ใบตอง"]],
  ["ฐิติมา","Marketing & HR",["Ann"]],
  ["ฝน","Marketing & HR",["Fon"]],
- ["ดวงกลม","ยังไม่ระบุแผนก",["ปีโป้","pepo"]]
+ ["ดวงกมล","Marketing & HR",["ปีโป้","pepo"]]
 ].map(([real,dept,nick])=>({real,dept,nick}));
 const NICK={};EMP.forEach(e=>e.nick.forEach(n=>NICK[n.trim().toLowerCase()]=e));
 // ชื่อพิมพ์ผิด: ยอมรับเมื่อต่างกัน 1 ตัวอักษร และมีคนที่ใกล้ที่สุดเพียงคนเดียว
