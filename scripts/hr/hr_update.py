@@ -84,11 +84,14 @@ require('fs').writeFileSync(process.argv[2], JSON.stringify({LAST, LAST_DATE, MO
  EMP: EMP.map(e=>({real:e.real, dept:e.dept, ot:DEPTS[e.dept].ot})),
  UNKNOWN: [...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))],
  FUZZY: [...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>r.nick+' -> '+r.fuzzy))],
+ GRID: (()=>{const bk={};DAY.forEach(r=>{if(r.emp)bk[r.real+"|"+r.date]=r});const td=process.env.HR_TODAY;
+   return Object.fromEntries(MONTHS.map(m=>[m,Object.fromEntries(EMP.map(e=>[e.real,gridRow(e,monthDates(m),td,bk)]))]))})(),
  DAY: DAY.filter(r=>r.emp).map(r=>({date:r.date, real:r.real, dept:r.dept, inTime:r.inTime, outTime:r.outTime,
    lateMin:r.lateMin, otMin:r.otMin, flags:r.flags.map(f=>f[1])}))}));"""
     f = WORK / "_compute.js"; f.write_text(logic, encoding="utf-8")
     out = WORK / "day.json"
-    r = subprocess.run(["node", str(f), str(out)], capture_output=True, text=True)
+    env = dict(os.environ, HR_TODAY=dt.datetime.now(BKK).date().isoformat())
+    r = subprocess.run(["node", str(f), str(out)], capture_output=True, text=True, env=env)
     if r.returncode: die("node compute failed: " + r.stderr[:500])
     return json.loads(out.read_text(encoding="utf-8"))
 
@@ -189,22 +192,11 @@ def hm(s):
 SYSTEM_VAL = re.compile(r"^(\d{1,2}:\d{2}|หยุด|ลืมสแกน)?$")
 
 def grid_values(d):
-    y, m = map(int, d["MONTH"].split("-"))
-    ndays = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.date(y, m, 1)).days
-    by = {(r["real"], r["date"]): r for r in d["DAY"]}
-    last = d["LAST_DATE"]; rows = {}
-    for e in d["EMP"]:
-        vals = []
-        for i in range(1, ndays + 1):
-            x = dt.date(y, m, i); ds = x.isoformat(); rec = by.get((e["real"], ds))
-            if ds > last: vals += ["", ""]; continue
-            if not rec:
-                off = x.weekday() == 6 or (x.weekday() == 5 and e["dept"] != "แอดมิน")
-                vals += (["หยุด", "หยุด"] if off else ["", ""]); continue
-            out = hm(rec["outTime"]) if rec["outTime"] else ("" if ds == last else "ลืมสแกน")
-            vals += [hm(rec["inTime"]) if rec["inTime"] else "ลืมสแกน", out]
-        rows[e["real"]] = vals
-    return rows, ndays
+    """Grid cells come from the page's own gridRow() (same as the Excel export)."""
+    mon = d["MONTH"]; g = d["GRID"].get(mon)
+    if g is None: die(f"month {mon} not in the page (MONTH or ARCHIVE)")
+    ndays = len(next(iter(g.values()))) // 2
+    return g, ndays
 
 def col(n):  # 0-based -> A1 letters
     s = ""; n += 1
