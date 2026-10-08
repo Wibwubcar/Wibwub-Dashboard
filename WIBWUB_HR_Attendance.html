@@ -85,6 +85,7 @@ tbody tr:nth-child(even) td{background:var(--row)}
         <div><b>แอดมิน · ไม่มี OT</b>08:00–23:00 · 4 วัน/สัปดาห์<br>เช็คเอาท์หลังเที่ยงคืน (ก่อน 05:00) นับเป็นกะของวันก่อน</div>
         <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
         <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
+        <div><b>ชื่อพิมพ์ผิด</b>ต่างจากชื่อในรายชื่อ 1 ตัวอักษร (เช่น ริย → ริน) ระบบจับคู่ให้และติดป้าย "พิมพ์ผิด?" ให้ตรวจ</div>
       </div>
     </details>
 
@@ -123,7 +124,8 @@ const DEPTS={
   "ผลิต":{ot:true,days:[1,2,3,4,5,6]},
   "แพ็ก":{ot:true,days:[1,2,3,4,5,6]},
   "แอดมิน":{ot:false,days:null},
-  "Marketing & HR":{ot:false,days:[1,2,3,4,5]}
+  "Marketing & HR":{ot:false,days:[1,2,3,4,5]},
+  "ยังไม่ระบุแผนก":{ot:false,days:[1,2,3,4,5]}
 };
 const EMP=[
  ["อุบลรัตน์","ผลิต",["Tuy"]],
@@ -147,13 +149,27 @@ const EMP=[
  ["วรกานต์","Marketing & HR",["aiime","worakarn","Worakarn Wuthiveth"]],
  ["สุนิชา","Marketing & HR",["พลอย"]],
  ["อินทิรา","Marketing & HR",["มีนา"]],
- ["ธนาทรัพย์","Marketing & HR",["ธนาทรัพย์"]],
+ ["ธนาทรัพย์","Marketing & HR",["ธนาทรัพย์","แบงค์","bank"]],
  ["ฐิติพร","Marketing & HR",["Baitong","ใบตอง"]],
  ["ฐิติมา","Marketing & HR",["Ann"]],
- ["ฝน","Marketing & HR",["Fon"]]
+ ["ฝน","Marketing & HR",["Fon"]],
+ ["ดวงกลม","ยังไม่ระบุแผนก",["ปีโป้","pepo"]]
 ].map(([real,dept,nick])=>({real,dept,nick}));
 const NICK={};EMP.forEach(e=>e.nick.forEach(n=>NICK[n.trim().toLowerCase()]=e));
-const findEmp=n=>NICK[n.trim().toLowerCase()]||null;
+// ชื่อพิมพ์ผิด: ยอมรับเมื่อต่างกัน 1 ตัวอักษร และมีคนที่ใกล้ที่สุดเพียงคนเดียว
+// (ถ้าเสมอกัน เลือกชื่อที่ยาวเท่ากัน = พิมพ์ผิด 1 ตัว เช่น กอล์ฟข → กอล์ฟช ไม่ใช่ กอล์ฟ)
+function lev(a,b){const m=a.length,n=b.length;let p=Array.from({length:n+1},(_,j)=>j),pp=p;
+  for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])c[j]=Math.min(c[j],pp[j-2]+1)}pp=p;p=c}return p[n]}
+const FUZZY={};
+function findEmp(raw){const n=raw.trim().toLowerCase();if(NICK[n])return NICK[n];
+  if(n in FUZZY)return FUZZY[n];
+  let best=[];
+  if([...n].length>=3)for(const k in NICK){if([...k].length<3)continue;const d=lev([...n],[...k]);if(d===1)best.push(k)}
+  const same=best.filter(k=>[...k].length===[...n].length),pool=same.length?same:best;
+  const people=[...new Set(pool.map(k=>NICK[k]))];
+  FUZZY[n]=people.length===1?{...people[0],fuzzyFrom:raw.trim(),fuzzyTo:pool[0]}:null;
+  return FUZZY[n];}
+const realOf=e=>e?EMP.find(x=>x.real===e.real):null;
 
 // ---------- ข้อมูลดิบจาก Discord (วัน|เวลา|ชื่อที่แสดง|สถานที่|ระยะห่างเมตร) ----------
 const MONTH="2026-10";
@@ -427,7 +443,8 @@ const RAW_OUT=`1|12:01|มีนา|W|26
 8|00:07|Ant|WFH|
 8|15:46|ริน|W|17`;
 const LOC={W:"Warehouse",WFH:"WFH",NEWGARAGE:"New Garage"};
-const parseRaw=s=>s.trim().split("\n").map((l,i)=>{const[d,t,n,loc,dist]=l.split("|");return{i,date:`${MONTH}-${d.padStart(2,"0")}`,time:t,nick:n,loc:LOC[loc]||loc,dist:dist?+dist:null,emp:findEmp(n)}});
+const parseRaw=s=>s.trim().split("\n").map((l,i)=>{const[d,t,n,loc,dist]=l.split("|");const f=findEmp(n);
+  return{i,date:`${MONTH}-${d.padStart(2,"0")}`,time:t,nick:n,loc:LOC[loc]||loc,dist:dist?+dist:null,emp:realOf(f),fuzzy:f&&f.fuzzyFrom?f.fuzzyTo:null}});
 const INR=parseRaw(RAW_IN), OUTR=parseRaw(RAW_OUT);
 
 // ---------- เครื่องมือเวลา ----------
@@ -469,6 +486,7 @@ const IN=INR.map(r=>{const x={...r,real:r.emp?r.emp.real:"ไม่พบชื�
   if(r.emp){const k=r.date+"|"+r.emp.real;x.dup=!!seenIn[k];seenIn[k]=true}
   x.flags=[];
   if(!r.emp)x.flags.push(["p-bad","ไม่พบชื่อ"]);
+  if(r.fuzzy)x.flags.push(["p-warn",`พิมพ์ผิด? → ${r.fuzzy}`]);
   if(x.dup)x.flags.push(["p-mute","เช็คอินซ้ำ"]);
   if(r.emp&&!x.dup)x.flags.push(x.lateMin?["p-warn",`สาย ${dur(x.lateMin)}`]:["p-ok","ตรงเวลา"]);
   if(r.loc==="WFH")x.flags.push(["p-ot","WFH"]);
@@ -503,8 +521,9 @@ const OUT=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
   if(outR&&x.outMin<sc.end){x.flags.push(["p-warn",`ออกก่อนเวลา ${dur(sc.end-x.outMin)}`])}
   if(x.otMin>0)x.flags.push(["p-ot",`OT ${dur(x.otMin)}`]);
   else if(outR&&DEPTS[e.dept].ot&&x.outMin>=sc.end&&x.outMin<sc.end+30&&x.outMin>sc.end)x.flags.push(["p-mute","ไม่ถึงเกณฑ์ OT"]);
-  if(outR&&!x.flags.some(f=>f[0]!=="p-mute"))x.flags.unshift(["p-ok","ปกติ"]);
+  if(outR&&!x.flags.some(f=>f[0]!=="p-mute"&&!f[1].startsWith("พิมพ์ผิด")))x.flags.unshift(["p-ok","ปกติ"]);
   if(x.extraOut>0)x.flags.push(["p-mute",`กดออกงาน ${s.outs.length} ครั้ง`]);
+  if(outR&&outR.fuzzy)x.flags.push(["p-warn",`พิมพ์ผิด? → ${outR.fuzzy}`]);
   if(dow(s.date)===0)x.flags.push(["p-mute","วันอาทิตย์"]);
   return x});
 unknownOut.forEach(r=>OUT.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,inTime:null,outTime:r.time,outMin:toMin(r.time),loc:r.loc,stay:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
@@ -555,10 +574,11 @@ function render(){
     h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
     S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days.size}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
   }else{const E=EMP.filter(e=>filt([{...e,date:"",nick:e.nick.join(" "),issue:false,emp:e}],true).length);
-    const unkNames=[...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))];n=E.length;
+    const unkNames=[...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))];
+    const fz=[...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy} (${r.emp.real})`))];n=E.length;
     h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่นที่ระบบรู้จัก</th><th>แผนก</th><th>OT</th></tr></thead><tbody>`+
     E.map(e=>`<tr><td>${esc(e.real)}</td><td class="nick">${esc(e.nick.join(", "))}</td><td>${esc(e.dept)}</td><td>${DEPTS[e.dept].ot?'<span class="pill p-ot">มี OT</span>':'<span class="pill p-mute">ไม่มี</span>'}</td></tr>`).join("")+
-    (unkNames.length&&!$("fIssue").checked?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
+    (fz.length?`<tr><td style="color:var(--warn);font-weight:600">พิมพ์ผิดที่ระบบเดาให้</td><td colspan="3">${esc(fz.join(" · "))}</td></tr>`:"")+(unkNames.length&&!$("fIssue").checked?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
   }
   $("tbl").innerHTML=n?h:`<tbody><tr><td class="empty">ไม่มีรายการตามตัวกรองนี้ ลองขยายช่วงวันที่ หรือเลือก "ทุกแผนก"</td></tr></tbody>`;
   $("count").textContent=`แสดง ${n} รายการ`;
@@ -578,13 +598,13 @@ $("exportBtn").onclick=async()=>{
   const s1=fi.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คอิน":r.nick,"แผนก":r.dept,"เวลาเข้า":r.time,"สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??"","สาย (นาที)":r.emp&&!r.dup?r.lateMin:"","สถานะ":plain(r.flags)}));
   const s2=fo.map(r=>({"วันที่ (กะ)":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คเอาท์":r.nick,"แผนก":r.dept,"เวลาเข้า":r.inTime||"","เวลาออก":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานะ":plain(r.flags)}));
   const s3=summary(fi,fo).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days.size,"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
-  const s4=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(r=>!r.emp).map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"สถานที่":r.loc}));
+  const s4=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(r=>!r.emp||r.fuzzy).map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"ระบบจับคู่เป็น":r.emp?`${r.emp.real} (${r.fuzzy})`:"ไม่พบ","สถานที่":r.loc}));
   const wb=XLSX.utils.book_new();
   const add=(rows,name,w)=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
   add(s3,"สรุปรายคน",[14,24,16,14,12,14,12,14,12,12,12]);
   add(s1,"บันทึกเข้างาน",[12,6,14,20,16,10,12,12,10,28]);
   add(s2,"บันทึกออกงาน",[12,6,14,20,16,10,12,16,10,10,36]);
-  add(s4,"ชื่อที่ไม่พบ",[10,12,8,20,12]);
+  add(s4,"ชื่อที่ต้องตรวจ",[10,12,8,20,26,12]);
   const fname=`WIBWUB_HR_${$("fFrom").value}_ถึง_${$("fTo").value}.xlsx`;
   if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
