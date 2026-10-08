@@ -531,7 +531,8 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
 unknownRecs.forEach(r=>DAY.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,
   inTime:r.ch==="เข้างาน"?r.time:null,inLoc:r.ch==="เข้างาน"?r.loc:null,inDist:r.dist,outTime:r.ch==="ออกงาน"?r.time:null,outMin:null,outLoc:r.ch==="ออกงาน"?r.loc:null,
   lateMin:0,stay:null,brk:0,work:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
-DAY.sort((a,b)=>b.date.localeCompare(a.date)||(a.inTime||"99").localeCompare(b.inTime||"99"));
+const ORDER=r=>r.emp?EMP.indexOf(EMP.find(e=>e.real===r.real)):999;
+DAY.sort((a,b)=>b.date.localeCompare(a.date)||ORDER(a)-ORDER(b));
 
 // ---------- UI ----------
 const $=id=>document.getElementById(id);
@@ -604,7 +605,38 @@ $("exportBtn").onclick=async()=>{
   const s2=summary(fd).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days,"ชั่วโมงทำงานรวม (ชม.)":+(s.work/60).toFixed(2),"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
   const raw=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(inRange).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
   const s3=raw.map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"ระบบจับคู่เป็น":r.emp?r.emp.real:"ไม่พบ","พิมพ์ผิด?":r.fuzzy?`→ ${r.fuzzy}`:"","สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??""}));
+  // ---- รูปแบบเดียวกับชีตของ HR ----
+  const TH_MONTH_FULL=["มกราคม","กุมภาพันธ์","มีนาคม","เมษายน","พฤษภาคม","มิถุนายน","กรกฎาคม","สิงหาคม","กันยายน","ตุลาคม","พฤศจิกายน","ธันวาคม"];
+  const TH_DOW_FULL=["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัส","ศุกร์","เสาร์"];
+  const EN_MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
+  const hrT=s=>{if(!s)return"";const m=s.match(/^(\d+):(\d+)/);return m?`${+m[1]}:${m[2]}`:s};
+  const d0=f||MONTH+"-01",d1=t||LAST_DATE;
+  const mIdx=+d0.slice(5,7)-1,yy=d0.slice(2,4),tag=`${EN_MON[mIdx]} ${yy}`;
+  const dates=[];for(let d=d0;d<=d1;d=addDay(d,1))dates.push(d);
+  const dept=$("fDept").value,people=EMP.filter(e=>dept==="ทุกแผนก"||e.dept===dept);
+  const byKey={};DAY.forEach(r=>{if(r.emp)byKey[r.real+"|"+r.date]=r});
+  const g=[["",...dates.flatMap(d=>[TH_DOW_FULL[dow(d)],""])],["ชื่อ",...dates.flatMap(d=>[+d.slice(8),+d.slice(8)])],["",...dates.flatMap(()=>["เข้า","ออก"])]];
+  people.forEach(e=>g.push([e.real,...dates.flatMap(d=>{const r=byKey[e.real+"|"+d];
+    if(!r)return dow(d)===0?["หยุด","หยุด"]:["",""];
+    const out=r.outTime?hrT(r.outTime.replace(" (+1)","")):(d===LAST_DATE?"":"ลืมสแกน");
+    return[r.inTime?hrT(r.inTime):"ลืมสแกน",out]})]));
+  const wsG=XLSX.utils.aoa_to_sheet(g);wsG["!cols"]=[{wch:12},...dates.flatMap(()=>[{wch:6},{wch:6}])];
+  // confirm ot: ซ้าย = OT (เฉพาะผลิต/แพ็ก), ขวา = สาย
+  const L=[],R=[];
+  people.filter(e=>DEPTS[e.dept].ot).forEach(e=>{const rows=dates.map(d=>byKey[e.real+"|"+d]).filter(r=>r&&r.otMin>0);if(!rows.length)return;
+    L.push([e.real],["ลำดับ","วันที่","เดือน","เวลาเลิกงาน","หน่วย (นาที)"]);
+    rows.forEach((r,i)=>L.push([i+1,+r.date.slice(8),TH_MONTH_FULL[+r.date.slice(5,7)-1],hrT(r.outTime.replace(" (+1)","")),r.otMin]));
+    L.push(["รวม","","","",rows.reduce((s,r)=>s+r.otMin,0)],[]);});
+  people.forEach(e=>{const rows=dates.map(d=>byKey[e.real+"|"+d]).filter(r=>r&&r.lateMin>0);if(!rows.length)return;
+    R.push([e.real],["สายวันที่","วัน","เวลาเข้างาน","เกินเวลา (นาที)"]);
+    rows.forEach(r=>R.push([+r.date.slice(8),TH_DOW_FULL[dow(r.date)],hrT(r.inTime),r.lateMin]));
+    R.push([`รวม ${rows.reduce((s,r)=>s+r.lateMin,0)} นาที`],[]);});
+  const C=[];for(let i=0;i<Math.max(L.length,R.length);i++){const a=L[i]||[];C.push([...a,...Array(5-a.length).fill(""),"",...(R[i]||[])])}
+  const wsC=XLSX.utils.aoa_to_sheet(C.length?C:[["ไม่มี OT หรือการมาสายในช่วงนี้"]]);wsC["!cols"]=[6,8,10,12,12,3,10,8,12,14].map(w=>({wch:w}));
+
   const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,wsG,tag);
+  XLSX.utils.book_append_sheet(wb,wsC,`${tag} confirm ot`);
   const add=(rows,name,w)=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
   add(s1,"เข้า-ออกงาน",[12,6,14,20,16,10,12,14,12,16,16,10,10,10,22,12,40]);
   add(s2,"สรุปรายคน",[14,24,16,14,18,12,14,12,14,12,12,12]);
