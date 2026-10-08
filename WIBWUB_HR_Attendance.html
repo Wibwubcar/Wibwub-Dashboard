@@ -87,6 +87,7 @@ tbody tr:nth-child(even) td{background:var(--row)}
         <div><b>แอดมิน · ไม่มี OT</b>08:00–23:00 · 4 วัน/สัปดาห์<br>เช็คเอาท์หลังเที่ยงคืน (ก่อน 05:00) นับเป็นกะของวันก่อน</div>
         <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
         <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
+        <div><b>พักเที่ยง</b>จ–ศ หัก 12:00–13:00 ออกจากชั่วโมงทำงาน · เสาร์ ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00</div>
         <div><b>ชื่อพิมพ์ผิด</b>ต่างจากชื่อในรายชื่อ 1 ตัวอักษร (เช่น ริย → ริน) ระบบจับคู่ให้และติดป้าย "พิมพ์ผิด?" ให้ตรวจ</div>
       </div>
     </details>
@@ -479,6 +480,11 @@ function calcOT(dept,date,outMin){
   return outMin-17*60;
 }
 
+// พักเที่ยง: จ–ศ (และแอดมินทุกวัน) หักช่วงที่ทับ 12:00–13:00 · เสาร์ ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00
+function breakMin(dept,date,inM,outM){
+  if(dow(date)===6&&(dept==="ผลิต"||dept==="แพ็ก"))return outM>=17*60?60:0;
+  return Math.max(0,Math.min(outM,13*60)-Math.max(inM,12*60));
+}
 // ---------- รวมเข้า-ออกงาน: 1 แถว ต่อ 1 คน ต่อ 1 วัน ----------
 const shifts={};
 const key=(e,d)=>e.real+"|"+d;
@@ -502,6 +508,8 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
     outTime:outR?hm(outR.m%1440)+(outR.m>=1440?" (+1)":""):null,outMin:outR?outR.m:null,outLoc:outR?outR.loc:null,
     lateMin:inR?Math.max(0,toMin(inR.time)-8*60):0};
   x.stay=(inR&&outR)?outR.m-toMin(inR.time):null;
+  x.brk=(inR&&outR)?breakMin(e.dept,s.date,toMin(inR.time),outR.m):0;
+  x.work=x.stay!=null?x.stay-x.brk:null;
   x.otMin=calcOT(e.dept,s.date,x.outMin);
   const F=[];let issue=false;
   if(!inR){F.push(["p-bad","ไม่มีเช็คอิน"]);issue=true}
@@ -522,7 +530,7 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
   return x});
 unknownRecs.forEach(r=>DAY.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,
   inTime:r.ch==="เข้างาน"?r.time:null,inLoc:r.ch==="เข้างาน"?r.loc:null,inDist:r.dist,outTime:r.ch==="ออกงาน"?r.time:null,outMin:null,outLoc:r.ch==="ออกงาน"?r.loc:null,
-  lateMin:0,stay:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
+  lateMin:0,stay:null,brk:0,work:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
 DAY.sort((a,b)=>b.date.localeCompare(a.date)||(a.inTime||"99").localeCompare(b.inTime||"99"));
 
 // ---------- UI ----------
@@ -540,8 +548,8 @@ function filt(rows,isEmp){const f=$("fFrom").value,t=$("fTo").value,d=$("fDept")
     (!q||r.real.toLowerCase().includes(q)||(r.nick||"").toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q))))&&(!iss||r.issue||r.fuzzy))}
 
 function summary(fd){
-  const S={};EMP.forEach(e=>S[e.real]={emp:e,days:0,late:0,lateMin:0,wfh:0,ot:0,forgot:0,early:0});
-  fd.filter(r=>r.emp).forEach(r=>{const s=S[r.real];if(r.inTime)s.days++;if(r.lateMin){s.late++;s.lateMin+=r.lateMin}
+  const S={};EMP.forEach(e=>S[e.real]={emp:e,work:0,days:0,late:0,lateMin:0,wfh:0,ot:0,forgot:0,early:0});
+  fd.filter(r=>r.emp).forEach(r=>{const s=S[r.real];if(r.inTime)s.days++;s.work+=r.work||0;if(r.lateMin){s.late++;s.lateMin+=r.lateMin}
     if(r.inLoc==="WFH")s.wfh++;s.ot+=r.otMin;if(r.flags.some(f=>f[1]==="ลืมเช็คเอาท์"))s.forgot++;if(r.flags.some(f=>f[1].startsWith("ออกก่อน")))s.early++});
   return Object.values(S);
 }
@@ -561,13 +569,13 @@ function render(){
   $("k4").textContent=unk+miss+noin;$("k4s").textContent=`ลืมเช็คเอาท์ ${miss} · ไม่มีเช็คอิน ${noin} · ไม่พบชื่อ ${unk}${fz?` · พิมพ์ผิด ${fz}`:""}`;
   let h="",n=0;
   if(tab==="day"){n=fd.length;
-    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่ใช้</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th class="num">อยู่ในงาน</th><th class="num">สาย</th><th class="num">OT</th><th>สถานที่</th><th>สถานะ</th></tr></thead><tbody>`+
+    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่ใช้</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th class="num">ชั่วโมงทำงาน</th><th class="num">สาย</th><th class="num">OT</th><th>สถานที่</th><th>สถานะ</th></tr></thead><tbody>`+
     fd.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td>`+
-      `<td class="t${r.lateMin?" late":""}">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num">${dur(r.stay)}</td>`+
+      `<td class="t${r.lateMin?" late":""}">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num" title="${r.brk?`อยู่ในงาน ${dur(r.stay)} หักพัก ${dur(r.brk)}`:""}">${dur(r.work)}${r.brk?'<span class="dsub">หักพัก '+dur(r.brk)+'</span>':""}</td>`+
       `<td class="num">${r.lateMin?dur(r.lateMin):"–"}</td><td class="num${r.otMin?" otv":""}">${r.otMin?dur(r.otMin):"–"}</td><td>${esc(locTxt(r))}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
   }else if(tab==="sum"){const S=summary(fd).filter(s=>filt([{...s.emp,date:"",nick:s.emp.nick.join(" "),issue:s.forgot>0,emp:s.emp}],true).length);n=S.length;
-    h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
-    S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
+    h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">ชั่วโมงทำงานรวม</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
+    S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days}</td><td class="num">${dur(s.work)}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
   }else{const E=EMP.filter(e=>filt([{...e,date:"",nick:e.nick.join(" "),issue:false,emp:e}],true).length);
     const unkNames=[...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))];
     const fzs=[...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy} (${r.emp.real})`))];n=E.length;
@@ -592,14 +600,14 @@ $("exportBtn").onclick=async()=>{
   if(typeof XLSX==="undefined"){toast("โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้า");return}
   const fd=filt(DAY),f=$("fFrom").value,t=$("fTo").value;
   const inRange=r=>(!f||r.date>=f)&&(!t||r.date<=t);
-  const s1=fd.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่ใช้":r.nick,"แผนก":r.dept,"เข้างาน":r.inTime||"","ออกงาน":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","สาย (นาที)":r.lateMin,"OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานที่":locTxt(r),"ระยะห่างตอนเข้า (ม.)":r.inDist??"","สถานะ":plain(r.flags)}));
-  const s2=summary(fd).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days,"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
+  const s1=fd.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่ใช้":r.nick,"แผนก":r.dept,"เข้างาน":r.inTime||"","ออกงาน":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","หักพัก (นาที)":r.brk||0,"ชั่วโมงทำงาน (นาที)":r.work??"","ชั่วโมงทำงาน (ชม.)":r.work!=null?+(r.work/60).toFixed(2):"","สาย (นาที)":r.lateMin,"OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานที่":locTxt(r),"ระยะห่างตอนเข้า (ม.)":r.inDist??"","สถานะ":plain(r.flags)}));
+  const s2=summary(fd).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days,"ชั่วโมงทำงานรวม (ชม.)":+(s.work/60).toFixed(2),"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
   const raw=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(inRange).sort((a,b)=>(a.date+a.time).localeCompare(b.date+b.time));
   const s3=raw.map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"ระบบจับคู่เป็น":r.emp?r.emp.real:"ไม่พบ","พิมพ์ผิด?":r.fuzzy?`→ ${r.fuzzy}`:"","สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??""}));
   const wb=XLSX.utils.book_new();
   const add=(rows,name,w)=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
-  add(s1,"เข้า-ออกงาน",[12,6,14,20,16,10,12,14,10,10,10,22,12,40]);
-  add(s2,"สรุปรายคน",[14,24,16,14,12,14,12,14,12,12,12]);
+  add(s1,"เข้า-ออกงาน",[12,6,14,20,16,10,12,14,12,16,16,10,10,10,22,12,40]);
+  add(s2,"สรุปรายคน",[14,24,16,14,18,12,14,12,14,12,12,12]);
   add(s3,"ข้อมูลดิบจาก Discord",[10,12,8,22,14,14,12,12]);
   const fname=`WIBWUB_HR_${$("fFrom").value}_ถึง_${$("fTo").value}.xlsx`;
   if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
