@@ -50,8 +50,12 @@ table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
 td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
 td.late{color:var(--warn);font-weight:600} td.otv{color:var(--ot);font-weight:600}
+tr.grp td{background:var(--accent-soft);color:var(--ink);padding:8px 12px;border-top:2px solid var(--accent)}
+tr.grp b{font-weight:600}
+.gsub{color:var(--muted);font-size:12px;margin-left:10px;font-weight:400}
+tbody tr.grp + tr td{border-top:0}
 td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
-tbody tr:nth-child(even) td{background:var(--row)}
+tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
 .t{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
 .nick{color:var(--muted)}
 .dsub{display:block;font-size:11px;color:var(--muted)}
@@ -111,6 +115,7 @@ tbody tr:nth-child(even) td{background:var(--row)}
           <label for="fTo">ถึง <input type="date" id="fTo"></label>
           <select id="fDept" aria-label="แผนก"></select>
           <input type="search" id="fName" placeholder="ค้นหาชื่อ / ชื่อเล่น" aria-label="ค้นหาชื่อ">
+          <select id="fSort" aria-label="เรียงตาม"><option value="new">วันล่าสุดก่อน</option><option value="old">วันแรกของเดือนก่อน</option><option value="name">เรียงตามพนักงาน</option></select>
           <label class="chk" for="fIssue"><input type="checkbox" id="fIssue"> เฉพาะที่ต้องตรวจสอบ</label>
         </div>
       </div>
@@ -570,10 +575,20 @@ function render(){
   $("k4").textContent=unk+miss+noin;$("k4s").textContent=`ลืมเช็คเอาท์ ${miss} · ไม่มีเช็คอิน ${noin} · ไม่พบชื่อ ${unk}${fz?` · พิมพ์ผิด ${fz}`:""}`;
   let h="",n=0;
   if(tab==="day"){n=fd.length;
-    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่ใช้</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th class="num">ชั่วโมงทำงาน</th><th class="num">สาย</th><th class="num">OT</th><th>สถานที่</th><th>สถานะ</th></tr></thead><tbody>`+
-    fd.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td>`+
+    const srt=$("fSort").value;
+    const rows=[...fd].sort(srt==="name"?(a,b)=>ORDER(a)-ORDER(b)||a.date.localeCompare(b.date):srt==="old"?(a,b)=>a.date.localeCompare(b.date)||ORDER(a)-ORDER(b):(a,b)=>b.date.localeCompare(a.date)||ORDER(a)-ORDER(b));
+    const gkey=r=>srt==="name"?r.real:r.date;
+    const groups=[];rows.forEach(r=>{const k=gkey(r);const g=groups[groups.length-1];if(g&&g.k===k)g.rows.push(r);else groups.push({k,rows:[r]})});
+    const cell=(r,first)=>`<td>${srt==="name"?thDate(r.date):esc(r.real)}</td><td class="nick">${esc(srt==="name"?r.nick:r.nick)}</td><td>${esc(r.dept)}</td>`;
+    const gHead=g=>{const L=g.rows.filter(r=>r.lateMin>0).length,O=g.rows.reduce((s,r)=>s+r.otMin,0),I=g.rows.filter(r=>r.issue).length;
+      const title=srt==="name"?`${esc(g.k)} <span class="gsub">${esc(g.rows[0].dept)}</span>`:thDate(g.k);
+      return `<tr class="grp"><td colspan="11"><b>${title}</b><span class="gsub">${srt==="name"?`${g.rows.filter(r=>r.inTime).length} วัน`:`${g.rows.filter(r=>r.inTime).length} คน`}${L?` · สาย ${L} ครั้ง`:""}${O?` · OT ${dur(O)}`:""}${I?` · ต้องตรวจ ${I}`:""}</span></td></tr>`};
+    h=`<thead><tr><th>${srt==="name"?"วันที่":"ชื่อจริง"}</th><th>ชื่อที่ใช้</th><th>แผนก</th><th>เข้างาน</th><th>ออกงาน</th><th class="num">ชั่วโมงทำงาน</th><th class="num">สาย</th><th class="num">OT</th><th>สถานที่</th><th>สถานะ</th><th></th></tr></thead><tbody>`+
+    groups.map(g=>gHead(g)+g.rows.map(r=>`<tr>${srt==="name"?`<td>${thDate(r.date)}</td>`:`<td class="${r.emp?"":"unk"}">${esc(r.real)}</td>`}<td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td>`+
       `<td class="t${r.lateMin?" late":""}">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num" title="${r.brk?`อยู่ในงาน ${dur(r.stay)} หักพัก ${dur(r.brk)}`:""}">${dur(r.work)}${r.brk?'<span class="dsub">หักพัก '+dur(r.brk)+'</span>':""}</td>`+
-      `<td class="num">${r.lateMin?dur(r.lateMin):"–"}</td><td class="num${r.otMin?" otv":""}">${r.otMin?dur(r.otMin):"–"}</td><td>${esc(locTxt(r))}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
+      `<td class="num">${r.lateMin?dur(r.lateMin):"–"}</td><td class="num${r.otMin?" otv":""}">${r.otMin?dur(r.otMin):"–"}</td><td>${esc(locTxt(r))}</td><td>${pills(r.flags)}</td><td></td></tr>`).join("")).join("")+"</tbody>";
+    n=rows.length;
+    $("count").dataset.days=new Set(rows.map(r=>r.date)).size;
   }else if(tab==="sum"){const S=summary(fd).filter(s=>filt([{...s.emp,date:"",nick:s.emp.nick.join(" "),issue:s.forgot>0,emp:s.emp}],true).length);n=S.length;
     h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">ชั่วโมงทำงานรวม</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
     S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days}</td><td class="num">${dur(s.work)}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
@@ -586,9 +601,9 @@ function render(){
     (unkNames.length?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
   }
   $("tbl").innerHTML=n?h:`<tbody><tr><td class="empty">ไม่มีรายการตามตัวกรองนี้ ลองขยายช่วงวันที่ หรือเลือก "ทุกแผนก"</td></tr></tbody>`;
-  $("count").textContent=`แสดง ${n} รายการ`;
+  $("count").textContent=tab==="day"?`แสดง ${n} รายการ จาก ${$("count").dataset.days} วัน`:`แสดง ${n} รายการ`;
 }
-["fFrom","fTo","fDept","fName","fIssue"].forEach(id=>$(id).addEventListener("input",render));
+["fFrom","fTo","fDept","fName","fIssue","fSort"].forEach(id=>$(id).addEventListener("input",render));
 document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{localStorage.setItem("hrTab3",tab)}catch(e){}render()});
 render();
 
