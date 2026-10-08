@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WIBWUB — HR เข้า-ออกงาน (Discord)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+/* Layout: app shell — left nav (Dashboard group), page header, rule strip, KPI strip, tabbed record tables */
+:root{
+  --bg:#F0F4FF; --surface:#FFFFFF; --ink:#0F0F0F; --muted:#666666; --line:#E4E8F0;
+  --accent:#1A5CDB; --accent-soft:#EEF3FD; --nav:#1F2B26; --nav-ink:#C9D6CF; --nav-active:#FFFFFF;
+  --ok:#23704A; --ok-bg:#E1F2E8; --warn:#9A5B00; --warn-bg:#FBEFD9; --bad:#B23A2E; --bad-bg:#F9E2DF;
+  --ot:#2D5A8C; --ot-bg:#E2ECF7; --row:#F8FAFF;
+  --f-body:"IBM Plex Sans Thai",system-ui,sans-serif; --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.5}
+main{padding-block:20px 48px;padding-inline:24px;max-width:1400px;margin:0 auto;display:flex;flex-direction:column;gap:18px;min-width:0}
+.crumb{color:var(--muted);font-size:13px}
+.crumb b{color:var(--ink);font-weight:600}
+.head{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;justify-content:space-between}
+h1{font-size:24px;margin:2px 0 0;text-wrap:balance}
+.asof{font-size:13px;color:var(--muted);margin-top:2px}
+.btn{font:inherit;font-weight:600;border:0;border-radius:8px;padding:9px 16px;cursor:pointer;background:var(--accent);color:var(--surface)}
+.btn:focus-visible,select:focus-visible,input:focus-visible,.tab:focus-visible,summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+details.rules{background:var(--accent-soft);border-radius:10px;padding:10px 16px;font-size:13px}
+details.rules summary{cursor:pointer;font-weight:600}
+.rulegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 20px;margin-top:10px}
+.rulegrid b{display:block}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.kpi .lab{font-size:12px;color:var(--muted)}
+.kpi .val{font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:12px;color:var(--muted)}
+.kpi.alert .val{color:var(--bad)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:12px;display:flex;flex-direction:column;min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid var(--line)}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--bg);padding:4px;border-radius:9px}
+.tab{font:inherit;border:0;background:transparent;color:var(--muted);padding:6px 12px;border-radius:6px;cursor:pointer;font-weight:500}
+.tab[aria-selected="true"]{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.tab .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
+.filters{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filters label{font-size:12px;color:var(--muted);display:flex;gap:6px;align-items:center}
+.chk{font-size:13px;color:var(--ink)}
+select,input{font:inherit;font-size:13px;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:7px;padding:6px 8px}
+input[type=search]{width:150px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-weight:600;color:var(--muted);font-size:12px;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap;background:var(--surface)}
+td{padding:9px 12px;border-bottom:1px solid var(--line);white-space:nowrap;vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tbody tr:nth-child(even) td{background:var(--row)}
+.t{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.nick{color:var(--muted)}
+.dsub{display:block;font-size:11px;color:var(--muted)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 9px;border-radius:99px;margin-right:4px}
+.p-ok{color:var(--ok);background:var(--ok-bg)} .p-warn{color:var(--warn);background:var(--warn-bg)}
+.p-bad{color:var(--bad);background:var(--bad-bg)} .p-ot{color:var(--ot);background:var(--ot-bg)}
+.p-mute{color:var(--muted);background:var(--bg)}
+.unk{color:var(--bad);font-weight:600}
+.foot{padding:10px 16px;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:space-between}
+.toast{position:fixed;right:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--surface);padding:10px 14px;border-radius:8px;font-size:13px;max-width:calc(100% - 32px)}
+.empty{padding:32px;text-align:center;color:var(--muted)}
+@media (max-width:860px){ main{padding-inline:16px} .kpis{grid-template-columns:repeat(2,minmax(0,1fr))} }
+</style>
+</head><body>
+
+
+  <main>
+    <div class="head">
+      <div>
+        <div class="crumb">HR &amp; พนักงาน › <b>เข้า-ออกงาน (Discord)</b></div>
+        <h1>บันทึกเวลาเข้า-ออกงาน</h1>
+        <div class="asof" id="asof"></div>
+      </div>
+      <button class="btn" id="exportBtn" type="button">Export Excel</button>
+    </div>
+
+    <details class="rules">
+      <summary>กฎเวลางานและ OT แต่ละแผนก</summary>
+      <div class="rulegrid">
+        <div><b>ผลิต · มี OT</b>จ–ศ 08:00–17:00 · ส 08:00–12:00<br>OT จ–ศ: ออกตั้งแต่ 17:30 นับตั้งแต่ 17:00</div>
+        <div><b>แพ็ก · มี OT</b>จ–ศ 08:00–17:00 · ส 08:00–12:00<br>OT ส: นับตั้งแต่ 12:00 · ถ้าอยู่ถึง 17:00 หักพัก 1 ชม.</div>
+        <div><b>แอดมิน · ไม่มี OT</b>08:00–23:00 · 4 วัน/สัปดาห์<br>เช็คเอาท์หลังเที่ยงคืน (ก่อน 05:00) นับเป็นกะของวันก่อน</div>
+        <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
+        <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
+      </div>
+    </details>
+
+    <section class="kpis" aria-label="สรุป">
+      <div class="kpi"><span class="lab">เข้างานวันล่าสุด</span><span class="val" id="k1">–</span><span class="sub" id="k1s"></span></div>
+      <div class="kpi"><span class="lab">มาสาย (ช่วงที่เลือก)</span><span class="val" id="k2">–</span><span class="sub" id="k2s"></span></div>
+      <div class="kpi"><span class="lab">OT รวม (ช่วงที่เลือก)</span><span class="val" id="k3">–</span><span class="sub" id="k3s"></span></div>
+      <div class="kpi alert"><span class="lab">ต้องตรวจสอบ</span><span class="val" id="k4">–</span><span class="sub" id="k4s"></span></div>
+    </section>
+
+    <section class="panel">
+      <div class="bar">
+        <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="in" type="button"><span class="dot" style="background:var(--ok)"></span>บันทึกเข้างาน</button>
+          <button class="tab" role="tab" data-tab="out" type="button"><span class="dot" style="background:var(--bad)"></span>บันทึกออกงาน</button>
+          <button class="tab" role="tab" data-tab="sum" type="button">สรุปรายคน</button>
+          <button class="tab" role="tab" data-tab="emp" type="button">รายชื่อ &amp; ชื่อเล่น</button>
+        </div>
+        <div class="filters">
+          <label for="fFrom">จาก <input type="date" id="fFrom"></label>
+          <label for="fTo">ถึง <input type="date" id="fTo"></label>
+          <select id="fDept" aria-label="แผนก"></select>
+          <input type="search" id="fName" placeholder="ค้นหาชื่อ / ชื่อเล่น" aria-label="ค้นหาชื่อ">
+          <label class="chk" for="fIssue"><input type="checkbox" id="fIssue"> เฉพาะที่ต้องตรวจสอบ</label>
+        </div>
+      </div>
+      <div class="tablewrap"><table id="tbl"></table></div>
+      <div class="foot"><span id="count"></span><span>ที่มา: Discord Wibwub Company ห้อง #บันทึกเข้างาน และ #บันทึกออกงาน</span></div>
+    </section>
+  </main>
+<div class="toast" id="toast" hidden></div>
+
+<script>
+// ---------- รายชื่อพนักงาน & ชื่อเล่นที่ใช้เช็คอิน ----------
+const DEPTS={
+  "ผลิต":{ot:true,days:[1,2,3,4,5,6]},
+  "แพ็ก":{ot:true,days:[1,2,3,4,5,6]},
+  "แอดมิน":{ot:false,days:null},
+  "Marketing & HR":{ot:false,days:[1,2,3,4,5]}
+};
+const EMP=[
+ ["อุบลรัตน์","ผลิต",["Tuy"]],
+ ["นพฤทธิ์","ผลิต",["ริน"]],
+ ["ณัฐวุฒิ","ผลิต",["ฟิล์ม"]],
+ ["ธนกร","ผลิต",["เซฟจุฟจุฟ"]],
+ ["รุจจิรา","ผลิต",["มาย","mind"]],
+ ["พรฒิกร","ผลิต",["ต้า","ตาต้า","tar","tatar"]],
+ ["นพมาศ","แพ็ก",["กอล์ฟ"]],
+ ["บุญมี","แพ็ก",["เติ้ล"]],
+ ["อัจฉรา","แพ็ก",["แนน"]],
+ ["กฤตบุญ","แพ็ก",["บุญ"]],
+ ["พชรพร","แพ็ก",["Fai"]],
+ ["ปติภาณ","แพ็ก",["ฟี"]],
+ ["พงศภัค","แพ็ก",["กอล์ฟช"]],
+ ["พัชรวรรณ","แอดมิน",["จ๋า","Jah","พัชรวรรณ","พัชรวรรณ รินทะรักษ์"]],
+ ["เจนจิรา","แอดมิน",["ปาย"]],
+ ["ฐานวีร์","แอดมิน",["Ant","atn","at","an","ฐานวีร์"]],
+ ["อลงกรณ์","แอดมิน",["ปืน","อลงกรณ์","อลงกรณ์ อาวุธ"]],
+ ["ปัทมพร","แอดมิน",["มิ้นท์"]],
+ ["วรกานต์","Marketing & HR",["aiime","worakarn","Worakarn Wuthiveth"]],
+ ["สุนิชา","Marketing & HR",["พลอย"]],
+ ["อินทิรา","Marketing & HR",["มีนา"]],
+ ["ธนาทรัพย์","Marketing & HR",["ธนาทรัพย์"]],
+ ["ฐิติพร","Marketing & HR",["Baitong","ใบตอง"]],
+ ["ฐิติมา","Marketing & HR",["Ann"]],
+ ["ฝน","Marketing & HR",["Fon"]]
+].map(([real,dept,nick])=>({real,dept,nick}));
+const NICK={};EMP.forEach(e=>e.nick.forEach(n=>NICK[n.trim().toLowerCase()]=e));
+const findEmp=n=>NICK[n.trim().toLowerCase()]||null;
+
+// ---------- ข้อมูลดิบจาก Discord (วัน|เวลา|ชื่อที่แสดง|สถานที่|ระยะห่างเมตร) ----------
+const MONTH="2026-10";
+const RAW_IN=`1|06:27|Tuy|W|17
+1|06:46|บุญ|W|18
+1|07:26|ฟิล์ม|W|16
+1|07:28|ใบตอง|W|34
+1|07:33|เซฟจุฟจุฟ|W|53
+1|07:38|ฟี|W|13
+1|07:45|กอล์ฟช|W|17
+1|07:47|เติ้ล|W|12
+1|07:53|กอล์ฟ|W|64
+1|07:53|อลงกรณ์ อาวุธ|W|12
+1|07:54|แนน|W|7
+1|07:55|Fai|WFH|
+1|07:58|ธนาทรัพย์|W|11
+1|07:58|มีนา|W|11
+1|07:58|Worakarn Wuthiveth|W|6
+1|07:59|พลอย|W|16
+1|07:59|Ann|WFH|
+1|07:59|Ant|WFH|
+1|07:59|Fon|W|13
+1|08:00|ต้า|W|2
+1|08:00|ริน|WFH|
+1|08:08|ปีโป้|W|10
+2|06:38|Tuy|W|17
+2|07:22|พลอย|WFH|
+2|07:29|เซฟจุฟจุฟ|W|16
+2|07:43|ฟี|W|17
+2|07:46|ฟิล์ม|W|15
+2|07:48|เติ้ล|W|18
+2|07:48|กอล์ฟช|W|17
+2|07:48|กอล์ฟ|W|17
+2|07:51|มีนา|W|20
+2|07:52|แนน|W|9
+2|07:53|ปีโป้|WFH|
+2|07:54|Ann|WFH|
+2|07:54|ธนาทรัพย์|WFH|
+2|07:55|ปีโป้|WFH|
+2|07:55|Ant|WFH|
+2|07:57|อลงกรณ์ อาวุธ|WFH|
+2|07:57|Fai|WFH|
+2|07:58|ใบตอง|WFH|
+2|08:00|พัชรวรรณ รินทะรักษ์|W|14
+2|08:02|ริน|W|17
+2|08:02|มาย|W|1
+2|08:03|ต้า|W|2
+2|08:03|Fon|WFH|
+2|13:07|Worakarn Wuthiveth|W|19
+3|06:42|Tuy|W|15
+3|07:40|บุญ|W|38
+3|07:45|เติ้ล|W|17
+3|07:49|Fai|W|9
+3|07:54|มิ้นท์|WFH|
+3|07:55|อลงกรณ์ อาวุธ|WFH|
+3|08:02|มาย|W|8
+3|08:02|ต้า|W|8
+4|07:59|มิ้นท์|WFH|
+5|06:58|Tuy|W|16
+5|07:15|เซฟจุฟจุฟ|W|11
+5|07:24|ปาย|WFH|
+5|07:32|Baitong|W|3
+5|07:36|บุญ|W|18
+5|07:42|กอล์ฟช|W|18
+5|07:47|แนน|W|9
+5|07:48|เติ้ล|W|13
+5|07:50|Fon|W|2
+5|07:51|ฟิล์ม|W|16
+5|07:52|ธนาทรัพย์|W|11
+5|07:53|มิ้นท์|WFH|
+5|07:54|มาย|W|3
+5|07:54|ต้า|W|3
+5|07:54|กอล์ฟ|W|18
+5|07:54|ปีโป้|WFH|
+5|07:56|Fai|W|9
+5|07:56|Ann|WFH|
+5|07:57|มีนา|W|17
+5|07:57|พลอย|W|25
+5|08:02|Worakarn Wuthiveth|W|10
+5|08:02|พัชรวรรณ รินทะรักษ์|W|14
+5|08:58|ริน|W|5
+6|06:41|Tuy|W|16
+6|07:24|เซฟจุฟจุฟ|W|18
+6|07:30|บุญ|W|17
+6|07:36|ปาย|WFH|
+6|07:39|ฟิล์ม|W|12
+6|07:45|กอล์ฟช|W|14
+6|07:47|Fon|WFH|
+6|07:48|เติ้ล|W|19
+6|07:50|แนน|W|8
+6|07:50|พัชรวรรณ รินทะรักษ์|WFH|
+6|07:51|ปีโป้|WFH|
+6|07:53|กอล์ฟ|W|23
+6|07:54|Ann|WFH|
+6|07:56|Fai|W|9
+6|07:57|ฟี|W|14
+6|07:57|มีนา|W|13
+6|07:59|Ant|WFH|
+6|07:59|Ant|WFH|
+6|07:59|Worakarn Wuthiveth|W|6
+6|07:59|Baitong|WFH|
+6|07:59|มาย|W|73
+6|08:00|ต้า|W|14
+6|08:08|ริน|W|4
+6|08:10|ธนาทรัพย์|WFH|
+7|06:44|Tuy|W|15
+7|07:41|บุญ|W|50
+7|07:42|แนน|W|8
+7|07:43|ฟิล์ม|W|29
+7|07:44|ปีโป้|NEWGARAGE|13
+7|07:45|กอล์ฟช|W|16
+7|07:47|เติ้ล|W|12
+7|07:50|อลงกรณ์ อาวุธ|NEWGARAGE|28
+7|07:51|Ann|WFH|
+7|07:52|กอล์ฟ|W|16
+7|07:52|มิ้นท์|NEWGARAGE|14
+7|07:53|ธนาทรัพย์|WFH|
+7|07:54|Ant|WFH|
+7|07:54|พลอย|W|22
+7|07:56|Fai|W|15
+7|07:57|มีนา|W|9
+7|07:59|ใบตอง|WFH|
+7|08:00|ฟี|W|16
+7|08:01|มาย|W|1
+7|08:01|ต้า|W|2
+7|08:02|พัชรวรรณ รินทะรักษ์|NEWGARAGE|12
+7|08:02|ปาย|WFH|
+7|08:03|ริน|W|4
+7|09:49|Worakarn Wuthiveth|W|9
+8|06:38|Tuy|W|16
+8|07:25|เซฟจุฟจุฟ|W|12
+8|07:34|บุญ|W|11
+8|07:41|ฟิล์ม|W|13
+8|07:42|เติ้ล|W|16
+8|07:45|Fai|W|14
+8|07:51|ปีโป้|WFH|
+8|07:51|Fon|W|2
+8|07:52|พัชรวรรณ รินทะรักษ์|WFH|
+8|07:53|ฟี|W|16
+8|07:54|ธนาทรัพย์|W|9
+8|07:54|กอล์ฟ|W|11
+8|07:55|อลงกรณ์ อาวุธ|WFH|
+8|07:58|มีนา|W|9
+8|07:58|มีนา|W|14
+8|07:58|ริน|W|98
+8|07:58|ใบตอง|W|14
+8|07:59|พลอย|W|6
+8|07:59|Ant|WFH|
+8|08:00|Ann|WFH|
+8|08:00|มาย|W|3
+8|08:01|ต้า|W|4
+8|08:01|Worakarn Wuthiveth|W|7`;
+const RAW_OUT=`1|12:01|มีนา|W|26
+1|17:00|ฟิล์ม|W|17
+1|17:00|กอล์ฟช|W|15
+1|17:00|ฟี|W|7
+1|17:00|แนน|W|7
+1|17:00|เซฟจุฟจุฟ|W|17
+1|17:00|กอล์ฟ|W|17
+1|17:01|เติ้ล|W|20
+1|17:01|ต้า|W|10
+1|17:01|ใบตอง|W|3
+1|17:01|บุญ|W|19
+1|17:02|Fon|W|2
+1|17:02|Fai|WFH|
+1|17:02|ริน|W|17
+1|17:03|ธนาทรัพย์|W|9
+1|17:03|Tuy|W|17
+1|17:12|พลอย|W|8
+1|17:12|Worakarn Wuthiveth|W|15
+1|19:46|ปีโป้|WFH|
+1|23:02|อลงกรณ์ อาวุธ|WFH|
+2|01:11|Ant|WFH|
+2|17:00|ฟิล์ม|W|12
+2|17:00|Tuy|W|11
+2|17:00|มาย|W|15
+2|17:00|เซฟจุฟจุฟ|W|13
+2|17:00|มีนา|W|27
+2|17:01|ต้า|W|10
+2|17:01|ริย|W|16
+2|17:02|Fon|WFH|
+2|17:06|ปีโป้|WFH|
+2|17:10|Fai|WFH|
+2|17:12|พัชรวรรณ รินทะรักษ์|W|16
+2|17:12|ใบตอง|WFH|
+2|17:29|Worakarn Wuthiveth|W|13
+2|17:45|พลอย|WFH|
+2|18:02|กอล์ฟช|W|8
+2|18:06|แนน|W|9
+2|18:07|กอล์ฟ|W|18
+2|18:08|เติ้ล|W|10
+2|18:10|ฟี|W|58
+2|18:48|ธนาทรัพย์|WFH|
+2|23:00|อลงกรณ์ อาวุธ|WFH|
+3|12:01|มาย|W|5
+3|12:01|ต้า|W|13
+3|15:30|Tuy|W|10
+3|17:02|เติ้ล|W|17
+3|17:03|Fai|W|17
+3|17:03|บุญ|W|20
+3|23:01|อลงกรณ์ อาวุธ|WFH|
+3|23:10|มิ้นท์|WFH|
+4|23:18|มิ้นท์|WFH|
+5|07:54|ต้า|W|3
+5|17:00|ริน|W|12
+5|17:02|พัชรวรรณ รินทะรักษ์|W|22
+5|17:03|Baitong|W|2
+5|17:03|Worakarn Wuthiveth|W|21
+5|17:04|Fon|W|7
+5|17:14|พลอย|W|15
+5|17:18|มีนา|W|13
+5|17:21|ปีโป้|W|42
+5|20:00|เซฟจุฟจุฟ|W|9
+5|20:00|ฟิล์ม|W|11
+5|20:00|Tuy|W|16
+5|20:00|มาย|W|40
+5|20:00|ต้า|W|10
+5|22:13|กอล์ฟช|W|9
+5|22:13|กอล์ฟ|W|19
+5|22:14|เติ้ล|W|12
+5|22:25|แนน|W|9
+5|22:30|Fai|W|13
+5|22:32|บุญ|W|19
+5|23:03|ปาย|WFH|
+5|23:27|มิ้นท์|WFH|
+6|17:00|เซฟจุฟจุฟ|W|15
+6|17:00|ฟิล์ม|W|13
+6|17:00|ริน|W|12
+6|17:00|Tuy|W|15
+6|17:00|Baitong|WFH|
+6|17:00|Fon|WFH|
+6|17:00|มีนา|W|25
+6|17:01|มาย|W|41
+6|17:01|ต้า|W|10
+6|17:01|พัชรวรรณ รินทะรักษ์|WFH|
+6|17:05|Worakarn Wuthiveth|W|12
+6|17:15|ธนาทรัพย์|WFH|
+6|17:20|ปีโป้|WFH|
+6|17:30|แนน|W|6
+6|17:38|กอล์ฟช|W|11
+6|20:00|Fai|W|16
+6|20:00|เติ้ล|W|51
+6|20:00|กอล์ฟ|W|23
+6|20:01|ฟี|W|22
+6|20:01|บุญ|W|21
+6|20:01|Fai|W|16
+6|23:00|Ant|WFH|
+6|23:03|ปาย|WFH|
+7|13:00|กอล์ฟข|W|13
+7|17:00|แนน|W|8
+7|17:00|ริน|W|14
+7|17:00|Baitong|WFH|
+7|17:01|ฟี|W|11
+7|17:01|กอล์ฟ|W|17
+7|17:01|มีนา|W|10
+7|17:02|Worakarn Wuthiveth|W|12
+7|17:05|เติ้ล|W|13
+7|17:13|ธนาทรัพย์|WFH|
+7|17:34|พลอย|W|12
+7|17:52|บุญ|W|34
+7|17:53|Fai|W|18
+7|20:00|เซฟจุฟจุฟ|W|46
+7|20:00|ฟิล์ม|W|32
+7|20:00|Tuy|W|14
+7|20:00|มาย|W|40
+7|20:00|ต้า|W|10
+7|21:51|ปีโป้|WFH|
+7|23:15|ปาย|WFH|
+7|23:16|มิ้นท์|WFH|
+7|23:38|อลงกรณ์ อาวุธ|WFH|
+8|00:07|Ant|WFH|
+8|15:46|ริน|W|17`;
+const LOC={W:"Warehouse",WFH:"WFH",NEWGARAGE:"New Garage"};
+const parseRaw=s=>s.trim().split("\n").map((l,i)=>{const[d,t,n,loc,dist]=l.split("|");return{i,date:`${MONTH}-${d.padStart(2,"0")}`,time:t,nick:n,loc:LOC[loc]||loc,dist:dist?+dist:null,emp:findEmp(n)}});
+const INR=parseRaw(RAW_IN), OUTR=parseRaw(RAW_OUT);
+
+// ---------- เครื่องมือเวลา ----------
+const toMin=t=>{const[h,m]=t.split(":").map(Number);return h*60+m};
+const hm=m=>String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const dur=m=>m==null||m<=0?"–":(Math.floor(m/60)?Math.floor(m/60)+" ชม."+(m%60?" ":""):"")+(m%60?m%60+" นาที":"");
+const addDay=(s,n)=>{const d=new Date(s+"T12:00:00Z");d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)};
+const dow=s=>new Date(s+"T12:00:00Z").getUTCDay();
+const TH_MON=["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+const TH_DOW=["อา.","จ.","อ.","พ.","พฤ.","ศ.","ส."];
+const thDate=s=>{const[y,m,d]=s.split("-").map(Number);return`${TH_DOW[dow(s)]} ${d} ${TH_MON[m-1]} ${y+543}`};
+
+const LAST_IN=INR.reduce((a,r)=>r.date+r.time>a?r.date+r.time:a,"");
+const LAST_OUT=OUTR.reduce((a,r)=>r.date+r.time>a?r.date+r.time:a,"");
+const LAST=LAST_IN>LAST_OUT?LAST_IN:LAST_OUT;
+const LAST_DATE=LAST.slice(0,10);
+
+// ---------- กฎเวลางาน ----------
+function schedule(dept,date){
+  const sat=dow(date)===6;
+  if(dept==="แอดมิน")return{end:23*60};
+  if(sat&&(dept==="ผลิต"||dept==="แพ็ก"))return{end:12*60,sat:true};
+  return{end:17*60};
+}
+function calcOT(dept,date,outMin){
+  if(!DEPTS[dept].ot||outMin==null)return 0;
+  if(dow(date)===6){ // วันเสาร์
+    if(outMin<12*60+30)return 0;
+    let ot=outMin-12*60; if(outMin>=17*60)ot-=60; return Math.max(0,ot);
+  }
+  if(outMin<17*60+30)return 0;
+  return outMin-17*60;
+}
+
+// ---------- เช็คอิน: ทุกรายการ ----------
+const seenIn={};
+const IN=INR.map(r=>{const x={...r,real:r.emp?r.emp.real:"ไม่พบชื่อในรายชื่อ",dept:r.emp?r.emp.dept:"–"};
+  x.lateMin=Math.max(0,toMin(r.time)-8*60);
+  if(r.emp){const k=r.date+"|"+r.emp.real;x.dup=!!seenIn[k];seenIn[k]=true}
+  x.flags=[];
+  if(!r.emp)x.flags.push(["p-bad","ไม่พบชื่อ"]);
+  if(x.dup)x.flags.push(["p-mute","เช็คอินซ้ำ"]);
+  if(r.emp&&!x.dup)x.flags.push(x.lateMin?["p-warn",`สาย ${dur(x.lateMin)}`]:["p-ok","ตรงเวลา"]);
+  if(r.loc==="WFH")x.flags.push(["p-ot","WFH"]);
+  if(r.dist!=null&&r.dist>100)x.flags.push(["p-bad","นอกพื้นที่"]);
+  x.issue=!r.emp;
+  return x});
+
+// ---------- ออกงาน: จับคู่ต่อคนต่อวัน ----------
+const shifts={};
+const key=(e,d)=>e.real+"|"+d;
+INR.filter(r=>r.emp).forEach(r=>{const k=key(r.emp,r.date);(shifts[k]=shifts[k]||{emp:r.emp,date:r.date,ins:[],outs:[]}).ins.push(r)});
+const unknownOut=[];
+OUTR.forEach(r=>{
+  if(!r.emp){unknownOut.push(r);return}
+  let d=r.date,m=toMin(r.time);
+  if(m<5*60){d=addDay(d,-1);m+=1440} // ออกหลังเที่ยงคืน = กะของเมื่อวาน
+  const k=key(r.emp,d);(shifts[k]=shifts[k]||{emp:r.emp,date:d,ins:[],outs:[]}).outs.push({...r,m});
+});
+const OUT=Object.values(shifts).filter(s=>s.date>=MONTH+"-01").map(s=>{
+  const e=s.emp,sc=schedule(e.dept,s.date);
+  const inR=s.ins.sort((a,b)=>a.time.localeCompare(b.time))[0]||null;
+  const outsAfter=s.outs.filter(o=>!inR||o.m>toMin(inR.time));
+  const outR=(outsAfter.length?outsAfter:s.outs).sort((a,b)=>b.m-a.m)[0]||null;
+  const x={date:s.date,emp:e,real:e.real,dept:e.dept,nick:outR?outR.nick:(inR?inR.nick:"–"),
+    inTime:inR?inR.time:null,outTime:outR?hm(outR.m%1440)+(outR.m>=1440?" (+1)":""):null,outMin:outR?outR.m:null,loc:outR?outR.loc:"–",
+    extraOut:s.outs.length-1};
+  x.stay=(inR&&outR)?outR.m-toMin(inR.time):null;
+  x.otMin=calcOT(e.dept,s.date,x.outMin);
+  x.flags=[];x.issue=false;
+  if(!outR){ if(s.date===LAST_DATE){x.flags.push(["p-mute","ยังไม่เช็คเอาท์"])}else{x.flags.push(["p-bad","ลืมเช็คเอาท์"]);x.issue=true} }
+  if(!inR){x.flags.push(["p-bad","ไม่มีเช็คอิน"]);x.issue=true}
+  if(outR&&x.outMin<sc.end){x.flags.push(["p-warn",`ออกก่อนเวลา ${dur(sc.end-x.outMin)}`])}
+  if(x.otMin>0)x.flags.push(["p-ot",`OT ${dur(x.otMin)}`]);
+  else if(outR&&DEPTS[e.dept].ot&&x.outMin>=sc.end&&x.outMin<sc.end+30&&x.outMin>sc.end)x.flags.push(["p-mute","ไม่ถึงเกณฑ์ OT"]);
+  if(outR&&!x.flags.some(f=>f[0]!=="p-mute"))x.flags.unshift(["p-ok","ปกติ"]);
+  if(x.extraOut>0)x.flags.push(["p-mute",`กดออกงาน ${s.outs.length} ครั้ง`]);
+  if(dow(s.date)===0)x.flags.push(["p-mute","วันอาทิตย์"]);
+  return x});
+unknownOut.forEach(r=>OUT.push({date:r.date,emp:null,real:"ไม่พบชื่อในรายชื่อ",dept:"–",nick:r.nick,inTime:null,outTime:r.time,outMin:toMin(r.time),loc:r.loc,stay:null,otMin:0,flags:[["p-bad","ไม่พบชื่อ"]],issue:true}));
+IN.sort((a,b)=>b.date.localeCompare(a.date)||a.time.localeCompare(b.time));
+OUT.sort((a,b)=>b.date.localeCompare(a.date)||((a.outMin??9999)-(b.outMin??9999)));
+
+// ---------- UI ----------
+const $=id=>document.getElementById(id);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const pills=f=>f.map(([c,l])=>`<span class="pill ${c}">${esc(l)}</span>`).join("");
+let tab="in";
+try{const t=localStorage.getItem("hrTab2");if(["in","out","sum","emp"].includes(t))tab=t}catch(e){}
+$("fDept").innerHTML=["ทุกแผนก",...Object.keys(DEPTS)].map(d=>`<option>${esc(d)}</option>`).join("");
+$("fFrom").value=MONTH+"-01";$("fTo").value=LAST_DATE;
+$("asof").textContent=`ข้อมูลถึง ${thDate(LAST_DATE)} เวลา ${LAST.slice(10)} น. · เข้างาน ${INR.length} รายการ · ออกงาน ${OUTR.length} รายการ`;
+
+function filt(rows,isEmp){const f=$("fFrom").value,t=$("fTo").value,d=$("fDept").value,q=$("fName").value.trim().toLowerCase(),iss=$("fIssue").checked;
+  return rows.filter(r=>(isEmp||((!f||r.date>=f)&&(!t||r.date<=t)))&&(d==="ทุกแผนก"||r.dept===d)&&
+    (!q||r.real.toLowerCase().includes(q)||(r.nick||"").toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q))))&&(!iss||r.issue))}
+
+function summary(fi,fo){
+  const S={};EMP.forEach(e=>S[e.real]={emp:e,days:new Set(),late:0,lateMin:0,wfh:0,ot:0,forgot:0,early:0});
+  fi.filter(r=>r.emp&&!r.dup).forEach(r=>{const s=S[r.real];s.days.add(r.date);if(r.lateMin){s.late++;s.lateMin+=r.lateMin}if(r.loc==="WFH")s.wfh++});
+  fo.filter(r=>r.emp).forEach(r=>{const s=S[r.real];s.ot+=r.otMin;if(r.flags.some(f=>f[1]==="ลืมเช็คเอาท์"))s.forgot++;if(r.flags.some(f=>f[1].startsWith("ออกก่อนเวลา")))s.early++});
+  return Object.values(S);
+}
+
+function render(){
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
+  const fi=filt(IN),fo=filt(OUT);
+  const lastIns=IN.filter(r=>r.date===LAST_DATE&&r.emp);
+  $("k1").textContent=`${new Set(lastIns.map(r=>r.real)).size} คน`;
+  $("k1s").textContent=`${thDate(LAST_DATE)} · ทั้งหมด ${EMP.length} คน`;
+  const lates=fi.filter(r=>r.emp&&!r.dup&&r.lateMin>0);
+  $("k2").textContent=lates.length+" ครั้ง";$("k2s").textContent=`${new Set(lates.map(r=>r.real)).size} คน · รวม ${dur(lates.reduce((s,r)=>s+r.lateMin,0))}`;
+  const ot=fo.reduce((s,r)=>s+r.otMin,0);
+  $("k3").textContent=dur(ot);$("k3s").textContent=`${fo.filter(r=>r.otMin>0).length} รายการ · ผลิต + แพ็ก`;
+  const unk=fi.filter(r=>!r.emp).length+fo.filter(r=>!r.emp).length,miss=fo.filter(r=>r.flags.some(f=>f[1]==="ลืมเช็คเอาท์")).length,noin=fo.filter(r=>r.flags.some(f=>f[1]==="ไม่มีเช็คอิน")).length;
+  $("k4").textContent=unk+miss+noin;$("k4s").textContent=`ไม่พบชื่อ ${unk} · ลืมเช็คเอาท์ ${miss} · ไม่มีเช็คอิน ${noin}`;
+  let h="",n=0;
+  if(tab==="in"){n=fi.length;
+    h=`<thead><tr><th>วันที่</th><th>ชื่อจริง</th><th>ชื่อที่เช็คอิน</th><th>แผนก</th><th>เวลาเข้า</th><th>สถานที่</th><th class="num">ระยะห่าง</th><th>สถานะ</th></tr></thead><tbody>`+
+    fi.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td><td class="t">${r.time}</td><td>${esc(r.loc)}</td><td class="num t">${r.dist!=null?r.dist+" ม.":"–"}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
+  }else if(tab==="out"){n=fo.length;
+    h=`<thead><tr><th>วันที่ (กะ)</th><th>ชื่อจริง</th><th>ชื่อที่เช็คเอาท์</th><th>แผนก</th><th>เวลาเข้า</th><th>เวลาออก</th><th class="num">อยู่ในงาน</th><th class="num">OT</th><th>สถานะ</th></tr></thead><tbody>`+
+    fo.map(r=>`<tr><td>${thDate(r.date)}</td><td class="${r.emp?"":"unk"}">${esc(r.real)}</td><td class="nick">${esc(r.nick)}</td><td>${esc(r.dept)}</td><td class="t">${r.inTime||"–"}</td><td class="t">${r.outTime||"–"}</td><td class="num">${dur(r.stay)}</td><td class="num">${r.otMin?dur(r.otMin):"–"}</td><td>${pills(r.flags)}</td></tr>`).join("")+"</tbody>";
+  }else if(tab==="sum"){const S=summary(fi,fo).filter(s=>filt([{...s.emp,date:"",nick:s.emp.nick.join(" "),issue:s.forgot>0,emp:s.emp}],true).length);n=S.length;
+    h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่น</th><th>แผนก</th><th class="num">วันที่มาทำงาน</th><th class="num">มาสาย</th><th class="num">สายรวม</th><th class="num">WFH</th><th class="num">OT รวม</th><th class="num">ลืมเช็คเอาท์</th><th class="num">ออกก่อนเวลา</th></tr></thead><tbody>`+
+    S.map(s=>`<tr><td>${esc(s.emp.real)}</td><td class="nick">${esc(s.emp.nick.slice(0,2).join(", "))}</td><td>${esc(s.emp.dept)}</td><td class="num">${s.days.size}</td><td class="num">${s.late?s.late+" ครั้ง":"–"}</td><td class="num">${dur(s.lateMin)}</td><td class="num">${s.wfh||"–"}</td><td class="num">${DEPTS[s.emp.dept].ot?dur(s.ot):"ไม่มี OT"}</td><td class="num">${s.forgot?`<span class="pill p-bad">${s.forgot}</span>`:"–"}</td><td class="num">${s.early||"–"}</td></tr>`).join("")+"</tbody>";
+  }else{const E=EMP.filter(e=>filt([{...e,date:"",nick:e.nick.join(" "),issue:false,emp:e}],true).length);
+    const unkNames=[...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))];n=E.length;
+    h=`<thead><tr><th>ชื่อจริง</th><th>ชื่อเล่นที่ระบบรู้จัก</th><th>แผนก</th><th>OT</th></tr></thead><tbody>`+
+    E.map(e=>`<tr><td>${esc(e.real)}</td><td class="nick">${esc(e.nick.join(", "))}</td><td>${esc(e.dept)}</td><td>${DEPTS[e.dept].ot?'<span class="pill p-ot">มี OT</span>':'<span class="pill p-mute">ไม่มี</span>'}</td></tr>`).join("")+
+    (unkNames.length&&!$("fIssue").checked?`<tr><td class="unk">ชื่อที่ยังไม่รู้จัก</td><td class="unk" colspan="3">${esc(unkNames.join(", "))} — แจ้งชื่อจริงเพื่อเพิ่มในรายชื่อ</td></tr>`:"")+"</tbody>";
+  }
+  $("tbl").innerHTML=n?h:`<tbody><tr><td class="empty">ไม่มีรายการตามตัวกรองนี้ ลองขยายช่วงวันที่ หรือเลือก "ทุกแผนก"</td></tr></tbody>`;
+  $("count").textContent=`แสดง ${n} รายการ`;
+}
+["fFrom","fTo","fDept","fName","fIssue"].forEach(id=>$(id).addEventListener("input",render));
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{localStorage.setItem("hrTab2",tab)}catch(e){}render()});
+render();
+
+// ---------- Export Excel ----------
+function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout(toast.h);toast.h=setTimeout(()=>t.hidden=true,3500)}
+let dl=null;
+(async()=>{try{dl=window.claude?.use?await window.claude.use("downloads"):null}catch(e){dl=null}})();
+const plain=f=>f.map(x=>x[1]).join(", ");
+$("exportBtn").onclick=async()=>{
+  if(typeof XLSX==="undefined"){toast("โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้า");return}
+  const fi=filt(IN),fo=filt(OUT);
+  const s1=fi.map(r=>({"วันที่":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คอิน":r.nick,"แผนก":r.dept,"เวลาเข้า":r.time,"สถานที่":r.loc,"ระยะห่าง (ม.)":r.dist??"","สาย (นาที)":r.emp&&!r.dup?r.lateMin:"","สถานะ":plain(r.flags)}));
+  const s2=fo.map(r=>({"วันที่ (กะ)":r.date,"วัน":TH_DOW[dow(r.date)],"ชื่อจริง":r.real,"ชื่อที่เช็คเอาท์":r.nick,"แผนก":r.dept,"เวลาเข้า":r.inTime||"","เวลาออก":r.outTime||"","อยู่ในงาน (นาที)":r.stay??"","OT (นาที)":r.otMin,"OT (ชม.)":+(r.otMin/60).toFixed(2),"สถานะ":plain(r.flags)}));
+  const s3=summary(fi,fo).map(s=>({"ชื่อจริง":s.emp.real,"ชื่อเล่น":s.emp.nick.join(", "),"แผนก":s.emp.dept,"วันที่มาทำงาน":s.days.size,"มาสาย (ครั้ง)":s.late,"สายรวม (นาที)":s.lateMin,"WFH (ครั้ง)":s.wfh,"OT รวม (นาที)":s.ot,"OT รวม (ชม.)":+(s.ot/60).toFixed(2),"ลืมเช็คเอาท์":s.forgot,"ออกก่อนเวลา":s.early}));
+  const s4=[...INR.map(r=>({...r,ch:"เข้างาน"})),...OUTR.map(r=>({...r,ch:"ออกงาน"}))].filter(r=>!r.emp).map(r=>({"ห้อง":r.ch,"วันที่":r.date,"เวลา":r.time,"ชื่อที่พิมพ์":r.nick,"สถานที่":r.loc}));
+  const wb=XLSX.utils.book_new();
+  const add=(rows,name,w)=>{const ws=XLSX.utils.json_to_sheet(rows.length?rows:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
+  add(s3,"สรุปรายคน",[14,24,16,14,12,14,12,14,12,12,12]);
+  add(s1,"บันทึกเข้างาน",[12,6,14,20,16,10,12,12,10,28]);
+  add(s2,"บันทึกออกงาน",[12,6,14,20,16,10,12,16,10,10,36]);
+  add(s4,"ชื่อที่ไม่พบ",[10,12,8,20,12]);
+  const fname=`WIBWUB_HR_${$("fFrom").value}_ถึง_${$("fTo").value}.xlsx`;
+  if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
+  const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+  try{await dl.save({filename:fname,data:new Blob([buf])});toast("บันทึกไฟล์ Excel แล้ว")}
+  catch(e){toast(e&&e.code==="declined"?"ยกเลิกการบันทึกไฟล์":"บันทึกไฟล์ไม่สำเร็จ ลองใหม่อีกครั้ง")}
+};
+</script>
+</body></html>
