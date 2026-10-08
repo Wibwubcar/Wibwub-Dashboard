@@ -288,6 +288,13 @@ def cmd_sheet(a):
     missing = [n for n in want if n not in names]
     if missing: die(f"names missing from sheet '{tag}' column A: {missing} — add the rows by hand first", 5)
     first = min(names[n] for n in want); last_row = max(names[n] for n in want)
+    st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    wkey = tag + "_written"
+    if wkey not in st:   # first run on this tab: every non-empty cell counts as already written (by HR or us)
+        st[wkey] = sorted(f"{col(ci+1)}{ri+1}" for ri in range(first, last_row + 1) if ri < len(cur)
+                          for ci in range(2 * ndays) if ci + 1 < len(cur[ri]) and cur[ri][ci + 1].strip())
+        STATE.write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+    written = set(st[wkey]); new_cells = []
     block, kept, changes = [], [], 0
     for ri in range(first, last_row + 1):
         row = cur[ri] if ri < len(cur) else []
@@ -296,9 +303,12 @@ def cmd_sheet(a):
         for ci in range(2 * ndays):
             have = row[ci + 1].strip() if ci + 1 < len(row) else ""
             new = want.get(nm, [None] * (2 * ndays))[ci] if nm in want else None
-            if new is None or have == new: out.append(None); continue
-            if not SYSTEM_VAL.match(have): kept.append(f"{nm} {col(ci+1)}{ri+1}='{have}'"); out.append(None); continue
-            out.append(new); changes += 1
+            if new is None or new == "" or have == new: out.append(None); continue
+            a1 = f"{col(ci+1)}{ri+1}"
+            # APPEND-ONLY: never change a cell that has a value, and never refill a cell we (or HR) already filled once
+            if have or a1 in written:
+                kept.append(f"{nm} {a1} sheet='{have}' system='{new}'"); out.append(None); continue
+            out.append(new); changes += 1; new_cells.append(a1)
         block.append(out)
     # trim columns that never change
     used = [ci for ci in range(2 * ndays) if any(r[ci] is not None for r in block)]
@@ -312,13 +322,28 @@ def cmd_sheet(a):
     digest = hashlib.md5(json.dumps(vals, ensure_ascii=False).encode()).hexdigest()
     st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
     confirm_changed = st.get(tag + "_confirm") != digest or a.force_confirm
+    confirm_blocked = []
+    last_vals = st.get(tag + "_confirm_vals")
+    if confirm_changed and last_vals is not None:
+        if not a.confirm_current: die("--confirm-current is required (get_values of the confirm tab) to check HR has not edited it", 2)
+        cc = json.loads(Path(a.confirm_current).read_text(encoding="utf-8")).get("values", [])
+        nz = lambda v: str(v).strip().replace(",", "")
+        for ri in range(max(len(cc), len(last_vals))):
+            for ci in range(10):
+                old = last_vals[ri][ci] if ri < len(last_vals) and ci < len(last_vals[ri]) else ""
+                now = cc[ri][ci] if ri < len(cc) and ci < len(cc[ri]) else ""
+                if isinstance(old, str) and old.startswith("="): continue
+                if nz(old) != nz(now): confirm_blocked.append(f"{col(ci)}{ri+1}: was '{old}' now '{now}'")
+    if confirm_blocked: confirm_changed = False   # HR edited our tab: leave it alone and report
     batches = split_requests(req) if confirm_changed else []
     for i, b in enumerate(batches):
         (WORK / f"confirm_req_{i+1}.json").write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (WORK / "confirm_values.json").write_text(json.dumps({"range": f"'{tag} confirm ot'!A1:J{len(vals)}", "values": vals}, ensure_ascii=False), encoding="utf-8")
-    (WORK / "pending_digest.json").write_text(json.dumps({tag + "_confirm": digest}), encoding="utf-8")
+    pend = {wkey: sorted(written | set(new_cells))}
+    if confirm_changed: pend.update({tag + "_confirm": digest, tag + "_confirm_vals": vals})
+    (WORK / "pending_digest.json").write_text(json.dumps(pend, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({"grid_tab": tag, "grid_cells_to_write": changes, "grid_file": "work/grid_update.json" if grid else None,
-        "kept_hr_edits": kept[:20], "confirm_changed": confirm_changed, "confirm_request_files": [f"work/confirm_req_{i+1}.json" for i in range(len(batches))],
+        "skipped_cells_not_empty": kept[:30], "confirm_changed": confirm_changed, "confirm_blocked_hr_edits": confirm_blocked[:20], "confirm_request_files": [f"work/confirm_req_{i+1}.json" for i in range(len(batches))],
         "confirm_values_file": "work/confirm_values.json" if confirm_changed else None,
         "after_success_run": "python3 hr_update.py sheet-done"}, ensure_ascii=False))
 
@@ -380,7 +405,7 @@ def main():
     m.add_argument("--since", type=int); m.add_argument("--full", action="store_true"); m.add_argument("--month")
     s.add_parser("commit")
     sh = s.add_parser("sheet"); sh.add_argument("--grid-current", required=True); sh.add_argument("--confirm-sheet-id", type=int, required=True)
-    sh.add_argument("--force-confirm", action="store_true"); sh.add_argument("--month")
+    sh.add_argument("--force-confirm", action="store_true"); sh.add_argument("--month"); sh.add_argument("--confirm-current")
     s.add_parser("sheet-done")
     ar = s.add_parser("archive"); ar.add_argument("--month", required=True); ar.add_argument("--in", dest="in_file", required=True); ar.add_argument("--out", dest="out_file", required=True)
     n = s.add_parser("newmonth"); n.add_argument("--src-id", type=int, required=True); n.add_argument("--new-id", type=int, required=True)
