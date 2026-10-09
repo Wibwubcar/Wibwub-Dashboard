@@ -83,6 +83,8 @@ def compute(t):
 require('fs').writeFileSync(process.argv[2], JSON.stringify({LAST, LAST_DATE, MONTH,
  EMP: EMP.map(e=>({real:e.real, dept:e.dept, ot:DEPTS[e.dept].ot})),
  UNKNOWN: [...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))],
+ LEAVE_WARN: [...new Set(typeof LEAVE_WARN==="undefined"?[]:LEAVE_WARN)],
+ LEAVES: typeof LEAVES==="undefined"?[]:LEAVES.map(r=>({id:r.id,status:r.status,real:r.real,kind:r.kind,dates:r.dates,min:r.span?r.span.min:null})),
  FUZZY: [...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>r.nick+' -> '+r.fuzzy))],
  GRID: (()=>{const bk={};DAY.forEach(r=>{if(r.emp)bk[r.real+"|"+r.date]=r});const td=process.env.HR_TODAY;
    return Object.fromEntries(MONTHS.map(m=>[m,Object.fromEntries(EMP.map(e=>[e.real,gridRow(e,monthDates(m),td,bk)]))]))})(),
@@ -107,7 +109,8 @@ def cmd_state(a):
     pm = 12 if m == 1 else m - 1
     print(json.dumps({"page_month": month, "current_month": cur, "new_month": new_month,
         "last_day": last, "since": since, "in_lines": len(rin), "out_lines": len(rout),
-        "scrape_params": {"cur": TH_MONTH[m-1], "prev": TH_MONTH[pm-1], "since": since}}, ensure_ascii=False))
+        "scrape_params": {"cur": TH_MONTH[m-1], "prev": TH_MONTH[pm-1], "since": since},
+        "leave_params": {"sinceTs": (today.replace(day=1) - dt.timedelta(days=1)).replace(day=1).isoformat()}}, ensure_ascii=False))
 
 # ---------------------------------------------------------------- merge
 def merge_one(old, new, since, full, label):
@@ -164,10 +167,18 @@ def git(*args, check=True):
     if check and r.returncode: die("git " + " ".join(args) + ": " + (r.stderr or r.stdout)[:400])
     return r.stdout.strip()
 
+def clear_locks():
+    """git leaves *.lock files behind when the bridge does not allow deletes; move them aside so the next git command works."""
+    stamp = dt.datetime.now(BKK).strftime("%Y%m%d%H%M%S")
+    for lk in (".git/index.lock", ".git/HEAD.lock", ".git/objects/maintenance.lock") + tuple(
+            str(p.relative_to(REPO)) for p in (REPO / ".git").glob("next-index-*.lock")):
+        f = REPO / lk
+        if not f.exists(): continue
+        try: f.unlink()
+        except PermissionError: f.rename(REPO / ".git" / f"stale-{f.name}-{stamp}")
+
 def cmd_commit(a):
-    for lk in (".git/index.lock", ".git/HEAD.lock"):
-        try: (REPO / lk).unlink()
-        except FileNotFoundError: pass
+    clear_locks()
     s = SW.read_text(encoding="utf-8")
     m = re.search(r"const CACHE = 'wibwub-v(\d+)';", s)
     if not m: die("sw.js CACHE line not found — do not commit, check sw.js line 2")
@@ -177,7 +188,10 @@ def cmd_commit(a):
     git("add", "WIBWUB_HR_Attendance.html", "sw.js")
     name = git("log", "-1", "--format=%an"); mail = git("log", "-1", "--format=%ae")
     now = dt.datetime.now(BKK).strftime("%Y-%m-%d %H:%M")
-    git("-c", f"user.name={name}", "-c", f"user.email={mail}", "commit", "-q", "-m", f"auto-update: HR attendance {now} — Discord")
+    # commit ONLY our two files (other tasks may have staged their own files)
+    git("-c", f"user.name={name}", "-c", f"user.email={mail}", "commit", "-q", "-m", f"auto-update: HR attendance {now} — Discord",
+        "--", "WIBWUB_HR_Attendance.html", "sw.js")
+    clear_locks()
     head = git("show", "HEAD:WIBWUB_HR_Attendance.html")
     ok = head.strip() == PAGE.read_text(encoding="utf-8").strip()
     print(json.dumps({"commit": git("log", "-1", "--oneline"), "cache": int(m.group(1))+1, "verified": ok,
@@ -363,6 +377,30 @@ def cmd_archive(a):
         "unknown_names": d["UNKNOWN"], "days": len({r["date"] for r in rows}),
         "late_count": sum(1 for r in rows if r["lateMin"] > 0), "ot_min": sum(r["otMin"] for r in rows)}, ensure_ascii=False))
 
+LEAVE_RE = re.compile(r"^\d+-\d+\|\d{4}-\d{2}-\d{2}T\d{2}:\d{2}\|[^|\n]*(\|[^|\n]*){5}$")
+
+def cmd_leave(a):
+    """Merge scraped #การลาที่รออนุมัติ lines (msgId|ts|status|name|type|date|reason|considered) into RAW_LEAVE.
+    Lines with the same message id are replaced (status edits); older messages outside the scan window are kept."""
+    t, month, *_ = read_page()
+    m = re.search(r"const RAW_LEAVE=`([^`]*)`;", t)
+    if not m: die("RAW_LEAVE not found in the page (run patch_leave first)")
+    old = [l for l in m.group(1).split("\n") if l.strip()]
+    new = [l.strip() for l in Path(a.in_file).read_text(encoding="utf-8").split("\n") if l.strip()]
+    bad = [l for l in new if not LEAVE_RE.match(l)]
+    if bad: die(f"{len(bad)} malformed leave lines, e.g. {bad[:2]}")
+    by = {l.split("|", 1)[0]: l for l in old}
+    changed = [l for l in new if by.get(l.split("|", 1)[0]) != l]
+    for l in new: by[l.split("|", 1)[0]] = l
+    lines = sorted(by.values(), key=lambda l: l.split("|")[1])
+    if not changed: print(json.dumps({"status": "NO_CHANGE", "leave_lines": len(lines)})); sys.exit(10)
+    t2 = t[:m.start()] + "const RAW_LEAVE=`" + "\n".join(lines) + "`;" + t[m.end():]
+    node_check(t2); d = compute(t2)
+    tmp = PAGE.with_suffix(".tmp.html"); tmp.write_text(t2, encoding="utf-8"); os.replace(tmp, PAGE)
+    print(json.dumps({"status": "UPDATED", "leave_lines": len(lines), "new_or_changed": len(changed),
+        "changed": [{"status": l.split("|")[2], "name": l.split("|")[3], "type": l.split("|")[4], "date": l.split("|")[5]} for l in changed[:30]],
+        "warnings": d.get("LEAVE_WARN", [])}, ensure_ascii=False))
+
 def cmd_newmonth(a):
     sid = a.new_id; y, m = map(int, a.month.split("-"))
     ndays = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.date(y, m, 1)).days
@@ -399,11 +437,12 @@ def main():
     sh = s.add_parser("sheet"); sh.add_argument("--grid-current", required=True); sh.add_argument("--confirm-sheet-id", type=int, required=True)
     sh.add_argument("--force-confirm", action="store_true"); sh.add_argument("--month"); sh.add_argument("--confirm-current")
     s.add_parser("sheet-done")
+    lv = s.add_parser("leave"); lv.add_argument("--in", dest="in_file", required=True)
     ar = s.add_parser("archive"); ar.add_argument("--month", required=True); ar.add_argument("--in", dest="in_file", required=True); ar.add_argument("--out", dest="out_file", required=True)
     n = s.add_parser("newmonth"); n.add_argument("--src-id", type=int, required=True); n.add_argument("--new-id", type=int, required=True)
     n.add_argument("--title", required=True); n.add_argument("--index", type=int, required=True); n.add_argument("--month", required=True)
     a = p.parse_args()
-    {"state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "newmonth": cmd_newmonth, "archive": cmd_archive}[a.cmd](a)
+    {"state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "newmonth": cmd_newmonth, "archive": cmd_archive, "leave": cmd_leave}[a.cmd](a)
 
 if __name__ == "__main__":
     main()
