@@ -357,7 +357,10 @@ def cmd_sheet_done(a):
     p = WORK / "pending_digest.json"
     if not p.exists(): die("nothing pending")
     st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
-    st.update(json.loads(p.read_text(encoding="utf-8"))); STATE.write_text(json.dumps(st), encoding="utf-8"); p.unlink()
+    pend = json.loads(p.read_text(encoding="utf-8"))
+    if not pend: die("nothing pending")
+    st.update(pend); STATE.write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+    p.write_text("{}", encoding="utf-8")   # the bridge may not allow deleting files
     print("saved")
 
 def cmd_archive(a):
