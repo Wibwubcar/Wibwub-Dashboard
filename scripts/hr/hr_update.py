@@ -82,7 +82,7 @@ def compute(t):
     logic += """
 require('fs').writeFileSync(process.argv[2], JSON.stringify({LAST, LAST_DATE, MONTH,
  EMP: EMP.map(e=>({real:e.real, dept:e.dept, ot:DEPTS[e.dept].ot})),
- UNKNOWN: [...new Set([...INR,...OUTR].filter(r=>!r.emp).map(r=>r.nick))],
+ UNKNOWN: [...new Set([...INR,...OUTR].filter(r=>!r.emp&&r.date.startsWith(MONTH)).map(r=>r.nick))],
  LEAVE_WARN: [...new Set(typeof LEAVE_WARN==="undefined"?[]:LEAVE_WARN)],
  LEAVES: typeof LEAVES==="undefined"?[]:LEAVES.map(r=>({id:r.id,status:r.status,real:r.real,kind:r.kind,dates:r.dates,min:r.span?r.span.min:null})),
  FUZZY: [...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>r.nick+' -> '+r.fuzzy))],
