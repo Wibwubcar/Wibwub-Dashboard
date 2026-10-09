@@ -95,6 +95,7 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
         <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
         <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
         <div><b>พักเที่ยง</b>จ–ศ หัก 12:00–13:00 ออกจากชั่วโมงทำงาน · เสาร์ ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00</div>
+        <div><b>รอบตัด OT</b>วันตัดรอบแต่ละเดือนไม่เท่ากัน ให้ HR เลือก "กำหนดเอง" แล้วใส่วันเริ่ม–วันสิ้นสุดของรอบเอง ตัวเลข OT และไฟล์ Export จะคิดตามช่วงนั้น</div>
         <div><b>การลา (#การลาที่รออนุมัติ)</b>นับเฉพาะใบที่อนุมัติแล้ว · ลาเต็มวัน = 8 ชม. (เสาร์ ผลิต/แพ็ก 4 ชม.) · ลาเป็นชั่วโมง/ช่วงเวลา คิดจากที่แจ้งในประเภทการลาหรือเหตุผล และหักออกจากเวลาสาย/ออกก่อน</div>
         <div><b>ชื่อพิมพ์ผิด</b>ต่างจากชื่อในรายชื่อ 1 ตัวอักษร (เช่น ริย → ริน) ระบบจับคู่ให้และติดป้าย "พิมพ์ผิด?" ให้ตรวจ</div>
       </div>
@@ -1072,7 +1073,7 @@ $("exportBtn").onclick=async()=>{
   const EN_MON=["JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"];
   const hrT=s=>{if(!s)return"";const m=s.match(/^(\d+):(\d+)/);return m?`${+m[1]}:${m[2]}`:s};
   const d0=f||MONTH+"-01",d1=t||LAST_DATE;
-  const mIdx=+d0.slice(5,7)-1,yy=d0.slice(2,4),tag=`${EN_MON[mIdx]} ${yy}`;
+  const tagD=d0.slice(0,7)===d1.slice(0,7)?d0:d1,mIdx=+tagD.slice(5,7)-1,yy=tagD.slice(2,4),tag=`${EN_MON[mIdx]} ${yy}`;   // รอบ OT ข้ามเดือน (เช่น 31 ส.ค.–30 ก.ย.) = ตั้งชื่อตามเดือนท้ายรอบ
   const dates=[];for(let d=d0;d<=d1;d=addDay(d,1))dates.push(d);
   const dept=$("fDept").value,people=EMP.filter(e=>dept==="ทุกแผนก"||e.dept===dept);
   const byKey={};DAY.forEach(r=>{if(r.emp)byKey[r.real+"|"+r.date]=r});
