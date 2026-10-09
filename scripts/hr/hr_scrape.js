@@ -31,6 +31,9 @@
   const reachedStart = () => Object.values(store).some(v => v.mon === P.prev || (v.mon === P.cur && v.d < P.since));
   (async () => {
     try {
+      // 0) wait for Discord to render the channel (a hidden/just-opened tab can take a while)
+      for (let i = 0; i < 60 && !(document.querySelector('li[id^="chat-messages-"]') && sc()); i++) await sleep(500);
+      if (!sc()) throw new Error('channel did not load (no messages after 30 s) — run this channel again');
       // 1) make sure we start at the newest messages
       const jump = [...document.querySelectorAll('button,div[role="button"]')].find(b => /Jump to Present|ข้ามไปยังปัจจุบัน/i.test(b.textContent || ''));
       if (jump) { jump.click(); await sleep(2500); }
