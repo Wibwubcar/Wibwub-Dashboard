@@ -21,7 +21,7 @@
   const parse = li => {
     const t = li.innerText;
     const m = t.match(/\n([^\n]+?) (เข้างาน|ออกงาน) \(([^)]*)\)\n/);
-    const tm = t.match(/เวลา\n(\d+) (\S+) (\d{4}) เวลา (\d{1,2}:\d{2})/);
+    const tm = t.match(/เวลา\n(\d+) (\S+) (\d{4})(?: เวลา)? (\d{1,2}:\d{2})/);
     if (!m || !tm) return { raw: t.slice(0, 200) };
     const dist = t.match(/ระยะห่าง:\s*([\d,\.]+)/);
     return { name: m[1].trim(), loc: m[3], d: +tm[1], mon: tm[2], time: tm[4], dist: dist ? dist[1] : '' };
