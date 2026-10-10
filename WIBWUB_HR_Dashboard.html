@@ -139,9 +139,8 @@ tr:hover td{background:#fafbff}
         <div class="kpi"><div class="kl">ชั่วโมงเฉลี่ย</div><div class="kv ok" id="kpi-hrs">—</div><div class="ks">ชม./คน</div></div>
       </div>
       <div class="ctrl-row">
-        <div class="ctrl-label">วันที่</div>
-        <input type="date" class="ctrl-input" id="today-date" onchange="loadToday()">
-        <button class="ctrl-btn" onclick="setTodayDate()">วันนี้</button>
+        <div class="ctrl-label">วันนี้: <span id="today-date-label" style="font-weight:700"></span></div>
+        <input type="date" id="today-date" hidden>
         <button class="reload-btn" onclick="loadToday()">↻ รีโหลด</button>
         <button class="ctrl-btn" id="quick-notify-btn" onclick="triggerCheckoutNotify()" style="margin-left:auto;background:#fff7ed;color:#c2410c;border-color:rgba(194,65,12,.25)" title="ส่ง Line แจ้งเตือนคนที่ยังไม่ Check out ทันที">🔔 แจ้งเตือน Check out</button>
         <span id="quick-notify-status" style="font-size:11px;min-height:14px"></span>
@@ -624,8 +623,9 @@ function goAttTab(h,nav){
 
 // ══ TODAY ════════════════════════════════════
 async function loadToday(){
-  const date=document.getElementById('today-date').value;
-  if(!date)return;
+  const date=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];
+  document.getElementById('today-date').value=date;
+  const lb=document.getElementById('today-date-label');if(lb)lb.textContent=new Date(date+'T12:00:00Z').toLocaleDateString('th-TH',{weekday:'long',day:'numeric',month:'long',year:'numeric',timeZone:'UTC'});
   const wrap=document.getElementById('today-tbl-wrap');
   wrap.innerHTML='<div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>';
   try{
@@ -676,10 +676,12 @@ async function discordAttendanceDocs(date){
   const mk=(t)=>t?new Date(`${date}T${t}:00+07:00`):null;
   return Object.values(by).sort((a,b)=>a.in.localeCompare(b.in)).map(o=>{
     const late=toMin(o.in)>8*60;
-    const hrs=o.out?Math.round((toMin(o.out)-toMin(o.in))/6)/10:null;
+    let wm=o.out?toMin(o.out)-toMin(o.in):null;if(wm!=null&&/ผลิต|แพ็ก/.test(o.dept)&&toMin(o.out)>=17*60)wm-=60; // ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00
+    const hrs=wm!=null?Math.round(Math.max(0,wm)/6)/10:null;
     return{id:o.name,data:()=>({name:o.name,dept:o.dept,check_in:mk(o.in),check_out:mk(o.out),status:late?'late':'present',work_hours:hrs,loc_label:o.loc})};
   });
 }
+setInterval(()=>{if(document.getElementById('sec-today')?.classList.contains('active'))loadToday();},300000);
 function setTodayDate(){document.getElementById('today-date').value=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];loadToday();}
 
 function fmtTime(v){
@@ -712,7 +714,7 @@ function renderTodayTable(docs,container){
   const rows=docs.map(doc=>{
     const d=doc.data();
     const inT=fmtTime(d.check_in),outT=fmtTime(d.check_out);
-    const hrs=d.check_out&&d.check_in?Math.round((new Date(d.check_out)-new Date(d.check_in))/360000)/10:null;
+    const hrs=d.work_hours!=null?d.work_hours:(d.check_out&&d.check_in?Math.round((new Date(d.check_out)-new Date(d.check_in))/360000)/10:null);
     const st=d.check_out?'checked-out':d.status||'present';
     const badgeMap={'checked-out':'<span class="badge b-approved">เสร็จสิ้น</span>','late':'<span class="badge b-late">มาสาย</span>','present':'<span class="badge b-present">กำลังทำงาน</span>'};
     const badge=badgeMap[st]||badgeMap.present;
