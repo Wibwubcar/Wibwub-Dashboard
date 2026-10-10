@@ -124,6 +124,7 @@ tr:hover td{background:#fafbff}
     <div class="nt"        id="nt-leave"      onclick="goTab('leave')">📝 ใบลา&nbsp;<span id="leave-badge" style="display:none;background:#ef4444;color:#fff;border-radius:10px;font-size:10px;padding:1px 6px"></span></div>
     <div class="nt"        id="nt-discord"    onclick="goTab('discord')">💬 บันทึกเข้า-ออกงาน</div>
     <div class="nt"        id="nt-leavesum"   onclick="goLeaveSummary()">📊 สรุปวันลา</div>
+    <div class="nt"        id="nt-prodrep"    onclick="goAttTab('prod','nt-prodrep')">🏭 รายงานการผลิต</div>
     <div class="nt"        id="nt-timesheet"  onclick="goTab('timesheet')">🗓️ ตารางเวลา</div>
     <div class="nt"        id="nt-settings"   onclick="goTab('settings')">⚙️ ตั้งค่า</div>
   </div>
@@ -620,7 +621,7 @@ function initApp(){
 
 function goTab(t,keepHash){
   if(t==='discord'){const f=document.getElementById('discord-iframe');if(f&&!f.src)f.src=f.dataset.src;
-    else if(f&&!keepHash){try{if(f.contentWindow.location.hash==='#leave')f.contentWindow.location.hash='day'}catch(e){}}}
+    else if(f&&!keepHash){try{if(['#leave','#prod'].includes(f.contentWindow.location.hash))f.contentWindow.location.hash='day'}catch(e){}}}
   document.querySelectorAll('.nt').forEach(el=>el.classList.remove('active'));
   document.querySelectorAll('.sec').forEach(el=>el.classList.remove('active'));
   document.getElementById('nt-'+t)?.classList.add('active');
@@ -634,6 +635,15 @@ function goLeaveSummary(){
   goTab('discord',true);
   document.getElementById('nt-discord')?.classList.remove('active');
   document.getElementById('nt-leavesum')?.classList.add('active');
+}
+
+// แท็บในหน้าเข้า-ออกงาน เช่น รายงานการผลิต (#prod)
+function goAttTab(h,nav){
+  const f=document.getElementById('discord-iframe');
+  if(f){const u=f.dataset.src+'#'+h;if(!f.src)f.src=u;else{try{f.contentWindow.location.hash=h}catch(e){f.src=u}}}
+  goTab('discord',true);
+  document.getElementById('nt-discord')?.classList.remove('active');
+  document.getElementById(nav)?.classList.add('active');
 }
 
 // ══ TODAY ════════════════════════════════════

@@ -84,6 +84,8 @@ require('fs').writeFileSync(process.argv[2], JSON.stringify({LAST, LAST_DATE, MO
  EMP: EMP.map(e=>({real:e.real, dept:e.dept, ot:DEPTS[e.dept].ot})),
  UNKNOWN: [...new Set([...INR,...OUTR].filter(r=>!r.emp&&r.date.startsWith(MONTH)).map(r=>r.nick))],
  LEAVE_WARN: [...new Set(typeof LEAVE_WARN==="undefined"?[]:LEAVE_WARN)],
+ PROD_WARN: [...new Set(typeof PROD_WARN==="undefined"?[]:PROD_WARN)],
+ PROD: typeof PROD==="undefined"?[]:PROD.map(r=>({id:r.id,date:r.date,by:r.by,real:r.real,kind:r.kind,items:r.items.length,qty:r.items.reduce((a,i)=>a+(i.empty?0:i.qty),0),flags:r.flags.concat(...r.items.map(i=>i.flags))})),
  LEAVES: typeof LEAVES==="undefined"?[]:LEAVES.map(r=>({id:r.id,status:r.status,real:r.real,kind:r.kind,dates:r.dates,min:r.span?r.span.min:null})),
  FUZZY: [...new Set([...INR,...OUTR].filter(r=>r.fuzzy).map(r=>r.nick+' -> '+r.fuzzy))],
  GRID: (()=>{const bk={};DAY.forEach(r=>{if(r.emp)bk[r.real+"|"+r.date]=r});const td=process.env.HR_TODAY;
@@ -110,7 +112,8 @@ def cmd_state(a):
     print(json.dumps({"page_month": month, "current_month": cur, "new_month": new_month,
         "last_day": last, "since": since, "in_lines": len(rin), "out_lines": len(rout),
         "scrape_params": {"cur": TH_MONTH[m-1], "prev": TH_MONTH[pm-1], "since": since},
-        "leave_params": {"sinceTs": (today.replace(day=1) - dt.timedelta(days=1)).replace(day=1).isoformat()}}, ensure_ascii=False))
+        "leave_params": {"sinceTs": (today.replace(day=1) - dt.timedelta(days=1)).replace(day=1).isoformat()},
+        "prod_params": {"sinceTs": (today - dt.timedelta(days=14)).isoformat()}}, ensure_ascii=False))
 
 # ---------------------------------------------------------------- merge
 def merge_one(old, new, since, full, label):
@@ -404,6 +407,34 @@ def cmd_leave(a):
         "changed": [{"status": l.split("|")[2], "name": l.split("|")[3], "type": l.split("|")[4], "date": l.split("|")[5]} for l in changed[:30]],
         "warnings": d.get("LEAVE_WARN", [])}, ensure_ascii=False))
 
+def cmd_prod(a):
+    """Merge scraped #รายงานการผลิตbyฝ่ายผลิต messages (JSON lines {id,ts,by,text}) into RAW_PROD.
+    Same message id = replaced (edits); older messages outside the scan window are kept."""
+    t, month, *_ = read_page()
+    m = re.search(r"const RAW_PROD=\[\n(.*?)\n?\];\n", t, re.S)
+    if not m: die("RAW_PROD not found in the page (run patch_prod first)")
+    old = [json.loads(l.rstrip(",")) for l in m.group(1).split("\n") if l.strip()]
+    new = []
+    for i, l in enumerate(Path(a.in_file).read_text(encoding="utf-8").split("\n")):
+        if not l.strip(): continue
+        try: o = json.loads(l)
+        except Exception: die(f"line {i+1} is not valid JSON: {l[:80]}")
+        if not (isinstance(o, dict) and o.get("id") and o.get("ts") and "text" in o): die(f"line {i+1} missing id/ts/text")
+        o.setdefault("by", o.pop("author", "")); new.append({"id": o["id"], "ts": o["ts"], "by": o["by"], "text": o["text"]})
+    by = {o["id"]: o for o in old}
+    changed = [o for o in new if by.get(o["id"]) != o]
+    for o in new: by[o["id"]] = o
+    rows = sorted(by.values(), key=lambda o: o["ts"])
+    if not changed: print(json.dumps({"status": "NO_CHANGE", "prod_messages": len(rows)})); sys.exit(10)
+    body = ",\n".join(json.dumps(o, ensure_ascii=False).replace("</", "<\\/") for o in rows)
+    t2 = t[:m.start()] + "const RAW_PROD=[\n" + body + "\n];\n" + t[m.end():]
+    node_check(t2); d = compute(t2)
+    tmp = PAGE.with_suffix(".tmp.html"); tmp.write_text(t2, encoding="utf-8"); os.replace(tmp, PAGE)
+    ids = {o["id"] for o in changed}
+    print(json.dumps({"status": "UPDATED", "prod_messages": len(rows), "new_or_changed": len(changed),
+        "reports": [{k: r[k] for k in ("date", "by", "real", "kind", "items", "qty")} for r in d.get("PROD", []) if r["id"] in ids][:30],
+        "warnings": [w for w in d.get("PROD_WARN", [])][-40:]}, ensure_ascii=False))
+
 def cmd_newmonth(a):
     sid = a.new_id; y, m = map(int, a.month.split("-"))
     ndays = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.date(y, m, 1)).days
@@ -441,11 +472,12 @@ def main():
     sh.add_argument("--force-confirm", action="store_true"); sh.add_argument("--month"); sh.add_argument("--confirm-current")
     s.add_parser("sheet-done")
     lv = s.add_parser("leave"); lv.add_argument("--in", dest="in_file", required=True)
+    pr = s.add_parser("prod"); pr.add_argument("--in", dest="in_file", required=True)
     ar = s.add_parser("archive"); ar.add_argument("--month", required=True); ar.add_argument("--in", dest="in_file", required=True); ar.add_argument("--out", dest="out_file", required=True)
     n = s.add_parser("newmonth"); n.add_argument("--src-id", type=int, required=True); n.add_argument("--new-id", type=int, required=True)
     n.add_argument("--title", required=True); n.add_argument("--index", type=int, required=True); n.add_argument("--month", required=True)
     a = p.parse_args()
-    {"state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "newmonth": cmd_newmonth, "archive": cmd_archive, "leave": cmd_leave}[a.cmd](a)
+    {"state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "newmonth": cmd_newmonth, "archive": cmd_archive, "leave": cmd_leave, "prod": cmd_prod}[a.cmd](a)
 
 if __name__ == "__main__":
     main()
