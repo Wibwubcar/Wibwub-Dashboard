@@ -629,10 +629,56 @@ async function loadToday(){
   const wrap=document.getElementById('today-tbl-wrap');
   wrap.innerHTML='<div class="loading-msg"><span class="spin"></span> กำลังโหลด...</div>';
   try{
-    const docs=await fsQuery('attendance',[{field:'date',value:date}],{field:'check_in',dir:'ASCENDING'});
+    let docs=null;
+    try{docs=await discordAttendanceDocs(date);}catch(e){console.warn('discord attendance failed',e);}
+    if(!docs)docs=await fsQuery('attendance',[{field:'date',value:date}],{field:'check_in',dir:'ASCENDING'});
     updateKPIs(docs);
     renderTodayTable(docs,wrap);
   }catch(e){wrap.innerHTML=`<div class="loading-msg" style="color:var(--rd)">โหลดไม่สำเร็จ: ${e.message}</div>`;}
+}
+
+// ══ ATTENDANCE FROM DISCORD ═══════════════════
+// ข้อมูลเข้า-ออกงานจริงมาจาก Discord (#บันทึกเข้างาน/#บันทึกออกงาน) ซึ่งถูกอัปเดตลงไฟล์ WIBWUB_HR_Attendance.html
+// (คอลเลกชัน Firestore 'attendance' ไม่ได้ถูกใช้แล้ว) → อ่านจากไฟล์นั้นมาแสดงในแท็บ "วันนี้"
+let _discordSrc=null;
+async function _loadDiscordSrc(){
+  if(_discordSrc)return _discordSrc;
+  const r=await fetch('WIBWUB_HR_Attendance.html',{cache:'no-store'});
+  if(!r.ok)throw new Error('attendance file '+r.status);
+  const t=await r.text();
+  const grab=n=>{const m=t.match(new RegExp('const '+n+'=`([\\s\\S]*?)`'));return m?m[1]:'';};
+  const month=(t.match(/const MONTH="(\d{4}-\d{2})"/)||[])[1];
+  const empTxt=(t.match(/const EMP=(\[[\s\S]*?\n\]);/)||[])[1];
+  const EMP=empTxt?(new Function('return '+empTxt))():[];
+  let ARCHIVE={};
+  try{const a=t.indexOf('const ARCHIVE=');if(a>=0){const e=t.indexOf('\nconst ',a+10);ARCHIVE=(new Function('return '+t.slice(a+14,e).replace(/;\s*$/,'')))();}}catch(e){}
+  _discordSrc={month,RAW_IN:grab('RAW_IN'),RAW_OUT:grab('RAW_OUT'),EMP,ARCHIVE};
+  return _discordSrc;
+}
+async function discordAttendanceDocs(date){
+  const S=await _loadDiscordSrc();
+  const ym=date.slice(0,7),day=+date.slice(8,10);
+  let inTxt,outTxt;
+  if(ym===S.month){inTxt=S.RAW_IN;outTxt=S.RAW_OUT;}
+  else if(S.ARCHIVE[ym]){inTxt=S.ARCHIVE[ym].in;outTxt=S.ARCHIVE[ym].out;}
+  else return [];
+  const NICK={};S.EMP.forEach(e=>{const E=Array.isArray(e)?{real:e[0],dept:e[1],nick:e[2]}:e;(E.nick||[]).forEach(n=>NICK[String(n).trim().toLowerCase()]=E);});
+  const rows=txt=>(txt||'').split('\n').filter(l=>l.trim()).map(l=>{const[dd,t,n,loc]=l.split('|');return{day:+dd,time:t,nick:(n||'').trim(),loc:loc||''};}).filter(r=>r.day===day);
+  const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m;};
+  const LOC={W:'Warehouse',WFH:'WFH',NEWGARAGE:'New Garage',GARAGE:'Garage'};
+  const by={};
+  rows(inTxt).forEach(r=>{const e=NICK[r.nick.toLowerCase()];const key=e?e.real:r.nick;
+    const o=by[key]||(by[key]={name:key,dept:e?e.dept:'—',in:null,out:null,loc:''});
+    if(!o.in||toMin(r.time)<toMin(o.in)){o.in=r.time;o.loc=LOC[r.loc]||r.loc;}});
+  rows(outTxt).forEach(r=>{const e=NICK[r.nick.toLowerCase()];const key=e?e.real:r.nick;
+    const o=by[key];if(!o||!o.in)return;
+    if(toMin(r.time)>=toMin(o.in)&&(!o.out||toMin(r.time)>toMin(o.out)))o.out=r.time;});
+  const mk=(t)=>t?new Date(`${date}T${t}:00+07:00`):null;
+  return Object.values(by).sort((a,b)=>a.in.localeCompare(b.in)).map(o=>{
+    const late=toMin(o.in)>8*60;
+    const hrs=o.out?Math.round((toMin(o.out)-toMin(o.in))/6)/10:null;
+    return{id:o.name,data:()=>({name:o.name,dept:o.dept,check_in:mk(o.in),check_out:mk(o.out),status:late?'late':'present',work_hours:hrs,loc_label:o.loc})};
+  });
 }
 function setTodayDate(){document.getElementById('today-date').value=new Date(Date.now()+7*3600*1000).toISOString().split('T')[0];loadToday();}
 
@@ -670,10 +716,10 @@ function renderTodayTable(docs,container){
     const st=d.check_out?'checked-out':d.status||'present';
     const badgeMap={'checked-out':'<span class="badge b-approved">เสร็จสิ้น</span>','late':'<span class="badge b-late">มาสาย</span>','present':'<span class="badge b-present">กำลังทำงาน</span>'};
     const badge=badgeMap[st]||badgeMap.present;
-    const loc=d.check_in_lat?`${Number(d.check_in_lat).toFixed(4)}, ${Number(d.check_in_lng).toFixed(4)}`:'—';
+    const loc=d.check_in_lat?`${Number(d.check_in_lat).toFixed(4)}, ${Number(d.check_in_lng).toFixed(4)}`:(d.loc_label||'—');
     return `<tr><td><strong>${d.name||d.email||'—'}</strong><br><span style="font-size:10px;color:var(--sub)">${d.email||''}</span></td><td>${d.dept||'—'}</td><td style="font-weight:600;font-variant-numeric:tabular-nums">${inT}</td><td style="font-variant-numeric:tabular-nums">${outT}</td><td class="td-c">${hrs!==null?hrs+' ชม.':'—'}</td><td class="td-c">${badge}</td><td style="font-size:10px;color:var(--sub)">${loc}</td></tr>`;
   }).join('');
-  container.innerHTML=`<table><thead><tr><th>พนักงาน</th><th>แผนก/Role</th><th>เข้างาน</th><th>ออกงาน</th><th class="td-c">ชั่วโมง</th><th class="td-c">สถานะ</th><th>GPS</th></tr></thead><tbody>${rows}</tbody></table>`;
+  container.innerHTML=`<table><thead><tr><th>พนักงาน</th><th>แผนก/Role</th><th>เข้างาน</th><th>ออกงาน</th><th class="td-c">ชั่วโมง</th><th class="td-c">สถานะ</th><th>สถานที่</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
 
 // ══ LEAVE ════════════════════════════════════
