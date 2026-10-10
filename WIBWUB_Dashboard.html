@@ -306,6 +306,7 @@
     <div class="nav-item" data-sec="hr" onclick="go('hr',this)"><span class="nav-icon">👥</span><span>HR & พนักงาน</span></div>
     <div class="nav-item" data-sec="projects" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
     <div class="nav-item" data-sec="procurement" id="nav-procurement-item" onclick="go('procurement',this)" style="display:none"><span class="nav-icon">📦</span><span>Forecast</span></div>
+    <div class="nav-item" data-sec="prodreport" id="nav-prodreport-item" onclick="go('prodreport',this)" style="display:none"><span class="nav-icon">🏭</span><span>รายงานการผลิต</span></div>
     <div class="nav-sec" id="ns-admin" style="display:none">Admin</div>
     <div class="nav-item" data-sec="admin" id="nav-admin-item" onclick="go('admin',this)" style="display:none"><span class="nav-icon">⚙️</span><span>จัดการผู้ใช้</span></div>
   </nav>
@@ -1584,6 +1585,16 @@
       </iframe>
     </section>
 
+    <!-- ─── PRODUCTION REPORT SECTION (รายงานการผลิต จาก Discord #รายงานการผลิตbyฝ่ายผลิต) ─── -->
+    <section id="prodreport" class="section" style="padding:0;margin:-26px;">
+      <iframe
+        data-src="WIBWUB_HR_Attendance.html#prod"
+        id="prodreport-iframe"
+        style="width:100%;height:calc(100vh - 64px);border:none;display:block;"
+        title="รายงานการผลิต">
+      </iframe>
+    </section>
+
     <!-- ─── ADMIN SECTION ─── -->
     <section id="admin" class="section">
       <div class="admin-form-card">
@@ -1632,7 +1643,7 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',admin:'⚙️ จัดการผู้ใช้'};
+const TITLES = {overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',prodreport:'🏭 รายงานการผลิต',admin:'⚙️ จัดการผู้ใช้'};
 
 // ── HR iframe auth helper ──────────────────────────────────────────────────────
 // Sends current user's ID token to the HR iframe so it can authenticate
@@ -1672,6 +1683,7 @@ function go(id, el) {
   document.getElementById('ptitle').textContent = TITLES[id] || id;
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
   if (id === 'admin') { loadAdminUsers(); renderPermissionsMatrix(); }
+  if (id === 'prodreport') { const pf=document.getElementById('prodreport-iframe'); if(pf&&!pf.src) pf.src=pf.dataset.src; }
   // Re-send token when navigating to HR (iframe may have just become visible)
   if (id === 'hr') {
     const u = firebase.auth().currentUser;
@@ -3011,12 +3023,12 @@ window._userName = null;
 
 const ROLE_LABEL = {admin:'Admin',head_marketing:'Head Marketing',kol_team:'KOL Team',content_team:'Content Team',hr_team:'HR Team',procurement:'จัดซื้อ'};
 let ROLE_SECTIONS_MAP = {
-  admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','admin'],
-  head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','procurement'],
+  admin:          ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','hr','projects','procurement','prodreport','admin'],
+  head_marketing: ['overview','sales','shopee','tiktok','lazada','products','ads','social','affiliate','procurement','prodreport'],
   kol_team:       ['affiliate'],
   content_team:   ['social'],
-  hr_team:        ['hr'],
-  procurement:    ['procurement'],
+  hr_team:        ['hr','prodreport'],
+  procurement:    ['procurement','prodreport'],
 };
 const ROLE_DEFAULT_PAGE = {admin:'overview',head_marketing:'overview',kol_team:'affiliate',content_team:'social',hr_team:'hr',procurement:'procurement'};
 
@@ -3071,7 +3083,7 @@ function applyRoleNav(role){
   else { adminSec.style.display='none'; adminItem.style.display='none'; }
 
   // Hide nav section headers that have no visible items
-  [['ns-overview',['overview']],['ns-sales',['sales','shopee','tiktok','lazada']],['ns-marketing',['products','ads','social','affiliate']],['ns-team',['hr','projects','procurement']]].forEach(([headId,secs])=>{
+  [['ns-overview',['overview']],['ns-sales',['sales','shopee','tiktok','lazada']],['ns-marketing',['products','ads','social','affiliate']],['ns-team',['hr','projects','procurement','prodreport']]].forEach(([headId,secs])=>{
     const hasVisible=secs.some(s=>allowed.includes(s));
     const headEl=document.getElementById(headId);
     if(headEl) headEl.style.display=hasVisible?'':'none';
@@ -3223,7 +3235,7 @@ const PERM_SECTIONS = [
   {group:'📊 ภาพรวม',    items:[{id:'overview',label:'ภาพรวมธุรกิจ'}]},
   {group:'💰 ยอดขาย',    items:[{id:'sales',label:'ยอดขายรวม'},{id:'shopee',label:'🧡 Shopee'},{id:'tiktok',label:'🎵 TikTok'},{id:'lazada',label:'💙 Lazada'}]},
   {group:'📣 การตลาด',   items:[{id:'products',label:'🏆 Top สินค้า'},{id:'ads',label:'📢 Ads'},{id:'social',label:'Social Media'},{id:'affiliate',label:'🤝 Affiliate'}]},
-  {group:'👥 ทีม',       items:[{id:'hr',label:'HR & พนักงาน'},{id:'projects',label:'Projects & Tasks'},{id:'procurement',label:'📦 Forecast / จัดซื้อ'}]},
+  {group:'👥 ทีม',       items:[{id:'hr',label:'HR & พนักงาน'},{id:'projects',label:'Projects & Tasks'},{id:'procurement',label:'📦 Forecast / จัดซื้อ'},{id:'prodreport',label:'🏭 รายงานการผลิต'}]},
 ];
 
 async function loadRolePermissions(){
@@ -3231,7 +3243,7 @@ async function loadRolePermissions(){
     const snap=await fsGet('settings', 'rolePermissions');
     if(snap.exists){
       const data=snap.data();
-      PERM_ROLES.forEach(r=>{ if(data[r]&&Array.isArray(data[r])) ROLE_SECTIONS_MAP[r]=data[r]; });
+      PERM_ROLES.forEach(r=>{ if(data[r]&&Array.isArray(data[r])){ ROLE_SECTIONS_MAP[r]=data[r]; if(!data[r].includes('prodreport')&&(data[r].includes('hr')||data[r].includes('procurement'))&&!(data.__prodreportOff&&data.__prodreportOff.includes(r))) ROLE_SECTIONS_MAP[r]=[...data[r],'prodreport']; } });
     }
   }catch(e){ console.warn('loadRolePermissions:',e); }
 }
