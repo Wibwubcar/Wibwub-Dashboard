@@ -1170,6 +1170,7 @@ prDay=PR_DATES[PR_DATES.length-1]||BKK_TODAY();
 const fmtN=n=>Number(n).toLocaleString("th-TH");
 function prRange(){if(prMode==="day")return[prDay,prDay];return[$("fFrom").value||null,$("fTo").value||null]}
 function renderProd(){
+  ["fMonth","fFrom","fTo"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=prMode==="day"?"none":""});   // วันเดียว: ไม่ใช้ช่วงวันที่ด้านบน
   const[pf,pt]=prRange(),q=$("fName").value.trim().toLowerCase();
   const inR=d=>(!pf||d>=pf)&&(!pt||d<=pt);
   const hitQ=(r,i)=>!q||(r.real||"").toLowerCase().includes(q)||String(r.by).toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q)))||(i&&prodLabel(i).toLowerCase().includes(q));
@@ -1212,6 +1213,7 @@ function renderProd(){
       `<details><summary>ข้อความต้นฉบับ</summary><pre>${esc(r.text)}</pre></details></article>`}).join("")+`</div>`;
   $("prWrap").innerHTML=h;
   $("count").textContent=`รายงาน ${reps.length} ฉบับ · ${rangeTxt}`;
+  if(PROD_ONLY){const last=PROD.filter(prodCounted).slice(-1)[0];$("asof").textContent=last?`รายงานล่าสุด ${thDate(last.date)} โดย ${last.real||last.by} · ทั้งหมด ${PROD.filter(prodCounted).length} ฉบับ · จาก Discord #รายงานการผลิตbyฝ่ายผลิต`:""}
   $("prWrap").querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{prMode=b.dataset.m;renderProd()});
   if(prMode==="day"){const go=d=>{if(d){prDay=d;renderProd()}};
     $("prDate").onchange=e=>go(e.target.value);
@@ -1219,11 +1221,15 @@ function renderProd(){
     $("prLatest").onclick=()=>go(PR_DATES[PR_DATES.length-1])}
 }
 
+const PROD_ONLY=location.hash==="#prodonly"||new URLSearchParams(location.search).get("view")==="prod";
 let tab="day";
 try{const t=localStorage.getItem("hrTab3");if(["day","sum","leave","prod","emp"].includes(t))tab=t}catch(e){}
 if(location.hash==="#prod")tab="prod";
+if(PROD_ONLY){tab="prod";document.querySelector(".tabs").style.display="none";document.querySelector("details.rules").style.display="none";
+  document.querySelector(".crumb").innerHTML="ทีม › <b>รายงานการผลิต</b>";document.querySelector("h1").textContent="รายงานการผลิต";document.title="WIBWUB — รายงานการผลิต"}
+else{const pb=document.querySelector('.tab[data-tab="prod"]');if(pb)pb.style.display="none";if(tab==="prod")tab="day"}   // หน้า HR ไม่มีแท็บนี้แล้ว (อยู่ที่แถบซ้ายของ Dashboard)
 if(location.hash==="#leave")tab="leave";
-window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(["day","sum","leave","prod","emp"].includes(h)){tab=h;render()}});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(PROD_ONLY)return;if(["day","sum","leave","prod","emp"].includes(h)){tab=h;render()}});
 $("fDept").innerHTML=["ทุกแผนก",...Object.keys(DEPTS)].map(d=>`<option>${esc(d)}</option>`).join("");
 const monthEnd=m=>{const[y,mm]=m.split("-").map(Number);const d=new Date(Date.UTC(y,mm,0));return d.toISOString().slice(0,10)};
 const ALL_MONTHS=[...new Set([...MONTHS,...LEAVES.flatMap(r=>r.dates.map(d=>d.slice(0,7)))])].filter(m=>m>="2026-01"&&m<=addDay(BKK_TODAY(),62).slice(0,7)).sort();
@@ -1253,6 +1259,7 @@ function render(){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
   const isPr=tab==="prod";$("prWrap").hidden=!isPr;$("mainWrap").hidden=isPr;document.querySelector(".kpis").style.display=isPr?"none":"";
   ["fDept","fSort","fIssue"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=isPr?"none":""});
+  if(!isPr)["fMonth","fFrom","fTo"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=""});
   if(isPr){$("lvWrap").hidden=true;renderProd();return}
   const fd=filt(DAY);
   const lastDay=DAY.filter(r=>r.date===LAST_DATE&&r.emp&&r.inTime);
@@ -1313,7 +1320,7 @@ function render(){
   $("count").textContent=tab==="day"?`แสดง ${n} รายการ จาก ${$("count").dataset.days} วัน`:`แสดง ${n} รายการ`;
 }
 ["fFrom","fTo","fDept","fName","fIssue","fSort"].forEach(id=>$(id).addEventListener("input",render));
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{localStorage.setItem("hrTab3",tab)}catch(e){}render()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{if(!PROD_ONLY)localStorage.setItem("hrTab3",tab)}catch(e){}render()});
 render();
 
 // ---------- Export Excel ----------
@@ -1321,7 +1328,20 @@ function toast(m){const t=$("toast");t.textContent=m;t.hidden=false;clearTimeout
 let dl=null;
 (async()=>{try{dl=window.claude?.use?await window.claude.use("downloads"):null}catch(e){dl=null}})();
 const plain=f=>f.map(x=>x[1]).join(", ");
-$("exportBtn").onclick=async()=>{
+async function exportProdOnly(){
+  if(typeof XLSX==="undefined"){toast("โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้า");return}
+  const[f,t]=prRange(),inR=d=>(!f||d>=f)&&(!t||d<=t),P={},rows=[];
+  PROD.filter(r=>inR(r.date)&&r.items.length).forEach(r=>r.items.forEach(i=>{rows.push({"วันที่ผลิต":r.date,"ผู้แจ้ง (Discord)":r.by,"ชื่อจริง":r.real||"","สถานะ":r.kind==="ซ้ำ"?"ซ้ำ (ไม่นับ)":r.kind,"สินค้า":i.product,"ขนาด":i.size,"ขวดเปล่า":i.empty?"ใช่":"","จำนวน":i.qty,"น้ำหนัก (g)":i.weight||"","หมายเหตุ":i.note,"ที่พิมพ์":i.raw,"ต้องตรวจ":i.flags.concat(r.flags).join("; ")});
+    if(prodCounted(r)){const k=prodLabel(i);const o=P[k]=P[k]||{"สินค้า":i.product,"ขนาด":i.size,"ขวดเปล่า":i.empty?"ใช่":"","จำนวนรวม":0,"ครั้งที่ผลิต":0};o["จำนวนรวม"]+=i.qty;o["ครั้งที่ผลิต"]++}}));
+  const wb=XLSX.utils.book_new(),add=(rs,name,w)=>{const ws=XLSX.utils.json_to_sheet(rs.length?rs:[{"ไม่มีข้อมูล":""}]);ws["!cols"]=w.map(x=>({wch:x}));XLSX.utils.book_append_sheet(wb,ws,name)};
+  add(Object.values(P).sort((a,b)=>a["สินค้า"].localeCompare(b["สินค้า"])),"รายสินค้า",[22,10,10,12,12]);
+  add(rows,"รายการ",[12,18,12,12,20,10,8,10,10,20,36,40]);
+  const fname=`WIBWUB_รายงานการผลิต_${f||"ทั้งหมด"}${t&&t!==f?"_ถึง_"+t:""}.xlsx`;
+  if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
+  const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
+  try{await dl.save({filename:fname,data:new Blob([buf])});toast("บันทึกไฟล์ Excel แล้ว")}catch(e){toast(e&&e.code==="declined"?"ยกเลิกการบันทึกไฟล์":"บันทึกไฟล์ไม่สำเร็จ ลองใหม่อีกครั้ง")}
+}
+$("exportBtn").onclick=async()=>{if(PROD_ONLY)return exportProdOnly();
   if(typeof XLSX==="undefined"){toast("โหลดตัวสร้างไฟล์ Excel ไม่สำเร็จ ลองรีเฟรชหน้า");return}
   const fd=filt(DAY),f=$("fFrom").value,t=$("fTo").value;
   const inRange=r=>(!f||r.date>=f)&&(!t||r.date<=t);
