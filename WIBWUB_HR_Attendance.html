@@ -64,6 +64,14 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
 .p-bad{color:var(--bad);background:var(--bad-bg)} .p-ot{color:var(--ot);background:var(--ot-bg)}
 .p-mute{color:var(--muted);background:var(--bg)} .p-leave{color:#7a4bd1;background:#efe7fd}
 .unk{color:var(--bad);font-weight:600}
+.prbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 16px 4px}.prbar input[type=date]{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+.seg{display:inline-flex;background:var(--bg);border-radius:8px;padding:3px}.seg button{font:inherit;border:0;background:transparent;color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer}.seg button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.btn.sm{padding:5px 10px;font-size:13px}.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}.prrange{color:var(--muted);font-size:13px;margin-left:auto}
+.prk{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:10px 16px}.prk>div{background:var(--bg);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column}.prk span{font-size:12px;color:var(--muted)}.prk b{font-size:22px}.prk small{font-size:12px;color:var(--muted)}.prk .bad b{color:var(--bad)}
+.prlist{display:grid;gap:10px;padding:0 16px 16px}.prcard{border:1px solid var(--line);border-radius:10px;padding:10px 12px}.prcard.mute{opacity:.6}.prcard header{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:6px}.prcard .right{margin-left:auto}
+.prcard table{width:100%;border-collapse:collapse}.prcard td{padding:3px 6px;border-top:1px solid var(--line);font-size:13px}.prcard pre{white-space:pre-wrap;font-size:12px;background:var(--bg);padding:8px;border-radius:6px;margin:6px 0 0}.prcard summary{font-size:12px;color:var(--muted);cursor:pointer;margin-top:4px}
+tr.mute td{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,monospace;font-size:12px}
+@media (max-width:860px){.prk{grid-template-columns:repeat(2,minmax(0,1fr))}.prrange{margin-left:0;width:100%}}
 .lvh{font-size:15px;margin:18px 16px 8px;font-weight:600}.lvh span{font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
 .why{max-width:340px;white-space:normal;line-height:1.45}.how{font-size:12px;color:var(--muted);display:block}.rej td{opacity:.55}
 .k-ลาป่วย{color:#c2410c;background:#ffedd5}.k-ลากิจ{color:#1d4ed8;background:#dbeafe}.k-ลาพักร้อน{color:#047857;background:#d1fae5}.k-ลาไม่รับเงินเดือน{color:#7a4bd1;background:#efe7fd}.k-อื่นๆ{color:#9a3412;background:#fef3c7}.k-ไม่ทราบประเภท{color:var(--muted);background:var(--bg)}
@@ -95,6 +103,7 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
         <div><b>Marketing &amp; HR · ไม่มี OT</b>จ–ศ 08:00–17:00</div>
         <div><b>มาสาย</b>เช็คอินหลัง 08:00 น.</div>
         <div><b>พักเที่ยง</b>จ–ศ หัก 12:00–13:00 ออกจากชั่วโมงทำงาน · เสาร์ ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00</div>
+        <div><b>รายงานการผลิต</b>อ่านจากห้อง #รายงานการผลิตbyฝ่ายผลิต · ใช้วันที่ที่พิมพ์ในรายงาน (ถ้าไม่พิมพ์ใช้วันที่ส่ง) · รายงานที่โพสต์ซ้ำนับครั้งเดียว · ชื่อสินค้าเทียบกับรายชื่อสินค้าในสต๊อกเพื่อจับคำพิมพ์ผิด</div>
         <div><b>รอบตัด OT</b>วันตัดรอบแต่ละเดือนไม่เท่ากัน ให้ HR เลือก "กำหนดเอง" แล้วใส่วันเริ่ม–วันสิ้นสุดของรอบเอง ตัวเลข OT และไฟล์ Export จะคิดตามช่วงนั้น</div>
         <div><b>การลา (#การลาที่รออนุมัติ)</b>นับเฉพาะใบที่อนุมัติแล้ว · ลาเต็มวัน = 8 ชม. (เสาร์ ผลิต/แพ็ก 4 ชม.) · ลาเป็นชั่วโมง/ช่วงเวลา คิดจากที่แจ้งในประเภทการลาหรือเหตุผล และหักออกจากเวลาสาย/ออกก่อน</div>
         <div><b>ชื่อพิมพ์ผิด</b>ต่างจากชื่อในรายชื่อ 1 ตัวอักษร (เช่น ริย → ริน) ระบบจับคู่ให้และติดป้าย "พิมพ์ผิด?" ให้ตรวจ</div>
@@ -114,6 +123,7 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
           <button class="tab" role="tab" data-tab="day" type="button">บันทึกเข้า-ออกงาน</button>
           <button class="tab" role="tab" data-tab="sum" type="button">สรุปรายคน</button>
           <button class="tab" role="tab" data-tab="leave" type="button">สรุปการลา</button>
+          <button class="tab" role="tab" data-tab="prod" type="button">รายงานการผลิต</button>
           <button class="tab" role="tab" data-tab="emp" type="button">รายชื่อ &amp; ชื่อเล่น</button>
         </div>
         <div class="filters">
@@ -126,9 +136,10 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
           <label class="chk" for="fIssue"><input type="checkbox" id="fIssue"> เฉพาะที่ต้องตรวจสอบ</label>
         </div>
       </div>
-      <div class="tablewrap"><table id="tbl"></table></div>
+      <div class="tablewrap" id="mainWrap"><table id="tbl"></table></div>
+      <div id="prWrap" hidden></div>
       <div id="lvWrap" hidden><h2 class="lvh">รายละเอียดใบลาทั้งหมด <span id="lvNote"></span></h2><div class="tablewrap"><table id="tbl2"></table></div></div>
-      <div class="foot"><span id="count"></span><span>ที่มา: Discord Wibwub Company ห้อง #บันทึกเข้างาน, #บันทึกออกงาน และ #การลาที่รออนุมัติ</span></div>
+      <div class="foot"><span id="count"></span><span>ที่มา: Discord Wibwub Company ห้อง #บันทึกเข้างาน, #บันทึกออกงาน, #การลาที่รออนุมัติ และ #รายงานการผลิตbyฝ่ายผลิต</span></div>
     </section>
   </main>
 <div class="toast" id="toast" hidden></div>
@@ -960,6 +971,154 @@ unknownRecs.forEach(r=>DAY.push({date:r.date,emp:null,real:"ไม่อยู�
 const ORDER=r=>r.emp?EMP.indexOf(EMP.find(e=>e.real===r.real)):999;
 DAY.sort((a,b)=>b.date.localeCompare(a.date)||ORDER(a)-ORDER(b));
 
+const RAW_PROD=[
+{"id": "1392059303669792889-1544277049072549938", "ts": "2026-09-01T09:25", "by": "เซฟ (ผลิต)", "text": "Brown 500ML=158\nSteel 500ML=57\nVisible 500ML=224\nVisible 3L=10 (3150)\nVisible 5L=3 (5300)\nขวดเปล่า Visible =13\nGraphene 100ML=120"},
+{"id": "1392059303669792889-1544634942229844048", "ts": "2026-09-02T09:07", "by": "ฟิล์ม (ผลิต)", "text": "02/09/69\nInterior 500ml. = 600\nInterior 3l. (3240) = 17\nขวดเปล่า interior = 17\nWaterless 500ml. = 175\nTire&trim 500ml. = 300\nTire&trim 3l. (3100) = 5\nTire&trim 5l. (5300) = 5\nขวดเปล่า tire&trim = 10"},
+{"id": "1392059303669792889-1544643681888374845", "ts": "2026-09-02T09:44", "by": "พี่พลอย (จัดซื้อ)", "text": "31/08/69   Sugar 500ML=720 Paint prep 500ML=130 Paint prep 3L=12 (2950) ขวดเปล่า Paint perp =12 Terrain 3L=21 (3300) Terrain 5L=2 (5600) Mind 500 ML=150 Gift box = 7 (ของวันเสาร์ตัดวันจันทร์)"},
+{"id": "1392059303669792889-1544644343695151154", "ts": "2026-09-02T09:46", "by": "พี่พลอย (จัดซื้อ)", "text": "02/09/69 Interior 500ml. = 600 Interior 3l. (3240) = 17 ขวดเปล่า interior = 17 Waterless 500ml. = 175 Tire&trim 500ml. = 300 Tire&trim 3l. (3100) = 5 Tire&trim 5l. (5300) = 5 ขวดเปล่า tire&trim = 10"},
+{"id": "1392059303669792889-1545010875016945664", "ts": "2026-09-03T10:01", "by": "น้องรินเองงับ", "text": "รายงานการผลิต \n03/09/69\nCleaner 100ml = 305\nRecove 500ml = 300\nDeep clean 1l = 113\nDeep clean 3l = 10 (3,300นน.)\nDeep clean 5l = 10 (5,600นน.)\nGift box = 11"},
+{"id": "1392059303669792889-1545371156893138944", "ts": "2026-09-04T09:53", "by": "เซฟ (ผลิต)", "text": "Refresh 500ML=600\nRefresh 3L=10(3260)\nRefresh 5L=5(5500)\nขวดเปล่า Refresh =15\nTireclean 3L=20\nขวดเปล่า Tireclean=20\nMonster=35\nJulia=93"},
+{"id": "1392059303669792889-1546516679394074666", "ts": "2026-09-07T13:45", "by": "ฟิล์ม (ผลิต)", "text": "07/09/69\nSugar 500 ml. = 1200\nPerfect = 840\nPolisher = 250\nMartini = 900\nMargarita = 149 \nMonster = 105"},
+{"id": "1392059303669792889-1546844950174375977", "ts": "2026-09-08T11:29", "by": "น้องรินเองงับ", "text": "รายงานการผลิต\n08/09/69\nQuartz Shampoo 1l = 400\nQuartz Shampoo 3l = 80 (3,300นน.)\nX-glass 100ml = 160\nMartini 10ผืน =  15\nMargarita 10ผืน = 9\nWool duster = 400\nFlex wheel brush = 101\nTire brush  = 86"},
+{"id": "1392059303669792889-1547174875834355762", "ts": "2026-09-09T09:20", "by": "ตาต้า (ผลิต)", "text": "09/09/69\n\nSugar 3l = 90(3175)\nSugar ขวดเปล่า = 90\nSpot 500ml = 450 \nSpot 3l = 11(3250)\nSpot ขวดเปล่า = 11\nX-Glass 1l = 15\nX-Glass ขวดเปล่า = 15\nReflex 500ml =,128\nReflex 3l = 20(3150)\nReflex ขวดเปล่า = 20 \nPaint prep 500ml = 160"},
+{"id": "1392059303669792889-1547544000997625947", "ts": "2026-09-10T09:47", "by": "เซฟ (ผลิต)", "text": "Intrrior 500ML=318\nInterior 3L=12 (3240)\nขวดเปล่า Interior=12\nBanyakart 500ML=319\nBugBug 500ML=56\nBrown 500ML=157"},
+{"id": "1392059303669792889-1547822086964379740", "ts": "2026-09-10T10:33", "by": "พี่พลอย (จัดซื้อ)", "text": "Intrrior 500ML=318 Interior 3L=12 (3240) ขวดเปล่า Interior=12 Banyakart 500ML=319 BugBug 500ML=56 Brown 500ML=157"},
+{"id": "1392059303669792889-1548875834490757223", "ts": "2026-09-14T01:59", "by": "ฟิล์ม (ผลิต)", "text": "11/09/69\nMind 500ml. = 255\nMicrofiber app = 501\nPremium mitt = 60"},
+{"id": "1392059303669792889-1548876206840217611", "ts": "2026-09-14T02:01", "by": "น้องรินเองงับ", "text": "วันเสาร์ที่ 12/09/69\nมีผลิต Phoenix 1L = 1 (900นน.)"},
+{"id": "1392059303669792889-1548993190647046145", "ts": "2026-09-14T09:45", "by": "ตาต้า (ผลิต)", "text": "14/09/69\n\nSugar 500ml = 604\nSugar 5l = 40(5400)\nSugar ขวดเปล่า = 40\nTire Clean 500ml = 30\nVisible 500ml = 208\nGraphene = 122"},
+{"id": "1392059303669792889-1549337978239717467", "ts": "2026-09-15T08:37", "by": "พี่พลอย (จัดซื้อ)", "text": "14/09/69  Sugar 500ml = 604 Sugar 5l = 40(5400) Sugar ขวดเปล่า = 40 Tire Clean 500ml = 30 Visible 500ml = 208 Graphene = 122"},
+{"id": "1392059303669792889-1549338395011059784", "ts": "2026-09-15T08:37", "by": "ตาต้า (ผลิต)", "text": "แก้แล้วครับ"},
+{"id": "1392059303669792889-1549356309684420649", "ts": "2026-09-15T09:48", "by": "ตาต้า (ผลิต)", "text": "15/09/69\n\nInterior 500ml = 117\nTire clean 500ml = 150\nMind 3l = 11(3200) \nBeach 500ml = 63\nDeep clean 1l = 132(1135)\nDeep clean 3l = 20(3300)"},
+{"id": "1392059303669792889-1549720700565192737", "ts": "2026-09-16T09:56", "by": "มาย (ผลิต)", "text": "16/09/69\nX-glass 338 ชุด \nX-glass 1L ได้ 9(885)\nขวดเปล่า X-glass ได้ 9\nTire&Trim500ml ได้ 300\nTire&Trim 3L(3100) ได้ 1\nขวดเปล่า Tire&Trim 1"},
+{"id": "1392059303669792889-1550083052909109311", "ts": "2026-09-17T09:56", "by": "น้องรินเองงับ", "text": "รายงานการผลิตครับ\n17/09/69\nSugar 500ml = 600\nBrown 500ml = 157\nClara 100ml = 37\nขวดเปล่า Mind = 11\nTester kit = 50"},
+{"id": "1392059303669792889-1550437372905398383", "ts": "2026-09-18T09:24", "by": "ฟิล์ม (ผลิต)", "text": "18/09/69\nInterior 500ml. = 1004\nInterior 3l. (3240) = 20 \nInterior 5l. (5500) = 5\nขวดเปล่า interior = 20\nTire brus = 214\nSuede towel = 10\nBanyakart 100ml. = 60"},
+{"id": "1392059303669792889-1551545341390749820", "ts": "2026-09-21T10:47", "by": "มาย (ผลิต)", "text": "21/09/69\nSugar 500ml ได้720\nPaint Prep500ml 207\nVisible500mlได้ 156\nVisible5L ได้ 5(5300)\nขวดเปล่า Visible ได้ 5 \nBanyakart100mlได้ 300"},
+{"id": "1392059303669792889-1551767796491489303", "ts": "2026-09-22T01:31", "by": "แอม (บุคคล)", "text": "พี่บุญคับ อันนี้ห้องรายงาน"},
+{"id": "1392059303669792889-1551790978027880519", "ts": "2026-09-22T03:03", "by": "บุญ (แพ็คสินค้า)", "text": "พี่บุญคับ อันนี้ห้องรายงาน"},
+{"id": "1392059303669792889-1551925707100266617", "ts": "2026-09-22T11:58", "by": "น้องรินเองงับ", "text": "รายงานการผลิต\n22/09/69\nQuartz Shampoo 1l = 400(1,135นน.)\nMind 500ml = 45\nMind 3l = 30 (3,200นน.)\nX-glass 100ml = 336\nUV 100ml = 228\nX-glass 1l = 20 (885นน.)\nขวดเปล่า X-glass = 20\nขวดเปล่า mind = 30"},
+{"id": "1392059303669792889-1552242624948346964", "ts": "2026-09-23T08:58", "by": "ตาต้า (ผลิต)", "text": "23/09/69\n\nRefresh 500ml  = 891\nSteel 500ml = 150\nBug bug 500ml = 117\nRefresh wipes = 30240"},
+{"id": "1392059303669792889-1552608240586465423", "ts": "2026-09-24T09:10", "by": "ฟิล์ม (ผลิต)", "text": "24/09/69\nSpot 500ml.(ใช้น้ำยาจากแกลลอนของสูตร3:5) = 121\nReflex 250ml. = 488\nReflex 500ml. = 257\nFront wheel Brush = 154"},
+{"id": "1392059303669792889-1552969919682060330", "ts": "2026-09-25T09:08", "by": "เซฟ (ผลิต)", "text": "Cleaner 100ML=342\nผ้าเหลือง =342\nFront wheel brush=100\nGrephene=123S\nSuede Towel=35\nSpot 500ML=326\nSpot 3L=12(3200)\nSpot 5L=4(5500)"},
+{"id": "1392059303669792889-1554101256698601563", "ts": "2026-09-28T12:03", "by": "น้องรินเองงับ", "text": "รายงานการผลิต\n28/09/69\nSugar 500ml = 600\nSugar 3l = 52\nขวดเปล่า Sugar = 52\nPerfect = 980\nMartini = 1,050\nMargarita = 300\nSuper dry = 120\nMonster = 105\nPolisher = 500"},
+{"id": "1392059303669792889-1554421988213395512", "ts": "2026-09-29T09:18", "by": "ตาต้า (ผลิต)", "text": "29/09/69\n\nBanyakart 100ml = 474\nBrown 500ml = 47 \nTerrain 5l = 2\nPolisher 10ผืน = 5\nVisible 500ml = 206"},
+{"id": "1392059303669792889-1554399923448061963", "ts": "2026-09-30T04:44", "by": "พี่พลอย (จัดซื้อ)", "text": "Cleaner 100ML=342 ผ้าเหลือง =342 Front wheel brush=100 Grephene=123S Suede Towel=35 Spot 500ML=326 Spot 3L=12(3200) Spot 5L=4(5500)"},
+{"id": "1392059303669792889-1554784378167623782", "ts": "2026-09-30T09:18", "by": "เซฟ (ผลิต)", "text": "Banykart 500ML=300\nRefresh 3L=10(3260)\nRefresh 500ML=18\nขวดเปล่า Refresh=10\nMicrofiberwash 500ML=80\nMicrofiberwash 3L=14(3250)\nWaterless 500ML=150\nAPC 5L= 3(5500)\nขวดเปล่า APC=3"},
+{"id": "1392059303669792889-1555143007173480509", "ts": "2026-10-01T09:03", "by": "ตาต้า (ผลิต)", "text": "01/10/69\n\nBanyakart 100ml = 150"},
+{"id": "1392059303669792889-1555506363403079774", "ts": "2026-10-02T09:06", "by": "ฟิล์ม (ผลิต)", "text": "2/10/69\nSuede towel 113\nSpot 500ml. = 462\nBeach 500ml. = 80\nX-glass 100ml. = 425\nFlex wheelbrush = 200\nBrown 500ml. = 111"},
+{"id": "1392059303669792889-1556488602077102134", "ts": "2026-10-05T02:10", "by": "ตาต้า (ผลิต)", "text": "03/10/69\nBanyakart 100ml 180\nGift box 10"},
+{"id": "1392059303669792889-1556650393063399536", "ts": "2026-10-05T12:52", "by": "น้องรินเองงับ", "text": "รายงานการผลิต\n05/10/69\nSugar 500ml = 1,020\nTire and trim 500ml = 150\nBrown 500ml = 158\nSugar 3l = 40 (3,175นน.)\nขวดเปล่า Sugar = 40\nBanyakart 100ml = 356\nAPC 500ML=152\nAPC 3L=3 (3200)\nAPC 5L=5 (5500)\nขวดเปล่า APC=8\nX-Glass 1L=20(885)\nขวดเปล่า X-Glass(20)"},
+{"id": "1392059303669792889-1556967560220647445", "ts": "2026-10-06T09:53", "by": "ตาต้า (ผลิต)", "text": "06/10/69\n\nDeep Clean 1L = 101(1135)\nDeep Clean 3L = 11(3300)\nDeep Clean 5L = 11(5600)\nBanyakart 100ml = 830\nTerrain 3L = 2(3300)"},
+{"id": "1392059303669792889-1557375852919001121", "ts": "2026-10-07T12:55", "by": "มาย (ผลิต)", "text": "07/10/69\nShampoo 1L(1135)=400\nShampoo 3L(3300)=100\nShampoo 5L(5600)=20\nTerrain 3(3300)=17\nTerrain 5L(5600)=20\nBanyakart 500ml=300"},
+{"id": "1392059303669792889-1557920428574515383", "ts": "2026-10-09T00:59", "by": "ฟิล์ม (ผลิต)", "text": "8/10/69\nBanyakart 100ml. = 1740\nInterior 500ml. (สูตรปรับใหม่) = 600\nInterior 3l. (สูตรปรับใหม่) = 15\nขวดเปล่า interior = 15"},
+{"id": "1392059303669792889-1558049412473950239", "ts": "2026-10-09T09:32", "by": "เซฟ (ผลิต)", "text": "Visible 500ML=143\nVisible 3L=10 (3150)\nขวดเปล่า Visible=10\nWool duster=300\nTire clean 500ML=150\nSugar 500ML=300\nGraphene 100ML=120\nTire brush=200"}
+];
+// ---------- รายงานการผลิต (#รายงานการผลิตbyฝ่ายผลิต) — PROD_V1 ----------
+// พนักงานพิมพ์อิสระ เช่น "Refresh 3L=10(3260)", "Banyakart 100ml 180", "ขวดเปล่า Sugar = 40"
+// ระบบแยกเป็น สินค้า/ขนาด/จำนวน/น้ำหนัก(กรัม) แล้วเทียบชื่อกับรายชื่อสินค้า (PROD_MASTER) เพื่อจับคำพิมพ์ผิด
+const PROD_MASTER=["Sugar","Interior","Refresh","Quartz shampoo","Quartz foam","Spot","Reflex","Xglass","Tire&trim gel","Mind","Visible","Paint prep",
+  "UV protect","Recove","Banyakart","Bugbug","Brown","Waterless","Microfiber wash","Deep clean","Beach","APC","Tire clean","Terrain","Steel","Phoenix",
+  "Taar","Clara","Cleaner","Graphene","Julia","Martini","Margarita","Perfect","Polisher","Monster","Suede towel","Superdry","Wool duster","Flex wheelbrush",
+  "Front wheel brush","Tire brush","Wheel brush","Strip wheel brush","Premium mitt","Microfiber applicator","Suede applicator","Tire applicator","Refresh wipes",
+  "Interior wipes","Gift box","Tester kit","ผ้าเหลือง","Synthetic","Ella","Scrubber","Claymitt","Micro brush","Ultra soft","Blue stiff","Detailing brush",
+  "Horse hair brush","Wool wash mitt","Anna nano diamond","Cleaning gel","Banana foam","Pinky foam","Sky foam","Prewash cola","Wash bucket","Rinse bucket"];
+// เขียนต่างรูปแบบแต่เป็นสินค้าเดียวกัน (ไม่นับเป็นพิมพ์ผิด)
+const PROD_ALIAS={"xglass":"Xglass","tireandtrim":"Tire&trim gel","tiretrim":"Tire&trim gel","tiretrimgel":"Tire&trim gel","microfiberapp":"Microfiber applicator",
+  "superdrydoubleside":"Superdry","suedetowels":"Suede towel","ผ้าไมโครไฟเบอร์สีเหลือง":"ผ้าเหลือง","tester":"Tester kit","giftbox":"Gift box"};
+// ชื่อย่อ (ไม่ผิด แต่ไม่ครบ) → แจ้งให้ตรวจ
+const PROD_SHORT={"shampoo":"Quartz shampoo","foam":"Quartz foam","wipes":"Refresh wipes","uv":"UV protect"};
+const PROD_NAME_ALIAS={"เซฟ":"ธนกร","รินเองงับ":"นพฤทธิ์","น้องรินเองงับ":"นพฤทธิ์"};   // ชื่อที่ใช้ใน Discord ↔ ชื่อในรายชื่อ
+const pKey=s=>String(s).toLowerCase().replace(/\band\b/g,"").replace(/[^a-z0-9ก-๙]/g,"");
+const PROD_KEYS=Object.fromEntries(PROD_MASTER.map(n=>[pKey(n),n]));
+function dlev(a,b){const d=[];for(let i=0;i<=a.length;i++){d[i]=[i];for(let j=1;j<=b.length;j++)d[i][j]=i?Math.min(d[i-1][j]+1,d[i][j-1]+1,d[i-1][j-1]+(a[i-1]===b[j-1]?0:1),
+  i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1]?d[i-2][j-2]+1:99):j}return d[a.length][b.length]}
+function prodMatch(raw){   // -> {name, flag: null|"พิมพ์ผิด"|"ชื่อย่อ"|"ไม่รู้จัก"}
+  const k=pKey(raw);if(!k)return{name:raw,flag:"ไม่รู้จัก"};
+  if(PROD_KEYS[k])return{name:PROD_KEYS[k],flag:null};
+  if(PROD_ALIAS[k])return{name:PROD_ALIAS[k],flag:null};
+  if(PROD_SHORT[k])return{name:PROD_SHORT[k],flag:"ชื่อย่อ"};
+  let best=null,bd=99;
+  for(const [mk,mn] of [...Object.entries(PROD_KEYS),...Object.entries(PROD_ALIAS)]){const dd=dlev(k,mk);if(dd<bd){bd=dd;best=mn}}
+  // มีคำไทยนำหน้า/ต่อท้ายชื่อสินค้า เช่น "มีผลิต Phoenix"
+  const sub=Object.entries(PROD_KEYS).filter(([mk])=>mk.length>=4&&k.includes(mk)).sort((a,b)=>b[0].length-a[0].length)[0];
+  if(sub&&!/[a-z0-9]/.test(k.replace(sub[0],"")))return{name:sub[1],flag:null};
+  const lim=k.length<=4?0:k.length<=7?1:2;
+  if(bd<=lim)return{name:best,flag:"พิมพ์ผิด"};
+  return{name:raw.trim(),flag:"ไม่รู้จัก"};
+}
+const pNum=s=>{const m=String(s).replace(/,/g,"").match(/\d+(?:\.\d+)?/);return m?+m[0]:null};
+function prodSize(s){   // -> {size, rest, noUnit}
+  let m=s.match(/(\d+(?:\.\d+)?)\s*(ml|ม\.?ล\.?|มล\.?)\.?(?![a-z])/i);
+  if(m)return{size:`${+m[1]}ml`,rest:s.replace(m[0]," ")};
+  m=s.match(/(\d+(?:\.\d+)?)\s*(l|ลิตร)\.?(?![a-z])/i);
+  if(m)return{size:`${+m[1]}L`,rest:s.replace(m[0]," ")};
+  m=s.match(/(\d+)\s*ผืน/);if(m)return{size:`${m[1]} ผืน`,rest:s.replace(m[0]," ")};
+  return{size:"",rest:s};
+}
+// แยก 1 บรรทัด -> รายการ (หรือ null ถ้าไม่ใช่รายการผลิต)
+function prodLine(line){
+  let s=line.replace(/\s+/g," ").trim();if(!s)return null;
+  const flags=[];let weight=null,note="";
+  // น้ำหนัก/หมายเหตุในวงเล็บ
+  s=s.replace(/\(([^)]*)\)/g,(x,inner)=>{const n=pNum(inner),t=inner.replace(/[\d,.\s]|นน|กรัม|g\b/gi,"");
+    if(n!=null&&n>=200&&!t){weight=n;return" "}
+    if(n!=null&&n<200&&!t)return` =${n} `;               // "ขวดเปล่า X-Glass(20)" = จำนวนในวงเล็บ
+    note+=(note?" · ":"")+inner.trim();return" "});
+  // จำนวน: หลัง "=" หรือ "ได้" หรือเลขตัวสุดท้าย
+  let qty=null,m=s.match(/(?:=|ได้)\s*,?\s*([\d,]+(?:\.\d+)?)\s*([^\d\s,]*)\s*$/);
+  if(!m)m=s.match(/(?:=|ได้)\s*,?\s*([\d,]+(?:\.\d+)?)\s*([^\d\s,]*)/);
+  let head;
+  if(m){qty=pNum(m[1]);if(m[2]&&!/^(ชุด|ชิ้น|ขวด|อัน|ผืน|แพ็ค|pcs)$/i.test(m[2]))flags.push(`มีตัวอักษรต่อท้ายจำนวน "${m[2]}"`);head=s.slice(0,m.index)}
+  else{const t=s.match(/^(.*?[^\d\s.,])\s+([\d,]+)\s*(ชุด|ชิ้น|ขวด|อัน|ผืน|แพ็ค)?\s*$/);if(!t)return null;qty=pNum(t[2]);head=t[1]}
+  if(qty==null)return null;
+  head=head.replace(/=/g," ").trim();
+  if(!/[a-zก-๙]/i.test(head))return null;
+  if(/^(วันที่|รายงาน)/.test(head))return null;
+  const empty=/ขวดเปล่า/.test(head);head=head.replace(/ขวดเปล่า/g," ");
+  let {size,rest}=prodSize(head);
+  if(!size){const u=rest.match(/^(.*[a-zก-๙])\s+(\d{1,2})\s*$/i);if(u&&+u[2]<=25){size=`${+u[2]}L`;rest=u[1];flags.push("ไม่ระบุหน่วย (เดาว่าเป็นลิตร)")}}
+  rest=rest.replace(/\b(ชุด|ชิ้น)\b/g," ").replace(/\s+/g," ").replace(/^[\s.\-–:]+|[\s.\-–:]+$/g,"");
+  const pm=prodMatch(rest);
+  if(pm.flag==="พิมพ์ผิด")flags.push(`พิมพ์ผิด "${rest}" → ${pm.name}`);
+  if(pm.flag==="ชื่อย่อ")flags.push(`ชื่อไม่ครบ "${rest}" → ${pm.name}`);
+  if(pm.flag==="ไม่รู้จัก")flags.push(`ไม่พบสินค้า "${rest}" ในรายชื่อสินค้า`);
+  return{product:pm.name,size,empty,qty,weight,note,flags,raw:line.trim(),typo:pm.flag==="พิมพ์ผิด"};
+}
+const thBE=(d,m,y)=>{y=+y;if(y<100)y+=y>=60?1957:2000;else if(y>=2400)y-=543;return`${y}-${String(+m).padStart(2,"0")}-${String(+d).padStart(2,"0")}`};
+const bkkDate=ts=>new Date(Date.parse(ts+":00Z")+7*3600e3).toISOString().slice(0,10);
+function prodWho(by){let n=String(by||"").replace(/\(.*?\)/g,"").trim();const raw=n;n=n.replace(/^(พี่|น้อง)/,"").trim();
+  const e=EMP.find(x=>x.real===(PROD_NAME_ALIAS[raw]||PROD_NAME_ALIAS[n]))||findEmp(n)||findEmp(n.replace(/เองงับ|ครับ|ค่ะ|คับ$/g,""))||null;return e}
+const PROD=[],PROD_WARN=[];
+{const seen={};
+  RAW_PROD.forEach(m=>{
+    const text=String(m.text||""),posted=bkkDate(m.ts),emp=prodWho(m.by);
+    let body=text;
+    // ข้อความที่ขึ้นบรรทัดใหม่หาย (โพสต์ต่อ) → แยกรายการตามรูปแบบ "... = จำนวน (น้ำหนัก)"
+    if(!/\n/.test(body))body=body.replace(/(=\s*,?\s*[\d,]+\s*[A-Za-z]?(?:\s*\([^)]*\))?)\s+(?=[^\d\s(=])/g,"$1\n").replace(/(\d{1,2}\/\d{1,2}\/\d{2,4})\s+/,"$1\n");
+    const lines=body.split(/\n/);let date=null,dateLine="";
+    for(const l of lines){const d=l.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);if(d){date=thBE(d[1],d[2],d[3]);dateLine=l.trim();break}}
+    const items=lines.map(prodLine).filter(Boolean);
+    const rep={id:m.id,ts:m.ts,posted,by:m.by,emp,real:emp?emp.real:null,dept:emp?emp.dept:"",date:date||posted,stated:!!date,text,items,flags:[]};
+    if(!items.length){rep.kind="ข้อความทั่วไป";PROD.push(rep);return}
+    const sig=items.map(i=>[i.product,i.size,i.empty,i.qty].join("~")).sort().join("|");
+    const lag=(Date.parse(posted)-Date.parse(rep.date))/864e5;
+    if(lag>=2)rep.flags.push(`ส่งรายงานช้า ${lag} วัน (ผลิตวันที่ ${rep.date.slice(8)}/${rep.date.slice(5,7)} ส่งวันที่ ${posted.slice(8)}/${posted.slice(5,7)})`);
+    if(lag<0)rep.flags.push("วันที่ในรายงานเป็นวันในอนาคต — อาจพิมพ์วันที่ผิด");
+    if(seen[sig]){rep.kind="ซ้ำ";rep.dupOf=seen[sig];rep.flags.push(`ซ้ำกับรายงานของ ${seen[sig].by} (${seen[sig].posted}) — ไม่นับซ้ำ`)}
+    else{seen[sig]=rep;rep.kind=emp&&emp.dept==="ผลิต"?"รายงาน":"แจ้งแทน"}
+    if(rep.kind==="แจ้งแทน")rep.flags.push(`แจ้งโดย ${m.by} (ไม่ใช่ฝ่ายผลิต)`);
+    if(!emp)PROD_WARN.push(`ไม่รู้จักชื่อผู้รายงาน "${m.by}"`);
+    items.forEach(i=>i.flags.forEach(f=>PROD_WARN.push(`${rep.date} ${m.by}: ${f}`)));
+    PROD.push(rep);
+  });
+  PROD.sort((a,b)=>a.date.localeCompare(b.date)||a.ts.localeCompare(b.ts));
+}
+const prodLabel=i=>(i.empty?"ขวดเปล่า ":"")+i.product+(i.size?" "+i.size:"");
+const prodCounted=r=>r.kind==="รายงาน"||r.kind==="แจ้งแทน";
+// วันที่ฝ่ายผลิตมาทำงาน (มีเช็คอิน) แต่ไม่มีรายงานการผลิตเลย
+function prodMissingDays(from,to){const rep=new Set(PROD.filter(prodCounted).map(r=>r.date)),days={};
+  DAY.filter(r=>r.emp&&r.dept==="ผลิต"&&r.inTime&&(!from||r.date>=from)&&(!to||r.date<=to)).forEach(r=>{(days[r.date]=days[r.date]||[]).push(r.real)});
+  return Object.entries(days).filter(([d])=>!rep.has(d)&&d<BKK_TODAY()).sort((a,b)=>b[0].localeCompare(a[0])).map(([d,p])=>({date:d,people:p}))}
+
 // ---------- ตาราง HR (MON YY) : ใช้ร่วมกันทั้ง Export และสคริปต์ที่เขียน Google Sheet ----------
 // รูปแบบตามที่ HR บันทึกเอง: ไม่มีเวลาเข้า/ออก = "หยุด"; ออกงานหลังเที่ยงคืน (กะดึก) = ลงในช่อง "ออก" ของวันถัดไป
 // และช่อง "ออก" ของวันที่เข้ากะเป็น "หยุด" (ยกเว้นวันถัดไปมีเวลาออกของตัวเองอยู่แล้ว หรือเป็นวันสุดท้ายของเดือน = ลงวันเดิม)
@@ -1000,10 +1159,67 @@ const BKK_TODAY=()=>new Date(Date.now()+7*3600e3).toISOString().slice(0,10);
 const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const pills=f=>f.map(([c,l])=>`<span class="pill ${c}">${esc(l)}</span>`).join("");
+// ---------- UI: รายงานการผลิต ----------
+let prMode="day",prDay=null;
+const PR_DATES=[...new Set(PROD.filter(prodCounted).map(r=>r.date))].sort();
+prDay=PR_DATES[PR_DATES.length-1]||BKK_TODAY();
+const fmtN=n=>Number(n).toLocaleString("th-TH");
+function prRange(){if(prMode==="day")return[prDay,prDay];return[$("fFrom").value||null,$("fTo").value||null]}
+function renderProd(){
+  const[pf,pt]=prRange(),q=$("fName").value.trim().toLowerCase();
+  const inR=d=>(!pf||d>=pf)&&(!pt||d<=pt);
+  const hitQ=(r,i)=>!q||(r.real||"").toLowerCase().includes(q)||String(r.by).toLowerCase().includes(q)||(r.emp&&r.emp.nick.some(n=>n.toLowerCase().includes(q)))||(i&&prodLabel(i).toLowerCase().includes(q));
+  const reps=PROD.filter(r=>inR(r.date)&&r.items.length&&(hitQ(r)||r.items.some(i=>hitQ(r,i))));
+  const counted=reps.filter(prodCounted);
+  // รายสินค้า
+  const P={};counted.forEach(r=>r.items.forEach(i=>{if(q&&!hitQ(r,i)&&!hitQ(r))return;const k=prodLabel(i);
+    const o=P[k]=P[k]||{label:k,product:i.product,size:i.size,empty:i.empty,qty:0,n:0,who:new Set(),w:[],days:new Set()};
+    o.qty+=i.qty;o.n++;o.who.add(r.real||r.by);if(i.weight)o.w.push(i.weight);o.days.add(r.date)}));
+  const PL=Object.values(P).sort((a,b)=>a.product.localeCompare(b.product)||a.empty-b.empty||a.size.localeCompare(b.size,undefined,{numeric:true}));
+  // รายคน
+  const W={};counted.forEach(r=>{const k=r.real||r.by;const o=W[k]=W[k]||{name:k,dept:r.emp?r.emp.dept:"–",reps:0,days:new Set(),qty:0,items:0,issues:0,late:0};
+    o.reps++;o.days.add(r.date);r.items.forEach(i=>{o.qty+=i.qty;o.items++;if(i.flags.length)o.issues++});if(r.flags.some(f=>f.startsWith("ส่งรายงานช้า")))o.late++});
+  EMP.filter(e=>e.dept==="ผลิต").forEach(e=>{if(!W[e.real]&&(!q||e.real.includes(q)))W[e.real]={name:e.real,dept:e.dept,reps:0,days:new Set(),qty:0,items:0,issues:0,late:0}});
+  const WL=Object.values(W).sort((a,b)=>b.qty-a.qty);
+  const miss=prodMissingDays(pf,pt);
+  const issues=[];reps.forEach(r=>{r.items.forEach(i=>i.flags.forEach(f=>issues.push({r,i,f})));r.flags.forEach(f=>issues.push({r,i:null,f}))});
+  const totQ=counted.reduce((s,r)=>s+r.items.reduce((a,i)=>a+(i.empty?0:i.qty),0),0);
+  const rangeTxt=pf===pt?thDate(pf):`${pf?thDate(pf):"เริ่มต้น"} – ${pt?thDate(pt):"ล่าสุด"}`;
+  let h=`<div class="prbar"><div class="seg"><button type="button" data-m="day" class="${prMode==="day"?"on":""}">ดูทีละวัน</button><button type="button" data-m="range" class="${prMode==="range"?"on":""}">ช่วงวันที่ด้านบน</button></div>`+
+    (prMode==="day"?`<button type="button" class="btn sm" id="prPrev" aria-label="วันก่อนหน้า">◀</button><input type="date" id="prDate" value="${prDay}"><button type="button" class="btn sm" id="prNext" aria-label="วันถัดไป">▶</button><button type="button" class="btn sm ghost" id="prLatest">วันล่าสุดที่มีรายงาน</button>`:"")+
+    `<span class="prrange">${esc(rangeTxt)}</span></div>`;
+  h+=`<div class="prk"><div><span>รายงานที่นับ</span><b>${counted.length}</b><small>${reps.length-counted.length?`ซ้ำ/ไม่นับ ${reps.length-counted.length}`:"ฉบับ"}</small></div>`+
+    `<div><span>ผลิตรวม (ไม่รวมขวดเปล่า)</span><b>${fmtN(totQ)}</b><small>ชิ้น/ขวด</small></div>`+
+    `<div><span>รายการสินค้า</span><b>${PL.filter(p=>!p.empty).length}</b><small>สินค้า-ขนาด</small></div>`+
+    `<div class="${issues.length?"bad":""}"><span>ต้องตรวจ</span><b>${issues.length}</b><small>พิมพ์ผิด ${issues.filter(x=>/^พิมพ์ผิด/.test(x.f)).length} · อื่นๆ ${issues.filter(x=>!/^พิมพ์ผิด/.test(x.f)).length}</small></div></div>`;
+  h+=`<h2 class="lvh">ยอดผลิตรายสินค้า <span>รวมทุกคนในช่วงที่เลือก · น้ำหนัก = ค่าเฉลี่ยที่แจ้งในวงเล็บ (กรัม/ชิ้น)</span></h2><div class="tablewrap"><table><thead><tr><th>สินค้า</th><th>ขนาด</th><th class="num">จำนวน</th><th class="num">ครั้งที่ผลิต</th><th class="num">น้ำหนักเฉลี่ย</th><th>ผู้ผลิต</th></tr></thead><tbody>`+
+    (PL.length?PL.map(p=>`<tr class="${p.empty?"mute":""}"><td>${p.empty?'<span class="pill p-mute">ขวดเปล่า</span> ':""}${esc(p.product)}</td><td>${esc(p.size||"–")}</td><td class="num"><b>${fmtN(p.qty)}</b></td><td class="num">${p.n}</td><td class="num">${p.w.length?fmtN(Math.round(p.w.reduce((a,b)=>a+b,0)/p.w.length))+" g":"–"}</td><td class="nick">${esc([...p.who].join(", "))}</td></tr>`).join(""):`<tr><td class="empty" colspan="6">ไม่มีรายงานการผลิตในช่วงนี้</td></tr>`)+`</tbody></table></div>`;
+  h+=`<h2 class="lvh">สรุปรายคน</h2><div class="tablewrap"><table><thead><tr><th>ชื่อ</th><th>แผนก</th><th class="num">รายงาน (ฉบับ)</th><th class="num">วันที่รายงาน</th><th class="num">จำนวนรวม</th><th class="num">รายการ</th><th class="num">ต้องตรวจ</th><th class="num">ส่งช้า</th></tr></thead><tbody>`+
+    WL.map(w=>`<tr><td>${esc(w.name)}</td><td>${esc(w.dept)}</td><td class="num">${w.reps||"–"}</td><td class="num">${w.days.size||"–"}</td><td class="num">${w.qty?fmtN(w.qty):"–"}</td><td class="num">${w.items||"–"}</td><td class="num">${w.issues?`<span class="pill p-warn">${w.issues}</span>`:"–"}</td><td class="num">${w.late||"–"}</td></tr>`).join("")+`</tbody></table></div>`;
+  if(prMode==="range"||miss.length)h+=`<h2 class="lvh">วันที่ไม่มีรายงานการผลิต <span>ฝ่ายผลิตมาทำงาน (มีเช็คอิน) แต่ไม่มีใครส่งรายงาน</span></h2><div class="tablewrap"><table><tbody>`+
+    (miss.length?miss.map(m=>`<tr><td>${thDate(m.date)}</td><td class="nick">มาทำงาน: ${esc(m.people.join(", "))}</td></tr>`).join(""):`<tr><td class="empty">ส่งรายงานครบทุกวันทำงาน</td></tr>`)+`</tbody></table></div>`;
+  h+=`<h2 class="lvh">ต้องตรวจ: พิมพ์ผิด / ชื่อไม่ครบ / อ่านไม่ได้ <span>ระบบเทียบชื่อสินค้ากับรายชื่อสินค้าในสต๊อก และจับคำใกล้เคียงให้</span></h2><div class="tablewrap"><table><thead><tr><th>วันที่</th><th>ผู้แจ้ง</th><th>ที่พิมพ์ใน Discord</th><th>ระบบอ่านเป็น</th><th>ปัญหา</th></tr></thead><tbody>`+
+    (issues.length?issues.map(({r,i,f})=>`<tr><td>${thDate(r.date)}</td><td>${esc(r.real||r.by)}<span class="how">${esc(r.by)}</span></td><td class="mono">${i?esc(i.raw):"–"}</td><td>${i?esc(prodLabel(i))+" = "+fmtN(i.qty):"–"}</td><td><span class="pill ${/^พิมพ์ผิด|ไม่พบ/.test(f)?"p-bad":"p-warn"}">${esc(f)}</span></td></tr>`).join(""):`<tr><td class="empty" colspan="5">ไม่มีรายการที่ต้องตรวจ</td></tr>`)+`</tbody></table></div>`;
+  h+=`<h2 class="lvh">รายงานรายวัน <span>${reps.length} ฉบับ · กดดูข้อความต้นฉบับได้</span></h2><div class="prlist">`+
+    [...reps].reverse().map(r=>{const st=r.kind==="ซ้ำ"?'<span class="pill p-mute">ซ้ำ (ไม่นับ)</span>':r.kind==="แจ้งแทน"?'<span class="pill p-warn">แจ้งแทน</span>':'<span class="pill p-ok">นับแล้ว</span>';
+      return `<article class="prcard${r.kind==="ซ้ำ"?" mute":""}"><header><b>${thDate(r.date)}</b> · ${esc(r.real||r.by)} <span class="nick">(${esc(r.by)})</span> ${st}<span class="nick right">ส่ง ${esc(thDate(r.posted))} ${esc(new Date(Date.parse(r.ts+":00Z")+7*3600e3).toISOString().slice(11,16))}</span></header>`+
+      (r.flags.length?`<div>${r.flags.map(f=>`<span class="pill p-warn">${esc(f)}</span>`).join("")}</div>`:"")+
+      `<table><tbody>${r.items.map(i=>`<tr><td>${i.empty?'<span class="pill p-mute">ขวดเปล่า</span> ':""}${esc(i.product)}</td><td>${esc(i.size||"–")}</td><td class="num"><b>${fmtN(i.qty)}</b></td><td class="num nick">${i.weight?fmtN(i.weight)+" g":""}</td><td class="nick">${esc(i.note||"")}${i.flags.map(f=>` <span class="pill ${/^พิมพ์ผิด|ไม่พบ/.test(f)?"p-bad":"p-warn"}">${esc(f)}</span>`).join("")}</td></tr>`).join("")}</tbody></table>`+
+      `<details><summary>ข้อความต้นฉบับ</summary><pre>${esc(r.text)}</pre></details></article>`}).join("")+`</div>`;
+  $("prWrap").innerHTML=h;
+  $("count").textContent=`รายงาน ${reps.length} ฉบับ · ${rangeTxt}`;
+  $("prWrap").querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{prMode=b.dataset.m;renderProd()});
+  if(prMode==="day"){const go=d=>{if(d){prDay=d;renderProd()}};
+    $("prDate").onchange=e=>go(e.target.value);
+    $("prPrev").onclick=()=>go(addDay(prDay,-1));$("prNext").onclick=()=>go(addDay(prDay,1));
+    $("prLatest").onclick=()=>go(PR_DATES[PR_DATES.length-1])}
+}
+
 let tab="day";
-try{const t=localStorage.getItem("hrTab3");if(["day","sum","leave","emp"].includes(t))tab=t}catch(e){}
+try{const t=localStorage.getItem("hrTab3");if(["day","sum","leave","prod","emp"].includes(t))tab=t}catch(e){}
+if(location.hash==="#prod")tab="prod";
 if(location.hash==="#leave")tab="leave";
-window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(["day","sum","leave","emp"].includes(h)){tab=h;render()}});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(["day","sum","leave","prod","emp"].includes(h)){tab=h;render()}});
 $("fDept").innerHTML=["ทุกแผนก",...Object.keys(DEPTS)].map(d=>`<option>${esc(d)}</option>`).join("");
 const monthEnd=m=>{const[y,mm]=m.split("-").map(Number);const d=new Date(Date.UTC(y,mm,0));return d.toISOString().slice(0,10)};
 const ALL_MONTHS=[...new Set([...MONTHS,...LEAVES.flatMap(r=>r.dates.map(d=>d.slice(0,7)))])].filter(m=>m>="2026-01"&&m<=addDay(BKK_TODAY(),62).slice(0,7)).sort();
@@ -1031,6 +1247,9 @@ const locTxt=r=>{const a=r.inLoc,b=r.outLoc;if(!a&&!b)return"–";if(!a||!b||a==
 
 function render(){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
+  const isPr=tab==="prod";$("prWrap").hidden=!isPr;$("mainWrap").hidden=isPr;document.querySelector(".kpis").style.display=isPr?"none":"";
+  ["fDept","fSort","fIssue"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=isPr?"none":""});
+  if(isPr){$("lvWrap").hidden=true;renderProd();return}
   const fd=filt(DAY);
   const lastDay=DAY.filter(r=>r.date===LAST_DATE&&r.emp&&r.inTime);
   $("k1").textContent=`${lastDay.length} คน`;
@@ -1148,6 +1367,11 @@ $("exportBtn").onclick=async()=>{
       .sort((a,b)=>(a.r.dates[0]||"").localeCompare(b.r.dates[0]||"")).map(({r,h})=>({"วันที่ลา (เริ่ม)":r.dates[0]||"","ถึง":r.dates[r.dates.length-1]||"","ชื่อจริง":r.real||"","ชื่อ-นามสกุล (ใบลา)":r.full,"แผนก":r.emp?r.emp.dept:"",
       "ประเภท":r.kind,"ประเภทที่แจ้ง":r.type,"จำนวน (ชม.)":+(h.min/60).toFixed(2),"วิธีคิด":h.how,"เหตุผล / หมายเหตุ":r.reason,"สถานะ":LEAVE_DUP.has(r.id)?"ซ้ำ (ไม่นับ)":r.status,"ยื่นใบลา (เวลาไทย)":new Date(Date.parse(r.ts+":00Z")+7*3600e3).toISOString().slice(0,16).replace("T"," "),"พิจารณา":r.considered||""}));
     add(s5,"ใบลา",[12,12,14,24,14,12,18,10,30,50,12,16,18]);}
+  {const inR=d=>(!f||d>=f)&&(!t||d<=t),P={};
+    const rows=[];PROD.filter(r=>inR(r.date)&&r.items.length).forEach(r=>r.items.forEach(i=>{rows.push({"วันที่ผลิต":r.date,"ผู้แจ้ง (Discord)":r.by,"ชื่อจริง":r.real||"","สถานะ":r.kind==="ซ้ำ"?"ซ้ำ (ไม่นับ)":r.kind,"สินค้า":i.product,"ขนาด":i.size,"ขวดเปล่า":i.empty?"ใช่":"","จำนวน":i.qty,"น้ำหนัก (g)":i.weight||"","หมายเหตุ":i.note,"ที่พิมพ์":i.raw,"ต้องตรวจ":i.flags.concat(r.flags).join("; ")});
+      if(prodCounted(r)){const k=prodLabel(i);const o=P[k]=P[k]||{"สินค้า":i.product,"ขนาด":i.size,"ขวดเปล่า":i.empty?"ใช่":"","จำนวนรวม":0,"ครั้งที่ผลิต":0};o["จำนวนรวม"]+=i.qty;o["ครั้งที่ผลิต"]++}}));
+    add(Object.values(P).sort((a,b)=>a["สินค้า"].localeCompare(b["สินค้า"])),"ผลิต-รายสินค้า",[22,10,10,12,12]);
+    add(rows,"ผลิต-รายการ",[12,18,12,12,20,10,8,10,10,20,36,40]);}
   const fname=`WIBWUB_HR_${$("fFrom").value}_ถึง_${$("fTo").value}.xlsx`;
   if(!dl){XLSX.writeFile(wb,fname);toast("ดาวน์โหลดไฟล์ Excel แล้ว");return}
   const buf=XLSX.write(wb,{type:"array",bookType:"xlsx"});
