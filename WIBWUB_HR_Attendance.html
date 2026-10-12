@@ -105,7 +105,7 @@ tr.mute td{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,monospace;fon
         <div><b>พักเที่ยง</b>จ–ศ หัก 12:00–13:00 ออกจากชั่วโมงทำงาน · เสาร์ ผลิต/แพ็ก หัก 1 ชม. เมื่ออยู่ถึง 17:00</div>
         <div><b>รายงานการผลิต</b>อ่านจากห้อง #รายงานการผลิตbyฝ่ายผลิต · ใช้วันที่ที่พิมพ์ในรายงาน (ถ้าไม่พิมพ์ใช้วันที่ส่ง) · รายงานที่โพสต์ซ้ำนับครั้งเดียว · ชื่อสินค้าเทียบกับรายชื่อสินค้าในสต๊อกเพื่อจับคำพิมพ์ผิด</div>
         <div><b>รอบตัด OT</b>วันตัดรอบแต่ละเดือนไม่เท่ากัน ให้ HR เลือก "กำหนดเอง" แล้วใส่วันเริ่ม–วันสิ้นสุดของรอบเอง ตัวเลข OT และไฟล์ Export จะคิดตามช่วงนั้น</div>
-        <div><b>การลา (#การลาที่รออนุมัติ)</b>นับเฉพาะใบที่อนุมัติแล้ว · ลาเต็มวัน = 8 ชม. (เสาร์ ผลิต/แพ็ก 4 ชม.) · ลาเป็นชั่วโมง/ช่วงเวลา คิดจากที่แจ้งในประเภทการลาหรือเหตุผล และหักออกจากเวลาสาย/ออกก่อน</div>
+        <div><b>การลา (#การลาที่รออนุมัติ)</b>นับเฉพาะใบที่อนุมัติแล้ว · ลาเต็มวัน = 8 ชม. (เสาร์ ผลิต/แพ็ก 4 ชม.) · ลาเป็นชั่วโมง/ช่วงเวลา คิดจากที่แจ้งในประเภทการลาหรือเหตุผล และหักออกจากเวลาสาย/ออกก่อน · ถ้าวันที่ในใบลาเข้า-ออกตรงเวลา ระบบจะเอาใบลานั้นไปหักวันที่สาย/ออกก่อนที่ใกล้ที่สุดของคนเดียวกันในเดือนเดียวกันแทน (วันที่ลาในใบไม่จำเป็นต้องตรงกับวันที่ลาจริง)</div>
         <div><b>ชื่อพิมพ์ผิด</b>ต่างจากชื่อในรายชื่อ 1 ตัวอักษร (เช่น ริย → ริน) ระบบจับคู่ให้และติดป้าย "พิมพ์ผิด?" ให้ตรวจ</div>
       </div>
     </details>
@@ -980,10 +980,11 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTHS[0]+"-01").map(s=>{
   let earlyMin=outR?Math.max(0,sc.end-x.outMin):0;
   if(ok&&lv.span){   // ลาบางช่วง: หักนาทีที่สาย/ออกก่อนเฉพาะช่วงที่ลา
     const sp=lv.span,inM=inR?toMin(inR.time):null;
-    if(inR&&outR&&!x.lateMin&&!earlyMin)LEAVE_WARN.push(`${e.real} ลา${lv.kind.replace(/^ลา/,"")} ${dur(sp.min)} วันที่ ${s.date} วันนั้นเข้า-ออกตรงเวลา จึงไม่ได้ใช้หักเวลาสาย (วันที่ลาไม่จำเป็นต้องตรงกับวันที่ยื่นหรืออนุมัติ)`);
+    if(inR&&outR&&!x.lateMin&&!earlyMin)x.unusedLeave=lv;   // ใช้ไม่ได้ในวันนี้ → ย้ายไปหักวันที่สายใกล้ที่สุด (LEAVE_MOVE_V1)
     if(x.lateMin){const cov=sp.from!=null?Math.max(0,Math.min(inM,sp.to)-Math.max(8*60,sp.from)):sp.min;x.lateMin=Math.max(0,x.lateMin-cov)}
     if(earlyMin){const cov=sp.from!=null?Math.max(0,Math.min(sc.end,sp.to)-Math.max(x.outMin,sp.from)):sp.min;earlyMin=Math.max(0,earlyMin-cov)}
   }else if(ok){x.lateMin=0;earlyMin=0}
+  x.earlyMin=earlyMin;
   const F=[];let issue=false;
   if(lv)F.push([ok?"p-leave":"p-mute",leaveLabel(lv)]);
   const lvStart=ok&&(!lv.span||(lv.span.from!=null&&lv.span.from<=8*60)),lvEnd=ok&&(!lv.span||(lv.span.to!=null&&lv.span.to>=sc.end));
@@ -1003,6 +1004,23 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTHS[0]+"-01").map(s=>{
   if(inR&&outR&&!F.some(f=>["p-bad","p-warn"].includes(f[0])&&!f[1].startsWith("พิมพ์ผิด")))F.unshift(["p-ok","ปกติ"]);
   x.flags=F;x.issue=issue;x.fuzzy=fz.length>0;
   return x});
+// ---- LEAVE_MOVE_V1: ใบลาเป็นชั่วโมงที่วันที่ในใบเข้า-ออกตรงเวลา (ไม่ได้ใช้) → หักวันที่สาย/ออกก่อนที่ใกล้ที่สุดของคนเดียวกันในเดือนเดียวกัน
+// วันที่ลาในใบไม่จำเป็นต้องตรงกับวันที่ลาจริง · เลือกวันที่สาย+ออกก่อน ≥ 15 นาทีก่อน (ใกล้สุด, เท่ากันเลือกที่สายมากกว่า) ถ้าไม่มีจึงใช้วันที่สายน้อยกว่า · ใบเดียวหักได้วันเดียว ไม่เกินชั่วโมงที่ลา
+DAY.filter(r=>r.unusedLeave).sort((a,b)=>a.date.localeCompare(b.date)).forEach(src=>{const lv=src.unusedLeave,mo=src.date.slice(0,7);
+  const dd=r=>Math.abs((Date.parse(r.date)-Date.parse(src.date))/864e5),bad=r=>r.lateMin+(r.earlyMin||0);
+  const C=DAY.filter(r=>r.real===src.real&&r!==src&&r.date.slice(0,7)===mo&&bad(r)>0).sort((a,b)=>((bad(b)>=15)-(bad(a)>=15))||dd(a)-dd(b)||bad(b)-bad(a));
+  const t=C[0];
+  if(!t){LEAVE_WARN.push(`${src.real} ลา${lv.kind.replace(/^ลา/,"")} ${dur(lv.span.min)} วันที่ ${src.date} วันนั้นเข้า-ออกตรงเวลา และไม่มีวันที่สายในเดือนนี้ให้หัก`);return}
+  let left=lv.span.min;const l0=t.lateMin,e0=t.earlyMin||0;
+  const ul=Math.min(left,t.lateMin);t.lateMin-=ul;left-=ul;const ue=Math.min(left,e0);t.earlyMin=e0-ue;
+  const th=d=>`${+d.slice(8,10)}/${+d.slice(5,7)}`;
+  t.flags=t.flags.filter(f=>!/^(สาย|ออกก่อน) /.test(f[1])&&f[1]!=="ปกติ");
+  t.flags.unshift(["p-leave",`ใช้ใบลา ${dur(ul+ue)} (ใบลาวันที่ ${th(src.date)})`]);
+  if(t.lateMin)t.flags.push(["p-warn",`สาย ${dur(t.lateMin)}`]);if(t.earlyMin)t.flags.push(["p-warn",`ออกก่อน ${dur(t.earlyMin)}`]);
+  if(t.inTime&&t.outTime&&!t.flags.some(f=>["p-bad","p-warn"].includes(f[0])&&!f[1].startsWith("พิมพ์ผิด")))t.flags.unshift(["p-ok","ปกติ"]);
+  t.movedLeave={from:src.date,min:ul+ue,lateBefore:l0,earlyBefore:e0};
+  src.flags.push(["p-mute",`ใบลานี้ใช้หักวันที่ ${th(t.date)}`]);
+  LEAVE_WARN.push(`${src.real} ลา${lv.kind.replace(/^ลา/,"")} ${dur(lv.span.min)} วันที่ ${src.date} วันนั้นเข้า-ออกตรงเวลา → ใช้หักวันที่ ${t.date} (สาย ${dur(l0)}${e0?`, ออกก่อน ${dur(e0)}`:""}) แทน`)});
 {const have=new Set(DAY.map(r=>r.real+"|"+r.date));
   Object.entries(LEAVE_BY).forEach(([k,lv])=>{const d=k.split("|")[1];
     if(have.has(k)||lv.status==="ไม่อนุมัติ"||d<MONTHS[0]+"-01"||dow(d)===0||(dow(d)===6&&lv.emp.dept!=="แอดมิน"&&lv.dates.length>1))return;
