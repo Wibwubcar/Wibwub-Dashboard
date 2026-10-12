@@ -980,7 +980,7 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTHS[0]+"-01").map(s=>{
   let earlyMin=outR?Math.max(0,sc.end-x.outMin):0;
   if(ok&&lv.span){   // ลาบางช่วง: หักนาทีที่สาย/ออกก่อนเฉพาะช่วงที่ลา
     const sp=lv.span,inM=inR?toMin(inR.time):null;
-    if(inR&&outR&&!x.lateMin&&!earlyMin)LEAVE_WARN.push(`${e.real} ลา${lv.kind.replace(/^ลา/,"")} ${dur(sp.min)} วันที่ ${s.date} แต่วันนั้นไม่ได้มาสายหรือออกก่อน — วันที่ในใบลาอาจผิด`);
+    if(inR&&outR&&!x.lateMin&&!earlyMin)LEAVE_WARN.push(`${e.real} ลา${lv.kind.replace(/^ลา/,"")} ${dur(sp.min)} วันที่ ${s.date} วันนั้นเข้า-ออกตรงเวลา จึงไม่ได้ใช้หักเวลาสาย (วันที่ลาไม่จำเป็นต้องตรงกับวันที่ยื่นหรืออนุมัติ)`);
     if(x.lateMin){const cov=sp.from!=null?Math.max(0,Math.min(inM,sp.to)-Math.max(8*60,sp.from)):sp.min;x.lateMin=Math.max(0,x.lateMin-cov)}
     if(earlyMin){const cov=sp.from!=null?Math.max(0,Math.min(sc.end,sp.to)-Math.max(x.outMin,sp.from)):sp.min;earlyMin=Math.max(0,earlyMin-cov)}
   }else if(ok){x.lateMin=0;earlyMin=0}
