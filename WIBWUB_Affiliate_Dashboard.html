@@ -16018,12 +16018,12 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 06/10/2026 - 12/10/2026 → 367 requests in-range (synced 12/10/2026). Staff log rows
+// Current window 07/10/2026 - 13/10/2026 → 199 requests in-range (synced 13/10/2026). Staff log rows
 // in batches, so day-to-day totals are lumpy.
 // NOTE: this total still does not match SAMPLE_LAST7D.funnel.req (10) above —
 // that funnel number predates the sheet swap done for SAMPLE_MONTHS and has
 // not been recomputed from this sheet yet. Flagged to the user in the UI.
-const SAMPLE_PRODUCTS_LAST7D = {total:367,window:'06/10/2026 - 12/10/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Banyakart',c:108,appr:65,rej:43,other:0},{n:'Interior wipes',c:100,appr:46,rej:54,other:0},{n:'Refresh Wipes',c:89,appr:48,rej:41,other:0},{n:'Reflex',c:32,appr:17,rej:15,other:0},{n:'Interior',c:22,appr:13,rej:9,other:0},{n:'Quart Shampoo',c:14,appr:7,rej:7,other:0},{n:'ไม้ปัดขนแกะ',c:13,appr:5,rej:8,other:0},{n:'Spot Clean',c:10,appr:4,rej:6,other:0},{n:'Tire Clean',c:9,appr:6,rej:3,other:0},{n:'Sugar',c:8,appr:6,rej:2,other:0},{n:'Waterless',c:5,appr:3,rej:2,other:0},{n:'Superdry',c:5,appr:5,rej:0,other:0},{n:'X glass',c:5,appr:3,rej:2,other:0},{n:'X gkass',c:4,appr:1,rej:3,other:0},{n:'Beach',c:3,appr:2,rej:1,other:0},{n:'Wheel Sling',c:3,appr:2,rej:1,other:0},{n:'Microfiber Wash',c:1,appr:1,rej:0,other:0}]};
+const SAMPLE_PRODUCTS_LAST7D = {total:199,window:'07/10/2026 - 13/10/2026', unspecified:{c:0,appr:0,rej:0,other:0}, items:[{n:'Banyakart',c:55,appr:29,rej:26,other:0},{n:'Interior wipes',c:52,appr:22,rej:30,other:0},{n:'Refresh Wipes',c:40,appr:23,rej:17,other:0},{n:'Reflex',c:14,appr:7,rej:7,other:0},{n:'ไม้ปัดขนแกะ',c:13,appr:5,rej:8,other:0},{n:'Interior',c:13,appr:7,rej:6,other:0},{n:'Quart Shampoo',c:13,appr:6,rej:7,other:0},{n:'Tire Clean',c:9,appr:6,rej:3,other:0},{n:'Spot Clean',c:8,appr:2,rej:6,other:0},{n:'Superdry',c:5,appr:5,rej:0,other:0},{n:'X glass',c:5,appr:3,rej:2,other:0},{n:'Sugar',c:3,appr:2,rej:1,other:0},{n:'Waterless',c:3,appr:1,rej:2,other:0},{n:'Wheel Sling',c:3,appr:2,rej:1,other:0},{n:'X gkass',c:3,appr:0,rej:3,other:0},{n:'Beach',c:1,appr:1,rej:0,other:0},{n:'Microfiber Wash',c:1,appr:1,rej:0,other:0}]};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
