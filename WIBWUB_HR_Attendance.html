@@ -64,6 +64,41 @@ tbody tr:not(.grp):nth-child(even) td{background:var(--row)}
 .p-bad{color:var(--bad);background:var(--bad-bg)} .p-ot{color:var(--ot);background:var(--ot-bg)}
 .p-mute{color:var(--muted);background:var(--bg)} .p-leave{color:#7a4bd1;background:#efe7fd}
 .unk{color:var(--bad);font-weight:600}
+.ovbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:14px 16px 6px}
+.ovbar .seg{flex-wrap:wrap}.ovbar .seg button{white-space:nowrap}
+.ovbar input[type=date],.ovbar select{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
+.mstep{display:inline-flex;gap:6px;align-items:center}
+.ovrange{margin-left:auto;color:var(--muted);font-size:13px}
+.ovk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:8px 16px}
+.ovk>div{background:var(--bg);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px;border-left:4px solid var(--line)}
+.ovk .c-lv{border-left-color:#047857}.ovk .c-ot{border-left-color:var(--ot)}.ovk .c-late{border-left-color:var(--warn)}
+.ovk span{font-size:12px;color:var(--muted)}.ovk b{font-size:24px;line-height:1.25;font-variant-numeric:tabular-nums}.ovk small{font-size:12px;color:var(--muted)}
+.ovk .cmp{margin-top:2px}.ovk .cmp .up,.ovk .cmp .dn{font-size:10px}
+.ovgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:8px 16px 16px;align-items:start}
+.ovcard{border:1px solid var(--line);border-radius:12px;padding:12px 14px;min-width:0;background:var(--surface)}
+.ovcard.wide{grid-column:1/-1}
+.ovcard h2{font-size:15px;margin:0 0 6px}.ovcard h2 span{font-weight:400;font-size:12px;color:var(--muted);margin-left:6px}
+.lvrow{display:grid;grid-template-columns:minmax(110px,1fr) minmax(0,2fr) auto;grid-template-areas:'who kinds tot' 'chips chips chips';gap:6px 10px;padding:9px 0;border-top:1px solid var(--line);align-items:center}
+.ovcard h2+.lvrow{border-top:0}
+.who{min-width:0}.who b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.who small{color:var(--muted);font-size:12px}
+.lvrow .who{grid-area:who}.lvrow .chips{grid-area:chips}.kinds{grid-area:kinds;display:flex;flex-wrap:wrap;gap:4px}.tot{grid-area:tot;text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}.tot small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+.chips{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:4px}
+.chip{font-size:12px;padding:2px 9px;border-radius:999px;white-space:nowrap;background:var(--bg);color:var(--ink)}
+.chip.pend{background:transparent;border:1px dashed currentColor}
+details.mrow{border-top:1px solid var(--line)}.ovcard h2+details.mrow{border-top:0}
+details.mrow summary{display:grid;grid-template-columns:minmax(110px,1fr) minmax(60px,2fr) 84px 52px;gap:10px;align-items:center;padding:8px 0;cursor:pointer;list-style:none}
+details.mrow summary::-webkit-details-marker{display:none}
+details.mrow summary:hover .who b{color:var(--accent)}
+.mbar{height:10px;background:var(--bg);border-radius:6px;overflow:hidden}.mbar i{display:block;height:100%;background:var(--ot);border-radius:6px}
+details.mrow.late .mbar i{background:#D08A1C}
+details.mrow .v{text-align:right;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}details.mrow .n{color:var(--muted);font-size:12px;text-align:right}
+details.mrow .chips{padding:0 0 10px}
+.ovnote{font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--line)}
+.ovempty{color:var(--muted);padding:12px 0}
+@media (max-width:900px){.ovgrid{grid-template-columns:1fr}.ovk{grid-template-columns:1fr}.ovrange{margin-left:0;width:100%}
+  .lvrow{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'who tot' 'kinds kinds' 'chips chips'}
+  details.mrow summary{grid-template-columns:minmax(90px,1fr) minmax(40px,1fr) auto}details.mrow .n{display:none}}
+
 .prbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px 16px 4px}.prbar input[type=date]{font:inherit;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--surface);color:var(--ink)}
 .seg{display:inline-flex;background:var(--bg);border-radius:8px;padding:3px}.seg button{font:inherit;border:0;background:transparent;color:var(--muted);padding:5px 10px;border-radius:6px;cursor:pointer}.seg button.on{background:var(--surface);color:var(--ink);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
 .btn.sm{padding:5px 10px;font-size:13px}.btn.ghost{background:transparent;color:var(--accent);border:1px solid var(--line)}.prrange{color:var(--muted);font-size:13px;margin-left:auto}
@@ -120,6 +155,7 @@ tr.mute td{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,monospace;fon
     <section class="panel">
       <div class="bar">
         <div class="tabs" role="tablist">
+          <button class="tab" role="tab" data-tab="ov" type="button">ภาพรวม</button>
           <button class="tab" role="tab" data-tab="day" type="button">บันทึกเข้า-ออกงาน</button>
           <button class="tab" role="tab" data-tab="sum" type="button">สรุปรายคน</button>
           <button class="tab" role="tab" data-tab="leave" type="button">สรุปการลา</button>
@@ -138,6 +174,7 @@ tr.mute td{color:var(--muted)}.mono{font-family:ui-monospace,Menlo,monospace;fon
       </div>
       <div class="tablewrap" id="mainWrap"><table id="tbl"></table></div>
       <div id="prWrap" hidden></div>
+      <div id="ovWrap" hidden></div>
       <div id="lvWrap" hidden><h2 class="lvh">รายละเอียดใบลาทั้งหมด <span id="lvNote"></span></h2><div class="tablewrap"><table id="tbl2"></table></div></div>
       <div class="foot"><span id="count"></span><span>ที่มา: Discord Wibwub Company ห้อง #บันทึกเข้างาน, #บันทึกออกงาน, #การลาที่รออนุมัติ และ #รายงานการผลิตbyฝ่ายผลิต</span></div>
     </section>
@@ -1347,14 +1384,14 @@ function renderProd(){
 }
 
 const PROD_ONLY=location.hash==="#prodonly"||new URLSearchParams(location.search).get("view")==="prod";
-let tab="day";
-try{const t=localStorage.getItem("hrTab3");if(["day","sum","leave","prod","emp"].includes(t))tab=t}catch(e){}
+let tab="ov";
+try{const t=localStorage.getItem("hrTab4");if(["ov","day","sum","leave","prod","emp"].includes(t))tab=t}catch(e){}
 if(location.hash==="#prod")tab="prod";
 if(PROD_ONLY){tab="prod";document.querySelector(".tabs").style.display="none";document.querySelector("details.rules").style.display="none";
   document.querySelector(".crumb").innerHTML="ทีม › <b>รายงานการผลิต</b>";document.querySelector("h1").textContent="รายงานการผลิต";document.title="WIBWUB — รายงานการผลิต"}
 else{const pb=document.querySelector('.tab[data-tab="prod"]');if(pb)pb.style.display="none";if(tab==="prod")tab="day"}   // หน้า HR ไม่มีแท็บนี้แล้ว (อยู่ที่แถบซ้ายของ Dashboard)
 if(location.hash==="#leave")tab="leave";
-window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(PROD_ONLY)return;if(["day","sum","leave","prod","emp"].includes(h)){tab=h;render()}});
+window.addEventListener("hashchange",()=>{const h=location.hash.slice(1);if(PROD_ONLY)return;if(["ov","day","sum","leave","prod","emp"].includes(h)){tab=h;render()}});
 $("fDept").innerHTML=["ทุกแผนก",...Object.keys(DEPTS)].map(d=>`<option>${esc(d)}</option>`).join("");
 const monthEnd=m=>{const[y,mm]=m.split("-").map(Number);const d=new Date(Date.UTC(y,mm,0));return d.toISOString().slice(0,10)};
 const ALL_MONTHS=[...new Set([...MONTHS,...LEAVES.flatMap(r=>r.dates.map(d=>d.slice(0,7)))])].filter(m=>m>="2026-01"&&m<=addDay(BKK_TODAY(),62).slice(0,7)).sort();
@@ -1380,12 +1417,86 @@ function summary(fd){
 }
 const locTxt=r=>{const a=r.inLoc,b=r.outLoc;if(!a&&!b)return"–";if(!a||!b||a===b)return a||b;return`${a} → ${b}`};
 
+// ---------- UI: ภาพรวม — ใครลา / ใครมี OT / ใครมาสาย ในช่วงที่เลือก (OV_V1) ----------
+let ovMode="m",ovMonth=MONTH,ovFrom=null,ovTo=null;
+const thShort=d=>`${+d.slice(8,10)} ${TH_MON[+d.slice(5,7)-1]}`;
+const thMonY=m=>`${TH_MON[+m.slice(5)-1]} ${+m.slice(0,4)+543}`;
+const addMonth=(m,n)=>{let[y,mm]=m.split("-").map(Number);mm+=n;while(mm<1){mm+=12;y--}while(mm>12){mm-=12;y++}return`${y}-${String(mm).padStart(2,"0")}`};
+const daysBetween=(a,b)=>Math.round((Date.parse(b)-Date.parse(a))/864e5)+1;
+function ovRange(){const td=BKK_TODAY();
+  if(ovMode==="m")return[ovMonth+"-01",monthEnd(ovMonth)];
+  if(ovMode==="7")return[addDay(td,-6),td];
+  if(ovMode==="30")return[addDay(td,-29),td];
+  if(ovMode==="y")return[td.slice(0,4)+"-01-01",td];
+  const f=ovFrom||ovMonth+"-01",t=ovTo||td;return f<=t?[f,t]:[t,f]}
+function ovPrev(f,t){if(ovMode==="m"){const p=addMonth(ovMonth,-1);if(p<"2026-01")return null;
+    if(t>LAST_DATE&&LAST_DATE>=f){const dd=Math.min(+LAST_DATE.slice(8,10),+monthEnd(p).slice(8,10));return[p+"-01",p+"-"+String(dd).padStart(2,"0")]}   // เดือนที่ยังไม่จบ: เทียบวันเดียวกันของเดือนก่อน
+    return[p+"-01",monthEnd(p)]}if(ovMode==="y")return null;
+  const n=daysBetween(f,t),pf=addDay(f,-n);return pf<"2026-01-01"?null:[pf,addDay(f,-1)]}
+const fmtLeave=min=>{if(!min)return"–";const d=Math.floor(min/LEAVE_DAY_MIN),h=min%LEAVE_DAY_MIN;return[d?d+" วัน":"",h?dur(h):""].filter(Boolean).join(" ")};
+const fmtH=min=>{if(!min)return"0 ชม.";const h=Math.floor(min/60),m=min%60;return h+(m?`:${String(m).padStart(2,"0")}`:"")+" ชม."};
+const kShort=k=>k.replace(/^ลา/,"");
+function ovData(f,t){
+  const pass=e=>filt([{...e,date:"",nick:e.nick.join(" "),issue:false,emp:e}],true).length>0;
+  const E=EMP.filter(pass),set=new Set(E.map(e=>e.real));
+  const P={};E.forEach((e,i)=>P[e.real]={emp:e,i:EMP.indexOf(e),ot:0,otD:[],late:0,lateD:[],lv:null,chips:[]});
+  DAY.forEach(r=>{if(!r.emp||!set.has(r.real)||r.date<f||r.date>t)return;const p=P[r.real];
+    if(r.otMin>0){p.ot+=r.otMin;p.otD.push([r.date,r.otMin])}if(r.lateMin>0){p.late+=r.lateMin;p.lateD.push([r.date,r.lateMin])}});
+  leaveSummary(f,t).forEach(s=>{if(P[s.emp.real])P[s.emp.real].lv=s});
+  LEAVES.forEach(r=>{if(!r.real||!P[r.real]||LEAVE_DUP.has(r.id)||r.status==="ไม่อนุมัติ")return;const h=leaveHours(r,f,t);if(!h.perDay.length)return;
+    P[r.real].chips.push({d:h.perDay[0][0],d2:h.perDay[h.perDay.length-1][0],kind:r.kind,min:h.min,days:h.perDay.length,span:!!r.span,pend:r.status!=="อนุมัติแล้ว",why:r.reason||""})});
+  const L=Object.values(P);L.forEach(p=>{p.chips.sort((a,b)=>a.d.localeCompare(b.d));p.otD.sort();p.lateD.sort()});
+  const lvMin=L.reduce((a,p)=>a+(p.lv?p.lv.min:0),0),lvN=L.reduce((a,p)=>a+(p.lv?p.lv.n:0),0),pend=L.reduce((a,p)=>a+(p.lv?p.lv.pend:0),0);
+  return{E,P:L,lvMin,lvN,pend,lvPeople:L.filter(p=>p.lv&&p.lv.n).length,
+    ot:L.reduce((a,p)=>a+p.ot,0),otPeople:L.filter(p=>p.ot).length,late:L.reduce((a,p)=>a+p.late,0),lateN:L.reduce((a,p)=>a+p.lateD.length,0),latePeople:L.filter(p=>p.late).length};
+}
+function renderOv(){
+  const[f,t]=ovRange();
+  $("fFrom").value=f;$("fTo").value=t;$("fMonth").value=ovMode==="m"&&[...$("fMonth").options].some(o=>o.value===ovMonth)?ovMonth:"custom";   // Export Excel ใช้ช่วงเดียวกัน
+  const D=ovData(f,t),pv=ovPrev(f,t),Q=pv?ovData(pv[0],pv[1]):null;
+  const pvName=!pv?"":ovMode==="m"?`${thMonY(addMonth(ovMonth,-1))}${pv[1]<monthEnd(addMonth(ovMonth,-1))?` (1–${+pv[1].slice(8,10)})`:""}`:`ช่วงก่อนหน้า (${thShort(pv[0])} – ${thShort(pv[1])})`;
+  const cmp=(a,b,fmt)=>Q?`<small class="cmp">${pvName}: ${fmt(b)}${a>b?' <span class="up">▲</span>':a<b?' <span class="dn">▼</span>':""}</small>`:"";
+  const mi=ALL_MONTHS.indexOf(ovMonth);
+  let h=`<div class="ovbar"><div class="seg" role="group" aria-label="ช่วงเวลา">${[["m","รายเดือน"],["7","7 วันล่าสุด"],["30","30 วันล่าสุด"],["y","ปีนี้"],["c","กำหนดเอง"]].map(([k,l])=>`<button type="button" data-o="${k}" class="${ovMode===k?"on":""}">${l}</button>`).join("")}</div>`;
+  if(ovMode==="m")h+=`<div class="mstep"><button type="button" class="btn sm" id="ovPm" aria-label="เดือนก่อน" ${mi<=0?"disabled":""}>◀</button><select id="ovMon" aria-label="เลือกเดือน">${[...ALL_MONTHS].reverse().map(m=>`<option value="${m}" ${m===ovMonth?"selected":""}>${thMonY(m)}</option>`).join("")}</select><button type="button" class="btn sm" id="ovNm" aria-label="เดือนถัดไป" ${mi>=ALL_MONTHS.length-1?"disabled":""}>▶</button>${ovMonth!==MONTH?`<button type="button" class="btn sm ghost" id="ovNow">กลับไปเดือนนี้</button>`:""}</div>`;
+  if(ovMode==="c")h+=`<label>จาก <input type="date" id="ovF" value="${f}" min="2026-01-01"></label><label>ถึง <input type="date" id="ovT" value="${t}" min="2026-01-01"></label>`;
+  h+=`<span class="ovrange">${thDate(f)} – ${thDate(t)} · ${daysBetween(f,t)} วัน${t>LAST_DATE?` · ข้อมูลเข้า-ออกงานถึง ${thShort(LAST_DATE)}`:""}</span></div>`;
+  h+=`<div class="ovk"><div class="c-lv"><span>ลา (อนุมัติแล้ว)</span><b>${D.lvPeople} คน</b><small>รวม ${fmtLeave(D.lvMin)} · ${D.lvN} ใบ${D.pend?` · รออนุมัติ ${D.pend} ใบ`:""}</small>${cmp(D.lvMin,Q&&Q.lvMin,fmtLeave)}</div>`+
+    `<div class="c-ot"><span>OT (ผลิต + แพ็ก)</span><b>${fmtH(D.ot)}</b><small>${D.otPeople} คน${D.otPeople?` · เฉลี่ย ${fmtH(Math.round(D.ot/D.otPeople))} ต่อคน`:""}</small>${cmp(D.ot,Q&&Q.ot,fmtH)}</div>`+
+    `<div class="c-late"><span>มาสาย (หักใบลาแล้ว)</span><b>${D.lateN} ครั้ง</b><small>${D.latePeople} คน · รวม ${dur(D.late)}</small>${cmp(D.late,Q&&Q.late,dur)}</div></div>`;
+  // ใครลาบ้าง
+  const LV=D.P.filter(p=>(p.lv&&(p.lv.n||p.lv.pend))||p.chips.length).sort((a,b)=>((b.lv?b.lv.min:0)-(a.lv?a.lv.min:0))||a.i-b.i);
+  const chip=c=>`<span class="chip k-${leaveKindCol(c.kind)}${c.pend?" pend":""}" title="${esc(c.why)}">${c.d===c.d2?thShort(c.d):thShort(c.d)+" – "+thShort(c.d2)} · ${esc(kShort(c.kind))}${c.span||c.days>1?" · "+fmtLeave(c.min):""}${c.pend?" · รออนุมัติ":""}</span>`;
+  h+=`<div class="ovgrid"><section class="ovcard"><h2>ใครลาบ้าง <span>ลาเต็มวัน = 1 วัน (8 ชม.) · เส้นประ = รออนุมัติ</span></h2>`+
+    (LV.length?LV.map(p=>{const s=p.lv||{k:{},n:0,min:0};
+      return `<div class="lvrow"><div class="who"><b>${esc(p.emp.real)}</b><small>${esc(p.emp.dept)}</small></div><div class="kinds">${LEAVE_COLS.filter(k=>s.k[k]&&s.k[k].n).map(k=>`<span class="pill k-${k}">${esc(kShort(k))} ${fmtLeave(s.k[k].min)}</span>`).join("")}</div><div class="tot">${fmtLeave(s.min)}<small>${s.n} ใบ</small></div><div class="chips">${p.chips.map(chip).join("")}</div></div>`}).join("")
+      :`<div class="ovempty">ไม่มีใครลาในช่วงนี้</div>`)+`</section>`;
+  // ใครมี OT บ้าง
+  const bars=(list,val,cls,fmt,dayFmt)=>{const mx=Math.max(1,...list.map(val));
+    return list.map(p=>{const v=val(p),dd=cls==="ot"?p.otD:p.lateD;return `<details class="mrow ${cls}"><summary><div class="who"><b>${esc(p.emp.real)}</b><small>${esc(p.emp.dept)}</small></div><div class="mbar"><i style="width:${Math.max(3,Math.round(v/mx*100))}%"></i></div><span class="v">${fmt(v)}</span><span class="n">${dd.length} วัน</span></summary><div class="chips">${dd.map(([d,m])=>`<span class="chip">${thShort(d)} · ${dayFmt(m)}</span>`).join("")}</div></details>`}).join("")};
+  const OT=D.P.filter(p=>p.ot>0).sort((a,b)=>b.ot-a.ot),noOT=D.P.filter(p=>DEPTS[p.emp.dept].ot&&!p.ot);
+  h+=`<section class="ovcard"><h2>ใครมี OT บ้าง <span>กดที่ชื่อเพื่อดูรายวัน</span></h2>`+(OT.length?bars(OT,p=>p.ot,"ot",fmtH,dur):`<div class="ovempty">ไม่มี OT ในช่วงนี้</div>`)+
+    (noOT.length?`<div class="ovnote">ไม่มี OT ในช่วงนี้: ${esc(noOT.map(p=>p.emp.real).join(", "))}</div>`:"")+`</section>`;
+  const LT=D.P.filter(p=>p.late>0).sort((a,b)=>b.late-a.late);
+  h+=`<section class="ovcard wide"><h2>ใครมาสายบ้าง <span>หลัง 08:00 น. · หักเวลาที่มีใบลาแล้ว · กดที่ชื่อเพื่อดูรายวัน</span></h2>`+(LT.length?bars(LT,p=>p.late,"late",dur,dur):`<div class="ovempty">ไม่มีใครมาสายในช่วงนี้</div>`)+`</section></div>`;
+  $("ovWrap").innerHTML=h;
+  $("count").textContent=`ภาพรวม ${thDate(f)} – ${thDate(t)} · ${D.E.length} คน`;
+  const W=$("ovWrap");
+  W.querySelectorAll(".seg button").forEach(b=>b.onclick=()=>{const[cf,ct]=ovRange();ovMode=b.dataset.o;if(ovMode==="c"){ovFrom=cf;ovTo=ct}renderOv()});
+  if(ovMode==="m"){const go=m=>{if(m){ovMonth=m;renderOv()}};
+    $("ovPm").onclick=()=>go(ALL_MONTHS[mi-1]);$("ovNm").onclick=()=>go(ALL_MONTHS[mi+1]);$("ovMon").onchange=e=>go(e.target.value);if($("ovNow"))$("ovNow").onclick=()=>go(MONTH)}
+  if(ovMode==="c"){$("ovF").onchange=e=>{if(e.target.value){ovFrom=e.target.value;renderOv()}};$("ovT").onchange=e=>{if(e.target.value){ovTo=e.target.value;renderOv()}}}
+}
+
 function render(){
   document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===tab));
   const isPr=tab==="prod";$("prWrap").hidden=!isPr;$("mainWrap").hidden=isPr;document.querySelector(".kpis").style.display=isPr?"none":"";
   ["fDept","fSort","fIssue"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=isPr?"none":""});
   if(!isPr)["fMonth","fFrom","fTo"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display=""});
+  $("ovWrap").hidden=tab!=="ov";
   if(isPr){$("lvWrap").hidden=true;renderProd();return}
+  if(tab==="ov"){$("mainWrap").hidden=true;$("lvWrap").hidden=true;document.querySelector(".kpis").style.display="none";
+    ["fMonth","fFrom","fTo","fSort","fIssue"].forEach(id=>{const el=$(id);(el.closest("label")||el).style.display="none"});renderOv();return}
   const fd=filt(DAY);
   const lastDay=DAY.filter(r=>r.date===LAST_DATE&&r.emp&&r.inTime);
   $("k1").textContent=`${lastDay.length} คน`;
@@ -1445,7 +1556,7 @@ function render(){
   $("count").textContent=tab==="day"?`แสดง ${n} รายการ จาก ${$("count").dataset.days} วัน`:`แสดง ${n} รายการ`;
 }
 ["fFrom","fTo","fDept","fName","fIssue","fSort"].forEach(id=>$(id).addEventListener("input",render));
-document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{if(!PROD_ONLY)localStorage.setItem("hrTab3",tab)}catch(e){}render()});
+document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{tab=b.dataset.tab;try{if(!PROD_ONLY)localStorage.setItem("hrTab4",tab)}catch(e){}render()});
 render();
 
 // ---------- Export Excel ----------
