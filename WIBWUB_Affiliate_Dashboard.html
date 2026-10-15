@@ -16021,7 +16021,7 @@ function renderTier(){
   if(!TIER_MONTH_COUNT) return;
   const s = activeFromIdx, e = activeToIdx;
   const label = rangeLabel(s,e);
-  const isCurrent = e === TIER_MONTH_COUNT - 1; // range's end includes the still-syncing latest month
+  const isCurrent = e === TIER_MONTH_COUNT - 1 && String(AF_MO[AF_MO.length-1]).split(/\s/)[0]===monthMeta(e).label; // end month still in progress (AF_MO's latest month = this month)
   const rangeLen = e - s + 1;
   const prevS = s - rangeLen, prevE = s - 1;
   const hasPrev = prevS >= 0;
