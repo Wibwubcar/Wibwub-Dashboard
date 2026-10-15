@@ -36,4 +36,8 @@ for f in "$DL"/ExportAds_V2_*.xlsx;                       do [ -f "$f" ] && mv "
 # Content / Followers
 for f in "$DL"/Followers_wibwubcar*.zip;                  do [ -f "$f" ] && mv "$f" "$ALL/data content/"; done
 
+# Affiliate › คำขอสินค้า (CSV จากชีต Top 30 Affiliate แท็บ ขอสินค้า — scripts/affiliate/samp_update.py)
+mkdir -p "$ALL/Data Affiliate/ขอสินค้า"
+for f in "$DL"/wibwub_samp_req_*.csv;                    do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/ขอสินค้า/"; done
+
 exit 0
