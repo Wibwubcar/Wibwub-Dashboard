@@ -1085,6 +1085,21 @@ function leaveSummary(from,to){
 }
 const leaveLabel=r=>r.kind+(r.span?` ${dur(r.span.min)}`:"")+(r.status==="อนุมัติแล้ว"?"":" (รออนุมัติ)");
 
+// ---- MISPRESS_V1: พนักงานกดห้องเข้า/ออกงานผิด (ข้อมูลดิบจาก Discord ไม่แก้ แก้เฉพาะตอนคำนวณ) ----
+// A) วันนั้นไม่มีเช็คอินเลย แต่มี "ออกงาน" ช่วง 05:00–11:59 = จริงๆ คือเข้างาน (ยกเว้นเมื่อวานเข้างานแล้วยังไม่มีเวลาออก = อาจทำงานข้ามคืน ไม่แตะ)
+// B) เช็คอิน 2 ครั้งขึ้นไป ครั้งสุดท้ายห่างครั้งแรก ≥ 4 ชม. และหลังจากนั้นไม่มี "ออกงาน" เลย (รวมหลังเที่ยงคืน) = ครั้งสุดท้ายจริงๆ คือออกงาน
+const MISPRESS=[];
+(()=>{const g={},K=(r,d)=>r.emp.real+"|"+(d||r.date),G=k=>g[k]=g[k]||{i:[],o:[]};
+  INR.forEach(r=>{if(r.emp)G(K(r)).i.push(r)});OUTR.forEach(r=>{if(r.emp)G(K(r)).o.push(r)});
+  Object.entries(g).forEach(([k,{i,o}])=>{const [real,d]=k.split("|"),prev=g[real+"|"+addDay(d,-1)],next=g[real+"|"+addDay(d,1)];
+    const night=x=>x&&x.o.some(r=>toMin(r.time)<5*60);
+    if(!i.length){const m=o.filter(r=>{const t=toMin(r.time);return t>=5*60&&t<12*60}).sort((a,b)=>a.time.localeCompare(b.time))[0];
+      if(!m||(prev&&prev.i.length&&!prev.o.length&&!night(g[k])))return;
+      OUTR.splice(OUTR.indexOf(m),1);const n={...m,mis:`กดออกงานแทนเข้างาน ${m.time}`};INR.push(n);MISPRESS.push(n)}
+    else if(i.length>=2){const s=[...i].sort((a,b)=>a.time.localeCompare(b.time)),l=s[s.length-1];
+      if(toMin(l.time)-toMin(s[0].time)<240||o.some(r=>toMin(r.time)>=toMin(l.time)-5)||night(next))return;
+      INR.splice(INR.indexOf(l),1);const n={...l,mis:`กดเข้างานแทนออกงาน ${l.time}`};OUTR.push(n);MISPRESS.push(n)}})})();
+
 // ---------- รวมเข้า-ออกงาน: 1 แถว ต่อ 1 คน ต่อ 1 วัน ----------
 const shifts={};
 const key=(e,d)=>e.real+"|"+d;
@@ -1133,6 +1148,7 @@ const DAY=Object.values(shifts).filter(s=>s.date>=MONTHS[0]+"-01").map(s=>{
   if((x.inDist!=null&&x.inDist>100)||(outR&&outR.dist!=null&&outR.dist>100)){F.push(["p-bad","นอกพื้นที่"]);issue=true}
   const fz=[...new Set([...s.ins,...s.outs].filter(r=>r.fuzzy).map(r=>`${r.nick} → ${r.fuzzy}`))];
   fz.forEach(f=>F.push(["p-warn",`พิมพ์ผิด? ${f}`]));
+  [...s.ins,...s.outs].filter(r=>r.mis).forEach(r=>F.push(["p-warn",`แก้กดผิด: ${r.mis}`]));
   if(s.ins.length>1)F.push(["p-mute",`เช็คอิน ${s.ins.length} ครั้ง`]);
   if(s.outs.length>1)F.push(["p-mute",`เช็คเอาท์ ${s.outs.length} ครั้ง`]);
   if(dow(s.date)===0)F.push(["p-mute","วันอาทิตย์"]);
@@ -1321,34 +1337,22 @@ function prodMissingDays(from,to){const rep=new Set(PROD.filter(prodCounted).map
   return Object.entries(days).filter(([d])=>!rep.has(d)&&d<BKK_TODAY()).sort((a,b)=>b[0].localeCompare(a[0])).map(([d,p])=>({date:d,people:p}))}
 
 // ---------- ตาราง HR (MON YY) : ใช้ร่วมกันทั้ง Export และสคริปต์ที่เขียน Google Sheet ----------
-// รูปแบบตามที่ HR บันทึกเอง: ไม่มีเวลาเข้า/ออก = "หยุด"; ออกงานหลังเที่ยงคืน (กะดึก) = ลงในช่อง "ออก" ของวันถัดไป
-// และช่อง "ออก" ของวันที่เข้ากะเป็น "หยุด" (ยกเว้นวันถัดไปมีเวลาออกของตัวเองอยู่แล้ว หรือเป็นวันสุดท้ายของเดือน = ลงวันเดิม)
+// รูปแบบตามที่ HR บันทึกเอง (OVERNIGHT_V2): ไม่มีบันทึกทั้งวัน = "หยุด" (วันหยุด) · มีเข้าแต่ไม่มีออก / มีออกแต่ไม่มีเข้า = "ลืมสแกน"
+// ออกงานหลังเที่ยงคืน = ลงเวลาออก (เช่น 1:34) ในช่อง "ออก" ของวันที่เข้างานเลย (OT นับต่อจากกะเดิม ข้ามเที่ยงคืนได้)
 function gridRow(e,dates,today,byKey){
   const T=s=>{const m=String(s).match(/^(\d+):(\d+)/);return m?`${+m[1]}:${m[2]}`:s};
-  const R=dates.map(d=>byKey[e.real+"|"+d]);
-  const late=i=>R[i]&&R[i].outTime&&R[i].outMin>=1440;          // ออกหลังเที่ยงคืน
-  const moved=new Array(dates.length).fill(false);
-  for(let i=dates.length-2;i>=0;i--){                             // ตัดสินจากท้ายเดือนย้อนขึ้นมา
-    if(!late(i)||dates[i+1]>=today)continue;                       // วันถัดไปยังไม่จบ: รอรอบหน้า
-    const n=R[i+1],free=!(n&&n.outTime)||moved[i+1];
-    if(free)moved[i]=true;
-  }
   const out=[];
-  dates.forEach((d,i)=>{
+  dates.forEach(d=>{
     if(d>today){out.push("","");return}
-    const r=R[i]&&(R[i].inTime||R[i].outTime)?R[i]:null,off=dow(d)===0||(dow(d)===6&&e.dept!=="แอดมิน");   // แถว "ลา" ไม่นับเป็นเวลาเข้า-ออก
+    const R=byKey[e.real+"|"+d],r=R&&(R.inTime||R.outTime)?R:null,off=dow(d)===0||(dow(d)===6&&e.dept!=="แอดมิน");   // แถว "ลา" ไม่นับเป็นเวลาเข้า-ออก
     let a,b;
     const lv=leaveOf(e.real,d);
     if(!r&&!off&&lv&&lv.status==="อนุมัติแล้ว"&&!lv.span){a=b=lv.kind}
     else if(!r){a=b=off?"หยุด":""}
     else{
-      a=r.inTime?T(r.inTime):"หยุด";
-      if(!r.outTime)b=d===today?"":"หยุด";
-      else if(moved[i])b="หยุด";
-      else if(late(i)&&i<dates.length-1&&dates[i+1]>=today)b="";  // รอดูวันถัดไปก่อน
-      else b=T(r.outTime);
+      a=r.inTime?T(r.inTime):"ลืมสแกน";
+      b=r.outTime?T(r.outTime):(d===today?"":"ลืมสแกน");
     }
-    if(i>0&&moved[i-1])b=T(R[i-1].outTime);                        // รับเวลาออกกะดึกของเมื่อวาน
     out.push(a,b);
   });
   return out;
