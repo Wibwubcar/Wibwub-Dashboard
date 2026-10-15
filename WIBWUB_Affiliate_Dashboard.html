@@ -367,7 +367,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
 
 <!-- ════ TIER RANKING ════ -->
 <div id="tab-tier" class="panel">
-  <div class="note">🏆 จัดอันดับ Top 30 ครีเอเตอร์ตามยอด GMV รวมของ<strong>ช่วงเดือนที่เลือกเอง</strong> — เลือกเดือนเริ่มต้นและสิ้นสุดได้อิสระ (1 เดือนขึ้นไป) เกณฑ์ Tier: Core &gt; ฿90,000 / Growth &gt; ฿60,000 / Rising Star ≥ ฿30,000 ใช้ตัวเลขตรงๆ กับยอดรวมของช่วงที่เลือก ไม่ปรับตามจำนวนเดือน ถ้าช่วงที่เลือกรวมเดือนล่าสุดที่กำลังนับอยู่ ยอดจะอัปเดตทุกครั้งที่ซิงก์ข้อมูล Affiliate ใหม่ (ทุกสัปดาห์)</div>
+  <div class="note">🏆 <strong>เกณฑ์ Tier (TIER_V2)</strong> ดูจากยอด GMV <strong>3 เดือนล่าสุด</strong> (เลือกเดือนสุดท้ายของรอบได้) — Core: รวม 3 เดือน ≥ ฿200,000 <u>และ</u> มีอย่างน้อย 2 ใน 3 เดือนที่ ≥ ฿70,000 (ยอดต้องต่อเนื่อง เช่น 70k/50k/80k ✅ · 40k/70k/90k ✅ · 0/0/200k ❌) · Growth: รวม 3 เดือน ≥ ฿100,000 แต่ยังไม่ถึง Core · Rising: รวม 3 เดือน ≥ ฿30,000 · Special: ยอดพุ่งผิดปกติ มากกว่า 2 เท่าของอันดับ 1 ใน 3 เดือนก่อนหน้า (ไม่ต้องต่อเนื่อง) — ต่ำกว่า ฿30,000 ไม่ติด Tier</div>
 
   <div class="qpicker" id="tier-qpicker"></div>
 
@@ -376,13 +376,13 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="kstrip" id="tier-kstrip"></div>
 
   <div class="tier-legend">
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-core">🥇 Core Partner</span><span class="tier-lcard-cnt" id="tl-core-cnt">–</span></div><div class="tier-lcard-sub">GMV &gt; ฿90,000</div></div>
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-growth">🌱 Growth Partner</span><span class="tier-lcard-cnt" id="tl-growth-cnt">–</span></div><div class="tier-lcard-sub">GMV &gt; ฿60,000</div></div>
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-rising">🌤 Rising Star</span><span class="tier-lcard-cnt" id="tl-rising-cnt">–</span></div><div class="tier-lcard-sub">GMV ไม่ต่ำกว่า ฿30,000 (ต่ำกว่านี้ไม่ติด Tier)</div></div>
-    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-special">✨ Special Partner</span><span class="tier-lcard-cnt" id="tl-special-cnt">–</span></div><div class="tier-lcard-sub">ยอดพุ่งเกิน 2 เท่าของอันดับ 1 ช่วงก่อนหน้า (ยาวเท่ากัน)</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-core">🥇 Core Partner</span><span class="tier-lcard-cnt" id="tl-core-cnt">–</span></div><div class="tier-lcard-sub">3 เดือน ≥ ฿200K และ 2 ใน 3 เดือน ≥ ฿70K</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-growth">🌱 Growth Partner</span><span class="tier-lcard-cnt" id="tl-growth-cnt">–</span></div><div class="tier-lcard-sub">3 เดือน ≥ ฿100K แต่ยังไม่ถึง Core — มีศักยภาพขึ้น Core</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-rising">🌤 Rising Partner</span><span class="tier-lcard-cnt" id="tl-rising-cnt">–</span></div><div class="tier-lcard-sub">3 เดือนรวม ≥ ฿30K เริ่มทำยอดได้ (ต่ำกว่านี้ไม่ติด Tier)</div></div>
+    <div class="tier-lcard"><div class="tier-lcard-hd"><span class="tier-badge tier-special">✨ Special Partner</span><span class="tier-lcard-cnt" id="tl-special-cnt">–</span></div><div class="tier-lcard-sub">ยอดพุ่ง &gt; 2 เท่าของอันดับ 1 รอบ 3 เดือนก่อนหน้า ไม่ต้องต่อเนื่อง</div></div>
   </div>
 
-  <div class="sec">Top 30 ครีเอเตอร์ตาม Tier — <span id="tier-sec-label"></span></div>
+  <div class="sec">ครีเอเตอร์ที่ติด Tier — <span id="tier-sec-label"></span></div>
   <div class="tw">
     <table id="tbl-tier">
       <thead>
@@ -390,8 +390,8 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th>#</th>
           <th>ครีเอเตอร์</th>
           <th>Tier</th>
-          <th onclick="sortTbl('tbl-tier',3,this)">GMV ช่วงที่เลือก <span class="sort-icon">↕</span></th>
-          <th>เทียบช่วงก่อนหน้า</th>
+          <th onclick="sortTbl('tbl-tier',3,this)">GMV 3 เดือน (รายเดือน) <span class="sort-icon">↕</span></th>
+          <th>เทียบ 3 เดือนก่อนหน้า</th>
           <th onclick="sortTbl('tbl-tier',5,this)">Orders (รวม) <span class="sort-icon">↕</span></th>
         </tr>
       </thead>
@@ -15907,6 +15907,7 @@ function rangeLabel(s,e){
   return a.year===b.year ? `${a.label}–${b.label} ${b.year}` : `${a.label} ${a.year}–${b.label} ${b.year}`;
 }
 
+// TIER_V2: รอบ Tier = 3 เดือนเสมอ สิ้นสุดที่เดือนที่เลือก (activeToIdx)
 let activeFromIdx = Math.max(0, TIER_MONTH_COUNT - 3);
 let activeToIdx   = TIER_MONTH_COUNT - 1;
 
@@ -15918,10 +15919,11 @@ function rangeGMV(creatorName, s, e){
   return sum;
 }
 
-function tierOf(gmv, specialThreshold){
+function tierOf(gmv, specialThreshold, months){
+  const strong = (months||[]).filter(x=>x>=70000).length;
+  if(gmv >= 200000 && strong >= 2) return 'core';
   if(specialThreshold && gmv > specialThreshold) return 'special';
-  if(gmv > 90000) return 'core';
-  if(gmv > 60000) return 'growth';
+  if(gmv >= 100000) return 'growth';
   if(gmv >= 30000) return 'rising';
   return 'none';
 }
@@ -15929,7 +15931,7 @@ function tierOf(gmv, specialThreshold){
 const TIER_META = {
   core:    {label:'🥇 Core Partner',    cls:'tier-core'},
   growth:  {label:'🌱 Growth Partner',  cls:'tier-growth'},
-  rising:  {label:'🌤 Rising Star',     cls:'tier-rising'},
+  rising:  {label:'🌤 Rising Partner',  cls:'tier-rising'},
   none:    {label:'— ต่ำกว่าเกณฑ์',    cls:'tier-none'},
   special: {label:'✨ Special Partner', cls:'tier-special'}
 };
@@ -15937,35 +15939,19 @@ const TIER_META = {
 function renderQPicker(){
   const el = document.getElementById('tier-qpicker');
   if(!el) return;
-  const opts = (selIdx)=> Array.from({length:TIER_MONTH_COUNT}, (_,i)=>
-    `<option value="${i}"${i===selIdx?' selected':''}>${monthMeta(i).label} ${monthMeta(i).year}</option>`
-  ).join('');
-  const presets = [
-    {n:1,  label:'1 เดือนล่าสุด'},
-    {n:3,  label:'3 เดือนล่าสุด'},
-    {n:6,  label:'6 เดือนล่าสุด'}
-  ].filter(p=>p.n<TIER_MONTH_COUNT);
+  const opts = Array.from({length:TIER_MONTH_COUNT}, (_,i)=>i).filter(i=>i>=2).map(i=>
+    `<option value="${i}"${i===activeToIdx?' selected':''}>${rangeLabel(i-2,i)}</option>`).join('');
   el.innerHTML = `
-    <span class="qpicker-label">📅 ช่วงเดือน</span>
-    <select class="qsel" id="tier-from-sel" onchange="onRangeSelChange()">${opts(activeFromIdx)}</select>
-    <span class="qpicker-sep">ถึง</span>
-    <select class="qsel" id="tier-to-sel" onchange="onRangeSelChange()">${opts(activeToIdx)}</select>
+    <span class="qpicker-label">📅 รอบ 3 เดือน</span>
+    <select class="qsel" id="tier-to-sel" onchange="onRangeSelChange()">${opts}</select>
     <span class="qpicker-divider"></span>
-    ${presets.map(p=>{
-      const s = Math.max(0, TIER_MONTH_COUNT-p.n), e = TIER_MONTH_COUNT-1;
-      const isActive = s===activeFromIdx && e===activeToIdx;
-      return `<button class="qbtn${isActive?' active':''}" onclick="setRange(${s},${e})">${p.label}</button>`;
-    }).join('')}
-    <button class="qbtn${activeFromIdx===0&&activeToIdx===TIER_MONTH_COUNT-1?' active':''}" onclick="setRange(0,${TIER_MONTH_COUNT-1})">ทั้งหมด</button>
+    <button class="qbtn${activeToIdx===TIER_MONTH_COUNT-1?' active':''}" onclick="setRange(${TIER_MONTH_COUNT-3},${TIER_MONTH_COUNT-1})">3 เดือนล่าสุด</button>
   `;
 }
 
 function onRangeSelChange(){
-  const fromEl = document.getElementById('tier-from-sel');
-  const toEl   = document.getElementById('tier-to-sel');
-  let s = parseInt(fromEl.value,10), e = parseInt(toEl.value,10);
-  if(s>e){ const t=s; s=e; e=t; } // keep from <= to
-  setRange(s,e);
+  const e = parseInt(document.getElementById('tier-to-sel').value,10);
+  setRange(Math.max(0,e-2), e);
 }
 
 function setRange(s,e){
@@ -16055,10 +16041,10 @@ function renderTier(){
   }
 
   const rankedAll = Object.keys(CREATOR_MONTHS)
-    .map(name=>({name, gmv: rangeGMV(name, s, e)}))
+    .map(name=>({name, gmv: rangeGMV(name, s, e), months: Array.from({length:e-s+1},(_,k)=>(CREATOR_MONTHS[name]||[])[s+k]||0)}))
     .filter(r=>r.gmv>0)
     .sort((a,b)=>b.gmv-a.gmv);
-  const top30 = rankedAll.slice(0,30);
+  const top30 = rankedAll.filter(r=>r.gmv>=30000);   // TIER_V2: แสดงทุกคนที่ติด Tier (≥ ฿30K)
 
   // Special Partner benchmark = 2x the #1 creator's total from the
   // immediately preceding period of EQUAL length (an exceptional breakout
@@ -16081,7 +16067,7 @@ function renderTier(){
   const counts = {core:0, growth:0, rising:0, special:0, none:0};
   if(tbody){
     tbody.innerHTML = top30.map((r,i)=>{
-      const t = tierOf(r.gmv, specialThr);
+      const t = tierOf(r.gmv, specialThr, r.months);
       counts[t]++;
       const meta = TIER_META[t];
       const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
@@ -16101,7 +16087,7 @@ function renderTier(){
         <td>${rnk}</td>
         <td><a href="${tierCreatorUrl(r.name)}" target="_blank" rel="noopener" class="creator-chip" style="text-decoration:none;color:inherit;cursor:pointer" title="เปิดหน้าหลังบ้าน Affiliate ของ ${r.name}"><div class="creator-av">${getAv(r.name)}</div>${r.name}</a></td>
         <td><span class="tier-badge ${meta.cls}">${meta.label}</span></td>
-        <td data-val="${r.gmv}">${fmtK(r.gmv)}</td>
+        <td data-val="${r.gmv}">${fmtK(r.gmv)}<div style="font-size:10px;color:var(--t3);font-weight:400">${r.months.map(x=>`<span style="${x>=70000?'color:var(--green);font-weight:700':''}">${fmtK(x)}</span>`).join(' / ')}</div></td>
         ${growthCell}
         <td data-val="${ordersByName[r.name]||0}">${ordersByName[r.name]||'–'}</td>
       </tr>`;
@@ -16119,8 +16105,8 @@ function renderTier(){
   const kstrip = document.getElementById('tier-kstrip');
   if(kstrip){
     kstrip.innerHTML = `
-      <div class="kk"><div class="kkl">Top 30 GMV รวม</div><div class="kkv teal">${fmtK(totalTop30GMV)}</div><div class="kks">${label}</div></div>
-      <div class="kk"><div class="kkl">สัดส่วนจาก Top 30</div><div class="kkv purple">${Math.round(totalTop30GMV/totalAllGMV*100)}%</div><div class="kks">ของ GMV ครีเอเตอร์ทั้งหมด ${rankedAll.length} คนที่มียอดในช่วงนี้</div></div>
+      <div class="kk"><div class="kkl">GMV รวมคนที่ติด Tier</div><div class="kkv teal">${fmtK(totalTop30GMV)}</div><div class="kks">${label}</div></div>
+      <div class="kk"><div class="kkl">สัดส่วนจากคนที่ติด Tier (${top30.length} คน)</div><div class="kkv purple">${Math.round(totalTop30GMV/totalAllGMV*100)}%</div><div class="kks">ของ GMV ครีเอเตอร์ทั้งหมด ${rankedAll.length} คนที่มียอดในช่วงนี้</div></div>
       <div class="kk"><div class="kkl">Top Creator ช่วงนี้</div><div class="kkv blue">${top30[0]?top30[0].name:'–'}</div><div class="kks">${top30[0]?fmtK(top30[0].gmv):''}</div></div>
       <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอดทั้งหมด</div><div class="kkv amber">${rankedAll.length}</div><div class="kks">ในช่วง ${label}</div></div>
     `;
