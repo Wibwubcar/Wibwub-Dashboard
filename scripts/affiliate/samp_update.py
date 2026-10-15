@@ -71,7 +71,15 @@ def jsobj(o):   # {total:..} style keys like the hand-written file
 def main():
     a = [x for x in sys.argv[1:] if not x.startswith("--")]
     if not a: die("usage: samp_update.py <csv>")
-    R = load(a[0]); today = dt.datetime.now(BKK).date()
+    src = a[0]
+    if src == "auto":   # newest wibwub_samp_req_*.csv downloaded by Chrome in the last 30 min
+        import time, os
+        cands = [p for d in (Path.home() / "mnt/Downloads", Path.home() / "Downloads", ROOT / "Data Affiliate/ขอสินค้า") if d.exists()
+                 for p in d.glob("wibwub_samp_req_*.csv")]
+        cands = [p for p in cands if time.time() - p.stat().st_mtime < 1800]
+        if not cands: die("no fresh wibwub_samp_req_*.csv in Downloads (download step failed?)")
+        src = str(max(cands, key=lambda p: p.stat().st_mtime))
+    R = load(src); today = dt.datetime.now(BKK).date()
     t = PAGE.read_text(encoding="utf-8"); t0 = t
     months = OrderedDict()
     for r in sorted(R, key=lambda r: r["d"]): months.setdefault(r["d"].strftime("%Y-%m"), []).append(r)
@@ -132,12 +140,12 @@ def main():
     t = re.sub(r"const SAMPLE_DATA_ASOF = '[^']*';", f"const SAMPLE_DATA_ASOF = '{max(r['d'] for r in R):%d/%m/%Y}';", t)
     if t == t0: print(json.dumps({"status": "NO_CHANGE"})); sys.exit(10)
     cur = funnel(months.get(today.strftime("%Y-%m"), []), today.strftime("%Y-%m"))
-    summary = {"status": "UPDATED", "rows": len(R), "latest_row": max(r["d"] for r in R).isoformat(), "this_month": cur,
+    summary = {"status": "UPDATED", "source": Path(src).name, "rows": len(R), "latest_row": max(r["d"] for r in R).isoformat(), "this_month": cur,
                "last7d": funnel(r7, "9999"), "waiting_post": len(W), "past_month_req_changed": changed_past,
                "top_products_this_month": [(i["n"], i["c"]) for i in products(months.get(today.strftime("%Y-%m"), []))["items"][:5]]}
     if "--dry" in sys.argv: print(json.dumps(summary, ensure_ascii=False, default=str)); return
     # syntax check before writing
-    tmpjs = ROOT / "scripts/affiliate/_check.js"
+    import tempfile; tmpjs = Path(tempfile.gettempdir()) / "wibwub_aff_check.js"
     tmpjs.write_text("\n;\n".join(x for x in re.findall(r"<script>(.*?)</script>", t, re.S)), encoding="utf-8")
     r = subprocess.run(["node", "--check", str(tmpjs)], capture_output=True, text=True)
     if r.returncode: die("node --check failed: " + r.stderr[:400])
