@@ -997,9 +997,34 @@ function hRender() {
   });
   document.getElementById('h-tbody').innerHTML = html || '<tr><td colspan="6" class="empty">ไม่มีข้อมูล</td></tr>';
   document.getElementById('h-tbl-wrap').style.display = '';
-  document.getElementById('h-note').innerHTML = `แสดง ${rows.length} SKU ที่มียอดขายในช่วง ${daysWithData} วัน &nbsp;|&nbsp; สต๊อกปัจจุบัน ณ วันนี้ (30 มิ.ย. 2569) &nbsp;|&nbsp; "พอสำหรับโปรครั้งต่อไปไหม" = เปรียบเทียบกับยอดขายจริงในช่วงเดิม`;
+  document.getElementById('h-note').innerHTML = `แสดง ${rows.length} SKU ที่มียอดขายในช่วง ${daysWithData} วัน &nbsp;|&nbsp; สต๊อกปัจจุบัน ณ ${stockAsOfLabel()} &nbsp;|&nbsp; "พอสำหรับโปรครั้งต่อไปไหม" = เปรียบเทียบกับยอดขายจริงในช่วงเดิม`;
   updateSticky();
 }
+
+/* ---- Derived "as-of" labels ------------------------------------------
+   DO NOT hardcode a date or a SKU count anywhere in this file.
+   #table-note is the single source of truth for the snapshot date and is
+   maintained by update_stock.py on every run; everything else derives
+   from it or from PRODUCTS. See skill: wibwub-avoid-stale-hardcoded-labels.
+---------------------------------------------------------------------- */
+function stockAsOfLabel() {
+  var el = document.getElementById('table-note');
+  var m = el && el.textContent ? el.textContent.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) : null;
+  if (!m) return 'วันนี้';
+  var TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return parseInt(m[1], 10) + ' ' + TH[parseInt(m[2], 10) - 1] + ' ' + (parseInt(m[3], 10) + 543);
+}
+
+(function syncNoteSkuCount() {
+  var el = document.getElementById('table-note');
+  if (!el) return;
+  var n = PRODUCTS.length;
+  if (/\(\s*\d+\s*SKUs?\s*\)/.test(el.innerHTML)) {
+    el.innerHTML = el.innerHTML.replace(/\(\s*\d+\s*SKUs?\s*\)/, '(' + n + ' SKUs)');
+  } else {
+    el.innerHTML = el.innerHTML + ' (' + n + ' SKUs)';
+  }
+})();
 
 </script>
 </body>
