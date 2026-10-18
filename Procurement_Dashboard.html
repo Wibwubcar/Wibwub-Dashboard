@@ -186,7 +186,7 @@ tbody td.num{text-align:right}
 </thead>
 <tbody id="tbody"></tbody>
 </table>
-<div class="note" id="table-note">อัปเดตล่าสุด: 18/10/2026 — Shipnity live (143 SKUs)</div>
+<div class="note" id="table-note">อัปเดตล่าสุด: 18/10/2026 — Shipnity live (<span id="note-sku-count">—</span> SKUs)</div>
 </div>
 </div><!-- /view-stock -->
 
@@ -1016,14 +1016,15 @@ function stockAsOfLabel() {
 }
 
 (function syncNoteSkuCount() {
+  var n = PRODUCTS.length;
+  var span = document.getElementById('note-sku-count');
+  if (span) { span.textContent = n; return; }
+  // Fallback: an automated rewrite of #table-note dropped the span.
   var el = document.getElementById('table-note');
   if (!el) return;
-  var n = PRODUCTS.length;
-  if (/\(\s*\d+\s*SKUs?\s*\)/.test(el.innerHTML)) {
-    el.innerHTML = el.innerHTML.replace(/\(\s*\d+\s*SKUs?\s*\)/, '(' + n + ' SKUs)');
-  } else {
-    el.innerHTML = el.innerHTML + ' (' + n + ' SKUs)';
-  }
+  el.innerHTML = /\(\s*[\d—-]+\s*SKUs?\s*\)/.test(el.innerHTML)
+    ? el.innerHTML.replace(/\(\s*[\d—-]+\s*SKUs?\s*\)/, '(' + n + ' SKUs)')
+    : el.innerHTML + ' (' + n + ' SKUs)';
 })();
 
 </script>
