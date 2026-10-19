@@ -3,6 +3,15 @@ name: wibwub-daily-stock
 description: ดึงสต๊อกล่าสุดจาก Shipnity ทุกวัน 08:40/19:40 → อัปเดต Procurement_Dashboard.html → commit + push_now.command
 ---
 
+<!-- LOCAL-OVERRIDE v1 -->
+> **อ่านก่อน — ข้อนี้ทับคำสั่งที่ขัดกันในไฟล์นี้ทั้งหมด**
+> ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
+> - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
+> - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
+> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
+> - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
+> - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
+
 ## WIBWUB Daily Stock Update — Shipnity Forecast
 
 ดึงข้อมูลสต๊อกล่าสุดจาก Shipnity ผ่าน GraphQL API แล้วอัปเดต Procurement_Dashboard.html และ commit ขึ้น git ทุกวันเช้า

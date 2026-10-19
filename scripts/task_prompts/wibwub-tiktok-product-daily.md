@@ -3,6 +3,15 @@ name: wibwub-tiktok-product-daily
 description: ทุกวัน 08:45/19:45 — ดึงยอดขายระดับสินค้า TikTok Shop จาก Seller Center Compass (วันล่าสุด) → merge เข้า WIBWUB_Dashboard.html (TK_PROD_DATA) → ดึงยอดระดับ SKU/ตัวเลือกสินค้าด้วย (multi-day chunk) → merge เข้า TK_PROD_SKU → bump sw.js → commit + push_now.command
 ---
 
+<!-- LOCAL-OVERRIDE v1 -->
+> **อ่านก่อน — ข้อนี้ทับคำสั่งที่ขัดกันในไฟล์นี้ทั้งหมด**
+> ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
+> - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
+> - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
+> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
+> - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
+> - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
+
 Goal: keep BOTH the parent-product section ("🛒 สินค้าที่ขายได้ — TikTok Shop", the `TK_PROD_DATA` const) AND the SKU/variant-level breakdown (`TK_PROD_SKU` const, used by the "ตัวเลือกสินค้า" drill-down) in WIBWUB_Dashboard.html up to date, using TikTok Seller Center Compass as the source. Historically `TK_PROD_SKU` was left as an empty stub while `TK_PROD_DATA` kept getting updated daily, which caused the two to drift apart — the SKU breakdown totals stopped matching the parent product's real totals and confused the user ("ตัวเลือกสินค้าข้อมูลไม่ตรงกับความจริงของยอดรวม"). As of 2026-09-07 both are wired into this same daily task so they never drift again. `TK_PROD_DATA` shows GMV/orders/items_sold per product broken down by channel (self_live, self_video, affiliate, affiliate_live, affiliate_video, product_card). `TK_PROD_SKU` shows GMV/orders/items_sold per SKU/variant (e.g. "500 ml" vs "3 L") within each product.
 
 File locations (host path — use Read/Write/Edit tools; for bash use the VM-mounted equivalent under /Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/):
