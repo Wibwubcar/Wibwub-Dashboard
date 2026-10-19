@@ -59,8 +59,8 @@ move_old() {  # $1=pattern (glob ของ find)  $2=ปลายทาง
     fi
   done
 }
-move_old 'tiktok_*.json'                              "$ARCH/tiktok_json"
-move_old 'tk_*.json'                                  "$ARCH/tiktok_json"
+move_old 'tiktok_*.json'                              "$ARCH/TikTok json"
+move_old 'tk_*.json'                                  "$ARCH/TikTok json"
 move_old 'Shop+-Ads-Overall-Data-*.csv'               "$ALL/data Ads/Shopee"
 move_old 'overview-v2_*.csv'                          "$ARCH/overview-v2"
 move_old 'WIBWUBCAR_หน้าแสดงรายละเอียดร้านค้า_*.xlsx' "$ALL/data Ads/TikTok/Business Ads"
