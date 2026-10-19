@@ -197,7 +197,7 @@ function thRange(a,b){
   return thDate(a,true)+' – '+thDate(b,true);
 }
 function deltaHtml(cur, prev, mode){
-  if (!isFinite(cur) || !isFinite(prev) || prev===0) return '<span class="muted">ไม่มีช่วงก่อนหน้าให้เทียบ</span>';
+  if (typeof cur!=='number' || typeof prev!=='number' || !isFinite(cur) || !isFinite(prev) || prev===0) return '<span class="muted">ไม่มีช่วงก่อนหน้าให้เทียบ</span>';
   if (mode==='pt'){ const d=(cur-prev)*100; const cls = d>0?'dn':'up'; // ค่าโฆษณา÷ยอดขาย สูงขึ้น = แย่ลง
     return `<span class="${cls}">${d>0?'▲':'▼'} ${Math.abs(d).toFixed(1)} จุด</span> เทียบช่วงก่อน`; }
   const r=(cur-prev)/prev; let cls = r>=0?'up':'dn'; if (mode==='cost') cls = r>=0?'dn':'up';
