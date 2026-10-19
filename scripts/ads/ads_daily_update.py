@@ -1,0 +1,85 @@
+#!/usr/bin/env python3
+"""WIBWUB ads daily — รวมผลจาก collect.js 4 ชุดเข้า data Ads/ads_daily.json
+
+ใช้:
+  python3 ads_daily_update.py state                       → บอกช่วงวันที่ที่ควรดึง (from/to)
+  python3 ads_daily_update.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json [--dry]
+  python3 ads_daily_update.py commit                      → sync ads_periods.json + bump sw.js + commit (เฉพาะไฟล์ที่เกี่ยวข้อง)
+exit 10 = ไม่มีอะไรเปลี่ยน
+"""
+import json, os, sys, subprocess, datetime, re, shutil
+HERE=os.path.dirname(os.path.abspath(__file__)); ALL=os.path.abspath(os.path.join(HERE,'..','..'))
+DAILY=os.path.join(ALL,'data Ads','ads_daily.json')
+REFETCH_DAYS=3   # ดึงซ้ำย้อนหลัง 3 วันเสมอ เพราะยอด "ยืนยันแล้ว" ของวันล่าสุดยังขยับได้
+def bkk_today(): return (datetime.datetime.utcnow()+datetime.timedelta(hours=7)).date()
+def load(): return json.load(open(DAILY,encoding='utf-8'))
+def iso(d): return d.isoformat()
+def state():
+    d=load(); last=max(d['days']); y=bkk_today()-datetime.timedelta(days=1)
+    frm=min(datetime.date.fromisoformat(last)+datetime.timedelta(days=1), y-datetime.timedelta(days=REFETCH_DAYS-1))
+    print(json.dumps({'last':last,'yesterday':iso(y),'from':iso(frm),'to':iso(y),'up_to_date': last>=iso(y)},ensure_ascii=False))
+def readpart(p):
+    o=json.load(open(p,encoding='utf-8')); return o['kind'],o['data']
+def merge(paths, dry=False):
+    parts={}
+    for p in paths:
+        k,data=readpart(p); parts[k]=data
+    need={'sh_real','sh_ads','tk_real','tk_ads'}
+    if set(parts)!=need: sys.exit('ต้องมีครบ 4 ชุด ได้: %s'%sorted(parts))
+    y=iso(bkk_today()-datetime.timedelta(days=1))
+    dates=sorted(set(parts['sh_real'])&set(parts['sh_ads'])&set(parts['tk_real'])&set(parts['tk_ads']))
+    missing=sorted((set().union(*[set(v) for v in parts.values()]))-set(dates))
+    if missing: sys.exit('บางชุดขาดวันที่: %s — ห้ามเขียนข้อมูลไม่ครบ'%missing)
+    d=load(); changed=[]; warn=[]
+    for dt in dates:
+        if dt>y: warn.append('ข้าม %s (ยังไม่จบวัน)'%dt); continue
+        e={'sh_real':{'gmv':int(round(parts['sh_real'][dt]['gmv'])),'orders':int(parts['sh_real'][dt]['orders'])},
+           'sh_ads':{k:{f:int(parts['sh_ads'][dt][k][f]) for f in ('gmv_broad','gmv_direct','spend','orders')} for k in ('product','search','live')},
+           'tk_real':{'gmv':round(float(parts['tk_real'][dt]['gmv']),2),'orders':int(parts['tk_real'][dt]['orders'])},
+           'tk_ads':{k:{'gmv':round(float(parts['tk_ads'][dt][k]['gmv']),2),'spend':round(float(parts['tk_ads'][dt][k]['spend']),2),'orders':int(parts['tk_ads'][dt][k]['orders'])} for k in ('product','live')}}
+        for sec in e.values():
+            for v in (sec.values() if all(isinstance(x,dict) for x in sec.values()) else [sec]):
+                if any((isinstance(x,(int,float)) and x<0) for x in v.values()): sys.exit('ค่าติดลบวันที่ %s'%dt)
+        if e['sh_real']['gmv']==0 or e['tk_real']['gmv']==0: warn.append('%s ยอดขายจริงเป็น 0 — ตรวจสอบ'%dt)
+        old=d['days'].get(dt)
+        if old!=e: changed.append((dt, old, e)); d['days'][dt]=e
+    def tot(e):
+        return (e['sh_real']['gmv'], sum(x['spend'] for x in e['sh_ads'].values()), e['tk_real']['gmv'], sum(x['spend'] for x in e['tk_ads'].values()))
+    rows=[]
+    for dt,old,e in changed:
+        a=tot(e); b=tot(old) if old else None
+        rows.append({'date':dt,'new':not old,'sh_real':a[0],'sh_spend':a[1],'tk_real':a[2],'tk_spend':round(a[3],2),
+                     'prev':None if not b else {'sh_real':b[0],'sh_spend':b[1],'tk_real':b[2],'tk_spend':round(b[3],2)}})
+    d['days']=dict(sorted(d['days'].items())); last=max(d['days']); d['coverage']={'shopee':last,'tiktok':last}
+    m=last[:7]; ds=[v for k,v in d['days'].items() if k.startswith(m)]
+    month={'month':m,'days':len(ds),'sh_real':sum(x['sh_real']['gmv'] for x in ds),'sh_spend':sum(sum(t['spend'] for t in x['sh_ads'].values()) for x in ds),
+           'tk_real':round(sum(x['tk_real']['gmv'] for x in ds),2),'tk_spend':round(sum(sum(t['spend'] for t in x['tk_ads'].values()) for x in ds),2)}
+    print(json.dumps({'changed':rows,'warnings':warn,'coverage':last,'month_to_date':month},ensure_ascii=False,indent=1))
+    if not changed: sys.exit(10)
+    if not dry:
+        shutil.copy2(DAILY, DAILY+'.bak')
+        tmp=DAILY+'.tmp'; json.dump(d,open(tmp,'w',encoding='utf-8'),ensure_ascii=False,indent=1); os.replace(tmp,DAILY)
+def git(*a): return subprocess.run(['git',*a],cwd=ALL,capture_output=True,text=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'})
+def unlock():
+    for f in ('index.lock','HEAD.lock','objects/maintenance.lock'):
+        p=os.path.join(ALL,'.git',f)
+        if os.path.exists(p): os.rename(p, os.path.join(ALL,'.git','stale-%d-%s'%(datetime.datetime.now().timestamp()*1e6, os.path.basename(f))))
+def commit():
+    r=subprocess.run(['node',os.path.join(HERE,'sync_periods.js')],cwd=ALL,capture_output=True,text=True); print(r.stdout.strip()); 
+    if r.returncode: sys.exit('sync_periods ล้มเหลว: '+r.stderr[-500:])
+    files=['data Ads/ads_daily.json','data Ads/ads_periods.json']
+    unlock(); st=git('status','--porcelain','--',*files).stdout.strip()
+    if not st: print('NO_CHANGE'); sys.exit(10)
+    sw=os.path.join(ALL,'sw.js'); s=open(sw,encoding='utf-8').read(); mm=re.search(r'wibwub-v(\d+)',s)
+    s=s.replace(mm.group(0),'wibwub-v%d'%(int(mm.group(1))+1),1); open(sw,'w',encoding='utf-8').write(s)
+    d=load(); unlock(); r=git('add','--',*files,'sw.js'); unlock()
+    msg='auto: ads daily (ยอดจริง vs Ads) ถึง %s'%max(d['days'])
+    r=git('-c','user.name=WIBWUB Bot','-c','user.email=marketingwibwub@gmail.com','commit','-m',msg,'--',*files,'sw.js'); unlock()
+    print(r.stdout.strip() or r.stderr.strip()); print(git('log','-1','--format=%h %s').stdout.strip())
+if __name__=='__main__':
+    a=sys.argv[1:]
+    if not a: sys.exit(__doc__)
+    if a[0]=='state': state()
+    elif a[0]=='merge': merge([x for x in a[1:] if not x.startswith('--')], dry='--dry' in a)
+    elif a[0]=='commit': commit()
+    else: sys.exit(__doc__)
