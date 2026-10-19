@@ -5,18 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WIBWUB Ads Dashboard</title>
 <!--
-  WIBWUB Ads Dashboard (v2, 19 ต.ค. 2569)
+  WIBWUB Ads Dashboard (v2, 19 ต.ค. 2569) — 3 หน้า: ภาพรวม / Shopee / TikTok (ใช้ช่วงวันที่ร่วมกัน)
   ข้อมูลไม่ฝังในไฟล์นี้ — หน้าเว็บอ่านจาก 2 ไฟล์ข้างๆ:
     ads_daily.json   = รายวัน (ยอดขายจริง + ยอดจาก Ads + ค่าโฆษณา) Shopee/TikTok — ใช้กับตัวเลือกช่วงวันที่
     ads_periods.json = รายเดือนจากไฟล์ export (ยอดรวม + รายชื่อแคมเปญ) — ใช้กับแนวโน้มรายเดือน/ตารางแคมเปญ
   งานตั้งเวลาให้แก้เฉพาะ 2 ไฟล์ JSON นี้ ห้ามแก้ตัวเลขใน HTML
+  เปิดหน้าเฉพาะได้ด้วย #overview / #shopee / #tiktok ต่อท้าย URL
 -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root{
   --bg:#F5F6F8; --panel:#FFFFFF; --panel-2:#F9FAFB; --border:#E6E8EC; --border-2:#D9DCE2;
   --ink:#1A1D23; --ink-2:#4B5260; --muted:#7A8190; --grid:#EEF0F3;
-  --shopee:#E8501F; --tiktok:#0A9690; --total:#1A1D23;
+  --shopee:#E8501F; --tiktok:#0A9690;
   --shopee-soft:#FDEEE8; --tiktok-soft:#E3F4F3;
   --good:#1E8E3E; --bad:#C5221F; --warn-bg:#FFF7E6; --warn-bd:#F5D9A0; --warn-ink:#7A5200;
   --radius:12px;
@@ -27,15 +28,21 @@ body{font-family:'Segoe UI',system-ui,-apple-system,'Noto Sans Thai',sans-serif;
 .num{font-variant-numeric:tabular-nums}
 button{font:inherit;color:inherit}
 
-/* ── top bar (ซ่อนเมื่ออยู่ใน iframe ของ Dashboard หลัก) ── */
+/* top bar (ซ่อนเมื่ออยู่ใน iframe ของ Dashboard หลัก) */
 .topbar{display:flex;align-items:center;gap:12px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--border)}
 .topbar img{height:22px;display:block}
 .topbar h1{font-size:15px;font-weight:700}
-.topbar .sp{flex:1}
 body.embedded .topbar{display:none}
 
-/* ── range bar (sticky) ── */
-.rangebar{position:sticky;top:0;z-index:20;background:rgba(245,246,248,.94);backdrop-filter:blur(6px);border-bottom:1px solid var(--border);padding:10px 20px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px}
+/* sticky header: page tabs + range */
+.head{position:sticky;top:0;z-index:20;background:rgba(245,246,248,.95);backdrop-filter:blur(6px);border-bottom:1px solid var(--border)}
+.tabs{display:flex;gap:4px;padding:8px 20px 0;overflow-x:auto}
+.tab{border:0;background:none;padding:9px 16px 10px;font-size:14px;font-weight:600;color:var(--ink-2);cursor:pointer;border-bottom:3px solid transparent;white-space:nowrap;display:flex;align-items:center;gap:7px}
+.tab:hover{color:var(--ink)}
+.tab.on{color:var(--ink);border-bottom-color:var(--ink)}
+.tab[data-v="shopee"].on{border-bottom-color:var(--shopee)}
+.tab[data-v="tiktok"].on{border-bottom-color:var(--tiktok)}
+.rangebar{padding:8px 20px 10px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 14px;border-top:1px solid var(--grid)}
 .rangebar .dates{display:flex;align-items:center;gap:6px}
 .rangebar input[type=date]{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--panel);color:var(--ink)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
@@ -45,90 +52,96 @@ body.embedded .topbar{display:none}
 .asof{font-size:12px;color:var(--muted);margin-left:auto}
 
 .main{max-width:1280px;margin:0 auto;padding:18px 20px 40px}
+.view{display:none}.view.on{display:block}
 .sec{margin-top:26px}
 .sec:first-child{margin-top:0}
 .sec-h{display:flex;align-items:baseline;flex-wrap:wrap;gap:6px 12px;margin-bottom:12px}
 .sec-h h2{font-size:16px;font-weight:700;color:var(--ink)}
 .sec-h .sub{font-size:12.5px;color:var(--muted)}
-
 .range-title{font-size:13px;color:var(--ink-2);margin-bottom:12px}
 .range-title b{color:var(--ink)}
 
-/* ── KPI tiles ── */
+/* KPI tiles */
 .kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
-.kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px}
+.kpis.k4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.kpi{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:14px 16px;min-width:0}
 .kpi .lab{font-size:12.5px;color:var(--ink-2);font-weight:600}
 .kpi .val{font-size:24px;font-weight:700;margin-top:4px;letter-spacing:-.01em}
+.kpi .sub2{font-size:12.5px;color:var(--ink-2);margin-top:1px}
 .kpi .delta{font-size:12px;margin-top:2px;color:var(--muted)}
-.kpi .delta .up{color:var(--good)} .kpi .delta .dn{color:var(--bad)}
+.delta .up{color:var(--good)} .delta .dn{color:var(--bad)}
 .kpi .split{margin-top:10px;padding-top:10px;border-top:1px solid var(--grid);display:grid;gap:3px;font-size:12.5px;color:var(--ink-2)}
 .kpi .split div{display:flex;justify-content:space-between;gap:8px}
+.view-shopee .kpi{border-top:3px solid var(--shopee)} .view-tiktok .kpi{border-top:3px solid var(--tiktok)}
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
 .dot.sh{background:var(--shopee)} .dot.tk{background:var(--tiktok)}
+.dash{display:inline-block;width:16px;height:0;border-top:2px dashed var(--ink-2);margin-right:6px;vertical-align:3px}
 
-/* ── cards / panels ── */
-.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px}
+/* panels */
+.panel{background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:16px;min-width:0}
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
 .two>*{min-width:0}
-.mini-wrap{overflow-x:auto;margin-top:14px}
-.pcard-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-bottom:12px}
-.pcard-h .tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:999px}
-.pcard.sh .tag{background:var(--shopee-soft);color:#A63A14}
-.pcard.tk .tag{background:var(--tiktok-soft);color:#076B67}
+.pcard{cursor:pointer;transition:border-color .15s}
+.pcard:hover{border-color:var(--border-2)}
 .pcard.sh{border-top:3px solid var(--shopee)} .pcard.tk{border-top:3px solid var(--tiktok)}
+.pcard-h{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin-bottom:12px}
+.pcard-h .go{margin-left:auto;font-size:12.5px;font-weight:600;color:var(--ink-2)}
 .mgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
 .m .ml{font-size:12px;color:var(--muted)}
 .m .mv{font-size:17px;font-weight:700}
 .m .ms{font-size:12px;color:var(--ink-2)}
-.mini{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
-.mini th{font-weight:600;color:var(--muted);text-align:right;padding:6px 6px;border-bottom:1px solid var(--border)}
+.mini-wrap{overflow-x:auto}
+.mini{width:100%;border-collapse:collapse;font-size:13px;white-space:nowrap}
+.mini th{font-weight:600;color:var(--muted);text-align:right;padding:7px 8px;border-bottom:1px solid var(--border)}
 .mini th:first-child,.mini td:first-child{text-align:left}
-.mini td{padding:6px 6px;text-align:right;border-bottom:1px solid var(--grid)}
+.mini td{padding:8px;text-align:right;border-bottom:1px solid var(--grid)}
 .mini tr.tot td{font-weight:700;border-bottom:none}
 .note{font-size:12px;color:var(--muted);margin-top:10px}
 
-/* ── charts ── */
+/* charts */
 .chart-h{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;margin-bottom:10px}
 .chart-h .t{font-weight:700;font-size:14px}
-.seg{display:inline-flex;border:1px solid var(--border-2);border-radius:8px;overflow:hidden;background:var(--panel)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border-2);border-radius:8px;overflow:hidden;background:var(--panel)}
 .seg button{border:0;background:transparent;padding:5px 11px;font-size:12.5px;cursor:pointer;color:var(--ink-2)}
 .seg button+button{border-left:1px solid var(--border-2)}
 .seg button.on{background:var(--ink);color:#fff}
 .legend{display:flex;gap:14px;font-size:12.5px;color:var(--ink-2);margin-left:auto}
 .cwrap{position:relative;height:280px}
 
-/* ── tables ── */
+/* tables */
 .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--panel)}
 table.data{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
 table.data th{position:sticky;top:0;background:var(--panel-2);font-weight:600;color:var(--ink-2);text-align:right;padding:8px 10px;border-bottom:1px solid var(--border)}
 table.data td{text-align:right;padding:7px 10px;border-bottom:1px solid var(--grid)}
 table.data th:first-child,table.data td:first-child{text-align:left}
-table.data th.grp{text-align:center;border-bottom:1px solid var(--border)}
+table.data th.grp{text-align:center}
 table.data th.sh{box-shadow:inset 0 -2px 0 var(--shopee)} table.data th.tk{box-shadow:inset 0 -2px 0 var(--tiktok)}
 table.data tr.tot td{font-weight:700;background:var(--panel-2);border-top:1px solid var(--border-2)}
 table.data td.name{white-space:normal;min-width:220px;max-width:420px;text-align:left}
 table.data tbody tr:hover td{background:#FAFBFC}
 .muted{color:var(--muted)}
 .more{margin-top:8px;font-size:12.5px;background:none;border:0;color:var(--ink-2);text-decoration:underline;cursor:pointer}
+select.sel{font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--panel);color:var(--ink)}
 
 .callout{background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn-ink);border-radius:10px;padding:10px 14px;font-size:12.5px}
 .callout b{color:#5A3D00}
-details.src{margin-top:12px;font-size:12px;color:var(--muted)}
+details.src{margin-top:16px;font-size:12px;color:var(--muted)}
 details.src summary{cursor:pointer}
 details.src pre{white-space:pre-wrap;font-family:inherit;margin-top:6px}
-
 .err{margin:40px auto;max-width:560px;background:var(--panel);border:1px solid var(--border);border-radius:var(--radius);padding:20px;text-align:center;color:var(--ink-2)}
 
-@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:1100px){.kpis{grid-template-columns:repeat(3,minmax(0,1fr))}.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:820px){.two{grid-template-columns:minmax(0,1fr)}}
 @media (max-width:640px){
-  .rangebar{padding:10px 12px}.main{padding:14px 12px 32px}
-  .kpis{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .head{position:static}
+  .tabs,.rangebar{padding-left:12px;padding-right:12px}.main{padding:14px 12px 32px}
+  .kpis,.kpis.k4{grid-template-columns:repeat(2,minmax(0,1fr))}
   .kpi .val{font-size:20px}
   .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .asof{margin-left:0;width:100%}
   .cwrap{height:240px}
   .legend{margin-left:0}
+  .tab{padding:8px 12px 9px}
 }
 </style>
 </head>
@@ -137,28 +150,34 @@ details.src pre{white-space:pre-wrap;font-family:inherit;margin-top:6px}
 <div class="topbar">
   <img src="../logo-header.png" alt="WIBWUB">
   <h1>Ads Dashboard</h1>
-  <span class="sp"></span>
 </div>
 
-<div class="rangebar" id="rangebar">
-  <div class="dates">
-    <input type="date" id="dFrom" aria-label="วันที่เริ่ม">
-    <span class="muted">ถึง</span>
-    <input type="date" id="dTo" aria-label="วันที่สิ้นสุด">
+<div class="head">
+  <nav class="tabs" id="tabs">
+    <button class="tab" data-v="overview">📊 ภาพรวม</button>
+    <button class="tab" data-v="shopee"><i class="dot sh"></i>Shopee</button>
+    <button class="tab" data-v="tiktok"><i class="dot tk"></i>TikTok</button>
+  </nav>
+  <div class="rangebar">
+    <div class="dates">
+      <input type="date" id="dFrom" aria-label="วันที่เริ่ม">
+      <span class="muted">ถึง</span>
+      <input type="date" id="dTo" aria-label="วันที่สิ้นสุด">
+    </div>
+    <div class="chips" id="presets">
+      <button class="chip" data-p="7">7 วันล่าสุด</button>
+      <button class="chip" data-p="14">14 วันล่าสุด</button>
+      <button class="chip" data-p="30">30 วันล่าสุด</button>
+      <button class="chip" data-p="thisMonth">เดือนนี้</button>
+      <button class="chip" data-p="lastMonth">เดือนก่อน</button>
+      <button class="chip" data-p="all">ทั้งหมด</button>
+    </div>
+    <span class="asof" id="asof"></span>
   </div>
-  <div class="chips" id="presets">
-    <button class="chip" data-p="7">7 วันล่าสุด</button>
-    <button class="chip" data-p="14">14 วันล่าสุด</button>
-    <button class="chip" data-p="30">30 วันล่าสุด</button>
-    <button class="chip" data-p="thisMonth">เดือนนี้</button>
-    <button class="chip" data-p="lastMonth">เดือนก่อน</button>
-    <button class="chip" data-p="all">ทั้งหมด</button>
-  </div>
-  <span class="asof" id="asof"></span>
 </div>
 
 <div class="main" id="main">
-  <div class="err" id="loading">กำลังโหลดข้อมูล…</div>
+  <div class="err">กำลังโหลดข้อมูล…</div>
 </div>
 
 <script>
@@ -170,6 +189,7 @@ const C = { sh:'#E8501F', tk:'#0A9690', ink:'#1A1D23', ink2:'#4B5260', muted:'#7
 const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const TH_MF = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const MKEYS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const VIEWS = ['overview','shopee','tiktok'];
 
 /* ---------- formatting ---------- */
 const nf0 = new Intl.NumberFormat('th-TH',{maximumFractionDigits:0});
@@ -180,8 +200,8 @@ const bahtShort = v => { v=v||0; const a=Math.abs(v);
   if (a>=1e3) return '฿'+(v/1e3).toFixed(a>=1e5?0:1)+'K';
   return '฿'+nf0.format(Math.round(v)); };
 const int = v => nf0.format(Math.round(v||0));
-const pct = (v,d=1) => (isFinite(v) ? (v*100).toFixed(d)+'%' : '–');
-const x2 = v => (isFinite(v) && v>0 ? v.toFixed(2)+'x' : '–');
+const pct = (v,d=1) => (Number.isFinite(v) ? (v*100).toFixed(d)+'%' : '–');
+const x2 = v => (Number.isFinite(v) && v>0 ? v.toFixed(2)+'x' : '–');
 const div = (a,b) => (b ? a/b : NaN);
 const esc = s => String(s==null?'':s).replace(/[&<>"]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function parseD(s){ const [y,m,d]=s.split('-').map(Number); return new Date(Date.UTC(y,m-1,d)); }
@@ -196,9 +216,11 @@ function thRange(a,b){
   if (yA===yB) return thDate(a)+' – '+thDate(b)+' '+yB;
   return thDate(a,true)+' – '+thDate(b,true);
 }
+/* mode: undefined = สูงขึ้นดี, 'cost' = สูงขึ้นแย่, 'pt' = อัตราส่วนค่าโฆษณา (จุด, สูงขึ้นแย่) */
 function deltaHtml(cur, prev, mode){
-  if (typeof cur!=='number' || typeof prev!=='number' || !isFinite(cur) || !isFinite(prev) || prev===0) return '<span class="muted">ไม่มีช่วงก่อนหน้าให้เทียบ</span>';
-  if (mode==='pt'){ const d=(cur-prev)*100; const cls = d>0?'dn':'up'; // ค่าโฆษณา÷ยอดขาย สูงขึ้น = แย่ลง
+  if (typeof cur!=='number' || typeof prev!=='number' || !Number.isFinite(cur) || !Number.isFinite(prev) || prev===0)
+    return '<span class="muted">ไม่มีช่วงก่อนหน้าให้เทียบ</span>';
+  if (mode==='pt'){ const d=(cur-prev)*100; const cls = d>0?'dn':'up';
     return `<span class="${cls}">${d>0?'▲':'▼'} ${Math.abs(d).toFixed(1)} จุด</span> เทียบช่วงก่อน`; }
   const r=(cur-prev)/prev; let cls = r>=0?'up':'dn'; if (mode==='cost') cls = r>=0?'dn':'up';
   return `<span class="${cls}">${r>=0?'▲':'▼'} ${Math.abs(r*100).toFixed(1)}%</span> เทียบช่วงก่อน`;
@@ -206,8 +228,11 @@ function deltaHtml(cur, prev, mode){
 
 /* ---------- state ---------- */
 let DAILY=null, PERIODS=null, DAYS=[], MIN='', MAX='';
-const st = { from:'', to:'', preset:'thisMonth', dayMetric:'real', monMetric:'spend', campMonth:'', campTab:'sh', campAll:false };
+const st = { view:'overview', from:'', to:'', preset:'thisMonth',
+  ovMetric:'real', shMetric:'realads', tkMetric:'realads', monMetric:'spend',
+  shMonth:'', tkMonth:'', tkCamp:'gmax', shAll:false, tkAll:false };
 const charts = {};
+let CUR=null, PREV=null;   // ผลรวมช่วงที่เลือก / ช่วงก่อนหน้า
 
 /* ---------- aggregation ---------- */
 function sumRange(a,b){
@@ -227,203 +252,213 @@ function sumRange(a,b){
   r.all = { real:r.sh.real+r.tk.real, spend:r.sh.spend+r.tk.spend, ads:r.sh.broad+r.tk.gmv, orders:r.sh.orders+r.tk.orders };
   return r;
 }
-function dayVals(d){ const v=DAILY.days[d];
-  const shS=['product','search','live'].reduce((s,k)=>s+((v.sh_ads[k]||{}).spend||0),0);
-  const shB=['product','search','live'].reduce((s,k)=>s+((v.sh_ads[k]||{}).gmv_broad||0),0);
-  const tkS=['product','live'].reduce((s,k)=>s+((v.tk_ads[k]||{}).spend||0),0);
-  const tkG=['product','live'].reduce((s,k)=>s+((v.tk_ads[k]||{}).gmv||0),0);
-  return { shR:v.sh_real.gmv, shO:v.sh_real.orders, shB, shS, tkR:v.tk_real.gmv, tkO:v.tk_real.orders, tkG, tkS };
+function dayVals(d){ const v=DAILY.days[d], S=v.sh_ads, T=v.tk_ads;
+  const g=(o,k,f)=>((o[k]||{})[f]||0);
+  return { shR:v.sh_real.gmv, shO:v.sh_real.orders,
+    shB:g(S,'product','gmv_broad')+g(S,'search','gmv_broad')+g(S,'live','gmv_broad'),
+    shD:g(S,'product','gmv_direct')+g(S,'search','gmv_direct')+g(S,'live','gmv_direct'),
+    shS:g(S,'product','spend')+g(S,'search','spend')+g(S,'live','spend'),
+    shSp:g(S,'product','spend'), shSs:g(S,'search','spend'), shSl:g(S,'live','spend'),
+    tkR:v.tk_real.gmv, tkO:v.tk_real.orders,
+    tkG:g(T,'product','gmv')+g(T,'live','gmv'), tkS:g(T,'product','spend')+g(T,'live','spend'),
+    tkSp:g(T,'product','spend'), tkSl:g(T,'live','spend'), tkGp:g(T,'product','gmv'), tkGl:g(T,'live','gmv') };
 }
 
 /* ---------- presets ---------- */
 function presetRange(p){
   if (p==='all') return [MIN,MAX];
-  if (/^\d+$/.test(p)){ const n=+p; return [ (addDays(MAX,-(n-1))<MIN?MIN:addDays(MAX,-(n-1))), MAX ]; }
+  if (/^\d+$/.test(p)){ const a=addDays(MAX,-(+p-1)); return [a<MIN?MIN:a, MAX]; }
   const m = MAX.slice(0,7);
   if (p==='thisMonth'){ const a=m+'-01'; return [a<MIN?MIN:a, MAX]; }
-  if (p==='lastMonth'){ const d=parseD(m+'-01'); d.setUTCMonth(d.getUTCMonth()-1); const a=fmtISO(d); const b=addDays(m+'-01',-1);
+  if (p==='lastMonth'){ const d=parseD(m+'-01'); d.setUTCMonth(d.getUTCMonth()-1); const a=fmtISO(d), b=addDays(m+'-01',-1);
     return [a<MIN?MIN:a, b>MAX?MAX:b]; }
   return [MIN,MAX];
 }
+function save(){ try{ localStorage.setItem('wibwub_ads_state', JSON.stringify({p:st.preset,a:st.from,b:st.to,v:st.view})); }catch(e){} }
 function setRange(a,b,preset){
   if (a>b) [a,b]=[b,a];
   if (a<MIN) a=MIN; if (b>MAX) b=MAX; if (a>MAX) a=MAX; if (b<MIN) b=MIN;
   st.from=a; st.to=b; st.preset=preset||'';
   document.getElementById('dFrom').value=a; document.getElementById('dTo').value=b;
   document.querySelectorAll('#presets .chip').forEach(c=>c.classList.toggle('on', c.dataset.p===st.preset));
-  try{ localStorage.setItem('wibwub_ads_range', JSON.stringify({p:st.preset,a,b})); }catch(e){}
-  renderRange();
+  save(); recompute(); renderView();
+}
+function setView(v, fromHash){
+  if (!VIEWS.includes(v)) v='overview';
+  st.view=v;
+  document.querySelectorAll('#tabs .tab').forEach(t=>t.classList.toggle('on', t.dataset.v===v));
+  document.querySelectorAll('.view').forEach(el=>el.classList.toggle('on', el.id==='view-'+v));
+  if (!fromHash && location.hash!=='#'+v) history.replaceState(null,'','#'+v);
+  save(); renderView();
+  window.scrollTo(0,0);
 }
 
-/* ---------- layout skeleton ---------- */
+/* ---------- skeleton ---------- */
+function kpiBox(id, k4){ return `<div class="kpis${k4?' k4':''}" id="${id}"></div>`; }
 function buildSkeleton(){
   document.getElementById('main').innerHTML = `
-  <section class="sec">
-    <div class="range-title" id="rangeTitle"></div>
-    <div class="kpis" id="kpis"></div>
-  </section>
-
-  <section class="sec">
-    <div class="panel">
-      <div class="chart-h">
-        <span class="t">รายวัน</span>
-        <div class="seg" id="segDay">
-          <button data-m="real">ยอดขายจริง</button>
-          <button data-m="spend">ค่าโฆษณา</button>
-          <button data-m="ratio">ค่าโฆษณา ÷ ยอดขายจริง</button>
-          <button data-m="roas">ROAS จากยอดจริง</button>
+  <!-- ═════════ ภาพรวม ═════════ -->
+  <div class="view view-overview" id="view-overview">
+    <section class="sec">
+      <div class="range-title" data-rt></div>
+      ${kpiBox('ovKpis')}
+    </section>
+    <section class="sec">
+      <div class="panel">
+        <div class="chart-h">
+          <span class="t">รายวัน</span>
+          <div class="seg" id="segOv">
+            <button data-m="real">ยอดขายจริง</button>
+            <button data-m="spend">ค่าโฆษณา</button>
+            <button data-m="ratio">ค่าโฆษณา ÷ ยอดขายจริง</button>
+            <button data-m="roas">ROAS จากยอดจริง</button>
+          </div>
+          <div class="legend"><span><i class="dot sh"></i>Shopee</span><span><i class="dot tk"></i>TikTok</span></div>
         </div>
-        <div class="legend"><span><i class="dot sh"></i>Shopee</span><span><i class="dot tk"></i>TikTok</span></div>
+        <div class="cwrap"><canvas id="cOv" aria-label="กราฟรายวัน Shopee และ TikTok"></canvas></div>
       </div>
-      <div class="cwrap"><canvas id="cDay" aria-label="กราฟรายวัน"></canvas></div>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="sec-h"><h2>แยกตามแพลตฟอร์ม</h2><span class="sub" id="pfSub"></span></div>
-    <div class="two">
-      <div class="panel pcard sh" id="cardSh"></div>
-      <div class="panel pcard tk" id="cardTk"></div>
-    </div>
-    <div class="callout" style="margin-top:12px">
-      <b>ทำไมยอดจาก Ads อาจสูงกว่ายอดขายจริง:</b> แพลตฟอร์มนับออเดอร์ให้โฆษณาถ้าลูกค้าเคยเห็นหรือคลิกโฆษณาภายในช่วงเวลาหนึ่ง
-      (Shopee แบบ <b>broad</b> นับกว้างที่สุด, <b>direct</b> นับเฉพาะสินค้าที่คลิกโดยตรง) ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ
-      และนับก่อนหักยกเลิก/คืนเงิน — จึงควรดู <b>ค่าโฆษณา ÷ ยอดขายจริง</b> และ <b>ROAS จากยอดจริง</b> เป็นหลัก
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="sec-h"><h2>ตารางรายวัน</h2><span class="sub">เรียงจากวันล่าสุด</span></div>
-    <div class="tbl-wrap" style="max-height:520px"><table class="data num" id="tDaily"></table></div>
-  </section>
-
-  <section class="sec">
-    <div class="sec-h"><h2>แนวโน้มรายเดือน</h2><span class="sub">ตัวเลขตามรายงานของแต่ละแพลตฟอร์ม (ไฟล์ export รายเดือน) · ไม่ขึ้นกับช่วงวันที่ด้านบน</span></div>
-    <div class="panel">
-      <div class="chart-h">
-        <div class="seg" id="segMon">
-          <button data-m="spend">ค่าโฆษณา</button>
-          <button data-m="revenue">ยอดขายจาก Ads</button>
-          <button data-m="roas">ROAS ตามแพลตฟอร์ม</button>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>เทียบ 2 แพลตฟอร์ม</h2><span class="sub">กดที่การ์ดเพื่อดูรายละเอียดของแพลตฟอร์มนั้น</span></div>
+      <div class="two">
+        <div class="panel pcard sh" id="ovSh" data-go="shopee"></div>
+        <div class="panel pcard tk" id="ovTk" data-go="tiktok"></div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>ตารางรายวัน</h2><span class="sub">เรียงจากวันล่าสุด</span></div>
+      <div class="tbl-wrap" style="max-height:520px"><table class="data num" id="tOv"></table></div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>แนวโน้มรายเดือน</h2><span class="sub">ตัวเลขตามรายงานของแต่ละแพลตฟอร์ม (ไฟล์ export รายเดือน) · ไม่ขึ้นกับช่วงวันที่ด้านบน</span></div>
+      <div class="panel">
+        <div class="chart-h">
+          <div class="seg" id="segMon">
+            <button data-m="spend">ค่าโฆษณา</button>
+            <button data-m="revenue">ยอดขายจาก Ads</button>
+            <button data-m="roas">ROAS ตามแพลตฟอร์ม</button>
+          </div>
+          <div class="legend"><span><i class="dot sh"></i>Shopee</span><span><i class="dot tk"></i>TikTok</span></div>
         </div>
-        <div class="legend"><span><i class="dot sh"></i>Shopee</span><span><i class="dot tk"></i>TikTok</span></div>
+        <div class="cwrap"><canvas id="cMon" aria-label="กราฟรายเดือน"></canvas></div>
+        <p class="note" id="monNote"></p>
       </div>
-      <div class="cwrap"><canvas id="cMon" aria-label="กราฟรายเดือน"></canvas></div>
-      <p class="note" id="monNote"></p>
-    </div>
-  </section>
-
-  <section class="sec">
-    <div class="sec-h"><h2>แคมเปญ</h2><span class="sub">รายเดือน ตามไฟล์ export ของแต่ละแพลตฟอร์ม</span></div>
-    <div class="chart-h">
-      <select id="campMonth" style="font:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--border-2);border-radius:8px;background:var(--panel)"></select>
-      <div class="seg" id="segCamp">
-        <button data-t="sh">Shopee Ads</button>
-        <button data-t="gmax">TikTok GMV Max</button>
-        <button data-t="glive">TikTok LIVE GMV Max</button>
-        <button data-t="biz">TikTok Business Ads</button>
+    </section>
+    <section class="sec">
+      <div class="callout">
+        <b>ทำไมยอดจาก Ads อาจสูงกว่ายอดขายจริง:</b> แพลตฟอร์มนับออเดอร์ให้โฆษณาถ้าลูกค้าเคยเห็นหรือคลิกโฆษณาภายในช่วงเวลาหนึ่ง
+        (Shopee แบบ <b>broad</b> นับกว้างที่สุด, <b>direct</b> นับเฉพาะสินค้าที่คลิกโดยตรง) ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ
+        และนับก่อนหักยกเลิก/คืนเงิน — จึงควรดู <b>ค่าโฆษณา ÷ ยอดขายจริง</b> และ <b>ROAS จากยอดจริง</b> เป็นหลัก
       </div>
-    </div>
-    <div class="tbl-wrap"><table class="data num" id="tCamp"></table></div>
-    <button class="more" id="campMore" hidden></button>
-    <details class="src"><summary>แหล่งข้อมูล / รายละเอียดทางเทคนิค</summary><pre id="srcText"></pre></details>
-  </section>`;
+      <details class="src"><summary>แหล่งข้อมูล / รายละเอียดทางเทคนิค</summary><pre id="srcText"></pre></details>
+    </section>
+  </div>
 
-  document.querySelectorAll('#segDay button').forEach(b=>b.onclick=()=>{ st.dayMetric=b.dataset.m; renderDayChart(); });
-  document.querySelectorAll('#segMon button').forEach(b=>b.onclick=()=>{ st.monMetric=b.dataset.m; renderMonChart(); });
-  document.querySelectorAll('#segCamp button').forEach(b=>b.onclick=()=>{ st.campTab=b.dataset.t; st.campAll=false; renderCamp(); });
-  document.getElementById('campMore').onclick=()=>{ st.campAll=!st.campAll; renderCamp(); };
+  <!-- ═════════ Shopee ═════════ -->
+  <div class="view view-shopee" id="view-shopee">
+    <section class="sec">
+      <div class="range-title" data-rt></div>
+      ${kpiBox('shKpis')}
+    </section>
+    <section class="sec">
+      <div class="panel">
+        <div class="chart-h">
+          <span class="t">รายวัน</span>
+          <div class="seg" id="segSh">
+            <button data-m="realads">ยอดขายจริง vs ยอดจาก Ads</button>
+            <button data-m="spend">ค่าโฆษณา</button>
+            <button data-m="ratio">ค่าโฆษณา ÷ ยอดขายจริง</button>
+            <button data-m="roas">ROAS จากยอดจริง</button>
+          </div>
+          <div class="legend" id="lgSh"></div>
+        </div>
+        <div class="cwrap"><canvas id="cSh" aria-label="กราฟรายวัน Shopee"></canvas></div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>แยกตามประเภทโฆษณา</h2><span class="sub" data-rs></span></div>
+      <div class="panel"><div class="mini-wrap"><table class="mini num" id="shTypes"></table></div>
+        <p class="note">ยอด broad = ออเดอร์ที่เกี่ยวข้องกับโฆษณาทั้งหมด · ยอด direct = เฉพาะสินค้าที่ลูกค้าคลิกจากโฆษณาโดยตรง · ROAS ในตารางนี้คิดจากยอด broad (ตามแพลตฟอร์ม)</p></div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>ตารางรายวัน — Shopee</h2><span class="sub">เรียงจากวันล่าสุด</span></div>
+      <div class="tbl-wrap" style="max-height:520px"><table class="data num" id="tSh"></table></div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>แคมเปญ Shopee</h2><span class="sub">รายเดือน ตามไฟล์ export</span></div>
+      <div class="chart-h"><select class="sel" id="shMonth"></select></div>
+      <div class="tbl-wrap"><table class="data num" id="tShCamp"></table></div>
+      <button class="more" id="shMore" hidden></button>
+    </section>
+  </div>
+
+  <!-- ═════════ TikTok ═════════ -->
+  <div class="view view-tiktok" id="view-tiktok">
+    <section class="sec">
+      <div class="range-title" data-rt></div>
+      ${kpiBox('tkKpis')}
+    </section>
+    <section class="sec">
+      <div class="panel">
+        <div class="chart-h">
+          <span class="t">รายวัน</span>
+          <div class="seg" id="segTk">
+            <button data-m="realads">ยอดขายจริง vs ยอด GMV Max</button>
+            <button data-m="spend">ค่าโฆษณา</button>
+            <button data-m="ratio">ค่าโฆษณา ÷ ยอดขายจริง</button>
+            <button data-m="roas">ROAS จากยอดจริง</button>
+          </div>
+          <div class="legend" id="lgTk"></div>
+        </div>
+        <div class="cwrap"><canvas id="cTk" aria-label="กราฟรายวัน TikTok"></canvas></div>
+      </div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>แยกตามประเภทโฆษณา</h2><span class="sub" data-rs></span></div>
+      <div class="panel"><div class="mini-wrap"><table class="mini num" id="tkTypes"></table></div>
+        <p class="note">ตัวเลขรายวันเป็น GMV Max เท่านั้น (Product + LIVE) — ยังไม่รวม Business Ads (C-Ads) ซึ่งมีเฉพาะยอดรายเดือน ดูได้ในตารางแคมเปญด้านล่าง</p></div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>ตารางรายวัน — TikTok</h2><span class="sub">เรียงจากวันล่าสุด</span></div>
+      <div class="tbl-wrap" style="max-height:520px"><table class="data num" id="tTk"></table></div>
+    </section>
+    <section class="sec">
+      <div class="sec-h"><h2>แคมเปญ TikTok</h2><span class="sub">รายเดือน ตามไฟล์ export</span></div>
+      <div class="chart-h">
+        <select class="sel" id="tkMonth"></select>
+        <div class="seg" id="segTkCamp">
+          <button data-t="gmax">GMV Max</button>
+          <button data-t="glive">LIVE GMV Max</button>
+          <button data-t="biz">Business Ads</button>
+        </div>
+      </div>
+      <div class="tbl-wrap"><table class="data num" id="tTkCamp"></table></div>
+      <button class="more" id="tkMore" hidden></button>
+    </section>
+  </div>`;
+
+  const seg=(id,key,fn)=>document.querySelectorAll('#'+id+' button').forEach(b=>b.onclick=()=>{ st[key]=b.dataset.m||b.dataset.t; fn(); });
+  seg('segOv','ovMetric',renderOvChart); seg('segMon','monMetric',renderMonChart);
+  seg('segSh','shMetric',renderShChart); seg('segTk','tkMetric',renderTkChart);
+  seg('segTkCamp','tkCamp',()=>{ st.tkAll=false; renderTkCamp(); });
+  document.querySelectorAll('.pcard[data-go]').forEach(c=>c.onclick=()=>setView(c.dataset.go));
+  document.getElementById('shMore').onclick=()=>{ st.shAll=!st.shAll; renderShCamp(); };
+  document.getElementById('tkMore').onclick=()=>{ st.tkAll=!st.tkAll; renderTkCamp(); };
 }
 
-/* ---------- KPI ---------- */
-function renderKpis(r, p){
-  const tiles = [
-    { lab:'ยอดขายจริง', val:baht(r.all.real), d:deltaHtml(r.all.real, p&&p.all.real),
-      sh:baht(r.sh.real), tk:baht(r.tk.real) },
-    { lab:'ค่าโฆษณา', val:baht(r.all.spend), d:deltaHtml(r.all.spend, p&&p.all.spend, 'cost'),
-      sh:baht(r.sh.spend), tk:baht(r.tk.spend)+' <span class="muted">(GMV Max)</span>' },
-    { lab:'ค่าโฆษณา ÷ ยอดขายจริง', val:pct(div(r.all.spend,r.all.real)), d:deltaHtml(div(r.all.spend,r.all.real), p&&div(p.all.spend,p.all.real), 'pt'),
-      sh:pct(div(r.sh.spend,r.sh.real)), tk:pct(div(r.tk.spend,r.tk.real)) },
-    { lab:'ROAS จากยอดจริง', val:x2(div(r.all.real,r.all.spend)), d:deltaHtml(div(r.all.real,r.all.spend), p&&div(p.all.real,p.all.spend)),
-      sh:x2(div(r.sh.real,r.sh.spend)), tk:x2(div(r.tk.real,r.tk.spend)) },
-    { lab:'ออเดอร์จริง', val:int(r.all.orders), d:deltaHtml(r.all.orders, p&&p.all.orders),
-      sh:int(r.sh.orders), tk:int(r.tk.orders) },
-  ];
-  document.getElementById('kpis').innerHTML = tiles.map(t=>`
-    <div class="kpi">
-      <div class="lab">${t.lab}</div>
-      <div class="val num">${t.val}</div>
-      <div class="delta">${t.d}</div>
-      <div class="split num">
-        <div><span><i class="dot sh"></i>Shopee</span><span>${t.sh}</span></div>
-        <div><span><i class="dot tk"></i>TikTok</span><span>${t.tk}</span></div>
-      </div>
-    </div>`).join('');
-}
-
-/* ---------- platform cards ---------- */
+/* ---------- shared pieces ---------- */
+function kpiTile(t){ return `
+  <div class="kpi">
+    <div class="lab">${t.lab}</div>
+    <div class="val num">${t.val}</div>
+    ${t.sub?`<div class="sub2 num">${t.sub}</div>`:''}
+    <div class="delta">${t.d||''}</div>
+    ${t.sh!=null?`<div class="split num">
+      <div><span><i class="dot sh"></i>Shopee</span><span>${t.sh}</span></div>
+      <div><span><i class="dot tk"></i>TikTok</span><span>${t.tk}</span></div></div>`:''}
+  </div>`; }
 function m(label, val, sub){ return `<div class="m"><div class="ml">${label}</div><div class="mv num">${val}</div>${sub?`<div class="ms num">${sub}</div>`:''}</div>`; }
-function renderCards(r){
-  const s=r.sh, t=r.tk;
-  const shRows = [['โฆษณาสินค้า','product'],['โฆษณาคำค้นหา/ร้านค้า','search'],['Live','live']].map(([n,k])=>{ const x=s.t[k];
-    return `<tr><td>${n}</td><td>${baht(x.s)}</td><td>${baht(x.b)}</td><td>${baht(x.d)}</td><td>${x2(div(x.b,x.s))}</td><td>${int(x.o)}</td></tr>`; }).join('');
-  document.getElementById('cardSh').innerHTML = `
-    <div class="pcard-h"><i class="dot sh"></i>Shopee <span class="tag">Shopee Ads ทุกประเภท</span></div>
-    <div class="mgrid">
-      ${m('ยอดขายจริง', baht(s.real), int(s.orders)+' ออเดอร์')}
-      ${m('ค่าโฆษณา', baht(s.spend))}
-      ${m('ค่าโฆษณา ÷ ยอดจริง', pct(div(s.spend,s.real)))}
-      ${m('ยอดจาก Ads (broad)', baht(s.broad), pct(div(s.broad,s.real))+' ของยอดจริง')}
-      ${m('ยอดจาก Ads (direct)', baht(s.direct), pct(div(s.direct,s.real))+' ของยอดจริง')}
-      ${m('ROAS', x2(div(s.real,s.spend)), 'จากยอดจริง · แพลตฟอร์ม '+x2(div(s.broad,s.spend)))}
-    </div>
-    <div class="mini-wrap"><table class="mini num">
-      <thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>ยอด broad</th><th>ยอด direct</th><th>ROAS</th><th>ออเดอร์</th></tr></thead>
-      <tbody>${shRows}<tr class="tot"><td>รวม</td><td>${baht(s.spend)}</td><td>${baht(s.broad)}</td><td>${baht(s.direct)}</td><td>${x2(div(s.broad,s.spend))}</td><td>${int(s.adsOrders)}</td></tr></tbody>
-    </table></div>`;
-  const tkRows = [['Product GMV Max','product'],['LIVE GMV Max','live']].map(([n,k])=>{ const x=t.t[k];
-    return `<tr><td>${n}</td><td>${baht(x.s)}</td><td>${baht(x.g)}</td><td>${x2(div(x.g,x.s))}</td><td>${int(x.o)}</td></tr>`; }).join('');
-  document.getElementById('cardTk').innerHTML = `
-    <div class="pcard-h"><i class="dot tk"></i>TikTok <span class="tag">GMV Max (ยังไม่รวม Business Ads)</span></div>
-    <div class="mgrid">
-      ${m('ยอดขายจริง', baht(t.real), int(t.orders)+' ออเดอร์')}
-      ${m('ค่าโฆษณา', baht(t.spend))}
-      ${m('ค่าโฆษณา ÷ ยอดจริง', pct(div(t.spend,t.real)))}
-      ${m('ยอดจาก GMV Max', baht(t.gmv), pct(div(t.gmv,t.real))+' ของยอดจริง')}
-      ${m('ROAS จากยอดจริง', x2(div(t.real,t.spend)))}
-      ${m('ROAS ตามแพลตฟอร์ม', x2(div(t.gmv,t.spend)))}
-    </div>
-    <div class="mini-wrap"><table class="mini num">
-      <thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>ยอดจาก Ads</th><th>ROAS</th><th>ออเดอร์</th></tr></thead>
-      <tbody>${tkRows}<tr class="tot"><td>รวม</td><td>${baht(t.spend)}</td><td>${baht(t.gmv)}</td><td>${x2(div(t.gmv,t.spend))}</td><td>${int(t.adsOrders)}</td></tr></tbody>
-    </table></div>
-    <p class="note">ค่าโฆษณา Business Ads (C-Ads) มีเฉพาะยอดรายเดือน ดูได้ที่ตารางแคมเปญด้านล่าง</p>`;
-}
 
-/* ---------- daily table ---------- */
-function renderDailyTable(r){
-  const rows = r.days.slice().reverse().map(d=>{ const v=dayVals(d); const R=v.shR+v.tkR, S=v.shS+v.tkS;
-    return `<tr><td>${thDate(d)}</td>
-      <td>${int(v.shR)}</td><td>${int(v.shB)}</td><td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td>
-      <td>${int(v.tkR)}</td><td>${int(v.tkG)}</td><td>${int(v.tkS)}</td><td>${pct(div(v.tkS,v.tkR))}</td>
-      <td>${int(R)}</td><td>${int(S)}</td><td>${pct(div(S,R))}</td></tr>`; }).join('');
-  const s=r.sh,t=r.tk,a=r.all;
-  document.getElementById('tDaily').innerHTML = `
-    <thead>
-      <tr><th></th><th class="grp sh" colspan="4">Shopee</th><th class="grp tk" colspan="4">TikTok</th><th class="grp" colspan="3">รวม</th></tr>
-      <tr><th>วันที่</th><th>ยอดจริง</th><th>ยอด Ads (broad)</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th>
-          <th>ยอดจริง</th><th>ยอด GMV Max</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th>
-          <th>ยอดจริง</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th></tr>
-    </thead>
-    <tbody>${rows}
-      <tr class="tot"><td>รวม ${r.n} วัน</td>
-        <td>${int(s.real)}</td><td>${int(s.broad)}</td><td>${int(s.spend)}</td><td>${pct(div(s.spend,s.real))}</td>
-        <td>${int(t.real)}</td><td>${int(t.gmv)}</td><td>${int(t.spend)}</td><td>${pct(div(t.spend,t.real))}</td>
-        <td>${int(a.real)}</td><td>${int(a.spend)}</td><td>${pct(div(a.spend,a.real))}</td></tr>
-    </tbody>`;
-}
-
-/* ---------- charts ---------- */
 Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
 Chart.defaults.font.size = 12;
 Chart.defaults.color = C.muted;
@@ -436,101 +471,248 @@ function baseOpts(yFmt){
     scales:{ x:{ grid:{display:false}, ticks:{maxRotation:0, autoSkip:true, autoSkipPadding:12} },
              y:{ beginAtZero:true, grid:{color:C.grid}, border:{display:false}, ticks:{callback:v=>yFmt(v,false)} } } };
 }
-function renderDayChart(){
-  document.querySelectorAll('#segDay button').forEach(b=>b.classList.toggle('on', b.dataset.m===st.dayMetric));
-  const days = DAYS.filter(d=>d>=st.from && d<=st.to);
-  const V = days.map(dayVals); const mt=st.dayMetric;
+const FMT = { money:(v,full)=>v==null?'–':(full?baht(v):bahtShort(v)), pct:v=>v==null?'–':(+v).toFixed(1)+'%', x:v=>v==null?'–':(+v).toFixed(2)+'x' };
+const fin = x => Number.isFinite(x) ? x : null;
+function line(label, data, color, n, dashed){
+  return { label, data, borderColor:color, backgroundColor:color, borderWidth:2, borderDash:dashed?[6,4]:[],
+    pointRadius:n>20?0:3, pointHoverRadius:5, pointBorderColor:'#fff', pointBorderWidth:2, tension:.25, spanGaps:true };
+}
+function drawLine(key, canvasId, labels, ds, fmt){
+  const o=baseOpts(fmt);
+  if (charts[key]){ charts[key].data.labels=labels; charts[key].data.datasets=ds; charts[key].options=o; charts[key].update(); }
+  else charts[key]=new Chart(document.getElementById(canvasId), {type:'line', data:{labels, datasets:ds}, options:o});
+}
+function rangeDays(){ return DAYS.filter(d=>d>=st.from && d<=st.to); }
+function segOn(id, val){ document.querySelectorAll('#'+id+' button').forEach(b=>b.classList.toggle('on', (b.dataset.m||b.dataset.t)===val)); }
+
+/* ---------- recompute + routing ---------- */
+function recompute(){
+  CUR = sumRange(st.from, st.to);
+  const n = daysBetween(st.from, st.to), pa = addDays(st.from,-n), pb = addDays(st.from,-1);
+  PREV = (pa>=MIN) ? sumRange(pa,pb) : null;
+  const t = `ช่วงที่เลือก: <b>${thRange(st.from, st.to)}</b> (${n} วัน)` + (PREV?` <span class="muted">· เทียบกับ ${thRange(pa,pb)}</span>`:'');
+  document.querySelectorAll('[data-rt]').forEach(e=>e.innerHTML=t);
+  document.querySelectorAll('[data-rs]').forEach(e=>e.textContent=thRange(st.from, st.to));
+}
+function renderView(){
+  if (!CUR) return;
+  if (st.view==='overview'){ renderOvKpis(); renderOvCards(); renderOvTable(); renderOvChart(); renderMonChart(); }
+  else if (st.view==='shopee'){ renderShKpis(); renderShTypes(); renderShTable(); renderShChart(); renderShCamp(); }
+  else { renderTkKpis(); renderTkTypes(); renderTkTable(); renderTkChart(); renderTkCamp(); }
+}
+
+/* ═════════ ภาพรวม ═════════ */
+function renderOvKpis(){
+  const r=CUR, p=PREV;
+  document.getElementById('ovKpis').innerHTML = [
+    { lab:'ยอดขายจริง', val:baht(r.all.real), d:deltaHtml(r.all.real, p&&p.all.real), sh:baht(r.sh.real), tk:baht(r.tk.real) },
+    { lab:'ค่าโฆษณา', val:baht(r.all.spend), d:deltaHtml(r.all.spend, p&&p.all.spend,'cost'), sh:baht(r.sh.spend), tk:baht(r.tk.spend)+' <span class="muted">(GMV Max)</span>' },
+    { lab:'ค่าโฆษณา ÷ ยอดขายจริง', val:pct(div(r.all.spend,r.all.real)), d:deltaHtml(div(r.all.spend,r.all.real), p&&div(p.all.spend,p.all.real),'pt'), sh:pct(div(r.sh.spend,r.sh.real)), tk:pct(div(r.tk.spend,r.tk.real)) },
+    { lab:'ROAS จากยอดจริง', val:x2(div(r.all.real,r.all.spend)), d:deltaHtml(div(r.all.real,r.all.spend), p&&div(p.all.real,p.all.spend)), sh:x2(div(r.sh.real,r.sh.spend)), tk:x2(div(r.tk.real,r.tk.spend)) },
+    { lab:'ออเดอร์จริง', val:int(r.all.orders), d:deltaHtml(r.all.orders, p&&p.all.orders), sh:int(r.sh.orders), tk:int(r.tk.orders) },
+  ].map(kpiTile).join('');
+}
+function renderOvCards(){
+  const s=CUR.sh, t=CUR.tk;
+  document.getElementById('ovSh').innerHTML = `
+    <div class="pcard-h"><i class="dot sh"></i>Shopee <span class="go">ดูหน้า Shopee →</span></div>
+    <div class="mgrid">
+      ${m('ยอดขายจริง', baht(s.real), int(s.orders)+' ออเดอร์')}
+      ${m('ค่าโฆษณา', baht(s.spend), pct(div(s.spend,s.real))+' ของยอดจริง')}
+      ${m('ROAS จากยอดจริง', x2(div(s.real,s.spend)), 'ตามแพลตฟอร์ม '+x2(div(s.broad,s.spend)))}
+    </div>`;
+  document.getElementById('ovTk').innerHTML = `
+    <div class="pcard-h"><i class="dot tk"></i>TikTok <span class="go">ดูหน้า TikTok →</span></div>
+    <div class="mgrid">
+      ${m('ยอดขายจริง', baht(t.real), int(t.orders)+' ออเดอร์')}
+      ${m('ค่าโฆษณา (GMV Max)', baht(t.spend), pct(div(t.spend,t.real))+' ของยอดจริง')}
+      ${m('ROAS จากยอดจริง', x2(div(t.real,t.spend)), 'ตามแพลตฟอร์ม '+x2(div(t.gmv,t.spend)))}
+    </div>`;
+}
+function renderOvTable(){
+  const r=CUR;
+  const rows = r.days.slice().reverse().map(d=>{ const v=dayVals(d); const R=v.shR+v.tkR, S=v.shS+v.tkS;
+    return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td><td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td>
+      <td>${int(v.tkR)}</td><td>${int(v.tkS)}</td><td>${pct(div(v.tkS,v.tkR))}</td>
+      <td>${int(R)}</td><td>${int(S)}</td><td>${pct(div(S,R))}</td></tr>`; }).join('');
+  const s=r.sh,t=r.tk,a=r.all;
+  document.getElementById('tOv').innerHTML = `
+    <thead><tr><th></th><th class="grp sh" colspan="3">Shopee</th><th class="grp tk" colspan="3">TikTok</th><th class="grp" colspan="3">รวม</th></tr>
+      <tr><th>วันที่</th><th>ยอดจริง</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th><th>ยอดจริง</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th><th>ยอดจริง</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th></tr></thead>
+    <tbody>${rows}<tr class="tot"><td>รวม ${r.n} วัน</td>
+      <td>${int(s.real)}</td><td>${int(s.spend)}</td><td>${pct(div(s.spend,s.real))}</td>
+      <td>${int(t.real)}</td><td>${int(t.spend)}</td><td>${pct(div(t.spend,t.real))}</td>
+      <td>${int(a.real)}</td><td>${int(a.spend)}</td><td>${pct(div(a.spend,a.real))}</td></tr></tbody>`;
+}
+function renderOvChart(){
+  segOn('segOv', st.ovMetric);
+  const days=rangeDays(), V=days.map(dayVals), mt=st.ovMetric, n=days.length;
   const pick = { real:v=>[v.shR,v.tkR], spend:v=>[v.shS,v.tkS], ratio:v=>[div(v.shS,v.shR)*100, div(v.tkS,v.tkR)*100], roas:v=>[div(v.shR,v.shS), div(v.tkR,v.tkS)] }[mt];
-  const sh = V.map(v=>{const x=pick(v)[0]; return isFinite(x)?x:null;}), tk = V.map(v=>{const x=pick(v)[1]; return isFinite(x)?x:null;});
-  const fmt = { real:(v,full)=>full?baht(v):bahtShort(v), spend:(v,full)=>full?baht(v):bahtShort(v), ratio:v=>v==null?'–':(+v).toFixed(1)+'%', roas:v=>v==null?'–':(+v).toFixed(2)+'x' }[mt];
-  const labels = days.map(d=>thDate(d));
-  const ds = [
-    { label:'Shopee', data:sh, borderColor:C.sh, backgroundColor:C.sh, borderWidth:2, pointRadius:days.length>20?0:3, pointHoverRadius:5, pointBorderColor:'#fff', pointBorderWidth:2, tension:.25, spanGaps:true },
-    { label:'TikTok', data:tk, borderColor:C.tk, backgroundColor:C.tk, borderWidth:2, pointRadius:days.length>20?0:3, pointHoverRadius:5, pointBorderColor:'#fff', pointBorderWidth:2, tension:.25, spanGaps:true } ];
-  if (charts.day){ charts.day.data.labels=labels; charts.day.data.datasets=ds; charts.day.options=baseOpts(fmt); charts.day.update(); }
-  else charts.day = new Chart(document.getElementById('cDay'), { type:'line', data:{labels, datasets:ds}, options:baseOpts(fmt) });
+  const fmt = {real:FMT.money, spend:FMT.money, ratio:FMT.pct, roas:FMT.x}[mt];
+  drawLine('ov','cOv', days.map(d=>thDate(d)),
+    [ line('Shopee', V.map(v=>fin(pick(v)[0])), C.sh, n), line('TikTok', V.map(v=>fin(pick(v)[1])), C.tk, n) ], fmt);
 }
 function monthList(){ return MKEYS.filter(k=>PERIODS.months[k]); }
 function renderMonChart(){
-  document.querySelectorAll('#segMon button').forEach(b=>b.classList.toggle('on', b.dataset.m===st.monMetric));
-  const ks = monthList(); const mt=st.monMetric;
-  const val = (p,key)=>{ const x=PERIODS.months[key][p]; if(!x) return null; if (mt==='roas') return x.spend? x.revenue/x.spend : null; return x[mt]||0; };
-  const fmt = mt==='roas' ? (v=>v==null?'–':(+v).toFixed(2)+'x') : ((v,full)=>full?baht(v):bahtShort(v));
-  const labels = ks.map(k=>{ const i=MKEYS.indexOf(k); const cv=PERIODS.months[k].cover; return TH_M[i]+(cv&&cv.shopeeDay&&k===ks[ks.length-1]?' (ถึง '+cv.shopeeDay+')':''); });
-  const ds = [
-    { label:'Shopee', data:ks.map(k=>val('shopee',k)), backgroundColor:C.sh, borderRadius:{topLeft:4,topRight:4}, borderSkipped:'bottom', maxBarThickness:22, categoryPercentage:.7, barPercentage:.86 },
-    { label:'TikTok', data:ks.map(k=>val('tiktok',k)), backgroundColor:C.tk, borderRadius:{topLeft:4,topRight:4}, borderSkipped:'bottom', maxBarThickness:22, categoryPercentage:.7, barPercentage:.86 } ];
-  const opts = baseOpts(fmt); opts.interaction={mode:'index', intersect:false};
-  if (charts.mon){ charts.mon.data.labels=labels; charts.mon.data.datasets=ds; charts.mon.options=opts; charts.mon.update(); }
-  else charts.mon = new Chart(document.getElementById('cMon'), { type:'bar', data:{labels, datasets:ds}, options:opts });
-  const last = PERIODS.months[ks[ks.length-1]];
+  segOn('segMon', st.monMetric);
+  const ks=monthList(), mt=st.monMetric;
+  const val=(p,key)=>{ const x=PERIODS.months[key][p]; if(!x) return null; if (mt==='roas') return x.spend? x.revenue/x.spend : null; return x[mt]||0; };
+  const fmt = mt==='roas' ? FMT.x : FMT.money;
+  const labels = ks.map((k,i)=>{ const cv=PERIODS.months[k].cover; return TH_M[MKEYS.indexOf(k)]+(cv&&cv.shopeeDay&&i===ks.length-1?' (ถึง '+cv.shopeeDay+')':''); });
+  const bar=(label,data,color)=>({ label, data, backgroundColor:color, borderRadius:{topLeft:4,topRight:4}, borderSkipped:'bottom', maxBarThickness:22, categoryPercentage:.7, barPercentage:.86 });
+  const ds=[ bar('Shopee', ks.map(k=>val('shopee',k)), C.sh), bar('TikTok', ks.map(k=>val('tiktok',k)), C.tk) ];
+  const o=baseOpts(fmt);
+  if (charts.mon){ charts.mon.data.labels=labels; charts.mon.data.datasets=ds; charts.mon.options=o; charts.mon.update(); }
+  else charts.mon=new Chart(document.getElementById('cMon'), {type:'bar', data:{labels, datasets:ds}, options:o});
+  const last=PERIODS.months[ks[ks.length-1]];
   document.getElementById('monNote').textContent = 'TikTok = GMV Max (+ LIVE GMV Max) · ยอดขายจาก Ads คือยอดที่แพลตฟอร์มนับให้โฆษณา ไม่ใช่ยอดขายจริงของร้าน'
     + (last && last.cover ? ` · เดือนล่าสุดเป็นข้อมูลบางส่วน (Shopee ถึงวันที่ ${last.cover.shopeeDay}, TikTok ถึงวันที่ ${last.cover.tiktokDay})` : '');
 }
 
-/* ---------- campaigns ---------- */
-function renderCampMonthSelect(){
-  const sel=document.getElementById('campMonth'); const ks=monthList().slice().reverse();
-  sel.innerHTML = ks.map(k=>`<option value="${k}">${TH_MF[MKEYS.indexOf(k)]} 2569</option>`).join('');
-  if (!st.campMonth || !PERIODS.months[st.campMonth]) st.campMonth=ks[0];
-  sel.value=st.campMonth; sel.onchange=()=>{ st.campMonth=sel.value; st.campAll=false; renderCamp(); };
+/* ═════════ Shopee ═════════ */
+function renderShKpis(){
+  const s=CUR.sh, p=PREV&&PREV.sh;
+  document.getElementById('shKpis').innerHTML = [
+    { lab:'ยอดขายจริง', val:baht(s.real), sub:int(s.orders)+' ออเดอร์', d:deltaHtml(s.real, p&&p.real) },
+    { lab:'ค่าโฆษณา', val:baht(s.spend), sub:'ทุกประเภทโฆษณา', d:deltaHtml(s.spend, p&&p.spend,'cost') },
+    { lab:'ค่าโฆษณา ÷ ยอดขายจริง', val:pct(div(s.spend,s.real)), d:deltaHtml(div(s.spend,s.real), p&&div(p.spend,p.real),'pt') },
+    { lab:'ROAS จากยอดจริง', val:x2(div(s.real,s.spend)), sub:'ตามแพลตฟอร์ม (broad) '+x2(div(s.broad,s.spend)), d:deltaHtml(div(s.real,s.spend), p&&div(p.real,p.spend)) },
+    { lab:'ยอดจาก Ads (broad)', val:baht(s.broad), sub:pct(div(s.broad,s.real))+' ของยอดจริง · direct '+bahtShort(s.direct)+' ('+pct(div(s.direct,s.real))+')', d:deltaHtml(s.broad, p&&p.broad) },
+  ].map(kpiTile).join('');
 }
-function renderCamp(){
-  document.querySelectorAll('#segCamp button').forEach(b=>b.classList.toggle('on', b.dataset.t===st.campTab));
-  const M = PERIODS.months[st.campMonth]; const tab=st.campTab; let head='', rows=[], tot='', list=[];
-  if (tab==='sh'){
-    list = (M.shopee.campaigns||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
-    head = '<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th><th>Impressions</th><th>คลิก</th><th>CTR</th></tr>';
-    rows = list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${baht(c.revenue)}</td><td>${x2(c.roas||div(c.revenue,c.spend))}</td><td>${int(c.orders)}</td><td>${c.orders?nf2.format(c.cpa||c.spend/c.orders):'–'}</td><td>${int(c.imp)}</td><td>${int(c.clicks)}</td><td>${c.ctr!=null?(+c.ctr).toFixed(2)+'%':'–'}</td></tr>`);
-    const S=M.shopee; tot = `<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(S.spend)}</td><td>${baht(S.revenue)}</td><td>${x2(div(S.revenue,S.spend))}</td><td>${int(S.orders)}</td><td>${S.orders?nf2.format(S.spend/S.orders):'–'}</td><td>${int(S.imp)}</td><td>${int(S.clicks)}</td><td>${S.imp?(S.clicks/S.imp*100).toFixed(2)+'%':'–'}</td></tr>`;
-  } else if (tab==='gmax' || tab==='glive'){
-    const src = tab==='gmax' ? M.tiktok.gmvMax : M.tiktok.gmvLive;
-    list = ((src && (tab==='gmax'?src.campaigns:src.sessions))||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
-    head = '<tr><th>'+(tab==='gmax'?'แคมเปญ':'ไลฟ์ / แคมเปญ')+'</th><th>ค่าโฆษณา</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th></tr>';
-    rows = list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${baht(c.revenue)}</td><td>${x2(c.roi||div(c.revenue,c.spend))}</td><td>${int(c.orders)}</td><td>${c.orders?nf2.format(c.cpa||c.spend/c.orders):'–'}</td></tr>`);
-    const T = src && src.total; if (T) tot = `<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(T.spend)}</td><td>${baht(T.revenue)}</td><td>${x2(div(T.revenue,T.spend))}</td><td>${int(T.orders)}</td><td>${T.orders?nf2.format(T.spend/T.orders):'–'}</td></tr>`;
-  } else {
-    const src = M.tiktok.bizAds; list = ((src&&src.campaigns)||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
-    head = '<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>Impressions</th><th>คลิก</th><th>CTR</th><th>CPM</th></tr>';
-    rows = list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${int(c.imp)}</td><td>${int(c.clicks)}</td><td>${c.imp?(c.clicks/c.imp*100).toFixed(2)+'%':'–'}</td><td>${c.imp?nf2.format(c.spend/c.imp*1000):'–'}</td></tr>`);
-    const T = src && src.total; if (T) tot = `<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(T.spend)}</td><td>${int(T.imp)}</td><td>${int(T.clicks)}</td><td>${T.imp?(T.clicks/T.imp*100).toFixed(2)+'%':'–'}</td><td>${T.imp?nf2.format(T.spend/T.imp*1000):'–'}</td></tr>`;
+function renderShTypes(){
+  const s=CUR.sh;
+  const rows=[['โฆษณาสินค้า','product'],['โฆษณาคำค้นหา/ร้านค้า','search'],['Live','live']].map(([n,k])=>{ const x=s.t[k];
+    return `<tr><td>${n}</td><td>${baht(x.s)}</td><td>${pct(div(x.s,s.spend),0)}</td><td>${baht(x.b)}</td><td>${baht(x.d)}</td><td>${x2(div(x.b,x.s))}</td><td>${int(x.o)}</td><td>${x.o?nf2.format(x.s/x.o):'–'}</td></tr>`; }).join('');
+  document.getElementById('shTypes').innerHTML = `
+    <thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>สัดส่วน</th><th>ยอด broad</th><th>ยอด direct</th><th>ROAS</th><th>ออเดอร์</th><th>ต้นทุน/ออเดอร์</th></tr></thead>
+    <tbody>${rows}<tr class="tot"><td>รวม</td><td>${baht(s.spend)}</td><td>100%</td><td>${baht(s.broad)}</td><td>${baht(s.direct)}</td><td>${x2(div(s.broad,s.spend))}</td><td>${int(s.adsOrders)}</td><td>${s.adsOrders?nf2.format(s.spend/s.adsOrders):'–'}</td></tr></tbody>`;
+}
+function renderShTable(){
+  const r=CUR, s=r.sh;
+  const rows = r.days.slice().reverse().map(d=>{ const v=dayVals(d);
+    return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td><td>${int(v.shO)}</td><td>${int(v.shB)}</td><td>${int(v.shD)}</td>
+      <td>${int(v.shSp)}</td><td>${int(v.shSs)}</td><td>${int(v.shSl)}</td><td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td><td>${x2(div(v.shR,v.shS))}</td></tr>`; }).join('');
+  document.getElementById('tSh').innerHTML = `
+    <thead><tr><th></th><th class="grp sh" colspan="2">ยอดขายจริง</th><th class="grp sh" colspan="2">ยอดจาก Ads</th><th class="grp sh" colspan="4">ค่าโฆษณา</th><th class="grp" colspan="2">ผลลัพธ์</th></tr>
+      <tr><th>วันที่</th><th>ยอดขาย</th><th>ออเดอร์</th><th>broad</th><th>direct</th><th>สินค้า</th><th>คำค้นหา</th><th>Live</th><th>รวม</th><th>÷ยอดจริง</th><th>ROAS จริง</th></tr></thead>
+    <tbody>${rows}<tr class="tot"><td>รวม ${r.n} วัน</td><td>${int(s.real)}</td><td>${int(s.orders)}</td><td>${int(s.broad)}</td><td>${int(s.direct)}</td>
+      <td>${int(s.t.product.s)}</td><td>${int(s.t.search.s)}</td><td>${int(s.t.live.s)}</td><td>${int(s.spend)}</td><td>${pct(div(s.spend,s.real))}</td><td>${x2(div(s.real,s.spend))}</td></tr></tbody>`;
+}
+function platformChart(key, canvasId, legendId, metric, color, getR, getA, getS, adsLabel){
+  const days=rangeDays(), V=days.map(dayVals), n=days.length, labels=days.map(d=>thDate(d));
+  const lg=document.getElementById(legendId);
+  if (metric==='realads'){
+    lg.innerHTML=`<span><i class="dot" style="background:${color}"></i>ยอดขายจริง</span><span><i class="dash"></i>${adsLabel}</span>`;
+    drawLine(key, canvasId, labels, [ line('ยอดขายจริง', V.map(getR), color, n), line(adsLabel, V.map(getA), C.ink2, n, true) ], FMT.money);
+    return;
   }
-  const LIMIT=15; const shown = st.campAll ? rows : rows.slice(0,LIMIT);
-  const cols = (head.match(/<th/g)||[]).length;
-  const emptyMsg = (tab==='gmax' && !list.length && M.tiktok.gmvMax && M.tiktok.gmvMax.total && M.tiktok.gmvMax.total.spend)
-     ? 'เดือนนี้ไฟล์ export มีเฉพาะยอดรวม ไม่มีรายแคมเปญ' : 'ไม่มีข้อมูลแคมเปญในเดือนนี้';
-  document.getElementById('tCamp').innerHTML = `<thead>${head}</thead><tbody>${shown.join('') || `<tr><td colspan="${cols}" class="muted" style="text-align:center;padding:18px">${emptyMsg}</td></tr>`}${tot}</tbody>`;
-  const more=document.getElementById('campMore');
-  if (rows.length>LIMIT){ more.hidden=false; more.textContent = st.campAll ? 'แสดงน้อยลง' : `แสดงทั้งหมด ${rows.length} แคมเปญ`; } else more.hidden=true;
+  const lab={spend:'ค่าโฆษณา', ratio:'ค่าโฆษณา ÷ ยอดขายจริง', roas:'ROAS จากยอดจริง'}[metric];
+  lg.innerHTML='';
+  const f={spend:v=>getS(v), ratio:v=>fin(div(getS(v),getR(v))*100), roas:v=>fin(div(getR(v),getS(v)))}[metric];
+  drawLine(key, canvasId, labels, [ line(lab, V.map(f), color, n) ], {spend:FMT.money, ratio:FMT.pct, roas:FMT.x}[metric]);
+}
+function renderShChart(){ segOn('segSh', st.shMetric);
+  platformChart('sh','cSh','lgSh', st.shMetric, C.sh, v=>v.shR, v=>v.shB, v=>v.shS, 'ยอดจาก Ads (broad)'); }
+function campMonthSelect(id, key, after){
+  const sel=document.getElementById(id); const ks=monthList().slice().reverse();
+  if (!sel.options.length) sel.innerHTML = ks.map(k=>`<option value="${k}">${TH_MF[MKEYS.indexOf(k)]} 2569</option>`).join('');
+  if (!st[key] || !PERIODS.months[st[key]]) st[key]=ks[0];
+  sel.value=st[key]; sel.onchange=()=>{ st[key]=sel.value; after(); };
+}
+function campTable(tableId, moreId, allKey, head, rows, tot, emptyMsg){
+  const LIMIT=15, shown = st[allKey] ? rows : rows.slice(0,LIMIT), cols=(head.match(/<th/g)||[]).length;
+  document.getElementById(tableId).innerHTML = `<thead>${head}</thead><tbody>${shown.join('') || `<tr><td colspan="${cols}" class="muted" style="text-align:center;padding:18px">${emptyMsg}</td></tr>`}${tot||''}</tbody>`;
+  const more=document.getElementById(moreId);
+  if (rows.length>LIMIT){ more.hidden=false; more.textContent = st[allKey] ? 'แสดงน้อยลง' : `แสดงทั้งหมด ${rows.length} แคมเปญ`; } else more.hidden=true;
+}
+function renderShCamp(){
+  campMonthSelect('shMonth','shMonth', ()=>{ st.shAll=false; renderShCamp(); });
+  const M=PERIODS.months[st.shMonth], S=M.shopee;
+  const list=(S.campaigns||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
+  const head='<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th><th>Impressions</th><th>คลิก</th><th>CTR</th></tr>';
+  const rows=list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${baht(c.revenue)}</td><td>${x2(c.roas||div(c.revenue,c.spend))}</td><td>${int(c.orders)}</td><td>${c.orders?nf2.format(c.cpa||c.spend/c.orders):'–'}</td><td>${int(c.imp)}</td><td>${int(c.clicks)}</td><td>${c.ctr!=null?(+c.ctr).toFixed(2)+'%':'–'}</td></tr>`);
+  const tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(S.spend)}</td><td>${baht(S.revenue)}</td><td>${x2(div(S.revenue,S.spend))}</td><td>${int(S.orders)}</td><td>${S.orders?nf2.format(S.spend/S.orders):'–'}</td><td>${int(S.imp)}</td><td>${int(S.clicks)}</td><td>${S.imp?(S.clicks/S.imp*100).toFixed(2)+'%':'–'}</td></tr>`;
+  campTable('tShCamp','shMore','shAll', head, rows, tot, 'ไม่มีข้อมูลแคมเปญในเดือนนี้');
 }
 
-/* ---------- range render ---------- */
-function renderRange(){
-  const r = sumRange(st.from, st.to);
-  const n = daysBetween(st.from, st.to);
-  const pa = addDays(st.from, -n), pb = addDays(st.from, -1);
-  const p = (pa>=MIN) ? sumRange(pa,pb) : null;
-  document.getElementById('rangeTitle').innerHTML = `ช่วงที่เลือก: <b>${thRange(st.from, st.to)}</b> (${n} วัน)` + (p?` <span class="muted">· เทียบกับ ${thRange(pa,pb)}</span>`:'');
-  document.getElementById('pfSub').textContent = thRange(st.from, st.to);
-  renderKpis(r, p); renderCards(r); renderDailyTable(r); renderDayChart();
+/* ═════════ TikTok ═════════ */
+function renderTkKpis(){
+  const t=CUR.tk, p=PREV&&PREV.tk;
+  document.getElementById('tkKpis').innerHTML = [
+    { lab:'ยอดขายจริง', val:baht(t.real), sub:int(t.orders)+' ออเดอร์', d:deltaHtml(t.real, p&&p.real) },
+    { lab:'ค่าโฆษณา (GMV Max)', val:baht(t.spend), sub:'ยังไม่รวม Business Ads', d:deltaHtml(t.spend, p&&p.spend,'cost') },
+    { lab:'ค่าโฆษณา ÷ ยอดขายจริง', val:pct(div(t.spend,t.real)), d:deltaHtml(div(t.spend,t.real), p&&div(p.spend,p.real),'pt') },
+    { lab:'ROAS จากยอดจริง', val:x2(div(t.real,t.spend)), sub:'ตามแพลตฟอร์ม '+x2(div(t.gmv,t.spend)), d:deltaHtml(div(t.real,t.spend), p&&div(p.real,p.spend)) },
+    { lab:'ยอดจาก GMV Max', val:baht(t.gmv), sub:pct(div(t.gmv,t.real))+' ของยอดจริง', d:deltaHtml(t.gmv, p&&p.gmv) },
+  ].map(kpiTile).join('');
+}
+function renderTkTypes(){
+  const t=CUR.tk;
+  const rows=[['Product GMV Max','product'],['LIVE GMV Max','live']].map(([n,k])=>{ const x=t.t[k];
+    return `<tr><td>${n}</td><td>${baht(x.s)}</td><td>${pct(div(x.s,t.spend),0)}</td><td>${baht(x.g)}</td><td>${x2(div(x.g,x.s))}</td><td>${int(x.o)}</td><td>${x.o?nf2.format(x.s/x.o):'–'}</td></tr>`; }).join('');
+  document.getElementById('tkTypes').innerHTML = `
+    <thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>สัดส่วน</th><th>ยอดจาก Ads</th><th>ROAS</th><th>ออเดอร์</th><th>ต้นทุน/ออเดอร์</th></tr></thead>
+    <tbody>${rows}<tr class="tot"><td>รวม</td><td>${baht(t.spend)}</td><td>100%</td><td>${baht(t.gmv)}</td><td>${x2(div(t.gmv,t.spend))}</td><td>${int(t.adsOrders)}</td><td>${t.adsOrders?nf2.format(t.spend/t.adsOrders):'–'}</td></tr></tbody>`;
+}
+function renderTkTable(){
+  const r=CUR, t=r.tk;
+  const rows = r.days.slice().reverse().map(d=>{ const v=dayVals(d);
+    return `<tr><td>${thDate(d)}</td><td>${int(v.tkR)}</td><td>${int(v.tkO)}</td><td>${int(v.tkGp)}</td><td>${int(v.tkGl)}</td>
+      <td>${int(v.tkSp)}</td><td>${int(v.tkSl)}</td><td>${int(v.tkS)}</td><td>${pct(div(v.tkS,v.tkR))}</td><td>${x2(div(v.tkR,v.tkS))}</td></tr>`; }).join('');
+  document.getElementById('tTk').innerHTML = `
+    <thead><tr><th></th><th class="grp tk" colspan="2">ยอดขายจริง</th><th class="grp tk" colspan="2">ยอดจาก GMV Max</th><th class="grp tk" colspan="3">ค่าโฆษณา</th><th class="grp" colspan="2">ผลลัพธ์</th></tr>
+      <tr><th>วันที่</th><th>ยอดขาย</th><th>ออเดอร์</th><th>Product</th><th>LIVE</th><th>Product</th><th>LIVE</th><th>รวม</th><th>÷ยอดจริง</th><th>ROAS จริง</th></tr></thead>
+    <tbody>${rows}<tr class="tot"><td>รวม ${r.n} วัน</td><td>${int(t.real)}</td><td>${int(t.orders)}</td><td>${int(t.t.product.g)}</td><td>${int(t.t.live.g)}</td>
+      <td>${int(t.t.product.s)}</td><td>${int(t.t.live.s)}</td><td>${int(t.spend)}</td><td>${pct(div(t.spend,t.real))}</td><td>${x2(div(t.real,t.spend))}</td></tr></tbody>`;
+}
+function renderTkChart(){ segOn('segTk', st.tkMetric);
+  platformChart('tk','cTk','lgTk', st.tkMetric, C.tk, v=>v.tkR, v=>v.tkG, v=>v.tkS, 'ยอดจาก GMV Max'); }
+function renderTkCamp(){
+  campMonthSelect('tkMonth','tkMonth', ()=>{ st.tkAll=false; renderTkCamp(); });
+  segOn('segTkCamp', st.tkCamp);
+  const M=PERIODS.months[st.tkMonth], tab=st.tkCamp; let head, rows, tot='', list, empty='ไม่มีข้อมูลแคมเปญในเดือนนี้';
+  if (tab==='biz'){
+    const src=M.tiktok.bizAds; list=((src&&src.campaigns)||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
+    head='<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>Impressions</th><th>คลิก</th><th>CTR</th><th>CPM</th></tr>';
+    rows=list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${int(c.imp)}</td><td>${int(c.clicks)}</td><td>${c.imp?(c.clicks/c.imp*100).toFixed(2)+'%':'–'}</td><td>${c.imp?nf2.format(c.spend/c.imp*1000):'–'}</td></tr>`);
+    const T=src&&src.total; if (T) tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(T.spend)}</td><td>${int(T.imp)}</td><td>${int(T.clicks)}</td><td>${T.imp?(T.clicks/T.imp*100).toFixed(2)+'%':'–'}</td><td>${T.imp?nf2.format(T.spend/T.imp*1000):'–'}</td></tr>`;
+  } else {
+    const src = tab==='gmax' ? M.tiktok.gmvMax : M.tiktok.gmvLive;
+    list=((src&&(tab==='gmax'?src.campaigns:src.sessions))||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
+    head='<tr><th>'+(tab==='gmax'?'แคมเปญ':'ไลฟ์ / แคมเปญ')+'</th><th>ค่าโฆษณา</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th></tr>';
+    rows=list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${baht(c.revenue)}</td><td>${x2(c.roi||div(c.revenue,c.spend))}</td><td>${int(c.orders)}</td><td>${c.orders?nf2.format(c.cpa||c.spend/c.orders):'–'}</td></tr>`);
+    const T=src&&src.total; if (T) tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(T.spend)}</td><td>${baht(T.revenue)}</td><td>${x2(div(T.revenue,T.spend))}</td><td>${int(T.orders)}</td><td>${T.orders?nf2.format(T.spend/T.orders):'–'}</td></tr>`;
+    if (tab==='gmax' && !list.length && T && T.spend) empty='เดือนนี้ไฟล์ export มีเฉพาะยอดรวม ไม่มีรายแคมเปญ';
+  }
+  campTable('tTkCamp','tkMore','tkAll', head, rows, tot, empty);
 }
 
 /* ---------- boot ---------- */
-async function loadJSON(f){ const res = await fetch(f+'?t='+Date.now(), {cache:'no-store'}); if(!res.ok) throw new Error(f+' '+res.status); return res.json(); }
+async function loadJSON(f){ const res=await fetch(f+'?t='+Date.now(), {cache:'no-store'}); if(!res.ok) throw new Error(f+' '+res.status); return res.json(); }
 Promise.all([loadJSON('ads_daily.json'), loadJSON('ads_periods.json')]).then(([d,p])=>{
   DAILY=d; PERIODS=p; DAYS=Object.keys(d.days).sort(); MIN=DAYS[0]; MAX=DAYS[DAYS.length-1];
-  const cv = d.coverage || {shopee:MAX, tiktok:MAX};
+  const cv=d.coverage||{shopee:MAX,tiktok:MAX};
   document.getElementById('asof').textContent = `ข้อมูลรายวัน ${thDate(MIN)} – ${thDate(MAX,true)} · Shopee ถึง ${thDate(cv.shopee)} · TikTok ถึง ${thDate(cv.tiktok)}`;
   ['dFrom','dTo'].forEach(id=>{ const el=document.getElementById(id); el.min=MIN; el.max=MAX; });
-  buildSkeleton(); renderCampMonthSelect(); renderMonChart(); renderCamp();
-  document.getElementById('srcText').textContent = (d.source_note||'') + '\n' + (p.note||'');
+  buildSkeleton();
+  document.getElementById('srcText').textContent=(d.source_note||'')+'\n'+(p.note||'');
+  document.querySelectorAll('#tabs .tab').forEach(t=>t.onclick=()=>setView(t.dataset.v));
+  window.addEventListener('hashchange', ()=>setView(location.hash.slice(1), true));
   document.querySelectorAll('#presets .chip').forEach(c=>c.onclick=()=>{ const [a,b]=presetRange(c.dataset.p); setRange(a,b,c.dataset.p); });
   const onDate=()=>{ const a=document.getElementById('dFrom').value, b=document.getElementById('dTo').value; if(a&&b) setRange(a,b,''); };
   document.getElementById('dFrom').onchange=onDate; document.getElementById('dTo').onchange=onDate;
-  let saved=null; try{ saved=JSON.parse(localStorage.getItem('wibwub_ads_range')||'null'); }catch(e){}
-  if (saved && saved.p){ const [a,b]=presetRange(saved.p); setRange(a,b,saved.p); }
-  else if (saved && saved.a && saved.b && saved.a>=MIN && saved.b<=MAX){ setRange(saved.a,saved.b,''); }
-  else { const [a,b]=presetRange('thisMonth'); setRange(a,b,'thisMonth'); }
+  let saved=null; try{ saved=JSON.parse(localStorage.getItem('wibwub_ads_state')||'null'); }catch(e){}
+  const hv=location.hash.slice(1);
+  st.view = VIEWS.includes(hv) ? hv : (saved&&VIEWS.includes(saved.v) ? saved.v : 'overview');
+  let a,b,pr;
+  if (saved && saved.p){ [a,b]=presetRange(saved.p); pr=saved.p; }
+  else if (saved && saved.a && saved.b && saved.a>=MIN && saved.b<=MAX){ a=saved.a; b=saved.b; pr=''; }
+  else { [a,b]=presetRange('thisMonth'); pr='thisMonth'; }
+  st.from=a; st.to=b; st.preset=pr;
+  document.getElementById('dFrom').value=a; document.getElementById('dTo').value=b;
+  document.querySelectorAll('#presets .chip').forEach(c=>c.classList.toggle('on', c.dataset.p===pr));
+  recompute(); setView(st.view, true);
 }).catch(e=>{
   document.getElementById('main').innerHTML = `<div class="err">โหลดข้อมูลไม่สำเร็จ (${esc(e.message)})<br><span class="muted">หน้านี้อ่านข้อมูลจาก ads_daily.json และ ads_periods.json ในโฟลเดอร์เดียวกัน — ถ้าเปิดไฟล์จากเครื่องโดยตรง (file://) เบราว์เซอร์จะไม่ยอมโหลด ให้เปิดผ่าน GitHub Pages</span></div>`;
 });
