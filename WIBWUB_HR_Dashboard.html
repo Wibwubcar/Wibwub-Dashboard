@@ -662,14 +662,21 @@ async function discordAttendanceDocs(date){
   else if(S.ARCHIVE[ym]){inTxt=S.ARCHIVE[ym].in;outTxt=S.ARCHIVE[ym].out;}
   else return [];
   const NICK={};S.EMP.forEach(e=>{const E=Array.isArray(e)?{real:e[0],dept:e[1],nick:e[2]}:e;(E.nick||[]).forEach(n=>NICK[String(n).trim().toLowerCase()]=E);});
+  // ชื่อพิมพ์ผิด (เช่น Tuu → Tuy): ใช้กฎเดียวกับ WIBWUB_HR_Attendance.html findEmp() — ต่างกัน 1 ตัวอักษรและตรงกับคนเดียว
+  const lev=(a,b)=>{const m=a.length,n=b.length;let p=Array.from({length:n+1},(_,j)=>j),pp=p;for(let i=1;i<=m;i++){const c=[i];for(let j=1;j<=n;j++){c[j]=Math.min(p[j]+1,c[j-1]+1,p[j-1]+(a[i-1]===b[j-1]?0:1));if(i>1&&j>1&&a[i-1]===b[j-2]&&a[i-2]===b[j-1])c[j]=Math.min(c[j],pp[j-2]+1)}pp=p;p=c}return p[n]};
+  const FZ={};const findE=raw=>{const n=String(raw).trim().toLowerCase();if(NICK[n])return NICK[n];if(n in FZ)return FZ[n];let best=[];
+    if([...n].length>=3)for(const k in NICK){if([...k].length<3)continue;if(lev([...n],[...k])===1)best.push(k)}
+    const same=best.filter(k=>[...k].length===[...n].length),pool=same.length?same:best;let people=[...new Set(pool.map(k=>NICK[k]))];
+    if(!people.length){const ends=Object.keys(NICK).filter(k=>[...k].length>=6&&n.endsWith(k));people=[...new Set(ends.map(k=>NICK[k]))]}
+    return FZ[n]=people.length===1?people[0]:null;};
   const rows=txt=>(txt||'').split('\n').filter(l=>l.trim()).map(l=>{const[dd,t,n,loc]=l.split('|');return{day:+dd,time:t,nick:(n||'').trim(),loc:loc||''};}).filter(r=>r.day===day);
   const toMin=t=>{const[h,m]=t.split(':').map(Number);return h*60+m;};
   const LOC={W:'Warehouse',WFH:'WFH',NEWGARAGE:'New Garage',GARAGE:'Garage'};
   const by={};
-  rows(inTxt).forEach(r=>{const e=NICK[r.nick.toLowerCase()];const key=e?e.real:r.nick;
+  rows(inTxt).forEach(r=>{const e=findE(r.nick);const key=e?e.real:r.nick;
     const o=by[key]||(by[key]={name:key,dept:e?e.dept:'—',in:null,out:null,loc:''});
     if(!o.in||toMin(r.time)<toMin(o.in)){o.in=r.time;o.loc=LOC[r.loc]||r.loc;}});
-  rows(outTxt).forEach(r=>{const e=NICK[r.nick.toLowerCase()];const key=e?e.real:r.nick;
+  rows(outTxt).forEach(r=>{const e=findE(r.nick);const key=e?e.real:r.nick;
     const o=by[key];if(!o||!o.in)return;
     if(toMin(r.time)>=toMin(o.in)&&(!o.out||toMin(r.time)>toMin(o.out)))o.out=r.time;});
   const mk=(t)=>t?new Date(`${date}T${t}:00+07:00`):null;
