@@ -1,5 +1,5 @@
 {
- "note": "ดึงจาก DATA_PERIODS/TK_BREAKDOWN ใน WIBWUB_Ads_Dashboard.html (ไฟล์ export รายเดือน) 19 ต.ค. 2569",
+ "note": "ดึงจาก DATA_PERIODS/TK_BREAKDOWN ใน WIBWUB_Ads_Dashboard.html (ไฟล์ export รายเดือน) — sync โดย scripts/ads/sync_periods.js",
  "months": {
   "jan": {
    "cover": null,
