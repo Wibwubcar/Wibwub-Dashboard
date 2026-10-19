@@ -1443,8 +1443,11 @@ const PROD=[],PROD_WARN=[];
     if(!/\n/.test(body))body=body.replace(/(=\s*,?\s*[\d,]+\s*[A-Za-z]?(?:\s*\([^)]*\))?)\s+(?=[^\d\s(=])/g,"$1\n").replace(/(\d{1,2}\/\d{1,2}\/\d{2,4})\s+/,"$1\n");
     const lines=body.split(/\n/);let date=null,dateLine="";
     for(const l of lines){const d=l.match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);if(d){date=thBE(d[1],d[2],d[3]);dateLine=l.trim();break}}
+    // พิมพ์ปีผิด (เช่น 19/10/68 แทน 19/10/69): ถ้าวันที่ห่างจากวันส่งเกิน 200 วัน แต่วัน/เดือนใกล้วันส่ง (≤31 วัน) ให้ใช้ปีของวันส่ง
+    let yrFix="";if(date){const gap=Math.abs(Date.parse(posted)-Date.parse(date))/864e5;if(gap>200){let best=null;for(const y of [+posted.slice(0,4),+posted.slice(0,4)-1]){const c=`${y}${date.slice(4)}`,g=Math.abs(Date.parse(posted)-Date.parse(c))/864e5;if(!isNaN(g)&&g<=31&&(!best||g<best.g))best={c,g}}if(best){yrFix=`พิมพ์ปีผิด "${dateLine}" → ใช้วันที่ ${+best.c.slice(8)}/${+best.c.slice(5,7)}/${+best.c.slice(0,4)+543}`;date=best.c}}}
     const items=lines.map(prodLine).filter(Boolean);
     const rep={id:m.id,ts:m.ts,posted,by:m.by,emp,real:emp?emp.real:null,dept:emp?emp.dept:"",date:date||posted,stated:!!date,text,items,flags:[]};
+    if(yrFix)rep.flags.push(yrFix);
     if(!items.length){rep.kind="ข้อความทั่วไป";PROD.push(rep);return}
     const sig=items.map(i=>[i.product,i.size,i.empty,i.qty].join("~")).sort().join("|");
     const lag=(Date.parse(posted)-Date.parse(rep.date))/864e5;
