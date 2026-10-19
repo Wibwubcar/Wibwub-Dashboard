@@ -1,0 +1,2025 @@
+{
+ "source_note": "ดึงจาก Shopee Business Insights / Shopee Ads (get_time_graph) / TikTok Compass / TikTok GMV Max overview — 19 ต.ค. 2569 · ก.ย. 2569 ดึงเพิ่ม 19 ต.ค. 2569 (replay request จริง, ตรวจ 1 ต.ค. ตรงทุกชุด)",
+ "days": {
+  "2026-09-01": {
+   "sh_real": {
+    "gmv": 250021,
+    "orders": 401
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 235489,
+     "gmv_direct": 200976,
+     "spend": 31113,
+     "orders": 516
+    },
+    "search": {
+     "gmv_broad": 17459,
+     "gmv_direct": 14754,
+     "spend": 2728,
+     "orders": 49
+    },
+    "live": {
+     "gmv_broad": 6077,
+     "gmv_direct": 6077,
+     "spend": 352,
+     "orders": 8
+    }
+   },
+   "tk_real": {
+    "gmv": 80405.66,
+    "orders": 347
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 64497.85,
+     "spend": 17786.86,
+     "orders": 286
+    },
+    "live": {
+     "gmv": 489.44,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-09-02": {
+   "sh_real": {
+    "gmv": 195365,
+    "orders": 361
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 181288,
+     "gmv_direct": 157034,
+     "spend": 26518,
+     "orders": 453
+    },
+    "search": {
+     "gmv_broad": 12519,
+     "gmv_direct": 10552,
+     "spend": 3256,
+     "orders": 40
+    },
+    "live": {
+     "gmv_broad": 1348,
+     "gmv_direct": 1348,
+     "spend": 63,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 92269.35,
+    "orders": 451
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 89001.19,
+     "spend": 24876.2,
+     "orders": 446
+    },
+    "live": {
+     "gmv": 290.0,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-09-03": {
+   "sh_real": {
+    "gmv": 198640,
+    "orders": 375
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 195717,
+     "gmv_direct": 172849,
+     "spend": 27606,
+     "orders": 475
+    },
+    "search": {
+     "gmv_broad": 11807,
+     "gmv_direct": 11017,
+     "spend": 3075,
+     "orders": 37
+    },
+    "live": {
+     "gmv_broad": 890,
+     "gmv_direct": 890,
+     "spend": 75,
+     "orders": 3
+    }
+   },
+   "tk_real": {
+    "gmv": 104316.81,
+    "orders": 426
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 95661.55,
+     "spend": 23646.63,
+     "orders": 432
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-04": {
+   "sh_real": {
+    "gmv": 215939,
+    "orders": 422
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 213475,
+     "gmv_direct": 180181,
+     "spend": 30352,
+     "orders": 506
+    },
+    "search": {
+     "gmv_broad": 14768,
+     "gmv_direct": 12667,
+     "spend": 3087,
+     "orders": 51
+    },
+    "live": {
+     "gmv_broad": 2025,
+     "gmv_direct": 2025,
+     "spend": 147,
+     "orders": 7
+    }
+   },
+   "tk_real": {
+    "gmv": 82744.25,
+    "orders": 363
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 83387.96,
+     "spend": 22373.82,
+     "orders": 361
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-05": {
+   "sh_real": {
+    "gmv": 174086,
+    "orders": 325
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 157859,
+     "gmv_direct": 134301,
+     "spend": 22403,
+     "orders": 386
+    },
+    "search": {
+     "gmv_broad": 17579,
+     "gmv_direct": 16452,
+     "spend": 3232,
+     "orders": 35
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 108976.26,
+    "orders": 462
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 124694.38,
+     "spend": 30969.47,
+     "orders": 499
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-06": {
+   "sh_real": {
+    "gmv": 178805,
+    "orders": 347
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 174938,
+     "gmv_direct": 149417,
+     "spend": 25050,
+     "orders": 441
+    },
+    "search": {
+     "gmv_broad": 12116,
+     "gmv_direct": 10267,
+     "spend": 3467,
+     "orders": 34
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 118710.79,
+    "orders": 521
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 114840.92,
+     "spend": 30712.26,
+     "orders": 490
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-07": {
+   "sh_real": {
+    "gmv": 166435,
+    "orders": 321
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 164288,
+     "gmv_direct": 132402,
+     "spend": 23556,
+     "orders": 417
+    },
+    "search": {
+     "gmv_broad": 10081,
+     "gmv_direct": 7308,
+     "spend": 2781,
+     "orders": 29
+    },
+    "live": {
+     "gmv_broad": 3960,
+     "gmv_direct": 3960,
+     "spend": 251,
+     "orders": 11
+    }
+   },
+   "tk_real": {
+    "gmv": 111729.87,
+    "orders": 502
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 116542.1,
+     "spend": 31253.67,
+     "orders": 495
+    },
+    "live": {
+     "gmv": 415.65,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-09-08": {
+   "sh_real": {
+    "gmv": 231890,
+    "orders": 423
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 226483,
+     "gmv_direct": 196892,
+     "spend": 41861,
+     "orders": 563
+    },
+    "search": {
+     "gmv_broad": 18283,
+     "gmv_direct": 13518,
+     "spend": 3818,
+     "orders": 48
+    },
+    "live": {
+     "gmv_broad": 2938,
+     "gmv_direct": 2938,
+     "spend": 106,
+     "orders": 9
+    }
+   },
+   "tk_real": {
+    "gmv": 119717.55,
+    "orders": 467
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 117173.01,
+     "spend": 29072.98,
+     "orders": 430
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-09": {
+   "sh_real": {
+    "gmv": 884889,
+    "orders": 1324
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 751323,
+     "gmv_direct": 551509,
+     "spend": 128308,
+     "orders": 1670
+    },
+    "search": {
+     "gmv_broad": 99104,
+     "gmv_direct": 84252,
+     "spend": 8850,
+     "orders": 209
+    },
+    "live": {
+     "gmv_broad": 5661,
+     "gmv_direct": 5661,
+     "spend": 200,
+     "orders": 12
+    }
+   },
+   "tk_real": {
+    "gmv": 202926.55,
+    "orders": 683
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 173167.56,
+     "spend": 42508.57,
+     "orders": 642
+    },
+    "live": {
+     "gmv": 64083.93,
+     "spend": 825.9,
+     "orders": 170
+    }
+   }
+  },
+  "2026-09-10": {
+   "sh_real": {
+    "gmv": 280050,
+    "orders": 551
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 247950,
+     "gmv_direct": 199190,
+     "spend": 46620,
+     "orders": 649
+    },
+    "search": {
+     "gmv_broad": 16187,
+     "gmv_direct": 14047,
+     "spend": 6306,
+     "orders": 48
+    },
+    "live": {
+     "gmv_broad": 6195,
+     "gmv_direct": 6195,
+     "spend": 224,
+     "orders": 12
+    }
+   },
+   "tk_real": {
+    "gmv": 103940.21,
+    "orders": 447
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 102696.42,
+     "spend": 28271.51,
+     "orders": 441
+    },
+    "live": {
+     "gmv": 1899.4,
+     "spend": 13.45,
+     "orders": 7
+    }
+   }
+  },
+  "2026-09-11": {
+   "sh_real": {
+    "gmv": 237958,
+    "orders": 393
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 225177,
+     "gmv_direct": 176511,
+     "spend": 42223,
+     "orders": 529
+    },
+    "search": {
+     "gmv_broad": 15850,
+     "gmv_direct": 13761,
+     "spend": 3981,
+     "orders": 37
+    },
+    "live": {
+     "gmv_broad": 1651,
+     "gmv_direct": 1651,
+     "spend": 106,
+     "orders": 5
+    }
+   },
+   "tk_real": {
+    "gmv": 85584.88,
+    "orders": 382
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 81314.39,
+     "spend": 22953.01,
+     "orders": 364
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-12": {
+   "sh_real": {
+    "gmv": 139966,
+    "orders": 278
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 141012,
+     "gmv_direct": 126045,
+     "spend": 21894,
+     "orders": 363
+    },
+    "search": {
+     "gmv_broad": 5687,
+     "gmv_direct": 5687,
+     "spend": 2679,
+     "orders": 18
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 101780.74,
+    "orders": 459
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 100944.96,
+     "spend": 27711.74,
+     "orders": 467
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-13": {
+   "sh_real": {
+    "gmv": 172223,
+    "orders": 336
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 166920,
+     "gmv_direct": 140097,
+     "spend": 24638,
+     "orders": 433
+    },
+    "search": {
+     "gmv_broad": 9459,
+     "gmv_direct": 8289,
+     "spend": 3023,
+     "orders": 34
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 111266.64,
+    "orders": 531
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 108393.45,
+     "spend": 29756.45,
+     "orders": 531
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-14": {
+   "sh_real": {
+    "gmv": 178813,
+    "orders": 306
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 168632,
+     "gmv_direct": 140923,
+     "spend": 23921,
+     "orders": 428
+    },
+    "search": {
+     "gmv_broad": 11494,
+     "gmv_direct": 8983,
+     "spend": 3105,
+     "orders": 31
+    },
+    "live": {
+     "gmv_broad": 5241,
+     "gmv_direct": 5241,
+     "spend": 251,
+     "orders": 7
+    }
+   },
+   "tk_real": {
+    "gmv": 116304.64,
+    "orders": 484
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 107413.23,
+     "spend": 28840.0,
+     "orders": 484
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-15": {
+   "sh_real": {
+    "gmv": 349504,
+    "orders": 599
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 341806,
+     "gmv_direct": 280575,
+     "spend": 59631,
+     "orders": 776
+    },
+    "search": {
+     "gmv_broad": 18420,
+     "gmv_direct": 13642,
+     "spend": 3722,
+     "orders": 51
+    },
+    "live": {
+     "gmv_broad": 7010,
+     "gmv_direct": 7010,
+     "spend": 200,
+     "orders": 14
+    }
+   },
+   "tk_real": {
+    "gmv": 110734.1,
+    "orders": 580
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 95906.78,
+     "spend": 27318.16,
+     "orders": 557
+    },
+    "live": {
+     "gmv": 15874.09,
+     "spend": 330.0,
+     "orders": 40
+    }
+   }
+  },
+  "2026-09-16": {
+   "sh_real": {
+    "gmv": 183701,
+    "orders": 314
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 171770,
+     "gmv_direct": 131640,
+     "spend": 26361,
+     "orders": 393
+    },
+    "search": {
+     "gmv_broad": 10764,
+     "gmv_direct": 10764,
+     "spend": 2637,
+     "orders": 28
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 106504.74,
+    "orders": 624
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 112425.65,
+     "spend": 32334.65,
+     "orders": 636
+    },
+    "live": {
+     "gmv": 89.0,
+     "spend": 3.66,
+     "orders": 1
+    }
+   }
+  },
+  "2026-09-17": {
+   "sh_real": {
+    "gmv": 184768,
+    "orders": 345
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 171001,
+     "gmv_direct": 147950,
+     "spend": 27192,
+     "orders": 417
+    },
+    "search": {
+     "gmv_broad": 20574,
+     "gmv_direct": 20259,
+     "spend": 3311,
+     "orders": 50
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 102035.71,
+    "orders": 551
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 97721.74,
+     "spend": 28008.72,
+     "orders": 530
+    },
+    "live": {
+     "gmv": 3422.24,
+     "spend": 330.0,
+     "orders": 10
+    }
+   }
+  },
+  "2026-09-18": {
+   "sh_real": {
+    "gmv": 161487,
+    "orders": 294
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 162742,
+     "gmv_direct": 135404,
+     "spend": 24060,
+     "orders": 390
+    },
+    "search": {
+     "gmv_broad": 9194,
+     "gmv_direct": 7724,
+     "spend": 2272,
+     "orders": 26
+    },
+    "live": {
+     "gmv_broad": 3300,
+     "gmv_direct": 3300,
+     "spend": 200,
+     "orders": 9
+    }
+   },
+   "tk_real": {
+    "gmv": 73140.04,
+    "orders": 404
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 68349.33,
+     "spend": 19660.18,
+     "orders": 394
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-19": {
+   "sh_real": {
+    "gmv": 186498,
+    "orders": 328
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 184552,
+     "gmv_direct": 146103,
+     "spend": 28592,
+     "orders": 422
+    },
+    "search": {
+     "gmv_broad": 13265,
+     "gmv_direct": 9647,
+     "spend": 2717,
+     "orders": 33
+    },
+    "live": {
+     "gmv_broad": 676,
+     "gmv_direct": 676,
+     "spend": 0,
+     "orders": 1
+    }
+   },
+   "tk_real": {
+    "gmv": 90521.72,
+    "orders": 507
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 97108.84,
+     "spend": 28413.82,
+     "orders": 544
+    },
+    "live": {
+     "gmv": 253.0,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-09-20": {
+   "sh_real": {
+    "gmv": 231380,
+    "orders": 413
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 226523,
+     "gmv_direct": 189414,
+     "spend": 32718,
+     "orders": 546
+    },
+    "search": {
+     "gmv_broad": 17344,
+     "gmv_direct": 15174,
+     "spend": 3050,
+     "orders": 40
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 130394.95,
+    "orders": 635
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 121759.65,
+     "spend": 34166.12,
+     "orders": 633
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-21": {
+   "sh_real": {
+    "gmv": 174126,
+    "orders": 351
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 159011,
+     "gmv_direct": 137268,
+     "spend": 23760,
+     "orders": 418
+    },
+    "search": {
+     "gmv_broad": 12341,
+     "gmv_direct": 9212,
+     "spend": 2780,
+     "orders": 30
+    },
+    "live": {
+     "gmv_broad": 2104,
+     "gmv_direct": 2104,
+     "spend": 106,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 110228.45,
+    "orders": 537
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 95019.69,
+     "spend": 28223.93,
+     "orders": 508
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-22": {
+   "sh_real": {
+    "gmv": 211361,
+    "orders": 392
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 209289,
+     "gmv_direct": 175719,
+     "spend": 30341,
+     "orders": 500
+    },
+    "search": {
+     "gmv_broad": 17243,
+     "gmv_direct": 16116,
+     "spend": 3633,
+     "orders": 43
+    },
+    "live": {
+     "gmv_broad": 3847,
+     "gmv_direct": 3847,
+     "spend": 200,
+     "orders": 8
+    }
+   },
+   "tk_real": {
+    "gmv": 93836.48,
+    "orders": 489
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 83365.39,
+     "spend": 24325.02,
+     "orders": 461
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-23": {
+   "sh_real": {
+    "gmv": 167676,
+    "orders": 315
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 166296,
+     "gmv_direct": 148053,
+     "spend": 26365,
+     "orders": 416
+    },
+    "search": {
+     "gmv_broad": 9699,
+     "gmv_direct": 7891,
+     "spend": 3255,
+     "orders": 25
+    },
+    "live": {
+     "gmv_broad": 1717,
+     "gmv_direct": 1717,
+     "spend": 150,
+     "orders": 5
+    }
+   },
+   "tk_real": {
+    "gmv": 114737.8,
+    "orders": 553
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 101429.91,
+     "spend": 28499.83,
+     "orders": 506
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-24": {
+   "sh_real": {
+    "gmv": 145211,
+    "orders": 285
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 137308,
+     "gmv_direct": 123574,
+     "spend": 21131,
+     "orders": 339
+    },
+    "search": {
+     "gmv_broad": 9391,
+     "gmv_direct": 9021,
+     "spend": 2945,
+     "orders": 29
+    },
+    "live": {
+     "gmv_broad": 2108,
+     "gmv_direct": 2108,
+     "spend": 119,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 89667.84,
+    "orders": 456
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 82527.23,
+     "spend": 24930.75,
+     "orders": 439
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-25": {
+   "sh_real": {
+    "gmv": 359640,
+    "orders": 617
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 345102,
+     "gmv_direct": 279804,
+     "spend": 61233,
+     "orders": 804
+    },
+    "search": {
+     "gmv_broad": 30086,
+     "gmv_direct": 15730,
+     "spend": 3758,
+     "orders": 63
+    },
+    "live": {
+     "gmv_broad": 2835,
+     "gmv_direct": 2835,
+     "spend": 200,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 90461.23,
+    "orders": 407
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 84718.56,
+     "spend": 24378.84,
+     "orders": 374
+    },
+    "live": {
+     "gmv": 5011.53,
+     "spend": 300.0,
+     "orders": 17
+    }
+   }
+  },
+  "2026-09-26": {
+   "sh_real": {
+    "gmv": 171932,
+    "orders": 309
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 164870,
+     "gmv_direct": 143801,
+     "spend": 37925,
+     "orders": 402
+    },
+    "search": {
+     "gmv_broad": 10632,
+     "gmv_direct": 7345,
+     "spend": 2067,
+     "orders": 25
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 70278.82,
+    "orders": 371
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 71127.69,
+     "spend": 20904.73,
+     "orders": 368
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-27": {
+   "sh_real": {
+    "gmv": 185196,
+    "orders": 329
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 187362,
+     "gmv_direct": 150415,
+     "spend": 38852,
+     "orders": 462
+    },
+    "search": {
+     "gmv_broad": 13918,
+     "gmv_direct": 13525,
+     "spend": 3266,
+     "orders": 34
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 114593.64,
+    "orders": 592
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 108659.28,
+     "spend": 29892.17,
+     "orders": 553
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-28": {
+   "sh_real": {
+    "gmv": 176993,
+    "orders": 303
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 157403,
+     "gmv_direct": 135516,
+     "spend": 33507,
+     "orders": 367
+    },
+    "search": {
+     "gmv_broad": 15800,
+     "gmv_direct": 15040,
+     "spend": 3194,
+     "orders": 44
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 102978.38,
+    "orders": 497
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 95955.09,
+     "spend": 27955.21,
+     "orders": 486
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-29": {
+   "sh_real": {
+    "gmv": 191348,
+    "orders": 342
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 175584,
+     "gmv_direct": 134089,
+     "spend": 36218,
+     "orders": 409
+    },
+    "search": {
+     "gmv_broad": 19699,
+     "gmv_direct": 15525,
+     "spend": 3913,
+     "orders": 52
+    },
+    "live": {
+     "gmv_broad": 95,
+     "gmv_direct": 95,
+     "spend": 0,
+     "orders": 1
+    }
+   },
+   "tk_real": {
+    "gmv": 152979.04,
+    "orders": 725
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 161024.61,
+     "spend": 47696.26,
+     "orders": 735
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-09-30": {
+   "sh_real": {
+    "gmv": 184918,
+    "orders": 338
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 171360,
+     "gmv_direct": 142725,
+     "spend": 35796,
+     "orders": 401
+    },
+    "search": {
+     "gmv_broad": 13201,
+     "gmv_direct": 11804,
+     "spend": 3221,
+     "orders": 34
+    },
+    "live": {
+     "gmv_broad": 4320,
+     "gmv_direct": 4320,
+     "spend": 324,
+     "orders": 10
+    }
+   },
+   "tk_real": {
+    "gmv": 151693.15,
+    "orders": 710
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 163860.07,
+     "spend": 46573.74,
+     "orders": 718
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-01": {
+   "sh_real": {
+    "gmv": 200516,
+    "orders": 344
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 181217,
+     "gmv_direct": 160382,
+     "spend": 27945,
+     "orders": 411
+    },
+    "search": {
+     "gmv_broad": 14393,
+     "gmv_direct": 12497,
+     "spend": 3268,
+     "orders": 49
+    },
+    "live": {
+     "gmv_broad": 7820,
+     "gmv_direct": 7820,
+     "spend": 90,
+     "orders": 15
+    }
+   },
+   "tk_real": {
+    "gmv": 143576.29,
+    "orders": 664
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 136504.21,
+     "spend": 39091.82,
+     "orders": 647
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-02": {
+   "sh_real": {
+    "gmv": 163991,
+    "orders": 292
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 158123,
+     "gmv_direct": 134622,
+     "spend": 23696,
+     "orders": 377
+    },
+    "search": {
+     "gmv_broad": 11397,
+     "gmv_direct": 10560,
+     "spend": 3434,
+     "orders": 30
+    },
+    "live": {
+     "gmv_broad": 583,
+     "gmv_direct": 583,
+     "spend": 66,
+     "orders": 3
+    }
+   },
+   "tk_real": {
+    "gmv": 159147.61,
+    "orders": 765
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 157005.1,
+     "spend": 43547.34,
+     "orders": 763
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-03": {
+   "sh_real": {
+    "gmv": 208280,
+    "orders": 379
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 184545,
+     "gmv_direct": 156405,
+     "spend": 28309,
+     "orders": 408
+    },
+    "search": {
+     "gmv_broad": 17867,
+     "gmv_direct": 16823,
+     "spend": 4161,
+     "orders": 47
+    },
+    "live": {
+     "gmv_broad": 1185,
+     "gmv_direct": 1185,
+     "spend": 0,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 184758.3,
+    "orders": 853
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 190297.88,
+     "spend": 52864.83,
+     "orders": 863
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-04": {
+   "sh_real": {
+    "gmv": 215696,
+    "orders": 391
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 203603,
+     "gmv_direct": 178270,
+     "spend": 30746,
+     "orders": 466
+    },
+    "search": {
+     "gmv_broad": 16337,
+     "gmv_direct": 15757,
+     "spend": 4130,
+     "orders": 41
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 191870.92,
+    "orders": 977
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 211121.82,
+     "spend": 56966.6,
+     "orders": 1042
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-05": {
+   "sh_real": {
+    "gmv": 212442,
+    "orders": 379
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 208491,
+     "gmv_direct": 180136,
+     "spend": 32040,
+     "orders": 491
+    },
+    "search": {
+     "gmv_broad": 10280,
+     "gmv_direct": 9054,
+     "spend": 3415,
+     "orders": 30
+    },
+    "live": {
+     "gmv_broad": 3894,
+     "gmv_direct": 3894,
+     "spend": 200,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 161320.34,
+    "orders": 767
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 158440.9,
+     "spend": 44030.01,
+     "orders": 754
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-06": {
+   "sh_real": {
+    "gmv": 214627,
+    "orders": 373
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 210832,
+     "gmv_direct": 182271,
+     "spend": 32296,
+     "orders": 464
+    },
+    "search": {
+     "gmv_broad": 16286,
+     "gmv_direct": 14774,
+     "spend": 3807,
+     "orders": 35
+    },
+    "live": {
+     "gmv_broad": 2070,
+     "gmv_direct": 2070,
+     "spend": 117,
+     "orders": 5
+    }
+   },
+   "tk_real": {
+    "gmv": 150852.55,
+    "orders": 770
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 160269.68,
+     "spend": 45166.31,
+     "orders": 775
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-07": {
+   "sh_real": {
+    "gmv": 184360,
+    "orders": 315
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 182461,
+     "gmv_direct": 156845,
+     "spend": 28538,
+     "orders": 423
+    },
+    "search": {
+     "gmv_broad": 17202,
+     "gmv_direct": 14776,
+     "spend": 2867,
+     "orders": 33
+    },
+    "live": {
+     "gmv_broad": 243,
+     "gmv_direct": 243,
+     "spend": 0,
+     "orders": 1
+    }
+   },
+   "tk_real": {
+    "gmv": 135861.12,
+    "orders": 598
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 157645.44,
+     "spend": 41934.1,
+     "orders": 633
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-08": {
+   "sh_real": {
+    "gmv": 168035,
+    "orders": 319
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 178089,
+     "gmv_direct": 156388,
+     "spend": 26986,
+     "orders": 421
+    },
+    "search": {
+     "gmv_broad": 7072,
+     "gmv_direct": 6150,
+     "spend": 2950,
+     "orders": 21
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 134219.46,
+    "orders": 620
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 149943.58,
+     "spend": 40930.9,
+     "orders": 627
+    },
+    "live": {
+     "gmv": 1048.0,
+     "spend": 0.0,
+     "orders": 2
+    }
+   }
+  },
+  "2026-10-09": {
+   "sh_real": {
+    "gmv": 227658,
+    "orders": 379
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 221584,
+     "gmv_direct": 177502,
+     "spend": 43694,
+     "orders": 518
+    },
+    "search": {
+     "gmv_broad": 8719,
+     "gmv_direct": 5576,
+     "spend": 2985,
+     "orders": 22
+    },
+    "live": {
+     "gmv_broad": 1515,
+     "gmv_direct": 1515,
+     "spend": 133,
+     "orders": 4
+    }
+   },
+   "tk_real": {
+    "gmv": 120857.27,
+    "orders": 515
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 127719.76,
+     "spend": 34040.1,
+     "orders": 527
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-10": {
+   "sh_real": {
+    "gmv": 759570,
+    "orders": 1162
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 658980,
+     "gmv_direct": 499894,
+     "spend": 118555,
+     "orders": 1436
+    },
+    "search": {
+     "gmv_broad": 68250,
+     "gmv_direct": 61132,
+     "spend": 10018,
+     "orders": 155
+    },
+    "live": {
+     "gmv_broad": 2358,
+     "gmv_direct": 2358,
+     "spend": 200,
+     "orders": 10
+    }
+   },
+   "tk_real": {
+    "gmv": 192784.71,
+    "orders": 846
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 195012.31,
+     "spend": 49980.42,
+     "orders": 812
+    },
+    "live": {
+     "gmv": 39071.11,
+     "spend": 504.42,
+     "orders": 111
+    }
+   }
+  },
+  "2026-10-11": {
+   "sh_real": {
+    "gmv": 310960,
+    "orders": 496
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 272374,
+     "gmv_direct": 230275,
+     "spend": 54731,
+     "orders": 599
+    },
+    "search": {
+     "gmv_broad": 23714,
+     "gmv_direct": 19628,
+     "spend": 6063,
+     "orders": 63
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 171324.76,
+    "orders": 882
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 187368.6,
+     "spend": 49447.39,
+     "orders": 904
+    },
+    "live": {
+     "gmv": 938.0,
+     "spend": 0.0,
+     "orders": 3
+    }
+   }
+  },
+  "2026-10-12": {
+   "sh_real": {
+    "gmv": 267402,
+    "orders": 435
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 250649,
+     "gmv_direct": 210711,
+     "spend": 35898,
+     "orders": 551
+    },
+    "search": {
+     "gmv_broad": 19435,
+     "gmv_direct": 18046,
+     "spend": 4039,
+     "orders": 52
+    },
+    "live": {
+     "gmv_broad": 2300,
+     "gmv_direct": 2300,
+     "spend": 136,
+     "orders": 6
+    }
+   },
+   "tk_real": {
+    "gmv": 123309.78,
+    "orders": 639
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 125283.57,
+     "spend": 31257.46,
+     "orders": 639
+    },
+    "live": {
+     "gmv": 99.0,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-10-13": {
+   "sh_real": {
+    "gmv": 212030,
+    "orders": 424
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 204037,
+     "gmv_direct": 176701,
+     "spend": 30254,
+     "orders": 499
+    },
+    "search": {
+     "gmv_broad": 9889,
+     "gmv_direct": 9342,
+     "spend": 4188,
+     "orders": 27
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 130871.01,
+    "orders": 639
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 123985.27,
+     "spend": 29902.31,
+     "orders": 646
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-14": {
+   "sh_real": {
+    "gmv": 172624,
+    "orders": 349
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 159955,
+     "gmv_direct": 138368,
+     "spend": 22816,
+     "orders": 401
+    },
+    "search": {
+     "gmv_broad": 10027,
+     "gmv_direct": 9025,
+     "spend": 3741,
+     "orders": 35
+    },
+    "live": {
+     "gmv_broad": 4222,
+     "gmv_direct": 4222,
+     "spend": 120,
+     "orders": 15
+    }
+   },
+   "tk_real": {
+    "gmv": 112980.69,
+    "orders": 562
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 115098.73,
+     "spend": 28037.68,
+     "orders": 573
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-15": {
+   "sh_real": {
+    "gmv": 333479,
+    "orders": 569
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 344375,
+     "gmv_direct": 280327,
+     "spend": 63413,
+     "orders": 766
+    },
+    "search": {
+     "gmv_broad": 19648,
+     "gmv_direct": 14813,
+     "spend": 4856,
+     "orders": 51
+    },
+    "live": {
+     "gmv_broad": 7058,
+     "gmv_direct": 7058,
+     "spend": 352,
+     "orders": 14
+    }
+   },
+   "tk_real": {
+    "gmv": 119512.52,
+    "orders": 560
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 117291.75,
+     "spend": 29190.14,
+     "orders": 553
+    },
+    "live": {
+     "gmv": 280.63,
+     "spend": 0.0,
+     "orders": 1
+    }
+   }
+  },
+  "2026-10-16": {
+   "sh_real": {
+    "gmv": 180421,
+    "orders": 329
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 164612,
+     "gmv_direct": 139595,
+     "spend": 27893,
+     "orders": 392
+    },
+    "search": {
+     "gmv_broad": 14921,
+     "gmv_direct": 13501,
+     "spend": 3470,
+     "orders": 39
+    },
+    "live": {
+     "gmv_broad": 1612,
+     "gmv_direct": 1612,
+     "spend": 92,
+     "orders": 4
+    }
+   },
+   "tk_real": {
+    "gmv": 84127.71,
+    "orders": 421
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 86479.89,
+     "spend": 22516.56,
+     "orders": 429
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-17": {
+   "sh_real": {
+    "gmv": 191607,
+    "orders": 345
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 198222,
+     "gmv_direct": 165955,
+     "spend": 33246,
+     "orders": 456
+    },
+    "search": {
+     "gmv_broad": 11092,
+     "gmv_direct": 7799,
+     "spend": 3426,
+     "orders": 26
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 88675.54,
+    "orders": 465
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 91831.7,
+     "spend": 22187.06,
+     "orders": 486
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  },
+  "2026-10-18": {
+   "sh_real": {
+    "gmv": 186190,
+    "orders": 369
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 189032,
+     "gmv_direct": 164490,
+     "spend": 29300,
+     "orders": 481
+    },
+    "search": {
+     "gmv_broad": 14502,
+     "gmv_direct": 14026,
+     "spend": 4501,
+     "orders": 36
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 125282.59,
+    "orders": 601
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 122893.72,
+     "spend": 31727.11,
+     "orders": 589
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   }
+  }
+ },
+ "coverage": {
+  "shopee": "2026-10-18",
+  "tiktok": "2026-10-18"
+ }
+}
