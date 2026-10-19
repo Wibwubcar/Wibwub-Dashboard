@@ -12,8 +12,8 @@ description: อัปเดต WIBWUB Dashboard ทั้งหมด (Sales + 
 
 ## STEP 0 — หา paths (ทำก่อนทุกอย่าง)
 ```bash
-ALL_MNT=$(find /sessions -maxdepth 5 -name "All" -type d 2>/dev/null | grep -v ".Trash" | head -1)
-OUTPUTS=$(find /sessions -maxdepth 5 -name "outputs" -type d 2>/dev/null | head -1)
+ALL_MNT="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS="/Users/thanasablilutanon/Library/Caches/wibwub-outputs"; mkdir -p "$OUTPUTS"
 echo "ALL_MNT=$ALL_MNT"
 echo "OUTPUTS=$OUTPUTS"
 ls "$ALL_MNT" 2>/dev/null | head -20
@@ -42,8 +42,8 @@ import re, json, os, csv, io, datetime
 from collections import defaultdict
 
 import subprocess
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
-OUTPUTS = subprocess.run(['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if not OUTPUTS: OUTPUTS = '/tmp'
 
 # ตรวจ ALL_MNT ก่อน — ถ้าไม่มีให้หยุด
@@ -219,8 +219,8 @@ print(f"TikTok Content: {len(posts)} posts")
 ```python
 import re, json, os, glob, subprocess
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
-OUTPUTS = subprocess.run(['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if not OUTPUTS: OUTPUTS='/tmp'
 if not ALL_MNT or not os.path.exists(ALL_MNT):
     print('ERROR: ALL_MNT not found. Stopping.'); exit(1)
@@ -312,7 +312,7 @@ for TK in glob.glob(f'{ALL_MNT}/**/WIBWUB_TikTok_Dashboard_v7.html', recursive=T
 import openpyxl, csv, re, json, os, glob, subprocess
 from collections import defaultdict
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 ADS_DIR = f'{ALL_MNT}/data Ads'
 ADS_HTML = f'{ADS_DIR}/WIBWUB_Ads_Dashboard.html'
 
@@ -428,7 +428,7 @@ else:
 import openpyxl, datetime, re, json, os, glob, subprocess
 from collections import defaultdict
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 SHIP_DIR = f'{ALL_MNT}/Data Shipnity'
 SALES_HTML = f'{SHIP_DIR}/Sales_Dashboard.html'
 
@@ -506,7 +506,7 @@ else:
 ```python
 import re, os, subprocess
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 SW = f'{ALL_MNT}/sw.js'
 
 if os.path.exists(SW):
@@ -528,7 +528,7 @@ else:
 ```bash
 python3 -c "
 import re, os, subprocess
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 print(f'ALL_MNT={ALL_MNT}')
 checks = {'Dashboard':f'{ALL_MNT}/WIBWUB_Dashboard.html','Mobile':f'{ALL_MNT}/WIBWUB_Mobile.html','Affiliate':f'{ALL_MNT}/WIBWUB_Affiliate_Dashboard.html','TikTok':f'{ALL_MNT}/WIBWUB_TikTok_Dashboard_v7.html','Ads':f'{ALL_MNT}/data Ads/WIBWUB_Ads_Dashboard.html','Sales':f'{ALL_MNT}/Data Shipnity/Sales_Dashboard.html','sw.js':f'{ALL_MNT}/sw.js'}
 for name,path in checks.items():
@@ -554,7 +554,7 @@ for name,path in checks.items():
 ```python
 import os, subprocess
 
-OUTPUTS = subprocess.run(['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if OUTPUTS and os.path.exists(OUTPUTS):
     for tmp in ['shopee.txt','tiktok_sales.txt','lazada.txt','tiktok_content.txt',
                 'sales_results.json','affil_results.json','tiktok_content_results.json']:

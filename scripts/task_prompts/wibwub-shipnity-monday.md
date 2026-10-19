@@ -16,8 +16,8 @@ description: อัปเดต Top สินค้าขายดี (Sales_Das
 ## STEP 0 — หา paths แบบ dynamic (ทำก่อนทุกอย่าง)
 
 ```bash
-ALL_MNT=$(find /sessions -maxdepth 5 -name "All" -type d 2>/dev/null | grep -v ".Trash" | head -1)
-OUTPUTS=$(find /sessions -maxdepth 5 -name "outputs" -type d 2>/dev/null | head -1)
+ALL_MNT="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS="/Users/thanasablilutanon/Library/Caches/wibwub-outputs"; mkdir -p "$OUTPUTS"
 echo "ALL_MNT=$ALL_MNT"
 echo "OUTPUTS=$OUTPUTS"
 
@@ -38,15 +38,9 @@ import openpyxl, os, re, json, datetime, subprocess
 from collections import defaultdict
 
 # Dynamic path — ห้าม hardcode session name
-ALL_MNT = subprocess.run(
-    ['find','/sessions','-maxdepth','5','-name','All','-type','d'],
-    capture_output=True, text=True
-).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 
-OUTPUTS = subprocess.run(
-    ['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],
-    capture_output=True, text=True
-).stdout.strip().split('\n')[0]
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if not OUTPUTS: OUTPUTS = '/tmp'
 
 if not ALL_MNT or not os.path.exists(ALL_MNT):
@@ -134,8 +128,8 @@ print('Saved shipnity_results.json')
 ```python
 import re, json, os, subprocess
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
-OUTPUTS = subprocess.run(['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if not OUTPUTS: OUTPUTS='/tmp'
 
 with open(f'{OUTPUTS}/shipnity_results.json',encoding='utf-8') as f: d=json.load(f)
@@ -163,8 +157,8 @@ else:
 ```python
 import re, json, os, subprocess
 
-ALL_MNT = subprocess.run(['find','/sessions','-maxdepth','5','-name','All','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
-OUTPUTS = subprocess.run(['find','/sessions','-maxdepth','5','-name','outputs','-type','d'],capture_output=True,text=True).stdout.strip().split('\n')[0]
+ALL_MNT = "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
+OUTPUTS = "/Users/thanasablilutanon/Library/Caches/wibwub-outputs"
 if not OUTPUTS: OUTPUTS='/tmp'
 
 # Verify
