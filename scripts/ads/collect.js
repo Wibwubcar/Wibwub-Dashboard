@@ -1,6 +1,6 @@
 // WIBWUB ads daily — ดึงข้อมูลรายวันด้วยการ replay request จริงที่ hook.js จับไว้
-// ใช้: window.__ADS={kind:'sh_real'|'sh_ads'|'tk_real'|'tk_ads', from:'YYYY-MM-DD', to:'YYYY-MM-DD'} แล้ววางไฟล์นี้
-// แล้ว poll: window.__adsJob  → {done:true, n, err?}   อ่านผล: window.__adsExport(0,1500), (1500,3000) …
+// ใช้: window.__ADS={kind:'sh_real'|'sh_ads'|'tk_real'|'tk_ads'|'tk_camp', from:'YYYY-MM-DD', to:'YYYY-MM-DD'} แล้ววางไฟล์นี้
+// แล้ว poll: window.__adsJob  → {done:true, n, len, err?}   อ่านผล: window.__adsExport(0,900), (900,1800) … (ผลของ javascript_tool ถูกตัดที่ ~1000 ตัวอักษร)
 (function(){
 const P=window.__ADS||{}; const J=window.__adsJob={done:false,kind:P.kind};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
@@ -40,6 +40,22 @@ const run={
       ch.categories.forEach((d,i)=>{ if(out[d]) out[d][k]={gmv:+val[i]||0, spend:+cost[i]||0, orders:+ord[i]||0}; });
       await sleep(500); }
     for(const d of days) for(const k of ['product','live']) if(!out[d][k]) throw new Error('ขาด '+k+' วันที่ '+d);
+    return out; },
+  // แคมเปญย่อย GMV Max รายเดือน: ดึงเดือนของ to (ตั้งแต่วันที่ 1) และเดือนก่อนหน้าถ้า from อยู่ในเดือนก่อน
+  async tk_camp(){ const c=cap(/post_campaign_list_v2/); const MK=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']; const out={};
+    const ranges=[]; const mStart=P.to.slice(0,8)+'01'; ranges.push([mStart,P.to]);
+    if (P.from<mStart){ const e=new Date(mStart+'T00:00:00Z'); e.setUTCDate(0); const ps=e.toISOString().slice(0,8)+'01'; ranges.push([ps,e.toISOString().slice(0,10)]); }
+    for(const [a,b] of ranges){ const m=MK[+a.slice(5,7)-1]; out[m]={from:a,to:b};
+      for(const [k,types] of [['product',['304','307']],['live',['305']]]){
+        const o=JSON.parse(c.b); o.start_time=a; o.end_time=b; o.page=1; o.page_size=100;
+        // ตั้ง filter เองให้เหมือนกันทุกครั้ง (ไม่ขึ้นกับว่าจับ request มาจากแท็บ Product หรือ LIVE) และไม่กรองแคมเปญที่ลบแล้ว
+        o.filters=[{field:'external_type',filter_type:0,in_field_values:types},{field:'gmv_roi_mode',in_field_values:['2'],filter_type:10}];
+        o.query_list=Array.from(new Set([...(o.query_list||[]),'campaign_name','cost','onsite_roi2_shopping_sku','onsite_roi2_shopping_value']));
+        const j=await postJSON(c,o); if(j.code!==0) throw new Error(m+' '+k+' code '+j.code+' '+j.msg);
+        if((j.data.pagination||{}).page_count>1) throw new Error(m+' '+k+' มีมากกว่า 100 แคมเปญ (หลายหน้า)');
+        const rows=j.data.table_v2.map(r=>Object.fromEntries(r.map(x=>[x.name,x.data])));
+        out[m][k]=rows.map(r=>({name:r.campaign_name,spend:+r.cost||0,orders:+r.onsite_roi2_shopping_sku||0,revenue:+r.onsite_roi2_shopping_value||0})).filter(r=>r.spend>0||r.revenue>0).sort((x,y)=>y.spend-x.spend);
+        out[m][k+'_total']=+((j.data.statistics||{}).cost||0); await sleep(500); } }
     return out; }
 };
 if(!run[P.kind]){ J.err='kind ไม่ถูกต้อง'; J.done=true; return 'bad kind'; }

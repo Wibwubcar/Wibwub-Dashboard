@@ -1,0 +1,431 @@
+{
+ "note": "แคมเปญย่อย TikTok GMV Max รายเดือน — ดึงจาก ads.tiktok.com post_campaign_list_v2 (Product = external_type 304+307, LIVE = 305) · อัปเดตโดย scripts/ads/ads_daily_update.py camp",
+ "months": {
+  "aug": {
+   "from": "2026-08-01",
+   "to": "2026-08-31",
+   "product": [
+    {
+     "name": "17.08.26/Refresh wipe",
+     "spend": 138893.28,
+     "orders": 3471,
+     "revenue": 451590.51
+    },
+    {
+     "name": "22.07.26/Sugar",
+     "spend": 76177.57,
+     "orders": 631,
+     "revenue": 271685.98
+    },
+    {
+     "name": "17.08.26/Sugar",
+     "spend": 56379.9,
+     "orders": 505,
+     "revenue": 204104.41
+    },
+    {
+     "name": "10.08.26/Refreshwipe",
+     "spend": 53141.31,
+     "orders": 1365,
+     "revenue": 172039.1
+    },
+    {
+     "name": "17.08.26/Interior wipe",
+     "spend": 47345.19,
+     "orders": 1054,
+     "revenue": 162592.98
+    },
+    {
+     "name": "03.08.26/Refresh wipes",
+     "spend": 43968.87,
+     "orders": 1257,
+     "revenue": 153849.77
+    },
+    {
+     "name": "18.08.26/AllProduct",
+     "spend": 43678.19,
+     "orders": 436,
+     "revenue": 209018.91
+    },
+    {
+     "name": "22.07.26/AllProduct",
+     "spend": 35108.03,
+     "orders": 349,
+     "revenue": 156018.11
+    },
+    {
+     "name": "16.06.26/Xglass.Spot.Visible",
+     "spend": 27266.38,
+     "orders": 277,
+     "revenue": 117226.52
+    },
+    {
+     "name": "03.08.26/Interior wipes",
+     "spend": 21786.88,
+     "orders": 607,
+     "revenue": 75888.78
+    },
+    {
+     "name": "10.08.26/interiorwipe",
+     "spend": 21458.71,
+     "orders": 497,
+     "revenue": 73597.89
+    },
+    {
+     "name": "22.06.26/Refreshwipes/08.08.26",
+     "spend": 14619.1,
+     "orders": 478,
+     "revenue": 56161.52
+    },
+    {
+     "name": "11.08.26/Refresh-Interior",
+     "spend": 11692.25,
+     "orders": 61,
+     "revenue": 25822.28
+    },
+    {
+     "name": "17.08.26/Refresh",
+     "spend": 9731.2,
+     "orders": 51,
+     "revenue": 24234.4
+    },
+    {
+     "name": "27.07.26/Cleaner",
+     "spend": 9552.94,
+     "orders": 191,
+     "revenue": 38380.14
+    },
+    {
+     "name": "17.08.26/Interior",
+     "spend": 9204.61,
+     "orders": 53,
+     "revenue": 24964.91
+    },
+    {
+     "name": "27.08.26/interior-refresh",
+     "spend": 8405.57,
+     "orders": 61,
+     "revenue": 28624.95
+    },
+    {
+     "name": "04.08.26/Refresh",
+     "spend": 8276.53,
+     "orders": 48,
+     "revenue": 21311.63
+    },
+    {
+     "name": "17.08.26/Cleaner",
+     "spend": 7269.69,
+     "orders": 133,
+     "revenue": 26770.42
+    },
+    {
+     "name": "04.08.26/Interior",
+     "spend": 7206.5,
+     "orders": 48,
+     "revenue": 22880.47
+    },
+    {
+     "name": "29.07.26/Refresh",
+     "spend": 4332.78,
+     "orders": 29,
+     "revenue": 12799.82
+    },
+    {
+     "name": "29.07.26/Interior",
+     "spend": 3784.75,
+     "orders": 27,
+     "revenue": 11983.0
+    },
+    {
+     "name": "17.08.26/Spot",
+     "spend": 546.29,
+     "orders": 2,
+     "revenue": 814.0
+    },
+    {
+     "name": "17.08.26/visible-XGlass",
+     "spend": 210.38,
+     "orders": 1,
+     "revenue": 299.91
+    }
+   ],
+   "live": [
+    {
+     "name": "live 19.08.26",
+     "spend": 623.86,
+     "orders": 11,
+     "revenue": 8179.94
+    },
+    {
+     "name": "15.08.26/Live",
+     "spend": 585.62,
+     "orders": 102,
+     "revenue": 40044.97
+    },
+    {
+     "name": "08.08.26/Liveปาย+แอ้น",
+     "spend": 442.24,
+     "orders": 52,
+     "revenue": 19428.72
+    },
+    {
+     "name": "08.08.26/Liveปาย+แอ้นบ่าย",
+     "spend": 386.39,
+     "orders": 38,
+     "revenue": 13645.98
+    },
+    {
+     "name": "25.08.26/Liveน้องปาย",
+     "spend": 367.69,
+     "orders": 23,
+     "revenue": 8154.46
+    },
+    {
+     "name": "08.08.26/Liveแอ้นปายมืด",
+     "spend": 315.64,
+     "orders": 25,
+     "revenue": 11595.95
+    },
+    {
+     "name": "26.08.26/Liveปายปืน",
+     "spend": 201.0,
+     "orders": 29,
+     "revenue": 11257.82
+    },
+    {
+     "name": "13.08.26Test/ROI",
+     "spend": 96.91,
+     "orders": 12,
+     "revenue": 4193.76
+    },
+    {
+     "name": "live-15.07",
+     "spend": 0.0,
+     "orders": 1,
+     "revenue": 295.0
+    },
+    {
+     "name": "7.7Live duo",
+     "spend": 0.0,
+     "orders": 2,
+     "revenue": 577.22
+    }
+   ]
+  },
+  "sep": {
+   "from": "2026-09-01",
+   "to": "2026-09-30",
+   "product": [
+    {
+     "name": "17.08.26/Refresh wipe",
+     "spend": 299181.78,
+     "orders": 7562,
+     "revenue": 984424.65
+    },
+    {
+     "name": "17.08.26/Sugar",
+     "spend": 198612.05,
+     "orders": 2059,
+     "revenue": 720771.12
+    },
+    {
+     "name": "18.08.26/AllProduct",
+     "spend": 102728.48,
+     "orders": 1024,
+     "revenue": 491364.99
+    },
+    {
+     "name": "17.08.26/Interior wipe",
+     "spend": 102479.63,
+     "orders": 2469,
+     "revenue": 343245.41
+    },
+    {
+     "name": "27.08.26/interior-refresh",
+     "spend": 50055.2,
+     "orders": 393,
+     "revenue": 167811.11
+    },
+    {
+     "name": "16.06.26/Xglass.Spot.Visible",
+     "spend": 43127.53,
+     "orders": 417,
+     "revenue": 181336.39
+    },
+    {
+     "name": "21.09.26/Banyakart",
+     "spend": 39001.8,
+     "orders": 558,
+     "revenue": 137682.16
+    },
+    {
+     "name": "17.08.26/Cleaner",
+     "spend": 13747.71,
+     "orders": 246,
+     "revenue": 50441.91
+    },
+    {
+     "name": "21.09.26/Reflex",
+     "spend": 10024.75,
+     "orders": 57,
+     "revenue": 34204.2
+    },
+    {
+     "name": "21.09.26/Brush",
+     "spend": 2535.64,
+     "orders": 8,
+     "revenue": 3583.0
+    },
+    {
+     "name": "21.09.26/towels",
+     "spend": 2520.73,
+     "orders": 17,
+     "revenue": 5823.54
+    }
+   ],
+   "live": [
+    {
+     "name": "15.09.26/ปาย09.00-12.00",
+     "spend": 663.66,
+     "orders": 52,
+     "revenue": 19638.32
+    },
+    {
+     "name": "09.09.26/Live ปายแอ้น 20.00 น.",
+     "spend": 413.45,
+     "orders": 63,
+     "revenue": 28941.98
+    },
+    {
+     "name": "25.09.26/Live",
+     "spend": 300.0,
+     "orders": 16,
+     "revenue": 4922.62
+    },
+    {
+     "name": "09.09.26/Live ปาย/แอ้น 14.00-17.00",
+     "spend": 250.0,
+     "orders": 50,
+     "revenue": 18126.18
+    },
+    {
+     "name": "9.9 Live ปาย/แอ้น 09.00-12.00",
+     "spend": 175.9,
+     "orders": 64,
+     "revenue": 18915.17
+    },
+    {
+     "name": "26.08.26/Liveปายปืน",
+     "spend": 0.0,
+     "orders": 3,
+     "revenue": 868.35
+    },
+    {
+     "name": "15.08.26/Live",
+     "spend": 0.0,
+     "orders": 1,
+     "revenue": 415.65
+    }
+   ]
+  },
+  "oct": {
+   "from": "2026-10-01",
+   "to": "2026-10-18",
+   "product": [
+    {
+     "name": "21.09.26/Banyakart",
+     "spend": 160266.29,
+     "orders": 2018,
+     "revenue": 510899.72
+    },
+    {
+     "name": "01.10.26/Refresh wipe",
+     "spend": 156985.28,
+     "orders": 4741,
+     "revenue": 587747.6
+    },
+    {
+     "name": "17.08.26/Sugar",
+     "spend": 156323.95,
+     "orders": 1603,
+     "revenue": 584657.13
+    },
+    {
+     "name": "17.08.26/Interior wipe",
+     "spend": 82129.24,
+     "orders": 2213,
+     "revenue": 295593.29
+    },
+    {
+     "name": "18.08.26/AllProduct",
+     "spend": 53880.12,
+     "orders": 817,
+     "revenue": 319887.93
+    },
+    {
+     "name": "05.10.26/Interior",
+     "spend": 27106.66,
+     "orders": 249,
+     "revenue": 80707.14
+    },
+    {
+     "name": "16.06.26/Xglass.Spot.Visible",
+     "spend": 25756.96,
+     "orders": 272,
+     "revenue": 125218.36
+    },
+    {
+     "name": "21.09.26/Reflex",
+     "spend": 21855.87,
+     "orders": 138,
+     "revenue": 82620.65
+    },
+    {
+     "name": "17.08.26/Refresh wipe",
+     "spend": 7545.63,
+     "orders": 204,
+     "revenue": 24791.8
+    },
+    {
+     "name": "27.08.26/interior-refresh",
+     "spend": 584.84,
+     "orders": 3,
+     "revenue": 1268.0
+    },
+    {
+     "name": "17.08.26/Cleaner",
+     "spend": 383.3,
+     "orders": 4,
+     "revenue": 802.31
+    }
+   ],
+   "live": [
+    {
+     "name": "10.10.26/แอ้นปาย",
+     "spend": 200.0,
+     "orders": 39,
+     "revenue": 15205.01
+    },
+    {
+     "name": "10.10.26/แอ้นปายบ่าย",
+     "spend": 153.23,
+     "orders": 31,
+     "revenue": 10271.56
+    },
+    {
+     "name": "10.10.26/ปายแอ้น",
+     "spend": 151.19,
+     "orders": 46,
+     "revenue": 14912.16
+    },
+    {
+     "name": "25.09.26/Live",
+     "spend": 0.0,
+     "orders": 2,
+     "revenue": 1048.0
+    }
+   ]
+  }
+ }
+}

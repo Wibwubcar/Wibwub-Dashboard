@@ -1,6 +1,6 @@
 // WIBWUB ads daily — ดักจับ request จริงที่หน้าเว็บยิง (วางใน javascript_tool หลัง navigate แล้วค่อยกด/รีเฟรชให้หน้าโหลดข้อมูล)
 (function(){ if (window.__adsHooked) return 'already';
-  window.__adsHooked=true; window.__cap=[]; const RX=/key-metrics|get_time_graph|us_overview_day_trend|post_overview_stat/;
+  window.__adsHooked=true; window.__cap=[]; const RX=/key-metrics|get_time_graph|us_overview_day_trend|post_overview_stat|post_campaign_list_v2/;
   const oo=XMLHttpRequest.prototype.open, os=XMLHttpRequest.prototype.send, sh=XMLHttpRequest.prototype.setRequestHeader;
   XMLHttpRequest.prototype.open=function(m,u){this.__u=String(u);this.__m=m;this.__h={};return oo.apply(this,arguments)};
   XMLHttpRequest.prototype.setRequestHeader=function(k,v){if(this.__h)this.__h[k]=v;return sh.apply(this,arguments)};

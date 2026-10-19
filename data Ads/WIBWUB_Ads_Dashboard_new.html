@@ -227,7 +227,7 @@ function deltaHtml(cur, prev, mode){
 }
 
 /* ---------- state ---------- */
-let DAILY=null, PERIODS=null, DAYS=[], MIN='', MAX='';
+let DAILY=null, PERIODS=null, TKC=null, DAYS=[], MIN='', MAX='';
 const st = { view:'overview', from:'', to:'', preset:'thisMonth',
   ovMetric:'real', shMetric:'realads', tkMetric:'realads', monMetric:'spend',
   shMonth:'', tkMonth:'', tkCamp:'gmax', shAll:false, tkAll:false };
@@ -677,6 +677,14 @@ function renderTkCamp(){
     head='<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>Impressions</th><th>คลิก</th><th>CTR</th><th>CPM</th></tr>';
     rows=list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${int(c.imp)}</td><td>${int(c.clicks)}</td><td>${c.imp?(c.clicks/c.imp*100).toFixed(2)+'%':'–'}</td><td>${c.imp?nf2.format(c.spend/c.imp*1000):'–'}</td></tr>`);
     const T=src&&src.total; if (T) tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td>${baht(T.spend)}</td><td>${int(T.imp)}</td><td>${int(T.clicks)}</td><td>${T.imp?(T.clicks/T.imp*100).toFixed(2)+'%':'–'}</td><td>${T.imp?nf2.format(T.spend/T.imp*1000):'–'}</td></tr>`;
+  } else if (TKC && TKC.months && TKC.months[st.tkMonth]){
+    // แคมเปญย่อยจาก API (ads_tk_campaigns.json) — ครบทุกแคมเปญ รวมแคมเปญที่ถูกลบแล้ว
+    const X=TKC.months[st.tkMonth], key = tab==='gmax' ? 'product' : 'live';
+    list=(X[key]||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
+    head='<tr><th>'+(tab==='gmax'?'แคมเปญ':'ไลฟ์ / แคมเปญ')+'</th><th>ค่าโฆษณา</th><th>สัดส่วน</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th></tr>';
+    const T=list.reduce((a,c)=>(a.spend+=c.spend||0,a.revenue+=c.revenue||0,a.orders+=c.orders||0,a),{spend:0,revenue:0,orders:0});
+    rows=list.map(c=>`<tr><td class="name">${esc(c.name)}</td><td>${baht(c.spend)}</td><td>${pct(div(c.spend,T.spend),1)}</td><td>${baht(c.revenue)}</td><td>${x2(div(c.revenue,c.spend))}</td><td>${int(c.orders)}</td><td>${c.orders&&c.spend?nf2.format(c.spend/c.orders):'–'}</td></tr>`);
+    tot=`<tr class="tot"><td>รวม ${thRange(X.from,X.to)}</td><td>${baht(T.spend)}</td><td>100%</td><td>${baht(T.revenue)}</td><td>${x2(div(T.revenue,T.spend))}</td><td>${int(T.orders)}</td><td>${T.orders?nf2.format(T.spend/T.orders):'–'}</td></tr>`;
   } else {
     const src = tab==='gmax' ? M.tiktok.gmvMax : M.tiktok.gmvLive;
     list=((src&&(tab==='gmax'?src.campaigns:src.sessions))||[]).slice().sort((a,b)=>(b.spend||0)-(a.spend||0));
@@ -690,8 +698,8 @@ function renderTkCamp(){
 
 /* ---------- boot ---------- */
 async function loadJSON(f){ const res=await fetch(f+'?t='+Date.now(), {cache:'no-store'}); if(!res.ok) throw new Error(f+' '+res.status); return res.json(); }
-Promise.all([loadJSON('ads_daily.json'), loadJSON('ads_periods.json')]).then(([d,p])=>{
-  DAILY=d; PERIODS=p; DAYS=Object.keys(d.days).sort(); MIN=DAYS[0]; MAX=DAYS[DAYS.length-1];
+Promise.all([loadJSON('ads_daily.json'), loadJSON('ads_periods.json'), loadJSON('ads_tk_campaigns.json').catch(()=>null)]).then(([d,p,tc])=>{
+  DAILY=d; PERIODS=p; TKC=tc; DAYS=Object.keys(d.days).sort(); MIN=DAYS[0]; MAX=DAYS[DAYS.length-1];
   const cv=d.coverage||{shopee:MAX,tiktok:MAX};
   document.getElementById('asof').textContent = `ข้อมูลรายวัน ${thDate(MIN)} – ${thDate(MAX,true)} · Shopee ถึง ${thDate(cv.shopee)} · TikTok ถึง ${thDate(cv.tiktok)}`;
   ['dFrom','dTo'].forEach(id=>{ const el=document.getElementById(id); el.min=MIN; el.max=MAX; });
