@@ -5381,7 +5381,7 @@
           },
           "trend28d": {
             "range": "2026-09-21 → 2026-10-18",
-            "orders": 18200,
+            "orders": 17800,
             "sales": 3100000,
             "creators": 599,
             "lives": 456,
@@ -5392,7 +5392,7 @@
             {
               "name": "WIBWUB Refresh Leather Wipes",
               "orders": 7600,
-              "sales": 674100
+              "sales": 674600
             },
             {
               "name": "WIBWUB Interior Wipes",
@@ -5401,18 +5401,18 @@
             },
             {
               "name": "WIBWUB BANYAKART - ODOR ELIMINATOR",
-              "orders": 2400,
-              "sales": 547200
+              "orders": 2500,
+              "sales": 565500
             },
             {
               "name": "WIBWUB Sugar V.3",
-              "orders": 2400,
-              "sales": 736800
+              "orders": 2300,
+              "sales": 731900
             },
             {
               "name": "WIBWUB Interior",
-              "orders": 407,
-              "sales": 132600
+              "orders": 412,
+              "sales": 132700
             }
           ]
         },
@@ -5432,8 +5432,8 @@
           },
           "trend28d": {
             "range": "2026-09-21 → 2026-10-18",
-            "orders": 29200,
-            "sales": 4900000,
+            "orders": 28100,
+            "sales": 4800000,
             "creators": 556,
             "lives": 1100,
             "videos": 1300,
@@ -5442,8 +5442,8 @@
           "top_products": [
             {
               "name": "Munwow Nano fiber towel",
-              "orders": 14400,
-              "sales": 12600
+              "orders": 14100,
+              "sales": 12400
             },
             {
               "name": "Munwow All interior",
@@ -5453,12 +5453,12 @@
             {
               "name": "Munwow Soft Pad",
               "orders": 2800,
-              "sales": 278100
+              "sales": 278200
             },
             {
               "name": "Munwow sexy",
-              "orders": 1000,
-              "sales": 359900
+              "orders": 1100,
+              "sales": 361500
             },
             {
               "name": "Good view",
