@@ -1,0 +1,37 @@
+## 🧹 ปิดแท็บ Chrome เมื่อจบงาน (ทำทุกครั้ง)
+ก่อนจบงาน ไม่ว่าจะสำเร็จ ไม่มีข้อมูลใหม่ หรือเจอ error: เรียก `tabs_context_mcp` ดู tabId ทั้งหมดในกลุ่มแท็บของรอบนี้ แล้วปิดทุกแท็บด้วย `tabs_close_mcp` จนกลุ่มแท็บหายไป (ยกเว้นหน้าที่ต้องให้ผู้ใช้ login เอง ให้เหลือแท็บนั้นแท็บเดียวและบอกในรายงาน)
+
+## WIBWUB HR — อัปเดตเข้า-ออกงานจาก Discord (ดึงต่อจากรอบก่อน + การลา + รายงานการผลิต)
+
+ใช้สกิล **wibwub-hr-attendance** เป็นคู่มือหลัก อ่านสกิลก่อนเริ่มทุกครั้ง แล้วทำตาม "Standard run" ในสกิลทีละขั้นจนครบ ตัวเลขทุกอย่างให้สคริปต์คำนวณ ห้ามคิดเอง
+
+### ขั้น 0 — หาโฟลเดอร์ All (สำคัญ)
+`for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -f "$d/scripts/hr/hr_update.py" ] && echo "$d" && break; done`
+ใช้ผลลัพธ์เป็น `BASE` ถ้าไม่เจอ หรือ shell ตอบว่า "No folders are connected": หยุดและรายงานทันทีว่าต้องเชื่อมโฟลเดอร์ All ให้งานนี้
+สคริปต์: `scripts/hr/hr_update.py`, `hr_scrape.js`, `hr_leave_scrape.js`, `hr_prod_scrape.js`
+
+### ขั้นตอนย่อ
+1. `cd "$BASE/scripts/hr" && python3 hr_update.py state` → ได้ `since` และ `scrape_params` (ถ้า `new_month: true` ทำหัวข้อ "Month change" ในสกิลก่อน)
+2. ดึงห้อง #บันทึกเข้างาน และ #บันทึกออกงาน **เฉพาะตั้งแต่วัน `since`** ด้วย `hr_scrape.js` (อ่านด้วย `cat` แล้ววางใน javascript_tool ต่อจาก `window.__HR={key,cur,prev,since}`) poll `window.__job` จนได้ `done:true, unparsed:0, reachedStart:true`
+3. บันทึกบรรทัดลง `work/new_in.txt` / `work/new_out.txt` (heredoc คัดลอกตรงตัว)
+3b. **การลา:** เปิด https://discord.com/channels/1331888082802315295/1331942184739667979 แล้ววาง `window.__LVP={sinceTs:'<leave_params.sinceTs>'}` ตามด้วย `hr_leave_scrape.js` → poll `window.__lj` จน `done:true` (ไม่มี `err`) → export `window.__lvExport(0,40)`, `(40,80)`… → บันทึก `work/new_leave.txt`
+3c. **รายงานการผลิต:** เปิด https://discord.com/channels/1331888082802315295/1392059303669792889 แล้ววาง `window.__PRP={sinceTs:'<prod_params.sinceTs>'}` ตามด้วย `hr_prod_scrape.js` → poll `window.__pj` จน `done:true` → export `window.__prExport(0,10)`, `(10,20)`… → บันทึก `work/new_prod.txt`
+4. `python3 hr_update.py merge --in work/new_in.txt --out work/new_out.txt --since <since>` — exit 10 = ไม่มีใหม่ · exit 3 = ดึงใหม่ทั้งเดือน `since:1` แล้ว `merge --full` · exit 4 = ดึงใหม่
+4b. `python3 hr_update.py leave --in work/new_leave.txt` — exit 10 = ไม่เปลี่ยน · มี `warnings` ให้ใส่ในรายงาน
+4c. `python3 hr_update.py prod --in work/new_prod.txt` — exit 10 = ไม่เปลี่ยน · มี `warnings` ให้ใส่ในรายงาน
+   - ถ้า 4, 4b, 4c ได้ exit 10 ทั้งหมด = ไม่มีอะไรใหม่ หยุดได้เลย
+5. `python3 hr_update.py commit` (bump sw.js + commit เฉพาะไฟล์ HR; auto-push จะ push เอง)
+6. Google Sheet id `1Ng8dK5bOGZ26vl-mfiZOuNan7-bh0eW-8jyu6OC6O7U` — **เติมได้เฉพาะช่องว่างใหม่ ห้ามแก้ค่าที่มีอยู่แล้ว**: get_values `'MON YY'!A1:BK29` → `work/grid_current.json` และ get_values `'MON YY confirm ot'!A1:J300` → `work/confirm_current.json` (ถ้าแท็บ confirm ot ไม่มี ให้ข้ามส่วน confirm และรายงาน ห้ามสร้างแท็บเอง) → `python3 hr_update.py sheet --grid-current work/grid_current.json --confirm-sheet-id <id> --confirm-current work/confirm_current.json` → ส่งเฉพาะไฟล์ที่สคริปต์สร้าง → รัน `python3 hr_update.py sheet-done` ทุกครั้งที่เขียนลงชีต · ถ้า `confirm_blocked_hr_edits` ไม่ว่าง ห้ามแตะ ให้รายงาน · ห้ามใช้ `--force-confirm`
+7. ตรวจด้วย get_values 1 ครั้ง
+
+### กฎเบราว์เซอร์
+- `list_connected_browsers` → `select_browser` ตัวที่เป็น Mac (ปกติ b75a6bb0-5b78-4e44-92a8-75224f1ce4ee) → `tabs_context_mcp(createIfEmpty=true)`
+- ใช้ `browser_batch([navigate, computer wait 4, javascript_tool])` ห้าม navigate เดี่ยว ห้าม wait เกิน 10 วิ
+- ถ้า Discord ขึ้นหน้า login: หยุดและรายงาน ห้ามกรอกรหัสผ่าน
+
+### ห้ามทำโดยอัตโนมัติ
+- ห้ามเพิ่มชื่อพนักงาน/ชื่อเล่น ห้ามเปลี่ยนกฎ OT/สาย ห้ามลบหรือแก้ค่าที่มีอยู่แล้วใน Google Sheet ห้ามแก้/ลบ/สร้างแท็บ ห้ามคัดลอกเงินเดือน เงินเบิก เลขบัญชี หรือยอดเงิน OT
+- ถ้าสคริปต์ใน `scripts/hr/` หายหรือพัง: หยุดและรายงาน
+
+### สรุปท้ายรอบ (สั้นๆ ภาษาไทย)
+เวลารอบนี้, ดึงตั้งแต่วันที่, จำนวนที่เพิ่ม (เข้า/ออก), การลาใหม่ + คำเตือน, รายงานการผลิตใหม่ + คำพิมพ์ผิด, ชื่อที่ไม่รู้จัก, ลืมเช็คเอาท์, มาสายวันนี้, OT รวมเดือนนี้, อัปเดต Google Sheet แล้วหรือไม่, และ error ถ้ามี
