@@ -4,6 +4,7 @@
 ใช้:
   python3 ads_daily_update.py state                       → บอกช่วงวันที่ที่ควรดึง (from/to)
   python3 ads_daily_update.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json [--dry]
+  python3 ads_daily_update.py camp work/tk_camp.json            → แคมเปญย่อย GMV Max รายเดือน → ads_tk_campaigns.json
   python3 ads_daily_update.py commit                      → sync ads_periods.json + bump sw.js + commit (เฉพาะไฟล์ที่เกี่ยวข้อง)
 exit 10 = ไม่มีอะไรเปลี่ยน
 """
@@ -59,6 +60,22 @@ def merge(paths, dry=False):
     if not dry:
         shutil.copy2(DAILY, DAILY+'.bak')
         tmp=DAILY+'.tmp'; json.dump(d,open(tmp,'w',encoding='utf-8'),ensure_ascii=False,indent=1); os.replace(tmp,DAILY)
+TKC=os.path.join(ALL,'data Ads','ads_tk_campaigns.json')
+def camp(path):
+    o=json.load(open(path,encoding='utf-8'))
+    if o.get('kind')!='tk_camp': sys.exit('ไฟล์ไม่ใช่ tk_camp')
+    d=json.load(open(TKC,encoding='utf-8')) if os.path.exists(TKC) else {'note':'','months':{}}
+    rep=[]; changed=False
+    for m,v in o['data'].items():
+        for k in ('product','live'):
+            s=round(sum(x['spend'] for x in v[k]),2); t=round(float(v.get(k+'_total',s)),2)
+            if abs(s-t)>1: sys.exit('%s %s ผลรวมแคมเปญ %.2f ไม่ตรงยอดรวม %.2f'%(m,k,s,t))
+        new={'from':v['from'],'to':v['to'],'product':v['product'],'live':v['live']}
+        if d['months'].get(m)!=new: d['months'][m]=new; changed=True
+        rep.append({'month':m,'to':v['to'],'product_campaigns':len(v['product']),'product_spend':round(sum(x['spend'] for x in v['product']),2),'live_campaigns':len(v['live']),'live_spend':round(sum(x['spend'] for x in v['live']),2)})
+    print(json.dumps({'tk_camp':rep,'changed':changed},ensure_ascii=False))
+    if not changed: sys.exit(10)
+    tmp=TKC+'.tmp'; json.dump(d,open(tmp,'w',encoding='utf-8'),ensure_ascii=False,indent=1); os.replace(tmp,TKC)
 def git(*a): return subprocess.run(['git',*a],cwd=ALL,capture_output=True,text=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'})
 def unlock():
     for f in ('index.lock','HEAD.lock','objects/maintenance.lock'):
@@ -67,12 +84,17 @@ def unlock():
 def commit():
     r=subprocess.run(['node',os.path.join(HERE,'sync_periods.js')],cwd=ALL,capture_output=True,text=True); print(r.stdout.strip()); 
     if r.returncode: sys.exit('sync_periods ล้มเหลว: '+r.stderr[-500:])
-    files=['data Ads/ads_daily.json','data Ads/ads_periods.json']
+    files=['data Ads/ads_daily.json','data Ads/ads_periods.json','data Ads/ads_tk_campaigns.json']
     unlock(); st=git('status','--porcelain','--',*files).stdout.strip()
     if not st: print('NO_CHANGE'); sys.exit(10)
     sw=os.path.join(ALL,'sw.js'); s=open(sw,encoding='utf-8').read(); mm=re.search(r'wibwub-v(\d+)',s)
     s=s.replace(mm.group(0),'wibwub-v%d'%(int(mm.group(1))+1),1); open(sw,'w',encoding='utf-8').write(s)
-    d=load(); unlock(); r=git('add','--',*files,'sw.js'); unlock()
+    d=load()
+    for _ in range(3):   # โฟลเดอร์ Google Drive บางครั้งเขียน .git/index ไม่ทัน ("unable to write new_index file") ให้ลองใหม่
+        unlock(); r=git('add','--',*files,'sw.js'); unlock()
+        if r.returncode==0: break
+        import time; time.sleep(3)
+    else: sys.exit('git add ล้มเหลว: '+r.stderr[-300:])
     msg='auto: ads daily (ยอดจริง vs Ads) ถึง %s'%max(d['days'])
     r=git('-c','user.name=WIBWUB Bot','-c','user.email=marketingwibwub@gmail.com','commit','-m',msg,'--',*files,'sw.js'); unlock()
     print(r.stdout.strip() or r.stderr.strip()); print(git('log','-1','--format=%h %s').stdout.strip())
@@ -81,5 +103,6 @@ if __name__=='__main__':
     if not a: sys.exit(__doc__)
     if a[0]=='state': state()
     elif a[0]=='merge': merge([x for x in a[1:] if not x.startswith('--')], dry='--dry' in a)
+    elif a[0]=='camp': camp(a[1])
     elif a[0]=='commit': commit()
     else: sys.exit(__doc__)
