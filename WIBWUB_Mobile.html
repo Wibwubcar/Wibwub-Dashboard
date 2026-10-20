@@ -494,6 +494,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     <div class="stab" onclick="mTab(1,this)">Affiliate</div>
     <div class="stab" onclick="mTab(2,this)">Ads</div>
     <div class="stab" onclick="mTab(3,this)">Social Media</div>
+    <div class="stab" onclick="mTab(4,this)">การตลาด vs ยอดขาย</div>
   </div>
 
   <!-- MK Overview -->
@@ -592,6 +593,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Noto Sans Thai',sans-serif;co
     </div>
     <div class="kgrid kgrid3" id="tt-kpi"></div>
     <div id="tt-clips"></div>
+  </div>
+
+  <div class="sv" id="m-sv-4">
+    <div class="card"><div class="sec-title">การตลาด vs ยอดขาย</div><div id="mks-mob"></div></div>
   </div>
 
 </div>
@@ -2623,5 +2628,115 @@ if('serviceWorker' in navigator){
     </div>
   </div>
 </div>
+
+<style id="mks-css-m">
+.mks-wrap{font-size:13px}
+.mks-tbl{width:100%;border-collapse:collapse;font-size:12.5px;white-space:nowrap}
+.mks-tbl th,.mks-tbl td{padding:7px 9px;border-bottom:1px solid var(--border);text-align:right}
+.mks-tbl th{font-size:11px;color:var(--muted);font-weight:600;text-align:right;
+  background:rgba(0,0,0,.02);position:sticky;top:0}
+.mks-tbl th:first-child,.mks-tbl td:first-child{text-align:left;font-weight:600}
+.mks-tbl tr:last-child td{border-bottom:none}
+.mks-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mks-na{color:var(--muted);font-weight:500;font-style:italic}
+.mks-tot{font-weight:700}
+.mks-note{margin-top:10px;font-size:11.5px;color:var(--muted);line-height:1.8}
+.mks-note b{color:#b45309}
+.mks-legend{display:flex;flex-wrap:wrap;gap:12px;margin:2px 0 14px;font-size:11.5px;color:var(--muted)}
+.mks-lg{display:flex;align-items:center;gap:5px}
+.mks-sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.mks-chart{display:flex;gap:26px;align-items:flex-end;padding:8px 2px 0;overflow-x:auto}
+.mks-mo{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:96px}
+.mks-cols{display:flex;gap:9px;align-items:flex-end;height:188px}
+.mks-col{width:34px;display:flex;flex-direction:column;justify-content:flex-end;
+  border-radius:4px 4px 0 0;overflow:hidden}
+.mks-seg{width:100%}
+.mks-cap{font-size:10.5px;color:var(--muted);text-align:center;line-height:1.5}
+.mks-mol{font-size:12px;font-weight:600}
+</style>
+
+<script id="mks-js-m">
+/* เมนู "การตลาด vs ยอดขาย" — อ่านจาก MKT_SPEND ที่ marketing_update.py เขียนไว้
+   ยอดขายอ่านจาก TOTAL_REV ในหน้า (แหล่งเดียวกับกราฟอื่น) ถ้าไม่มีจึงใช้ค่าที่ฝังมา */
+const MKS_CAT = [
+  {k:'sh',    n:'Ads Shopee',  c:'#ee4d2d'},
+  {k:'tk',    n:'Ads TikTok',  c:'#111111'},
+  {k:'lz',    n:'Ads Lazada',  c:'#1b04a1'},
+  {k:'fb',    n:'Ads Facebook',c:'#1877f2'},
+  {k:'kol',   n:'KOL',         c:'#8b5cf6'},
+  {k:'event', n:'Event',       c:'#f59e0b'}
+];
+const MKS_REVC = '#22c55e';
+function mksNum(v){return v==null?null:Math.round(v).toLocaleString('en-US');}
+function mksRev(r){
+  try{ if(typeof TOTAL_REV!=='undefined' && TOTAL_REV[r.i]!=null) return TOTAL_REV[r.i]; }catch(e){}
+  return r.rev;
+}
+function renderMktSpend(elId){
+  const el=document.getElementById(elId); if(!el) return;
+  const D=(typeof MKT_SPEND!=='undefined')?MKT_SPEND:null;
+  if(!D||!D.months||!D.months.length){el.innerHTML='<div class="mks-note">ยังไม่มีข้อมูล</div>';return;}
+  const rows=D.months;
+  const miss=MKS_CAT.filter(c=>rows.every(r=>r[c.k]==null));
+
+  let h='<div class="mks-wrap">';
+  h+='<div class="mks-legend"><span class="mks-lg"><i class="mks-sw" style="background:'+MKS_REVC+'"></i>ยอดขายรวม</span>';
+  MKS_CAT.forEach(c=>{h+='<span class="mks-lg"><i class="mks-sw" style="background:'+c.c+
+    (miss.includes(c)?';opacity:.25':'')+'"></i>'+c.n+(miss.includes(c)?' (รอข้อมูล)':'')+'</span>';});
+  h+='</div>';
+
+  /* ── ตาราง ─────────────────────────────────────────────── */
+  h+='<div class="mks-scroll"><table class="mks-tbl"><thead><tr><th>เดือน</th><th>ยอดขายรวม</th>';
+  MKS_CAT.forEach(c=>{h+='<th>'+c.n+'</th>';});
+  h+='<th>ค่าการตลาดรวม</th><th>% ต่อยอดขาย</th><th>ยอดขาย/ค่าการตลาด</th></tr></thead><tbody>';
+  rows.forEach(r=>{
+    const rev=mksRev(r);
+    h+='<tr><td>'+r.label+'</td><td>'+mksNum(rev)+'</td>';
+    MKS_CAT.forEach(c=>{
+      h+= r[c.k]==null ? '<td class="mks-na">รอข้อมูล</td>' : '<td>'+mksNum(r[c.k])+'</td>';
+    });
+    const spend=MKS_CAT.reduce((s,c)=>s+(r[c.k]||0),0);
+    h+='<td class="mks-tot">'+mksNum(spend)+'</td>';
+    h+='<td class="mks-tot">'+(rev?(spend/rev*100).toFixed(2)+'%':'-')+'</td>';
+    h+='<td class="mks-tot">'+(spend?(rev/spend).toFixed(2)+'x':'-')+'</td></tr>';
+  });
+  h+='</tbody></table></div>';
+
+  /* ── กราฟแท่ง: ยอดขาย เทียบ ค่าการตลาด (ซ้อนสีตามประเภท) ── */
+  const mx=Math.max(...rows.map(r=>mksRev(r)));
+  h+='<div class="mks-chart">';
+  rows.forEach(r=>{
+    const rev=mksRev(r), spend=MKS_CAT.reduce((s,c)=>s+(r[c.k]||0),0);
+    h+='<div class="mks-mo"><div class="mks-cols">';
+    h+='<div class="mks-col" title="ยอดขาย '+mksNum(rev)+'" style="height:'+(rev/mx*100)+'%;background:'+MKS_REVC+'"></div>';
+    h+='<div class="mks-col" title="ค่าการตลาด '+mksNum(spend)+'" style="height:'+(spend/mx*100)+'%">';
+    MKS_CAT.forEach(c=>{ const v=r[c.k]||0; if(v>0)
+      h+='<div class="mks-seg" title="'+c.n+' '+mksNum(v)+'" style="height:'+(v/spend*100)+'%;background:'+c.c+'"></div>';});
+    h+='</div></div>';
+    h+='<div class="mks-mol">'+r.label+'</div>';
+    h+='<div class="mks-cap">'+mksNum(rev)+'<br>vs '+mksNum(spend)+'<br>'+(rev?(spend/rev*100).toFixed(1)+'%':'')+'</div>';
+    h+='</div>';
+  });
+  h+='</div>';
+
+  /* ── หมายเหตุ ───────────────────────────────────────────── */
+  h+='<div class="mks-note">';
+  if(miss.length) h+='<b>⚠️ % ต่อยอดขายยังไม่รวม '+miss.map(c=>c.n).join(' และ ')+
+    '</b> — ยังไม่มีข้อมูล จึงเว้นไว้ ไม่ได้นับเป็น 0<br>';
+  const pend=rows.filter(r=>r.kol_pending>0);
+  if(pend.length) h+='KOL รอจ่าย (ยังไม่นับในยอดหลัก): '+
+    pend.map(r=>r.label+' '+mksNum(r.kol_pending)+' บาท'+(r.kol_pending_n?' ('+r.kol_pending_n+' ราย)':'')).join(' · ')+'<br>';
+  h+='KOL นับเฉพาะ Status = Done ตามวันที่ทำจ่าย · ข้อมูลครอบถึง '+
+    rows.map(r=>r.label+' ถึง '+r.cov).join(' · ')+'<br>';
+  h+='ตัดข้อมูลที่ '+(D.asof||'-')+' ให้ตรงกับฝั่งยอดขาย (SALES_ASOF)';
+  h+='</div></div>';
+  el.innerHTML=h;
+}
+/* MKT_SPEND:AUTO-START */
+const MKT_SPEND = {"asof":"2026-10-18","missing_sources":["fb","event"],"kol_rule":"Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย","kol_fetched":"2026-10-20 14:24","ads_note":"ดึงจาก Shopee Business Insights / Shopee Ads (get_time_graph) / TikTok Compass / TikTok GMV Max overview — 19 ต.ค. 2569 · ก.ย. 2569 ดึงเพิ่ม 19 ต.ค. 2569 (repla","months":[{"m":"2026-10","label":"ต.ค. 69","i":9,"rev":7545565.5,"sh":767181.0,"tk":693322.56,"lz":6622.79,"fb":null,"event":null,"kol":14108.93,"kol_n":8,"kol_pending":18900.0,"kol_pending_n":9,"cov":"2026-10-18","days":18,"spend":1481235.28,"pct":19.63,"roi":5.09}]};
+/* MKT_SPEND:AUTO-END */
+</script>
+
+<script>document.addEventListener("DOMContentLoaded",function(){try{renderMktSpend("mks-mob");}catch(e){console.error(e);}});</script>
 </body>
 </html>
