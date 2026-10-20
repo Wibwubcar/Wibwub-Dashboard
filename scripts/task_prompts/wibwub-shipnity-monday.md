@@ -5,7 +5,14 @@ description: อัปเดต Top สินค้าขายดี (Sales_Das
 
 ## WIBWUB Shipnity Weekly Update — ทุกวันจันทร์ 10:00 น.
 
-อัปเดต `Data Shipnity/Sales_Dashboard.html` จาก Excel ใน `Data Shipnity/`
+งานนี้อัปเดต **2 ส่วน** จาก Excel ใน `Data Shipnity/`:
+1. `Data Shipnity/Sales_Dashboard.html` — Top สินค้าขายดี
+2. **อาเรย์ยอดขายรายช่องทางใน `WIBWUB_Dashboard.html` + `WIBWUB_Mobile.html`**
+   (`FB_REV`, `LINE_REV`, `CARE_REV`, `WEB_REV`, `MKT_REV`, `POS_REV`, `BEUK_REV`, `FB_ORD`, `LINE_ORD`)
+   Shipnity เป็นแหล่งเดียวของช่องทางเหล่านี้ — ก่อน 20 ต.ค. 2569 ไม่มีงานไหนเขียนเลย
+   ค่าจึงค้างซ้ำเดิมตั้งแต่ มิ.ย. และสองหน้าโชว์ไม่ตรงกัน (ยอดรวม ต.ค. ต่างกัน 334,351 บาท)
+   สคริปต์เขียนค่าเดียวกันลงทั้ง 2 หน้าทุกรอบ และ **ตัดข้อมูลที่ `SALES_ASOF` เสมอ**
+   เพื่อให้ยอดรวมเดือนล่าสุดไม่คาบเกี่ยวคนละวันกับ Shopee/TikTok/Lazada
 พนักงาน upload ไฟล์ใหม่ก่อน 10:00 น. ทุกวันจันทร์
 
 BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
@@ -31,6 +38,7 @@ cd "$BASE" && python3 scripts/shipnity_update.py --dry-run
 `{"status":"DRY_RUN","lines":44216,"order_counts":1862,"products":217,"channels":17,"date_min":"2026-01-01","date_max":"2026-10-19","raw_mb":2.26,"page_mb_before":2.11}`
 
 ตรวจด้วยตา: `date_max` ควรเป็นวันล่าสุดที่มีไฟล์ · `lines` ควรอยู่หลักหมื่น ไม่ใช่หลักล้าน · `raw_mb` ควรใกล้ `page_mb_before`
+· `asof` ต้องตรงกับ `SALES_ASOF` ในหน้า · `channels_changed` บอกว่าอาเรย์ไหนในหน้าไหนจะเปลี่ยน
 ถ้า `status` เป็น `ERROR` → **หยุดและรายงาน** ห้ามแก้ตัวเลขเองหรือเขียนวิธีอื่น
 
 ### 2. รันจริง
@@ -47,7 +55,7 @@ exit code: `0` = อัปเดตแล้ว (bump sw.js ให้ด้ว�
 
 ```bash
 cd "$BASE"
-git add "Data Shipnity/Sales_Dashboard.html" sw.js
+git add "Data Shipnity/Sales_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
 git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: Shipnity Top สินค้าขายดี $(date +%Y-%m-%d)"
 ```
@@ -62,8 +70,12 @@ git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
 - ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดเอง ห้ามกรอกค่าสมมุติ
 - ถ้า dry-run หรือรันจริงได้ `ERROR` / exit 2: หยุดและรายงาน **ห้ามหาทางอ้อม ห้าม reimplement**
 - ถ้าต้องแก้วิธีคำนวณ ให้แก้ `process_shipnity()` ใน `wibwub_update.py` ที่เดียว อย่าแก้ที่ไฟล์นี้
+- การ map ช่องทาง -> อาเรย์ อยู่ใน `CH_ARRAYS` / `CH_ORDERS` ของ `scripts/shipnity_update.py`
+  (`LINE_REV` = Line OA + Line Shopping · `BEUK_REV` = เบิกของ · `CARE_REV` = Carcare)
+- **ห้ามแก้อาเรย์ช่องทางด้วยมือ** ให้สคริปต์เขียนเท่านั้น ไม่งั้นสองหน้าจะหลุดจากกันอีก
 
 ## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
 
-ช่วงวันที่ที่ครอบคลุม (`date_min` → `date_max`), จำนวน lines / order_counts / products,
-ขนาดหน้าก่อน-หลัง, commit id หรือ "ไม่มีข้อมูลใหม่", และ error ถ้ามี
+ช่วงวันที่ที่ครอบคลุม (`date_min` → `date_max`), `asof` ที่ใช้ตัด, จำนวน lines / order_counts / products,
+ขนาดหน้าก่อน-หลัง, อาเรย์ช่องทางที่เปลี่ยน + ยอด FB/LINE/CARE ของเดือนล่าสุด,
+commit id หรือ "ไม่มีข้อมูลใหม่", และ error ถ้ามี
