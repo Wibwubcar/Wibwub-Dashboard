@@ -9,7 +9,7 @@
 ใช้:  python3 scripts/shipnity_update.py [--dry-run]
 exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน · 2 = ข้อมูลไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
 """
-import sys, json, argparse
+import sys, json, argparse, re
 from pathlib import Path
 
 BASE = Path('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com'
@@ -18,6 +18,73 @@ PAGE = BASE / 'Data Shipnity' / 'Sales_Dashboard.html'
 
 # คีย์ที่ JS ในหน้าเว็บอ้างผ่าน RAW.* — ขาดตัวใดตัวหนึ่งหน้าเว็บพังทันที
 REQUIRED = {'date_min', 'date_max', 'channels', 'products', 'lines', 'order_counts'}
+
+# ── อาเรย์ยอดขายรายช่องทางใน WIBWUB_Dashboard.html / WIBWUB_Mobile.html ──────
+# Shipnity เป็นแหล่งเดียวของช่องทางเหล่านี้ (ไม่มีใน Google Sheets)
+# ก่อน 20 ต.ค. 2569 ไม่มีงานไหนเขียนเลย -> ค่าค้างซ้ำเดิมตั้งแต่ มิ.ย. และสองหน้าไม่ตรงกัน
+MAIN_PAGES = ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']
+CH_ARRAYS = {                      # ชื่ออาเรย์ -> ช่องทางใน Shipnity ที่รวมเข้าด้วยกัน
+    'FB_REV':   ['Facebook'],
+    'LINE_REV': ['Line OA', 'Line Shopping'],
+    'CARE_REV': ['Carcare'],
+    'WEB_REV':  ['Website'],
+    'MKT_REV':  ['Marketing'],
+    'POS_REV':  ['POS'],
+    'BEUK_REV': ['เบิกของ'],
+}
+CH_ORDERS = {'FB_ORD': ['Facebook'], 'LINE_ORD': ['Line OA', 'Line Shopping']}
+
+
+def _asof(html):
+    """วันสุดท้ายที่ฝั่ง Sales (Shopee/TikTok/Lazada) ครอบถึง — ตัด Shipnity ให้เท่ากัน
+    ไม่งั้นยอดรวมเดือนล่าสุดจะคาบเกี่ยวคนละวัน (Shipnity มักมีข้อมูลล่วงหน้า 1 วัน)"""
+    m = re.search(r"SALES_ASOF\s*=\s*'(\d{4}-\d{2}-\d{2})'", html)
+    return m.group(1) if m else None
+
+
+def channel_months(raw, asof):
+    """ยอดขาย/ออเดอร์รายเดือนต่อช่องทาง จาก order_counts (ระดับออเดอร์ dedup แล้ว)"""
+    CH = raw['channels']; agg = {}
+    for o in raw['order_counts']:
+        d = o['d']
+        if asof and d > asof: continue
+        mo = d[:7]
+        agg.setdefault(mo, {}).setdefault(CH[o['c']], {'r': 0.0, 'n': 0})
+        agg[mo][CH[o['c']]]['r'] += o['r']; agg[mo][CH[o['c']]]['n'] += o['n']
+    return agg
+
+
+def write_channels(raw, asof, dry=False):
+    """เขียนอาเรย์ช่องทางลงทั้ง 2 หน้าให้ค่าตรงกัน — คืน (report, changed)"""
+    agg = channel_months(raw, asof)
+    rep, changed = {}, False
+    for page in MAIN_PAGES:
+        fp = BASE / page
+        if not fp.exists(): die('ไม่พบไฟล์', page)
+        t0 = t = fp.read_text(encoding='utf-8')
+        m5 = re.search(r'const\s+M5\s*=\s*\[([^\]]*)\]', t)
+        if not m5: die('ไม่พบ M5 (ชื่อเดือน)', page)
+        nmo = len([x for x in m5.group(1).split(',') if x.strip()])
+        yr = max(agg)[:4] if agg else None
+        mos = [f'{yr}-{i:02d}' for i in range(1, nmo + 1)]
+        for name, chans in {**CH_ARRAYS, **CH_ORDERS}.items():
+            key = 'n' if name.endswith('_ORD') else 'r'
+            vals = [round(sum(agg.get(mo, {}).get(c, {}).get(key, 0) for c in chans), 2) for mo in mos]
+            vals = [int(v) if v == int(v) else v for v in vals]
+            pat = re.compile(r'(const\s+' + name + r'\s*=\s*\[)([^\]]*)(\])')
+            mm = pat.search(t)
+            if not mm: continue                      # อาเรย์นี้ไม่มีในหน้านี้ -> ข้าม
+            old = [x.strip() for x in mm.group(2).split(',') if x.strip()]
+            if len(old) != nmo:
+                die(f'{name} ใน {page} ยาว {len(old)} ไม่เท่า M5 ({nmo}) — ไม่เขียนทับ')
+            new = ','.join(str(v) for v in vals)
+            if mm.group(2).strip() != new:
+                rep.setdefault(page, {})[name] = {'old': old, 'new': [str(v) for v in vals]}
+                t = t[:mm.start(2)] + new + t[mm.end(2):]
+        if t != t0:
+            changed = True
+            if not dry: fp.write_text(t, encoding='utf-8')
+    return rep, changed
 
 
 def die(msg, detail=None):
@@ -64,11 +131,20 @@ def main():
                'date_max': raw['date_max'], 'raw_mb': size_mb,
                'page_mb_before': round(len(prev) / 1e6, 2)}
 
+    asof = _asof((BASE / MAIN_PAGES[0]).read_text(encoding='utf-8'))
+    summary['asof'] = asof
+
     if a.dry_run:
+        rep_ch, ch_changed = write_channels(raw, asof, dry=True)
+        summary['channels_changed'] = {pg: {k: f"{v['old'][-1]} -> {v['new'][-1]}" for k, v in d.items()}
+                                       for pg, d in rep_ch.items()}
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False))
         return 0
 
     changed = W.update_html(None, None, None, raw) or PAGE.read_text(encoding='utf-8') != prev
+    rep_ch, ch_changed = write_channels(raw, asof)
+    summary['channels_changed'] = {pg: sorted(d) for pg, d in rep_ch.items()}
+    changed = changed or ch_changed
     if changed:
         W.bump_sw()
     summary['page_mb_after'] = round(len(PAGE.read_text(encoding='utf-8')) / 1e6, 2)
