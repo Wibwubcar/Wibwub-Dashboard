@@ -319,10 +319,15 @@ function mksRender(){
        '<div class="mks-range">ช่วงที่เลือก '+f+' ถึง '+t+' ('+A.days+' วัน)'+
        (P?' · เทียบกับ '+pf+' ถึง '+pt:' · ไม่มีช่วงก่อนหน้าให้เทียบ (ข้อมูลเริ่ม '+lo+')')+'</div></div>';
 
+    /* วันที่ขาดจะ "ไม่ถูกนับเป็น 0" อยู่แล้ว เพราะ mksAgg วนเฉพาะวันที่มีจริง
+       ป้ายนี้มีไว้กันอ่านผิดว่ายอดเดือนนั้นต่ำ ทั้งที่จริงคือข้อมูลยังดึงมาไม่ครบ */
+    const want=mksDiffDays(f,t)+1, gap=Math.max(0, want-A.days);
+
     /* ป้ายวันที่ข้อมูล */
     const C=MKT_SPEND.cov||{};
     h+='<div class="mks-badges">'+MKS_SRC.map(s=>'<span class="mks-bd">'+s.n+' <b>'+(C[s.k]||'–')+'</b></span>').join('')+
-       miss.map(c=>'<span class="mks-bd warn">'+c.n+' <b>รอข้อมูล</b></span>').join('')+'</div>';
+       miss.map(c=>'<span class="mks-bd warn">'+c.n+' <b>รอข้อมูล</b></span>').join('')+
+       (gap>0?'<span class="mks-bd warn">ช่วงนี้ยังไม่มีข้อมูล <b>'+gap+' วัน</b> จาก '+want+'</span>':'')+'</div>';
 
     /* KPI */
     const kpi=[
@@ -366,7 +371,10 @@ function mksRender(){
     h+='ยอดขาย TikTok รายวันเป็นยอดก่อนหักคำสั่งซื้อที่ยกเลิก จึงสูงกว่าหน้า Sales '+
        'ราว 1% (ต.ค. ต่างกัน 24,572 บาท) ช่องอื่นตรงกันทุกบาท<br>';
     h+='ยอดขาย Shopee/TikTok/Lazada ใช้ข้อมูลรายวันจาก Ads Dashboard · ช่องทางที่เหลือจาก Shipnity · '+
-       'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done<br>ข้อมูลรายวันมีตั้งแต่ '+lo+' ถึง '+hi;
+       'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done<br>';
+    if(gap>0) h+='<b>ช่วงที่เลือกมีข้อมูลจริง '+A.days+' วัน จาก '+want+' วัน</b> — '+gap+
+      ' วันที่ขาดไม่ได้ถูกนับเป็น 0 แต่ยอดรวมของช่วงนี้จึงต่ำกว่าความเป็นจริง<br>';
+    h+='ข้อมูลรายวันมีตั้งแต่ '+lo+' ถึง '+hi;
     h+='</div></div>';
     el.innerHTML=h;
   });
