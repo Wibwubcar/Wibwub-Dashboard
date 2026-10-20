@@ -47,6 +47,12 @@ browser_batch([
 
 ## Step 2 — เปลี่ยน Date Range เป็น 60 วัน
 
+> 🚨 **ต้องใช้ "60 วันล่าสุด" เท่านั้น ห้ามใช้ 28 / 365 / กำหนดเอง เด็ดขาด**
+> export ของ TikTok **ติดป้ายวันที่ไม่เหมือนกันตามช่วงที่เลือก** — ไฟล์ 365 วันช้ากว่าไฟล์ 60 วัน
+> 1 วันทุกแถว (เคยเทียบแล้ว ซ้อนกัน 59 วัน ตรงกัน 0 วัน) ถ้าเผลอใช้คนละช่วงแล้วเอามาต่อกัน
+> ข้อมูลจะเหลื่อมและกราฟจะขาดช่วง (บั๊กที่เกิดจริงกับ ส.ค./ก.ย. 2569 — แก้เมื่อ 20 ต.ค.)
+> ถ้าหน้าเว็บไม่มีตัวเลือก "60 วัน" ให้ **หยุดและรายงาน ห้ามเลือกช่วงอื่นแทน**
+
 1. คลิกปุ่ม date range (มุมขวาบน แสดง "7 วันล่าสุด")
 2. คลิก "60 วัน"
 3. Wait 2 วินาที
@@ -120,6 +126,36 @@ if delta_str:
 print(f"✅ Updated: {latest_count:,} followers ({latest_date})")
 ```
 
+## Step 4B — ด่านตรวจความต่อเนื่อง (ทำทุกครั้ง ห้ามข้าม)
+
+หลังรัน `update_followers.py` และ **ก่อน** commit ให้ตรวจว่า `start` ของทุกเดือนใน `FOL_DATA`
+เท่ากับ `end` ของเดือนก่อนหน้า และ `end` ของแต่ละเดือนตรงกับ `TK_FOL` ใน `WIBWUB_Mobile.html`:
+
+```bash
+cd "$BASE" && python3 - <<'EOF'
+import re,sys
+d=open('WIBWUB_Dashboard.html',encoding='utf-8').read()
+seg=d[d.find('const FOL_DATA'):]
+ent=[]
+for m in re.finditer(r"\{label:'([^']+)',start:(\d+),end:(\d+)",seg):
+    ent.append((m.group(1),int(m.group(2)),int(m.group(3))))
+    if m.group(1).startswith('ตุลาคม') or len(ent)>=24: break
+bad=[]
+for i in range(1,len(ent)):
+    if ent[i][1]!=ent[i-1][2]:
+        bad.append(f"{ent[i][0]}: start={ent[i][1]} แต่ {ent[i-1][0]} end={ent[i-1][2]}")
+tk=[int(x) for x in re.search(r'const TK_FOL = \[([^\]]*)\]',
+      open('WIBWUB_Mobile.html',encoding='utf-8').read()).group(1).split(',')]
+for i,(lab,s,e) in enumerate(ent):
+    if i<len(tk) and tk[i]!=e: bad.append(f"{lab}: Dashboard end={e} แต่ Mobile TK_FOL={tk[i]}")
+print("ไม่ผ่าน:\n  "+"\n  ".join(bad) if bad else "ผ่าน: ทุกเดือนต่อเนื่องและตรงกับ Mobile")
+sys.exit(1 if bad else 0)
+EOF
+```
+
+ถ้า exit != 0 → **หยุดทันที ห้าม commit ห้ามแก้ตัวเลขเอง** ให้รายงานว่าเดือนไหนไม่ต่อเนื่อง
+สาเหตุที่พบบ่อยคือใช้ export คนละช่วง (ดู Step 2) หรือสคริปต์เขียนทับเฉพาะเดือนปัจจุบัน
+
 ## Step 5 — Bump sw.js + Git commit + สร้าง push_now.command
 
 ```bash
@@ -149,5 +185,8 @@ chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@
 - ไฟล์ zip ที่ download อาจชื่อ `Followers_wibwubcar (N).zip` หรือ `Followers_wibwubcar.zip`
 - ถ้า download ไม่สำเร็จ ให้ลอง DOM scraping แทน: `document.body.innerText` หา "ผู้ติดตามทั้งหมด" แล้วดูค่าถัดไป
 - ไฟล์ TikTok export มีข้อมูล 60 วันย้อนหลัง อัปเดตทุกวันจะได้ข้อมูล realtime
+- **convention วันที่:** ยึดไฟล์ 60 วันเป็นหลักเสมอ · ถ้าจำเป็นต้องใช้ไฟล์ช่วงอื่นมาเติมย้อนหลัง
+  ต้องเลื่อน +1 วัน (กฎที่ตรวจแล้ว: `ค่าวันที่ D ในไฟล์ 60 วัน = ค่าวันที่ D-1 ในไฟล์ 365 วัน` ตรง 60/60)
+- `FOL_DATA[เดือน].start` = ยอดของวันสุดท้ายของเดือนก่อน (ไม่ใช่วันที่ 1 ของเดือนนั้น)
 - git push จาก sandbox จะล้มเหลว HTTP 403 (proxy) → commit ไว้แล้วรายงานให้ user กด push_now.command
 - navigate ค้าง → ตรวจสอบว่าใช้ browser_batch ไม่ใช่ navigate standalone
