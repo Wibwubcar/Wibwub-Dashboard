@@ -1,86 +1,90 @@
 ---
 name: wibwub-samp-request-sync
-description: ทุกวัน 09:35/20:35 — ดึงข้อมูลสดจากชีต "ขอสินค้า" มาอัปเดตแท็บ คำขอสินค้า (SAMPLE_MONTHS + SAMPLE_PRODUCTS) ใน WIBWUB_Affiliate_Dashboard.html
+description: ทุกวัน 09:35/20:35 — ดึงชีต "ขอสินค้า" มาอัปเดตแท็บ คำขอสินค้า ใน WIBWUB_Affiliate_Dashboard.html
 ---
 
-<!-- LOCAL-OVERRIDE v1 -->
-> **อ่านก่อน — ข้อนี้ทับคำสั่งที่ขัดกันในไฟล์นี้ทั้งหมด**
-> ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
-> - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
-> - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
-> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
-> - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
-> - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
+## WIBWUB Affiliate — sync แท็บ "คำขอสินค้า" จากชีตสด
 
-## WIBWUB Affiliate Dashboard — sync "คำขอสินค้า" (product-request) tab from the live sheet
+BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
 
-Goal: refresh `SAMPLE_MONTHS` and `SAMPLE_PRODUCTS`/`SAMPLE_PRODUCTS_LAST7D` in `WIBWUB_Affiliate_Dashboard.html` (in the WIBWUB "All" Google Drive workspace folder) so the "คำขอสินค้า" tab reflects the latest rows a team member has added to the source Google Sheet today. This sheet gets new rows added by staff throughout the day, so this must run automatically — don't skip it just because "nothing seems new."
+พนักงานเพิ่มแถวในชีตตลอดวัน งานนี้ต้องรันทุกรอบ **ห้ามข้ามเพราะคิดว่า "ไม่น่ามีอะไรใหม่"**
 
-### Source
+> **ห้ามเขียนสคริปต์อ่าน/คำนวณเอง** ตัวคำนวณจริงคือ `scripts/affiliate/samp_update.py`
+> มันจัดการครบทั้ง `SAMPLE_MONTHS` (req/appr/shipped/posted/clips/waiting), `SAMPLE_LAST7D`,
+> `SAMPLE_PRODUCTS`, `SAMPLE_PRODUCTS_LAST7D`, `SAMPLE_POSTWAIT`, `SAMPLE_DATA_ASOF`
+> และ `node --check` ก่อนเขียนไฟล์
+> เวอร์ชันเก่าของพรอมป์นี้เคยบรรยายคอลัมน์เองแล้ว**ผิด** (ใส่คอลัมน์ `NO.` ที่ไม่มีจริง
+> ทำให้ index เลื่อนทั้งแถว → อ่านวันที่ไม่ได้ → ล้างข้อมูลทั้งเดือนเป็น 0) จึงถอดออกทั้งหมด
 
-Google Sheet **"Top 30 Affiliate"**, fileId `1EYzinmagF1iTXgKe7PNU5SVD9WcTvHhuO054aWKITxg`, tab **"ขอสินค้า"**, gid `1644804644`.
+---
 
-### STEP 1 — Fetch the sheet live via Chrome
+## ขั้นที่ 1 — ดึงชีตเป็น CSV ลงดิสก์
 
-1. Select the Mac Chrome browser explicitly (never let it auto-pick — could run on the wrong device if multiple browsers are connected). Call `list_connected_browsers` and pick the entry with `osPlatform` macOS / `isLocal:true`, then `select_browser(deviceId=...)` → `tabs_context_mcp(createIfEmpty=true)`.
-2. Navigate (via `browser_batch`, NEVER standalone `navigate` — it hangs) to any open tab, then run `javascript_tool` to fetch:
-   ```js
-   fetch('https://docs.google.com/spreadsheets/d/1EYzinmagF1iTXgKe7PNU5SVD9WcTvHhuO054aWKITxg/gviz/tq?tqx=out:csv&gid=1644804644', {credentials:'include'})
-     .then(r => r.text()).then(t => { window.__sheetCsv = t; window.__sheetCsvLen = t.length; });
-   ```
-   Wait a couple seconds, then read `window.__sheetCsvLen` to confirm it fetched, then read `window.__sheetCsv` back out.
-3. **Output truncation gotcha:** `javascript_tool` truncates returned strings at ~900-1000 chars. Read `window.__sheetCsv` back in ~900-char slices (`window.__sheetCsv.slice(0,900)`, `.slice(900,1800)`, etc. using `window.__sheetCsvLen` to know when to stop) across multiple calls and reconstruct the full CSV text yourself before parsing.
-4. Parse the CSV with a proper quoted-field-aware parser (char-by-char state machine) — a naive `.split(',')`/`.split('\n')` will break on creator names or product lists that contain commas inside quotes.
+ชีต **"Top 30 Affiliate"** · fileId `1EYzinmagF1iTXgKe7PNU5SVD9WcTvHhuO054aWKITxg` · แท็บ **"ขอสินค้า"** · gid `1644804644`
 
-### STEP 2 — Column layout (do not confuse col 4 and col 5)
+> 🚨 **ต้องใช้ `export?format=csv` เท่านั้น ห้ามใช้ `gviz/tq?tqx=out:csv`**
+> `gviz` เคารพ filter view ของชีต — ทดสอบเมื่อ 20 ต.ค. ได้กลับมาแค่ **304 แถว (21 ก.ย.–19 ต.ค.)**
+> ขณะที่ `export` ได้ครบ **2,647 แถว (21 ต.ค. 2025–19 ต.ค. 2026)** ถ้าใช้ gviz ข้อมูลเดือนเก่าจะหายหมด
+> และ **ห้ามดึงผ่าน `get_values` แล้วเขียนไฟล์เอง** — 2,600+ แถวเปลืองมากและเสี่ยงตกหล่น
 
-`NO. | Date | Creator | url | สินค้าที่ Creator ขอ | สินค้าที่ให้ | Status | Category | GMV 1 เดือนล่าสุด | Top 3 สินค้าขายได้ 1 เดือนล่าสุด | ...`
+1. Chrome: `list_connected_browsers` → `select_browser` deviceId `b75a6bb0-5b78-4e44-92a8-75224f1ce4ee` → `tabs_context_mcp(createIfEmpty=true)`
+2. `navigate` ไป URL นี้ตรง ๆ (Chrome จะโหลดไฟล์เอง — **อย่าใช้ `fetch` จะติด CORS**):
+   `https://docs.google.com/spreadsheets/d/1EYzinmagF1iTXgKe7PNU5SVD9WcTvHhuO054aWKITxg/export?format=csv&gid=1644804644`
+   รอ 8 วินาที · ถ้าขึ้นหน้า login: **หยุดและรายงาน ห้ามกรอกรหัสผ่าน**
+3. ปิดแท็บที่เปิดด้วย `tabs_close_mcp`
+4. หาไฟล์แล้วคัดลอกไปที่ work (ไฟล์ชื่อ `Top 30 Affiliate  - ขอสินค้า.csv`
+   และ launchd `com.wibwub.download-mover` อาจย้ายออกจาก Downloads แล้ว):
 
-- col 1 (Date) = `DD/MM/YYYY` in Buddhist era. Convert year: `if (yr > 2400) yr -= 543;`
-- **col 4 "สินค้าที่ Creator ขอ" = the column to use for counting requests per product.** It's populated for both Approved and Rejected rows at similar rates (~80%).
-- col 5 "สินค้าที่ให้" (what was shipped) — **do NOT use this for request counts.** It's only filled in on approval, so building per-product counts from it systematically undercounts/mislabels rejected requests. (This was a real bug shipped once and caught by the user — do not reintroduce it.)
-- col 6 Status: `Approve`, `Reject`, `On Process`, `Done`, `Sent Product`, `Waiting`, or blank.
-
-### STEP 3 — Recompute data
-
-Bucket rows by month (`YYYY-MM` from col 1, after Buddhist→Gregorian conversion).
-
-For `SAMPLE_MONTHS`: recompute `funnel.req` (count of rows) and `funnel.appr` (count where Status=='Approve') for the CURRENT month only (in-progress month, since past months are already finalized and confirmed — don't silently rewrite historical months; if a past month's row count changed, flag it in the report instead of overwriting).
-
-For `SAMPLE_PRODUCTS[currentMonthKey]` and the `all`/`last7d` aggregates, rebuild using col 4:
-```js
-{
-  total: N,
-  unspecified: {c:N, appr:N, rej:N, other:N},   // rows where col4 is blank/"-"
-  items: [ {n:'ProductName', c:N, appr:N, rej:N, other:N}, ... ]  // one per product name in col4
-}
+```bash
+mkdir -p "$BASE/scripts/affiliate/work"
+F=$(ls -t /Users/thanasablilutanon/Downloads/*ขอสินค้า*.csv \
+          "$BASE/downloads_archive"/*ขอสินค้า*.csv 2>/dev/null | head -1)
+[ -z "$F" ] && { echo "ไม่พบไฟล์ CSV ที่โหลดมา"; exit 1; }
+cp "$F" "$BASE/scripts/affiliate/work/samp.csv"
+python3 -c "
+import csv,sys
+r=list(csv.reader(open('$BASE/scripts/affiliate/work/samp.csv',encoding='utf-8-sig')))
+print('แถวดิบ',len(r))
+sys.exit(0 if len(r)>=2000 else 1)"
 ```
-- `appr` = Status=='Approve' count, `rej` = Status=='Reject' count, `other` = everything else (On Process/Done/Sent Product/Waiting/blank).
-- A request can list multiple products in col4 (comma-separated) — count it toward EACH product listed. `sum(items[].c)` can legitimately exceed `total`; this is expected and documented in the on-page note, don't dedupe it away.
-- `SAMPLE_PRODUCTS_LAST7D` = rolling last-7-calendar-days window computed directly from the date column, independent of the monthly buckets.
-- `SAMPLE_PRODUCTS['all']`/`productsByKey('all')` is computed on-the-fly in the JS itself (sums all monthly buckets) — you don't need to hardcode it, just make sure the per-month buckets are correct and that function will stay correct automatically.
 
-### STEP 4 — Update the file
+ถ้าหาไฟล์ไม่เจอ หรือแถวดิบน้อยกว่า 2,000: **หยุดและรายงาน ห้ามเดาข้อมูล**
+(สคริปต์มีด่านของตัวเองอีกชั้น — ถ้าแถวที่มีวันที่ < 500 มันจะ die เอง)
 
-In `WIBWUB_Affiliate_Dashboard.html`:
-- `SAMPLE_MONTHS` (~line 8773): update the CURRENT month's `funnel.req`/`funnel.appr` entry only. If the current month's key doesn't exist yet in the array, append a new entry (copy the shape of the last entry, mark `partial:true` with an updated date range like `"01/MM/YYYY - DD/MM/YYYY"` in `range` and `label`).
-- `SAMPLE_PRODUCTS` (near `productsByKey`, ~line 8830): update/replace the current month's entry with the recomputed object from STEP 3.
-- `SAMPLE_PRODUCTS_LAST7D`: replace with the freshly recomputed rolling-7-day object.
-- Do not touch any other month's data.
+## ขั้นที่ 2 — ดูก่อนว่าจะเปลี่ยนอะไร
 
-### STEP 5 — Validate, bump cache, commit
+```bash
+cd "$BASE" && python3 scripts/affiliate/samp_update.py scripts/affiliate/work/samp.csv --dry
+```
 
-1. Extract the `<script>` block from the HTML and run `node --check` on it (via bash) — must pass with no errors before proceeding.
-2. Run `git diff --stat WIBWUB_Affiliate_Dashboard.html` — if the diff touches more than the SAMPLE_MONTHS/SAMPLE_PRODUCTS/SAMPLE_PRODUCTS_LAST7D regions, stop and do not commit; report the anomaly instead.
-3. Bump `sw.js`: read current `const CACHE = 'wibwub-vNNN';`, increment by 1, write it back.
-4. `git add WIBWUB_Affiliate_Dashboard.html sw.js` then commit with `git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: คำขอสินค้า $(date +%Y-%m-%d)"`.
-5. Sandbox `git push` will fail with a 403 proxy error — this is expected, do not troubleshoot it. Make sure `push_now.command` exists in the workspace root and stages `WIBWUB_Affiliate_Dashboard.html sw.js` (create/refresh it if missing, following the pattern used by the other wibwub-* scheduled tasks).
+ตรวจด้วยตา: `rows` ควรใกล้เคียงหรือมากกว่ารอบก่อน · `latest_row` ควรเป็นวันนี้หรือเมื่อวาน ·
+`this_month.req` ไม่ควรลดลง · ถ้า `status` เป็น `ERROR` → **หยุดและรายงาน**
 
-### STEP 6 — Report
+## ขั้นที่ 3 — รันจริง
 
-Short Thai summary: current month req/approve/reject totals, top products this month, whether any anomaly was flagged (e.g. row count for a past month changed, or diff looked too large to commit), sw.js version bump, and remind to double-click `push_now.command` to deploy.
+```bash
+cd "$BASE" && python3 scripts/affiliate/samp_update.py scripts/affiliate/work/samp.csv
+```
 
-### If something fails
-- Chrome not connected / session expired → log it and stop, don't guess at data.
-- CSV fetch returns much shorter than expected or header row doesn't match the expected columns → the sheet structure may have changed; stop and flag for manual review rather than writing bad data.
-- `node --check` fails → do not commit; report the syntax issue instead.
+exit `0` = อัปเดต + commit แล้ว · `10` = ไม่มีอะไรเปลี่ยน · อื่น ๆ = error
+
+สคริปต์ bump `sw.js` และ commit ให้เอง **ไม่ต้อง `git push`** (launchd autopush ทำให้ภายใน 2 นาที)
+
+ถ้าผลลัพธ์มี `commit: "SKIPPED: ... มีงานค้าง ..."` แปลว่ามีคนแก้ `WIBWUB_Affiliate_Dashboard.html`
+ค้างไว้ก่อน สคริปต์เขียนข้อมูลใหม่ให้แล้วแต่ไม่ commit เพื่อไม่ให้กวาดงานคนอื่นเข้าไปด้วย
+→ **ให้รายงาน ไม่ต้อง commit เอง**
+
+---
+
+## RULES
+
+- ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดเอง ห้ามกรอกค่าสมมุติ
+- **ห้ามลบ `.git/index.lock` หรือ `.git/HEAD.lock`** มีงานอื่นรันพร้อมกันได้ ถ้าติดให้รอแล้วลองใหม่
+- ถ้าต้องแก้วิธีคำนวณ ให้แก้ `scripts/affiliate/samp_update.py` ที่เดียว อย่าแก้ที่ไฟล์นี้
+- คอลัมน์สินค้าที่ใช้คือ **"สินค้าที่ Creator ขอ"** เท่านั้น ห้ามใช้ "สินค้าที่ให้"
+
+## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
+
+จำนวนแถวที่อ่านได้, วันที่ล่าสุดในชีต, คำขอ/อนุมัติ/โพสต์แล้ว ของเดือนนี้,
+รอบ 7 วันล่าสุด, จำนวนที่รอโพสต์, สินค้าที่ถูกขอมากสุด 5 อันดับ,
+commit id หรือ "ไม่มีข้อมูลใหม่" หรือเหตุผลที่ไม่ได้ commit, และ error ถ้ามี
