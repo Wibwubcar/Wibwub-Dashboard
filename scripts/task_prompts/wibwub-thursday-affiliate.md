@@ -73,9 +73,8 @@ cd "$BASE" && python3 scripts/vid_merge.py
 ## ขั้นที่ 5 — commit (เฉพาะตอนมีอะไรเปลี่ยน)
 
 ```bash
-cd "$BASE"
-git add WIBWUB_Affiliate_Dashboard.html WIBWUB_Mobile.html sw.js "Data Affiliate"
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add WIBWUB_Affiliate_Dashboard.html WIBWUB_Mobile.html sw.js "Data Affiliate"
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: Affiliate $(date +%Y-%m-%d)"
 ```
 

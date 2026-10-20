@@ -189,18 +189,18 @@ ls -lt "$BASE/data Ads/TikTok/Business Ads/" | head -3
 6. ตรวจ + commit:
 
 ```bash
-cd "$BASE"
+export BASE
 python3 - <<'PY'
-import re, subprocess, tempfile, pathlib
-p = pathlib.Path('data Ads/WIBWUB_Ads_Dashboard.html')
+import re, os, subprocess, tempfile, pathlib
+p = pathlib.Path(os.environ['BASE'])/'data Ads/WIBWUB_Ads_Dashboard.html'
 js = pathlib.Path(tempfile.gettempdir())/'ads_check.js'
 js.write_text('\n;\n'.join(re.findall(r'<script[^>]*>([\s\S]*?)</script>', p.read_text(encoding='utf-8'))), encoding='utf-8')
 r = subprocess.run(['node','--check',str(js)], capture_output=True, text=True)
 print('node --check', 'OK' if r.returncode==0 else 'FAIL\n'+r.stderr[:400])
 PY
-python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed ต้องใส่ '' และเคยพังเงียบ ๆ มาแล้ว
-git add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+python3 "$BASE/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed ต้องใส่ '' และเคยพังเงียบ ๆ มาแล้ว
+git -C "$BASE" add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: TikTok Ads $(date +%Y-%m-%d)"
 ```
 

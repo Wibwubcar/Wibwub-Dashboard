@@ -95,10 +95,9 @@ cd "$BASE" && python3 tiktok_sku_merge.py tiktok_sku_daily_new.json
 ## ขั้นที่ 6 — ตรวจ + bump + commit
 
 ```bash
-cd "$BASE"
 python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
-git add WIBWUB_Dashboard.html sw.js tiktok_product_daily_new.json tiktok_sku_daily_new.json
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add WIBWUB_Dashboard.html sw.js tiktok_product_daily_new.json tiktok_sku_daily_new.json
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto: TikTok product/SKU $(date +%Y-%m-%d)"
 ```
 

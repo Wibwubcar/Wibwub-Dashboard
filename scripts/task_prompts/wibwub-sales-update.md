@@ -46,9 +46,8 @@ exit `0` = อัปเดตแล้ว (bump sw.js ให้ด้วย) · 
 ### 3. commit (เฉพาะตอน exit 0)
 
 ```bash
-cd "$BASE"
-git add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: sales from Sheets $(date +%Y-%m-%d)"
 ```
 

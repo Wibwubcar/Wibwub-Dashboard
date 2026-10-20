@@ -54,9 +54,8 @@ exit code: `0` = อัปเดตแล้ว (bump sw.js ให้ด้ว�
 ### 3. commit (เฉพาะตอน exit 0)
 
 ```bash
-cd "$BASE"
-git add "Data Shipnity/Sales_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add "Data Shipnity/Sales_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: Shipnity Top สินค้าขายดี $(date +%Y-%m-%d)"
 ```
 
