@@ -1,72 +1,87 @@
 ---
 name: wibwub-shopee-live-daily
-description: ทุกวัน 08:37/19:37 — ดึงข้อมูล Shopee Live ใหม่จาก Seller Centre → merge เข้า SH_LIVE_DAILY ใน WIBWUB_Dashboard.html → bump sw.js → commit + push_now.command
+description: ทุกวัน 08:37/19:37 — ดึง Shopee Live รายวัน → merge SH_LIVE_DAILY ใน WIBWUB_Dashboard.html
 ---
 
-<!-- LOCAL-OVERRIDE v1 -->
-> **อ่านก่อน — ข้อนี้ทับคำสั่งที่ขัดกันในไฟล์นี้ทั้งหมด**
-> ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
-> - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
-> - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
-> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
-> - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
-> - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
+## WIBWUB — Shopee Live รายวัน
 
-งาน: อัปเดตข้อมูล Shopee Live รายวัน (ส่วน "📺 ยอดขายไลฟ์สดรายวัน — Shopee Live" ใน WIBWUB_Dashboard.html ที่ใช้ SH_LIVE_DAILY เป็น data source, mirror โครงสร้างเดียวกับ TK_LIVE_DAILY)
+BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
 
-Base folder: /Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All
-ไฟล์หลัก: WIBWUB_Dashboard.html, sw.js
+อัปเดตส่วน "📺 ยอดขายไลฟ์สดรายวัน — Shopee Live" (`SH_LIVE_DAILY`) ใน `WIBWUB_Dashboard.html`
 
-## Step 1 — อ่านสถานะปัจจุบัน
-Read WIBWUB_Dashboard.html, หา `const SH_LIVE_DAILY = {...}` (อยู่หลัง `tklInit(); tklRender();`)
-- `SH_LIVE_DAILY.dates` = array วันที่ต่อเนื่อง (ISO string) ตั้งแต่ 2026-04-01
-- `SH_LIVE_DAILY.daily[date]` = `{gmv, orders, viewers, newFollowers}` — วันที่ไม่มีไลฟ์ค่าจะเป็น 0 ทั้งหมด
-- หา `lastDate` = ตัวสุดท้ายใน `dates` array — นี่คือจุดที่ต้องดึงข้อมูลต่อ (ตั้งแต่ lastDate+1 ถึงวันนี้)
-- ถ้า lastDate เท่ากับหรือมากกว่าวันนี้แล้ว → ข้อมูลอัปเดตล่าสุดแล้ว ไม่ต้องทำอะไรต่อ จบงานเลย
+> **ห้ามเขียนสคริปต์อ่าน CSV/คำนวณเอง** ตัวจริงคือ `scripts/shopee_live_daily.py`
+> ซึ่งรู้จักกับดักของ export นี้แล้ว (คอลัมน์คู่แฝด, ค่าที่ยังไม่ยืนยัน, ไฟล์เก่าทับไฟล์ใหม่)
 
-## Step 2 — ดึงข้อมูล Shopee Live ใหม่ผ่าน Chrome
-ใช้ Chrome MCP (`mcp__Claude_in_Chrome__*`) — ก่อนเริ่มต้อง `select_browser` เลือก browser บน Mac จริงเสมอ (ห้ามปล่อยเลือกอัตโนมัติ), แล้ว `tabs_context_mcp(createIfEmpty=true)` เหมือน task อื่นๆ ของ WIBWUB (ดู wibwub-download-orders-monday เป็นตัวอย่าง pattern การเช็ค session/recovery)
+---
 
-Shopee Seller Centre → เครื่องมือไลฟ์ (Live tools) / Data Center Live Analysis:
-1. Navigate ไปที่ https://seller.shopee.co.th (หรือเมนู "เครื่องมือไลฟ์" ในหน้า Seller Centre) → wait 5s → screenshot
-2. ถ้า redirect ไปหน้า login = session หมด → แจ้งใน completion report ว่าต้อง login Shopee ใน Claude Chrome เอง แล้วหยุดงาน (ห้ามพยายาม login เอง)
-3. หาเมนู "ไลฟ์" หรือ "Live" → "ข้อมูลวิเคราะห์" / "Live Analysis" หรือหน้ารายงานสรุปไลฟ์แต่ละครั้ง (เดิมเคยอยู่ที่ Data Center > Live) — ใช้ `find`/`get_page_text` สำรวจถ้าตำแหน่งเมนูเปลี่ยน
-4. ตั้งช่วงวันที่: lastDate+1 ถึงวันนี้ (ถ้าเป็นวันเดียวกับ lastDate อยู่แล้ว ให้ลองรวมวันปัจจุบันด้วยเผื่อมีไลฟ์เพิ่ม)
-5. กด Export / ส่งออกรายงาน (CSV) ของทุกไลฟ์ในช่วงนั้น → รอดาวน์โหลด
-   ⚠️ ถ้าเจอ Chrome popup "Allow multiple automatic downloads" ให้แจ้งใน completion report ว่าต้องกด Allow เองครั้งนี้ (auto-click ไม่ได้) แล้วลอง export ใหม่อีกครั้งหลัง user กดอนุญาต
-6. ไฟล์ที่โหลดมาจะอยู่ที่ `/Users/thanasablilutanon/Downloads/` — ใช้ `cp` ย้ายไปที่ `All/data ยอดขาย plaform/Shopee Live/` (สร้างโฟลเดอร์นี้ถ้ายังไม่มี) เพื่อเก็บ raw ไว้ตรวจสอบย้อนหลังได้
+## ขั้นที่ 1 — โหลด CSV ของ "เมื่อวาน"
 
-## Step 3 — Parse CSV และรวมยอดต่อวัน
-คอลัมน์ในไฟล์ CSV ของ Shopee Live analysis (อิงจากตารางที่ใช้แสดงผลในหน้า dashboard):
-- วันที่ไลฟ์ → ใช้ mapping เป็น key ISO date (YYYY-MM-DD)
-- ยอดขาย (ยืนยันแล้ว) → `gmv`
-- คำสั่งซื้อ → `orders`
-- ผู้ชมทั้งหมด → `viewers`
-- ผู้ติดตามใหม่ → `newFollowers`
+1. Chrome: `list_connected_browsers` → `select_browser` deviceId `b75a6bb0-5b78-4e44-92a8-75224f1ce4ee` → `tabs_context_mcp(createIfEmpty=true)`
+2. navigate ไป `https://seller.shopee.co.th/creator-center/insight/live`
+   (**ไม่ใช่** `/datacenter/live` — path นั้น 404) · รอ 9 วินาที
+   ถ้าขึ้นหน้า login: **หยุดและรายงาน ห้ามกรอกรหัสผ่าน**
+3. อยู่ที่แท็บ **"ข้อมูลโดยรวม"** · ตรวจ 2 ช่องนี้ด้วย `zoom` ก่อนโหลดเสมอ:
+   - `ระยะเวลาเก็บข้อมูล` = **วันเดียว ของเมื่อวาน** (รูปแบบ `DD-MM-YYYY`)
+   - `ประเภทคำสั่งซื้อ` = **"คำสั่งซื้อที่ยืนยันแล้ว"**
 
-ถ้าวันเดียวมีไลฟ์มากกว่า 1 รอบ ให้ **sum** ทั้ง 4 ค่าเข้าด้วยกันเป็นค่าของวันนั้นวันเดียว (เหมือนที่ backfill Apr–Sep ทำไว้)
+   > 🚨 ถ้าเป็น **ช่วงวันที่ (range)** ค้างจากแท็บอื่น ทุกช่องจะโชว์ `-` ซึ่งดูเหมือน "ไม่มีไลฟ์"
+   > แต่จริง ๆ คือดึงผิด — **ต้องเลือกวันเดี่ยวเสมอ** (สคริปต์มีด่านกันเขียน 0 ทับอีกชั้น)
 
-## Step 4 — Merge เข้า SH_LIVE_DAILY
-- ขยาย `SH_LIVE_DAILY.dates` ให้ต่อเนื่องทุกวันจาก lastDate+1 ถึงวันนี้ (รวมวันที่ไม่มีไลฟ์ด้วย โดยใส่ `{gmv:0,orders:0,viewers:0,newFollowers:0}`)
-- ใส่ค่าจริงเฉพาะวันที่มีไลฟ์ (จาก Step 3)
-- แก้ไฟล์ WIBWUB_Dashboard.html ด้วย Edit tool เท่านั้น (ห้าม regenerate ทั้งไฟล์)
+4. กด **"ดาวน์โหลดข้อมูล"** (มุมขวาของแถบวันที่) รอ 8 วินาที
+5. ปิดแท็บด้วย `tabs_close_mcp`
+6. ย้ายไฟล์เข้าโฟลเดอร์เก็บ (launchd `com.wibwub.download-mover` อาจย้ายออกจาก Downloads แล้ว):
 
-## Step 5 — Validate
-- Extract `<script>` blocks แล้วรัน `node --check` ต้องผ่านไม่มี syntax error
-- เช็คว่า `SH_LIVE_DAILY.dates.length` ตรงกับจำนวนวันจริงระหว่างวันแรก (2026-04-01) ถึงวันสุดท้าย (ไม่มีวันขาด)
+```bash
+D="$BASE/data ยอดขาย plaform/Shopee Live"
+F=$(ls -t /Users/thanasablilutanon/Downloads/overview-v2_1d_*.csv \
+          "$BASE/downloads_archive"/overview-v2_1d_*.csv 2>/dev/null | head -1)
+[ -z "$F" ] && { echo "ไม่พบไฟล์ CSV ที่โหลดมา"; exit 1; }
+cp "$F" "$D/" && echo "เก็บแล้ว: $(basename "$F")"
+```
 
-## Step 6 — Bump sw.js + Commit
-1. เปิด sw.js, เพิ่มเลข version ใน `const CACHE = 'wibwub-vNNN';` ขึ้น 1
-2. `cd` ไปที่ All folder แล้ว:
-   ```bash
-   git add WIBWUB_Dashboard.html sw.js
-   git commit -m "Update Shopee Live daily data through <วันที่ล่าสุด>"
-   ```
-   **สำคัญ:** commit เฉพาะ WIBWUB_Dashboard.html และ sw.js เท่านั้น ห้ามรวมไฟล์อื่นที่อาจ modified จาก task อื่นๆ (เช่น report .md, push_now.command, vid_merge.py ฯลฯ)
-3. อย่าพยายาม `git push` จาก sandbox — จะ fail ด้วย 403 proxy error เสมอ (เป็นเรื่องปกติ) ให้ผู้ใช้กด `push_now.command` เองบนเครื่องจริงแทน
+ชื่อไฟล์จะเป็น `overview-v2_1d_<YYYY-MM-DD>_*.csv` — ตรวจว่าวันที่ในชื่อไฟล์คือเมื่อวานจริง
 
-## Completion Report (สรุปสั้นๆ)
-- ✅ อัปเดต Shopee Live: [N] วันใหม่ที่มีไลฟ์ ([lastDate+1] ถึง [วันนี้]) ยอดขายรวมช่วงนี้ ฿[X]
-- หรือ "ไม่มีข้อมูลใหม่ ข้อมูลอัปเดตล่าสุดแล้ว" ถ้า lastDate = วันนี้แล้ว
-- ⛔ ถ้า session Shopee หมดหรือเจอ permission popup ที่ auto-click ไม่ได้ → แจ้งชัดเจนว่าต้องทำอะไรต่อ (login / กด Allow) แล้วรอบหน้าจะลองใหม่
-- เตือนให้กด push_now.command เพื่อ publish ขึ้น GitHub Pages เสมอเมื่อมีการ commit
+## ขั้นที่ 2 — ดูก่อนว่าจะเปลี่ยนอะไร
+
+```bash
+cd "$BASE" && python3 scripts/shopee_live_daily.py "data ยอดขาย plaform/Shopee Live/" --dry-run
+```
+
+ดูที่ `added` ควรมีวันเมื่อวาน · `skipped` ที่ขึ้นว่า "ไฟล์เก่ากว่า" เป็นเรื่องปกติ
+(ยอด "ยืนยันแล้ว" โตขึ้นตามเวลา สคริปต์จะไม่ถอยค่าที่ matured แล้ว)
+ถ้า `status` เป็น `ERROR` → **หยุดและรายงาน ห้ามแก้ตัวเลขเอง**
+
+## ขั้นที่ 3 — รันจริง + commit
+
+```bash
+cd "$BASE" && python3 scripts/shopee_live_daily.py "data ยอดขาย plaform/Shopee Live/"
+```
+
+exit `0` = อัปเดต + bump sw.js แล้ว · `10` = ไม่มีอะไรเปลี่ยน (ไม่ต้อง commit) · `2` = ไม่ผ่านด่าน
+
+เฉพาะตอน exit 0:
+
+```bash
+cd "$BASE"
+git add WIBWUB_Dashboard.html sw.js "data ยอดขาย plaform/Shopee Live/"
+git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+    commit -m "auto-update: Shopee Live รายวัน $(date +%Y-%m-%d)"
+```
+
+ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองภายใน 2 นาที
+ถ้า git ติด `index.lock`: รอ 20 วินาทีแล้วลองใหม่ สูงสุด 3 ครั้ง **ห้ามลบ lock ของคนอื่น**
+
+---
+
+## RULES
+
+- ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดเอง ห้ามกรอกค่าสมมุติ
+- ห้ามใช้ export แบบรายไลฟ์ (`sc_live_stream_list_export*`) — ไม่มีคอลัมน์ผู้ติดตาม
+  และ `overview-v2` เป็นยอดรวมรายวันอยู่แล้ว ถ้าเอามาบวกกันเองจะเบิ้ล
+- `grep -oP`, `sed -i "s/.../"`, `find -newermt` เป็น GNU-only **พังบน macOS** ห้ามใช้
+- ถ้าต้องแก้วิธีคำนวณหรือชื่อคอลัมน์ ให้แก้ `scripts/shopee_live_daily.py` ที่เดียว
+
+## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
+
+วันที่เพิ่มเข้าไป + ยอดขาย/ออเดอร์/ผู้ชม/ผู้ติดตามใหม่ของวันนั้น,
+จำนวนวันทั้งหมดและวันที่มีไลฟ์, รายการที่ถูกข้าม, commit id หรือ "ไม่มีข้อมูลใหม่", error ถ้ามี
