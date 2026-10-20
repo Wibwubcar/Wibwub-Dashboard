@@ -100,6 +100,23 @@ def main():
         return 0
 
     W.update_html(sales, None, None, None)      # เขียนเฉพาะส่วน sales (ส่วนอื่นเป็น None จึงถูกข้าม)
+
+    # ── ช่องทาง Shipnity (FB/LINE/CARE/...) ให้สดพร้อมกับ sales ทุกรอบ ──────
+    # ไม่งั้นกลางสัปดาห์ยอดรวมจะเอียง: SH/TK/LZ เดินหน้าวันละ 2 รอบ แต่ช่องทางอื่น
+    # อัปเดตแค่วันจันทร์ · ใช้ cache จึงไม่ช้า (รอบที่ไม่มีไฟล์ Shipnity ใหม่ <1 วิ)
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from ship_cache import load_shipnity
+        import shipnity_update as S
+        raw = load_shipnity()
+        if raw:
+            asof = S._asof((BASE / PAGES[0]).read_text(encoding='utf-8'))
+            S.write_channels(raw, asof)
+            S.write_coverage(raw, asof)
+            summary['channels_asof'] = asof
+    except Exception as e:                   # ช่องทางล้มต้องไม่ทำให้ sales ล้มด้วย
+        summary['channels_error'] = f'{type(e).__name__}: {e}'
+
     after = {p: arrays(BASE / p) for p in PAGES}
     changed = after != before
     if changed: W.bump_sw()
