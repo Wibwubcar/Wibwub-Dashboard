@@ -142,7 +142,15 @@ def cmd_merge(a):
 
     dates = sorted(set.intersection(*[set(parts[k]) for k in NEED]))
     gaps = sorted(set().union(*[set(parts[k]) for k in NEED]) - set(dates))
-    if gaps: die('บางชุดขาดวันที่ — ห้ามเขียนข้อมูลไม่ครบ', gaps)
+    # ปกติห้ามให้ชุดใดชุดหนึ่งขาดวัน (กันเขียนวันไม่ครบ) แต่ตอน backfill ย้อนหลัง
+    # แต่ละแหล่งย้อนได้ไม่เท่ากันโดยธรรมชาติ เช่น ค่าโฆษณา Shopee ย้อนได้แค่ ~6 เดือน
+    # (หน้าต่างกลิ้ง เลื่อนขึ้นวันละวัน) ส่วนยอดขายจริงย้อนได้ถึง ม.ค.
+    # --intersect = ยอมรับ แล้วเขียนเฉพาะวันที่ "ทุกชุดมีครบ" เท่านั้น ที่เหลือรายงานทิ้ง
+    if gaps and not a.intersect:
+        die('บางชุดขาดวันที่ — ห้ามเขียนข้อมูลไม่ครบ (ถ้าตั้งใจ ให้ใส่ --intersect)',
+            {'ขาด': len(gaps), 'ตัวอย่าง': gaps[:5] + (['...'] if len(gaps) > 5 else []),
+             'จะเขียนได้': f'{dates[0]} → {dates[-1]} ({len(dates)} วัน)' if dates else 'ไม่มีเลย'})
+    dropped = gaps
     yest = (bkk_now().date() - datetime.timedelta(days=1)).isoformat()
 
     d = load(); have = set(d['days'])
@@ -179,6 +187,8 @@ def cmd_merge(a):
 
     summary = {'added': len(added), 'added_range': [added[0], added[-1]] if added else None,
                'skipped_exist': len(skipped_exist), 'skipped_future': skipped_future,
+               'dropped_incomplete': len(dropped),
+               'dropped_range': [dropped[0], dropped[-1]] if dropped else None,
                'warnings': warn}
     if not added:
         print(json.dumps({'status': 'NO_NEW', **summary}, ensure_ascii=False)); return 10
@@ -228,7 +238,10 @@ def main():
     s.add_parser('status').set_defaults(fn=cmd_status)
     s.add_parser('report').set_defaults(fn=cmd_report)
     m = s.add_parser('merge'); m.add_argument('files', nargs='+')
-    m.add_argument('--dry-run', action='store_true'); m.set_defaults(fn=cmd_merge)
+    m.add_argument('--dry-run', action='store_true')
+    m.add_argument('--intersect', action='store_true',
+                   help='ยอมให้แต่ละชุดมีช่วงวันไม่เท่ากัน เขียนเฉพาะวันที่ทุกชุดมีครบ')
+    m.set_defaults(fn=cmd_merge)
     c = s.add_parser('camp'); c.add_argument('file')
     c.add_argument('--dry-run', action='store_true'); c.set_defaults(fn=cmd_camp)
     a = ap.parse_args()
