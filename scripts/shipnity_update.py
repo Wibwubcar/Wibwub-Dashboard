@@ -32,7 +32,15 @@ CH_ARRAYS = {                      # ชื่ออาเรย์ -> ช่อ
     'POS_REV':  ['POS'],
     'BEUK_REV': ['เบิกของ'],
 }
-CH_ORDERS = {'FB_ORD': ['Facebook'], 'LINE_ORD': ['Line OA', 'Line Shopping']}
+CH_ORDERS = {                      # ออเดอร์รายช่องทาง — TOTAL_ORD รวมครบ 10 ช่องทางเท่า TOTAL_REV
+    'FB_ORD':   ['Facebook'],
+    'LINE_ORD': ['Line OA', 'Line Shopping'],
+    'WEB_ORD':  ['Website'],
+    'CARE_ORD': ['Carcare'],
+    'MKT_ORD':  ['Marketing'],
+    'BEUK_ORD': ['เบิกของ'],
+    'POS_ORD':  ['POS'],
+}
 
 
 def _asof(html):
