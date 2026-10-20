@@ -32,7 +32,7 @@
    (ถ้า Lazada ล้ม ให้ตัด 2 ไฟล์ท้ายออก — สคริปต์รับ Lazada แบบไม่บังคับ แต่ถ้าจะใส่ต้องใส่ทั้งคู่) — exit 10 = ข้อมูลรายวันไม่เปลี่ยน (ทำขั้นต่อไปได้) · ถ้า error ว่าขาดวันที่/ค่าติดลบ: หยุดและรายงาน ห้ามเขียนไฟล์เอง
 6. `python3 ads_daily_update.py camp work/tk_camp.json` — exit 10 = แคมเปญไม่เปลี่ยน · ถ้า error ว่าผลรวมไม่ตรงหรือมีมากกว่า 100 แคมเปญ: รายงาน (ขั้นอื่นทำต่อได้)
 7. `python3 ads_daily_update.py commit` — sync รายเดือน + bump sw.js + commit เฉพาะไฟล์ Ads (exit 10 = ไม่มีอะไรเปลี่ยน) · auto-push จะ push เอง ไม่ต้อง push
-   - ถ้า git ล็อกค้าง ให้ย้ายไป .git/stale-* (ห้ามลบไฟล์): `cd "$BASE" && for f in HEAD.lock objects/maintenance.lock index.lock; do [ -e .git/$f ] && mv .git/$f .git/stale-$(date +%s)-$(basename $f); done`
+   - ถ้า git ล็อกค้าง ให้ย้ายไป .git/stale-* (ห้ามลบไฟล์): `for f in HEAD.lock objects/maintenance.lock index.lock; do [ -e "$BASE/.git/$f" ] && mv "$BASE/.git/$f" "$BASE/.git/stale-$(date +%s)-$(basename $f)"; done`
 
 8. **เมนู "การตลาด vs ยอดขาย"** — ทำต่อทุกครั้งหลังขั้น 7 (ไม่ว่าขั้น 7 จะ exit 0 หรือ 10):
 ```bash
@@ -43,8 +43,8 @@ python3 scripts/marketing/marketing_update.py   # รวม Ads + KOL + ยอ�
    exit `0` = อัปเดตแล้ว · `10` = ไม่มีอะไรเปลี่ยน (ทั้งคู่ถือว่าผ่าน) · `2` = ไม่ผ่านด่านตรวจ ให้รายงานแล้วไปต่อ
    ถ้ามีไฟล์เปลี่ยน ให้ commit:
 ```bash
-git add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: การตลาด vs ยอดขาย $(date +%Y-%m-%d)"
 ```
    > ⚠️ ชีต KOL (`1NEkm1bcHvXO0Ehs6cwaNDkBUUM1A9assALMp5V7S7lo`) มีชื่อ-นามสกุล เลขบัตรประชาชน

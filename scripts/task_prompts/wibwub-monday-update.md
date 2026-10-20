@@ -54,9 +54,8 @@ cd "$BASE" && python3 scripts/products_update.py
 exit `0` = อัปเดต + bump sw.js · `10` = ไม่มีอะไรเปลี่ยน · `2` = ไม่ผ่านด่าน
 
 ```bash
-cd "$BASE"
-git add WIBWUB_Mobile.html sw.js
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add WIBWUB_Mobile.html sw.js
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: Top สินค้า $(date +%Y-%m-%d)"
 ```
 

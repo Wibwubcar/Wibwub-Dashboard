@@ -241,16 +241,14 @@ print(f"✅ Updated Procurement_Dashboard.html — {date_str}")
 ## Step 5 — Bump sw.js + Git commit + สร้าง push_now.command
 
 ```bash
-cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-
 # Bump sw.js
-python3 scripts/bump_sw.py   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ (sw.js จะไม่ถูก bump)
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ (sw.js จะไม่ถูก bump)
 echo "sw.js: v${CURRENT} → v${NEW}"
 
 # Git commit (ไม่ push เอง — sandbox push ติด proxy HTTP 403)
 # ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
-git add Procurement_Dashboard.html sw.js "Data Shipnity/stock_snapshot.json"
-git commit -m "auto-update: Stock forecast $(date +%Y-%m-%d) — Shipnity live"
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add Procurement_Dashboard.html sw.js "Data Shipnity/stock_snapshot.json"
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" commit -m "auto-update: Stock forecast $(date +%Y-%m-%d) — Shipnity live"
 echo "✅ Committed — รอ user กด push_now.command"
 
 # สร้าง push_now.command

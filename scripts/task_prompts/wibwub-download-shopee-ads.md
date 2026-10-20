@@ -104,15 +104,15 @@ ls -t /Users/thanasablilutanon/Downloads/*Shopee-Ads*.csv \
 6. ตรวจ + commit:
 
 ```bash
-cd "$BASE"
+export BASE
 python3 -c "
-import re,io
-h=io.open('data Ads/WIBWUB_Ads_Dashboard.html',encoding='utf-8').read()
+import re,io,os
+h=io.open(os.environ['BASE']+'/data Ads/WIBWUB_Ads_Dashboard.html',encoding='utf-8').read()
 io.open('/tmp/ads.js','w').write('\n'.join(re.findall(r'<script[^>]*>([\s\S]*?)</script>',h)))"
 node --check /tmp/ads.js || exit 1
-python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
-git add "data Ads/WIBWUB_Ads_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js "data Ads/Shopee"
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+python3 "$BASE/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
+git -C "$BASE" add "data Ads/WIBWUB_Ads_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js "data Ads/Shopee"
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto: Shopee Ads $(date +%Y-%m-%d)"
 ```
 

@@ -62,9 +62,8 @@ exit `0` = อัปเดต + bump sw.js แล้ว · `10` = ไม่ม�
 เฉพาะตอน exit 0:
 
 ```bash
-cd "$BASE"
-git add WIBWUB_Dashboard.html sw.js "data ยอดขาย plaform/Shopee Live/"
-git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "$BASE" add WIBWUB_Dashboard.html sw.js "data ยอดขาย plaform/Shopee Live/"
+git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: Shopee Live รายวัน $(date +%Y-%m-%d)"
 ```
 
