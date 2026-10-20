@@ -3,7 +3,7 @@
 
 ## WIBWUB Ads Dashboard — เติมข้อมูลรายวัน "ยอดขายจริง vs ยอดจาก Ads" + แคมเปญย่อย TikTok GMV Max
 
-หน้าเว็บ `data Ads/WIBWUB_Ads_Dashboard_new.html` อ่านข้อมูลจาก `data Ads/ads_daily.json` (รายวัน), `data Ads/ads_periods.json` (รายเดือน) และ `data Ads/ads_tk_campaigns.json` (แคมเปญย่อย GMV Max) งานนี้ทำให้ไฟล์เหล่านี้ทันสมัยถึง "เมื่อวาน" — ห้ามแก้ HTML
+หน้าเว็บ `data Ads/WIBWUB_Ads_Dashboard_new.html` อ่านข้อมูลจาก `data Ads/ads_daily.json` (รายวัน — Shopee/TikTok/Lazada), `data Ads/ads_periods.json` (รายเดือน) และ `data Ads/ads_tk_campaigns.json` (แคมเปญย่อย GMV Max) งานนี้ทำให้ไฟล์เหล่านี้ทันสมัยถึง "เมื่อวาน" — ห้ามแก้ HTML
 
 ### ขั้น 0 — หาโฟลเดอร์ All (สำคัญ)
 ใน shell ให้หาโฟลเดอร์ All ที่เชื่อมไว้กับงานนี้ ตามลำดับ:
@@ -21,11 +21,18 @@
    - `sh_ads` (ต้องมี get_time_graph): https://seller.shopee.co.th/portal/marketing/pas/index — สำรอง: รีโหลดหน้าแล้ววาง hook.js ใหม่ทันที
    - `tk_real` (ต้องมี us_overview_day_trend): https://seller-th.tiktok.com/compass/data-overview — ต้องกดช่อง "วันที่เริ่มต้น" แล้วเลือก "7 วันที่ผ่านมา" เสมอ (ใช้ find หา element)
    - `tk_ads` (ต้องมี post_overview_stat) และ `tk_camp` (ต้องมี post_campaign_list_v2) ทำในหน้าเดียวกัน: https://ads.tiktok.com/i18n/gmv-max/dashboard?aadvid=7229166192752148482&oec_seller_id=7494549095358892612&bc_id=7229165256428240898&type=product — ถ้าไม่มี post_overview_stat ให้กดปุ่มรีเฟรช (ไอคอนไม่มีชื่อ ถัดจากช่องวันที่ของ Campaign list ใช้ find); ถ้าไม่มี post_campaign_list_v2 ให้กดแท็บ "LIVE GMV Max" ในส่วน Campaign list — รัน `tk_ads` ก่อน แล้วรัน `tk_camp` ในหน้าเดิม
+   - `lz_real` และ `lz_ads` (**Lazada — ไม่ต้องใช้ hook.js เลย** ยิง fetch same-origin ตรงได้ ไม่มี signature):
+     · `lz_real`: เปิด https://sellercenter.lazada.co.th/ba/dashboard ก่อน แล้ววาง `window.__ADS={kind:'lz_real',...}` + collect.js
+     · `lz_ads`: เปิด https://sellercenter.lazada.co.th/sponsor/solutions/ads/productads/#!/overview ก่อน แล้ววาง `window.__ADS={kind:'lz_ads',...}` + collect.js
+     · หน้า Ads มีป๊อปอัปหลายอัน (แคมเปญ 11.11 / เติมเงิน) — **กด X หรือ Escape ปิดเท่านั้น ห้ามกด "เข้าร่วมเลย" / "เติมยอด" / เปลี่ยน ROAS** · ป๊อปอัปไม่บล็อก fetch ถ้าปิดไม่ได้ก็ดึงข้อมูลต่อได้
+     · ค่า spend = 0 เป็นค่าจริงได้ (กระเป๋าเงิน Ads ติดลบ แคมเปญหยุด) ไม่ใช่ bug — ดูที่ `imp` ถ้ายังมีเลขน้อย ๆ แปลว่าแคมเปญหยุดจริง
+     · **Lazada เป็นออปชัน** ถ้าดึงไม่ได้ (login หลุด / endpoint เปลี่ยน) ให้ข้ามไป merge เฉพาะ Shopee/TikTok แล้วรายงานว่า Lazada ล้มเพราะอะไร — ข้อมูล Lazada เดิมในไฟล์จะไม่ถูกลบ
    - ถ้าหน้าใดขึ้นหน้า login: หยุดและรายงาน ห้ามกรอกรหัสผ่าน · ห้ามเดา/สร้าง signature หรือ token เอง ใช้เฉพาะ request ที่ hook จับได้
-5. `python3 ads_daily_update.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json` — exit 10 = ข้อมูลรายวันไม่เปลี่ยน (ทำขั้นต่อไปได้) · ถ้า error ว่าขาดวันที่/ค่าติดลบ: หยุดและรายงาน ห้ามเขียนไฟล์เอง
+5. `python3 ads_daily_update.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json work/lz_real.json work/lz_ads.json`
+   (ถ้า Lazada ล้ม ให้ตัด 2 ไฟล์ท้ายออก — สคริปต์รับ Lazada แบบไม่บังคับ แต่ถ้าจะใส่ต้องใส่ทั้งคู่) — exit 10 = ข้อมูลรายวันไม่เปลี่ยน (ทำขั้นต่อไปได้) · ถ้า error ว่าขาดวันที่/ค่าติดลบ: หยุดและรายงาน ห้ามเขียนไฟล์เอง
 6. `python3 ads_daily_update.py camp work/tk_camp.json` — exit 10 = แคมเปญไม่เปลี่ยน · ถ้า error ว่าผลรวมไม่ตรงหรือมีมากกว่า 100 แคมเปญ: รายงาน (ขั้นอื่นทำต่อได้)
 7. `python3 ads_daily_update.py commit` — sync รายเดือน + bump sw.js + commit เฉพาะไฟล์ Ads (exit 10 = ไม่มีอะไรเปลี่ยน) · auto-push จะ push เอง ไม่ต้อง push
    - ถ้า git ล็อกค้าง ให้ย้ายไป .git/stale-* (ห้ามลบไฟล์): `cd "$BASE" && for f in HEAD.lock objects/maintenance.lock index.lock; do [ -e .git/$f ] && mv .git/$f .git/stale-$(date +%s)-$(basename $f); done`
 
 ### สรุปท้ายรอบ (สั้นๆ ภาษาไทย)
-ช่วงวันที่ที่ดึง, วันที่ที่เพิ่ม/เปลี่ยน (จาก `changed`), ยอดเดือนนี้ถึงวันล่าสุด: Shopee ยอดจริง / ค่าโฆษณา, TikTok ยอดจริง / ค่าโฆษณา (จาก `month_to_date`), จำนวนแคมเปญ GMV Max และค่าโฆษณารวม, คำเตือนถ้ามี, commit id หรือ "ไม่มีข้อมูลใหม่", และ error ถ้ามี
+ช่วงวันที่ที่ดึง, วันที่ที่เพิ่ม/เปลี่ยน (จาก `changed`), ยอดเดือนนี้ถึงวันล่าสุด: Shopee ยอดจริง / ค่าโฆษณา, TikTok ยอดจริง / ค่าโฆษณา, Lazada ยอดจริง / ค่าโฆษณา (จาก `month_to_date` — คีย์ `lz_real` / `lz_spend`), จำนวนแคมเปญ GMV Max และค่าโฆษณารวม, คำเตือนถ้ามี, commit id หรือ "ไม่มีข้อมูลใหม่", และ error ถ้ามี
