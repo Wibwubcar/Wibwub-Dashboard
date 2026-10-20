@@ -40,7 +40,8 @@ COL_MONTH = 'Month'
 # เป็นชื่อ-นามสกุลจริง จึงไม่อยู่ในรายการนี้ แถวพวกนั้นจะได้ kol = '' แต่ยอดยังนับปกติ
 COL_KOL = ('KOLs', 'KOLs Name')
 TIER_MAP = BASE / 'data Ads' / 'kol_campaign_tier.json'
-ROWS_FROM = '2026-09'                     # แถวรายตัวเก็บเฉพาะช่วงที่หน้าเว็บใช้จริง
+ROWS_FROM = '2026-01'                     # แถวรายตัวเก็บเฉพาะช่วงที่หน้าเว็บใช้จริง
+#            ^ ขยับจาก 2026-09 เป็น 2026-01 ตอนทำ backfill Ads ย้อนหลัง (20 ต.ค. 69)
 EPOCH = dt.date(1899, 12, 30)             # serial 1 = 1899-12-31 ใน Google Sheets
 MONTH_WORDS = {m: i + 1 for i, m in enumerate(
     ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}

@@ -124,7 +124,9 @@ def main():
             kol_day[r['d']] = round(kol_day.get(r['d'], 0.0) + r['amt'], 2)
 
     # ── ประกอบรายวัน ────────────────────────────────────────────────────────
-    d0 = max(min(days_ads), '2026-09-01')
+    # เดิมตรึงไว้ที่ 2026-09-01 เพราะ ads_daily.json เริ่มเดือน ก.ย.
+    # ตอนนี้ปล่อยตามไฟล์จริง เพื่อให้ backfill ย้อนหลังโผล่บนหน้าเองโดยไม่ต้องแก้โค้ดอีก
+    d0 = min(days_ads)
     dates = sorted(d for d in days_ads if d0 <= d <= asof)
     if not dates: die('ไม่มีวันในช่วงที่ใช้ได้', {'ads_from': min(days_ads), 'asof': asof})
 
