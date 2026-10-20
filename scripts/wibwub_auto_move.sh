@@ -50,8 +50,11 @@ for f in "$DL"/Data-*.xlsx;                               do safe_mv "$f" "$ALL/
 
 # Ads
 for f in "$DL"/ข้อมูล-Shopee-Ads-*.csv;                  do safe_mv "$f" "$ALL/data Ads/Shopee/"; done
-for f in "$DL"/WIBWUBCAR-Campaign\ Report-*.xlsx;         do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
-for f in "$DL"/Campaign\ overview\ data\ *.xlsx;          do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
+# ปลายทางต้องเป็นโฟลเดอร์ย่อยที่สคริปต์อ่านจริง (Business Ads / GMV Max)
+# เดิมทิ้งไว้ที่ "data Ads/Tiktok/" เฉย ๆ -> ไฟล์ไปกองที่ราก งาน download ต้อง cp ซ้ำเอง
+# และ cp นั้นแข่งกับ mover (WatchPaths ยิงภายใน ~5 วิ) มักแพ้ -> รายงาน "ไม่พบไฟล์" ทั้งที่โหลดสำเร็จ
+for f in "$DL"/WIBWUBCAR-Campaign\ Report-*.xlsx;         do safe_mv "$f" "$ALL/data Ads/TikTok/Business Ads/"; done
+for f in "$DL"/Campaign\ overview\ data\ *.xlsx;          do safe_mv "$f" "$ALL/data Ads/TikTok/GMV Max/"; done
 for f in "$DL"/creative\ data\ for\ product\ campaigns\ *.xlsx; do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
 for f in "$DL"/ExportAds_V2_*.xlsx;                       do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
 
