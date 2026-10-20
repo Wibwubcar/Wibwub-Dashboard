@@ -1,6 +1,6 @@
 ---
 name: wibwub-daily-followers
-description: ดาวน์โหลด TikTok Followers จาก TikTok Studio ทุกวัน 09:00/20:00 → อัปเดต soc_follow chart + Mobile KPI → commit + push_now.command
+description: ดาวน์โหลด TikTok Followers จาก TikTok Studio ทุกวัน 09:00/20:00 → อัปเดต soc_follow chart + Mobile KPI → commit
 ---
 
 <!-- LOCAL-OVERRIDE v1 -->
@@ -156,7 +156,7 @@ EOF
 ถ้า exit != 0 → **หยุดทันที ห้าม commit ห้ามแก้ตัวเลขเอง** ให้รายงานว่าเดือนไหนไม่ต่อเนื่อง
 สาเหตุที่พบบ่อยคือใช้ export คนละช่วง (ดู Step 2) หรือสคริปต์เขียนทับเฉพาะเดือนปัจจุบัน
 
-## Step 5 — Bump sw.js + Git commit + สร้าง push_now.command
+## Step 5 — Bump sw.js + Git commit
 
 ```bash
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ (sw.js จะไม่ถูก bump)
@@ -166,16 +166,8 @@ echo "sw.js: v${CURRENT} → v${NEW}"
 # ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
 git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
 git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" commit -m "auto-update: TikTok followers $(date +%Y-%m-%d) — ${latest_count} followers"
-echo "✅ Committed — รอ user กด push_now.command"
+echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"
 
-# สร้าง push_now.command
-cat > "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command" << 'EOF'
-#!/bin/bash
-cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
-git push origin main && echo "✅ Push สำเร็จ" || echo "❌ Push ล้มเหลว"
-EOF
-chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command"
 ```
 
 ## หมายเหตุ
@@ -185,7 +177,7 @@ chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@
 - **convention วันที่:** ยึดไฟล์ 60 วันเป็นหลักเสมอ · ถ้าจำเป็นต้องใช้ไฟล์ช่วงอื่นมาเติมย้อนหลัง
   ต้องเลื่อน +1 วัน (กฎที่ตรวจแล้ว: `ค่าวันที่ D ในไฟล์ 60 วัน = ค่าวันที่ D-1 ในไฟล์ 365 วัน` ตรง 60/60)
 - `FOL_DATA[เดือน].start` = ยอดของวันสุดท้ายของเดือนก่อน (ไม่ใช่วันที่ 1 ของเดือนนั้น)
-- git push จาก sandbox จะล้มเหลว HTTP 403 (proxy) → commit ไว้แล้วรายงานให้ user กด push_now.command
+- ไม่ต้อง git push — launchd com.wibwub.autopush push ให้เองทุก 2 นาที
 - navigate ค้าง → ตรวจสอบว่าใช้ browser_batch ไม่ใช่ navigate standalone
 
 ---
