@@ -331,55 +331,55 @@
   },
   "oct": {
    "from": "2026-10-01",
-   "to": "2026-10-18",
+   "to": "2026-10-19",
    "product": [
     {
      "name": "21.09.26/Banyakart",
-     "spend": 160266.29,
-     "orders": 2018,
-     "revenue": 510899.72
+     "spend": 163643.92,
+     "orders": 2054,
+     "revenue": 519964.71
     },
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 156985.28,
-     "orders": 4741,
-     "revenue": 587747.6
+     "spend": 162436.8,
+     "orders": 4940,
+     "revenue": 610682.96
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 156323.95,
-     "orders": 1603,
-     "revenue": 584657.13
+     "spend": 162154.94,
+     "orders": 1661,
+     "revenue": 608365.78
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 82129.24,
-     "orders": 2213,
-     "revenue": 295593.29
+     "spend": 86632.27,
+     "orders": 2333,
+     "revenue": 313086.39
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 53880.12,
-     "orders": 817,
-     "revenue": 319887.93
+     "spend": 56193.63,
+     "orders": 866,
+     "revenue": 334229.31
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 27106.66,
-     "orders": 249,
-     "revenue": 80707.14
+     "spend": 29097.26,
+     "orders": 265,
+     "revenue": 85958.26
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 25756.96,
-     "orders": 272,
-     "revenue": 125218.36
+     "spend": 26347.92,
+     "orders": 280,
+     "revenue": 128490.06
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 21855.87,
-     "orders": 138,
-     "revenue": 82620.65
+     "spend": 22941.65,
+     "orders": 147,
+     "revenue": 87642.56
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -388,10 +388,16 @@
      "revenue": 24791.8
     },
     {
+     "name": "19.10.26/Banyakart",
+     "spend": 3027.24,
+     "orders": 39,
+     "revenue": 8961.9
+    },
+    {
      "name": "27.08.26/interior-refresh",
      "spend": 584.84,
      "orders": 3,
-     "revenue": 1268.0
+     "revenue": 1268
     },
     {
      "name": "17.08.26/Cleaner",
@@ -403,7 +409,7 @@
    "live": [
     {
      "name": "10.10.26/แอ้นปาย",
-     "spend": 200.0,
+     "spend": 200,
      "orders": 39,
      "revenue": 15205.01
     },
@@ -421,9 +427,9 @@
     },
     {
      "name": "25.09.26/Live",
-     "spend": 0.0,
+     "spend": 0,
      "orders": 2,
-     "revenue": 1048.0
+     "revenue": 1048
     }
    ]
   }
