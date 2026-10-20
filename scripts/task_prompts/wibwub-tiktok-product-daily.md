@@ -62,7 +62,7 @@ Step 7 — `git push origin main` will fail in this sandbox (proxy 403 — expec
 Important gotchas (from the skill history for this dashboard, same conventions apply here):
 - Never guess/hardcode a msToken, sign, or anti-bot signature — only replay requests you've actually observed the live page make.
 - If Compass's UI or API shape has changed since this task was written and you can't get a clean per-day per-product (or per-SKU) response after reasonable effort, stop and clearly report what you tried and what broke, rather than writing partial/malformed data into TK_PROD_DATA or TK_PROD_SKU.
-- If `git commit` fails with "Unable to create .../HEAD.lock: File exists" and no live git process is running, it's a stale lock from an interrupted run — `rm -f .git/HEAD.lock .git/index.lock` before retrying.
+- **ห้ามลบ `.git/*.lock` เอง** — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้า `git commit` ติด lock ให้รอ 20 วินาทีแล้วลองใหม่ สูงสุด 3 ครั้ง
 - If fetching SKU-level data fails for any reason after reasonable effort (endpoint changed, no clean chunk available, etc.), don't let that block the parent-level (`TK_PROD_DATA`) update — commit that part and just report the SKU-level failure clearly, so daily parent-level freshness is never held hostage to the newer SKU step.
 
 At the end, give a short Thai-language summary: which date(s) were added/updated for both TK_PROD_DATA and TK_PROD_SKU, how many products/SKUs, and remind the user about push_now.command.

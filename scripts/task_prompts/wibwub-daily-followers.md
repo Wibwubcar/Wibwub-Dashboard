@@ -160,13 +160,11 @@ EOF
 
 ```bash
 cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-CURRENT=$(grep -o 'wibwub-v[0-9]*' sw.js | head -1 | grep -o '[0-9]*')
-NEW=$((CURRENT + 1))
-sed -i "s/wibwub-v${CURRENT}/wibwub-v${NEW}/" sw.js
+python3 scripts/bump_sw.py   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ (sw.js จะไม่ถูก bump)
 echo "sw.js: v${CURRENT} → v${NEW}"
 
 # Git commit (ไม่ push เอง — sandbox push ติด proxy HTTP 403)
-rm -f .git/index.lock .git/HEAD.lock
+# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
 git add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
 git commit -m "auto-update: TikTok followers $(date +%Y-%m-%d) — ${latest_count} followers"
 echo "✅ Committed — รอ user กด push_now.command"
@@ -175,7 +173,7 @@ echo "✅ Committed — รอ user กด push_now.command"
 cat > "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command" << 'EOF'
 #!/bin/bash
 cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-rm -f .git/index.lock .git/HEAD.lock
+# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
 git push origin main && echo "✅ Push สำเร็จ" || echo "❌ Push ล้มเหลว"
 EOF
 chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command"
