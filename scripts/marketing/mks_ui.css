@@ -1,0 +1,112 @@
+/* เมนู "การตลาด vs ยอดขาย" — สไตล์เดียวกับ Ads Dashboard
+   ไฟล์นี้ถูกฝังเข้าหน้าเว็บโดย scripts/marketing/marketing_ui.py — อย่าแก้ในหน้า HTML */
+.mks{font-size:13px;color:var(--txt,#0F0F0F)}
+.mks *{box-sizing:border-box}
+
+/* ── แถบเลือกช่วงวันที่ ─────────────────────────────── */
+.mks-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
+.mks-pre{display:flex;gap:6px;flex-wrap:wrap}
+.mks-b{padding:6px 13px;border:1px solid var(--border,#e8e8e8);background:var(--card,#fff);
+  border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;color:#555;
+  transition:all .15s;white-space:nowrap}
+.mks-b:hover{border-color:#1A5CDB;color:#1A5CDB}
+.mks-b.on{background:#1A5CDB;border-color:#1A5CDB;color:#fff}
+.mks-dates{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
+.mks-dates input{padding:5px 8px;border:1px solid var(--border,#e8e8e8);border-radius:7px;
+  font-size:12.5px;font-family:inherit;color:inherit;background:var(--card,#fff)}
+.mks-range{font-size:11.5px;color:var(--muted,#999);width:100%}
+
+/* ── KPI ───────────────────────────────────────────── */
+.mks-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
+.mks-k{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
+  padding:13px 14px;position:relative;overflow:hidden}
+.mks-k::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--kc,#1A5CDB)}
+.mks-kl{font-size:11px;color:var(--muted,#999);font-weight:600;margin-bottom:5px}
+.mks-kv{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
+.mks-ks{font-size:11px;margin-top:4px;color:var(--muted,#999)}
+.mks-up{color:#16a34a;font-weight:700}
+.mks-dn{color:#dc2626;font-weight:700}
+
+/* ── การ์ด ─────────────────────────────────────────── */
+.mks-card{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
+  padding:14px 15px;margin-bottom:14px}
+.mks-t{font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;
+  gap:8px;flex-wrap:wrap}
+.mks-t small{font-weight:500;color:var(--muted,#999);font-size:11px}
+
+/* ── แท่งแนวนอน: สัดส่วนค่าการตลาด ────────────────── */
+.mks-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:12px}
+.mks-hn{width:112px;flex:0 0 112px;font-weight:600;display:flex;align-items:center;gap:6px}
+.mks-hn i{width:9px;height:9px;border-radius:2px;flex:0 0 9px}
+.mks-ht{flex:1;background:rgba(0,0,0,.045);border-radius:5px;height:17px;position:relative;min-width:40px}
+.mks-hf{height:100%;border-radius:5px;min-width:2px}
+.mks-hv{width:118px;flex:0 0 118px;text-align:right;font-variant-numeric:tabular-nums}
+.mks-hp{width:52px;flex:0 0 52px;text-align:right;color:var(--muted,#999);font-variant-numeric:tabular-nums}
+.mks-hd{width:62px;flex:0 0 62px;text-align:right;font-size:11px}
+.mks-pie{display:flex;gap:16px;align-items:flex-start}
+.mks-donut{flex:0 0 168px;color:var(--txt,#0F0F0F)}
+.mks-bars{flex:1;min-width:0;padding-top:4px}
+.mks-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
+.mks-two>.mks-card{margin-bottom:0}
+/* ในเลย์เอาต์ 2 คอลัมน์ การ์ดแคบ -> วางโดนัทไว้บน ให้แท่งได้ความกว้างเต็มใบ
+   ไม่งั้นช่องยอดเงิน/%/▲▼ เบียดจนแท่งเหลือไม่กี่พิกเซล */
+.mks-two .mks-pie{flex-direction:column;align-items:center;gap:12px}
+.mks-two .mks-bars{width:100%;padding-top:0}
+.mks-sub{font-size:10.5px;color:var(--muted,#999);margin:-4px 0 10px 121px}
+.mks-wait{color:#b45309;font-style:italic;font-weight:600}
+
+/* ── กราฟแนวโน้มรายวัน ────────────────────────────── */
+.mks-chart{width:100%;overflow-x:auto}
+.mks-chart svg{display:block}
+.mks-leg{display:flex;flex-wrap:wrap;gap:13px;font-size:11px;color:var(--muted,#999);margin-top:9px}
+.mks-leg span{display:flex;align-items:center;gap:5px}
+.mks-leg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+
+/* ── ตาราง ─────────────────────────────────────────── */
+.mks-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mks-tb{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
+.mks-tb th,.mks-tb td{padding:7px 10px;border-bottom:1px solid var(--border,#e8e8e8);text-align:right}
+.mks-tb th{font-size:10.5px;color:var(--muted,#999);font-weight:700;background:rgba(0,0,0,.02)}
+.mks-tb th:first-child,.mks-tb td:first-child,
+.mks-tb th:nth-child(2),.mks-tb td:nth-child(2){text-align:left}
+.mks-tb tr:last-child td{border-bottom:none}
+.mks-tb td{font-variant-numeric:tabular-nums}
+.mks-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
+.mks-paid{background:#dcfce7;color:#15803d}
+.mks-pend{background:#fef3c7;color:#b45309}
+.mks-tier{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10.5px;
+  background:rgba(139,92,246,.12);color:#6d28d9;font-weight:600}
+.mks-tier.na{background:rgba(0,0,0,.05);color:var(--muted,#999);font-weight:500}
+
+/* ── ป้ายวันที่ข้อมูล + หมายเหตุ ───────────────────── */
+.mks-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.mks-bd{font-size:10.5px;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.04);
+  color:var(--muted,#999);white-space:nowrap}
+.mks-bd b{color:#444;font-weight:700}
+.mks-bd.warn{background:#fef3c7;color:#b45309}
+.mks-bd.warn b{color:#92400e}
+.mks-note{font-size:11.5px;color:var(--muted,#999);line-height:1.85}
+.mks-note b{color:#b45309}
+.mks-empty{padding:26px;text-align:center;color:var(--muted,#999);font-size:12.5px}
+
+/* ── Mobile ────────────────────────────────────────── */
+@media(max-width:700px){
+  .mks-kpi{grid-template-columns:1fr 1fr;gap:8px}
+  .mks-k{padding:11px}
+  .mks-kv{font-size:17px}
+  .mks-dates{margin-left:0;width:100%}
+  .mks-dates input{flex:1;min-width:0}
+  .mks-hn{width:78px;flex:0 0 78px;font-size:11px}
+  .mks-hv{width:92px;flex:0 0 92px;font-size:11px}
+  .mks-hp{width:44px;flex:0 0 44px;font-size:11px}
+  .mks-card{padding:12px}
+  .mks-two{grid-template-columns:1fr;gap:0}
+  .mks-two>.mks-card{margin-bottom:12px}
+  .mks-hd{width:52px;flex:0 0 52px;font-size:10px}
+  .mks-sub{margin-left:87px}
+  .mks-pie{flex-direction:column;align-items:center;gap:10px}
+  .mks-donut{flex:0 0 auto;width:150px;height:150px}
+  .mks-bars{width:100%;padding-top:0}
+}
+
+@media(max-width:1000px) and (min-width:701px){ .mks-two{grid-template-columns:1fr} .mks-two>.mks-card{margin-bottom:14px} }

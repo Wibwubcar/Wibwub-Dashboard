@@ -35,6 +35,12 @@ COL_DATE  = 'วันที่ทำจ่าย'
 COL_AMT   = 'จำนวนที่ต้องจ่าย'
 COL_STAT  = 'Status'
 COL_MONTH = 'Month'
+# คอลัมน์ชื่อ KOL ที่อนุญาต — เป็น "ชื่อช่อง/ชื่อเล่น" เท่านั้น (เช่น atpk.live)
+# **ห้ามเพิ่ม 'ชื่อจริง' / 'นามสกุล' / 'Name' เข้ามาเด็ดขาด** — 'Name' ในแท็บปี 2025
+# เป็นชื่อ-นามสกุลจริง จึงไม่อยู่ในรายการนี้ แถวพวกนั้นจะได้ kol = '' แต่ยอดยังนับปกติ
+COL_KOL = ('KOLs', 'KOLs Name')
+TIER_MAP = BASE / 'data Ads' / 'kol_campaign_tier.json'
+ROWS_FROM = '2026-09'                     # แถวรายตัวเก็บเฉพาะช่วงที่หน้าเว็บใช้จริง
 EPOCH = dt.date(1899, 12, 30)             # serial 1 = 1899-12-31 ใน Google Sheets
 MONTH_WORDS = {m: i + 1 for i, m in enumerate(
     ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'])}
@@ -77,6 +83,31 @@ def to_date(v):
     return None
 
 
+def to_day(v):
+    """คืน 'YYYY-MM-DD' (ใช้ตรรกะเดียวกับ to_date แต่เก็บวันด้วย)"""
+    if v is None or v == '': return None
+    if isinstance(v, (int, float)):
+        if not (20000 < v < 60000): return None
+        return (EPOCH + dt.timedelta(days=int(v))).isoformat()
+    s = norm(v)
+    m = re.match(r'^(\d{1,2})[/-](\d{1,2})[/-](\d{4})$', s)
+    if m:
+        d, mo, y = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if y > 2400: y -= 543
+        try: return dt.date(y, mo, d).isoformat()
+        except ValueError: return None
+    m = re.match(r'^(\d{4})-(\d{2})-(\d{2})$', s)
+    if m: return s
+    m = re.match(r'^(\d{1,2})\s+([A-Za-z]+)\.?\s+(\d{4})$', s)
+    if m:
+        mm = MONTH_WORDS.get(m.group(2)[:3].lower())
+        if mm:
+            y = int(m.group(3));  y -= 543 if y > 2400 else 0
+            try: return dt.date(y, mm, int(m.group(1))).isoformat()
+            except ValueError: return None
+    return None
+
+
 def to_amt(v):
     if v is None or v == '': return None
     if isinstance(v, (int, float)): return float(v)
@@ -103,7 +134,9 @@ def main():
     sh = gspread.authorize(cred).open_by_key(SHEET_ID)
 
     months, pend, undated, camps, skipped = {}, {}, {'done': 0.0, 'n': 0}, {}, []
-    rows_seen = 0
+    rows_seen, rows_out = 0, []
+    tiers = json.loads(TIER_MAP.read_text(encoding='utf-8')).get('campaign_tier', {}) \
+        if TIER_MAP.exists() else {}
     for ws in sh.worksheets():
         if ws.title in SKIP_TABS: continue
         grid = ws.get('A1:BC1200', value_render_option='UNFORMATTED_VALUE')
@@ -116,6 +149,7 @@ def main():
         except ValueError:
             skipped.append(ws.title); continue
         ci[COL_MONTH] = hdr.index(COL_MONTH) if COL_MONTH in hdr else None
+        ci['kol'] = next((hdr.index(x) for x in COL_KOL if x in hdr), None)
 
         for r in grid[hi + 1:]:
             if len(r) <= ci[COL_STAT]: continue          # แถวโน้ต/แถวว่าง
@@ -124,6 +158,11 @@ def main():
             rows_seen += 1
             st = norm(r[ci[COL_STAT]]).lower()
             mo = to_date(r[ci[COL_DATE]] if len(r) > ci[COL_DATE] else None)
+            kol = norm(r[ci['kol']]) if ci['kol'] is not None and len(r) > ci['kol'] else ''
+            if mo and mo >= ROWS_FROM:
+                rows_out.append({'d': to_day(r[ci[COL_DATE]]), 'camp': ws.title,
+                                 'tier': tiers.get(ws.title), 'kol': kol,
+                                 'amt': round(amt, 2), 'st': 'done' if st == 'done' else 'pending'})
             if st != 'done':
                 key = mo or 'undated'
                 p = pend.setdefault(key, {'amount': 0.0, 'n': 0})
@@ -148,6 +187,8 @@ def main():
            'months': dict(sorted(months.items())),
            'pending': dict(sorted(pend.items())),
            'undated_done': {'amount': round(undated['done'], 2), 'n': undated['n']},
+           'rows_from': ROWS_FROM, 'rows': sorted(rows_out, key=lambda r: (r['d'] or '', -r['amt'])),
+           'tiers_unmapped': sorted({r['camp'] for r in rows_out if not r['tier']}),
            'tabs_skipped': skipped, 'rows_scanned': rows_seen}
 
     # by_campaign = ชื่อแคมเปญ (บางชื่อมีชื่อเล่น KOL อยู่) -> ดูได้ตอน dry-run เท่านั้น

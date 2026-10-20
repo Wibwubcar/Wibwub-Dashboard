@@ -1,47 +1,49 @@
 #!/usr/bin/env python3
-"""สร้างข้อมูลเมนู "การตลาด vs ยอดขาย" ลง WIBWUB_Dashboard.html + WIBWUB_Mobile.html
+"""สร้างข้อมูล **รายวัน** ของเมนู "การตลาด vs ยอดขาย" ลง Dashboard + Mobile
 
-รวมค่าการตลาดทุกช่องทางเทียบกับยอดขายรวมรายเดือน
+หน้าเว็บคำนวณทุกตัวเลขเองจากข้อมูลรายวันชุดนี้ ตามช่วงวันที่ผู้ใช้เลือก
+สคริปต์นี้จึงมีหน้าที่แค่ "รวมแหล่งข้อมูลให้เป็นรายวันที่เชื่อถือได้"
 
-แหล่งข้อมูล
-  · Ads Shopee / TikTok / Lazada : `data Ads/ads_daily.json` (รวม spend รายวัน -> รายเดือน)
-  · KOL                          : `data Ads/kol_monthly.json` (สร้างโดย kol_fetch.py)
-  · ยอดขายรวม                    : TOTAL_REV ในหน้าเว็บ = ผลรวมอาเรย์ช่องทางทั้ง 10 ตัว
-  · Facebook Ads / Event         : **ยังไม่มีข้อมูล** -> null = "รอข้อมูล"
+แหล่งข้อมูล (ไฮบริด — ตั้งใจให้ตรงกับหน้าอื่นของ Dashboard)
+  · ยอดขาย Shopee/TikTok/Lazada : `data Ads/ads_daily.json` (sh_real/tk_real/lz_real)
+      รวมทั้งเดือนแล้วได้เท่ากับ SH_REV / LZ_REV บนหน้าเว็บเป๊ะ ๆ
+      -> จึงมีรายวันเฉพาะตั้งแต่ 2026-09-01 (วันแรกของ ads_daily.json)
+  · ยอดขายช่องทางที่เหลือ        : Shipnity รายวัน (Facebook, Line, Carcare, Website,
+      Marketing, POS, เบิกของ, อื่น ๆ) — map ตาม CH_ARRAYS ของ shipnity_update.py
+      ที่เดียว ไม่ก๊อปมาเขียนใหม่ (เคยมีบั๊ก LINE_OA หายไปจากยอดรวม)
+  · ค่าโฆษณา                      : `data Ads/ads_daily.json`
+  · KOL                           : `data Ads/kol_monthly.json` (จาก kol_fetch.py)
+  · Facebook Ads / Event          : ยังไม่มีข้อมูล -> หน้าเว็บขึ้น "รอข้อมูล" และ
+      **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
 
-กฎที่ตกลงไว้ (ห้ามเปลี่ยนโดยไม่ถาม)
-  · ช่องที่ยังไม่มีข้อมูลเป็น null **ห้ามนับเป็น 0** ในสูตร % ต่อยอดขาย
-    หน้าเว็บจะขึ้นหมายเหตุว่า % ที่เห็นยังไม่รวม Facebook / Event
-  · KOL นับเฉพาะ Status=Done ตามวันที่ทำจ่าย · ยอด "รอจ่าย" แสดงเป็นหมายเหตุแยก
-  · ทุกเดือนตัดข้อมูลที่ `asof` เดียวกับฝั่งยอดขาย (SALES_ASOF) ไม่ให้คาบเกี่ยวคนละวัน
+⚠️ ชีต KOL มีข้อมูลส่วนบุคคล — ไฟล์นี้อ่านแค่ `kol_monthly.json` ซึ่งมีเฉพาะ
+   วันที่ / ยอดเงิน / ชื่อช่อง (handle) / แคมเปญ / สถานะ
+   ห้ามดึงชีตตรงจากที่นี่ และห้ามให้ชื่อจริง เลขบัญชี เลขบัตร ที่อยู่ เบอร์โทร หลุดเข้ามา
 
-⚠️ ชีต KOL มีข้อมูลส่วนบุคคล — ที่นี่อ่านเฉพาะ `kol_monthly.json` ซึ่งเป็นผลรวมรายเดือน
-   ห้ามดึงชีตตรงจากไฟล์นี้ และห้ามใส่ชื่อ/เลขบัญชีลงหน้าเว็บหรือ commit เด็ดขาด
-
-**เพิ่มเดือนย้อนหลัง**: แก้ `MONTHS` ด้านล่างให้มีเดือนที่ต้องการ (ต้องมีใน ads_daily.json)
-แล้วรันสคริปต์ใหม่ — ไม่ต้องแตะ HTML
-
-ใช้:  python3 scripts/marketing/marketing_update.py [--dry-run] [--all-months]
+ใช้:  python3 scripts/marketing/marketing_update.py [--dry-run]
 exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน · 2 = ไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
 """
-import sys, re, json, argparse
+import sys, re, json, argparse, subprocess
 from pathlib import Path
 
 BASE = Path('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com'
             '/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All')
 ADS = BASE / 'data Ads' / 'ads_daily.json'
 KOL = BASE / 'data Ads' / 'kol_monthly.json'
+# ค่าการตลาดที่ยังไม่มีระบบดึงอัตโนมัติ (Event, Facebook Ads) — กรอกมือ ไฟล์อาจยังว่าง
+MANUAL = BASE / 'data Ads' / 'mkt_manual.json'
+MANUAL_KEYS = ['ads_fb', 'event']
 PAGES = ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']
-
-# เดือนที่จะแสดงบนหน้าเว็บ — เพิ่มย้อนหลังได้ที่นี่ที่เดียว (เรียงเก่า -> ใหม่)
-MONTHS = ['2026-10']
-
-TH_MON = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
-          'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
-REV_ARRAYS = ['SH_REV', 'TK_REV', 'LZ_REV', 'FB_REV', 'LINE_REV',
-              'WEB_REV', 'CARE_REV', 'MKT_REV', 'BEUK_REV', 'POS_REV']
 START = '/* MKT_SPEND:AUTO-START */'
 END = '/* MKT_SPEND:AUTO-END */'
+
+# ช่องทางฝั่ง Shipnity -> คีย์ที่ใช้บนหน้าเว็บ (ชื่ออาเรย์เดิมใน CH_ARRAYS)
+SHIP_KEYS = [('fb', 'FB_REV'), ('line', 'LINE_REV'), ('care', 'CARE_REV'),
+             ('web', 'WEB_REV'), ('mkt', 'MKT_REV'), ('pos', 'POS_REV'),
+             ('beuk', 'BEUK_REV'), ('oth', 'OTH_REV')]
+# ลำดับตัวเลขในแต่ละวัน (ย่อให้ไฟล์เล็ก — หน้าเว็บอ่านลำดับจาก MKT_SPEND.keys)
+DAY_KEYS = ['sh', 'tk', 'lz'] + [k for k, _ in SHIP_KEYS] + \
+           ['ads_sh', 'ads_tk', 'ads_lz', 'kol'] + MANUAL_KEYS
 
 
 def die(msg, detail=None):
@@ -56,138 +58,155 @@ def arr(text, name):
     except ValueError: return None
 
 
-def th_label(ym):
-    y, m = ym.split('-')
-    return f'{TH_MON[int(m) - 1]} {int(y) + 543 - 2500:02d}'      # 2026-10 -> 'ต.ค. 69'
-
-
-def ads_by_month(days):
-    out = {}
-    for d, v in days.items():
-        o = out.setdefault(d[:7], {'sh': 0.0, 'tk': 0.0, 'lz': 0.0, 'days': 0,
-                                   'first': d, 'last': d})
-        o['sh'] += sum((v.get('sh_ads', {}).get(x, {}) or {}).get('spend', 0) or 0
-                       for x in ('product', 'search', 'live'))
-        o['tk'] += sum((v.get('tk_ads', {}).get(x, {}) or {}).get('spend', 0) or 0
-                       for x in ('product', 'live'))
-        o['lz'] += (v.get('lz_ads', {}) or {}).get('spend', 0) or 0
-        o['days'] += 1
-        o['first'] = min(o['first'], d); o['last'] = max(o['last'], d)
-    return out
-
-
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
-    ap.add_argument('--all-months', action='store_true',
-                    help='แสดงทุกเดือนที่มีข้อมูล (ไว้ดูตัวเลขตอน dry-run)')
     a = ap.parse_args()
 
     for p in (ADS, KOL):
         if not p.exists(): die('ไม่พบไฟล์แหล่งข้อมูล', str(p))
     ads_raw = json.loads(ADS.read_text(encoding='utf-8'))
     kol_raw = json.loads(KOL.read_text(encoding='utf-8'))
-    ads = ads_by_month(ads_raw.get('days') or {})
-    if not ads: die('ads_daily.json ไม่มี days')
+    days_ads = ads_raw.get('days') or {}
+    if not days_ads: die('ads_daily.json ไม่มี days')
 
     pages = {}
     for p in PAGES:
         fp = BASE / p
         if not fp.exists(): die('ไม่พบไฟล์', p)
         pages[p] = fp.read_text(encoding='utf-8')
-
     dash = pages['WIBWUB_Dashboard.html']
+
     m = re.search(r"SALES_ASOF\s*=\s*'([\d-]{10})'", pages['WIBWUB_Mobile.html'])
     if not m: die('ไม่พบ SALES_ASOF ใน WIBWUB_Mobile.html')
     asof = m.group(1)
 
-    # ── ยอดขายรวมรายเดือน: ต้องตรงกันทั้ง 2 หน้า ไม่งั้นหยุด ───────────────
-    revs = {}
-    for p, t in pages.items():
-        tot = None
-        for n in REV_ARRAYS:
-            v = arr(t, n)
-            if v is None: die(f'ไม่พบอาเรย์ {n} ใน {p}')
-            tot = v if tot is None else [x + y for x, y in zip(tot, v)]
-        revs[p] = [round(x, 2) for x in tot]
-    if revs[PAGES[0]] != revs[PAGES[1]]:
-        die('TOTAL_REV สองหน้าไม่ตรงกัน — รัน shipnity_update.py ก่อน',
-            {p: revs[p][-1] for p in PAGES})
-    rev = revs[PAGES[0]]
-    nmo = len(arr(dash, 'SH_REV') or [])
+    # ── Shipnity รายวัน (ใช้ CH_ARRAYS ตัวจริง ไม่ reimplement) ───────────────
+    sys.path.insert(0, str(BASE / 'scripts'))
+    try:
+        from ship_cache import load_shipnity
+        import shipnity_update as SU
+    except Exception as e:
+        die('import ship_cache/shipnity_update ไม่สำเร็จ', f'{type(e).__name__}: {e}')
+    raw = load_shipnity(verbose=False)
+    if not raw: die('load_shipnity คืน None')
+    CH = raw['channels']
+    ship = {}
+    for o in raw['order_counts']:
+        d = o['d']
+        if d > asof: continue
+        s = ship.setdefault(d, {})
+        c = CH[o['c']]
+        s[c] = s.get(c, 0.0) + o['r']
 
-    want = sorted(ads) if a.all_months else MONTHS
-    missing = [x for x in want if x not in ads]
-    if missing: die('ไม่มีข้อมูล Ads ของเดือนที่ขอ — ดูช่วงใน ads_daily.json',
-                    {'missing': missing, 'available': sorted(ads)})
+    # ── ค่าใช้จ่ายที่กรอกมือ (Event / Facebook Ads) ──────────────────────────
+    man = {}
+    if MANUAL.exists():
+        try:
+            man = (json.loads(MANUAL.read_text(encoding='utf-8')).get('days') or {})
+        except Exception as e:
+            die('อ่าน mkt_manual.json ไม่ได้ (JSON เสีย?)', f'{type(e).__name__}: {e}')
+        for d, v in man.items():
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
+                die('วันที่ใน mkt_manual.json ผิดรูปแบบ ต้องเป็น YYYY-MM-DD', d)
+            for k, x in (v or {}).items():
+                if k not in MANUAL_KEYS:
+                    die('คีย์ที่ไม่รู้จักใน mkt_manual.json — ใช้ได้เฉพาะ ' + ', '.join(MANUAL_KEYS),
+                        {d: k})
+                if not isinstance(x, (int, float)) or x < 0:
+                    die('ยอดใน mkt_manual.json ต้องเป็นตัวเลขไม่ติดลบ', {d: {k: x}})
 
-    rows, notes = [], []
-    for ym in want:
-        o = ads[ym]
-        idx = int(ym[5:7]) - 1                      # อาเรย์ยอดขายเริ่ม ม.ค. = index 0
-        if ym[:4] != '2026' or idx >= nmo:
-            die('เดือนนี้ยังไม่มีช่องในอาเรย์ยอดขายของหน้าเว็บ', ym)
-        k = (kol_raw.get('months') or {}).get(ym) or {}
-        kp = (kol_raw.get('pending') or {}).get(ym) or {}
-        cov = min(o['last'], asof) if ym == asof[:7] else o['last']
-        if o['last'] > asof:
-            notes.append(f'{ym}: ข้อมูล Ads ถึง {o["last"]} แต่ตัดที่ {asof} ตาม SALES_ASOF')
-        rows.append({
-            'm': ym, 'label': th_label(ym), 'i': idx,
-            'rev': rev[idx],
-            'sh': round(o['sh'], 2), 'tk': round(o['tk'], 2), 'lz': round(o['lz'], 2),
-            'fb': None, 'event': None,                      # ยังไม่มีข้อมูล
-            'kol': round(k.get('amount', 0.0), 2), 'kol_n': k.get('n', 0),
-            'kol_pending': round(kp.get('amount', 0.0), 2), 'kol_pending_n': kp.get('n', 0),
-            'cov': cov, 'days': o['days'],
-        })
+    # ── KOL รายวัน ───────────────────────────────────────────────────────────
+    kol_rows = [r for r in (kol_raw.get('rows') or []) if r.get('d')]
+    kol_day = {}
+    for r in kol_rows:
+        if r['st'] == 'done' and r['d'] <= asof:
+            kol_day[r['d']] = round(kol_day.get(r['d'], 0.0) + r['amt'], 2)
 
-    # ── ด่านตรวจ ────────────────────────────────────────────────────────────
-    for r in rows:
-        spend = r['sh'] + r['tk'] + r['lz'] + r['kol']
-        if spend <= 0: die('ค่าการตลาดรวมเป็น 0 — แหล่งข้อมูลน่าจะหลุด', r['m'])
-        if r['rev'] <= 0: die('ยอดขายรวมเป็น 0', r['m'])
-        if spend > r['rev']: die('ค่าการตลาดสูงกว่ายอดขาย — ตรวจแหล่งข้อมูลก่อน',
-                                 {'m': r['m'], 'spend': spend, 'rev': r['rev']})
-        r['spend'] = round(spend, 2)
-        r['pct'] = round(spend / r['rev'] * 100, 2)
-        r['roi'] = round(r['rev'] / spend, 2)
+    # ── ประกอบรายวัน ────────────────────────────────────────────────────────
+    d0 = max(min(days_ads), '2026-09-01')
+    dates = sorted(d for d in days_ads if d0 <= d <= asof)
+    if not dates: die('ไม่มีวันในช่วงที่ใช้ได้', {'ads_from': min(days_ads), 'asof': asof})
 
-    data = {'asof': asof, 'missing_sources': ['fb', 'event'],
-            'kol_rule': kol_raw.get('rule', ''),
-            'kol_fetched': kol_raw.get('fetched_at', ''),
-            'ads_note': ads_raw.get('source_note', '')[:160],
-            'months': rows}
+    rows = {}
+    for d in dates:
+        v = days_ads[d]
+        s = ship.get(d, {})
+        rec = [round((v.get('sh_real', {}) or {}).get('gmv', 0) or 0, 2),
+               round((v.get('tk_real', {}) or {}).get('gmv', 0) or 0, 2),
+               round((v.get('lz_real', {}) or {}).get('gmv', 0) or 0, 2)]
+        for _, name in SHIP_KEYS:
+            rec.append(round(sum(s.get(c, 0) for c in SU.CH_ARRAYS[name]), 2))
+        rec += [round(sum((v.get('sh_ads', {}).get(x, {}) or {}).get('spend', 0) or 0
+                          for x in ('product', 'search', 'live')), 2),
+                round(sum((v.get('tk_ads', {}).get(x, {}) or {}).get('spend', 0) or 0
+                          for x in ('product', 'live')), 2),
+                round((v.get('lz_ads', {}) or {}).get('spend', 0) or 0, 2),
+                kol_day.get(d, 0.0)]
+        rec += [round(float((man.get(d) or {}).get(k, 0) or 0), 2) for k in MANUAL_KEYS]
+        rows[d] = rec
 
-    summary = {'asof': asof, 'months': [
-        {'เดือน': r['label'], 'ครอบถึง': r['cov'], 'วัน': r['days'],
-         'ยอดขาย': r['rev'], 'Shopee': r['sh'], 'TikTok': r['tk'], 'Lazada': r['lz'],
-         'KOL': r['kol'], 'KOL รอจ่าย': r['kol_pending'],
-         'ค่าการตลาดรวม': r['spend'], '%ต่อยอดขาย': r['pct'], 'ยอดขาย/ค่าการตลาด': r['roi']}
-        for r in rows], 'notes': notes}
+    # ── ด่านตรวจ: รวมรายวันของเดือนล่าสุดต้องเท่าอาเรย์รายเดือนบนหน้าเว็บ ────
+    checks, idx = {}, int(asof[5:7]) - 1
+    for key, name in [('sh', 'SH_REV'), ('lz', 'LZ_REV')] + SHIP_KEYS:
+        page_v = (arr(dash, name) or [0] * 12)[idx]
+        day_v = round(sum(rows[d][DAY_KEYS.index(key)] for d in dates if d[:7] == asof[:7]), 2)
+        checks[name] = {'page': page_v, 'daily': day_v, 'diff': round(day_v - page_v, 2)}
+        if page_v and abs(day_v - page_v) > max(1.0, abs(page_v) * 0.001):
+            die(f'รายวันรวมแล้วไม่เท่า {name} บนหน้าเว็บ — แหล่งข้อมูลไม่ตรงกัน', checks[name])
+    # TikTok ต่างได้บ้าง (ads_daily เป็นยอดก่อนหักยกเลิก · TK_REV หักแล้ว) แต่ไม่เกิน 3%
+    tk_page = (arr(dash, 'TK_REV') or [0] * 12)[idx]
+    tk_day = round(sum(rows[d][1] for d in dates if d[:7] == asof[:7]), 2)
+    checks['TK_REV'] = {'page': tk_page, 'daily': tk_day, 'diff': round(tk_day - tk_page, 2)}
+    if tk_page and abs(tk_day - tk_page) > abs(tk_page) * 0.03:
+        die('ยอด TikTok รายวันต่างจาก TK_REV เกิน 3%', checks['TK_REV'])
+
+    cov = {'sales': asof, 'shopee': (ads_raw.get('coverage') or {}).get('shopee'),
+           'tiktok': (ads_raw.get('coverage') or {}).get('tiktok'),
+           'lazada': (ads_raw.get('coverage') or {}).get('lazada'),
+           'shipnity': max((d for d in ship), default=None),
+           'kol': max((r['d'] for r in kol_rows if r['st'] == 'done'), default=None),
+           'kol_fetched': kol_raw.get('fetched_at')}
+
+    # หมวดที่ยังไม่มีข้อมูลเลยในช่วงนี้ -> หน้าเว็บขึ้น "รอข้อมูล" และไม่นับเป็น 0
+    # พอ mkt_manual.json มียอดจริง คีย์นั้นจะหลุดออกจาก missing เอง ไม่ต้องแก้โค้ดหน้าเว็บ
+    missing = [k for k in MANUAL_KEYS
+               if sum(r[DAY_KEYS.index(k)] for r in rows.values()) <= 0]
+    man_out = {k: round(sum(r[DAY_KEYS.index(k)] for r in rows.values()), 2) for k in MANUAL_KEYS}
+
+    data = {'asof': asof, 'from': dates[0], 'to': dates[-1], 'keys': DAY_KEYS,
+            'days': rows, 'kol': kol_rows, 'cov': cov,
+            'tiers_unmapped': kol_raw.get('tiers_unmapped') or [],
+            'missing': missing}
+
+    tot = {k: round(sum(r[i] for r in rows.values()), 2) for i, k in enumerate(DAY_KEYS)}
+    summary = {'asof': asof, 'range': f'{dates[0]} → {dates[-1]}', 'days': len(dates),
+               'checks_vs_page': checks, 'totals_whole_range': tot,
+               'kol_rows': len(kol_rows), 'tiers_unmapped': data['tiers_unmapped'],
+               'manual': man_out, 'still_missing': missing,
+               'manual_file': str(MANUAL.relative_to(BASE)),
+               'size_kb': round(len(json.dumps(data, ensure_ascii=False)) / 1024, 1)}
 
     if a.dry_run:
-        print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False, indent=1))
-        return 0
+        print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False, indent=1)); return 0
 
     block = (START + '\nconst MKT_SPEND = ' +
              json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n' + END)
     changed = False
     for p, t in pages.items():
         if START not in t or END not in t:
-            die(f'ไม่พบบล็อก {START} ใน {p} — ต้องแทรก UI ก่อน (ดู marketing_section.py)')
+            die(f'ไม่พบบล็อก {START} ใน {p} — รัน marketing_section.py ก่อน')
         new = re.sub(re.escape(START) + r'[\s\S]*?' + re.escape(END), lambda _: block, t)
         if new != t:
             (BASE / p).write_text(new, encoding='utf-8'); changed = True
+    notes = []
     if changed:
-        # bump_sw.py ทำงานตอน import (ไม่มี main()) จึงต้องเรียกเป็น subprocess
-        import subprocess
         r = subprocess.run([sys.executable, str(BASE / 'scripts' / 'bump_sw.py')],
                            capture_output=True, text=True)
         notes.append(r.stdout.strip() if r.returncode == 0
                      else f'bump_sw ไม่สำเร็จ: {r.stderr.strip()[:120]}')
-    print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary},
-                     ensure_ascii=False))
+    print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary,
+                      'notes': notes}, ensure_ascii=False))
     return 0 if changed else 10
 
 

@@ -1,7 +1,7 @@
 {
  "source": "Payment KOL Wibwub (aggregate only — no personal data)",
  "rule": "Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย",
- "fetched_at": "2026-10-20 14:29",
+ "fetched_at": "2026-10-20 14:50",
  "months": {
   "2025-01": {
    "amount": 26000.0,
@@ -82,6 +82,402 @@
   "amount": 0.0,
   "n": 0
  },
+ "rows_from": "2026-09",
+ "rows": [
+  {
+   "d": "2026-09-04",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 3000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-04",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-07",
+   "camp": "",
+   "tier": "Macro / Mega",
+   "kol": "",
+   "amt": 36400.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 4000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 1800.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 1200.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2900.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-15",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 3500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-15",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 2500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 5000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2600.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "",
+   "tier": "Top Creator",
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-29",
+   "camp": "",
+   "tier": "Seeding",
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-06",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 4365.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1943.93,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 800.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 5200.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 2000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "",
+   "tier": null,
+   "kol": "",
+   "amt": 1200.0,
+   "st": "pending"
+  }
+ ],
+ "tiers_unmapped": [],
  "tabs_skipped": [],
  "rows_scanned": 661
 }
