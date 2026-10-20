@@ -23,23 +23,31 @@ REQUIRED = {'date_min', 'date_max', 'channels', 'products', 'lines', 'order_coun
 # Shipnity เป็นแหล่งเดียวของช่องทางเหล่านี้ (ไม่มีใน Google Sheets)
 # ก่อน 20 ต.ค. 2569 ไม่มีงานไหนเขียนเลย -> ค่าค้างซ้ำเดิมตั้งแต่ มิ.ย. และสองหน้าไม่ตรงกัน
 MAIN_PAGES = ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']
+# ⚠️ ชื่อช่องทางใน Shipnity สะกดไม่เหมือนกันหลายแบบ (คนกรอก/ระบบเปลี่ยน)
+# 'Line OA' (เว้นวรรค) กับ 'LINE_OA' (ขีดล่าง) เป็นคนละสตริง — เดิม map แค่ตัวแรก
+# ทำให้ยอด LINE_OA 449,137 บาท (ทั้งปี 69) หายไปจาก TOTAL_REV เงียบ ๆ
+# แก้ 20 ต.ค. 2569 พร้อมใส่ด่านตรวจ unmapped ด้านล่างเพื่อไม่ให้เกิดซ้ำ
 CH_ARRAYS = {                      # ชื่ออาเรย์ -> ช่องทางใน Shipnity ที่รวมเข้าด้วยกัน
     'FB_REV':   ['Facebook'],
-    'LINE_REV': ['Line OA', 'Line Shopping'],
+    'LINE_REV': ['Line OA', 'Line Shopping', 'LINE_OA', 'LINE_SHOPPING'],
     'CARE_REV': ['Carcare'],
     'WEB_REV':  ['Website'],
-    'MKT_REV':  ['Marketing'],
+    'MKT_REV':  ['Marketing', 'สินค้าสำหรับทำการตลาด'],
     'POS_REV':  ['POS'],
     'BEUK_REV': ['เบิกของ'],
+    'OTH_REV':  ['Makro pro', 'Other', 'instagram'],
 }
+# ช่องทางฝั่งแพลตฟอร์ม — มีอาเรย์ของตัวเองจากแหล่งอื่น (ads_daily) ไม่เอาของ Shipnity
+PLATFORM_CH = {'Shopee', 'TikTok', 'Lazada'}
 CH_ORDERS = {                      # ออเดอร์รายช่องทาง — TOTAL_ORD รวมครบ 10 ช่องทางเท่า TOTAL_REV
     'FB_ORD':   ['Facebook'],
-    'LINE_ORD': ['Line OA', 'Line Shopping'],
+    'LINE_ORD': ['Line OA', 'Line Shopping', 'LINE_OA', 'LINE_SHOPPING'],
     'WEB_ORD':  ['Website'],
     'CARE_ORD': ['Carcare'],
-    'MKT_ORD':  ['Marketing'],
+    'MKT_ORD':  ['Marketing', 'สินค้าสำหรับทำการตลาด'],
     'BEUK_ORD': ['เบิกของ'],
     'POS_ORD':  ['POS'],
+    'OTH_ORD':  ['Makro pro', 'Other', 'instagram'],
 }
 
 
@@ -86,9 +94,27 @@ def write_coverage(raw, asof, dry=False):
     return ship, True
 
 
+def check_unmapped(agg):
+    """ช่องทางที่มียอดแต่ไม่ได้ map ไว้ = ยอดหายจาก TOTAL_REV เงียบ ๆ -> หยุดทันที
+
+    เคยเกิดจริง: 'LINE_OA' กับ 'Makro pro' ไม่อยู่ใน CH_ARRAYS เลยหายไปจากยอดรวม
+    ตั้งแต่ ม.ค. 69 โดยไม่มีใครรู้ เพราะหน้าเว็บไม่ได้บอกว่ามีช่องทางที่ไม่ถูกนับ
+    """
+    mapped = {c for v in CH_ARRAYS.values() for c in v} | PLATFORM_CH
+    bad = {}
+    for mo, chans in agg.items():
+        for c, v in chans.items():
+            if c not in mapped and (v.get('r') or 0) > 0:
+                bad[c] = round(bad.get(c, 0) + v['r'], 2)
+    if bad:
+        die('มีช่องทางใน Shipnity ที่ยังไม่ได้ map — ยอดจะหายจาก TOTAL_REV '
+            'ให้เพิ่มเข้า CH_ARRAYS/CH_ORDERS ก่อน', bad)
+
+
 def write_channels(raw, asof, dry=False):
     """เขียนอาเรย์ช่องทางลงทั้ง 2 หน้าให้ค่าตรงกัน — คืน (report, changed)"""
     agg = channel_months(raw, asof)
+    check_unmapped(agg)
     rep, changed = {}, False
     for page in MAIN_PAGES:
         fp = BASE / page

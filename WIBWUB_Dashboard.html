@@ -1725,22 +1725,22 @@ const SH_REV = [4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604,
 const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21,3245460.29,2506761.4];
 const LZ_REV = [179084.08,120948.89,183370.11,110531.65,129523.54,118094.7,95770.98,119349.79,114813.46,34435];
 const FB_REV = [2152231.25,1327334,1061901,802046.9,980883,1030940.45,631892.8,569816.44,564666.28,337858.3];
-const LINE_REV = [283427.5,412896.5,367314,318432.36,337096.7,339102.05,262996.6,283238.06,228022.96,167931.3];
+const LINE_REV = [350828.5,459157.7,418472,397898.06,374817.2,373396.65,295311.6,336236.66,262784.96,193582.3];
 const WEB_REV  = [4568,1760,11754,3060,4468,10430,2760,3513,16605,1130];
 const CARE_REV = [84069.25,90134,70705.7,92509.75,100266.4,113001.65,100996.25,57257.55,127877.6,61753];
-const MKT_REV = [0,0,0,0,0,0,0,0,0,0];
+const MKT_REV = [580,0,0,490,0,0,0,0,0,0];
 const BEUK_REV= [0,0,0,0,0,0,0,0,35756,0];
-const POS_REV = [435,547.5,2278,267.5,1550,4591.5,967,2633,2693.5,25808.5];
+const POS_REV = [435,547.5,2278,267.5,1550,4591.5,967,2633,2693.5,25808.5]; const OTH_REV = [0,0,0,0,375,0,3457,2194,5735,1850];
 const SH_ORD = [7532,6580,6873,8128,9093,8895,10511,11689,12037,7649];
 const TK_ORD = [3204,3652,3934,5032,7543,4260,10094,11498,16562,13152];
 const LZ_ORD = [236,176,255,161,157,158,146,155,148,53];
 const FB_ORD = [2970,1964,1569,1167,1475,1601,905,846,816,491];
-const LINE_ORD = [279,408,281,318,305,350,265,378,242,155];
+const LINE_ORD = [312,445,319,356,327,380,280,403,266,170];
 const WEB_ORD = [1,2,13,4,7,6,5,6,6,3];
 const CARE_ORD = [25,29,23,36,39,43,37,24,58,31];
-const MKT_ORD = [0,0,0,0,0,0,0,0,0,0];
+const MKT_ORD = [2,0,0,1,0,0,0,0,0,0];
 const BEUK_ORD = [0,0,0,0,0,0,0,0,1,0];
-const POS_ORD = [1,3,9,2,4,9,5,5,5,4];
+const POS_ORD = [1,3,9,2,4,9,5,5,5,4]; const OTH_ORD = [0,0,0,0,1,0,2,6,7,3];
 const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.89,5.68,6.58];
 const TK_CANCEL_PCT = [9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.69,6.03,7.19];
 const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92,21.92];
@@ -2639,8 +2639,8 @@ function setMonthRange(s, e) {
   const tkFeeCommPct   = tkRev>0 ? tkFeeComm/tkRev*100 : 0;
   const tkAdsPct       = tkRev>0 ? tkAds/tkRev*100 : 0;
   const tkAfiPct       = tkRev>0 ? tkAfi/tkRev*100 : 0;
-  const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]);
-  const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]);
+  const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]+OTH_REV[i]);
+  const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]+OTH_ORD[i]);
 
   // Month summary bar
   set('monthSummary', `${isRange?'สะสม':''} ${MN} 2569: ${f(totRev)} · ${fn(totOrd)} orders`);
@@ -2675,7 +2675,7 @@ function setMonthRange(s, e) {
 
   // ── INTERNAL CHANNELS ──
   const careRev = sum(CARE_REV), mktRev = sum(MKT_REV), beukRev = sum(BEUK_REV), posRev = sum(POS_REV);
-  const intTotal = careRev + mktRev + beukRev + posRev;
+  const intTotal = careRev + mktRev + beukRev + posRev + sum(OTH_REV);
   set('v-int-care', f(careRev));
   set('v-int-mkt',  f(mktRev));
   set('v-int-beuk', f(beukRev));
@@ -2850,7 +2850,7 @@ function _addMonthParity(mo){
   const pad = n => String(n).padStart(2,'0');
   MP_MONTH_BOUNDS.push({s:`2026-${pad(mi)}-01`, e:`2026-${pad(mi)}-${pad(last)}`});
   // channel arrays ที่ไม่ได้อยู่ในฟอร์ม — carry forward ค่าล่าสุดไว้ก่อน เพื่อคง length ให้เท่ากัน
-  [FB_REV,LINE_REV,WEB_REV,CARE_REV,MKT_REV,BEUK_REV,POS_REV,FB_ORD,LINE_ORD]
+  [FB_REV,LINE_REV,WEB_REV,CARE_REV,MKT_REV,BEUK_REV,POS_REV,OTH_REV,FB_ORD,LINE_ORD]
     .forEach(a => { if(a.length < M5.length) a.push(a[a.length-1]); });
 }
 const ADD_CFG = {
@@ -3484,7 +3484,7 @@ function renderMktSpend(elId){
   el.innerHTML=h;
 }
 /* MKT_SPEND:AUTO-START */
-const MKT_SPEND = {"asof":"2026-10-18","missing_sources":["fb","event"],"kol_rule":"Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย","kol_fetched":"2026-10-20 14:24","ads_note":"ดึงจาก Shopee Business Insights / Shopee Ads (get_time_graph) / TikTok Compass / TikTok GMV Max overview — 19 ต.ค. 2569 · ก.ย. 2569 ดึงเพิ่ม 19 ต.ค. 2569 (repla","months":[{"m":"2026-10","label":"ต.ค. 69","i":9,"rev":7545565.5,"sh":767181.0,"tk":693322.56,"lz":6622.79,"fb":null,"event":null,"kol":14108.93,"kol_n":8,"kol_pending":18900.0,"kol_pending_n":9,"cov":"2026-10-18","days":18,"spend":1481235.28,"pct":19.63,"roi":5.09}]};
+const MKT_SPEND = {"asof":"2026-10-18","missing_sources":["fb","event"],"kol_rule":"Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย","kol_fetched":"2026-10-20 14:29","ads_note":"ดึงจาก Shopee Business Insights / Shopee Ads (get_time_graph) / TikTok Compass / TikTok GMV Max overview — 19 ต.ค. 2569 · ก.ย. 2569 ดึงเพิ่ม 19 ต.ค. 2569 (repla","months":[{"m":"2026-10","label":"ต.ค. 69","i":9,"rev":7571216.5,"sh":767181.0,"tk":693322.56,"lz":6622.79,"fb":null,"event":null,"kol":14108.93,"kol_n":8,"kol_pending":18900.0,"kol_pending_n":9,"cov":"2026-10-18","days":18,"spend":1481235.28,"pct":19.56,"roi":5.11}]};
 /* MKT_SPEND:AUTO-END */
 </script>
 
