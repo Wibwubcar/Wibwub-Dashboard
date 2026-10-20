@@ -25,37 +25,70 @@ def merge(paths, dry=False):
     parts={}
     for p in paths:
         k,data=readpart(p); parts[k]=data
-    need={'sh_real','sh_ads','tk_real','tk_ads'}
-    if set(parts)!=need: sys.exit('ต้องมีครบ 4 ชุด ได้: %s'%sorted(parts))
+    need={'sh_real','sh_ads','tk_real','tk_ads'}; opt={'lz_real','lz_ads'}
+    miss=need-set(parts)
+    if miss: sys.exit('ขาดชุดบังคับ: %s'%sorted(miss))
+    extra=set(parts)-need-opt
+    if extra: sys.exit('ชุดที่ไม่รู้จัก: %s'%sorted(extra))
+    # Lazada เป็นออปชัน แต่ถ้าให้มาต้องให้ครบคู่ (กันเขียนข้างเดียวแล้วตัวเลขไม่สอดคล้อง)
+    has_lz = bool(opt & set(parts))
+    if has_lz and not opt <= set(parts): sys.exit('ถ้าจะอัปเดต Lazada ต้องให้ทั้ง lz_real และ lz_ads')
     y=iso(bkk_today()-datetime.timedelta(days=1))
     dates=sorted(set(parts['sh_real'])&set(parts['sh_ads'])&set(parts['tk_real'])&set(parts['tk_ads']))
-    missing=sorted((set().union(*[set(v) for v in parts.values()]))-set(dates))
+    missing=sorted((set().union(*[set(parts[k]) for k in need]))-set(dates))
     if missing: sys.exit('บางชุดขาดวันที่: %s — ห้ามเขียนข้อมูลไม่ครบ'%missing)
+    lz_dates=sorted(set(parts['lz_real'])&set(parts['lz_ads'])) if has_lz else []
     d=load(); changed=[]; warn=[]
-    for dt in dates:
-        if dt>y: warn.append('ข้าม %s (ยังไม่จบวัน)'%dt); continue
-        e={'sh_real':{'gmv':int(round(parts['sh_real'][dt]['gmv'])),'orders':int(parts['sh_real'][dt]['orders'])},
-           'sh_ads':{k:{f:int(parts['sh_ads'][dt][k][f]) for f in ('gmv_broad','gmv_direct','spend','orders')} for k in ('product','search','live')},
-           'tk_real':{'gmv':round(float(parts['tk_real'][dt]['gmv']),2),'orders':int(parts['tk_real'][dt]['orders'])},
-           'tk_ads':{k:{'gmv':round(float(parts['tk_ads'][dt][k]['gmv']),2),'spend':round(float(parts['tk_ads'][dt][k]['spend']),2),'orders':int(parts['tk_ads'][dt][k]['orders'])} for k in ('product','live')}}
+    def neg(e,dt):
         for sec in e.values():
             for v in (sec.values() if all(isinstance(x,dict) for x in sec.values()) else [sec]):
                 if any((isinstance(x,(int,float)) and x<0) for x in v.values()): sys.exit('ค่าติดลบวันที่ %s'%dt)
-        if e['sh_real']['gmv']==0 or e['tk_real']['gmv']==0: warn.append('%s ยอดขายจริงเป็น 0 — ตรวจสอบ'%dt)
+    def lz_entry(dt):
+        return ({'gmv':round(float(parts['lz_real'][dt]['gmv']),2),'orders':int(parts['lz_real'][dt]['orders'])},
+                {f:(int(parts['lz_ads'][dt][f]) if f in ('orders','imp','clicks') else round(float(parts['lz_ads'][dt][f]),2))
+                 for f in ('spend','revenue','orders','imp','clicks')})
+    for dt in sorted(set(dates)|set(lz_dates)):
+        if dt>y: warn.append('ข้าม %s (ยังไม่จบวัน)'%dt); continue
         old=d['days'].get(dt)
+        if dt in dates:
+            e={'sh_real':{'gmv':int(round(parts['sh_real'][dt]['gmv'])),'orders':int(parts['sh_real'][dt]['orders'])},
+               'sh_ads':{k:{f:int(parts['sh_ads'][dt][k][f]) for f in ('gmv_broad','gmv_direct','spend','orders')} for k in ('product','search','live')},
+               'tk_real':{'gmv':round(float(parts['tk_real'][dt]['gmv']),2),'orders':int(parts['tk_real'][dt]['orders'])},
+               'tk_ads':{k:{'gmv':round(float(parts['tk_ads'][dt][k]['gmv']),2),'spend':round(float(parts['tk_ads'][dt][k]['spend']),2),'orders':int(parts['tk_ads'][dt][k]['orders'])} for k in ('product','live')}}
+            if e['sh_real']['gmv']==0 or e['tk_real']['gmv']==0: warn.append('%s ยอดขายจริงเป็น 0 — ตรวจสอบ'%dt)
+        elif old:
+            e={k:old[k] for k in need if k in old}      # Lazada อย่างเดียว: คง Shopee/TikTok เดิมไว้
+        else:
+            warn.append('ข้าม %s (มีแต่ Lazada ยังไม่มี Shopee/TikTok ของวันนี้)'%dt); continue
+        if dt in lz_dates:
+            e['lz_real'],e['lz_ads']=lz_entry(dt)
+        elif old:                                       # ไม่ได้ส่ง Lazada มา -> ห้ามลบของเดิม
+            for k in opt:
+                if k in old: e[k]=old[k]
+        neg(e,dt)
         if old!=e: changed.append((dt, old, e)); d['days'][dt]=e
     def tot(e):
-        return (e['sh_real']['gmv'], sum(x['spend'] for x in e['sh_ads'].values()), e['tk_real']['gmv'], sum(x['spend'] for x in e['tk_ads'].values()))
+        return (e['sh_real']['gmv'], sum(x['spend'] for x in e['sh_ads'].values()), e['tk_real']['gmv'],
+                sum(x['spend'] for x in e['tk_ads'].values()),
+                (e.get('lz_real') or {}).get('gmv'), (e.get('lz_ads') or {}).get('spend'))
     rows=[]
     for dt,old,e in changed:
         a=tot(e); b=tot(old) if old else None
-        rows.append({'date':dt,'new':not old,'sh_real':a[0],'sh_spend':a[1],'tk_real':a[2],'tk_spend':round(a[3],2),
-                     'prev':None if not b else {'sh_real':b[0],'sh_spend':b[1],'tk_real':b[2],'tk_spend':round(b[3],2)}})
-    d['days']=dict(sorted(d['days'].items())); last=max(d['days']); d['coverage']={'shopee':last,'tiktok':last}
+        row={'date':dt,'new':not old,'sh_real':a[0],'sh_spend':a[1],'tk_real':a[2],'tk_spend':round(a[3],2)}
+        if a[4] is not None: row['lz_real']=a[4]; row['lz_spend']=a[5]
+        row['prev']=None if not b else {'sh_real':b[0],'sh_spend':b[1],'tk_real':b[2],'tk_spend':round(b[3],2),'lz_real':b[4],'lz_spend':b[5]}
+        rows.append(row)
+    d['days']=dict(sorted(d['days'].items())); last=max(d['days'])
+    cov={'shopee':last,'tiktok':last}
+    lzd=[k for k,v in d['days'].items() if 'lz_real' in v]
+    if lzd: cov['lazada']=max(lzd)
+    d['coverage']=cov
     m=last[:7]; ds=[v for k,v in d['days'].items() if k.startswith(m)]
     month={'month':m,'days':len(ds),'sh_real':sum(x['sh_real']['gmv'] for x in ds),'sh_spend':sum(sum(t['spend'] for t in x['sh_ads'].values()) for x in ds),
            'tk_real':round(sum(x['tk_real']['gmv'] for x in ds),2),'tk_spend':round(sum(sum(t['spend'] for t in x['tk_ads'].values()) for x in ds),2)}
-    print(json.dumps({'changed':rows,'warnings':warn,'coverage':last,'month_to_date':month},ensure_ascii=False,indent=1))
+    lzm=[x for x in ds if 'lz_real' in x]
+    if lzm: month['lz_days']=len(lzm); month['lz_real']=round(sum(x['lz_real']['gmv'] for x in lzm),2); month['lz_spend']=round(sum(x['lz_ads']['spend'] for x in lzm),2)
+    print(json.dumps({'changed':rows,'warnings':warn,'coverage':cov,'month_to_date':month},ensure_ascii=False,indent=1))
     if not changed: sys.exit(10)
     if not dry:
         shutil.copy2(DAILY, DAILY+'.bak')

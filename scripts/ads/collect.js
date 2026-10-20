@@ -1,10 +1,12 @@
 // WIBWUB ads daily — ดึงข้อมูลรายวันด้วยการ replay request จริงที่ hook.js จับไว้
-// ใช้: window.__ADS={kind:'sh_real'|'sh_ads'|'tk_real'|'tk_ads'|'tk_camp', from:'YYYY-MM-DD', to:'YYYY-MM-DD'} แล้ววางไฟล์นี้
+// ใช้: window.__ADS={kind:'sh_real'|'sh_ads'|'tk_real'|'tk_ads'|'tk_camp'|'lz_real'|'lz_ads', from:'YYYY-MM-DD', to:'YYYY-MM-DD'} แล้ววางไฟล์นี้
 // แล้ว poll: window.__adsJob  → {done:true, n, len, err?}   อ่านผล: window.__adsExport(0,900), (900,1800) … (ผลของ javascript_tool ถูกตัดที่ ~1000 ตัวอักษร)
 (function(){
 const P=window.__ADS||{}; const J=window.__adsJob={done:false,kind:P.kind};
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 const nextDay=d=>{const x=new Date(d+'T00:00:00Z'); x.setUTCDate(x.getUTCDate()+1); return x.toISOString().slice(0,10);};
+const prevDay=d=>{const x=new Date(d+'T00:00:00Z'); x.setUTCDate(x.getUTCDate()-1); return x.toISOString().slice(0,10);};
+const needHost=h=>{ if(!location.hostname.endsWith(h)) throw new Error('ต้องรันบนหน้า '+h+' (ตอนนี้อยู่ '+location.hostname+')'); };
 const ts=d=>Math.floor(new Date(d+'T00:00:00+07:00')/1000);
 const days=[]; for(let d=P.from; d<=P.to; d=nextDay(d)) days.push(d);
 const cap=re=>{ const c=(window.__cap||[]).filter(c=>re.test(c.u)).pop(); if(!c) throw new Error('ยังไม่ได้จับ request '+re+' — ให้หน้าเว็บโหลดข้อมูลก่อน'); return c; };
@@ -56,6 +58,26 @@ const run={
         const rows=j.data.table_v2.map(r=>Object.fromEntries(r.map(x=>[x.name,x.data])));
         out[m][k]=rows.map(r=>({name:r.campaign_name,spend:+r.cost||0,orders:+r.onsite_roi2_shopping_sku||0,revenue:+r.onsite_roi2_shopping_value||0})).filter(r=>r.spend>0||r.revenue>0).sort((x,y)=>y.spend-x.spend);
         out[m][k+'_total']=+((j.data.statistics||{}).cost||0); await sleep(500); } }
+    return out; },
+  // ── Lazada ───────────────────────────────────────────────────────────────
+  // ไม่ต้องใช้ hook/signature — ยิง same-origin ตรงได้ แต่ต้องเปิดหน้าที่ถูกต้องก่อน
+  // (cookie/permission ผูกกับ path) ดูรายละเอียดใน scripts/task_prompts/ads_daily.md
+  async lz_real(){ needHost('sellercenter.lazada.co.th'); const out={};
+    for(const d of days){ const u='/ba/sycm/lazada/faas/dashboard/key/overviewV2.json?dateRange='+encodeURIComponent(d+'|'+d)+'&dateType=day';
+      const j=await (await fetch(u,{credentials:'include'})).json();
+      if(j.code!==0) throw new Error(d+' code '+j.code);
+      const q=j.data||{}; if(!q.payAmount||!q.paidOrderAmount) throw new Error(d+' ไม่มี payAmount/paidOrderAmount');
+      out[d]={gmv:+q.payAmount.value||0, orders:+q.paidOrderAmount.value||0}; await sleep(250); }
+    return out; },
+  async lz_ads(){ needHost('sellercenter.lazada.co.th'); const out={};
+    for(const d of days){ const p=prevDay(d);
+      const u='/sponsor/solutions/performance/report/overview.json?useRtTable=0&startDate='+d+'&endDate='+d+
+              '&lastStartDate='+p+'&lastEndDate='+p+'&sceneIds=12020,12021,12022,12023,12024&attributionType=2';
+      const j=await (await fetch(u,{credentials:'include'})).json();
+      const o=j&&j.result&&j.result.reportOverview;
+      if(!o) throw new Error(d+' ไม่มี reportOverview (success='+(j&&j.success)+' msg='+(j&&j.msg)+')');
+      out[d]={spend:+o.spend||0, revenue:+o.revenue||0, orders:+o.order||0, imp:+o.impressions||0, clicks:+o.clicks||0};
+      await sleep(300); }
     return out; }
 };
 if(!run[P.kind]){ J.err='kind ไม่ถูกต้อง'; J.done=true; return 'bad kind'; }
