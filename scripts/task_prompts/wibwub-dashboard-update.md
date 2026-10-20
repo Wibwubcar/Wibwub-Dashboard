@@ -586,3 +586,20 @@ print('✅ Cleanup done.')
 - Sales: อ่าน xlsx ทุกไฟล์ใน Data Shipnity/ แล้ว aggregate
 - sw.js: bump +1 ทุกครั้งที่รัน task (ไม่งั้น PWA ไม่ refresh)
 - On error: log แล้วทำต่อ ห้าม abort
+
+---
+
+## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
+
+**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
+which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
+
+| ❌ ห้าม | ✅ ใช้แบบนี้ |
+|---|---|
+| `cd "$BASE" && git status` | `git -C "$BASE" status` |
+| `cd "$BASE"` ขึ้นบรรทัดใหม่แล้วตามด้วย `git ...` | `git -C "$BASE" ...` |
+| `cd "$BASE" && python3 x.py; git status` | แยกเป็น 2 คำสั่ง · ใช้ `python3 "$BASE/x.py"` และ `git -C "$BASE" status` |
+
+เรียกสคริปต์ด้วย path เต็มเสมอ (`python3 "$BASE/scripts/..."`) จะได้ไม่ต้อง `cd`
+ถ้าจำเป็นต้อง `cd` จริง ๆ (เช่นสคริปต์อ่าน path สัมพัทธ์) **ห้ามมี `git` อยู่ในคำสั่งนั้น**
