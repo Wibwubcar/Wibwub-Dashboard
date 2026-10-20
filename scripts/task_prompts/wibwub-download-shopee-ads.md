@@ -37,8 +37,22 @@ POST /api/pas/v1/report/export_job/get_download_url/?SPC_CDS_VER=2
 
 (`direct_download` ที่พรอมป์เก่าพูดถึงตอบ 400 / `code 450` ใช้ไม่ได้)
 
-ถ้ายังไม่มี export พร้อม ให้สั่งสร้างรายงานใหม่ในหน้า (เลือก **"ภาพรวมข้อมูลโฆษณา"**)
-แล้วรอ ~10 วินาที · panel "รายงานล่าสุด" **เปิดเอง ไม่ต้องคลิกไอคอน "≡"**
+**สั่ง export เองเสมอ อย่าใช้ของเก่าใน list** — ของเดิมมักเป็นรอบเช้า ข้อมูลค้างหลายชั่วโมง:
+
+```
+POST /api/pas/v1/report/export_job/trigger/?SPC_CDS_VER=2
+     body: {"language":"th","report_type":"new_cpc_homepage__overall",
+            "start_time":<epoch 1 ของเดือน 00:00>,"end_time":<epoch วันนี้ 23:59:59>}
+     -> {"data":{"export_id":<id>}}  แล้ว poll list_homepage_result จน status=="success" (~10–30 วิ)
+```
+
+> 🚨 **`report_type` ต้องเป็น `new_cpc_homepage__overall` เท่านั้น** (all-CPC = 42 แคมเปญ)
+> เมนู **"ภาพรวมข้อมูลโฆษณา"** ในหน้าเว็บยิง `product_homepage_v2__overall` ซึ่งเป็น
+> **product-only = 38 แคมเปญ** ตัวเลขต่ำกว่าจริง (20 ต.ค. 69 รอบเย็น: product-only
+> spend 7.4 แสน vs all-CPC 8.31 แสน) — พลาดมาแล้วเพราะพรอมป์เดิมสั่งให้กดเมนูนี้
+> เช็กเร็ว ๆ: นับแถวใน CSV ถ้าไม่ใช่ ~42 และไม่มีแถว "โฆษณาร้านค้า"/"โฆษณาคำค้นหา" = ผิดชุด
+
+(ถ้าจำเป็นต้องกดในหน้าจริง ๆ: panel "รายงานล่าสุด" **เปิดเอง ไม่ต้องคลิกไอคอน "≡"**)
 
 3. โหลดไฟล์ด้วย Blob + `<a download>` และ **ตั้งชื่อให้ unique เสมอ**
    เช่น `shopee-ads-<from>-<to>-cpc-allads__<YYYYmmdd_HHMM>.csv`
@@ -69,14 +83,24 @@ ls -t /Users/thanasablilutanon/Downloads/*Shopee-Ads*.csv \
 > เพราะไม่รวม GMV Max และโฆษณาร้านค้า ถ้า cross-check แล้วไม่ตรงนี่คือสาเหตุ ไม่ใช่บั๊ก
 
 1. Sum เป็นยอดรวมเดือนปัจจุบัน + สร้าง top5 / worst5 / all campaigns
+   - นับเฉพาะแถวที่ `spend > 0` · `all` = เรียง spend มาก→น้อย · `top5` = 5 ตัวแรกของ `all`
+     · `worst5` = roas น้อย→มาก 5 ตัว
+   - `roas=revenue/spend`, `ctr=clicks/imp*100`, `cvr=orders/clicks*100`, `cpa=spend/orders` (คำนวณเอง ไม่อ่าน col 27)
+   - **รูปแบบตัวเลขต่างกันระหว่างระดับ** ระดับบนสุดใช้ `%.2f` ทุกตัว · ในแต่ละแคมเปญ
+     `spend`/`revenue` ใช้ `%.2f` แต่ `roas`/`ctr`/`cvr`/`cpa` ใช้ `repr(round(x,2))`
+     (เช่น `cpa:45.5`, `roas:0.0`) และ `cpa:0` (int) เมื่อ `orders==0`
+   - **ตรวจ generator ก่อนใช้**: รัน generator กับ CSV ของรอบก่อน แล้วเทียบ byte-identical
+     กับบล็อก `shopee:{...}` ที่อยู่ในไฟล์จริง ถ้าไม่ตรง = generator ผิด อย่าเขียนทับ
 2. **ถ้าค่าที่คำนวณได้เท่ากับของเดิมทุกตัว → หยุดตรงนี้** ไม่ต้องเขียน ไม่ bump sw.js ไม่ commit
    (รอบ 19:00 จะเจอเคสนี้บ่อยถ้า Shopee ยังไม่อัปเดตข้อมูล)
 3. แก้ `DATA_PERIODS.<เดือน>.shopee` ใน `data Ads/WIBWUB_Ads_Dashboard.html`
    ไฟล์นี้ minified บรรทัดเดียวยาวมาก — ใช้ Python แทนที่ substring แบบ exact-match
    **อย่าใช้ Edit tool**
-4. แก้ `SH_ADS[idx]` ใน `WIBWUB_Dashboard.html` + `WIBWUB_Mobile.html` ให้ตรงกับ spend เดือนปัจจุบัน
-   `idx` นับจาก array **`M5` ซึ่งอยู่ใน `WIBWUB_Dashboard.html`** (ไม่มีใน Ads Dashboard)
-5. แก้ badge `#ads-updated` และ `.pb-sub` ให้ตรงวันที่ข้อมูลจริง
+4. ~~แก้ `SH_ADS[idx]`~~ — **ข้ามข้อนี้** มีคอมเมนต์กำกับในไฟล์ทั้งสองว่า `SH_ADS` มาจาก
+   Google Sheet (sales sync) ซึ่งกว้างกว่ายอด Ads portal **ห้าม overwrite ด้วย spend จากรายงานนี้**
+   (ส.ค. 69: Sheet 1,185,609.37 vs Ads report 974,764.42) · รอบ 19–20 ต.ค. 69 ก็ข้ามเหมือนกัน
+5. ~~แก้ badge `#ads-updated` / `.pb-sub` ด้วยมือ~~ — ทั้งคู่ derive จาก `DATA_PERIODS.oct.cover`
+   แก้แค่ `cover.shopeeDay` + `cover.shopeePull` พอ (skill: wibwub-avoid-stale-hardcoded-labels)
 6. ตรวจ + commit:
 
 ```bash
