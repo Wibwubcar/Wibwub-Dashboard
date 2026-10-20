@@ -3,6 +3,28 @@
 DL="$HOME/Downloads"
 ALL="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
 
+ARCH="$ALL/downloads_archive"   # อยู่ใน .gitignore แล้ว ไม่ขึ้น GitHub
+# ย้ายไฟล์แบบไม่ทับของเดิมเด็ดขาด — ก่อน 20 ต.ค. 2569 ทุกบรรทัดด้านล่างใช้ `mv` เปล่า
+# ทำให้ไฟล์ชื่อซ้ำถูกทับเงียบ ๆ (เกิดจริง: CSV Shopee Ads รอบเช้าถูกไฟล์รอบสายทับ
+# ข้อมูลหายถาวรเพราะไฟล์พวกนี้ไม่ได้ track ใน git)
+safe_mv() {  # $1=ไฟล์ต้นทาง  $2=โฟลเดอร์ปลายทาง
+  local f="$1" dst="$2" b stamp
+  [ -f "$f" ] || return 0
+  mkdir -p "$dst"
+  b=$(basename "$f")
+  if [ -e "$dst/$b" ]; then
+    stamp=$(date -r "$f" +%Y%m%d_%H%M%S)
+    if cmp -s "$f" "$dst/$b"; then            # เหมือนกันทุกไบต์ -> เก็บเข้า dup ไม่รก
+      mkdir -p "$ARCH/dup"; mv -n "$f" "$ARCH/dup/${b%.*}__$stamp.${b##*.}"
+    else                                      # ชื่อซ้ำแต่เนื้อหาต่าง -> เก็บทั้งคู่
+      mv -n "$f" "$dst/${b%.*}__$stamp.${b##*.}"
+    fi
+  else
+    mv -n "$f" "$dst/$b"
+  fi
+}
+
+
 move() {
   local src="$1"; local dst="$2"
   [ -f "$src" ] && mv "$src" "$dst/" && echo "[WIBWUB] moved: $(basename "$src") → $dst"
@@ -42,7 +64,6 @@ for f in "$DL"/wibwub_samp_req_*.csv;                    do safe_mv "$f" "$ALL/D
 
 # ── ไฟล์ที่งานตั้งเวลาอ่านจาก Downloads โดยตรง (เช่น tiktok product daily โหลด json แล้วอ่านทันที)
 #    → ย้ายเฉพาะไฟล์ที่อายุเกิน 1 วัน (1440 นาที) และไม่ทับไฟล์เดิม (ชื่อซ้ำจะต่อท้ายด้วยเวลา)
-ARCH="$ALL/downloads_archive"   # อยู่ใน .gitignore แล้ว ไม่ขึ้น GitHub
 move_old() {  # $1=pattern (glob ของ find)  $2=ปลายทาง
   local pat="$1" dst="$2"
   find "$DL" -maxdepth 1 -type f -name "$pat" -mmin +1440 -print0 2>/dev/null |
@@ -60,25 +81,6 @@ move_old() {  # $1=pattern (glob ของ find)  $2=ปลายทาง
   done
 }
 
-# ย้ายไฟล์แบบไม่ทับของเดิมเด็ดขาด — ก่อน 20 ต.ค. 2569 ทุกบรรทัดด้านล่างใช้ `mv` เปล่า
-# ทำให้ไฟล์ชื่อซ้ำถูกทับเงียบ ๆ (เกิดจริง: CSV Shopee Ads รอบเช้าถูกไฟล์รอบสายทับ
-# ข้อมูลหายถาวรเพราะไฟล์พวกนี้ไม่ได้ track ใน git)
-safe_mv() {  # $1=ไฟล์ต้นทาง  $2=โฟลเดอร์ปลายทาง
-  local f="$1" dst="$2" b stamp
-  [ -f "$f" ] || return 0
-  mkdir -p "$dst"
-  b=$(basename "$f")
-  if [ -e "$dst/$b" ]; then
-    stamp=$(date -r "$f" +%Y%m%d_%H%M%S)
-    if cmp -s "$f" "$dst/$b"; then            # เหมือนกันทุกไบต์ -> เก็บเข้า dup ไม่รก
-      mkdir -p "$ARCH/dup"; mv -n "$f" "$ARCH/dup/${b%.*}__$stamp.${b##*.}"
-    else                                      # ชื่อซ้ำแต่เนื้อหาต่าง -> เก็บทั้งคู่
-      mv -n "$f" "$dst/${b%.*}__$stamp.${b##*.}"
-    fi
-  else
-    mv -n "$f" "$dst/$b"
-  fi
-}
 move_old 'tiktok_*.json'                              "$ARCH/TikTok json"
 move_old 'tk_*.json'                                  "$ARCH/TikTok json"
 move_old 'Shop+-Ads-Overall-Data-*.csv'               "$ALL/data Ads/Shopee"
