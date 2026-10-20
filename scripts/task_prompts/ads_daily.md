@@ -34,5 +34,23 @@
 7. `python3 ads_daily_update.py commit` — sync รายเดือน + bump sw.js + commit เฉพาะไฟล์ Ads (exit 10 = ไม่มีอะไรเปลี่ยน) · auto-push จะ push เอง ไม่ต้อง push
    - ถ้า git ล็อกค้าง ให้ย้ายไป .git/stale-* (ห้ามลบไฟล์): `cd "$BASE" && for f in HEAD.lock objects/maintenance.lock index.lock; do [ -e .git/$f ] && mv .git/$f .git/stale-$(date +%s)-$(basename $f); done`
 
+8. **เมนู "การตลาด vs ยอดขาย"** — ทำต่อทุกครั้งหลังขั้น 7 (ไม่ว่าขั้น 7 จะ exit 0 หรือ 10):
+```bash
+cd "$BASE"
+python3 scripts/marketing/kol_fetch.py          # ดึงยอด KOL จากชีต -> data Ads/kol_monthly.json
+python3 scripts/marketing/marketing_update.py   # รวม Ads + KOL + ยอดขาย -> เขียนลง 2 หน้า
+```
+   exit `0` = อัปเดตแล้ว · `10` = ไม่มีอะไรเปลี่ยน (ทั้งคู่ถือว่าผ่าน) · `2` = ไม่ผ่านด่านตรวจ ให้รายงานแล้วไปต่อ
+   ถ้ามีไฟล์เปลี่ยน ให้ commit:
+```bash
+git add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+    commit -m "auto-update: การตลาด vs ยอดขาย $(date +%Y-%m-%d)"
+```
+   > ⚠️ ชีต KOL (`1NEkm1bcHvXO0Ehs6cwaNDkBUUM1A9assALMp5V7S7lo`) มีชื่อ-นามสกุล เลขบัตรประชาชน
+   > เลขบัญชีธนาคาร ที่อยู่ เบอร์โทร — **`kol_fetch.py` อ่านแค่ 4 คอลัมน์และเขียนออกเป็นผลรวมรายเดือนเท่านั้น**
+   > ห้ามเปิดชีตนี้ด้วยวิธีอื่น ห้ามนำแถวรายบุคคลขึ้นหน้าเว็บ และห้าม commit อะไรที่มีข้อมูลส่วนบุคคล
+   > ถ้า `kol_fetch.py` พัง: รายงานแล้วข้าม — ห้าม copy ตัวเลขจากชีตมาใส่มือ
+
 ### สรุปท้ายรอบ (สั้นๆ ภาษาไทย)
 ช่วงวันที่ที่ดึง, วันที่ที่เพิ่ม/เปลี่ยน (จาก `changed`), ยอดเดือนนี้ถึงวันล่าสุด: Shopee ยอดจริง / ค่าโฆษณา, TikTok ยอดจริง / ค่าโฆษณา, Lazada ยอดจริง / ค่าโฆษณา (จาก `month_to_date` — คีย์ `lz_real` / `lz_spend`), จำนวนแคมเปญ GMV Max และค่าโฆษณารวม, คำเตือนถ้ามี, commit id หรือ "ไม่มีข้อมูลใหม่", และ error ถ้ามี
