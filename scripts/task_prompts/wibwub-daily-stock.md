@@ -1,6 +1,6 @@
 ---
 name: wibwub-daily-stock
-description: ดึงสต๊อกล่าสุดจาก Shipnity ทุกวัน 08:40/19:40 → อัปเดต Procurement_Dashboard.html → commit + push_now.command
+description: ดึงสต๊อกล่าสุดจาก Shipnity ทุกวัน 08:40/19:40 → อัปเดต Procurement_Dashboard.html → commit
 ---
 
 <!-- LOCAL-OVERRIDE v1 -->
@@ -238,7 +238,7 @@ print(f"✅ Updated Procurement_Dashboard.html — {date_str}")
 
 ---
 
-## Step 5 — Bump sw.js + Git commit + สร้าง push_now.command
+## Step 5 — Bump sw.js + Git commit
 
 ```bash
 # Bump sw.js
@@ -249,16 +249,8 @@ echo "sw.js: v${CURRENT} → v${NEW}"
 # ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
 git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add Procurement_Dashboard.html sw.js "Data Shipnity/stock_snapshot.json"
 git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" commit -m "auto-update: Stock forecast $(date +%Y-%m-%d) — Shipnity live"
-echo "✅ Committed — รอ user กด push_now.command"
+echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"
 
-# สร้าง push_now.command
-cat > "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command" << 'EOF'
-#!/bin/bash
-cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
-git push origin main && echo "✅ Push สำเร็จ" || echo "❌ Push ล้มเหลว"
-EOF
-chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/push_now.command"
 ```
 
 ---
@@ -266,7 +258,7 @@ chmod +x "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@
 ## หมายเหตุ
 
 - ถ้า Shipnity ต้องการ login: หยุดและรายงาน
-- git push จาก sandbox จะล้มเหลว HTTP 403 (proxy) → commit ไว้แล้วรายงานให้ user กด push_now.command
+- ไม่ต้อง git push — launchd com.wibwub.autopush push ให้เองทุก 2 นาที
 - ไฟล์ที่อัปเดต: Procurement_Dashboard.html, sw.js, Data Shipnity/stock_snapshot.json
 - navigate ค้าง → ตรวจสอบว่าใช้ browser_batch ไม่ใช่ navigate standalone
 
