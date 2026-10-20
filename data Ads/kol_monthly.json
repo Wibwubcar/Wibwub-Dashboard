@@ -1,7 +1,7 @@
 {
  "source": "Payment KOL Wibwub (aggregate only — no personal data)",
  "rule": "Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย",
- "fetched_at": "2026-10-20 14:29",
+ "fetched_at": "2026-10-20 14:50",
  "months": {
   "2025-01": {
    "amount": 26000.0,
@@ -82,6 +82,405 @@
   "amount": 0.0,
   "n": 0
  },
+ "rows_from": "2026-09",
+ "rows": [
+  {
+   "d": "2026-09-04",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "rita.fe_",
+   "amt": 3000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-04",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "jarkkystory",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-07",
+   "camp": "Campaign Sep",
+   "tier": "Macro / Mega",
+   "kol": "tanya_liyah",
+   "amt": 36400.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "papajate",
+   "amt": 4000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "ralph.detailing8",
+   "amt": 1800.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-08",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "muchmai_mumi",
+   "amt": 1200.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "wwearpraeww",
+   "amt": 2900.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "jaonnm",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "biiboooo2",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "pailong05",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "aornor.kd",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "sushada.ch",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "jojocheng_",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "theston666",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "aoohphonhan",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "aoohphonhan",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-11",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "pkautocare168",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-15",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "mhiewkanjana",
+   "amt": 3500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-15",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "_pploynut",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "noonjourneyyy",
+   "amt": 2500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "reviewbynongbaylinn",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "emily_bartstra",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": ".namoshop125",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-18",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "irada8307",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "bhbhawatt",
+   "amt": 5000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "stamphobby",
+   "amt": 2600.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "stamphobby",
+   "amt": 2500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "name.nut6",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "cafog_cf",
+   "amt": 1000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "nat_natthawut14",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-25",
+   "camp": "(Done)Wheel Sling (Sep)",
+   "tier": "Top Creator",
+   "kol": "phanuwatinsri",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-09-29",
+   "camp": "Sugar (Sep-Oct)",
+   "tier": "Seeding",
+   "kol": "trotan_2",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-06",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "sriployyy",
+   "amt": 4365.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "yurikuliga",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "poppyme.6",
+   "amt": 2000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "kidsana4289",
+   "amt": 1943.93,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "joy.ph21",
+   "amt": 1500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "pickupmanz",
+   "amt": 1000.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "godofreviews",
+   "amt": 800.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-16",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "plai.kk",
+   "amt": 500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "atpk.live",
+   "amt": 5200.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "supathanes",
+   "amt": 2500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "mormor.land",
+   "amt": 2000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "mormor.land",
+   "amt": 2000.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "rungtanteeb789",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "opel.s",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "phannnqvzg2",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Refresh wipes (Sep-Oct)",
+   "tier": null,
+   "kol": "rungtanteeb789",
+   "amt": 1500.0,
+   "st": "pending"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "january.1991_",
+   "amt": 1200.0,
+   "st": "pending"
+  }
+ ],
+ "tiers_unmapped": [
+  "Banyakart (Oct)",
+  "Refresh wipes (Sep-Oct)"
+ ],
  "tabs_skipped": [],
  "rows_scanned": 661
 }

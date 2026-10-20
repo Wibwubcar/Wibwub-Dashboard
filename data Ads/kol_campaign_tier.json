@@ -1,0 +1,17 @@
+{
+ "_note": "แคมเปญ (= ชื่อแท็บในชีต Payment KOL Wibwub) -> ระดับ KOL — ชีตไม่มีคอลัมน์ระดับรายแถว",
+ "_source": "เทียบยอดกับแท็บ 'Total Spending' รายเดือน x ระดับ เฉพาะเดือนที่ยอดตรงกันพอดี",
+ "_warning": "เดือน พ.ค./เม.ย. 69 ยอดไม่ลงตัวกับแท็บสรุป (แท็บเดียวมีหลายระดับปนกัน) จึงไม่ map",
+ "_how_to_add": "เพิ่มคู่ \"ชื่อแท็บ\": \"ระดับ\" แล้วรัน scripts/marketing/kol_fetch.py ใหม่",
+ "_tiers": ["Seeding", "Top Superstar", "Top Creator", "Macro / Mega", "Mid-tier", "Micro", "Nano", "Affiliate Bonus"],
+ "campaign_tier": {
+  "Campaign Aug 2026": "Macro / Mega",
+  "Campaign Sep": "Macro / Mega",
+  "(Done)Wheel Sling (Sep)": "Top Creator",
+  "Sugar (Sep-Oct)": "Seeding",
+  "Campaign June 2026": "Macro / Mega",
+  "Top Superstar​ May-June 2026": "Top Superstar",
+  "Banyakart (Oct)": null,
+  "Refresh wipes (Sep-Oct)": null
+ }
+}
