@@ -25,7 +25,7 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 ### 1. ดูก่อน
 
 ```bash
-cd "$BASE" && python3 scripts/tiktok_content_update.py --dry-run
+python3 "$BASE/scripts/tiktok_content_update.py" --dry-run
 ```
 
 ตรวจด้วยตา: `posts` ไม่ควรน้อยกว่า `before` · `zero_month` ควรเป็น **0** ·
@@ -38,7 +38,7 @@ cd "$BASE" && python3 scripts/tiktok_content_update.py --dry-run
 ### 2. รันจริง + commit
 
 ```bash
-cd "$BASE" && python3 scripts/tiktok_content_update.py
+python3 "$BASE/scripts/tiktok_content_update.py"
 ```
 
 exit `0` = อัปเดต + bump sw.js · `10` = ไม่มีอะไรเปลี่ยน · `2` = ไม่ผ่านด่าน
@@ -71,7 +71,10 @@ commit id หรือ "ไม่มีข้อมูลใหม่", error �
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
 ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
 which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
 

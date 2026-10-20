@@ -11,7 +11,7 @@
 สคริปต์: `scripts/hr/hr_update.py`, `hr_scrape.js`, `hr_leave_scrape.js`, `hr_prod_scrape.js`
 
 ### ขั้นตอนย่อ
-1. `cd "$BASE/scripts/hr" && python3 hr_update.py state` → ได้ `since` และ `scrape_params` (ถ้า `new_month: true` ทำหัวข้อ "Month change" ในสกิลก่อน)
+1. `python3 "$BASE/scripts/hr/hr_update.py" state` → ได้ `since` และ `scrape_params` (ถ้า `new_month: true` ทำหัวข้อ "Month change" ในสกิลก่อน)
 2. ดึงห้อง #บันทึกเข้างาน และ #บันทึกออกงาน **เฉพาะตั้งแต่วัน `since`** ด้วย `hr_scrape.js` (อ่านด้วย `cat` แล้ววางใน javascript_tool ต่อจาก `window.__HR={key,cur,prev,since}`) poll `window.__job` จนได้ `done:true, unparsed:0, reachedStart:true`
 3. บันทึกบรรทัดลง `work/new_in.txt` / `work/new_out.txt` (heredoc คัดลอกตรงตัว)
 3b. **การลา:** เปิด https://discord.com/channels/1331888082802315295/1331942184739667979 แล้ววาง `window.__LVP={sinceTs:'<leave_params.sinceTs>'}` ตามด้วย `hr_leave_scrape.js` → poll `window.__lj` จน `done:true` (ไม่มี `err`) → export `window.__lvExport(0,40)`, `(40,80)`… → บันทึก `work/new_leave.txt`
@@ -40,7 +40,10 @@
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
 ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
 which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
 

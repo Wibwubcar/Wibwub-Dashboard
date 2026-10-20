@@ -20,7 +20,7 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 ## 🚦 ขั้น 0 — ตรวจก่อนเสมอ (ทำซ้ำก่อนเริ่มดึงทุกเดือน)
 
 ```bash
-cd "$BASE/scripts/ads" && python3 backfill.py guard --minutes 30
+python3 "$BASE/scripts/ads/backfill.py" guard --minutes 30
 ```
 - `status: OK` → ทำต่อได้
 - `status: WAIT` (exit 2) → **หยุด** รอจนถึงเวลาที่ปลอดภัย แล้วเช็คใหม่ ห้ามฝืนดึง
@@ -34,14 +34,14 @@ cd "$BASE/scripts/ads" && python3 backfill.py guard --minutes 30
 (หลังจากนั้น guard จะเป็น WAIT เพราะ HR ปิดวัน 23:50)
 **ทำได้เท่าไรก็หยุดเท่านั้น ไม่ต้องฝืน** แล้วรอบที่สองเวลา **00:15** จะมาทำเดือนที่เหลือต่อ
 `backfill.py merge` ข้ามวันที่มีอยู่แล้วเสมอ จึงรันซ้ำได้ปลอดภัย ไม่มีข้อมูลซ้ำซ้อน
-ก่อนเริ่มทุกครั้งให้ดู `python3 backfill.py status` ว่าเดือนไหนยังขาด แล้วทำต่อจากตรงนั้น
+ก่อนเริ่มทุกครั้งให้ดู `python3 "$BASE/scripts/ads/backfill.py" status` ว่าเดือนไหนยังขาด แล้วทำต่อจากตรงนั้น
 
 ---
 
 ## ขั้น 1 — ตรวจสถานะปัจจุบัน + ทดสอบว่าย้อนได้ไกลแค่ไหน
 
 ```bash
-cd "$BASE/scripts/ads" && python3 backfill.py status
+python3 "$BASE/scripts/ads/backfill.py" status
 ```
 
 ### กฎเบราว์เซอร์ (เหมือน ads-daily)
@@ -80,7 +80,7 @@ cd "$BASE/scripts/ads" && python3 backfill.py status
 ลำดับ: **ส.ค. → ก.ค. → มิ.ย. → พ.ค. → เม.ย. → มี.ค. → ก.พ. → ม.ค.**
 
 สำหรับแต่ละเดือน:
-1. `python3 backfill.py guard --minutes 30` — ไม่ OK ให้หยุด
+1. `python3 "$BASE/scripts/ads/backfill.py" guard --minutes 30` — ไม่ OK ให้หยุด
 2. ตั้ง `window.__ADS={kind:'<kind>', from:'<YYYY-MM-01>', to:'<วันสุดท้ายของเดือน>'}` แล้ววาง collect.js
    - **วาง collect.js โดยคงการขึ้นบรรทัดใหม่ไว้** ถ้าแปลงเป็นบรรทัดเดียว `//` จะกินทั้งไฟล์
    - ดึงทีละ kind: `sh_real` → `sh_ads` → `tk_real` → `tk_ads` → `lz_real` → `lz_ads`
@@ -89,13 +89,13 @@ cd "$BASE/scripts/ads" && python3 backfill.py status
    - บันทึกเป็น `work/<kind>.json` ด้วย heredoc คัดลอกตรงตัว
 3. รวมเข้าไฟล์:
 ```bash
-cd "$BASE/scripts/ads"
-python3 backfill.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json work/lz_real.json work/lz_ads.json --dry-run
-python3 backfill.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json work/lz_real.json work/lz_ads.json
+W="$BASE/scripts/ads/work"
+python3 "$BASE/scripts/ads/backfill.py" merge "$W/sh_real.json" "$W/sh_ads.json" "$W/tk_real.json" "$W/tk_ads.json" "$W/lz_real.json" "$W/lz_ads.json" --dry-run
+python3 "$BASE/scripts/ads/backfill.py" merge "$W/sh_real.json" "$W/sh_ads.json" "$W/tk_real.json" "$W/tk_ads.json" "$W/lz_real.json" "$W/lz_ads.json"
 ```
    (ถ้า Lazada ย้อนไม่ถึงเดือนนั้น ให้ตัด 2 ไฟล์ท้ายออก — Lazada เป็นออปชัน)
    `exit 10` = ไม่มีวันใหม่ (ปกติถ้าเดือนนั้นมีอยู่แล้ว) · `exit 2` = ไม่ผ่านด่านตรวจ ให้หยุดและบันทึก
-4. แคมเปญ: `python3 backfill.py camp work/tk_camp.json`
+4. แคมเปญ: `python3 "$BASE/scripts/ads/backfill.py" camp "$BASE/scripts/ads/work/tk_camp.json"`
 
 ### ✅ เดือนแรก (ส.ค.) ต้องตรวจก่อนไปต่อ
 หลังดึง ส.ค. เสร็จ **สุ่ม 2–3 วัน** เทียบกับตัวเลขบนหน้าเว็บจริง (ตั้งช่วงวันที่เป็นวันนั้นวันเดียว
@@ -134,7 +134,7 @@ git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.co
    (`git log --oneline --since="20 hours ago"`) และ `ads_daily.json` มีวันที่ 19 ครบ 3 แพลตฟอร์มไหม
 2. **ขอบเขตย้อนหลังของแต่ละแหล่ง** — แหล่งไหนได้ถึงวันไหน ถ้าไม่ถึง 1 ม.ค. บอกวันที่เก่าสุดที่ได้
 3. **ผลตรวจเดือน ส.ค.** — สุ่มวันไหนบ้าง ตัวเลขตรงกับหน้าเว็บหรือไม่
-4. **ยอดรวมรายเดือน ม.ค.–ต.ค.** — จาก `python3 backfill.py report`
+4. **ยอดรวมรายเดือน ม.ค.–ต.ค.** — จาก `python3 "$BASE/scripts/ads/backfill.py" report`
 5. **รายการ KOL ที่ปีน่าจะพิมพ์ผิด** — จาก `data Ads/kol_monthly.json` เดือน `2025-01` / `2025-02` /
    `2025-03` (ยอด 26,000 / 2,000 / 1,000) ให้ลิสต์ว่าอยู่แท็บไหน วันที่อะไร ยอดเท่าไร
    **ห้ามแก้เอง** แค่ลิสต์ไว้ให้เจ้าของงานตัดสิน
@@ -157,7 +157,13 @@ git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.co
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** (ทั้งกับ `git` และ `python3`)
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎ `Bash(python3 *)` / `Bash(git *)` ที่อนุญาตไว้แล้ว
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะยิ่งโดนตัวตรวจตีธงซ้ำอีกชั้น
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
 ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
 which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
 

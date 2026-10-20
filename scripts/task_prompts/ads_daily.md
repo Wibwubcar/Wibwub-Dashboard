@@ -13,7 +13,7 @@
 สคริปต์: `scripts/ads/hook.js`, `scripts/ads/collect.js`, `scripts/ads/ads_daily_update.py`, `scripts/ads/sync_periods.js` — ถ้าหายหรือพัง ให้หยุดและรายงาน ห้ามเขียนวิธีอื่นเอง ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดหรือแก้เอง
 
 ### ขั้นตอน
-1. `cd "$BASE/scripts/ads" && python3 ads_daily_update.py state` → ได้ `from` และ `to` (ดึงซ้ำย้อนหลัง 3 วันเสมอ ตั้งใจให้เป็นแบบนั้น)
+1. `python3 "$BASE/scripts/ads/ads_daily_update.py" state` → ได้ `from` และ `to` (ดึงซ้ำย้อนหลัง 3 วันเสมอ ตั้งใจให้เป็นแบบนั้น)
 2. อ่านเนื้อหา `hook.js` และ `collect.js` ด้วย `cat` (ใช้วางใน javascript_tool แบบคัดลอกตรงตัว)
 3. Chrome: `list_connected_browsers` แล้ว `select_browser` ตัวที่เป็น macOS เท่านั้น (deviceId ปกติคือ b75a6bb0-5b78-4e44-92a8-75224f1ce4ee) → `tabs_context_mcp(createIfEmpty=true)` ใช้ `browser_batch` เสมอ ห้าม navigate เดี่ยว ห้าม wait เกิน 10 วิ
 4. แต่ละ kind: navigate → วาง hook.js ทันที → รอหน้าโหลด → เช็คว่า `window.__cap` มี request ที่ต้องใช้ (ดูชื่อจาก `window.__cap.map(c=>c.u.split('?')[0].split('/').pop())`) ถ้ายังไม่มี ให้กดตามวิธีสำรองด้านล่าง → วาง `window.__ADS={kind:'<kind>',from:'<from>',to:'<to>'};` ตามด้วยเนื้อหา collect.js → poll `window.__adsJob` จน `done:true` (ต้องไม่มี `err`) → อ่าน `window.__adsExport(0,900)`, `(900,1800)`, `(1800,2700)`… จนครบ `__adsJob.len` (ผลของ javascript_tool ถูกตัดที่ ~1000 ตัวอักษร ห้ามอ่านทีละมากกว่า 900) → ต่อกันแล้วบันทึกเป็นไฟล์ `scripts/ads/work/<kind>.json` ด้วย heredoc คัดลอกตรงตัว
@@ -59,7 +59,10 @@ git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.co
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
 ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
 which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
 
