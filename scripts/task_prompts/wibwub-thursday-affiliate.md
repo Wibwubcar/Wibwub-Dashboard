@@ -42,7 +42,7 @@ ls -lt "$BASE/Data Affiliate"/*Creator_List*.xlsx | head -3
 ## ขั้นที่ 2 — ดูก่อนว่าจะเปลี่ยนอะไร
 
 ```bash
-cd "$BASE" && python3 scripts/affiliate_update.py --dry-run
+python3 "$BASE/scripts/affiliate_update.py" --dry-run
 ```
 
 ตรวจด้วยตา: `latest_month` ควรเป็นเดือนปัจจุบัน · `AF_GMV` ไม่ควรต่ำกว่า `current_page.AF_GMV`
@@ -55,7 +55,7 @@ cd "$BASE" && python3 scripts/affiliate_update.py --dry-run
 ## ขั้นที่ 3 — รันจริง
 
 ```bash
-cd "$BASE" && python3 scripts/affiliate_update.py
+python3 "$BASE/scripts/affiliate_update.py"
 ```
 
 exit `0` = อัปเดต + bump sw.js แล้ว · `10` = ไม่มีอะไรเปลี่ยน · `2` = ไม่ผ่านด่าน
@@ -64,7 +64,7 @@ exit `0` = อัปเดต + bump sw.js แล้ว · `10` = ไม่ม�
 ## ขั้นที่ 4 — VIDEOS (ถ้ามีไฟล์วีดีโอใหม่)
 
 ```bash
-cd "$BASE" && python3 scripts/vid_merge.py
+python3 "$BASE/scripts/vid_merge.py"
 ```
 
 อ่านจาก `Data Affiliate/วีดีโอ/` แล้ว merge เข้า `const VIDEOS` ในหน้า Affiliate
@@ -99,7 +99,10 @@ git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.co
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามใส่ `cd` ไว้ในคำสั่งเดียวกับ `git` เด็ดขาด** ไม่ว่าจะเชื่อมด้วย `&&` `;` หรือขึ้นบรรทัดใหม่
+**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+
+คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
+จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
 ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
 which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
 
