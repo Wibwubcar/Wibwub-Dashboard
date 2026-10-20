@@ -9,36 +9,36 @@ move() {
 }
 
 # Affiliate
-for f in "$DL"/Transaction_Analysis_Creator_List_*.xlsx;  do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/ครีเอเตอร์/"; done
-for f in "$DL"/Transaction_Analysis_Video_List_*.xlsx;    do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/วีดีโอ/"; done
-for f in "$DL"/Transaction_Analysis_Product_List_*.xlsx;  do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/สินค้า/"; done
-for f in "$DL"/Transaction_Analysis_Live_List_*.xlsx;     do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/ไลฟ์สตรีม/"; done
-for f in "$DL"/Creator_List_*.xlsx;                       do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/ครีเอเตอร์/"; done
+for f in "$DL"/Transaction_Analysis_Creator_List_*.xlsx;  do safe_mv "$f" "$ALL/Data Affiliate/ครีเอเตอร์/"; done
+for f in "$DL"/Transaction_Analysis_Video_List_*.xlsx;    do safe_mv "$f" "$ALL/Data Affiliate/วีดีโอ/"; done
+for f in "$DL"/Transaction_Analysis_Product_List_*.xlsx;  do safe_mv "$f" "$ALL/Data Affiliate/สินค้า/"; done
+for f in "$DL"/Transaction_Analysis_Live_List_*.xlsx;     do safe_mv "$f" "$ALL/Data Affiliate/ไลฟ์สตรีม/"; done
+for f in "$DL"/Creator_List_*.xlsx;                       do safe_mv "$f" "$ALL/Data Affiliate/ครีเอเตอร์/"; done
 
 # Orders
-for f in "$DL"/Order.all.*.xlsx;                          do [ -f "$f" ] && mv "$f" "$ALL/data ยอดขาย plaform/Shopee/"; done
-for f in "$DL"/Order.all.*.zip;                           do [ -f "$f" ] && mv "$f" "$ALL/data ยอดขาย plaform/Shopee/"; done
-for f in "$DL"/*คำสั่งซื้อ*.xlsx;                        do [ -f "$f" ] && mv "$f" "$ALL/data ยอดขาย plaform/Tiktok/"; done
-for f in "$DL"/Order\ Report\ *.xlsx;                     do [ -f "$f" ] && mv "$f" "$ALL/data ยอดขาย plaform/Line My Shop/"; done
-for f in "$DL"/Lazada_Orders_*.xlsx;                      do [ -f "$f" ] && mv "$f" "$ALL/data ยอดขาย plaform/Lazada/"; done
+for f in "$DL"/Order.all.*.xlsx;                          do safe_mv "$f" "$ALL/data ยอดขาย plaform/Shopee/"; done
+for f in "$DL"/Order.all.*.zip;                           do safe_mv "$f" "$ALL/data ยอดขาย plaform/Shopee/"; done
+for f in "$DL"/*คำสั่งซื้อ*.xlsx;                        do safe_mv "$f" "$ALL/data ยอดขาย plaform/Tiktok/"; done
+for f in "$DL"/Order\ Report\ *.xlsx;                     do safe_mv "$f" "$ALL/data ยอดขาย plaform/Line My Shop/"; done
+for f in "$DL"/Lazada_Orders_*.xlsx;                      do safe_mv "$f" "$ALL/data ยอดขาย plaform/Lazada/"; done
 
 # Shipnity
-for f in "$DL"/Data_*.xlsx;                               do [ -f "$f" ] && mv "$f" "$ALL/Data Shipnity/"; done
-for f in "$DL"/Data-*.xlsx;                               do [ -f "$f" ] && mv "$f" "$ALL/Data Shipnity/"; done
+for f in "$DL"/Data_*.xlsx;                               do safe_mv "$f" "$ALL/Data Shipnity/"; done
+for f in "$DL"/Data-*.xlsx;                               do safe_mv "$f" "$ALL/Data Shipnity/"; done
 
 # Ads
-for f in "$DL"/ข้อมูล-Shopee-Ads-*.csv;                  do [ -f "$f" ] && mv "$f" "$ALL/data Ads/Shopee/"; done
-for f in "$DL"/WIBWUBCAR-Campaign\ Report-*.xlsx;         do [ -f "$f" ] && mv "$f" "$ALL/data Ads/Tiktok/"; done
-for f in "$DL"/Campaign\ overview\ data\ *.xlsx;          do [ -f "$f" ] && mv "$f" "$ALL/data Ads/Tiktok/"; done
-for f in "$DL"/creative\ data\ for\ product\ campaigns\ *.xlsx; do [ -f "$f" ] && mv "$f" "$ALL/data Ads/Tiktok/"; done
-for f in "$DL"/ExportAds_V2_*.xlsx;                       do [ -f "$f" ] && mv "$f" "$ALL/data Ads/Tiktok/"; done
+for f in "$DL"/ข้อมูล-Shopee-Ads-*.csv;                  do safe_mv "$f" "$ALL/data Ads/Shopee/"; done
+for f in "$DL"/WIBWUBCAR-Campaign\ Report-*.xlsx;         do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
+for f in "$DL"/Campaign\ overview\ data\ *.xlsx;          do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
+for f in "$DL"/creative\ data\ for\ product\ campaigns\ *.xlsx; do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
+for f in "$DL"/ExportAds_V2_*.xlsx;                       do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
 
 # Content / Followers
-for f in "$DL"/Followers_wibwubcar*.zip;                  do [ -f "$f" ] && mv "$f" "$ALL/data content/"; done
+for f in "$DL"/Followers_wibwubcar*.zip;                  do safe_mv "$f" "$ALL/data content/"; done
 
 # Affiliate › คำขอสินค้า (CSV จากชีต Top 30 Affiliate แท็บ ขอสินค้า — scripts/affiliate/samp_update.py)
 mkdir -p "$ALL/Data Affiliate/ขอสินค้า"
-for f in "$DL"/wibwub_samp_req_*.csv;                    do [ -f "$f" ] && mv "$f" "$ALL/Data Affiliate/ขอสินค้า/"; done
+for f in "$DL"/wibwub_samp_req_*.csv;                    do safe_mv "$f" "$ALL/Data Affiliate/ขอสินค้า/"; done
 
 # ── ไฟล์ที่งานตั้งเวลาอ่านจาก Downloads โดยตรง (เช่น tiktok product daily โหลด json แล้วอ่านทันที)
 #    → ย้ายเฉพาะไฟล์ที่อายุเกิน 1 วัน (1440 นาที) และไม่ทับไฟล์เดิม (ชื่อซ้ำจะต่อท้ายด้วยเวลา)
@@ -58,6 +58,26 @@ move_old() {  # $1=pattern (glob ของ find)  $2=ปลายทาง
       mv -n "$f" "$dst/$b"
     fi
   done
+}
+
+# ย้ายไฟล์แบบไม่ทับของเดิมเด็ดขาด — ก่อน 20 ต.ค. 2569 ทุกบรรทัดด้านล่างใช้ `mv` เปล่า
+# ทำให้ไฟล์ชื่อซ้ำถูกทับเงียบ ๆ (เกิดจริง: CSV Shopee Ads รอบเช้าถูกไฟล์รอบสายทับ
+# ข้อมูลหายถาวรเพราะไฟล์พวกนี้ไม่ได้ track ใน git)
+safe_mv() {  # $1=ไฟล์ต้นทาง  $2=โฟลเดอร์ปลายทาง
+  local f="$1" dst="$2" b stamp
+  [ -f "$f" ] || return 0
+  mkdir -p "$dst"
+  b=$(basename "$f")
+  if [ -e "$dst/$b" ]; then
+    stamp=$(date -r "$f" +%Y%m%d_%H%M%S)
+    if cmp -s "$f" "$dst/$b"; then            # เหมือนกันทุกไบต์ -> เก็บเข้า dup ไม่รก
+      mkdir -p "$ARCH/dup"; mv -n "$f" "$ARCH/dup/${b%.*}__$stamp.${b##*.}"
+    else                                      # ชื่อซ้ำแต่เนื้อหาต่าง -> เก็บทั้งคู่
+      mv -n "$f" "$dst/${b%.*}__$stamp.${b##*.}"
+    fi
+  else
+    mv -n "$f" "$dst/$b"
+  fi
 }
 move_old 'tiktok_*.json'                              "$ARCH/TikTok json"
 move_old 'tk_*.json'                                  "$ARCH/TikTok json"
