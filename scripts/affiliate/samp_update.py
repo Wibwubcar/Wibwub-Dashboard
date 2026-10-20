@@ -144,19 +144,27 @@ def main():
                "last7d": funnel(r7, "9999"), "waiting_post": len(W), "past_month_req_changed": changed_past,
                "top_products_this_month": [(i["n"], i["c"]) for i in products(months.get(today.strftime("%Y-%m"), []))["items"][:5]]}
     if "--dry" in sys.argv: print(json.dumps(summary, ensure_ascii=False, default=str)); return
+    # ถ้าหน้านี้มีงานค้างของคนอื่นอยู่ก่อน การ git add ทั้งไฟล์จะกวาดเข้า commit นี้ด้วย -> เขียนได้ แต่ห้าม commit
+    _pre = subprocess.run(["git","-C",str(ROOT),"diff","--name-only","--","WIBWUB_Affiliate_Dashboard.html"],
+                          capture_output=True, text=True).stdout.strip()
     # syntax check before writing
     import tempfile; tmpjs = Path(tempfile.gettempdir()) / "wibwub_aff_check.js"
     tmpjs.write_text("\n;\n".join(x for x in re.findall(r"<script>(.*?)</script>", t, re.S)), encoding="utf-8")
     r = subprocess.run(["node", "--check", str(tmpjs)], capture_output=True, text=True)
     if r.returncode: die("node --check failed: " + r.stderr[:400])
     PAGE.with_suffix(".tmp.html").write_text(t, encoding="utf-8"); PAGE.with_suffix(".tmp.html").replace(PAGE)
-    if "--no-commit" not in sys.argv:
+    if "--no-commit" not in sys.argv and _pre:
+        summary["commit"] = "SKIPPED: WIBWUB_Affiliate_Dashboard.html มีงานค้างที่ยังไม่ commit อยู่ก่อนแล้ว — เขียนข้อมูลใหม่ให้แล้วแต่ไม่ commit เพื่อไม่ให้กวาดงานของคนอื่นเข้าไปด้วย ให้ commit เองแบบแยก hunk"
+    elif "--no-commit" not in sys.argv:
         sw = ROOT / "sw.js"; s = sw.read_text(); v = int(re.search(r"wibwub-v(\d+)", s).group(1))
         sw.write_text(s.replace(f"wibwub-v{v}", f"wibwub-v{v+1}", 1))
-        for lk in ("index.lock", "HEAD.lock"):
-            p = ROOT / ".git" / lk
-            if p.exists(): p.rename(ROOT / ".git" / f"stale-{lk}-{int(dt.datetime.now().timestamp())}")
-        g = lambda *x: subprocess.run(["git", "-C", str(ROOT), *x], capture_output=True, text=True)
+        # ห้ามลบ/ย้าย .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติด lock ให้ลองใหม่แล้วรายงาน
+        def g(*x):
+            for i in range(3):
+                r = subprocess.run(["git", "-C", str(ROOT), *x], capture_output=True, text=True)
+                if r.returncode == 0 or "index.lock" not in (r.stderr or ""): return r
+                import time; time.sleep(20)
+            return r
         g("add", "WIBWUB_Affiliate_Dashboard.html", "sw.js")
         c = g("-c", "user.name=WIBWUB Bot", "-c", "user.email=marketingwibwub@gmail.com", "commit", "-m",
               f"auto-update: คำขอสินค้า {today} — {cur['req']} คำขอ / {cur['appr']} อนุมัติ / {cur['posted']} โพสต์แล้ว")
