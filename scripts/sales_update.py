@@ -104,6 +104,7 @@ def main():
     # ── ช่องทาง Shipnity (FB/LINE/CARE/...) ให้สดพร้อมกับ sales ทุกรอบ ──────
     # ไม่งั้นกลางสัปดาห์ยอดรวมจะเอียง: SH/TK/LZ เดินหน้าวันละ 2 รอบ แต่ช่องทางอื่น
     # อัปเดตแค่วันจันทร์ · ใช้ cache จึงไม่ช้า (รอบที่ไม่มีไฟล์ Shipnity ใหม่ <1 วิ)
+    ch_any = False
     try:
         sys.path.insert(0, str(Path(__file__).resolve().parent))
         from ship_cache import load_shipnity
@@ -111,14 +112,17 @@ def main():
         raw = load_shipnity()
         if raw:
             asof = S._asof((BASE / PAGES[0]).read_text(encoding='utf-8'))
-            S.write_channels(raw, asof)
-            S.write_coverage(raw, asof)
+            rep_ch, ch_changed = S.write_channels(raw, asof)
+            _, cov_changed = S.write_coverage(raw, asof)
             summary['channels_asof'] = asof
+            summary['channels_changed'] = {pg: sorted(d) for pg, d in rep_ch.items()}
+            ch_any = ch_changed or cov_changed
     except Exception as e:                   # ช่องทางล้มต้องไม่ทำให้ sales ล้มด้วย
         summary['channels_error'] = f'{type(e).__name__}: {e}'
+        ch_any = False
 
     after = {p: arrays(BASE / p) for p in PAGES}
-    changed = after != before
+    changed = (after != before) or ch_any
     if changed: W.bump_sw()
     summary['changed_files'] = [p for p in PAGES if after[p] != before[p]]
     print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary}, ensure_ascii=False))
