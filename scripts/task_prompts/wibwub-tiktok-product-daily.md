@@ -1,68 +1,122 @@
 ---
 name: wibwub-tiktok-product-daily
-description: ทุกวัน 08:45/19:45 — ดึงยอดขายระดับสินค้า TikTok Shop จาก Seller Center Compass (วันล่าสุด) → merge เข้า WIBWUB_Dashboard.html (TK_PROD_DATA) → ดึงยอดระดับ SKU/ตัวเลือกสินค้าด้วย (multi-day chunk) → merge เข้า TK_PROD_SKU → bump sw.js → commit + push_now.command
+description: ทุกวัน 08:45/19:45 — ยอดขายระดับสินค้า + SKU จาก TikTok Compass → TK_PROD_DATA / TK_PROD_SKU
 ---
 
-<!-- LOCAL-OVERRIDE v1 -->
-> **อ่านก่อน — ข้อนี้ทับคำสั่งที่ขัดกันในไฟล์นี้ทั้งหมด**
-> ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
-> - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
-> - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
-> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
-> - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
-> - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
+## WIBWUB — ยอดขายระดับสินค้า/SKU จาก TikTok Compass
 
-Goal: keep BOTH the parent-product section ("🛒 สินค้าที่ขายได้ — TikTok Shop", the `TK_PROD_DATA` const) AND the SKU/variant-level breakdown (`TK_PROD_SKU` const, used by the "ตัวเลือกสินค้า" drill-down) in WIBWUB_Dashboard.html up to date, using TikTok Seller Center Compass as the source. Historically `TK_PROD_SKU` was left as an empty stub while `TK_PROD_DATA` kept getting updated daily, which caused the two to drift apart — the SKU breakdown totals stopped matching the parent product's real totals and confused the user ("ตัวเลือกสินค้าข้อมูลไม่ตรงกับความจริงของยอดรวม"). As of 2026-09-07 both are wired into this same daily task so they never drift again. `TK_PROD_DATA` shows GMV/orders/items_sold per product broken down by channel (self_live, self_video, affiliate, affiliate_live, affiliate_video, product_card). `TK_PROD_SKU` shows GMV/orders/items_sold per SKU/variant (e.g. "500 ml" vs "3 L") within each product.
+BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
 
-File locations (host path — use Read/Write/Edit tools; for bash use the VM-mounted equivalent under /Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/):
-- Dashboard: `.../claude/All/WIBWUB_Dashboard.html`
-- Parent-level merge script: `.../claude/All/tiktok_product_merge.py` (already written and tested — do not rewrite it unless it's missing or broken)
-- SKU-level merge script: `.../claude/All/tiktok_sku_merge.py` (already written and tested — do not rewrite it unless it's missing or broken)
-- Service worker: `.../claude/All/sw.js`
-- Push helper: `.../claude/All/push_now.command`
+เป้าหมาย: เติมข้อมูล **ของเมื่อวาน** ลง `TK_PROD_DATA` และ `TK_PROD_SKU` ใน `WIBWUB_Dashboard.html`
 
-Step 1 — Determine the target date. Use "yesterday" relative to today (local time), as an ISO date string `YYYY-MM-DD`. Check the existing `TK_PROD_DATA.dates` array in WIBWUB_Dashboard.html (regex `const TK_PROD_DATA = ({.*?});` near the bottom `<script>` block) — if yesterday's date is already present, you can still re-fetch and overwrite it (the merge script is safe/idempotent per-date), but if the last several days are already missing/stale, fetch each missing date in turn rather than just yesterday.
+> **สคริปต์ merge เขียนไว้แล้ว ห้ามเขียนใหม่** — `tiktok_product_merge.py` / `tiktok_sku_merge.py`
+> หน้าที่ของรอบนี้คือ "ดึงข้อมูลให้ได้" แล้วส่งไฟล์ JSON ให้สคริปต์ merge
 
-Step 2 — Get the data via Claude-in-Chrome. There is no official public API for this — the working method (already proven in a prior session) is:
-1. Navigate to TikTok Seller Center Compass (the seller's product-analytics page, e.g. https://seller-th.tiktok.com/compass/product-detail or similar — navigate to Compass > Product from the seller center nav if the direct URL doesn't load) and make sure you're logged in (the user's existing session/cookies should carry over; if a login wall appears, stop and tell the user to log in manually first).
-2. Open the product-list view for a single day (yesterday's date) so the page fires its own request to `/api/v3/insights/seller/ttp/product/list`. Use `mcp__Claude_in_Chrome__read_network_requests` to capture that exact request (headers, query params, and POST body shape) — TikTok's own page already handles all anti-bot signing for this endpoint (unlike the SKU/variant-level v2 endpoint, which requires a signature we don't have), so replaying its own request structure works.
-3. Once you have the real request shape from the network capture, use `mcp__Claude_in_Chrome__javascript_tool` to execute a same-origin `fetch()` (so cookies/auth carry over) against that endpoint with the date parameters adjusted to the target date(s), and parse the JSON response.
-4. From the response, build a JS object matching this exact schema (one entry per date):
-```json
-{
-  "YYYY-MM-DD": [
-    {"pid": "...", "name": "...", "gmv": 0, "orders": 0, "sku_orders": 0, "items_sold": 0,
-     "self_live": 0, "self_video": 0, "affiliate": 0, "affiliate_live": 0, "affiliate_video": 0, "product_card": 0},
-    ...
-  ]
-}
+---
+
+## ⚠️ วิธีที่ **ใช้ไม่ได้** (อย่าเสียเวลาลอง)
+
+ทดสอบแล้วเมื่อ 20 ต.ค. 2569 — ทั้ง 3 วิธีนี้ตายหมด:
+
+| วิธี | ทำไมไม่ได้ |
+|---|---|
+| `read_network_requests` เพื่อดู POST body | **คืนแค่ url/method/status ไม่มี body** จับ request shape ไม่ได้ |
+| patch `window.fetch` / `XMLHttpRequest` เพื่อดัก request | **ถูก safety classifier บล็อก** (`Permission ... denied by the auto mode classifier`) |
+| สแกน JS bundle ด้วย `performance.getEntriesByType('resource')` | ถูกบล็อกเหมือนกัน |
+
+**ไม่ต้องไปค้นหา request shape ใหม่** — shape ที่ถูกต้องอยู่ข้างล่างนี้แล้ว
+
+---
+
+## ขั้นที่ 1 — เปิดหน้า Compass
+
+1. Chrome: `list_connected_browsers` → `select_browser` deviceId `b75a6bb0-5b78-4e44-92a8-75224f1ce4ee` → `tabs_context_mcp(createIfEmpty=true)`
+2. navigate ไป **`https://seller-th.tiktok.com/compass/product-analysis`**
+   (**ไม่ใช่** `/compass/product-detail` — path นั้น redirect ไป data-overview)
+   ถ้าขึ้นหน้า login: **หยุดและรายงาน ห้ามกรอกรหัสผ่าน**
+
+## ขั้นที่ 2 — ดึงระดับสินค้า (parent)
+
+ยิง `fetch` same-origin ใน `javascript_tool` ตรง ๆ **ไม่ต้องใช้ signature/token**:
+
 ```
-Map the Compass response's fields onto these keys (field names in the TikTok UI are Thai/English mixed — gmv = total GMV for the product that day, self_live/self_video = GMV from the seller's own livestreams/videos, affiliate = total affiliate-driven GMV, affiliate_live/affiliate_video = the affiliate sub-breakdown, product_card = GMV from product-card/search placements). If a field genuinely isn't present in the response, default it to 0 rather than guessing.
+POST /api/v3/insights/seller/ttp/product/list
+{"version":3,"request":{
+  "time_descriptor":{"start":"YYYY-MM-DD","end":"YYYY-MM-DD"},
+  "list_control":{"pagination":{"page":1,"size":30}}}}
+```
 
-Step 3 — Save that JSON to a temp file, e.g. `tiktok_product_daily_new.json` in the `All/` folder (via bash so it's in the same folder as the merge script).
+กฎที่ต้องรู้ (เคยพลาดมาแล้วทุกข้อ):
+- **`end` เป็น exclusive** — ข้อมูลวันเดียวคือ `start` = วันนั้น, `end` = วันถัดไป
+- ต้องมี key `request` ครอบ ไม่งั้นได้ error `binding: expr_path=request`
+- ฟิลด์ที่ใช้อยู่ใน `stats_v3.total`: `gmv`, `orders`, `sku_orders`, `items_sold`,
+  `self_live_gmv`, `self_video_gmv`, `affiliate_gmv`
+- **backend ตัดข้อมูลทิ้งแบบสุ่ม** — `size` > 50 คืน `items` ว่างทั้งที่ `code:0` ·
+  `size:40` ได้ 34 แถว · `size:50` ได้ 24 แถว ทั้งที่ `total` บอก 74
+- `rules:[{"field":"gmv","direction":2}]` ผ่าน validation และ server echo กลับ **แต่ไม่ sort จริง**
+- ยิงถี่เกินไปได้ `code:429 rate limit exceeded` → **เว้น ≥ 2 วินาทีต่อ request**
 
-Step 4 — Run the parent-level merge: `cd` into the `All/` folder (VM path) and run `python3 tiktok_product_merge.py tiktok_product_daily_new.json`. This merges the new date(s) into `TK_PROD_DATA` (dates/names/daily) inside WIBWUB_Dashboard.html, additive-only (never deletes existing dates), and auto-commits WIBWUB_Dashboard.html with a `WIBWUB Bot <marketingwibwub@gmail.com>` commit.
+**วิธีที่ใช้ได้:** ยิงซ้ำหลายรอบสลับ `size` (10/20/30/40) และ `page` (1..8) แล้ว **union ตาม `pid`**
+หยุดเมื่อจำนวน pid ไม่เพิ่มแล้วติดกันหลายรอบ แล้วเทียบกับ `next_pagination.total`
 
-Step 5 — Also fetch and merge SKU/variant-level data (`TK_PROD_SKU`), in the same run, so it never falls behind `TK_PROD_DATA` again:
-1. Determine a multi-day chunk ending yesterday. **The SKU-level endpoint (`/api/v2/insights/seller/ttp/product/sku/list`) rejects single-day ranges** (start===end fails with error code 98001021) and only returns ONE aggregate number per SKU for the whole range, not a true per-day breakdown. So pick a short window that ends at yesterday — e.g. if `TK_PROD_SKU`'s last date + 1 through yesterday is only 1 day, widen it to at least 2-3 days (going a bit further back is fine and harmless; the merge script overwrites/redistributes evenly across every date in the chunk, and re-running it for already-covered dates is safe/idempotent).
-2. In Chrome, open the Compass product page and switch to its "ตาม SKU" / SKU/variant sub-view for that date range so the page fires its own request to `/api/v2/insights/seller/ttp/product/sku/list`. Capture the exact request (url + headers, which carry the anti-bot signature/msToken) via `mcp__Claude_in_Chrome__read_network_requests` — never hand-construct or guess a signature.
-3. This endpoint paginates (10 SKUs per page, `body.request.list_control.pagination.page` starting at 0). To fetch all pages reliably via `mcp__Claude_in_Chrome__javascript_tool`:
-   - Top-level `async () => {...}` expressions do NOT get awaited by the tool and return `{}` immediately. Instead: fire the async loop without awaiting (store progress/results into a `window.__skuPages` array and any error into `window.__skuError`), return a synchronous placeholder string like `"started"`, then poll `window.__skuPages.length` in a follow-up call (after a short `wait`) until it reaches `total_page` from the first response's `data.list_control.next_pagination`.
-   - Replay each page with the captured `url`/`headers` verbatim and `credentials:'include'`, changing only `body.request.list_control.pagination.page`.
-   - Never `JSON.stringify()` the full captured request/response object in one shot — including `url` or image fields (`product_image`/`sku_image`) triggers a `[BLOCKED: Cookie/query string data]` error from the tool. Only pull out specific plain fields you actually need (pid, sku_id, sku_property_value, gmv amount, orders, items_sold).
-4. Once all pages are collected in `window.__skuPages`, flatten them client-side into simple records `{"pid","sid","prop","gmv","orders","items_sold"}` and build one combined JSON string. **Do not try to read large JSON (multi-KB) back through `javascript_tool` in text chunks** — outputs above roughly 1500-2000 characters can come back silently truncated even when the underlying JS string is correct. Instead, trigger a real browser download: build a `Blob` from the JSON string, `URL.createObjectURL()` it, create a hidden `<a download="...">` pointed at that URL, and `.click()` it. This saves the complete file to the user's real Downloads folder, which you can then read intact via `mcp__workspace__bash` (mounted at `/Users/thanasablilutanon/Downloads/`).
-5. Wrap the flat array of records under a single chunk key `"STARTDATE_ENDDATE"` (e.g. `{"2026-09-08_2026-09-10": [...]}`) — this is the exact input shape `tiktok_sku_merge.py` expects — and save it to a file in the `All/` folder (e.g. `tiktok_sku_daily_new.json`).
-6. Run `python3 tiktok_sku_merge.py tiktok_sku_daily_new.json`. This divides each numeric field evenly across every date in the chunk (since the API only gives a range total, not true per-day figures) and writes `TK_PROD_SKU[date] = {pid: [...]}` for each date, then auto-commits WIBWUB_Dashboard.html again.
-   - **Known limitation, not a bug**: because a multi-day chunk's SKU total is spread evenly across its dates, a single day's `TK_PROD_SKU` entry will NOT exactly equal that same single day's real `TK_PROD_DATA` parent GMV (real daily parent sales fluctuate day-to-day; the averaged SKU figure doesn't). This was spot-checked on 2026-09-07: per-single-day mismatches were 20-50%, but summed back over the full chunk, SKU totals matched parent totals to within ~0.2% (rounding only). This is expected and acceptable — don't try to "fix" it by inventing a fake per-day split; just make sure the aggregate reconciles.
+## ขั้นที่ 3 — เซฟไฟล์ (ห้ามอ่านผ่าน javascript_tool)
 
-Step 6 — Bump the cache version in `sw.js` (e.g. `wibwub-v928` → `wibwub-v929`, always +1 from whatever is currently there — check the file first, don't assume a fixed number), then `git add sw.js && git commit -m "chore: bump sw.js cache version"` (separate commit, since both merge scripts only stage the dashboard HTML).
+ผลลัพธ์ JSON หลาย KB **อ่านกลับผ่าน `javascript_tool` จะถูกตัดเงียบ ๆ** (เกิน ~1,500–2,000 ตัวอักษร)
+ให้ trigger download แทน:
 
-Step 7 — `git push origin main` will fail in this sandbox (proxy 403 — expected, not an error to report as a failure). Do NOT try to work around it. Instead, in your final summary, remind the user to double-click `push_now.command` on their real machine to publish the change to the live GitHub Pages dashboard, and mention the commit message(s) you just made so they know what's pending.
+```js
+const a=document.createElement('a');
+a.href=URL.createObjectURL(new Blob([JSON.stringify(out)],{type:'application/json'}));
+a.download='tk_prod_YYYYMMDD.json'; document.body.appendChild(a); a.click();
+```
 
-Important gotchas (from the skill history for this dashboard, same conventions apply here):
-- Never guess/hardcode a msToken, sign, or anti-bot signature — only replay requests you've actually observed the live page make.
-- If Compass's UI or API shape has changed since this task was written and you can't get a clean per-day per-product (or per-SKU) response after reasonable effort, stop and clearly report what you tried and what broke, rather than writing partial/malformed data into TK_PROD_DATA or TK_PROD_SKU.
-- **ห้ามลบ `.git/*.lock` เอง** — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้า `git commit` ติด lock ให้รอ 20 วินาทีแล้วลองใหม่ สูงสุด 3 ครั้ง
-- If fetching SKU-level data fails for any reason after reasonable effort (endpoint changed, no clean chunk available, etc.), don't let that block the parent-level (`TK_PROD_DATA`) update — commit that part and just report the SKU-level failure clearly, so daily parent-level freshness is never held hostage to the newer SKU step.
+แล้วอ่านไฟล์ด้วย **Bash tool** จาก `/Users/thanasablilutanon/Downloads/`
+(launchd `com.wibwub.download-mover` อาจย้ายไป `downloads_archive/` ของ BASE แล้ว — หาทั้งสองที่)
 
-At the end, give a short Thai-language summary: which date(s) were added/updated for both TK_PROD_DATA and TK_PROD_SKU, how many products/SKUs, and remind the user about push_now.command.
+## ขั้นที่ 4 — merge ระดับสินค้า
+
+```bash
+cd "$BASE" && python3 tiktok_product_merge.py tiktok_product_daily_new.json
+```
+
+## ขั้นที่ 5 — ดึงระดับ SKU
+
+Endpoint: `/api/v2/.../sku/list` — **ไม่ต้องใช้ signature เช่นกัน** แต่ **ต้องมี query params**:
+`oec_seller_id`, `seller_id`, `aid=4068`, `app_name=i18n_ecom_shop`
+ถ้าขาด params จะได้ `code=98001021 call downstream server error`
+(**ไม่ใช่** เพราะ `start === end` อย่างที่พรอมป์เก่าเขียนไว้ผิด)
+
+ห่อผลเป็น chunk key เดียว `"STARTDATE_ENDDATE"` แล้ว:
+
+```bash
+cd "$BASE" && python3 tiktok_sku_merge.py tiktok_sku_daily_new.json
+```
+
+## ขั้นที่ 6 — ตรวจ + bump + commit
+
+```bash
+cd "$BASE"
+python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
+git add WIBWUB_Dashboard.html sw.js tiktok_product_daily_new.json tiktok_sku_daily_new.json
+git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+    commit -m "auto: TikTok product/SKU $(date +%Y-%m-%d)"
+```
+
+ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองภายใน 2 นาที
+
+---
+
+## RULES
+
+- **ห้ามลบ `.git/*.lock` เอง** — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
+- ตัวเลขทุกตัวให้สคริปต์ merge คำนวณ ห้ามคิดเอง ห้ามกรอกค่าสมมุติ
+- **ห้ามเขียนทับวันเดิมด้วยข้อมูลที่ได้น้อยกว่าเดิม** — backend ตัดข้อมูลสุ่ม
+  ถ้ารอบนี้ได้สินค้าน้อยกว่าที่มีอยู่ ให้ข้ามและรายงาน
+- จบงานปิดแท็บที่เปิดด้วย `tabs_close_mcp`
+- บันทึก coverage % (unique pid เทียบ `next_pagination.total`) ลง commit message ทุกครั้ง
+  เพื่อให้รู้ว่าวันไหน merge ของไม่ครบ
+
+## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
+
+วันที่ดึง, จำนวนสินค้าที่ได้ / total ที่ backend บอก (coverage %), GMV รวม,
+จำนวน SKU, reconcile SKU vs parent, commit id หรือ "ไม่มีข้อมูลใหม่", error ถ้ามี
