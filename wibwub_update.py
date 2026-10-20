@@ -50,9 +50,13 @@ def log(msg):  logging.info(msg);  print(msg)
 def err(msg):  logging.error(msg); print(f'ERROR: {msg}', file=sys.stderr)
 
 # ─── Google Sheets IDs / gids ─────────────────────────────────────────────────
+# อัปเดต 20 ต.ค. 2569: Shopee/Lazada เดิมชี้ไฟล์ .xlsx ที่ตายแล้ว
+#   shopee เก่า 10LrzWB8... แถวสุดท้ายเป็น ['A66',''] (ขยะ)
+#   lazada เก่า 1FxLAUiw... ค้างที่ 01-31/05/26 (เก่า 4.5 เดือน)
+# ของสดเป็น native Sheet ตามนี้ (แถวสุดท้าย 01-18/10/26 ทั้งคู่ ตรงกับหน้า Dashboard)
 SHEETS = {
-    'shopee':  ('10LrzWB8bbCO9FigCQFz5gZ3iSXMVhK0S', 1820466351),
-    'lazada':  ('1FxLAUiwabmNcBc3TA-bpHqg2MSK7uJ4U', 1032656124),
+    'shopee':  ('19P7945wP4mQI0zzWA3qgFsEFOd1VQOLctLfSM0TJMos', 1820466351),
+    'lazada':  ('1x8bbjZxgoQe6bT4s1_S8W2A9EONsI4bl4d4znwq9t7E', 1032656124),
     'tiktok':  ('1k22c3PGY6aQjygAX6df_rQLR8aTzL-iz',  150856480),
     'content': ('1OWZGQD1wHvIlLAAg_7rJ0CtL-X9vEx4py-cRp_e3NvQ', 1242793042),
 }
@@ -189,11 +193,16 @@ def read_sheets():
 # ═════════════════════════════════════════════════════════════════════════════
 def process_sales(sheets):
     log('[STEP 2] Process Sales...')
-    ALL_MONTHS = ['01/25','02/25','03/25','04/25','05/25','06/25','07/25','08/25',
-                  '09/25','10/25','11/25','12/25',
-                  '01/26','02/26','03/26','04/26','05/26','06/26','07/26',
-                  '01/27','02/27','03/27','04/27','05/27','06/27','07/27',
-                  '08/27','09/27','10/27','11/27','12/27']
+    # สร้างเองจากช่วงปี ห้าม hardcode รายเดือน — ของเดิมกระโดดจาก '07/26' ไป '01/27'
+    # ทำให้ ส.ค.-ธ.ค. 2569 หายทั้งหมด (process_sales คืนแค่ 7 เดือน latest=ก.ค.)
+    # ถ้าเขียนทับหน้าเว็บตอนนั้นจะล้าง ส.ค./ก.ย./ต.ค. ทิ้ง — แก้ 20 ต.ค. 2569
+    _yr_now = datetime.datetime.now().year % 100
+    ALL_MONTHS = [f'{m:02d}/{y:02d}' for y in range(25, _yr_now + 3) for m in range(1, 13)]
+
+    def money(x):
+        v = round(float(x or 0), 2)
+        return int(v) if v == int(v) else v
+
     M_LBL = {'01':'ม.ค.','02':'ก.พ.','03':'มี.ค.','04':'เม.ย.','05':'พ.ค.',
               '06':'มิ.ย.','07':'ก.ค.','08':'ส.ค.','09':'ก.ย.',
               '10':'ต.ค.','11':'พ.ย.','12':'ธ.ค.'}
@@ -233,14 +242,17 @@ def process_sales(sheets):
         return out
 
     def parse_tiktok(rows):
-        # tab "ยอดรายเดือน": 1-3=ยอด Afi (อย่าใช้), 5=ยอดขายรวม 8=ads 9=ค่าธรรมเนียม
-        #   16=จำนวน order 17=ยกเลิก 18=%ยกเลิก
+        # tab "ยอดรายเดือน": 1-3=ยอด Afi (อย่าใช้), 5=ยอดขายรวม 8=ads 10=ค่าธรรมเนียม
+        #   17=จำนวน order 18=ยกเลิก 19=%ยกเลิก
+        # แก้ 20 ต.ค. 2569: ชีตเพิ่มคอลัมน์ ทำให้ index ตั้งแต่ 9 ขึ้นไปเลื่อน +1
+        #   ของเดิมอ่าน fee=[9] ได้ 3.54 (เป็นอัตราส่วน) และ ord=[16] ได้ 1,514 แทน 13,152
+        #   ตรวจกับหน้าเว็บแล้ว mapping 5/17/10 ตรง 9/10 เดือน (ส.ค. ชีตต้นทางเป็น 0 เอง)
         raw = extract(rows)
         out = {}
         for key, row in raw.items():
             def g(i): return parse_num(row[i]) if i < len(row) else 0
-            out[key] = {'rev': g(5), 'ads': g(8), 'fee': g(9),
-                        'cancel_pct': g(18), 'ord': g(16), 'cancel': g(17)}
+            out[key] = {'rev': g(5), 'ads': g(8), 'fee': g(10),
+                        'cancel_pct': g(19), 'ord': g(17), 'cancel': g(18)}
         return out
 
     def parse_lazada(rows):
@@ -282,15 +294,17 @@ def process_sales(sheets):
 
     return {
         'M4': labels,
-        'SH_REV':         [int(sh(m,'rev'))         for m in available],
+        # เงิน = เก็บสตางค์ (ของเดิมใช้ int() ซึ่ง "ตัดทิ้ง" ทำให้ 707,658.99 -> 707,658
+        #   และ 742,365 -> 742,364 ทุกครั้งที่รัน) · จำนวนออเดอร์ยังเป็น int ตามเดิม
+        'SH_REV':         [money(sh(m,'rev'))       for m in available],
         'SH_ORD':         [int(sh(m,'ord'))          for m in available],
         'SH_CANCEL_PCT':  [round(sh(m,'cancel_pct'),2) for m in available],
         'TK_REV':         [round(tk(m,'rev'),2)      for m in available],
         'TK_ORD':         [int(tk(m,'ord'))           for m in available],
         'TK_CANCEL_PCT':  [round(tk(m,'cancel_pct'),2) for m in available],
-        'TK_ADSSPEND':    [int(tk(m,'ads'))           for m in available],
-        'TK_FEECOMM':     [int(tk(m,'fee'))           for m in available],
-        'LZ_REV':         [int(lz(m,'rev'))           for m in available],
+        'TK_ADSSPEND':    [money(tk(m,'ads'))         for m in available],
+        'TK_FEECOMM':     [money(tk(m,'fee'))         for m in available],
+        'LZ_REV':         [money(lz(m,'rev'))         for m in available],
         'LZ_ORD':         [int(lz(m,'ord'))           for m in available],
         'LZ_COST_PCT':    [round(lz(m,'cost_pct'),2) for m in available],
         'n_months': n, 'latest_month': labels[-1],
