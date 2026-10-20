@@ -38,8 +38,9 @@ CH_ORDERS = {'FB_ORD': ['Facebook'], 'LINE_ORD': ['Line OA', 'Line Shopping']}
 def _asof(html):
     """วันสุดท้ายที่ฝั่ง Sales (Shopee/TikTok/Lazada) ครอบถึง — ตัด Shipnity ให้เท่ากัน
     ไม่งั้นยอดรวมเดือนล่าสุดจะคาบเกี่ยวคนละวัน (Shipnity มักมีข้อมูลล่วงหน้า 1 วัน)"""
-    m = re.search(r"SALES_ASOF\s*=\s*'(\d{4}-\d{2}-\d{2})'", html)
-    return m.group(1) if m else None
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from ship_cache import sales_asof
+    return sales_asof()
 
 
 def channel_months(raw, asof):
@@ -52,6 +53,29 @@ def channel_months(raw, asof):
         agg.setdefault(mo, {}).setdefault(CH[o['c']], {'r': 0.0, 'n': 0})
         agg[mo][CH[o['c']]]['r'] += o['r']; agg[mo][CH[o['c']]]['n'] += o['n']
     return agg
+
+
+def write_coverage(raw, asof, dry=False):
+    """บอกบนหน้าเว็บว่าช่องทางฝั่ง Shipnity ครอบถึงวันไหน
+
+    ช่องทาง Shipnity อัปเดตคนละความถี่กับ Shopee/TikTok/Lazada (ไฟล์มาจากคน export เอง)
+    ถ้าวันไหนไม่มีไฟล์ใหม่ ยอดช่องทางจะค้างโดยไม่มีใครรู้ — คีย์นี้ทำให้เห็นทันที
+    mtdCoverageLabel() ในหน้าเว็บวนอ่าน MTD_COVERAGE เองจึงโชว์ให้อัตโนมัติ
+    (MTD_MAX_DATE ใช้ค่า max จึงไม่ถูกดึงลงถ้า Shipnity ตามหลัง)
+    """
+    ship = min(x for x in (raw['date_max'], asof) if x) if asof else raw['date_max']
+    fp = BASE / 'WIBWUB_Dashboard.html'
+    t = fp.read_text(encoding='utf-8')
+    m = re.search(r"(const MTD_COVERAGE\s*=\s*\{)([^}]*)(\})", t)
+    if not m: return None, False
+    body = m.group(2)
+    if re.search(r"Shipnity\s*:", body):
+        new = re.sub(r"(Shipnity\s*:\s*')[^']*(')", lambda z: z.group(1) + ship + z.group(2), body)
+    else:
+        new = body.rstrip().rstrip(',') + f", Shipnity:'{ship}' "
+    if new == body: return ship, False
+    if not dry: fp.write_text(t[:m.start(2)] + new + t[m.end(2):], encoding='utf-8')
+    return ship, True
 
 
 def write_channels(raw, asof, dry=False):
@@ -106,7 +130,9 @@ def main():
     except Exception as e:
         die('import wibwub_update ไม่สำเร็จ', f'{type(e).__name__}: {e}')
 
-    raw = W.process_shipnity()
+    sys.path.insert(0, str(Path(__file__).resolve().parent))
+    from ship_cache import load_shipnity
+    raw = load_shipnity(verbose=True)       # อ่าน Excel ~2 นาที / cache hit <1 วิ
     if not raw:
         die('process_shipnity() คืน None — ดู stderr ด้านบน')
 
@@ -136,6 +162,8 @@ def main():
 
     if a.dry_run:
         rep_ch, ch_changed = write_channels(raw, asof, dry=True)
+        ship, _ = write_coverage(raw, asof, dry=True)
+        summary['shipnity_coverage'] = ship
         summary['channels_changed'] = {pg: {k: f"{v['old'][-1]} -> {v['new'][-1]}" for k, v in d.items()}
                                        for pg, d in rep_ch.items()}
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False))
@@ -143,6 +171,9 @@ def main():
 
     changed = W.update_html(None, None, None, raw) or PAGE.read_text(encoding='utf-8') != prev
     rep_ch, ch_changed = write_channels(raw, asof)
+    ship, cov_changed = write_coverage(raw, asof)
+    summary['shipnity_coverage'] = ship
+    ch_changed = ch_changed or cov_changed
     summary['channels_changed'] = {pg: sorted(d) for pg, d in rep_ch.items()}
     changed = changed or ch_changed
     if changed:
