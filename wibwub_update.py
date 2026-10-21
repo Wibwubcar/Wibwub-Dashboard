@@ -378,7 +378,7 @@ def process_affiliate():
     # end-date ใหม่กว่าไฟล์เต็มเดือน 20260601-20260630 ทั้งที่คลุมข้อมูลเดือนนั้นน้อยกว่ามาก)
     # แทนที่จะไล่ประมวลผลทุกไฟล์ของเดือนเดียวกันแล้ว overwrite ทีละครีเอเตอร์
     # — วิธีเดิมทำให้ครีเอเตอร์ที่หายไปจากไฟล์ใหม่กว่า (แต่มีอยู่ในไฟล์เก่า) ค้างค่าผิดๆ ไว้
-    best_per_month = {}   # mi -> (fp, overlap_days, end_date)
+    best_per_month = {}   # mi -> (fp, overlap_days, end_date, mtime)
     for fp in all_files:
         fname = os.path.basename(fp)
         mi = detect_mi(fname)
@@ -389,9 +389,16 @@ def process_affiliate():
         tfirst, tlast = month_bounds(mi)
         overlap = (min(e, tlast) - max(s, tfirst)).days + 1
         if overlap <= 0: continue
+        # tie-break ชั้นที่ 3 = mtime ใหม่สุด: ช่วงวันที่เดียวกันถูกโหลดซ้ำหลายรอบต่อวัน
+        # (top-level + Data Affiliate/ครีเอเตอร์/*__YYYYMMDD_HHMMSS.xlsx) และ export
+        # รอบหลังมียอดคืนสินค้าอัปเดตแล้ว → ไฟล์ขนาดเท่ากันแต่ checksum ต่างกัน
+        # ถ้าไม่เทียบ mtime ผู้ชนะจะขึ้นกับลำดับ os.walk (top-level มาก่อน = ของเก่ากว่า)
+        # ทำให้ตัวเลขบนแดชบอร์ดสลับไปมาระหว่าง export สองรอบในวันเดียวกัน
+        try: mt = os.path.getmtime(fp)
+        except OSError: mt = 0
         cur = best_per_month.get(mi)
-        if cur is None or (overlap, e) > (cur[1], cur[2]):
-            best_per_month[mi] = (fp, overlap, e)
+        if cur is None or (overlap, e, mt) > (cur[1], cur[2], cur[3]):
+            best_per_month[mi] = (fp, overlap, e, mt)
 
     xlsx_files = sorted(v[0] for v in best_per_month.values())
 
