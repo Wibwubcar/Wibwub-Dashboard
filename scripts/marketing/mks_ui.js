@@ -131,6 +131,22 @@ function mksRatePct(A,c){
   return (many?'~':'')+eff.toFixed(2)+'%';
 }
 function mksFeeLabel(A){ return mksFeeCats().map(c=>c.n+' '+mksRatePct(A,c)).join(' · '); }
+/* เดือนที่ยอด settlement ยังไหลเข้าไม่ครบ จะถูกทำเครื่องหมาย prov ไว้
+   ถ้าช่วงที่เลือกคร่อมเดือนพวกนั้น ต้องบอกผู้ใช้ว่าตัวเลขยังขยับได้ */
+function mksProvMonths(from,to){
+  const out=new Set();
+  const all=mksFeeCats().concat(mksMktRateCats());
+  all.forEach(c=>{ if(!Array.isArray(c.spec)) return;
+    c.spec.forEach(s=>{ if(s.prov && s.from<=to){
+      const e=mksMonthEnd(s.from); if(e>=from) out.add(s.from.slice(0,7)); } }); });
+  return [...out].sort();
+}
+function TH_MF_SHORT(m){
+  const N=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  return N[+m.slice(5,7)-1]+' '+((+m.slice(0,4)+543)%100);
+}
+function mksMonthEnd(d){ const x=new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7), 0));
+  return x.toISOString().slice(0,10); }
 
 /* รวมตัวเลขในช่วง — คืน null สำหรับหมวดที่ยังไม่มีข้อมูล */
 function mksAgg(from,to){
@@ -446,6 +462,10 @@ function mksRender(){
          ' (แก้ที่ <code>data Ads/kol_campaign_tier.json</code>)<br>';
     h+='ยอดขาย TikTok รายวันเป็นยอดก่อนหักคำสั่งซื้อที่ยกเลิก จึงสูงกว่าหน้า Sales '+
        'ราว 1% (ต.ค. ต่างกัน 24,572 บาท) ช่องอื่นตรงกันทุกบาท<br>';
+    const prov=A.fee>0? mksProvMonths(f,t) : [];
+    if(prov.length) h+='<b>⚠️ '+prov.map(m=>TH_MF_SHORT(m)).join(' · ')+
+      ' ยังเป็นอัตราชั่วคราว</b> — ยอดเงินจากแพลตฟอร์มยังเข้าไม่ครบเดือน '+
+      'ตัวเลขค่าธรรมเนียมและยอดหลังหักยังขยับได้ จะปิดยอดเป็นตัวจริงวันที่ 5 ของเดือนถัดไป<br>';
     if(A.fee>0) h+='<b>ค่าธรรมเนียมแพลตฟอร์มเป็นอัตราที่ตั้งไว้เอง</b> ('+mksFeeLabel(A)+
       ') คิดจากยอดขายของช่องทางนั้น ไม่ใช่ยอดเรียกเก็บจริงจากแพลตฟอร์ม · '+
       'ช่องทางขายตรง (Facebook · LINE · POS · เว็บไซต์ ฯลฯ) ไม่มีค่าธรรมเนียม · '+
