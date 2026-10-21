@@ -2377,7 +2377,7 @@ function tklRender(){
     totGmv += v.gmv||0;
     totAdsCost += v.adsCost||0;
     totAdsRev += v.adsRev||0;
-    if(v.adsCampaigns>0) adsDays++;
+    if((v.adsCost||0)>0 || (v.adsRev||0)>0) adsDays++;
   });
   const roas = totAdsCost>0 ? (totAdsRev/totAdsCost) : 0;
 
@@ -2393,7 +2393,7 @@ function tklRender(){
   let h='';
   [...ds].reverse().forEach(d=>{
     const v = TK_LIVE_DAILY.daily[d] || {gmv:0,adsCost:0,adsRev:0,adsCampaigns:0};
-    const hasAds = v.adsCampaigns>0;
+    const hasAds = (v.adsCost||0)>0 || (v.adsRev||0)>0;
     const dRoas = hasAds && v.adsCost>0 ? (v.adsRev/v.adsCost).toFixed(2)+'x' : '—';
     h += `<tr>
       <td>${tklFmtThai(d)}</td>
@@ -2401,7 +2401,7 @@ function tklRender(){
       <td>${hasAds?tklFmtBaht(v.adsCost):'—'}</td>
       <td>${hasAds?tklFmtBaht(v.adsRev):'—'}</td>
       <td>${dRoas}</td>
-      <td>${hasAds?v.adsCampaigns:'—'}</td>
+      <td>${v.adsCampaigns>0?v.adsCampaigns:'—'}</td>
     </tr>`;
   });
   if(ds.length===0) h = `<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">ไม่มีข้อมูลในช่วงที่เลือก</td></tr>`;
