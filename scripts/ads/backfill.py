@@ -126,6 +126,10 @@ def cmd_report(a):
 # ── merge (เฉพาะวันใหม่) ────────────────────────────────────────────────────
 NEED = ('sh_real', 'sh_ads', 'tk_real', 'tk_ads')
 OPT = ('lz_real', 'lz_ads')
+# ค่าโฆษณา Shopee ย้อนได้แค่ ~185 วัน (หน้าต่างกลิ้ง เลื่อนขึ้นวันละวัน) ส่วนยอดขายจริง
+# + TikTok + Lazada ย้อนได้ถึง ม.ค. ถ้าจะเติมวันเก่ากว่าหน้าต่างนั้นต้องยอมให้ขาด sh_ads
+# --allow-no-sh-ads = วันไหนไม่มี sh_ads ให้เขียนโดย "ไม่ใส่คีย์" (เหมือน lz_* ก่อน ก.ย.)
+# ห้ามเติม 0 เพราะจะกลายเป็น "ลงโฆษณา 0 บาท" ซึ่งผิด
 
 
 def cmd_merge(a):
@@ -140,8 +144,9 @@ def cmd_merge(a):
     if has_lz and not all(k in parts for k in OPT):
         die('ถ้าจะใส่ Lazada ต้องให้ทั้ง lz_real และ lz_ads')
 
-    dates = sorted(set.intersection(*[set(parts[k]) for k in NEED]))
-    gaps = sorted(set().union(*[set(parts[k]) for k in NEED]) - set(dates))
+    core = tuple(k for k in NEED if not (a.allow_no_sh_ads and k == 'sh_ads'))
+    dates = sorted(set.intersection(*[set(parts[k]) for k in core]))
+    gaps = sorted(set().union(*[set(parts[k]) for k in core]) - set(dates))
     # ปกติห้ามให้ชุดใดชุดหนึ่งขาดวัน (กันเขียนวันไม่ครบ) แต่ตอน backfill ย้อนหลัง
     # แต่ละแหล่งย้อนได้ไม่เท่ากันโดยธรรมชาติ เช่น ค่าโฆษณา Shopee ย้อนได้แค่ ~6 เดือน
     # (หน้าต่างกลิ้ง เลื่อนขึ้นวันละวัน) ส่วนยอดขายจริงย้อนได้ถึง ม.ค.
@@ -155,21 +160,25 @@ def cmd_merge(a):
 
     d = load(); have = set(d['days'])
     skipped_exist, skipped_future, added, warn = [], [], [], []
+    no_sh_ads = []
     for dt in dates:
         if dt > yest: skipped_future.append(dt); continue
         if dt in have:                       # ★ หัวใจของสคริปต์นี้: ห้ามแตะของเดิม
             skipped_exist.append(dt); continue
         e = {'sh_real': {'gmv': int(round(parts['sh_real'][dt]['gmv'])),
                          'orders': int(parts['sh_real'][dt]['orders'])},
-             'sh_ads': {k: {f: int(parts['sh_ads'][dt][k][f])
-                            for f in ('gmv_broad', 'gmv_direct', 'spend', 'orders')}
-                        for k in ('product', 'search', 'live')},
              'tk_real': {'gmv': round(float(parts['tk_real'][dt]['gmv']), 2),
                          'orders': int(parts['tk_real'][dt]['orders'])},
              'tk_ads': {k: {'gmv': round(float(parts['tk_ads'][dt][k]['gmv']), 2),
                             'spend': round(float(parts['tk_ads'][dt][k]['spend']), 2),
                             'orders': int(parts['tk_ads'][dt][k]['orders'])}
                         for k in ('product', 'live')}}
+        if dt in parts['sh_ads']:
+            e['sh_ads'] = {k: {f: int(parts['sh_ads'][dt][k][f])
+                               for f in ('gmv_broad', 'gmv_direct', 'spend', 'orders')}
+                           for k in ('product', 'search', 'live')}
+        else:
+            no_sh_ads.append(dt)
         if has_lz and dt in parts['lz_real'] and dt in parts['lz_ads']:
             e['lz_real'] = {'gmv': round(float(parts['lz_real'][dt]['gmv']), 2),
                             'orders': int(parts['lz_real'][dt]['orders'])}
@@ -187,6 +196,8 @@ def cmd_merge(a):
 
     summary = {'added': len(added), 'added_range': [added[0], added[-1]] if added else None,
                'skipped_exist': len(skipped_exist), 'skipped_future': skipped_future,
+               'no_sh_ads': len(no_sh_ads),
+               'no_sh_ads_range': [no_sh_ads[0], no_sh_ads[-1]] if no_sh_ads else None,
                'dropped_incomplete': len(dropped),
                'dropped_range': [dropped[0], dropped[-1]] if dropped else None,
                'warnings': warn}
@@ -239,6 +250,9 @@ def main():
     s.add_parser('report').set_defaults(fn=cmd_report)
     m = s.add_parser('merge'); m.add_argument('files', nargs='+')
     m.add_argument('--dry-run', action='store_true')
+    m.add_argument('--allow-no-sh-ads', action='store_true', dest='allow_no_sh_ads',
+                   help='ยอมให้บางวันไม่มีค่าโฆษณา Shopee (เกินหน้าต่าง 185 วัน) '
+                        'วันนั้นจะไม่มีคีย์ sh_ads ไม่ใช่ 0')
     m.add_argument('--intersect', action='store_true',
                    help='ยอมให้แต่ละชุดมีช่วงวันไม่เท่ากัน เขียนเฉพาะวันที่ทุกชุดมีครบ')
     m.set_defaults(fn=cmd_merge)
