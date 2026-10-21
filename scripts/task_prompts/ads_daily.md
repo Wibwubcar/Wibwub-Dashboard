@@ -13,7 +13,7 @@
 สคริปต์: `scripts/ads/hook.js`, `scripts/ads/collect.js`, `scripts/ads/ads_daily_update.py`, `scripts/ads/sync_periods.js` — ถ้าหายหรือพัง ให้หยุดและรายงาน ห้ามเขียนวิธีอื่นเอง ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดหรือแก้เอง
 
 ### ขั้นตอน
-1. `python3 "$BASE/scripts/ads/ads_daily_update.py" state` → ได้ `from` และ `to` (ดึงซ้ำย้อนหลัง 3 วันเสมอ ตั้งใจให้เป็นแบบนั้น)
+1. `python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ads/ads_daily_update.py" state` → ได้ `from` และ `to` (ดึงซ้ำย้อนหลัง 3 วันเสมอ ตั้งใจให้เป็นแบบนั้น)
 2. อ่านเนื้อหา `hook.js` และ `collect.js` ด้วย `cat` (ใช้วางใน javascript_tool แบบคัดลอกตรงตัว)
 3. Chrome: `list_connected_browsers` แล้ว `select_browser` ตัวที่เป็น macOS เท่านั้น (deviceId ปกติคือ b75a6bb0-5b78-4e44-92a8-75224f1ce4ee) → `tabs_context_mcp(createIfEmpty=true)` ใช้ `browser_batch` เสมอ ห้าม navigate เดี่ยว ห้าม wait เกิน 10 วิ
 4. แต่ละ kind: navigate → วาง hook.js ทันที → รอหน้าโหลด → เช็คว่า `window.__cap` มี request ที่ต้องใช้ (ดูชื่อจาก `window.__cap.map(c=>c.u.split('?')[0].split('/').pop())`) ถ้ายังไม่มี ให้กดตามวิธีสำรองด้านล่าง → วาง `window.__ADS={kind:'<kind>',from:'<from>',to:'<to>'};` ตามด้วยเนื้อหา collect.js → poll `window.__adsJob` จน `done:true` (ต้องไม่มี `err`) → อ่าน `window.__adsExport(0,900)`, `(900,1800)`, `(1800,2700)`… จนครบ `__adsJob.len` (ผลของ javascript_tool ถูกตัดที่ ~1000 ตัวอักษร ห้ามอ่านทีละมากกว่า 900) → ต่อกันแล้วบันทึกเป็นไฟล์ `scripts/ads/work/<kind>.json` ด้วย heredoc คัดลอกตรงตัว
@@ -43,8 +43,8 @@ python3 scripts/marketing/marketing_update.py   # รวม Ads + KOL + ยอ�
    exit `0` = อัปเดตแล้ว · `10` = ไม่มีอะไรเปลี่ยน (ทั้งคู่ถือว่าผ่าน) · `2` = ไม่ผ่านด่านตรวจ ให้รายงานแล้วไปต่อ
    ถ้ามีไฟล์เปลี่ยน ให้ commit:
 ```bash
-git -C "$BASE" add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: การตลาด vs ยอดขาย $(date +%Y-%m-%d)"
 ```
    > ⚠️ ชีต KOL (`1NEkm1bcHvXO0Ehs6cwaNDkBUUM1A9assALMp5V7S7lo`) มีชื่อ-นามสกุล เลขบัตรประชาชน
@@ -59,18 +59,21 @@ git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.co
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+งานตั้งเวลา **ไม่มีคนนั่งกดอนุญาต** ถ้าคำสั่งไม่แมตช์กฎที่อนุญาตไว้แล้ว
+(`Bash(python3 *)` / `Bash(git *)` / `Bash(ls *)` ฯลฯ) งานจะค้างทั้งรอบ
+สังเกตง่าย ๆ: ถ้ากล่องขออนุญาตมีแค่ปุ่ม **"Allow once"** โดยไม่มี "Always allow"
+แปลว่าคำสั่งนั้นสร้างกฎถาวรไม่ได้ จะถามใหม่ทุกครั้งตลอดไป
 
-คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
-จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
-ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
-which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
+**เขียนคำสั่งให้เรียบง่ายที่สุด — 1 คำสั่ง = 1 โปรแกรม + พาธเต็ม**
 
-| ❌ ห้าม | ✅ ใช้แบบนี้ |
-|---|---|
-| `cd "$BASE" && git status` | `git -C "$BASE" status` |
-| `cd "$BASE"` ขึ้นบรรทัดใหม่แล้วตามด้วย `git ...` | `git -C "$BASE" ...` |
-| `cd "$BASE" && python3 x.py; git status` | แยกเป็น 2 คำสั่ง · ใช้ `python3 "$BASE/x.py"` และ `git -C "$BASE" status` |
+| ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
+|---|---|---|
+| `cd "<path>" && git status` | cd + git = ตัวตรวจตีธง (รัน hook ได้) | `git -C "<path เต็ม>" status` |
+| `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
+| `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
+| `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
+| `cmd1; cmd2; cmd3` ต่อกันยาว ๆ | คำสั่งผสมแมตช์กฎไม่ได้ | แยกเป็นคนละคำสั่ง |
 
-เรียกสคริปต์ด้วย path เต็มเสมอ (`python3 "$BASE/scripts/..."`) จะได้ไม่ต้อง `cd`
-ถ้าจำเป็นต้อง `cd` จริง ๆ (เช่นสคริปต์อ่าน path สัมพัทธ์) **ห้ามมี `git` อยู่ในคำสั่งนั้น**
+**ถ้าต้องมีตรรกะ (วนลูป / เช็คเงื่อนไข / ประกอบพาธ): เขียนเป็นสคริปต์ python
+ไว้ใน `scripts/` แล้วเรียกด้วยพาธเต็ม** เช่น `python3 "<path เต็ม>/scripts/ads/check_downloads.py" tiktok`
+วิธีนี้ทั้งอ่านง่ายกว่า ทดสอบแยกได้ และไม่ติดกำแพงสิทธิ์
