@@ -18631,8 +18631,10 @@ const SAMPLE_PRODUCTS = {
 // `window`/`total` below always describe the same run — read the range from
 // SAMPLE_PRODUCTS_LAST7D.window, never from SAMPLE_LAST7D.range (that field
 // belongs to the unrelated TikTok-Insights perf source and is stale).
-// Current window 13/10/2026 - 19/10/2026 → 117 requests in-range (synced 19/10/2026). Staff log rows
-// in batches, so day-to-day totals are lumpy.
+// Do NOT restate the window/total here — they live in the object below
+// (`.window` / `.total`) and any copy in this comment goes stale the next
+// time the sync runs. Staff log rows in batches, so day-to-day totals are
+// lumpy.
 // SAMPLE_LAST7D.funnel below is recomputed from this same sheet in the same
 // run, so its req/appr and this total always agree.
 const SAMPLE_PRODUCTS_LAST7D = {total:224,unspecified:{c:0,appr:0,rej:0,other:0},items:[{n:"Refresh Wipes",c:60,appr:28,rej:32,other:0},{n:"Interior wipes",c:54,appr:27,rej:27,other:0},{n:"Banyakart",c:49,appr:19,rej:30,other:0},{n:"Quart Shampoo",c:18,appr:12,rej:6,other:0},{n:"Reflex",c:17,appr:7,rej:10,other:0},{n:"Interior",c:12,appr:7,rej:5,other:0},{n:"ไม้ปัดขนแกะ",c:10,appr:2,rej:8,other:0},{n:"Spot Clean",c:9,appr:3,rej:6,other:0},{n:"Tire Clean",c:9,appr:4,rej:5,other:0},{n:"Sugar",c:5,appr:4,rej:1,other:0},{n:"X glass",c:4,appr:3,rej:1,other:0},{n:"Waterless",c:2,appr:1,rej:1,other:0},{n:"Superdry",c:2,appr:0,rej:2,other:0},{n:"Beach",c:2,appr:2,rej:0,other:0},{n:"Microfiber Wash",c:1,appr:0,rej:1,other:0}],window:"15/10/2026 - 21/10/2026"};
