@@ -226,6 +226,64 @@ def cmd_merge(a):
     return 0
 
 
+def cmd_fill_lz(a):
+    """เติม lz_real/lz_ads ให้วันที่มีอยู่แล้วแต่ขาดคีย์ Lazada
+
+    ทำไมต้องมีคำสั่งแยก: `merge` ถูกออกแบบให้ "ห้ามแตะวันที่มีข้อมูลแล้ว" เด็ดขาด
+    จึงเติมคีย์ที่ขาดให้วันเดิมไม่ได้ ซึ่งเป็นสิ่งที่ถูกต้องสำหรับ merge
+    แต่รอบ backfill 18 เม.ย.-31 ส.ค. (ทำเมื่อ 20 ต.ค.) merge ไปโดยไม่มีไฟล์ Lazada
+    ทำให้ 136 วันนั้นขาด lz_* ทั้งที่ ม.ค.-17 เม.ย. และ ก.ย.-ต.ค. มี
+    = หน้าเว็บมีช่องว่าง Lazada กลางปีทั้งที่ข้อมูลมีอยู่ในไฟล์ backfill
+
+    คำสั่งนี้แคบที่สุดเท่าที่จะทำได้: **เพิ่มได้เฉพาะคีย์ที่ยังไม่มี**
+    ถ้าวันไหนมี lz_real หรือ lz_ads อยู่แล้วจะข้ามทั้งวัน ไม่เขียนทับอะไรเลย
+    และไม่แตะคีย์อื่น (sh_*, tk_*) แม้แต่ตัวเดียว
+    """
+    parts = {}
+    for p in a.files:
+        o = json.load(open(p, encoding='utf-8')); parts[o['kind']] = o['data']
+    if set(parts) != {'lz_real', 'lz_ads'}:
+        die('ต้องให้ไฟล์ lz_real และ lz_ads เท่านั้น', sorted(parts))
+
+    d = load()
+    yest = (bkk_now().date() - datetime.timedelta(days=1)).isoformat()
+    filled, skip_have, skip_nodata, untouched = [], [], [], []
+    for dt in sorted(d['days']):
+        v = d['days'][dt]
+        if 'lz_real' in v or 'lz_ads' in v: skip_have.append(dt); continue
+        if dt > yest: continue
+        if dt not in parts['lz_real'] or dt not in parts['lz_ads']:
+            skip_nodata.append(dt); continue
+        lr, la = parts['lz_real'][dt], parts['lz_ads'][dt]
+        vals = [lr['gmv'], lr['orders']] + [la[f] for f in ('spend', 'revenue', 'orders', 'imp', 'clicks')]
+        if any(x < 0 for x in vals): die('ค่าติดลบ', dt)
+        v['lz_real'] = {'gmv': round(float(lr['gmv']), 2), 'orders': int(lr['orders'])}
+        v['lz_ads'] = {f: (int(la[f]) if f in ('orders', 'imp', 'clicks') else round(float(la[f]), 2))
+                       for f in ('spend', 'revenue', 'orders', 'imp', 'clicks')}
+        filled.append(dt)
+
+    summary = {'filled': len(filled),
+               'filled_range': [filled[0], filled[-1]] if filled else None,
+               'gmv': round(sum(d['days'][x]['lz_real']['gmv'] for x in filled), 2),
+               'orders': sum(d['days'][x]['lz_real']['orders'] for x in filled),
+               'spend': round(sum(d['days'][x]['lz_ads']['spend'] for x in filled), 2),
+               'skipped_มีอยู่แล้ว': len(skip_have),
+               'skipped_ไม่มีข้อมูล': len(skip_nodata)}
+    if not filled:
+        print(json.dumps({'status': 'NO_NEW', **summary}, ensure_ascii=False)); return 10
+    if a.dry_run:
+        print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False)); return 0
+
+    lzd = [k for k, v in d['days'].items() if 'lz_real' in v]
+    d['coverage']['lazada'] = max(lzd)
+    shutil.copy2(DAILY, DAILY + '.bak')
+    tmp = DAILY + '.tmp'
+    json.dump(d, open(tmp, 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
+    os.replace(tmp, DAILY)
+    print(json.dumps({'status': 'UPDATED', **summary}, ensure_ascii=False))
+    return 0
+
+
 def cmd_camp(a):
     new = json.load(open(a.file, encoding='utf-8'))['data']
     cur = json.load(open(TKC, encoding='utf-8')) if os.path.exists(TKC) else {}
@@ -261,6 +319,10 @@ def main():
     m.add_argument('--intersect', action='store_true',
                    help='ยอมให้แต่ละชุดมีช่วงวันไม่เท่ากัน เขียนเฉพาะวันที่ทุกชุดมีครบ')
     m.set_defaults(fn=cmd_merge)
+    fl = s.add_parser('fill-lz', help='เติม lz_real/lz_ads ให้วันที่ขาด (ไม่เขียนทับของเดิม)')
+    fl.add_argument('files', nargs='+'); fl.add_argument('--dry-run', action='store_true')
+    fl.set_defaults(fn=cmd_fill_lz)
+
     c = s.add_parser('camp'); c.add_argument('file')
     c.add_argument('--dry-run', action='store_true'); c.set_defaults(fn=cmd_camp)
     a = ap.parse_args()
