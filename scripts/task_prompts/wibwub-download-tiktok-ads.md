@@ -53,14 +53,7 @@ Navigate `https://ads.tiktok.com/i18n/dashboard?aadvid=7229166192752148482`
 (retry / รันมือ) ให้ข้าม เพื่อไม่ให้ archive บวมด้วยไฟล์ `__stamp` ที่ต่างกันไม่กี่บาท
 
 ```bash
-BASE="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-TODAY=$(date +%Y-%m-%d)
-for d in "$BASE/data Ads/TikTok/Business Ads" "$BASE/data Ads/TikTok/GMV Max"; do
-  n=$(find "$d" -maxdepth 1 -type f -newermt "$TODAY 00:00" 2>/dev/null | wc -l | tr -d ' ')
-  # find -newermt บน macOS บางเครื่องคืนค่าว่าง → เช็คซ้ำด้วย mtime ของไฟล์ล่าสุด
-  latest=$(ls -t "$d" | head -1)
-  echo "$d → วันนี้ $n ไฟล์ · ล่าสุด: $latest"
-done
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ads/check_downloads.py" tiktok
 ```
 ถ้าทั้งสองโฟลเดอร์มีไฟล์ของ **ชั่วโมงนี้** อยู่แล้ว → รายงาน "ข้ามรอบ (โหลดไปแล้ว)" แล้วจบ
 
@@ -104,7 +97,7 @@ b ? (b.click(), 'clicked: ' + b.textContent.trim()) : 'NOT FOUND';
 ### 1.4 ตรวจผล (รอ 20 วิ)
 
 ```bash
-ls -lt "$BASE/data Ads/TikTok/GMV Max/" | head -3
+ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/GMV Max/" | head -3
 ```
 ต้องเห็นไฟล์ `Campaign overview data {YYYYMMDD} - {YYYYMMDD}.xlsx` ที่ mtime เป็นเวลานี้
 
@@ -163,7 +156,7 @@ it ? (it.click(), 'export clicked') : 'EXPORT ITEM NOT FOUND';
 ### 2.4 ตรวจผล
 
 ```bash
-ls -lt "$BASE/data Ads/TikTok/Business Ads/" | head -3
+ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/Business Ads/" | head -3
 ```
 ต้องเห็น `WIBWUBCAR-Campaign Report-{YYYY-MM-01} to {YYYY-MM-DD}.xlsx` mtime เป็นเวลานี้
 ถ้ายังไม่มี รอเพิ่มอีก 15 วิ แล้วตรวจซ้ำ 1 ครั้ง ก่อนรายงานว่าไม่สำเร็จ
@@ -198,9 +191,9 @@ js.write_text('\n;\n'.join(re.findall(r'<script[^>]*>([\s\S]*?)</script>', p.rea
 r = subprocess.run(['node','--check',str(js)], capture_output=True, text=True)
 print('node --check', 'OK' if r.returncode==0 else 'FAIL\n'+r.stderr[:400])
 PY
-python3 "$BASE/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed ต้องใส่ '' และเคยพังเงียบ ๆ มาแล้ว
-git -C "$BASE" add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
-git -C "$BASE" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed ต้องใส่ '' และเคยพังเงียบ ๆ มาแล้ว
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
+git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: TikTok Ads $(date +%Y-%m-%d)"
 ```
 
@@ -233,18 +226,21 @@ TikTok Ads Download — {วันที่} {รอบเช้า/เย็น
 
 ## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
 
-**ห้ามขึ้นต้นคำสั่งด้วย `cd` เด็ดขาด** — ทั้งกับ `git` และ `python3`
+งานตั้งเวลา **ไม่มีคนนั่งกดอนุญาต** ถ้าคำสั่งไม่แมตช์กฎที่อนุญาตไว้แล้ว
+(`Bash(python3 *)` / `Bash(git *)` / `Bash(ls *)` ฯลฯ) งานจะค้างทั้งรอบ
+สังเกตง่าย ๆ: ถ้ากล่องขออนุญาตมีแค่ปุ่ม **"Allow once"** โดยไม่มี "Always allow"
+แปลว่าคำสั่งนั้นสร้างกฎถาวรไม่ได้ จะถามใหม่ทุกครั้งตลอดไป
 
-คำสั่งที่ขึ้นต้นด้วย `cd` ไม่แมตช์กฎที่อนุญาตไว้แล้ว (`Bash(python3 *)` / `Bash(git *)`)
-จึงเด้งถามทุกครั้ง และถ้ามี `git` ร่วมด้วยจะโดนตัวตรวจตีธงซ้ำอีกชั้น
-ตัวตรวจความปลอดภัยจะหยุดงานแล้วรอคนกดอนุญาต ("changes directory before running git,
-which can execute untrusted hooks") ซึ่งงานตั้งเวลาไม่มีคนนั่งกด = ค้างทั้งรอบ
+**เขียนคำสั่งให้เรียบง่ายที่สุด — 1 คำสั่ง = 1 โปรแกรม + พาธเต็ม**
 
-| ❌ ห้าม | ✅ ใช้แบบนี้ |
-|---|---|
-| `cd "$BASE" && git status` | `git -C "$BASE" status` |
-| `cd "$BASE"` ขึ้นบรรทัดใหม่แล้วตามด้วย `git ...` | `git -C "$BASE" ...` |
-| `cd "$BASE" && python3 x.py; git status` | แยกเป็น 2 คำสั่ง · ใช้ `python3 "$BASE/x.py"` และ `git -C "$BASE" status` |
+| ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
+|---|---|---|
+| `cd "<path>" && git status` | cd + git = ตัวตรวจตีธง (รัน hook ได้) | `git -C "<path เต็ม>" status` |
+| `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
+| `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
+| `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
+| `cmd1; cmd2; cmd3` ต่อกันยาว ๆ | คำสั่งผสมแมตช์กฎไม่ได้ | แยกเป็นคนละคำสั่ง |
 
-เรียกสคริปต์ด้วย path เต็มเสมอ (`python3 "$BASE/scripts/..."`) จะได้ไม่ต้อง `cd`
-ถ้าจำเป็นต้อง `cd` จริง ๆ (เช่นสคริปต์อ่าน path สัมพัทธ์) **ห้ามมี `git` อยู่ในคำสั่งนั้น**
+**ถ้าต้องมีตรรกะ (วนลูป / เช็คเงื่อนไข / ประกอบพาธ): เขียนเป็นสคริปต์ python
+ไว้ใน `scripts/` แล้วเรียกด้วยพาธเต็ม** เช่น `python3 "<path เต็ม>/scripts/ads/check_downloads.py" tiktok`
+วิธีนี้ทั้งอ่านง่ายกว่า ทดสอบแยกได้ และไม่ติดกำแพงสิทธิ์
