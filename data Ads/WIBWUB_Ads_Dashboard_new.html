@@ -243,14 +243,17 @@ let CUR=null, PREV=null;   // ผลรวมช่วงที่เลือ�
 /* ---------- aggregation ---------- */
 function sumRange(a,b){
   const r = { n:0, days:[],
-    sh:{real:0,orders:0,broad:0,direct:0,spend:0,adsOrders:0, t:{product:{b:0,d:0,s:0,o:0},search:{b:0,d:0,s:0,o:0},live:{b:0,d:0,s:0,o:0}}},
+    sh:{real:0,orders:0,broad:0,direct:0,spend:0,adsOrders:0,adsDays:0, t:{product:{b:0,d:0,s:0,o:0},search:{b:0,d:0,s:0,o:0},live:{b:0,d:0,s:0,o:0}}},
     tk:{real:0,orders:0,gmv:0,spend:0,adsOrders:0, t:{product:{g:0,s:0,o:0},live:{g:0,s:0,o:0}}},
     lz:{real:0,orders:0,gmv:0,spend:0,adsOrders:0,imp:0,clicks:0,days:0} };
   for (const d of DAYS){ if (d<a || d>b) continue; const v=DAILY.days[d]; r.n++; r.days.push(d);
     r.sh.real+=v.sh_real.gmv; r.sh.orders+=v.sh_real.orders;
-    for (const k of ['product','search','live']){ const x=v.sh_ads[k]||{}; const t=r.sh.t[k];
-      t.b+=x.gmv_broad||0; t.d+=x.gmv_direct||0; t.s+=x.spend||0; t.o+=x.orders||0;
-      r.sh.broad+=x.gmv_broad||0; r.sh.direct+=x.gmv_direct||0; r.sh.spend+=x.spend||0; r.sh.adsOrders+=x.orders||0; }
+    // ค่าโฆษณา Shopee ย้อนได้แค่ ~185 วัน (หน้าต่างกลิ้ง) วันเก่ากว่านั้นไม่มีคีย์ sh_ads
+    // ให้ข้ามและนับ adsDays ไว้เพื่อขึ้นป้ายเตือน — ห้ามนับเป็น 0 เพราะจะเพี้ยนทั้ง ROAS และ %
+    if (v.sh_ads){ r.sh.adsDays++;
+      for (const k of ['product','search','live']){ const x=v.sh_ads[k]||{}; const t=r.sh.t[k];
+        t.b+=x.gmv_broad||0; t.d+=x.gmv_direct||0; t.s+=x.spend||0; t.o+=x.orders||0;
+        r.sh.broad+=x.gmv_broad||0; r.sh.direct+=x.gmv_direct||0; r.sh.spend+=x.spend||0; r.sh.adsOrders+=x.orders||0; } }
     r.tk.real+=v.tk_real.gmv; r.tk.orders+=v.tk_real.orders;
     for (const k of ['product','live']){ const x=v.tk_ads[k]||{}; const t=r.tk.t[k];
       t.g+=x.gmv||0; t.s+=x.spend||0; t.o+=x.orders||0;
@@ -265,9 +268,9 @@ function sumRange(a,b){
             ads:r.sh.broad+r.tk.gmv+r.lz.gmv, orders:r.sh.orders+r.tk.orders+r.lz.orders };
   return r;
 }
-function dayVals(d){ const v=DAILY.days[d], S=v.sh_ads, T=v.tk_ads, LR=v.lz_real, LA=v.lz_ads;
+function dayVals(d){ const v=DAILY.days[d], S=v.sh_ads||{}, T=v.tk_ads, LR=v.lz_real, LA=v.lz_ads;
   const g=(o,k,f)=>((o[k]||{})[f]||0);
-  return { shR:v.sh_real.gmv, shO:v.sh_real.orders,
+  return { shR:v.sh_real.gmv, shO:v.sh_real.orders, hasShAds:!!v.sh_ads,
     shB:g(S,'product','gmv_broad')+g(S,'search','gmv_broad')+g(S,'live','gmv_broad'),
     shD:g(S,'product','gmv_direct')+g(S,'search','gmv_direct')+g(S,'live','gmv_direct'),
     shS:g(S,'product','spend')+g(S,'search','spend')+g(S,'live','spend'),
@@ -317,6 +320,7 @@ function buildSkeleton(){
   <div class="view view-overview" id="view-overview">
     <section class="sec">
       <div class="range-title" data-rt></div>
+      <div class="callout" data-cov hidden></div>
       ${kpiBox('ovKpis')}
     </section>
     <section class="sec">
@@ -375,6 +379,7 @@ function buildSkeleton(){
   <div class="view view-shopee" id="view-shopee">
     <section class="sec">
       <div class="range-title" data-rt></div>
+      <div class="callout" data-cov hidden></div>
       ${kpiBox('shKpis')}
     </section>
     <section class="sec">
@@ -413,6 +418,7 @@ function buildSkeleton(){
   <div class="view view-tiktok" id="view-tiktok">
     <section class="sec">
       <div class="range-title" data-rt></div>
+      <div class="callout" data-cov hidden></div>
       ${kpiBox('tkKpis')}
     </section>
     <section class="sec">
@@ -458,6 +464,7 @@ function buildSkeleton(){
   <div class="view view-lazada" id="view-lazada">
     <section class="sec">
       <div class="range-title" data-rt></div>
+      <div class="callout" data-cov hidden></div>
       ${kpiBox('lzKpis')}
     </section>
     <section class="sec">
@@ -545,6 +552,36 @@ function recompute(){
   const t = `ช่วงที่เลือก: <b>${thRange(st.from, st.to)}</b> (${n} วัน)` + (PREV?` <span class="muted">· เทียบกับ ${thRange(pa,pb)}</span>`:'');
   document.querySelectorAll('[data-rt]').forEach(e=>e.innerHTML=t);
   document.querySelectorAll('[data-rs]').forEach(e=>e.textContent=thRange(st.from, st.to));
+  coverageNote(n);
+}
+/* วันที่ไม่มีค่าโฆษณา Shopee (เก่ากว่าหน้าต่าง ~185 วันของ Shopee Ads) ต้องบอกให้ชัด
+   ไม่งั้นจะเข้าใจผิดว่าเดือนนั้นค่าโฆษณาถูกลง ทั้งที่จริงคือไม่มีข้อมูล */
+function coverageNote(n){
+  const el = document.querySelectorAll('[data-cov]'), miss = CUR.n - CUR.sh.adsDays;
+  if (miss <= 0){ el.forEach(e=>{ e.hidden=true; e.innerHTML=''; }); return; }
+  const gap = CUR.days.filter(d=>!DAILY.days[d].sh_ads);
+  const span = gap.length===1 ? thDate(gap[0],1) : thDate(gap[0],1)+' – '+thDate(gap[gap.length-1],1);
+  el.forEach(e=>{ e.hidden=false; e.innerHTML =
+    `<b>ค่าโฆษณา Shopee ไม่ครบช่วงนี้:</b> ขาด ${int(miss)} จาก ${int(CUR.n)} วัน (${span}) — ` +
+    `ระบบ Shopee ย้อนดูค่าโฆษณารายวันได้แค่ประมาณ 185 วัน วันที่ขาด<b>ไม่ถูกนับเป็น 0</b> ` +
+    `ค่าโฆษณารวม · % ต่อยอดขาย · ROAS ของ Shopee จึงคิดจาก ${int(CUR.sh.adsDays)} วันที่มีข้อมูลเท่านั้น ` +
+    `ส่วนยอดขายจริงและออเดอร์ครบทุกวัน` + monthFallback(gap); });
+}
+/* เดือนที่ไม่มีรายวันเลย ยังมี "ยอดรวมทั้งเดือน" จากไฟล์ export อยู่ใน PERIODS
+   ถ้าช่วงที่เลือกคลุมเดือนนั้นครบทั้งเดือน ก็บอกยอดรวมไปด้วย จะได้ไม่ต้องเดา
+   แต่ถ้าคลุมไม่ครบเดือนห้ามเอามาใช้ เพราะเป็นยอดทั้งเดือน หารรายวันไม่ได้ */
+function monthFallback(gap){
+  const by = {}; gap.forEach(d=>{ (by[d.slice(0,7)] = by[d.slice(0,7)] || []).push(d); });
+  const out = [];
+  for (const m of Object.keys(by).sort()){
+    const inM = new Date(Date.UTC(+m.slice(0,4), +m.slice(5,7), 0)).getUTCDate();
+    const pm = PERIODS.months[MKEYS[+m.slice(5,7)-1]];
+    if (by[m].length !== inM || !pm || !pm.shopee || !pm.shopee.spend) continue;  // ไม่ครบเดือน = ใช้ไม่ได้
+    if (st.from > m+'-01' || st.to < m+'-'+String(inM).padStart(2,'0')) continue;
+    out.push(`${TH_MF[+m.slice(5,7)-1]} ${baht(pm.shopee.spend)}`);
+  }
+  return out.length ? `<br><b>มีเฉพาะยอดรวมทั้งเดือน</b> (จากไฟล์รายงานรายเดือน ไม่ใช่รายวัน): ` +
+    out.join(' · ') + ` — ตัวเลขนี้ไม่ถูกรวมในการ์ดด้านบน ดูได้ที่กราฟ "แนวโน้มรายเดือน"` : '';
 }
 function renderView(){
   if (!CUR) return;
@@ -597,7 +634,9 @@ function renderOvTable(){
     const R=v.shR+v.tkR+(v.lzR||0), S=v.shS+v.tkS+(v.lzS||0);
     const lz = v.hasLz ? `<td>${int(v.lzR)}</td><td>${int(v.lzS)}</td><td>${pct(div(v.lzS,v.lzR))}</td>`
                        : `<td class="muted">–</td><td class="muted">–</td><td class="muted">–</td>`;
-    return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td><td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td>
+    const sh = v.hasShAds ? `<td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td>`
+                          : `<td class="muted">–</td><td class="muted">–</td>`;
+    return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td>${sh}
       <td>${int(v.tkR)}</td><td>${int(v.tkS)}</td><td>${pct(div(v.tkS,v.tkR))}</td>
       ${lz}
       <td>${int(R)}</td><td>${int(S)}</td><td>${pct(div(S,R))}</td></tr>`; }).join('');
@@ -616,9 +655,10 @@ function renderOvTable(){
 function renderOvChart(){
   segOn('segOv', st.ovMetric);
   const days=rangeDays(), V=days.map(dayVals), mt=st.ovMetric, n=days.length;
-  const pick = { real:v=>[v.shR,v.tkR,v.lzR], spend:v=>[v.shS,v.tkS,v.lzS],
-    ratio:v=>[div(v.shS,v.shR)*100, div(v.tkS,v.tkR)*100, v.hasLz?div(v.lzS,v.lzR)*100:null],
-    roas:v=>[div(v.shR,v.shS), div(v.tkR,v.tkS), v.hasLz?div(v.lzR,v.lzS):null] }[mt];
+  // วันที่ไม่มีค่าโฆษณา Shopee ต้องส่ง null ให้เส้นขาดช่วง ถ้าส่ง 0 กราฟจะดิ่งลงเหมือนหยุดลงโฆษณา
+  const pick = { real:v=>[v.shR,v.tkR,v.lzR], spend:v=>[v.hasShAds?v.shS:null, v.tkS, v.lzS],
+    ratio:v=>[v.hasShAds?div(v.shS,v.shR)*100:null, div(v.tkS,v.tkR)*100, v.hasLz?div(v.lzS,v.lzR)*100:null],
+    roas:v=>[v.hasShAds?div(v.shR,v.shS):null, div(v.tkR,v.tkS), v.hasLz?div(v.lzR,v.lzS):null] }[mt];
   const fmt = {real:FMT.money, spend:FMT.money, ratio:FMT.pct, roas:FMT.x}[mt];
   const ds=[ line('Shopee', V.map(v=>fin(pick(v)[0])), C.sh, n), line('TikTok', V.map(v=>fin(pick(v)[1])), C.tk, n) ];
   if (V.some(v=>v.hasLz)) ds.push(line('Lazada', V.map(v=>fin(pick(v)[2])), C.lz, n));
@@ -676,12 +716,14 @@ function renderShTypes(){
 function renderShTable(){
   const r=CUR, s=r.sh;
   const rows = r.days.slice().reverse().map(d=>{ const v=dayVals(d);
+    if (!v.hasShAds) return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td><td>${int(v.shO)}</td>
+      <td class="muted" colspan="8">ไม่มีข้อมูลค่าโฆษณา (เกินช่วงที่ Shopee ย้อนดูได้)</td></tr>`;
     return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td><td>${int(v.shO)}</td><td>${int(v.shB)}</td><td>${int(v.shD)}</td>
       <td>${int(v.shSp)}</td><td>${int(v.shSs)}</td><td>${int(v.shSl)}</td><td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td><td>${x2(div(v.shR,v.shS))}</td></tr>`; }).join('');
   document.getElementById('tSh').innerHTML = `
     <thead><tr><th></th><th class="grp sh" colspan="2">ยอดขายจริง</th><th class="grp sh" colspan="2">ยอดจาก Ads</th><th class="grp sh" colspan="4">ค่าโฆษณา</th><th class="grp" colspan="2">ผลลัพธ์</th></tr>
       <tr><th>วันที่</th><th>ยอดขาย</th><th>ออเดอร์</th><th>broad</th><th>direct</th><th>สินค้า</th><th>คำค้นหา</th><th>Live</th><th>รวม</th><th>÷ยอดจริง</th><th>ROAS จริง</th></tr></thead>
-    <tbody>${rows}<tr class="tot"><td>รวม ${r.n} วัน</td><td>${int(s.real)}</td><td>${int(s.orders)}</td><td>${int(s.broad)}</td><td>${int(s.direct)}</td>
+    <tbody>${rows}<tr class="tot"><td>รวม ${r.n} วัน${s.adsDays<r.n?` <span class="muted">(ค่าโฆษณา ${s.adsDays} วัน)</span>`:''}</td><td>${int(s.real)}</td><td>${int(s.orders)}</td><td>${int(s.broad)}</td><td>${int(s.direct)}</td>
       <td>${int(s.t.product.s)}</td><td>${int(s.t.search.s)}</td><td>${int(s.t.live.s)}</td><td>${int(s.spend)}</td><td>${pct(div(s.spend,s.real))}</td><td>${x2(div(s.real,s.spend))}</td></tr></tbody>`;
 }
 function platformChart(key, canvasId, legendId, metric, color, getR, getA, getS, adsLabel){
@@ -698,7 +740,8 @@ function platformChart(key, canvasId, legendId, metric, color, getR, getA, getS,
   drawLine(key, canvasId, labels, [ line(lab, V.map(f), color, n) ], {spend:FMT.money, ratio:FMT.pct, roas:FMT.x}[metric]);
 }
 function renderShChart(){ segOn('segSh', st.shMetric);
-  platformChart('sh','cSh','lgSh', st.shMetric, C.sh, v=>v.shR, v=>v.shB, v=>v.shS, 'ยอดจาก Ads (broad)'); }
+  platformChart('sh','cSh','lgSh', st.shMetric, C.sh, v=>v.shR,
+    v=>v.hasShAds?v.shB:null, v=>v.hasShAds?v.shS:null, 'ยอดจาก Ads (broad)'); }
 function campMonthSelect(id, key, after){
   const sel=document.getElementById(id); const ks=monthList().slice().reverse();
   if (!sel.options.length) sel.innerHTML = ks.map(k=>`<option value="${k}">${TH_MF[MKEYS.indexOf(k)]} 2569</option>`).join('');
