@@ -58,3 +58,37 @@
   }
   return JSON.stringify(out);
 })();
+
+// ─────────────────────────────────────────────────────────────────────────
+// ตัวช่วยเลือกเดือน — วางส่วนนี้ก่อน แล้วเรียก await __pickMonth(9, 2026)
+// ปฏิทินเป็นคอมโพเนนต์ p-picker: หัวซ้าย = เดือนที่เลือกอยู่, .p-picker-header-icon
+// เรียงเป็น « ‹ (ซ้าย) และ › » (ขวา) ตัวที่มีคลาส -hidden ใช้ไม่ได้
+// ⚠️ ห้ามคลิกปฏิทินด้วยพิกัดพิกเซล ตำแหน่งวันที่เปลี่ยนตามว่าเดือนนั้นเริ่มวันอะไร
+window.__pickMonth = async function (mm, yyyy) {
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  if (!document.querySelector('.p-panel-date')) {
+    const el = [...document.querySelectorAll('*')]
+      .find(e => e.children.length === 0 && (e.textContent || '').trim() === 'กำหนดเอง');
+    if (!el) throw new Error('ไม่พบปุ่มกำหนดเอง — แผงรายงานธุรกิจเปิดอยู่หรือยัง');
+    el.click(); await sleep(1500);
+  }
+  const head = () => (document.querySelectorAll('.p-picker-header')[0].innerText || '').trim();
+  const want = String(mm).padStart(2, '0') + '/' + yyyy;
+  const live = i => [...document.querySelectorAll('.p-picker-header')[i]
+    .querySelectorAll('.p-picker-header-icon')].filter(e => !/hidden/.test(e.className.toString()));
+  for (let i = 0; i < 40 && head() !== want; i++) {
+    const [m, y] = head().split('/').map(Number);
+    if (y * 12 + m > yyyy * 12 + mm) live(0)[1].click();   // ‹ ถอยหลัง 1 เดือน
+    else live(1)[0].click();                               // › เดินหน้า 1 เดือน
+    await sleep(350);
+  }
+  if (head() !== want) throw new Error('เลื่อนปฏิทินไม่ถึง ' + want + ' (อยู่ที่ ' + head() + ')');
+  const cells = [...document.querySelectorAll('.p-panel-date')[0].querySelectorAll('.p-picker-date')];
+  // ช่องของเดือนก่อน/หลังไม่มีคลาสแยก จึงหาช่อง "01" ช่องแรกแล้วนับต่อไปตามจำนวนวัน
+  const i1 = cells.findIndex(c => (c.innerText || '').trim() === '01');
+  const last = new Date(Date.UTC(yyyy, mm, 0)).getUTCDate();
+  if (i1 < 0 || i1 + last - 1 >= cells.length) throw new Error('หาช่องวันที่ไม่ครบ');
+  cells[i1].click(); await sleep(800);
+  cells[i1 + last - 1].click(); await sleep(7000);   // รอแผงโหลดตัวเลขใหม่
+  return 'ok ' + want;
+};
