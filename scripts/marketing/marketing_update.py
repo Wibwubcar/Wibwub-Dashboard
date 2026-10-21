@@ -33,6 +33,11 @@ KOL = BASE / 'data Ads' / 'kol_monthly.json'
 # ค่าการตลาดที่ยังไม่มีระบบดึงอัตโนมัติ (Event, Facebook Ads) — กรอกมือ ไฟล์อาจยังว่าง
 MANUAL = BASE / 'data Ads' / 'mkt_manual.json'
 MANUAL_KEYS = ['ads_fb', 'event']
+# อัตราค่าธรรมเนียมแพลตฟอร์ม — ผู้ใช้กำหนดเป็นอัตราคงที่ แก้ที่ไฟล์นี้ได้เลย
+# ส่งขึ้นหน้าเว็บเป็น fee_rates แล้วหน้าเว็บคูณกับยอดขายรายวันเอง
+# เก็บเป็น "อัตรา" ไม่ใช่ "ยอดเงิน" เพราะยอดขายรายวันเปลี่ยนได้ทีหลัง (ออเดอร์ยกเลิก/ยืนยันเพิ่ม)
+# ถ้าเก็บยอดเงินไว้จะค้างเป็นค่าเก่าโดยไม่มีใครรู้
+FEE = BASE / 'data Ads' / 'platform_fee.json'
 PAGES = ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']
 START = '/* MKT_SPEND:AUTO-START */'
 END = '/* MKT_SPEND:AUTO-END */'
@@ -176,9 +181,44 @@ def main():
                if sum(r[DAY_KEYS.index(k)] for r in rows.values()) <= 0]
     man_out = {k: round(sum(r[DAY_KEYS.index(k)] for r in rows.values()), 2) for k in MANUAL_KEYS}
 
+    fee_cfg = json.load(open(FEE, encoding='utf-8')) if FEE.exists() else {}
+    fee_rates = fee_cfg.get('rates') or {}
+    bad = [k for k in fee_rates if k not in DAY_KEYS]
+    if bad:
+        die('platform_fee.json มีคีย์ที่ไม่ใช่ช่องทางยอดขาย', bad)
+    # อัตราเขียนได้ 2 แบบ: ตัวเลขเดียว (คงที่) หรือ list ของ {from, rate} (เปลี่ยนตามวันที่)
+    for k, v in fee_rates.items():
+        if isinstance(v, (int, float)):
+            if not 0 <= v < 1:
+                die('อัตราค่าธรรมเนียมต้องอยู่ระหว่าง 0-1 (0.30 = 30%)', {k: v})
+            continue
+        if not isinstance(v, list) or not v:
+            die('อัตราต้องเป็นตัวเลข หรือ list ของ {from, rate}', {k: v})
+        prev = ''
+        for s in v:
+            if not isinstance(s, dict) or 'from' not in s or 'rate' not in s:
+                die('ทุกช่วงต้องมี from และ rate', {k: s})
+            if not re.match(r'^\d{4}-\d{2}-\d{2}$', str(s['from'])):
+                die('from ต้องเป็น YYYY-MM-DD', {k: s})
+            if not 0 <= s['rate'] < 1:
+                die('rate ต้องอยู่ระหว่าง 0-1', {k: s})
+            if s['from'] <= prev:
+                die('ช่วงอัตราต้องเรียงจากเก่าไปใหม่ ห้ามซ้ำ', {k: s['from']})
+            prev = s['from']
+
+    # ค่าการตลาดที่คิดจากอัตรา (คอมแอฟฟิลิเอต ฯลฯ) — base ต้องเป็นช่องทางยอดขายจริง
+    mkt_rates = fee_cfg.get('marketing_rates') or {}
+    for k, b in mkt_rates.items():
+        if b.get('base') not in DAY_KEYS:
+            die('marketing_rates.base ต้องเป็นช่องทางยอดขาย', {k: b.get('base')})
+        if not isinstance(b.get('rates'), list) or not b['rates']:
+            die('marketing_rates ต้องมี rates เป็น list ของ {from, rate}', k)
+
     data = {'asof': asof, 'from': dates[0], 'to': dates[-1], 'keys': DAY_KEYS,
             'days': rows, 'kol': kol_rows, 'cov': cov,
             'tiers_unmapped': kol_raw.get('tiers_unmapped') or [],
+            'fee_rates': fee_rates, 'fee_labels': fee_cfg.get('labels') or {},
+            'mkt_rates': mkt_rates,
             'missing': missing}
 
     tot = {k: round(sum(r[i] for r in rows.values()), 2) for i, k in enumerate(DAY_KEYS)}

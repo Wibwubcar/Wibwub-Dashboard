@@ -43,6 +43,41 @@ const MKS_REV_CAT = [
   {k:'oth',  n:'อื่น ๆ',     c:'#cbd5e1'}
 ];
 const MKS_REVK = MKS_REV_CAT.map(c=>c.k);
+/* ── ค่าธรรมเนียมแพลตฟอร์ม ────────────────────────────────────────────
+   อัตราคงที่ที่ผู้ใช้กำหนด มาจาก data Ads/platform_fee.json (ไม่ hardcode ที่นี่)
+   คิดจาก "ยอดขายของช่องทางนั้น × อัตรา" ไม่ใช่ยอดรวม เพราะแต่ละเจ้าคิดคนละอัตรา
+   ช่องทางที่ไม่มีอัตรา (Facebook/LINE/POS/เว็บ ฯลฯ) = ไม่คิดค่าธรรมเนียม ไม่ใช่ 0 เพราะขาดข้อมูล
+   แต่เพราะมันขายตรงไม่ผ่านแพลตฟอร์ม จึงไม่มีค่าธรรมเนียมจริง ๆ */
+function mksFeeRates(){ return (typeof MKT_SPEND!=='undefined' && MKT_SPEND.fee_rates) || {}; }
+/* อัตราของช่องทางหนึ่งเขียนได้ 2 แบบ
+     0.30                                   = คงที่ตลอด
+     [{from:'2026-01-01',rate:0.2154}, …]   = เปลี่ยนตามวันที่ (เรียงจากเก่าไปใหม่)
+   คืนอัตราที่ใช้กับ "วันนั้น" — ถ้าวันนั้นเก่ากว่าช่วงแรกสุด ให้ใช้ช่วงแรก */
+function mksRateOn(spec, d){
+  if(typeof spec==='number') return spec;
+  if(!Array.isArray(spec) || !spec.length) return 0;
+  let r=spec[0].rate;
+  for(const s of spec){ if(d>=s.from) r=s.rate; else break; }
+  return r;
+}
+/* ช่วงที่เลือกอาจคร่อมหลายอัตรา จึงต้องคิดรายวันแล้วบวกกัน
+   คืนอัตราเฉลี่ยถ่วงน้ำหนักด้วยยอดขายไว้โชว์ด้วย */
+/* ค่าการตลาดบางก้อนไม่มีคอลัมน์รายวัน แต่คิดจาก "ยอดขายช่องทางนั้น × อัตรา"
+   เช่น คอมแอฟฟิลิเอต TikTok ที่หักผ่านระบบ settlement ของแพลตฟอร์ม
+   นิยามอยู่ใน data Ads/platform_fee.json -> marketing_rates (ไม่ hardcode ที่นี่)
+   ⚠️ อัตราค่าธรรมเนียมของช่องทางนั้นต้องหักก้อนนี้ออกไปแล้ว ไม่งั้นนับซ้ำ
+      fee_update.py ทำให้อัตโนมัติตอนบันทึก */
+function mksMktRateCats(){
+  const M=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.mkt_rates)||{};
+  return Object.keys(M).map(k=>({k:k, n:M[k].label||k, c:M[k].color||'#c084fc',
+                                 g:M[k].group||'kol', base:M[k].base, spec:M[k].rates||[],
+                                 na:false, rate:true}));
+}
+function mksFeeCats(){
+  const R=mksFeeRates(), L=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.fee_labels)||{};
+  return Object.keys(R).map(k=>{ const c=MKS_REV_CAT.find(x=>x.k===k)||{};
+    return {k:k, n:L[k]||c.n||k, c:c.c||'#dc2626', spec:R[k]}; });
+}
 const MKS_SRC = [
   {k:'sales',   n:'ยอดขาย'},
   {k:'shopee',  n:'Ads Shopee'},
@@ -71,6 +106,8 @@ function mksDiffDays(a,b){
 
 /* วันทั้งหมดที่มีข้อมูล (เรียงแล้ว) */
 function mksAll(){ return Object.keys(MKT_SPEND.days).sort(); }
+/* หมวดค่าการตลาดทั้งหมด = หมวดที่มีคอลัมน์รายวัน + หมวดที่คิดจากอัตรา */
+function mksSpendCats(){ return MKS_CAT.concat(mksMktRateCats()); }
 
 /* คำนวณช่วงของปุ่มลัด — ยึด asof เป็น "วันนี้" ของข้อมูล ไม่ใช่วันจริงของเครื่อง */
 function mksPreset(p){
@@ -85,6 +122,16 @@ function mksPreset(p){
   return [lo, last];
 }
 
+/* อัตราที่ใช้จริงในช่วงที่เลือก = ค่าธรรมเนียม ÷ ยอดขายของช่องทางนั้น
+   ถ้าช่วงคร่อมการปรับอัตรา ตัวเลขนี้จะเป็นค่าเฉลี่ยถ่วงน้ำหนัก และต่อท้ายด้วย ~ */
+function mksRatePct(A,c){
+  const base=A.rv[c.k]||0; if(!base) return '–';
+  const eff=(A.fv[c.k]||0)/base*100;
+  const many=Array.isArray(c.spec) && c.spec.length>1;
+  return (many?'~':'')+eff.toFixed(2)+'%';
+}
+function mksFeeLabel(A){ return mksFeeCats().map(c=>c.n+' '+mksRatePct(A,c)).join(' · '); }
+
 /* รวมตัวเลขในช่วง — คืน null สำหรับหมวดที่ยังไม่มีข้อมูล */
 function mksAgg(from,to){
   const K=MKT_SPEND.keys, ix={}; K.forEach((k,i)=>ix[k]=i);
@@ -97,8 +144,26 @@ function mksAgg(from,to){
     MKS_REVK.forEach(k=>{ if(ix[k]!=null){ rev+=r[ix[k]]||0; rv[k]+=r[ix[k]]||0; } });
     MKS_CAT.forEach(c=>{ if(!c.na && ix[c.k]!=null) sp[c.k]+=r[ix[c.k]]||0; });
   });
-  const spend=MKS_CAT.reduce((s,c)=>s+(sp[c.k]||0),0);
-  return {rev, rv, sp, spend, days, pct: rev? spend/rev*100 : null, roi: spend? rev/spend : null};
+  const spend=mksSpendCats().reduce((s,c)=>s+(sp[c.k]||0),0);
+  /* ค่าธรรมเนียมคิดทีเดียวจากยอดรวมของช่วง ไม่ต้องคิดรายวัน เพราะอัตราคงที่
+     ผลลัพธ์เท่ากันและคลาดเคลื่อนจากการปัดเศษน้อยกว่า */
+  const fv={}; let fee=0;
+  mksFeeCats().forEach(c=>{ fv[c.k]=0; });
+  const MR=mksMktRateCats();
+  MR.forEach(c=>{ sp[c.k]=0; });
+  mksAll().forEach(d=>{
+    if(d<from||d>to) return;
+    const r=MKT_SPEND.days[d];
+    mksFeeCats().forEach(c=>{ if(ix[c.k]==null) return;
+      fv[c.k]+=(r[ix[c.k]]||0)*mksRateOn(c.spec,d); });
+    MR.forEach(c=>{ if(ix[c.base]==null) return;
+      sp[c.k]+=(r[ix[c.base]]||0)*mksRateOn(c.spec,d); });
+  });
+  mksFeeCats().forEach(c=>{ fee+=fv[c.k]; });
+  const net=rev-fee;
+  return {rev, rv, sp, spend, days, fv, fee, net,
+          pct: rev? spend/rev*100 : null, roi: spend? rev/spend : null,
+          pctNet: net>0? spend/net*100 : null, roiNet: spend? net/spend : null};
 }
 
 /* ช่วงก่อนหน้าที่ยาวเท่ากัน จบก่อนวันเริ่มของช่วงปัจจุบัน 1 วัน */
@@ -126,7 +191,7 @@ function mksTrend(from,to,w){
   const H=200, PL=4, PB=20, PT=8;
   const bw=Math.max(7, Math.min(26, (w-PL*2)/ds.length - 3));
   const step=bw+3, W=Math.max(w, ds.length*step+PL*2);
-  const cats=MKS_CAT.filter(c=>!c.na);
+  const cats=mksSpendCats().filter(c=>!c.na);
   const rev=ds.map(d=>MKS_REVK.reduce((s,k)=>s+(ix[k]!=null?MKT_SPEND.days[d][ix[k]]||0:0),0));
   const spd=ds.map(d=>cats.reduce((s,c)=>s+(MKT_SPEND.days[d][ix[c.k]]||0),0));
   const rMax=Math.max(1,...rev), sMax=Math.max(1,...spd);
@@ -160,10 +225,10 @@ function mksTrend(from,to,w){
 
 /* ── สัดส่วนค่าการตลาด: แท่งแนวนอน (ยอดเล็กอ่านออกเสมอ) ─────────────── */
 function mksSplit(A){
-  const mx=Math.max(1,...MKS_CAT.map(c=>A.sp[c.k]||0));
-  const pie=mksDonut(MKS_CAT.filter(c=>!c.na).map(c=>({n:c.n,c:c.c,v:A.sp[c.k]||0})),
+  const mx=Math.max(1,...mksSpendCats().map(c=>A.sp[c.k]||0));
+  const pie=mksDonut(mksSpendCats().filter(c=>!c.na).map(c=>({n:c.n,c:c.c,v:A.sp[c.k]||0})),
                      A.spend, 'ค่าการตลาด');
-  return '<div class="mks-pie">'+pie+'<div class="mks-bars">'+MKS_CAT.map(c=>{
+  return '<div class="mks-pie">'+pie+'<div class="mks-bars">'+mksSpendCats().map(c=>{
     const v=A.sp[c.k];
     if(v==null) return '<div class="mks-h"><div class="mks-hn"><i style="background:'+c.c+
       ';opacity:.25"></i>'+c.n+'</div><div class="mks-ht"></div>'+
@@ -212,7 +277,7 @@ function mksDonut(items,total,label){
 function mksRatio(A){
   const items=[], gaps=[];
   MKS_GRP.forEach(G=>{
-    const mem=MKS_CAT.filter(c=>c.g===G.g);
+    const mem=mksSpendCats().filter(c=>c.g===G.g);
     const have=mem.filter(c=>!c.na);
     if(!have.length){ gaps.push(G.n); return; }          // ทั้งกลุ่มยังไม่มีข้อมูล -> ไม่ใส่ชิ้น
     const miss=mem.filter(c=>c.na).map(c=>c.n);
@@ -220,9 +285,11 @@ function mksRatio(A){
                 d:have.map(c=>c.n.replace('Ads ','')).join(' + ')+
                   (miss.length? ' (ยังไม่รวม '+miss.join(', ')+')':'')});
   });
+  if(A.fee>0) items.push({n:'ค่าธรรมเนียมแพลตฟอร์ม', c:'#dc2626', v:A.fee,
+    d:mksFeeCats().map(c=>c.n+' '+mksRatePct(A,c)+' = '+mksN(A.fv[c.k]||0)).join(' · ')});
   const used=items.reduce((s,i)=>s+i.v,0);
   items.unshift({n:'ยอดขายส่วนที่เหลือ', c:'#16a34a', v:Math.max(0,A.rev-used),
-                 d:'หลังหักค่าการตลาดที่มีข้อมูลแล้ว'});
+                 d:'หลังหักค่าการตลาด'+(A.fee>0?'และค่าธรรมเนียม':'')+'ที่มีข้อมูลแล้ว'});
   const rows=items.map(it=>'<div class="mks-h"><div class="mks-hn"><i style="background:'+it.c+'"></i>'+it.n+
     '</div><div class="mks-ht"><div class="mks-hf" style="width:'+(A.rev?it.v/A.rev*100:0).toFixed(2)+
     '%;background:'+it.c+'"></div></div><div class="mks-hv">'+mksN(it.v)+'</div>'+
@@ -338,6 +405,15 @@ function mksRender(){
       {l:'ยอดขาย/ค่าการตลาด', v:(A.roi!=null?A.roi.toFixed(2)+'x':'–'), c:'#8b5cf6',
        d:P&&P.roi!=null?mksDelta(A.roi,P.roi):'', s:'ยิ่งสูงยิ่งดี'}
     ];
+    /* ค่าธรรมเนียมแพลตฟอร์ม — โผล่เฉพาะเมื่อมีอัตราตั้งไว้ ถ้าไม่มีหน้าเว็บจะเหมือนเดิมทุกอย่าง */
+    if(A.fee>0){
+      const fc=mksFeeLabel(A);
+      kpi.push({l:'ค่าธรรมเนียมแพลตฟอร์ม', v:mksN(A.fee), c:'#dc2626',
+        d:P&&P.fee?mksDelta(A.fee,P.fee,true):'', s:fc});
+      kpi.push({l:'ยอดขายหลังหักค่าธรรมเนียม', v:mksN(A.net), c:'#0d9488',
+        d:P&&P.net?mksDelta(A.net,P.net):'',
+        s:'ค่าการตลาดคิดเป็น '+(A.pctNet!=null?A.pctNet.toFixed(2)+'%':'–')+' ของยอดนี้'});
+    }
     h+='<div class="mks-kpi">'+kpi.map(k=>'<div class="mks-k" style="--kc:'+k.c+'">'+
        '<div class="mks-kl">'+k.l+'</div><div class="mks-kv">'+k.v+'</div>'+
        '<div class="mks-ks">'+(k.d||k.s)+(k.d?' จากช่วงก่อน':'')+'</div></div>').join('')+'</div>';
@@ -370,6 +446,10 @@ function mksRender(){
          ' (แก้ที่ <code>data Ads/kol_campaign_tier.json</code>)<br>';
     h+='ยอดขาย TikTok รายวันเป็นยอดก่อนหักคำสั่งซื้อที่ยกเลิก จึงสูงกว่าหน้า Sales '+
        'ราว 1% (ต.ค. ต่างกัน 24,572 บาท) ช่องอื่นตรงกันทุกบาท<br>';
+    if(A.fee>0) h+='<b>ค่าธรรมเนียมแพลตฟอร์มเป็นอัตราที่ตั้งไว้เอง</b> ('+mksFeeLabel(A)+
+      ') คิดจากยอดขายของช่องทางนั้น ไม่ใช่ยอดเรียกเก็บจริงจากแพลตฟอร์ม · '+
+      'ช่องทางขายตรง (Facebook · LINE · POS · เว็บไซต์ ฯลฯ) ไม่มีค่าธรรมเนียม · '+
+      'แก้อัตราได้ที่ <code>data Ads/platform_fee.json</code><br>';
     h+='ยอดขาย Shopee/TikTok/Lazada ใช้ข้อมูลรายวันจาก Ads Dashboard · ช่องทางที่เหลือจาก Shipnity · '+
        'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done<br>';
     if(gap>0) h+='<b>ช่วงที่เลือกมีข้อมูลจริง '+A.days+' วัน จาก '+want+' วัน</b> — '+gap+
