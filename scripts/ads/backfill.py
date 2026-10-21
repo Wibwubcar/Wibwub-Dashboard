@@ -124,6 +124,10 @@ def cmd_report(a):
 
 
 # ── merge (เฉพาะวันใหม่) ────────────────────────────────────────────────────
+# วันที่ร้านปิดตามแผน — ยอด 0 เป็นข้อมูลจริง ไม่ใช่ดึงพลาด ห้ามไปดึงซ้ำ
+CLOSED = {'2026-02-19': 'ปิดร้านออนไลน์ เอาท์ติ้งบริษัท',
+          '2026-02-20': 'ปิดร้านออนไลน์ เอาท์ติ้งบริษัท'}
+
 NEED = ('sh_real', 'sh_ads', 'tk_real', 'tk_ads')
 OPT = ('lz_real', 'lz_ads')
 # ค่าโฆษณา Shopee ย้อนได้แค่ ~185 วัน (หน้าต่างกลิ้ง เลื่อนขึ้นวันละวัน) ส่วนยอดขายจริง
@@ -191,7 +195,8 @@ def cmd_merge(a):
                 if any(isinstance(x, (int, float)) and x < 0 for x in v.values()):
                     die('ค่าติดลบ', dt)
         if e['sh_real']['gmv'] == 0 and e['tk_real']['gmv'] == 0:
-            warn.append(f'{dt} ยอดขายจริงเป็น 0 ทั้งสองแพลตฟอร์ม — ตรวจสอบ')
+            warn.append(f'{dt} ยอดขายจริงเป็น 0 ทั้งสองแพลตฟอร์ม — ' +
+                        (CLOSED[dt] + ' (ยืนยันแล้วว่าปกติ)' if dt in CLOSED else 'ตรวจสอบ'))
         d['days'][dt] = e; added.append(dt)
 
     summary = {'added': len(added), 'added_range': [added[0], added[-1]] if added else None,

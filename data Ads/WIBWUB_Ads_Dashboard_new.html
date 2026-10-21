@@ -191,6 +191,7 @@ details.src pre{white-space:pre-wrap;font-family:inherit;margin-top:6px}
 'use strict';
 if (window.self !== window.top) document.body.classList.add('embedded');
 
+const CLOSED = { '2026-02-19':'ปิดร้านออนไลน์ — เอาท์ติ้งบริษัท', '2026-02-20':'ปิดร้านออนไลน์ — เอาท์ติ้งบริษัท' };
 const C = { sh:'#E8501F', tk:'#0A9690', lz:'#1A52C4', ink:'#1A1D23', ink2:'#4B5260', muted:'#7A8190', grid:'#EEF0F3' };
 const TH_M = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const TH_MF = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
@@ -636,7 +637,7 @@ function renderOvTable(){
                        : `<td class="muted">–</td><td class="muted">–</td><td class="muted">–</td>`;
     const sh = v.hasShAds ? `<td>${int(v.shS)}</td><td>${pct(div(v.shS,v.shR))}</td>`
                           : `<td class="muted">–</td><td class="muted">–</td>`;
-    return `<tr><td>${thDate(d)}</td><td>${int(v.shR)}</td>${sh}
+    return `<tr><td>${thDate(d)}${CLOSED[d]?` <span class="muted" title="${CLOSED[d]}">· ปิดร้าน</span>`:''}</td><td>${int(v.shR)}</td>${sh}
       <td>${int(v.tkR)}</td><td>${int(v.tkS)}</td><td>${pct(div(v.tkS,v.tkR))}</td>
       ${lz}
       <td>${int(R)}</td><td>${int(S)}</td><td>${pct(div(S,R))}</td></tr>`; }).join('');
