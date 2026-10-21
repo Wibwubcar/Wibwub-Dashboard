@@ -31,6 +31,8 @@ BASE = Path('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.
 FEE = BASE / 'data Ads' / 'platform_fee.json'
 PAGE = BASE / 'WIBWUB_Dashboard.html'
 MKEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+TH_MONTHS = ['มกราคม', 'กุมภาพันธ์', 'มีนาคม', 'เมษายน', 'พฤษภาคม', 'มิถุนายน',
+             'กรกฎาคม', 'สิงหาคม', 'กันยายน', 'ตุลาคม', 'พฤศจิกายน', 'ธันวาคม']
 
 
 def die(msg, detail=None):
@@ -149,8 +151,30 @@ def cmd_shopee(a):
     save(cfg); print(json.dumps({'status': 'UPDATED', 'msg': msg}, ensure_ascii=False)); return 0
 
 
+def check_range(text, month):
+    """ช่วงวันที่ที่แผงแสดงอยู่ ต้องเป็น 'ทั้งเดือน' ที่กำลังจะบันทึกเท่านั้น
+
+    ด่านนี้มีเพราะ 21 ต.ค. 69 งานตั้งเวลารันแล้วได้ยอดของ 'สัปดาห์ที่แล้ว'
+    (ค่าเริ่มต้นของหน้าเว็บ) แทนที่จะเป็นทั้งเดือน — ตัวเลขบังเอิญเท่าเดิมเลยไม่มีใครรู้
+    ถ้าไม่ดักไว้ รอบต่อไปจะได้อัตราที่คิดจากยอดแค่สัปดาห์เดียวโดยไม่มีอะไรเตือน
+    """
+    import datetime as dt
+    y, m = int(month[:4]), int(month[5:7])
+    last = (dt.date(y + (m == 12), m % 12 + 1, 1) - dt.timedelta(days=1)).day
+    want = f'1 {TH_MONTHS[m-1]} {y} - {last} {TH_MONTHS[m-1]} {y}'
+    got = ' '.join(str(text or '').split())
+    if got != want:
+        die('ช่วงวันที่บนหน้าเว็บไม่ตรงกับเดือนที่จะบันทึก — เลือกเดือนใหม่ก่อน '
+            '(ใช้ __pickMonth ใน fee_scrape.js อย่าใช้ปุ่มสำเร็จรูปอย่าง "สัปดาห์ที่แล้ว")',
+            {'ต้องการ': want, 'ที่แผงแสดง': got or '(ว่าง)'})
+
+
 def cmd_tiktok(a):
     cfg = load()
+    if a.range: check_range(a.range, a.month)
+    elif not a.no_range_check:
+        die('ต้องใส่ --range ตามค่า range ที่ fee_scrape.js คืนมา '
+            '(ถ้าตั้งใจข้ามจริง ๆ ให้ใส่ --no-range-check)')
     if a.revenue <= 0: die('revenue ต้องมากกว่า 0')
     if not 0 < a.fee < a.revenue: die('fee ต้องมากกว่า 0 และน้อยกว่า revenue', {'fee': a.fee, 'revenue': a.revenue})
     aff = (a.aff or 0) + (a.aff_ads or 0)
@@ -203,6 +227,8 @@ def main():
             p.add_argument('--aff-ads', type=float, default=0, dest='aff_ads')
             p.add_argument('--provisional', action='store_true',
                            help='อัตราชั่วคราวของเดือนที่ยังไม่จบ — ทับของเดิมได้ทุกวัน')
+            p.add_argument('--range', help="ค่า range จาก fee_scrape.js เช่น '1 ตุลาคม 2026 - 31 ตุลาคม 2026'")
+            p.add_argument('--no-range-check', action='store_true', dest='no_range_check')
     sh = s.add_parser('show'); sh.set_defaults(fn=cmd_show)
     a = ap.parse_args()
     if not re.match(r'^\d{4}-\d{2}$', getattr(a, 'month', '2026-01')):

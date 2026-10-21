@@ -69,17 +69,24 @@ exit `0` = เพิ่มแล้ว · `10` = มีอยู่แล้ว�
    **อย่าคลิกปฏิทินด้วยพิกัดพิกเซล** ตำแหน่งเปลี่ยนตามเดือน เคยพลาดมาแล้ว
 5. วางเนื้อหา `scripts/marketing/fee_scrape.js` (อ่านด้วย `cat`) ใน `javascript_tool`
    → ได้ JSON `{revenue, fee, aff, aff_ads, range}`
-   **ตรวจ `range` ให้ตรงกับเดือนที่ต้องการก่อนใช้ตัวเลข** ถ้าไม่ตรงให้เลือกใหม่
+   **ต้องส่งค่า `range` ที่ได้ เข้าไปใน `--range` ของคำสั่งเสมอ** สคริปต์จะตรวจเองว่า
+   ช่วงวันที่เป็น "ทั้งเดือน" จริงไหม ถ้าไม่ใช่จะหยุดและบอกว่าแผงแสดงช่วงอะไรอยู่
+   → กลับไปทำข้อ 4 ใหม่
+
+   > ⚠️ **เคยพลาดมาแล้ว 21 ต.ค. 69:** รอบแรกที่รันจริง ขั้นเลือกเดือนไม่ทำงาน
+   > แล้วไปอ่านยอดของ **"สัปดาห์ที่แล้ว"** (ค่าเริ่มต้นของหน้าเว็บ) มาแทนทั้งเดือน
+   > ตัวเลขบังเอิญเท่าของเดิมเลยไม่มีใครรู้ว่าผิด — ด่าน `--range` ใส่ไว้กันเรื่องนี้
+   > **ห้ามใช้ `--no-range-check` เพื่อให้คำสั่งผ่าน** ถ้าติดด่านแปลว่าเลือกเดือนไม่สำเร็จจริง ๆ
 6. ปิดแท็บด้วย `tabs_close_mcp`
 
 ```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/fee_update.py" tiktok --month <เดือนปัจจุบัน> --revenue <revenue> --fee <fee> --aff <aff> --aff-ads <aff_ads> --provisional
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/fee_update.py" tiktok --month <เดือนปัจจุบัน> --revenue <revenue> --fee <fee> --aff <aff> --aff-ads <aff_ads> --provisional --range "<range ที่ scrape คืนมา>"
 ```
 
 แล้วถ้าเป็นวันที่ 5 เป็นต้นไป ทำเดือนที่แล้วอีกรอบ (เลือกเดือนใหม่ → อ่านใหม่ → สั่ง)
 
 ```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/fee_update.py" tiktok --month <เดือนที่แล้ว> --revenue <revenue> --fee <fee> --aff <aff> --aff-ads <aff_ads>
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/fee_update.py" tiktok --month <เดือนที่แล้ว> --revenue <revenue> --fee <fee> --aff <aff> --aff-ads <aff_ads> --range "<range ที่ scrape คืนมา>"
 ```
 
 สคริปต์จะ **หักคอมแอฟฟิลิเอตออกจากอัตราค่าธรรมเนียมให้เอง** แล้วเก็บเป็นอีกก้อน
@@ -106,6 +113,8 @@ git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 ## RULES
 
 - **ห้ามเดาอัตราเอง** ทุกตัวเลขต้องมาจากหน้าเว็บหรือ Seller Center เท่านั้น
+- **ห้ามใช้ปุ่มสำเร็จรูป "สัปดาห์ที่แล้ว" / "เดือนที่แล้ว" แทนการเลือกเดือน**
+  ปุ่มพวกนั้นให้ช่วงที่ไม่ตรงกับเดือนที่จะบันทึก ใช้ `__pickMonth` เท่านั้น
 - **ห้ามแก้อัตราของเดือนที่เคยบันทึกแล้ว** สคริปต์กันไว้ (ต้องใส่ `--force`)
   อัตราเก่าถูกใช้คำนวณย้อนหลังไปแล้ว การแก้เงียบ ๆ ทำให้ตัวเลขทั้งปีขยับโดยไม่มีใครรู้
   ถ้าเจอว่าค่าไม่ตรง **ให้รายงาน ห้ามใส่ --force เอง**
