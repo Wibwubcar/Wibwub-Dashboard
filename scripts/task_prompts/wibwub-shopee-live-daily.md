@@ -5,8 +5,6 @@ description: ทุกวัน 08:37/19:37 — ดึง Shopee Live ราย�
 
 ## WIBWUB — Shopee Live รายวัน
 
-BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
-
 อัปเดตส่วน "📺 ยอดขายไลฟ์สดรายวัน — Shopee Live" (`SH_LIVE_DAILY`) ใน `WIBWUB_Dashboard.html`
 
 > **ห้ามเขียนสคริปต์อ่าน CSV/คำนวณเอง** ตัวจริงคือ `scripts/shopee_live_daily.py`
@@ -32,12 +30,14 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 6. ย้ายไฟล์เข้าโฟลเดอร์เก็บ (launchd `com.wibwub.download-mover` อาจย้ายออกจาก Downloads แล้ว):
 
 ```bash
-D="$BASE/data ยอดขาย plaform/Shopee Live"
-F=$(ls -t /Users/thanasablilutanon/Downloads/overview-v2_1d_*.csv \
-          "$BASE/downloads_archive"/overview-v2_1d_*.csv 2>/dev/null | head -1)
-[ -z "$F" ] && { echo "ไม่พบไฟล์ CSV ที่โหลดมา"; exit 1; }
-cp "$F" "$D/" && echo "เก็บแล้ว: $(basename "$F")"
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/collect_download.py" "overview-v2_1d_*.csv" "data ยอดขาย plaform/Shopee Live"
 ```
+
+สคริปต์มองทั้ง `~/Downloads`, `downloads_archive/` (mover ย้ายไฟล์ออกจาก Downloads
+ภายในไม่กี่วินาที) และโฟลเดอร์ปลายทาง แล้วหยิบไฟล์ใหม่สุด
+`status` ที่ควรได้คือ `COPIED` หรือ `ALREADY_THERE`
+ถ้าได้ `NOT_FOUND` หรือ `TOO_OLD` = รอบนี้โหลดไม่สำเร็จ **ให้หยุดและรายงาน
+ห้ามเอาไฟล์ของเมื่อวานไปใช้แทน** (สคริปต์กันไว้ด้วยเกณฑ์อายุ 30 นาที)
 
 ชื่อไฟล์จะเป็น `overview-v2_1d_<YYYY-MM-DD>_*.csv` — ตรวจว่าวันที่ในชื่อไฟล์คือเมื่อวานจริง
 
