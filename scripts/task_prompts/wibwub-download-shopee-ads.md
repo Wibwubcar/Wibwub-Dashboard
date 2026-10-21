@@ -55,7 +55,11 @@ POST /api/pas/v1/report/export_job/trigger/?SPC_CDS_VER=2
 (ถ้าจำเป็นต้องกดในหน้าจริง ๆ: panel "รายงานล่าสุด" **เปิดเอง ไม่ต้องคลิกไอคอน "≡"**)
 
 3. โหลดไฟล์ด้วย Blob + `<a download>` และ **ตั้งชื่อให้ unique เสมอ**
-   เช่น `shopee-ads-<from>-<to>-cpc-allads__<YYYYmmdd_HHMM>.csv`
+   เช่น `ข้อมูล-Shopee-Ads-<from>-<to>-cpc-allads__<YYYYmmdd_HHMM>.csv`
+   > ⚠️ **ต้องขึ้นต้นด้วย `ข้อมูล-Shopee-Ads-` เท่านั้น** — `wibwub_auto_move.sh` แมตช์
+   > `"$DL"/ข้อมูล-Shopee-Ads-*.csv` แบบ case-sensitive ชื่ออย่าง `shopee-ads-...`
+   > (ตัวอย่างเดิมในพรอมป์นี้ ผิด — แก้ 21 ต.ค. 69) จะค้างใน ~/Downloads ตลอดไป
+   > mover ไม่ย้ายให้ แล้วขั้นที่ 2 จะหาไฟล์ใน `data Ads/Shopee/` ไม่เจอ
 4. ปิดแท็บด้วย `tabs_close_mcp`
 5. หาไฟล์ (LaunchAgent `com.wibwub.download-mover` ย้ายให้ภายใน **~1 นาที** ไม่ใช่ 5–10 นาที):
 
@@ -89,8 +93,14 @@ ls -t /Users/thanasablilutanon/Downloads/*Shopee-Ads*.csv \
    - **รูปแบบตัวเลขต่างกันระหว่างระดับ** ระดับบนสุดใช้ `%.2f` ทุกตัว · ในแต่ละแคมเปญ
      `spend`/`revenue` ใช้ `%.2f` แต่ `roas`/`ctr`/`cvr`/`cpa` ใช้ `repr(round(x,2))`
      (เช่น `cpa:45.5`, `roas:0.0`) และ `cpa:0` (int) เมื่อ `orders==0`
+   - generator มีอยู่แล้ว **ไม่ต้องเขียนใหม่**: `scripts/ads/shopee_block_from_csv.py`
+     (สร้าง 21 ต.ค. 69 · ยืนยัน byte-identical กับบล็อก 21/10 08:06 และ 19:50)
+     ```
+     python3 "<BASE>/scripts/ads/shopee_block_from_csv.py" <csv> --check <ไฟล์บล็อกเดิม> --out <ไฟล์บล็อกใหม่>
+     ```
    - **ตรวจ generator ก่อนใช้**: รัน generator กับ CSV ของรอบก่อน แล้วเทียบ byte-identical
-     กับบล็อก `shopee:{...}` ที่อยู่ในไฟล์จริง ถ้าไม่ตรง = generator ผิด อย่าเขียนทับ
+     กับบล็อก `shopee:{...}` ที่อยู่ในไฟล์จริง (`--check` รายงาน `identical` + `first_diff_at`)
+     ถ้าไม่ตรง = generator ผิด อย่าเขียนทับ
 2. **ถ้าค่าที่คำนวณได้เท่ากับของเดิมทุกตัว → หยุดตรงนี้** ไม่ต้องเขียน ไม่ bump sw.js ไม่ commit
    (รอบ 19:00 จะเจอเคสนี้บ่อยถ้า Shopee ยังไม่อัปเดตข้อมูล)
 3. แก้ `DATA_PERIODS.<เดือน>.shopee` ใน `data Ads/WIBWUB_Ads_Dashboard.html`
