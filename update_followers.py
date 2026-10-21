@@ -146,10 +146,13 @@ mobile = re.sub(
     rf'\g<1>{disp_k}\g<2>', mobile
 )
 # อัปเดต mks-sub (delta)
+# count=1 สำคัญ: มี "TK Followers" 2 ที่ (การ์ด mks และการ์ด kc) การ์ดที่สอง
+# ไม่มี mks-sub ของตัวเอง ถ้าไม่จำกัดจำนวน DOTALL จะวิ่งเลยไปทับ '+it.d+'
+# ใน mksRatio() ทำให้ทุกแถวโชว์ delta เดียวกันหมด
 if delta_str:
     mobile = re.sub(
         r'(TK Followers.*?<div class="mks-sub">)[^<]*(</div>)',
-        rf'\g<1>{delta_str}\g<2>', mobile, flags=re.DOTALL
+        rf'\g<1>{delta_str}\g<2>', mobile, count=1, flags=re.DOTALL
     )
 
 # อัปเดต TK_FOL (array ยอด follower ปลายเดือน ที่ Mobile ใช้วาดกราฟ + คำนวณ
