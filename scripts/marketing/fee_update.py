@@ -58,12 +58,12 @@ MKT_RATE_META = {
 }
 
 
-def put(cfg, key, month, rate, force, extra=None):
+def put(cfg, key, month, rate, force, extra=None, prov=False):
     """ใส่อัตราของเดือนนั้น — ห้ามทับของเดิม"""
     rate = round(rate, 5)
     if key in MKT_RATE_META:
         box = cfg.setdefault('marketing_rates', {}).setdefault(key, dict(MKT_RATE_META[key], rates=[]))
-        return put_spec(box, 'rates', key, month, rate, force, extra, cfg)
+        return put_spec(box, 'rates', key, month, rate, force, extra, cfg, prov)
     spec = cfg['rates'].get(key)
     if isinstance(spec, (int, float)):          # เดิมเป็นอัตราคงที่ -> แปลงเป็นช่วง
         spec = [{'from': '2026-01-01', 'rate': spec}]
@@ -71,12 +71,22 @@ def put(cfg, key, month, rate, force, extra=None):
     frm = month + '-01'
     cur = next((s for s in spec if s['from'] == frm), None)
     if cur and not force:
-        if abs(cur['rate'] - rate) < 1e-9:
+        same = abs(cur['rate'] - rate) < 1e-9
+        if same and bool(cur.get('prov')) == prov:
             return False, f'{key} {month} มีอยู่แล้วและค่าตรงกัน ({rate*100:.3f}%)'
-        die('เดือนนี้มีอัตราอยู่แล้วและค่าไม่ตรง — ห้ามเขียนทับเงียบ ๆ (ใส่ --force ถ้าตั้งใจ)',
-            {'คีย์': key, 'เดือน': month, 'เดิม': cur['rate'], 'ใหม่': rate})
-    if cur: cur['rate'] = rate
-    else: spec.append({'from': frm, 'rate': rate})
+        # เดือนที่ยังเป็นอัตราชั่วคราว = ทับได้ตลอด (ยอดยังไหลเข้าอยู่)
+        # เดือนที่ปิดยอดแล้ว = ล็อก เพราะถูกใช้คำนวณย้อนหลังไปแล้ว
+        if not cur.get('prov'):
+            die('เดือนนี้ปิดยอดไปแล้วและค่าไม่ตรง — ห้ามเขียนทับเงียบ ๆ (ใส่ --force ถ้าตั้งใจ)',
+                {'คีย์': key, 'เดือน': month, 'เดิม': cur['rate'], 'ใหม่': rate})
+    if cur:
+        cur['rate'] = rate
+        if prov: cur['prov'] = True
+        else: cur.pop('prov', None)
+    else:
+        e = {'from': frm, 'rate': rate}
+        if prov: e['prov'] = True
+        spec.append(e)
     cfg['rates'][key] = squash(spec)
     if extra: cfg.setdefault('_บันทึก', {})[f'{key} {month}'] = extra
     return True, f'{key} {month} = {rate*100:.3f}%'
@@ -87,22 +97,32 @@ def squash(spec):
     spec.sort(key=lambda s: s['from'])
     out = []
     for s in spec:
-        if out and abs(out[-1]['rate'] - s['rate']) < 1e-9: continue
+        if out and abs(out[-1]['rate'] - s['rate']) < 1e-9 and not s.get('prov'): continue
         out.append(s)
     return out
 
 
-def put_spec(box, field, key, month, rate, force, extra, cfg):
+def put_spec(box, field, key, month, rate, force, extra, cfg, prov=False):
     spec = box.get(field) or []
     frm = month + '-01'
     cur = next((s for s in spec if s['from'] == frm), None)
     if cur and not force:
-        if abs(cur['rate'] - rate) < 1e-9:
+        same = abs(cur['rate'] - rate) < 1e-9
+        if same and bool(cur.get('prov')) == prov:
             return False, f'{key} {month} มีอยู่แล้วและค่าตรงกัน ({rate*100:.3f}%)'
-        die('เดือนนี้มีอัตราอยู่แล้วและค่าไม่ตรง — ห้ามเขียนทับเงียบ ๆ (ใส่ --force ถ้าตั้งใจ)',
-            {'คีย์': key, 'เดือน': month, 'เดิม': cur['rate'], 'ใหม่': rate})
-    if cur: cur['rate'] = rate
-    else: spec.append({'from': frm, 'rate': rate})
+        # เดือนที่ยังเป็นอัตราชั่วคราว = ทับได้ตลอด (ยอดยังไหลเข้าอยู่)
+        # เดือนที่ปิดยอดแล้ว = ล็อก เพราะถูกใช้คำนวณย้อนหลังไปแล้ว
+        if not cur.get('prov'):
+            die('เดือนนี้ปิดยอดไปแล้วและค่าไม่ตรง — ห้ามเขียนทับเงียบ ๆ (ใส่ --force ถ้าตั้งใจ)',
+                {'คีย์': key, 'เดือน': month, 'เดิม': cur['rate'], 'ใหม่': rate})
+    if cur:
+        cur['rate'] = rate
+        if prov: cur['prov'] = True
+        else: cur.pop('prov', None)
+    else:
+        e = {'from': frm, 'rate': rate}
+        if prov: e['prov'] = True
+        spec.append(e)
     box[field] = squash(spec)
     if extra: cfg.setdefault('_บันทึก', {})[f'{key} {month}'] = extra
     return True, f'{key} {month} = {rate*100:.3f}%'
@@ -140,10 +160,12 @@ def cmd_tiktok(a):
     fee_rate = (a.fee - aff) / a.revenue if aff else a.fee / a.revenue
     ch, m = put(cfg, 'tk', a.month, fee_rate, a.force,
                 {'รายได้': a.revenue, 'ค่าธรรมเนียมรวม': a.fee, 'คอมแอฟฟิลิเอต': aff,
-                 'ที่มา': 'TikTok Seller Center > การเงิน > ธุรกรรม > รายงานธุรกิจ'})
-    msgs.append(m); changed = ch
+                 'ชั่วคราว': a.provisional,
+                 'ที่มา': 'TikTok Seller Center > การเงิน > ธุรกรรม > รายงานธุรกิจ'},
+                a.provisional)
+    msgs.append(m + (' (ชั่วคราว)' if a.provisional else '')); changed = ch
     if aff:
-        ch2, m2 = put(cfg, 'aff_tk', a.month, aff / a.revenue, a.force)
+        ch2, m2 = put(cfg, 'aff_tk', a.month, aff / a.revenue, a.force, None, a.provisional)
         msgs.append(m2); changed = changed or ch2
     if not changed:
         print(json.dumps({'status': 'NO_CHANGE', 'msgs': msgs}, ensure_ascii=False)); return 10
@@ -179,6 +201,8 @@ def main():
             p.add_argument('--fee', type=float, required=True)
             p.add_argument('--aff', type=float, default=0)
             p.add_argument('--aff-ads', type=float, default=0, dest='aff_ads')
+            p.add_argument('--provisional', action='store_true',
+                           help='อัตราชั่วคราวของเดือนที่ยังไม่จบ — ทับของเดิมได้ทุกวัน')
     sh = s.add_parser('show'); sh.set_defaults(fn=cmd_show)
     a = ap.parse_args()
     if not re.match(r'^\d{4}-\d{2}$', getattr(a, 'month', '2026-01')):

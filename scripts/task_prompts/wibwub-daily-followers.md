@@ -121,7 +121,9 @@ mobile = (BASE / "WIBWUB_Mobile.html").read_text(encoding='utf-8')
 disp_k = f"{latest_k:.1f}K"
 mobile = re.sub(r'(TK Followers</div><div class="mks-val">)[^<]+(</div>)', rf'\g<1>{disp_k}\g<2>', mobile)
 if delta_str:
-    mobile = re.sub(r'(TK Followers.*?mks-sub">)[^<]+(</div>)', rf'\g<1>{delta_str}\g<2>', mobile, flags=re.DOTALL)
+    # count=1 สำคัญ: มี "TK Followers" 2 ที่ (บรรทัด ~394 การ์ด mks, ~1637 การ์ด kc)
+    # ที่สองไม่มี mks-sub ของตัวเอง ถ้าไม่จำกัดจำนวน DOTALL จะวิ่งไปทับ '+it.d+' ใน mksRatio()
+    mobile = re.sub(r'(TK Followers.*?mks-sub">)[^<]+(</div>)', rf'\g<1>{delta_str}\g<2>', mobile, count=1, flags=re.DOTALL)
 (BASE / "WIBWUB_Mobile.html").write_text(mobile, encoding='utf-8')
 print(f"✅ Updated: {latest_count:,} followers ({latest_date})")
 ```
