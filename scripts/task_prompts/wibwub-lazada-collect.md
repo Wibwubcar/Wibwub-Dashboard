@@ -1,12 +1,12 @@
 ---
 name: wibwub-lazada-collect
-description: ทุกวัน 08:25/19:25 (ต่อท้ายงานโหลด order ทันที) — ดึงยอดขาย + ค่าโฆษณา Lazada เก็บไว้ใน scripts/ads/work/ ให้ ads-daily หยิบไปใช้ตอน 09:47/20:47
+description: ทุกวัน 08:30/19:30 (ต่อท้ายงานโหลด order ทันที) — ดึงยอดขาย + ค่าโฆษณา Lazada เก็บไว้ใน scripts/ads/work/ ให้ ads-daily หยิบไปใช้ตอน 09:15/20:15
 ---
 
 ## WIBWUB — ดึง Lazada ล่วงหน้า (กัน session หลุด)
 
 ดึง `lz_real` + `lz_ads` เก็บไว้ที่ `scripts/ads/work/` เฉย ๆ **ไม่ต้อง merge ไม่ต้อง commit**
-งาน `wibwub-ads-daily` รอบ 09:47/20:47 จะหยิบไฟล์พวกนี้ไปใช้เองอยู่แล้ว
+งาน `wibwub-ads-daily` รอบ 09:15/20:15 จะหยิบไฟล์พวกนี้ไปใช้เองอยู่แล้ว
 
 > **ทำไมต้องแยกออกมา:** session ของ Lazada Seller Center หลุดบ่อยมากและหลุดเป็นช่วง ๆ
 > จากที่สังเกต 21 ต.ค. 69 — ตอนงานโหลด order รอบ 19:20 session ยังใช้ได้ปกติ
