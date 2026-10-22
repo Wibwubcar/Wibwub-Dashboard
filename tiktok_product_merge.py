@@ -81,20 +81,37 @@ def load_dashboard_tk_prod_data(html):
     return json.loads(m.group(1)), m.span(1)
 
 
+# TikTok API คืนตัวเลขเป็น string ได้ในบางรอบ (เจอจริง 7 ต.ค. 69: orders/sku_orders/
+# items_sold ของ 70 แถวมาเป็น "115" แทน 115) ถ้าปล่อยผ่าน หน้าเว็บจะเอาไปบวกแบบสตริง
+# กลายเป็นต่อกันเป็นเลข 10^49 และยอดรวมขึ้น ∞ โดยไม่มี error อะไรเลย
+# -> บังคับแปลงชนิดทุกช่องตรงนี้ที่เดียว ถ้าแปลงไม่ได้ให้หยุดทันที
+def _n(v, field, pid):
+    if isinstance(v, bool):
+        raise SystemExit(f'ค่า {field} ของ {pid} เป็น boolean — ข้อมูลผิดรูป')
+    if isinstance(v, (int, float)):
+        return v
+    try:
+        return float(str(v).replace(',', '').strip())
+    except (TypeError, ValueError):
+        raise SystemExit(f'ค่า {field} ของ {pid} แปลงเป็นตัวเลขไม่ได้: {v!r}')
+
+
 def row_from_record(rec):
-    r = lambda x: round(x, 2) if isinstance(x, float) else x
+    pid = rec["pid"]
+    money = lambda k: round(float(_n(rec.get(k, 0), k, pid)), 2)
+    count = lambda k: int(round(_n(rec.get(k, 0), k, pid)))
     return [
-        rec["pid"],
-        r(rec.get("gmv", 0)),
-        rec.get("orders", 0),
-        rec.get("sku_orders", 0),
-        rec.get("items_sold", 0),
-        r(rec.get("self_live", 0)),
-        r(rec.get("self_video", 0)),
-        r(rec.get("affiliate", 0)),
-        r(rec.get("affiliate_live", 0)),
-        r(rec.get("affiliate_video", 0)),
-        r(rec.get("product_card", 0)),
+        pid,
+        money("gmv"),
+        count("orders"),
+        count("sku_orders"),
+        count("items_sold"),
+        money("self_live"),
+        money("self_video"),
+        money("affiliate"),
+        money("affiliate_live"),
+        money("affiliate_video"),
+        money("product_card"),
     ]
 
 
