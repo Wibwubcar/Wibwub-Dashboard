@@ -84,7 +84,10 @@ def main():
 
     m = re.search(r"SALES_ASOF\s*=\s*'([\d-]{10})'", pages['WIBWUB_Mobile.html'])
     if not m: die('ไม่พบ SALES_ASOF ใน WIBWUB_Mobile.html')
-    asof = m.group(1)
+    # recon = วันสุดท้ายที่ยอดผ่านการกระทบยอดกับหน้า "ยอดขาย & รายได้" แล้ว
+    # (มาจากชีตที่คนกรอกสัปดาห์ละครั้ง) ใช้เป็นขอบของด่านตรวจเท่านั้น
+    # ไม่ใช่ขอบของสิ่งที่แสดง — เดิมตัดทุกอย่างที่นี่ ทำให้หน้าเว็บช้ากว่าข้อมูลจริง 2-3 วัน
+    recon = m.group(1)
 
     # ── Shipnity รายวัน (ใช้ CH_ARRAYS ตัวจริง ไม่ reimplement) ───────────────
     sys.path.insert(0, str(BASE / 'scripts'))
@@ -99,7 +102,6 @@ def main():
     ship = {}
     for o in raw['order_counts']:
         d = o['d']
-        if d > asof: continue
         s = ship.setdefault(d, {})
         c = CH[o['c']]
         s[c] = s.get(c, 0.0) + o['r']
@@ -125,15 +127,21 @@ def main():
     kol_rows = [r for r in (kol_raw.get('rows') or []) if r.get('d')]
     kol_day = {}
     for r in kol_rows:
-        if r['st'] == 'done' and r['d'] <= asof:
+        if r['st'] == 'done':
             kol_day[r['d']] = round(kol_day.get(r['d'], 0.0) + r['amt'], 2)
 
     # ── ประกอบรายวัน ────────────────────────────────────────────────────────
     # เดิมตรึงไว้ที่ 2026-09-01 เพราะ ads_daily.json เริ่มเดือน ก.ย.
     # ตอนนี้ปล่อยตามไฟล์จริง เพื่อให้ backfill ย้อนหลังโผล่บนหน้าเองโดยไม่ต้องแก้โค้ดอีก
     d0 = min(days_ads)
-    dates = sorted(d for d in days_ads if d0 <= d <= asof)
-    if not dates: die('ไม่มีวันในช่วงที่ใช้ได้', {'ads_from': min(days_ads), 'asof': asof})
+    # แสดงถึงวันล่าสุดที่ "ทุกแหล่งรายวัน" มีข้อมูลครบ ไม่ใช่ถึงแค่วันที่กระทบยอด
+    # ใช้ min() เพื่อไม่ให้มีวันที่บางช่องทางขาด ซึ่งจะทำให้ยอดรวมต่ำกว่าจริงแบบมองไม่ออก
+    ship_max = max(ship) if ship else None
+    end = min(max(days_ads), ship_max) if ship_max else max(days_ads)
+    if end < recon: end = recon        # กันกรณีแหล่งใดแหล่งหนึ่งถอยหลัง
+    dates = sorted(d for d in days_ads if d0 <= d <= end)
+    if not dates: die('ไม่มีวันในช่วงที่ใช้ได้', {'ads_from': min(days_ads), 'end': end})
+    asof = end                          # ตัวแปรเดิมที่ใช้ต่อข้างล่าง = ขอบของสิ่งที่แสดง
 
     rows = {}
     for d in dates:
@@ -154,21 +162,24 @@ def main():
         rows[d] = rec
 
     # ── ด่านตรวจ: รวมรายวันของเดือนล่าสุดต้องเท่าอาเรย์รายเดือนบนหน้าเว็บ ────
-    checks, idx = {}, int(asof[5:7]) - 1
+    # เทียบเฉพาะช่วงที่กระทบยอดแล้ว (<= recon) เพราะอาเรย์รายเดือนบนหน้ายอดขาย
+    # ก็หยุดที่วันเดียวกัน ถ้าเอาวันที่เลยไปมารวมด้วยจะไม่มีวันตรงกันเลย
+    checks, idx = {}, int(recon[5:7]) - 1
+    chk_days = [d for d in dates if d[:7] == recon[:7] and d <= recon]
     for key, name in [('sh', 'SH_REV'), ('lz', 'LZ_REV')] + SHIP_KEYS:
         page_v = (arr(dash, name) or [0] * 12)[idx]
-        day_v = round(sum(rows[d][DAY_KEYS.index(key)] for d in dates if d[:7] == asof[:7]), 2)
+        day_v = round(sum(rows[d][DAY_KEYS.index(key)] for d in chk_days), 2)
         checks[name] = {'page': page_v, 'daily': day_v, 'diff': round(day_v - page_v, 2)}
         if page_v and abs(day_v - page_v) > max(1.0, abs(page_v) * 0.001):
             die(f'รายวันรวมแล้วไม่เท่า {name} บนหน้าเว็บ — แหล่งข้อมูลไม่ตรงกัน', checks[name])
     # TikTok ต่างได้บ้าง (ads_daily เป็นยอดก่อนหักยกเลิก · TK_REV หักแล้ว) แต่ไม่เกิน 3%
     tk_page = (arr(dash, 'TK_REV') or [0] * 12)[idx]
-    tk_day = round(sum(rows[d][1] for d in dates if d[:7] == asof[:7]), 2)
+    tk_day = round(sum(rows[d][1] for d in chk_days), 2)
     checks['TK_REV'] = {'page': tk_page, 'daily': tk_day, 'diff': round(tk_day - tk_page, 2)}
     if tk_page and abs(tk_day - tk_page) > abs(tk_page) * 0.03:
         die('ยอด TikTok รายวันต่างจาก TK_REV เกิน 3%', checks['TK_REV'])
 
-    cov = {'sales': asof, 'shopee': (ads_raw.get('coverage') or {}).get('shopee'),
+    cov = {'sales': recon, 'shopee': (ads_raw.get('coverage') or {}).get('shopee'),
            'tiktok': (ads_raw.get('coverage') or {}).get('tiktok'),
            'lazada': (ads_raw.get('coverage') or {}).get('lazada'),
            'shipnity': max((d for d in ship), default=None),
@@ -217,6 +228,7 @@ def main():
     data = {'asof': asof, 'from': dates[0], 'to': dates[-1], 'keys': DAY_KEYS,
             'days': rows, 'kol': kol_rows, 'cov': cov,
             'tiers_unmapped': kol_raw.get('tiers_unmapped') or [],
+            'recon': recon,
             'fee_rates': fee_rates, 'fee_labels': fee_cfg.get('labels') or {},
             'mkt_rates': mkt_rates,
             'missing': missing}
