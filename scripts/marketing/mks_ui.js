@@ -418,7 +418,7 @@ function mksRender(){
 
     /* KPI */
     const kpi=[
-      {l:'ยอดขายรวม', v:mksN(A.rev), c:'#16a34a', d:P?mksDelta(A.rev,P.rev):'', s:'บาท'},
+      {l:'ยอดขายรวม', v:mksN(A.rev), c:'#16a34a', d:P?mksDelta(A.rev,P.rev):'', s:'ทุกช่องทาง '+MKS_REV_CAT.length+' ช่อง'},
       {l:'ค่าการตลาดรวม', v:mksN(A.spend), c:'#1A5CDB', d:P?mksDelta(A.spend,P.spend):'', s:'บาท'},
       {l:'% ต่อยอดขาย', v:(A.pct!=null?A.pct.toFixed(2)+'%':'–'), c:'#f59e0b',
        d:P&&P.pct!=null?mksDelta(A.pct,P.pct,true):'', s:'ยิ่งต่ำยิ่งดี'},
@@ -484,6 +484,9 @@ function mksRender(){
       ') คิดจากยอดขายของช่องทางนั้น ไม่ใช่ยอดเรียกเก็บจริงจากแพลตฟอร์ม · '+
       'ช่องทางขายตรง (Facebook · LINE · POS · เว็บไซต์ ฯลฯ) ไม่มีค่าธรรมเนียม · '+
       'แก้อัตราได้ที่ <code>data Ads/platform_fee.json</code><br>';
+    h+='<b>ยอดขายหน้านี้นับครบทุกช่องทาง</b> รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ '+
+      'จึงมากกว่าหน้า <b>Ads Dashboard</b> ที่นับเฉพาะ 3 ช่องทางที่ยิงโฆษณา (ต่างกันราว 8–9%) '+
+      'ช่องทางที่ซ้ำกันตรงกันทุกบาท<br>';
     h+='ยอดขาย Shopee/TikTok/Lazada ใช้ข้อมูลรายวันจาก Ads Dashboard · ช่องทางที่เหลือจาก Shipnity · '+
        'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done<br>';
     if(gap>0) h+='<b>ช่วงที่เลือกมีข้อมูลจริง '+A.days+' วัน จาก '+want+' วัน</b> — '+gap+
