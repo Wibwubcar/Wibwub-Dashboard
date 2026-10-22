@@ -412,6 +412,12 @@ function buildSkeleton(){
         (Shopee แบบ <b>broad</b> นับกว้างที่สุด, <b>direct</b> นับเฉพาะสินค้าที่คลิกโดยตรง) ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ
         และนับก่อนหักยกเลิก/คืนเงิน — จึงควรดู <b>ค่าโฆษณา ÷ ยอดขายจริง</b> และ <b>ROAS จากยอดจริง</b> เป็นหลัก
       </div>
+      <div class="callout" style="margin-top:10px">
+        <b>ยอดขายหน้านี้นับเฉพาะ Shopee + TikTok + Lazada</b> ซึ่งเป็นช่องทางที่ยิงโฆษณา —
+        ไม่รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ
+        จึงน้อยกว่าหน้า <b>“การตลาด vs ยอดขาย”</b> ที่นับครบ 11 ช่องทาง (ต่างกันราว 8–9%)
+        <br>ตั้งใจให้ต่าง เพราะถ้าเอายอดที่ไม่ได้มาจากโฆษณามารวมด้วย ROAS จะดูดีเกินจริง
+      </div>
       <details class="src"><summary>แหล่งข้อมูล / รายละเอียดทางเทคนิค</summary><pre id="srcText"></pre></details>
     </section>
   </div>
@@ -636,7 +642,7 @@ function renderView(){
 function renderOvKpis(){
   const r=CUR, p=PREV;
   const k = [
-    { lab:'ยอดขายจริง', val:baht(r.all.real), d:deltaHtml(r.all.real, p&&p.all.real), sh:baht(r.sh.real), tk:baht(r.tk.real), lz:baht(r.lz.real) },
+    { lab:'ยอดขายจริง', val:baht(r.all.real), sub:'เฉพาะ 3 ช่องทางที่ยิงแอด', d:deltaHtml(r.all.real, p&&p.all.real), sh:baht(r.sh.real), tk:baht(r.tk.real), lz:baht(r.lz.real) },
     { lab:'ค่าโฆษณา', val:baht(r.all.spend), d:deltaHtml(r.all.spend, p&&p.all.spend,'cost'), sh:baht(r.sh.spend), tk:baht(r.tk.spend)+' <span class="muted">(GMV Max)</span>', lz:baht(r.lz.spend) },
     { lab:'ค่าโฆษณา ÷ ยอดขายจริง', val:pct(div(r.all.spend,r.all.real)), d:deltaHtml(div(r.all.spend,r.all.real), p&&div(p.all.spend,p.all.real),'pt'), sh:pct(div(r.sh.spend,r.sh.real)), tk:pct(div(r.tk.spend,r.tk.real)), lz:pct(div(r.lz.spend,r.lz.real)) },
     { lab:'ROAS จากยอดจริง', val:x2(div(r.all.real,r.all.spend)), d:deltaHtml(div(r.all.real,r.all.spend), p&&div(p.all.real,p.all.spend)), sh:x2(div(r.sh.real,r.sh.spend)), tk:x2(div(r.tk.real,r.tk.spend)), lz:x2(div(r.lz.real,r.lz.spend)) },

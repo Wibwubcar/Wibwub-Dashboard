@@ -27,6 +27,95 @@ PAGES = ['WIBWUB_Dashboard.html', 'WIBWUB_Mobile.html']
 WATCH = ['SH_REV', 'TK_REV', 'LZ_REV', 'SH_ORD', 'TK_ORD', 'LZ_ORD']
 
 
+# แถวในชีตยอดขายใช้รูปแบบ "01-DD/MM/YY" = ยอดสะสมตั้งแต่วันที่ 1 ถึง DD
+# วันสุดท้ายของแถวล่างสุด = วันที่ข้อมูลในชีตไปถึง
+ROW_RE = re.compile(r'^\s*0?1\s*-\s*(\d{1,2})/(\d{1,2})/(\d{2})\s*$')
+
+
+TK_DATE_RE = re.compile(r'(\d{1,2})/(\d{1,2})/(\d{2})')
+
+
+def tiktok_asof(rows):
+    """ชีต TikTok เป็นรายวัน (DD/MM/YY ปี พ.ศ. 2 หลัก) ไม่ใช่ยอดสะสมแบบ Shopee/Lazada
+    จึงต้องหาวันที่มากสุดจากทุกเซลล์"""
+    best = None
+    for r in rows or []:
+        for c in (r or []):
+            m = TK_DATE_RE.search(str(c or ''))
+            if not m:
+                continue
+            d, mo, yy = int(m[1]), int(m[2]), int(m[3])
+            if not (1 <= mo <= 12 and 1 <= d <= 31):
+                continue
+            y = 1957 + yy if yy >= 60 else 2000 + yy      # 69 = พ.ศ.2569 = ค.ศ.2026
+            iso = f'{y}-{mo:02d}-{d:02d}'
+            if best is None or iso > best:
+                best = iso
+    return best
+
+
+def sheet_asof(rows):
+    """วันสุดท้ายที่ชีตนี้มีข้อมูล (YYYY-MM-DD) — None ถ้าอ่านไม่ได้"""
+    best = None
+    for r in rows or []:
+        m = ROW_RE.match(str((r or [''])[0] or ''))
+        if not m:
+            continue
+        d, mo, yy = int(m[1]), int(m[2]), int(m[3])
+        iso = f'20{yy:02d}-{mo:02d}-{d:02d}'
+        if best is None or iso > best:
+            best = iso
+    return best
+
+
+def write_asof(asof, per_ch=None):
+    """เขียน SALES_ASOF + MTD_COVERAGE ลงหน้าเว็บ — ขยับไปข้างหน้าเท่านั้น
+
+    ทำไมต้องมี: หลังย้ายมาใช้สคริปต์ชุดใหม่ 19 ต.ค. 69 ไม่มีตัวไหนเขียนค่านี้อีกเลย
+    ทุกตัวอ่านอย่างเดียว ค่าจึงค้างอยู่ที่ 2026-10-18 ถาวร และหน้า "การตลาด vs ยอดขาย"
+    ใช้ค่านี้เป็นขอบของการกระทบยอด -> ป้าย "ยังไม่กระทบยอด" จะยาวขึ้นเรื่อย ๆ
+    """
+    # ⚠️ ต้องตรวจ "ห้ามถอยหลัง" ให้ครบทุกหน้า **ก่อน** เริ่มเขียน
+    # เคยเขียนด่านไว้ในลูปแล้วเจอว่าเขียน Dashboard ไปแล้วค่อยหยุดที่ Mobile
+    # ทำให้สองหน้าค่าไม่ตรงกันโดยไม่มีอะไรเตือน (เจอตอนทดสอบ 22 ต.ค. 69)
+    cur = []
+    for pg in PAGES:
+        f = BASE / pg
+        if not f.exists():
+            continue
+        m = re.search(r"SALES_ASOF\s*=\s*'(\d{4}-\d{2}-\d{2})'", f.read_text(encoding='utf-8'))
+        if m:
+            cur.append(m.group(1))
+    if cur and asof < max(cur):          # ชีตอาจอ่านพลาดบางรอบ
+        return {'skipped': f'{asof} เก่ากว่าค่าเดิม {max(cur)} — ไม่เขียน'}
+
+    changed = []
+    for pg in PAGES:
+        f = BASE / pg
+        if not f.exists():
+            continue
+        h = f.read_text(encoding='utf-8')
+        new = h
+        m = re.search(r"SALES_ASOF\s*=\s*'(\d{4}-\d{2}-\d{2})'", new)
+        if m and asof != m.group(1):
+            new = new[:m.start(1)] + asof + new[m.end(1):]
+        # MTD_COVERAGE โชว์วันที่ของแต่ละช่องทาง — แต่ละชีตไปถึงคนละวันได้
+        # (22 ต.ค. 69: Shopee/Lazada ถึง 18 แต่ TikTok ถึง 21)
+        # ⚠️ แก้ทีละคีย์เท่านั้น ห้ามประกอบ dict ใหม่ทั้งก้อน — คีย์ Shipnity เป็นของ
+        # shipnity_update.py ถ้าเขียนทับจะดึงวันของมันถอยหลังแบบเงียบ ๆ
+        for k, v in (per_ch or {}).items():
+            if not v:
+                continue
+            mk = re.search(r"(MTD_COVERAGE\s*=\s*\{[^}]*?" + k + r"\s*:\s*')(\d{4}-\d{2}-\d{2})",
+                           new)
+            if mk and v > mk.group(2):
+                new = new[:mk.start(2)] + v + new[mk.end(2):]
+        if new != h:
+            f.write_text(new, encoding='utf-8')
+            changed.append(pg)
+    return {'asof': asof, 'pages': changed}
+
+
 def die(msg, detail=None):
     print(json.dumps({'status': 'ERROR', 'error': msg, 'detail': detail}, ensure_ascii=False))
     sys.exit(2)
@@ -94,6 +183,26 @@ def main():
 
     summary = {'months': months, 'arrays': n,
                'latest': {k: (sales.get(k) or [None])[-1] for k in WATCH if sales.get(k)}}
+
+    # ── SALES_ASOF: ขอบ "กระทบยอดแล้ว" ที่หน้า การตลาด vs ยอดขาย ใช้ ─────────
+    # อ่านวันสุดท้ายจากชีตเอง แทนที่จะปล่อยให้ค่าค้างอยู่กับที่
+    asof_ch = {k: sheet_asof(sheets.get(k)) for k in ('shopee', 'lazada')}
+    asof_ch['tiktok'] = tiktok_asof(sheets.get('tiktok'))
+    got = {k: v for k, v in asof_ch.items() if v}
+    PER = {'shopee': 'Shopee', 'tiktok': 'TikTok', 'lazada': 'Lazada'}
+    per_ch = {PER[k]: v for k, v in got.items() if k in PER}
+    summary['sheet_asof'] = asof_ch
+    if not got:
+        summary['asof_note'] = 'อ่านวันที่จากชีตไม่ได้เลย — คง SALES_ASOF เดิมไว้'
+    elif len(set(got.values())) > 1:
+        # ชีตคนละวัน = ด่านตรวจของหน้าการตลาดจะเทียบไม่ตรงอยู่ดี ใช้ตัวเก่าสุดไว้ก่อน
+        # แล้วรายงานให้คนไปกรอกชีตที่ตามหลังให้ทัน
+        summary['asof_note'] = ('ชีตแต่ละช่องทางไปถึงคนละวัน ใช้วันเก่าสุด — '
+                                'ควรกรอกชีตที่ตามหลังให้ทันกัน')
+        summary['asof_write'] = write_asof(min(got.values()), per_ch) if not a.dry_run else 'dry-run'
+    else:
+        summary['asof_write'] = (write_asof(next(iter(got.values())), per_ch)
+                                 if not a.dry_run else 'dry-run')
 
     if a.dry_run:
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False))

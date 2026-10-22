@@ -164,18 +164,39 @@ def main():
     # ── ด่านตรวจ: รวมรายวันของเดือนล่าสุดต้องเท่าอาเรย์รายเดือนบนหน้าเว็บ ────
     # เทียบเฉพาะช่วงที่กระทบยอดแล้ว (<= recon) เพราะอาเรย์รายเดือนบนหน้ายอดขาย
     # ก็หยุดที่วันเดียวกัน ถ้าเอาวันที่เลยไปมารวมด้วยจะไม่มีวันตรงกันเลย
+    # ⚠️ แต่ละช่องทางมี "ขอบกระทบยอด" ของตัวเอง เพราะชีตแต่ละใบคนละคนกรอก
+    # คนละรอบ (22 ต.ค. 69: Shopee/Lazada ถึง 18 แต่ TikTok ถึง 21 แล้ว)
+    # ถ้าใช้ recon ตัวเดียวกับทุกช่อง ด่าน TikTok จะเอายอดหน้าเว็บของวันที่ 21
+    # ไปเทียบผลรวมรายวันที่ตัดแค่วันที่ 18 แล้วตายด้วย "ต่างเกิน 3%" ทุกรอบ
+    mc = re.search(r"MTD_COVERAGE\s*=\s*\{([^}]*)\}", dash)
+    mcov = dict(re.findall(r"(\w+)\s*:\s*'(\d{4}-\d{2}-\d{2})'",
+                           mc.group(1) if mc else ''))
+    CH_OF = {'sh': 'Shopee', 'tk': 'TikTok', 'lz': 'Lazada'}
+
+    def bound(key):
+        """ขอบของช่องทางนี้ — ไม่เกิน recon ไม่ได้ (recon = min ของทุกชีต) แต่เกินได้"""
+        return mcov.get(CH_OF.get(key, 'Shipnity'), recon) or recon
+
+    def chk(key):
+        b = bound(key)
+        days = [d for d in dates if d[:7] == b[:7] and d <= b]
+        return days, int(b[5:7]) - 1
+
     checks, idx = {}, int(recon[5:7]) - 1
-    chk_days = [d for d in dates if d[:7] == recon[:7] and d <= recon]
     for key, name in [('sh', 'SH_REV'), ('lz', 'LZ_REV')] + SHIP_KEYS:
-        page_v = (arr(dash, name) or [0] * 12)[idx]
+        chk_days, i = chk(key)
+        page_v = (arr(dash, name) or [0] * 12)[i]
         day_v = round(sum(rows[d][DAY_KEYS.index(key)] for d in chk_days), 2)
-        checks[name] = {'page': page_v, 'daily': day_v, 'diff': round(day_v - page_v, 2)}
+        checks[name] = {'page': page_v, 'daily': day_v, 'diff': round(day_v - page_v, 2),
+                        'ถึงวันที่': bound(key)}
         if page_v and abs(day_v - page_v) > max(1.0, abs(page_v) * 0.001):
             die(f'รายวันรวมแล้วไม่เท่า {name} บนหน้าเว็บ — แหล่งข้อมูลไม่ตรงกัน', checks[name])
     # TikTok ต่างได้บ้าง (ads_daily เป็นยอดก่อนหักยกเลิก · TK_REV หักแล้ว) แต่ไม่เกิน 3%
-    tk_page = (arr(dash, 'TK_REV') or [0] * 12)[idx]
-    tk_day = round(sum(rows[d][1] for d in chk_days), 2)
-    checks['TK_REV'] = {'page': tk_page, 'daily': tk_day, 'diff': round(tk_day - tk_page, 2)}
+    tk_days, tk_i = chk('tk')
+    tk_page = (arr(dash, 'TK_REV') or [0] * 12)[tk_i]
+    tk_day = round(sum(rows[d][1] for d in tk_days), 2)
+    checks['TK_REV'] = {'page': tk_page, 'daily': tk_day, 'diff': round(tk_day - tk_page, 2),
+                        'ถึงวันที่': bound('tk')}
     if tk_page and abs(tk_day - tk_page) > abs(tk_page) * 0.03:
         die('ยอด TikTok รายวันต่างจาก TK_REV เกิน 3%', checks['TK_REV'])
 
