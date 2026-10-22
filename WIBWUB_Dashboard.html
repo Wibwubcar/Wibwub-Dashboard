@@ -35,6 +35,15 @@
     .main{margin-left:248px;flex:1;display:flex;flex-direction:column;}
     .topbar{background:var(--card);padding:15px 28px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);position:sticky;top:0;z-index:90;}
     .tb-title{font-size:19px;font-weight:800;}
+    /* ป้ายบอกที่มาข้อมูลของแต่ละหน้า — auto กับ "รอคนกรอกชีต" ต้องแยกออกจากกัน
+       ให้เห็นทันที ไม่งั้นเวลาข้อมูลไม่ถึงวันนี้จะแยกไม่ออกว่าระบบพังหรือรอคน */
+    .src-badge{margin-top:5px;font-size:11px;line-height:1.5;display:inline-flex;
+      align-items:center;gap:6px;padding:3px 10px;border-radius:20px;
+      border:1px solid var(--border);background:var(--bg);color:var(--muted)}
+    .src-badge.sb-sheet{border-color:#f59e0b55;background:#f59e0b14;color:#b45309}
+    .src-badge.sb-demo{border-color:#ef444455;background:#ef444414;color:#b91c1c}
+    .src-badge.sb-auto{border-color:#10b98155;background:#10b98114;color:#047857}
+    .src-badge:empty{display:none}
     .tb-date{font-size:12px;color:var(--muted);margin-top:2px;}
     .tb-right{display:flex;gap:10px;align-items:center;}
     .btn{padding:8px 16px;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .2s;}
@@ -329,6 +338,7 @@
     <div>
       <div class="tb-title" id="ptitle">ภาพรวมธุรกิจ</div>
       <div class="tb-date" id="pdate"></div>
+      <div id="src-badge" class="src-badge"></div>
     </div>
     <div class="tb-right">
       <div class="notif-btn">🔔<span class="ndot"></span></div>
@@ -1689,6 +1699,7 @@ function go(id, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('ptitle').textContent = TITLES[id] || id;
+  try{ renderSrcBadge(id); }catch(e){ console.error('srcBadge',e); }
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
   if (id === 'admin') { loadAdminUsers(); renderPermissionsMatrix(); }
   if (id === 'prodreport') { const pf=document.getElementById('prodreport-iframe'); if(pf&&!pf.src) pf.src=pf.dataset.src; }
@@ -1714,12 +1725,73 @@ function mtdCoverageLabel(){
   if(uniq.length === 1) return `${mo} = MTD ถึง ${d(uniq[0])} (Shopee / TikTok / Lazada)`;
   return `${mo} = MTD · ` + Object.entries(MTD_COVERAGE).map(([k,v])=>`${k} ถึง ${d(v)}`).join(' · ');
 }
+// ── ป้ายที่มาข้อมูลรายหน้า ────────────────────────────────────────────────
+// kind: 'auto'  = งานตั้งเวลาดึงเองทั้งหมด ถ้าไม่ถึงวันนี้แปลว่าระบบมีปัญหา
+//       'sheet' = ต้องรอคนกรอก Google Sheet ก่อน ระบบดึงให้เฉพาะที่กรอกแล้ว
+//       'lag'   = auto แต่ต้นทาง (แพลตฟอร์ม) เองช้าอยู่แล้ว ไม่ใช่ความผิดของระบบ
+//       'live'  = ดึงสดตอนเปิดหน้า ไม่มีวันที่
+//       'demo'  = ยังเป็นข้อมูลตัวอย่าง ไม่ได้ต่อของจริง
+// ⚠️ ห้ามเขียนวันที่ตายตัวในนี้ ให้ดึงจาก MTD_COVERAGE / MKT_SPEND เสมอ
+const SRC_META = {
+  overview:   {kind:'sheet', asof:()=>mtdMin(), who:'ชีตยอดขาย Shopee / TikTok / Lazada'},
+  sales:      {kind:'sheet', asof:()=>mtdMin(), who:'ชีตยอดขาย Shopee / TikTok / Lazada'},
+  shopee:     {kind:'sheet', asof:()=>MTD_COVERAGE.Shopee, who:'ชีตยอดขาย Shopee'},
+  tiktok:     {kind:'sheet', asof:()=>MTD_COVERAGE.TikTok, who:'ชีตยอดขาย TikTok'},
+  lazada:     {kind:'sheet', asof:()=>MTD_COVERAGE.Lazada, who:'ชีตยอดขาย Lazada'},
+  mktspend:   {kind:'auto',  asof:()=>covOf('shipnity'), who:'ads-daily + Shipnity (ค่าจ้าง KOL รอคนกรอกชีต)'},
+  ads:        {kind:'auto',  asof:()=>covOf('shopee'),   who:'ads-daily 09:15/20:15'},
+  products:   {kind:'auto',  asof:()=>maxKey(typeof TK_PROD_DATA!=='undefined'?TK_PROD_DATA:null), who:'TikTok สินค้า + SKU 09:00/20:00'},
+  social:     {kind:'lag',   asof:()=>null, who:'TikTok Followers 10:00/21:00 — ไฟล์ export ของ TikTok ช้า ~2 วัน'},
+  affiliate:  {kind:'lag',   asof:()=>null, who:'Affiliate ครีเอเตอร์ 09:35/20:35 — Affiliate Center เปิดให้ดึงช้า ~2 วัน'},
+  hr:         {kind:'auto',  asof:()=>null, who:'HR attendance จาก Discord 6 รอบ/วัน'},
+  prodreport: {kind:'auto',  asof:()=>null, who:'รายงานการผลิตจาก Discord'},
+  procurement:{kind:'auto',  asof:()=>null, who:'สต๊อก / Forecast 09:00 ทุกวัน'},
+  admin:      {kind:'live',  asof:()=>null, who:'Firestore'},
+  projects:   {kind:'demo',  asof:()=>null, who:'ยังไม่ได้ต่อข้อมูลจริง — การ์ดที่เห็นเป็นตัวอย่าง'}
+};
+function mtdMin(){ return Object.values(MTD_COVERAGE).sort()[0]; }
+function covOf(k){ try{ return (MKT_SPEND.cov||{})[k] || MKT_SPEND.asof; }catch(e){ return null; } }
+function maxKey(o){ try{ return Object.keys(o).filter(k=>/^\d{4}-\d{2}-\d{2}$/.test(k)).sort().slice(-1)[0]; }catch(e){ return null; } }
+function thDate(s){
+  if(!s) return '';
+  const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const p=String(s).split('-'); return `${+p[2]} ${TH[+p[1]-1]} ${(+p[0])+543-2500}`;
+}
+function renderSrcBadge(id){
+  const el = document.getElementById('src-badge'); if(!el) return;
+  const m = SRC_META[id];
+  if(!m){ el.className='src-badge'; el.textContent=''; return; }
+  const d = (()=>{ try{ return m.asof(); }catch(e){ return null; } })();
+  const today = new Date().toISOString().slice(0,10);
+  const late  = d && d < today;
+  let cls='src-badge', txt='';
+  if(m.kind==='sheet'){
+    cls += ' sb-sheet';
+    txt = `✍️ รอคนกรอกชีต` + (d ? ` · ข้อมูลถึง ${thDate(d)}` : '') +
+          (late ? ` (ตามหลัง ${Math.round((Date.parse(today)-Date.parse(d))/864e5)} วัน)` : '');
+  } else if(m.kind==='demo'){
+    cls += ' sb-demo'; txt = '⚠️ ข้อมูลตัวอย่าง ยังไม่ได้ต่อข้อมูลจริง';
+  } else if(m.kind==='lag'){
+    cls += ' sb-auto'; txt = '🤖 อัปเดตอัตโนมัติ · ต้นทางเองช้า ~2 วัน';
+  } else if(m.kind==='live'){
+    cls += ' sb-auto'; txt = '🤖 ดึงสดตอนเปิดหน้า';
+  } else {
+    cls += ' sb-auto';
+    txt = '🤖 อัปเดตอัตโนมัติ' + (d ? ` · ข้อมูลถึง ${thDate(d)}` : '');
+  }
+  el.className = cls;
+  el.textContent = txt;
+  el.title = m.who || '';
+}
 (function(){
   const el = document.getElementById('cc-ovrev-sub');
   if(el) el.textContent = `ม.ค. – ${M5[M5.length-1]} 2569 (ข้อมูลจริง) · ${mtdCoverageLabel()}`;
   // Derived from M5 so the "ม.ค. – <เดือนล่าสุด> 2569" chart sub-labels never go stale
   // after a sales sync (see skill: wibwub-avoid-stale-hardcoded-labels).
   document.querySelectorAll('.rng-lbl').forEach(n => { n.textContent = `ม.ค. – ${M5[M5.length-1]} 2569`; });
+  // หน้าแรกไม่ได้ผ่าน go() จึงต้องวาดป้ายที่มาข้อมูลเองรอบหนึ่ง
+  try{ renderSrcBadge(typeof currentPage!=='undefined' && currentPage ? currentPage : 'overview'); }
+  catch(e){ console.error('srcBadge init',e); }
 })();
 const SH_REV = [4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604,6770819,4409888];
 const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21,3245460.29,2832509.85];
