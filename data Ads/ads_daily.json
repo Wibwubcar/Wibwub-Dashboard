@@ -13377,6 +13377,17 @@
      "spend": 0.0,
      "orders": 0
     }
+   },
+   "lz_real": {
+    "gmv": 1346.0,
+    "orders": 3
+   },
+   "lz_ads": {
+    "spend": 0.0,
+    "revenue": 0.0,
+    "orders": 0,
+    "imp": 32,
+    "clicks": 0
    }
   },
   "2026-10-21": {
@@ -13419,12 +13430,23 @@
      "spend": 0.0,
      "orders": 1
     }
+   },
+   "lz_real": {
+    "gmv": 814.0,
+    "orders": 1
+   },
+   "lz_ads": {
+    "spend": 0.0,
+    "revenue": 0.0,
+    "orders": 0,
+    "imp": 24,
+    "clicks": 0
    }
   }
  },
  "coverage": {
   "shopee": "2026-10-21",
   "tiktok": "2026-10-21",
-  "lazada": "2026-10-19"
+  "lazada": "2026-10-21"
  }
 }
