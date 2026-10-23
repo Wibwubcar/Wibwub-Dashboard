@@ -3,6 +3,23 @@ name: wibwub-thursday-affiliate
 description: ทุกวัน 08:50/19:50 — โหลดไฟล์ TikTok Affiliate → อัปเดต Affiliate Dashboard + Mobile
 ---
 
+## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
+
+พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
+จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
+
+```bash
+for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+```
+
+- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
+- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
+  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
+  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+
+---
+
+
 ## WIBWUB — อัปเดตข้อมูล Affiliate
 
 BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
@@ -94,6 +111,39 @@ git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 
 เดือนล่าสุด + GMV / Net / Commission / จำนวนครีเอเตอร์, จำนวน creator ในตาราง,
 `mobile_mismatch` ว่าง/ไม่ว่าง, VIDEOS ที่เพิ่ม (ถ้ารัน), commit id หรือ "ไม่มีข้อมูลใหม่", error ถ้ามี
+
+---
+
+## 🚨 ทำงานไม่ได้ = ต้องรายงานว่าล้มเหลว ห้ามขึ้นว่าสำเร็จ
+
+**กรณีที่ถือว่าล้มเหลว**
+
+1. **เข้าโฟลเดอร์ All ไม่ได้** (ขั้น 0 ไม่เจอพาธ)
+2. **เปิดเว็บไม่ได้** — `navigate`/`browser_batch` คืนข้อความใดข้อความหนึ่งนี้
+   - `The approval prompt for this browser action went unanswered for 5 minutes` (กล่องขออนุญาตไม่มีคนกด)
+   - `Navigation to this domain is not allowed` (สิทธิ์โดเมนถูกปฏิเสธ)
+   - `Tab ... is not in Claude's tab group` / เชื่อมต่อส่วนขยายไม่ได้
+3. **สคริปต์ที่พรอมป์ระบุหายหรือพัง**
+
+**สิ่งที่ต้องทำเมื่อล้มเหลว**
+
+1. **ลองครั้งเดียวพอ ห้ามวนลองซ้ำ** — เคยเสียเวลา 5 นาทีต่อหนึ่งเว็บโดยไม่ได้อะไร
+   (22 ต.ค. 69 งาน HR ลองทั้ง `browser_batch` และ `javascript_tool` ตรงไปที่แท็บที่ล็อกอินค้างอยู่
+   ก็โดนกล่องเดียวกันทั้งคู่ — แท็บที่เปิดค้างไว้ช่วยไม่ได้)
+2. ปิดแท็บที่เปิดไว้ด้วย `tabs_close_mcp`
+3. จบงานโดยขึ้นต้นบรรทัดแรกด้วย
+   `❌ ล้มเหลว — <สาเหตุสั้น ๆ> ไม่ได้ข้อมูลใหม่รอบนี้`
+   แล้วบอกด้วยว่าข้อมูลล่าสุดในไฟล์อยู่ถึงวันไหน
+
+**ห้ามทำเด็ดขาด**
+
+- ❌ ห้ามหันไปใช้ไฟล์เก่าแล้วรายงานว่า "สำเร็จ" — ถ้าดึงของใหม่ไม่ได้ ถือว่าล้มเหลว
+- ❌ ห้ามเขียน ✅ หรือคำว่า "เสร็จ/สำเร็จ/OK" เมื่อขั้นใดขั้นหนึ่งข้างบนไม่ผ่าน
+- ❌ ห้ามเดาตัวเลข หรือคัดลอกตัวเลขจากรอบก่อนมาใส่
+
+> ใช้ไฟล์เดิมได้เฉพาะกรณีที่พรอมป์ระบุไว้ชัดเจนว่าเป็นทางสำรองที่ยอมรับได้
+> (เช่น ads-daily ใช้ `work/*.json` ที่ครอบช่วง `from→to` พอดี) และต้อง**รายงานตรง ๆ
+> ว่ารอบนี้ใช้ของเดิม ไม่ได้ดึงใหม่**
 
 ---
 
