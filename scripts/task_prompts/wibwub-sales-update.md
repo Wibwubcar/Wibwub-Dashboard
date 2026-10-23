@@ -63,8 +63,8 @@ exit `0` = อัปเดตแล้ว (bump sw.js ให้ด้วย) · 
 ### 3. commit (เฉพาะตอน exit 0)
 
 ```bash
-git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" && git add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" && git -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto-update: sales from Sheets $(date +%Y-%m-%d)"
 ```
 
@@ -132,7 +132,7 @@ git -C "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 
 | ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
 |---|---|---|
-| `cd "<path>" && git status` | cd + git = ตัวตรวจตีธง (รัน hook ได้) | `git -C "<path เต็ม>" status` |
+| `git -C "<path>" ...` | **ห้ามใช้** — กฎ deny จับจากคำขึ้นต้น `git push` จึงกัน `git -C <path> push` ไม่ได้ = เปิดช่องให้ push หลุด | `cd "<path เต็ม>" && git status` |
 | `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
 | `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
 | `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
