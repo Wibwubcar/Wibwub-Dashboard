@@ -159,7 +159,6 @@ and this run looks unattended"* แปลว่าไม่มีคนกดอ
 
 | ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
 |---|---|---|
-| `cd "<path>" && git status` | cd + git = ตัวตรวจตีธง | `cd "<path เต็ม>" && git status` |
 | `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
 | `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
 | `for ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขเข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python |

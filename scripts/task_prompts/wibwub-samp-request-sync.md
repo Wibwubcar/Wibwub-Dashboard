@@ -152,7 +152,7 @@ commit id หรือ "ไม่มีข้อมูลใหม่" หรื
 
 | ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
 |---|---|---|
-| `git -C "<path>" ...` | **ห้ามใช้** — กฎ deny จับจากคำขึ้นต้น `git push` จึงกัน `git -C <path> push` ไม่ได้ = เปิดช่องให้ push หลุด | `cd "<path เต็ม>" && git status` |
+| `git ...` ทุกรูปแบบ | `git -C` เปิดช่องให้ push หลุด · `cd ... && git` ขึ้นต้นด้วย cd จึงไม่แมตช์กฎ `Bash(git add:*)` → งานค้างรออนุญาต | `python3 "<BASE>/scripts/gitw.py" add/commit/status/log` |
 | `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
 | `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
 | `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
