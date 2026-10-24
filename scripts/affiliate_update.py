@@ -20,8 +20,21 @@ exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเ�
 import sys, json, argparse, re
 from pathlib import Path
 
-BASE = Path('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com'
-            '/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All')
+def _find_base():
+    """ไล่ขึ้นจากตำแหน่งไฟล์นี้จนเจอโฟลเดอร์ All — ดูจาก marker sw.js + .git
+
+    ห้ามฝังพาธ Mac ตายตัว: งานตั้งเวลาฝั่ง local รันในแซนด์บ็อกซ์ที่ mount โฟลเดอร์ All
+    ไว้คนละที่ (/sessions/<ชื่อ>/mnt/All) และชื่อเซสชันเปลี่ยนทุกรอบ (24 ต.ค. 69)
+    """
+    p = Path(__file__).resolve()
+    for d in (p, *p.parents):
+        if (d / 'sw.js').is_file() and (d / '.git').exists():
+            return d
+    raise SystemExit(f'หาโฟลเดอร์ All ไม่เจอ — ไล่ขึ้นจาก {p} แล้วไม่เจอโฟลเดอร์ที่มีทั้ง '
+                     'sw.js และ .git · ห้ามเดาพาธ ให้ตรวจว่าสคริปต์ยังอยู่ในโฟลเดอร์ All หรือไม่')
+
+
+BASE = _find_base()
 AFF = BASE / 'WIBWUB_Affiliate_Dashboard.html'
 MOB = BASE / 'WIBWUB_Mobile.html'
 # ชื่ออาเรย์ที่ต้องตรงกันระหว่าง 2 หน้า (Affiliate Dashboard -> Mobile)

@@ -19,8 +19,25 @@ exit: 0 = คัดลอกแล้ว/มีอยู่แล้ว · 1 = �
 """
 import sys, os, glob, json, time, shutil, argparse
 
-ALL = ('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com'
-       '/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All')
+def _find_base():
+    """ไล่ขึ้นจากตำแหน่งไฟล์นี้จนเจอโฟลเดอร์ All — ดูจาก marker sw.js + .git
+
+    ห้ามฝังพาธ Mac ตายตัว: งานตั้งเวลาฝั่ง local รันในแซนด์บ็อกซ์ที่ mount โฟลเดอร์ All
+    ไว้คนละที่ (/sessions/<ชื่อ>/mnt/All) และชื่อเซสชันเปลี่ยนทุกรอบ (24 ต.ค. 69)
+    """
+    d = os.path.dirname(os.path.abspath(__file__))
+    while True:
+        if os.path.isfile(os.path.join(d, 'sw.js')) and os.path.exists(os.path.join(d, '.git')):
+            return d
+        parent = os.path.dirname(d)
+        if parent == d:
+            raise SystemExit('หาโฟลเดอร์ All ไม่เจอ — ไล่ขึ้นจาก %s แล้วไม่เจอโฟลเดอร์ที่มีทั้ง '
+                             'sw.js และ .git · ห้ามเดาพาธ ให้ตรวจว่าสคริปต์ยังอยู่ในโฟลเดอร์ All หรือไม่'
+                             % os.path.abspath(__file__))
+        d = parent
+
+
+ALL = _find_base()
 DL = os.path.expanduser('~/Downloads')
 
 
