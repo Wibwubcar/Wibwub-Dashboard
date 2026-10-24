@@ -23,7 +23,7 @@
 
 exit: 0 = เขียนแล้ว · 10 = ไม่มีอะไรต้องเขียน · 2 = ผิดพลาด (ไม่เขียนอะไรเลย)
 """
-import sys, json, argparse, re
+import sys, json, argparse, re, time
 from pathlib import Path
 
 SHEET_ID = '1OWZGQD1wHvIlLAAg_7rJ0CtL-X9vEx4py-cRp_e3NvQ'
@@ -37,9 +37,9 @@ COL = dict(A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7, I=8, J=9,
 FILL = ['K', 'N', 'O', 'P', 'Q', 'R', 'S', 'T']       # ช่องตัวเลขที่เติมได้
 
 
-def die(msg, detail=None):
+def die(msg, detail=None, code=2):
     print(json.dumps({'status': 'ERROR', 'error': msg, 'detail': detail}, ensure_ascii=False))
-    sys.exit(2)
+    sys.exit(code)
 
 
 def vid_of(url):
@@ -105,8 +105,19 @@ def cmd_plan(a):
 
 
 def cmd_write(a):
+    src = Path(a.input)
+    # ด่านกันเขียนซ้ำด้วยไฟล์เก่า: ท่อนเก็บตัวเลขอยู่คนละงาน (local ผ่าน Chrome)
+    # ถ้าท่อนนั้นล้ม ไฟล์เดิมจะยังอยู่ และงานนี้จะเขียนของเก่าซ้ำโดยไม่รู้ตัว (24 ต.ค. 69)
+    if getattr(a, 'max_age_min', None):
+        if not src.exists():
+            die('ไม่พบไฟล์ --in', str(src), code=3)
+        age = (time.time() - src.stat().st_mtime) / 60
+        if age > a.max_age_min:
+            die('ไฟล์ --in เก่าเกินกำหนด ไม่เขียนซ้ำ',
+                f'{src.name} เก่า {age:.0f} นาที (จำกัด {a.max_age_min}) '
+                f'— ให้งานที่เก็บตัวเลขคลิปรันใหม่ก่อน', code=3)
     try:
-        items = json.loads(Path(a.input).read_text(encoding='utf-8'))
+        items = json.loads(src.read_text(encoding='utf-8'))
     except Exception as e:
         die('อ่านไฟล์ --in ไม่ได้', f'{type(e).__name__}: {e}')
     if isinstance(items, dict):
@@ -189,6 +200,7 @@ def main():
     w = sub.add_parser('write')
     w.add_argument('--in', dest='input', required=True)
     w.add_argument('--dry-run', action='store_true')
+    w.add_argument('--max-age-min', type=int, dest='max_age_min')
     a = ap.parse_args()
     (cmd_plan if a.cmd == 'plan' else cmd_write)(a)
 
