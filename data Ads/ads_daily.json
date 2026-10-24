@@ -13474,7 +13474,7 @@
    },
    "tk_ads": {
     "product": {
-     "gmv": 87101.67,
+     "gmv": 87129.08,
      "spend": 19850.62,
      "orders": 439
     },
@@ -13495,11 +13495,64 @@
     "imp": 10,
     "clicks": 0
    }
+  },
+  "2026-10-23": {
+   "sh_real": {
+    "gmv": 175114,
+    "orders": 323
+   },
+   "sh_ads": {
+    "product": {
+     "gmv_broad": 171286,
+     "gmv_direct": 149100,
+     "spend": 26004,
+     "orders": 399
+    },
+    "search": {
+     "gmv_broad": 8925,
+     "gmv_direct": 8385,
+     "spend": 3294,
+     "orders": 29
+    },
+    "live": {
+     "gmv_broad": 0,
+     "gmv_direct": 0,
+     "spend": 0,
+     "orders": 0
+    }
+   },
+   "tk_real": {
+    "gmv": 100734.96,
+    "orders": 492
+   },
+   "tk_ads": {
+    "product": {
+     "gmv": 101023.65,
+     "spend": 25448.82,
+     "orders": 508
+    },
+    "live": {
+     "gmv": 0.0,
+     "spend": 0.0,
+     "orders": 0
+    }
+   },
+   "lz_real": {
+    "gmv": 2584.0,
+    "orders": 5
+   },
+   "lz_ads": {
+    "spend": 0.0,
+    "revenue": 0.0,
+    "orders": 0,
+    "imp": 9,
+    "clicks": 0
+   }
   }
  },
  "coverage": {
-  "shopee": "2026-10-22",
-  "tiktok": "2026-10-22",
-  "lazada": "2026-10-22"
+  "shopee": "2026-10-23",
+  "tiktok": "2026-10-23",
+  "lazada": "2026-10-23"
  }
 }
