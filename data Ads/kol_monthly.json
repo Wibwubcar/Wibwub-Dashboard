@@ -1,7 +1,7 @@
 {
  "source": "Payment KOL Wibwub (aggregate only — no personal data)",
  "rule": "Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย",
- "fetched_at": "2026-10-25 09:47",
+ "fetched_at": "2026-10-25 22:18",
  "months": {
   "2025-01": {
    "amount": 26000.0,
