@@ -13580,7 +13580,7 @@
    },
    "tk_ads": {
     "product": {
-     "gmv": 104539.34,
+     "gmv": 104511.88,
      "spend": 26717.02,
      "orders": 516
     },
@@ -13589,12 +13589,23 @@
      "spend": 0.0,
      "orders": 0
     }
+   },
+   "lz_real": {
+    "gmv": 6767.0,
+    "orders": 9
+   },
+   "lz_ads": {
+    "spend": 0.0,
+    "revenue": 2615.0,
+    "orders": 2,
+    "imp": 11,
+    "clicks": 0
    }
   }
  },
  "coverage": {
   "shopee": "2026-10-24",
   "tiktok": "2026-10-24",
-  "lazada": "2026-10-23"
+  "lazada": "2026-10-24"
  }
 }
