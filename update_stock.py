@@ -86,6 +86,7 @@ if not selected_files and order_files:
 sold7_map, sold14_map = {}, {}
 day_sku_qty = {}  # date_str -> sku -> qty (รวมจากทุกไฟล์ที่เลือก — ใช้อัปเดต HIST_DAILY/HIST_DATES ด้านล่างด้วย)
 name_fallback = {}
+latest_order_dt = None
 if not order_files:
     print("⚠️  ไม่พบไฟล์ Data_DD-MM-YYYY.xlsx ใน Data Shipnity/ — จะข้ามการคำนวณ sold7d/sold14d/burn (ใช้ค่าเดิม)")
 else:
@@ -98,6 +99,7 @@ else:
     d7_start  = (today_dt - timedelta(days=7)).date()   # ขาย 7 วันเต็มล่าสุด (ไม่รวมวันนี้)
     d14_start = (today_dt - timedelta(days=14)).date()  # ขาย 14 วันเต็มล่าสุด (ไม่รวมวันนี้)
     total_rows_seen = 0
+    latest_order_dt = None
     # กัน double-count ข้ามไฟล์: เมื่อเปลี่ยนเดือน ไฟล์ของเดือนใหม่ที่ export ตอนต้นเดือนมากๆ
     # (เช่น Data_01-09-2026.xlsx) บางครั้ง Shipnity ยังไม่รีเซ็ต ทำให้ไฟล์นั้นมีข้อมูลของ
     # "ทั้งเดือนก่อนหน้า" ติดมาด้วย (ไม่ใช่แค่เดือนใหม่ตามชื่อไฟล์) — พบเจอจริง 1 ก.ย. 2569:
@@ -124,11 +126,14 @@ else:
                 continue
             try:
                 if isinstance(created_raw, datetime):
-                    created_date = created_raw.date()
+                    created_dt_full = created_raw
                 else:
-                    created_date = datetime.strptime(str(created_raw).strip()[:16], "%d/%m/%Y %H:%M").date()
+                    created_dt_full = datetime.strptime(str(created_raw).strip()[:16], "%d/%m/%Y %H:%M")
+                created_date = created_dt_full.date()
             except Exception:
                 continue
+            if latest_order_dt is None or created_dt_full > latest_order_dt:
+                latest_order_dt = created_dt_full
             rows_seen += 1
             dedup_key = (order_no, sku)
             if dedup_key in seen_order_sku:
@@ -262,6 +267,36 @@ html_new = re.sub(
     f'const PRODUCTS = {new_products_json};',
     html, flags=re.DOTALL
 )
+
+# ─── ด่านตรวจว่าไฟล์ออเดอร์ครอบคลุมถึงเมื่อวานจริงไหม ─────────────────
+# sold7d/sold14d/burn นับ "7/14 วันเต็มล่าสุด สิ้นสุดเมื่อวาน" ถ้าไฟล์ export
+# หยุดไปหลายวัน หน้าต่างจะมีข้อมูลไม่ครบแล้วคำนวณต่ำกว่าจริงแบบเงียบ ๆ
+# (เกิดจริง 26 ต.ค. 69: ไฟล์ล่าสุดคือ 24 ต.ค. ทำให้ 7 วันเหลือข้อมูลแค่ ~5 วัน)
+_cutoff = datetime.combine(datetime.now().date() - timedelta(days=1),
+                           datetime.max.time().replace(microsecond=0))   # เมื่อวาน 23:59:59
+if latest_order_dt is None:
+    _warn = {"stale": True, "through": "",
+             "msg": "ยอด 7 วันไม่ครบ — ไม่พบไฟล์ออเดอร์ Data_DD-MM-YYYY.xlsx เลย"}
+elif latest_order_dt < _cutoff:
+    _through = latest_order_dt.strftime("%d/%m/%Y %H:%M")
+    _missing = (datetime.now().date() - latest_order_dt.date()).days
+    _warn = {"stale": True, "through": _through,
+             "msg": f"ยอด 7 วันไม่ครบ ข้อมูลถึง {_through} (ขาดไป {_missing} วัน) "
+                    f"— ตัวเลขขาย 7/14 วันและ Burn/วัน ต่ำกว่าจริง"}
+else:
+    _warn = {"stale": False, "through": latest_order_dt.strftime("%d/%m/%Y %H:%M"), "msg": ""}
+
+if _warn["stale"]:
+    print(f"⚠️  WARNING: {_warn['msg']}")
+else:
+    print(f"✅ ไฟล์ออเดอร์ครอบคลุมถึง {_warn['through']} (ครบถึงเมื่อวาน)")
+
+_warn_json = json.dumps(_warn, ensure_ascii=False, separators=(',', ':'))
+html_new, _n_warn = re.subn(r'const STOCK_DATA_WARN *= *\{.*?\};',
+                            lambda m: f'const STOCK_DATA_WARN = {_warn_json};',
+                            html_new, count=1, flags=re.DOTALL)
+if _n_warn != 1:
+    print("⚠️  WARNING: ไม่พบ const STOCK_DATA_WARN ใน Dashboard — ป้ายเตือนจะไม่ขึ้นบนหน้าเว็บ")
 
 # ─── อัปเดต HIST_DAILY/HIST_DATES/HIST_SKUS (ตาราง "ดูย้อนหลัง") ──────────────────
 # เดิมตารางนี้ถูกสร้างครั้งเดียวตอน redesign (ครอบคลุมแค่ ม.ค.-29 มิ.ย. 2569) แล้วไม่เคย
