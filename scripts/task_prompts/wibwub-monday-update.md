@@ -26,7 +26,15 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 
 อัปเดต `ALL_PRODUCTS` (15 สินค้า) และ `PROD_MO` (ยอดรายเดือนต่อสินค้า) ใน `WIBWUB_Mobile.html`
 
-> **งานนี้เหลือแค่ส่วนสินค้าแล้ว** — ส่วนอื่นที่เคยอยู่ในพรอมป์เก่าย้ายไปที่อื่นหมด:
+> **งานนี้มี 2 หน้าที่: (ก) ดาวน์โหลดไฟล์ออเดอร์จาก Shipnity  (ข) อัปเดต Top สินค้า**
+>
+> ⚠️ **ขั้นดาวน์โหลด (ขั้นที่ 0 ข้างล่าง) เป็นของงานนี้เท่านั้น ห้ามข้าม** — ไม่มีงานอื่นทำแทน
+> ไฟล์ `Data Shipnity/Data_DD-MM-YYYY.xlsx` ที่ได้จากขั้นนี้ถูกใช้ต่อโดย `update_stock.py`
+> (sold7d/burn ในหน้าสต๊อก), `shipnity_update.py` และ `products_update.py`
+> เคยมีข้อความเก่าบอกว่าขั้นนี้ย้ายไปงานอื่นแล้ว ซึ่ง**ไม่จริง** ทำให้ export หยุดไป
+> 25–26 ต.ค. 69 แล้ว sold7d ต่ำกว่าจริง (SSUG010024 ได้ 550 ทั้งที่ของจริง 813)
+>
+> ส่วน*การคำนวณ*อื่นที่เคยอยู่ในพรอมป์เก่าย้ายไปที่อื่นหมดแล้วจริง (ขั้นดาวน์โหลดไม่ได้ย้ายไปด้วย):
 > - Affiliate → `wibwub-thursday-affiliate` (`scripts/affiliate_update.py`)
 > - Shipnity Sales_Dashboard + อาเรย์ช่องทาง → `wibwub-shipnity-monday`
 > - ยอดขาย SH/TK/LZ → `wibwub-sales-update`
@@ -46,6 +54,49 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 ---
 
 ## ขั้นตอน
+
+### 0. ดาวน์โหลดไฟล์ออเดอร์จาก Shipnity (ทำก่อนเสมอ ห้ามข้าม)
+
+```
+select_browser(deviceId ที่ osPlatform เป็น macOS) → tabs_context_mcp(createIfEmpty=true)
+browser_batch([ navigate("https://www.shipnity.com/data/c/purchase"), wait 6, screenshot ])
+```
+
+1. ตรวจว่าหน้า "ประวัติ" โหลดขึ้น และตัวกรองซ้ายบนเป็น **"สินค้าในออเดอร์"**
+   ถ้าเจอหน้า login: **หยุดและรายงานว่าล้มเหลว ห้ามกรอกรหัสผ่าน**
+2. กดปุ่มช่วงวันที่มุมขวาบน (ป้าย "วันที่สร้าง") แล้วกดปุ่มลัด **"เดือนนี้"**
+   ยืนยันว่าป้ายเปลี่ยนเป็น `1 <เดือน> <ปี> ~ 31 <เดือน> <ปี>` และตารางมีข้อมูลขึ้นมา
+3. กด **"ส่งออกข้อมูล"** (ปุ่มขวาบน)
+4. ⚠️ **ในกล่อง Export ต้องเลือก "ไฟล์เดียว" เสมอ**
+   ค่าเริ่มต้นคือ **"แยกไฟล์"** 500 แถว/ไฟล์ ซึ่งจะได้ `Data-Page-1_*.xlsx` ที่เป็นไฟล์หลอก
+   (มีแค่ ~500 แถวล่าสุด) ถ้าใช้ไฟล์นั้น sold7d/sold14d/burn ของทุก SKU จะผิดแบบไม่มี error
+5. กด **Export File** แล้ว **รอจนขึ้น 100%** — ไฟล์ ~33 MB ใช้เวลาราว **10 นาที**
+   ห้ามปิดแท็บก่อนเสร็จ ระหว่างรอให้เช็กด้วย `find` (อย่าใช้ `ls` กับ glob — zsh ล้มถ้าไม่แมตช์)
+   ```bash
+   find "$BASE/Data Shipnity" "$HOME/Downloads" -maxdepth 1 -name 'Data_*.xlsx' -newermt "today" 2>/dev/null
+   ```
+6. download-mover จะย้ายไฟล์เข้า `Data Shipnity/` ให้เองภายใน 5 วินาที **ห้าม cp/mv เอง**
+
+**ด่านตรวจก่อนไปขั้นถัดไป**
+
+```bash
+python3 - "$BASE" <<'PY'
+import sys, os, glob, datetime as dt
+base = sys.argv[1]
+fs = glob.glob(os.path.join(base, "Data Shipnity", "Data_[0-9][0-9]-[0-9][0-9]-*.xlsx"))
+if not fs:
+    print("FAIL ไม่พบไฟล์ Data_DD-MM-YYYY.xlsx เลย"); sys.exit(1)
+newest = max(fs, key=os.path.getmtime)
+d = dt.date.fromtimestamp(os.path.getmtime(newest))
+ok = d == dt.date.today()
+print(("OK " if ok else "FAIL ") + os.path.basename(newest) + " ลงวันที่ " + d.isoformat())
+sys.exit(0 if ok else 1)
+PY
+```
+
+ได้ `FAIL` → **ขึ้นต้นรายงานด้วย `❌ ล้มเหลว — export Shipnity ไม่สำเร็จ`**
+บอกด้วยว่าไฟล์ล่าสุดที่มีคือวันไหน **ห้ามเขียนว่าสำเร็จเด็ดขาด**
+ทำขั้นที่ 1–2 ต่อได้ (Top สินค้ายังคำนวณจากไฟล์เก่าได้) แต่ต้องรายงานว่าส่วนดาวน์โหลดล้มเหลว
 
 ### 1. ดูก่อนว่าจะเปลี่ยนอะไร
 
