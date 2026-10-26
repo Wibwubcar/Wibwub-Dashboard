@@ -331,19 +331,19 @@
   },
   "oct": {
    "from": "2026-10-01",
-   "to": "2026-10-24",
+   "to": "2026-10-25",
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 195313,
-     "orders": 6036,
-     "revenue": 744133.77
+     "spend": 205296.49,
+     "orders": 6324,
+     "revenue": 783322.55
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 181366.15,
-     "orders": 1864,
-     "revenue": 682207.9
+     "spend": 186798.4,
+     "orders": 1912,
+     "revenue": 701279.98
     },
     {
      "name": "21.09.26/Banyakart",
@@ -353,39 +353,39 @@
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 101880.49,
-     "orders": 2861,
-     "revenue": 378275.44
+     "spend": 105286.19,
+     "orders": 2983,
+     "revenue": 393020.05
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 65298.56,
-     "orders": 1024,
-     "revenue": 397422.56
+     "spend": 66817.79,
+     "orders": 1053,
+     "revenue": 409779.54
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 38646.34,
-     "orders": 360,
-     "revenue": 117498.16
+     "spend": 42011.99,
+     "orders": 393,
+     "revenue": 128288.82
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 30893.23,
-     "orders": 387,
-     "revenue": 89671.9
+     "spend": 38104.82,
+     "orders": 464,
+     "revenue": 108453.94
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 29441.36,
-     "orders": 324,
-     "revenue": 147587.62
+     "spend": 30040.66,
+     "orders": 334,
+     "revenue": 152207.31
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 28240.44,
-     "orders": 183,
-     "revenue": 109385.6
+     "spend": 29467.84,
+     "orders": 189,
+     "revenue": 113626.92
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -412,6 +412,12 @@
      "spend": 200,
      "orders": 39,
      "revenue": 15205.01
+    },
+    {
+     "name": "25.10.26/Live ปาย",
+     "spend": 159.52,
+     "orders": 8,
+     "revenue": 2608
     },
     {
      "name": "10.10.26/แอ้นปายบ่าย",
