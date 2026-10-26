@@ -167,3 +167,132 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 **ถ้าต้องมีตรรกะ (วนลูป / เช็คเงื่อนไข / ประกอบพาธ): เขียนเป็นสคริปต์ python
 ไว้ใน `scripts/` แล้วเรียกด้วยพาธเต็ม** เช่น `python3 "<path เต็ม>/scripts/ads/check_downloads.py" tiktok`
 วิธีนี้ทั้งอ่านง่ายกว่า ทดสอบแยกได้ และไม่ติดกำแพงสิทธิ์
+
+---
+---
+
+# 🚩 ขั้นที่มีเฉพาะใน SKILL.md — ย้ายเข้ามา 26 ต.ค. 2569
+
+สามขั้นข้างล่างเคยอยู่ใน SKILL.md ของงาน local ที่เดียว พรอมป์ใน repo ไม่มี
+ทำให้ "ขั้นที่ 1 — โหลดไฟล์ใหม่" ข้างบนโหลดมาแค่ Creator List แค่ไฟล์เดียว
+แต่ "ขั้นที่ 4 — VIDEOS" กลับต้องใช้ไฟล์แท็บ "วีดิโอ" ที่ไม่เคยโหลด
+และการอัปเดต `PRODUCTS[].cr / .vid` ก็หายไปทั้งขั้น
+
+**หมายเหตุ 2 ข้อ**
+1. STEP 3 ของ SKILL.md (คำสั่งย้ายไฟล์จาก Downloads ด้วยมือ) **ไม่ได้ย้ายมา**
+   เพราะ launchd `com.wibwub.download-mover` ย้ายให้เองใน 5 วินาที และกฎของรีโปคือ **ห้าม `cp`/`mv` เอง**
+2. โค้ด STEP 5 ข้างล่างคือโค้ด inline ที่ยกมาตามเดิม (แก้เฉพาะพาธ `/sessions/` → พาธจริง)
+   ยัง**ไม่มีสคริปต์รองรับ** ต่างจากขั้นอื่นที่มี `affiliate_update.py` / `vid_merge.py`
+   ถ้าค่า `cr`/`vid` ออกมาเพี้ยน → **หยุดรายงาน ห้ามเดาค่าเอง**
+
+---
+
+## STEP 1 — เปิดหน้าและตั้ง Date Range
+
+1. ⚠️ **ต้องระบุ browser ที่ Mac เสมอ ห้ามปล่อยให้เลือกอัตโนมัติ** — ถ้ามีหลาย browser connected อาจไปรันบน PC โดยไม่ตั้งใจ:
+   `select_browser(deviceId="b75a6bb0-5b78-4e44-92a8-75224f1ce4ee")` → `tabs_context_mcp(createIfEmpty=true)`
+   (ถ้า deviceId นี้ไม่ connected แล้ว ให้เรียก `list_connected_browsers` ก่อน แล้วเลือกตัวที่ `osPlatform` เป็น macOS / `isLocal:true` เท่านั้น — ห้ามเลือก Windows/PC)
+
+2. Navigate ด้วย browser_batch:
+   - URL: `https://affiliate.tiktok.com/insights/transaction-analysis?shop_region=TH&shop_id=7494549095358892612`
+   - wait 5s → screenshot ยืนยันหน้า "การวิเคราะห์ธุรกรรม" / "Transaction Analysis" โหลดแล้ว
+
+3. Set date range เดือนปัจจุบัน:
+   - คลิก date field → เลือก "กำหนดเอง"
+   - Start = วันที่ 1 ของเดือน, End = วันล่าสุดที่ available (ถ้าวันนี้ greyed out → วันก่อน)
+   - บันทึก end_date จริงที่ระบบยอมรับ
+
+---
+
+## STEP 2 — Export และดาวน์โหลด 4 ไฟล์ทีละ Tab
+
+ทำซ้ำ 4 รอบ — แต่ละ tab มีปุ่ม "ส่งออก" ของตัวเอง
+Export เป็น async queue: trigger → รอ → download จาก reports panel
+
+### Tab 1: ครีเอเตอร์
+1. ตรวจว่าอยู่ที่ tab **ครีเอเตอร์** (default) — ถ้าไม่ใช่ให้คลิก
+2. Scroll หาปุ่ม **"ส่งออก"** เหนือตาราง → คลิก
+3. รอ 60-90 วินาที
+4. คลิกปุ่ม **"บันทึกการดาวน์โหลดไฟล์"** (document icon) → reports panel
+5. หาไฟล์ล่าสุดที่สถานะ **"ดาวน์โหลด"** → คลิก ดาวน์โหลด
+   - ถ้ายัง **"กำลังส่งออก"** → รออีก 30s แล้ว refresh panel
+
+### Tab 2: สินค้า
+6. คลิก tab **"สินค้า"** → รอ 3s → screenshot
+7. ปุ่ม "ส่งออก" → คลิก → รอ 60-90s → download จาก reports panel
+
+### Tab 3: วีดีโอ
+8. คลิก tab **"วีดีโอ"** → รอ 3s → screenshot
+9. ปุ่ม "ส่งออก" → คลิก → รอ 60-90s → download จาก reports panel
+
+### Tab 4: ไลฟ์สตรีม
+10. คลิก tab **"ไลฟ์สตรีม"** → รอ 3s → screenshot
+11. ปุ่ม "ส่งออก" → คลิก → รอ 60-90s → download จาก reports panel
+
+> ถ้า panel มีไฟล์ same-day ที่พร้อมอยู่แล้ว → ดาวน์โหลดได้เลย ไม่ต้อง export ใหม่
+
+---
+
+
+---
+
+## STEP 5 — Process ไฟล์ สินค้า → อัปเดต PRODUCTS cr/vid
+
+```python
+PROD_DIR = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/Data Affiliate/สินค้า/'
+prod_files = sorted(glob.glob(PROD_DIR + '*.xlsx'), key=os.path.getmtime, reverse=True)
+if not prod_files:
+    print("WARNING: ไม่พบไฟล์ในโฟลเดอร์สินค้า — ข้ามขั้นตอนนี้")
+else:
+    df_prod = pd.read_excel(prod_files[0], header=None)
+    
+    # หา header row ที่มีชื่อ column
+    header_idx = 0
+    for i, row in df_prod.iterrows():
+        row_str = ' '.join(str(v) for v in row.values if pd.notna(v))
+        if 'สินค้า' in row_str or 'GMV' in row_str or 'ครีเอเตอร์' in row_str:
+            header_idx = i
+            break
+    
+    df_prod = pd.read_excel(prod_files[0], header=header_idx)
+    print(f"Columns: {list(df_prod.columns)}")
+    
+    # หา columns สำคัญ (ชื่อ column อาจต่างกันตามเวอร์ชัน TikTok)
+    # ค้นหา: product name, ครีเอเตอร์ที่มียอดขาย, วีดีโอ
+    cols = {str(c).lower(): i for i, c in enumerate(df_prod.columns)}
+    
+    # สร้าง product cr/vid dict
+    prod_data = {}
+    for _, row in df_prod.iterrows():
+        name = str(row.iloc[0]) if pd.notna(row.iloc[0]) else ''
+        if not name or name == 'nan': continue
+        # ค้นหา cr column (ครีเอเตอร์ที่มียอดขาย)
+        cr_val = 0
+        vid_val = 0
+        for col_name, col_idx in cols.items():
+            if 'ครีเอเตอร์' in col_name and 'ขาย' in col_name:
+                cr_val = int(pd.to_numeric(row.iloc[col_idx], errors='coerce') or 0)
+            elif 'วีดีโอ' in col_name or 'video' in col_name:
+                vid_val = int(pd.to_numeric(row.iloc[col_idx], errors='coerce') or 0)
+        prod_data[name] = {'cr': cr_val, 'vid': vid_val}
+    
+    print(f"Products found: {list(prod_data.items())[:5]}")
+```
+
+**Mapping TikTok product name → PRODUCTS[].name (fuzzy keyword):**
+| Keyword | PRODUCTS[].name |
+|---|---|
+| Leather | WIBWUB Refresh Leather Wipes |
+| interior wipe (case-insensitive) | WIBWUB Interior wipes |
+| Sugar | WIBWUB Sugar |
+| CLEANER | WIBWUB CLEANER |
+| Interior (ไม่มี "wipe") | WIBWUB Interior |
+| Refresh (ไม่มี "Leather") | WIBWUB Refresh |
+| Visible | WIBWUB Visible |
+
+**อัปเดต `WIBWUB_Affiliate_Dashboard.html`:**
+- `PRODUCTS` array: แก้เฉพาะ `cr` และ `vid` fields (ห้ามแก้ gmv, units, monthly, ret)
+- KPI strip สินค้า tab: `ผ่าน X,XXX creators` = รวม cr ทุกสินค้า
+
+---
+
