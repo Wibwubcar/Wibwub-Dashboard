@@ -1,7 +1,7 @@
 {
  "source": "Payment KOL Wibwub (aggregate only — no personal data)",
  "rule": "Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย",
- "fetched_at": "2026-10-25 22:18",
+ "fetched_at": "2026-10-26 09:48",
  "months": {
   "2025-01": {
    "amount": 26000.0,
@@ -56,8 +56,8 @@
    "n": 30
   },
   "2026-10": {
-   "amount": 14108.93,
-   "n": 8
+   "amount": 35608.93,
+   "n": 18
   }
  },
  "pending": {
@@ -70,8 +70,8 @@
    "n": 1
   },
   "2026-10": {
-   "amount": 21500.0,
-   "n": 10
+   "amount": 2080.0,
+   "n": 1
   },
   "undated": {
    "amount": 300.0,
@@ -3978,7 +3978,7 @@
    "tier": null,
    "kol": "atpk.live",
    "amt": 5200.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -3986,7 +3986,7 @@
    "tier": null,
    "kol": "stamphobby",
    "amt": 2600.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -3994,6 +3994,14 @@
    "tier": null,
    "kol": "supathanes",
    "amt": 2500.0,
+   "st": "done"
+  },
+  {
+   "d": "2026-10-20",
+   "camp": "Banyakart (Oct)",
+   "tier": null,
+   "kol": "milkreview4",
+   "amt": 2080.0,
    "st": "pending"
   },
   {
@@ -4002,7 +4010,7 @@
    "tier": null,
    "kol": "mormor.land",
    "amt": 2000.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4010,7 +4018,7 @@
    "tier": null,
    "kol": "mormor.land",
    "amt": 2000.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4018,7 +4026,7 @@
    "tier": null,
    "kol": "rungtanteeb789",
    "amt": 1500.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4026,7 +4034,7 @@
    "tier": null,
    "kol": "opel.s",
    "amt": 1500.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4034,7 +4042,7 @@
    "tier": null,
    "kol": "phannnqvzg2",
    "amt": 1500.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4042,7 +4050,7 @@
    "tier": null,
    "kol": "rungtanteeb789",
    "amt": 1500.0,
-   "st": "pending"
+   "st": "done"
   },
   {
    "d": "2026-10-20",
@@ -4050,7 +4058,7 @@
    "tier": null,
    "kol": "january.1991_",
    "amt": 1200.0,
-   "st": "pending"
+   "st": "done"
   }
  ],
  "tiers_unmapped": [
@@ -4068,5 +4076,5 @@
   "Seeding 200 Interior Apr-May 2026"
  ],
  "tabs_skipped": [],
- "rows_scanned": 661
+ "rows_scanned": 662
 }
