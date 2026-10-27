@@ -160,10 +160,12 @@ def main():
             si = fbj['keys'].index('spend')
         except Exception:
             die("fb_daily.json ไม่มีคีย์ spend ใน keys — รัน scripts/ads/fb_daily.py ใหม่")
-        for d, a in (fbj.get('days') or {}).items():
+        # ⚠️ ห้ามตั้งชื่อตัวแปรลูปว่า a — ชนกับ argparse namespace `a` ที่ใช้ต่อข้างล่าง
+        #    (27 ต.ค. 69: เคยชนจริง แล้วตายที่ `a.dry_run` หลังผ่านด่านตรวจไปหมดแล้ว)
+        for d, row in (fbj.get('days') or {}).items():
             if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
                 die('วันที่ใน fb_daily.json ผิดรูปแบบ', d)
-            man.setdefault(d, {})['ads_fb'] = round(float(a[si]), 2)
+            man.setdefault(d, {})['ads_fb'] = round(float(row[si]), 2)
         fb_src = {'from': fbj.get('from'), 'to': fbj.get('to'),
                   'spend': (fbj.get('total') or {}).get('spend'),
                   'generated': fbj.get('generated')}
