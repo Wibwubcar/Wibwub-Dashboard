@@ -60,7 +60,14 @@ order_files = sorted(
 #     ขายเฉลี่ย 800-1000 หน่วย/วัน — เพราะ order_files[0] ตอนนั้นคือไฟล์เล็กของเดือนใหม่)
 # แก้โดย: หา "ไฟล์ล่าสุดของแต่ละเดือน" เฉพาะเดือนที่หน้าต่าง 14 วันครอบคลุมถึง (ปกติ 1-2 เดือน)
 # แล้วรวมข้อมูลรายวันจากไฟล์เหล่านั้นเข้าด้วยกัน แทนที่จะใช้ไฟล์เดียว
-FNAME_RE = re.compile(r'Data_(\d{2})-(\d{2})-(\d{4})\.xlsx$')
+# รับ __<stamp> ต่อท้ายได้ด้วย — download-mover (safe_mv ใน scripts/wibwub_auto_move.sh)
+# ไม่เขียนทับไฟล์ชื่อซ้ำ แต่เปลี่ยนชื่อเป็น Data_DD-MM-YYYY__YYYYMMDD_HHMMSS.xlsx
+# ซึ่งเกิดทุกคืนตั้งแต่ daily-stock export เองทั้งรอบ 09:00 และ 19:00 (27 ต.ค. 69)
+# เดิม regex ปิดท้ายด้วย \.xlsx$ ติดกับปีพอดี ไฟล์ __stamp จึงถูกข้ามทั้งหมด
+# = export รอบเย็นโหลด 34 MB มาแล้วไม่มีใครอ่าน
+# ไฟล์วันเดียวกันมีหลายตัว -> order_files เรียงตาม mtime มาก->น้อย และเงื่อนไข day >
+# ข้างล่างเป็น strict จึงได้ไฟล์ที่ใหม่สุดของวันนั้นเสมอ
+FNAME_RE = re.compile(r'Data_(\d{2})-(\d{2})-(\d{4})(?:__\d{8}_\d{6})?\.xlsx$')
 _today_for_months = datetime.now().date()
 _d14_for_months = _today_for_months - timedelta(days=14)
 target_months = {(_today_for_months.year, _today_for_months.month),
