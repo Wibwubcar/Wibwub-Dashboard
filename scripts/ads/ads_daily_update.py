@@ -128,7 +128,16 @@ def commit():
         if r.returncode==0: break
         import time; time.sleep(3)
     else: sys.exit('git add ล้มเหลว: '+r.stderr[-300:])
-    msg='auto: ads daily (ยอดจริง vs Ads) ถึง %s'%max(d['days'])
+    # ข้อความ commit ต้องบอกว่ารอบนี้ "เพิ่มข้อมูลรายวันจริงไหม" ไม่ใช่บอกวันสูงสุดที่มีอยู่แล้วในไฟล์
+    # (27 ต.ค. 69: รอบ 08:35 merge ไม่ได้รันเพราะ TikTok Shop login หลุด แต่ขั้น commit ยังเขียน
+    #  "ถึง 2026-10-25" จาก max(d['days']) เดิม = commit 67c564c ที่แตะแค่ ads_periods/ads_tk_campaigns/sw.js
+    #  แต่ดูเหมือนรอบปกติทุกประการ ทำให้ไม่มีใครรู้ว่าวันที่ 26 หายไป)
+    dirty={l[3:].strip().strip('"') for l in st.splitlines() if l.strip()}
+    if 'data Ads/ads_daily.json' in dirty:
+        msg='auto: ads daily (ยอดจริง vs Ads) ถึง %s'%max(d['days'])
+    else:
+        other=sorted(x.split('/')[-1] for x in dirty)
+        msg='auto: ads daily — ไม่มีข้อมูลรายวันใหม่ (รายวันยังถึง %s) · อัปเดตเฉพาะ %s'%(max(d['days']),', '.join(other))
     r=git('-c','user.name=WIBWUB Bot','-c','user.email=marketingwibwub@gmail.com','commit','-m',msg,'--',*files,'sw.js'); unlock()
     print(r.stdout.strip() or r.stderr.strip()); print(git('log','-1','--format=%h %s').stdout.strip())
 if __name__=='__main__':
