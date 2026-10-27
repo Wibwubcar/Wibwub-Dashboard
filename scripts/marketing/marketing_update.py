@@ -13,8 +13,12 @@
       ที่เดียว ไม่ก๊อปมาเขียนใหม่ (เคยมีบั๊ก LINE_OA หายไปจากยอดรวม)
   · ค่าโฆษณา                      : `data Ads/ads_daily.json`
   · KOL                           : `data Ads/kol_monthly.json` (จาก kol_fetch.py)
-  · Facebook Ads / Event          : ยังไม่มีข้อมูล -> หน้าเว็บขึ้น "รอข้อมูล" และ
-      **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
+  · Facebook Ads (ads_fb)         : `data Ads/facebook/fb_daily.json` (จาก
+      scripts/ads/fb_daily.py ซึ่งอ่าน data Ads/facebook/daily/FBD_*.csv)
+      **แหล่งเดียว** — ชุดเดียวกับส่วน Facebook Ads ในหน้า Ads Dashboard
+      ห้ามกรอก ads_fb มือใน mkt_manual.json (สคริปต์จะตายถ้าเจอ)
+  · Event                         : กรอกมือใน `data Ads/mkt_manual.json`
+      ยังไม่มีข้อมูล -> หน้าเว็บขึ้น "รอข้อมูล" และ **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
 
 ⚠️ ชีต KOL มีข้อมูลส่วนบุคคล — ไฟล์นี้อ่านแค่ `kol_monthly.json` ซึ่งมีเฉพาะ
    วันที่ / ยอดเงิน / ชื่อช่อง (handle) / แคมเปญ / สถานะ
@@ -46,6 +50,9 @@ KOL = BASE / 'data Ads' / 'kol_monthly.json'
 # ค่าการตลาดที่ยังไม่มีระบบดึงอัตโนมัติ (Event, Facebook Ads) — กรอกมือ ไฟล์อาจยังว่าง
 MANUAL = BASE / 'data Ads' / 'mkt_manual.json'
 MANUAL_KEYS = ['ads_fb', 'event']
+# ads_fb มีแหล่งเดียว = fb_daily.json (สคริปต์เขียน ไม่ใช่คนกรอก) — ดูหัวไฟล์
+FBD = BASE / 'data Ads' / 'facebook' / 'fb_daily.json'
+AUTO_KEYS = {'ads_fb': FBD}
 # อัตราค่าธรรมเนียมแพลตฟอร์ม — ผู้ใช้กำหนดเป็นอัตราคงที่ แก้ที่ไฟล์นี้ได้เลย
 # ส่งขึ้นหน้าเว็บเป็น fee_rates แล้วหน้าเว็บคูณกับยอดขายรายวันเอง
 # เก็บเป็น "อัตรา" ไม่ใช่ "ยอดเงิน" เพราะยอดขายรายวันเปลี่ยนได้ทีหลัง (ออเดอร์ยกเลิก/ยืนยันเพิ่ม)
@@ -133,8 +140,33 @@ def main():
                 if k not in MANUAL_KEYS:
                     die('คีย์ที่ไม่รู้จักใน mkt_manual.json — ใช้ได้เฉพาะ ' + ', '.join(MANUAL_KEYS),
                         {d: k})
+                if k in AUTO_KEYS:
+                    die(f'{k} ดึงอัตโนมัติแล้ว ห้ามกรอกมือใน mkt_manual.json — '
+                        f'ถ้าตัวเลขไม่ตรง ให้แก้ที่ต้นทางแล้วรัน scripts/ads/fb_daily.py',
+                        {d: k, 'แหล่ง': str(AUTO_KEYS[k].relative_to(BASE))})
                 if not isinstance(x, (int, float)) or x < 0:
                     die('ยอดใน mkt_manual.json ต้องเป็นตัวเลขไม่ติดลบ', {d: {k: x}})
+
+    # ── Facebook Ads รายวัน (อัตโนมัติ) ─────────────────────────────────────
+    # เขียนทับลง man[] ช่องเดียวกับที่เคยกรอกมือ เพื่อไม่ต้องแก้สูตร/หน้าเว็บ
+    # ไฟล์ยังไม่มี = ไม่ใช่ error (ads_fb จะอยู่ใน missing แล้วหน้าเว็บขึ้น "รอข้อมูล")
+    fb_src = None
+    if FBD.exists():
+        try:
+            fbj = json.loads(FBD.read_text(encoding='utf-8'))
+        except Exception as e:
+            die('อ่าน fb_daily.json ไม่ได้ (JSON เสีย?)', f'{type(e).__name__}: {e}')
+        try:
+            si = fbj['keys'].index('spend')
+        except Exception:
+            die("fb_daily.json ไม่มีคีย์ spend ใน keys — รัน scripts/ads/fb_daily.py ใหม่")
+        for d, a in (fbj.get('days') or {}).items():
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
+                die('วันที่ใน fb_daily.json ผิดรูปแบบ', d)
+            man.setdefault(d, {})['ads_fb'] = round(float(a[si]), 2)
+        fb_src = {'from': fbj.get('from'), 'to': fbj.get('to'),
+                  'spend': (fbj.get('total') or {}).get('spend'),
+                  'generated': fbj.get('generated')}
 
     # ── KOL รายวัน ───────────────────────────────────────────────────────────
     kol_rows = [r for r in (kol_raw.get('rows') or []) if r.get('d')]
@@ -271,7 +303,7 @@ def main():
     summary = {'asof': asof, 'range': f'{dates[0]} → {dates[-1]}', 'days': len(dates),
                'checks_vs_page': checks, 'totals_whole_range': tot,
                'kol_rows': len(kol_rows), 'tiers_unmapped': data['tiers_unmapped'],
-               'manual': man_out, 'still_missing': missing,
+               'manual': man_out, 'still_missing': missing, 'facebook_src': fb_src,
                'manual_file': str(MANUAL.relative_to(BASE)),
                'size_kb': round(len(json.dumps(data, ensure_ascii=False)) / 1024, 1)}
 
