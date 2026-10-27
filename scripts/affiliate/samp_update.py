@@ -15,6 +15,14 @@ PAGE = ROOT / "WIBWUB_Affiliate_Dashboard.html"
 BKK = dt.timezone(dt.timedelta(hours=7))
 TH = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."]
 POST_FROM = "2026-06"   # คอลัมน์ "การลงโพสต์" เริ่มกรอกจริง มิ.ย. 69
+# ── จำนวนคลิป ────────────────────────────────────────────────────────────────
+# 19–27 ต.ค. 69 ทีมเปลี่ยนคอลัมน์ "การลงโพสต์" เป็น dropdown ค่าเดิม "โพสต์แล้ว N คลิป"
+# ถูกเขียนทับด้วย "ดำเนินการแล้ว" ทั้งคอลัมน์ -> จำนวนคลิปหายจากชีตถาวร
+# export ล่าสุดที่ยังมีตัวเลขคือไฟล์ข้างล่าง (19 ต.ค. · 378 แถวที่มีคลิป · รวม 495 คลิป)
+# ใช้เป็นแหล่งย้อนหลังอย่างเดียว ห้ามเดาค่าให้แถวที่จับคู่ไม่ได้ และห้ามเติม 0
+CLIP_SRC = ROOT / "Data Affiliate" / "ขอสินค้า" / "wibwub_samp_req_1792377363335.csv"
+# ถ้าชีตเพิ่มคอลัมน์นับคลิปกลับมาในอนาคต ให้ใช้คอลัมน์นั้นก่อนไฟล์ย้อนหลังเสมอ
+CLIP_COL = "จำนวนคลิป"
 
 def die(m, code=1): print(json.dumps({"status": "ERROR", "error": m}, ensure_ascii=False)); sys.exit(code)
 def pdate(v):
@@ -24,34 +32,81 @@ def pdate(v):
     try: return dt.date(y, int(m[2]), int(m[1]))
     except ValueError: return None
 
+def clip_backfill():
+    """{(วันที่, ครีเอเตอร์): จำนวนคลิป} จาก export 19 ต.ค. + วันสุดท้ายที่แหล่งนี้ครอบคลุม
+
+    คีย์หลักคือ Date+Creator (ตรวจแล้ว 378/378 แถวไม่ซ้ำและไม่กำกวม)
+    เก็บ ask ไว้เป็นคีย์สำรองเผื่อ export รอบหลังมีครีเอเตอร์ยื่นซ้ำวันเดียวกัน
+    """
+    if not CLIP_SRC.exists():
+        return {}, {}, None
+    rows = list(csv.reader(open(CLIP_SRC, encoding="utf-8-sig")))
+    hdr = [h.strip() for h in rows[0]]
+    try:
+        iD, iC, iA, iP = hdr.index("Date"), hdr.index("Creator"), hdr.index("สินค้าที่ Creator ขอ"), hdr.index("การลงโพสต์")
+    except ValueError:
+        die(f"ไฟล์แหล่งจำนวนคลิป {CLIP_SRC.name} ไม่มีคอลัมน์ที่ต้องใช้")
+    by2, by3, last = {}, {}, None
+    for r in rows[1:]:
+        if len(r) <= max(iD, iC, iA, iP): continue
+        d = pdate(r[iD])
+        if not d: continue
+        last = d if last is None or d > last else last
+        n = sum(int(x) for x in re.findall(r"โพสต์แล้ว\s*(\d+)", r[iP] or ""))
+        if not n: continue
+        by2[(d, r[iC].strip())] = n
+        by3[(d, r[iC].strip(), r[iA].strip())] = n
+    return by2, by3, last
+
+
 def load(path):
     rows = list(csv.reader(open(path, encoding="utf-8-sig")))
     hdr = [h.strip() for h in rows[0]]
     need = {"Date": 0, "Creator": 1, "url": 2, "สินค้าที่ Creator ขอ": 3, "สินค้าที่ให้": 4, "Status": 5, "การลงโพสต์": 7}
     for k, i in need.items():
         if i >= len(hdr) or hdr[i] != k: die(f"sheet columns changed: expected '{k}' in column {i+1}, got {hdr[i] if i < len(hdr) else None}")
+    iClip = hdr.index(CLIP_COL) if CLIP_COL in hdr else None
+    by2, by3, clip_last = clip_backfill()
     out = []
     for r in rows[1:]:
-        r = r + [""] * (12 - len(r)); d = pdate(r[0])
+        r = r + [""] * (max(12, (iClip or 0) + 1) - len(r)); d = pdate(r[0])
         if not d: continue
-        out.append({"d": d, "c": r[1].strip(), "u": r[2].strip(), "ask": r[3].strip(), "give": r[4].strip(), "st": r[5].strip(),
-                    "post": r[7].strip(), "ship": pdate(r[8])})
+        c, ask = r[1].strip(), r[3].strip()
+        # ลำดับแหล่งจำนวนคลิป: คอลัมน์ในชีต -> ไฟล์ย้อนหลัง 19 ต.ค. -> ไม่รู้ (None)
+        # None แปลว่า "ไม่มีข้อมูล" ไม่ใช่ "ศูนย์คลิป" ห้ามแปลงเป็น 0 ที่ไหนทั้งสิ้น
+        clip = None
+        if iClip is not None and str(r[iClip]).strip().isdigit():
+            clip = int(str(r[iClip]).strip())
+        elif (d, c, ask) in by3:
+            clip = by3[(d, c, ask)]
+        elif (d, c) in by2:
+            clip = by2[(d, c)]
+        elif clip_last is not None and d <= clip_last:
+            clip = 0        # อยู่ในช่วงที่แหล่งครอบคลุม แต่แถวนั้นไม่มีคลิป = 0 จริง
+        out.append({"d": d, "c": c, "u": r[2].strip(), "ask": ask, "give": r[4].strip(), "st": r[5].strip(),
+                    "post": r[7].strip(), "ship": pdate(r[8]), "clip": clip})
+    globals()["CLIP_LAST"] = clip_last
+    globals()["CLIP_FROM_SHEET"] = iClip is not None
     if len(out) < 500: die(f"only {len(out)} dated rows — export looks incomplete")
     return out
 
 def post_kind(p):
-    if re.search(r"โพสต์แล้ว\s*\d*", p) or "ไลฟ์" in p: return "posted"
-    if "ยังไม่" in p or "ไม่โพสต์" in p: return "waiting"
+    # ชีตใช้ dropdown ตั้งแต่ 19-27 ต.ค. 69: ดำเนินการแล้ว / ยังไม่โพสต์ / เลยกำหนด
+    # คำเก่า ("โพสต์แล้ว N คลิป" / "ไลฟ์") คงไว้เพื่ออ่าน export เก่าได้เหมือนเดิม
+    # ⚠️ "เลยกำหนด" ต้องไม่ตกไปอยู่ posted — เป็นงานที่ยังไม่โพสต์และเลยกำหนดแล้ว
+    if "ดำเนินการแล้ว" in p or re.search(r"โพสต์แล้ว\s*\d*", p) or "ไลฟ์" in p: return "posted"
+    if "ยังไม่" in p or "ไม่โพสต์" in p or "เลยกำหนด" in p: return "waiting"
     return ""
-
-def clips(p): return sum(int(x) for x in re.findall(r"โพสต์แล้ว\s*(\d+)", p))
 
 def funnel(rs, mkey=None):
     req = len(rs); appr = sum(r["st"] == "Approve" for r in rs)
     has = any(r["post"] for r in rs) or (mkey is not None and mkey >= POST_FROM)
     if not has: return OrderedDict(req=req, appr=appr, shipped=appr, posted=None, clips=None, waiting=None, sale=0)
+    # clips: บวกเฉพาะแถวที่ "รู้จำนวนจริง" · ไม่มีสักแถว = None (หน้าเว็บขึ้นว่าไม่มีข้อมูล)
+    known = [r["clip"] for r in rs if r.get("clip") is not None]
     return OrderedDict(req=req, appr=appr, shipped=appr, posted=sum(post_kind(r["post"]) == "posted" for r in rs),
-                       clips=sum(clips(r["post"]) for r in rs), waiting=sum(post_kind(r["post"]) == "waiting" for r in rs), sale=0)
+                       clips=sum(known) if known else None,
+                       waiting=sum(post_kind(r["post"]) == "waiting" for r in rs), sale=0)
 
 def products(rs):
     items = OrderedDict(); un = dict(c=0, appr=0, rej=0, other=0)
@@ -138,10 +193,19 @@ def main():
     if "const SAMPLE_POSTWAIT = [" in t: t = re.sub(r"const SAMPLE_POSTWAIT = \[\n.*?\n?\];", lambda _: pw, t, count=1, flags=re.S)
     else: die("SAMPLE_POSTWAIT not found (run the UI patch first)")
     t = re.sub(r"const SAMPLE_DATA_ASOF = '[^']*';", f"const SAMPLE_DATA_ASOF = '{max(r['d'] for r in R):%d/%m/%Y}';", t)
+    # ขอบของ "จำนวนคลิป" ต่างจากขอบของข้อมูลคำขอ เพราะคลิปมาจาก export 19 ต.ค. เท่านั้น
+    # หน้าเว็บต้องบอกผู้ใช้ให้รู้ ไม่งั้นจะอ่านว่าคลิปหลัง 19 ต.ค. เป็น 0
+    _ca = f"{CLIP_LAST:%d/%m/%Y}" if (CLIP_LAST and not CLIP_FROM_SHEET) else ""
+    t = re.sub(r"const SAMPLE_CLIPS_ASOF = '[^']*';", f"const SAMPLE_CLIPS_ASOF = '{_ca}';", t)
     if t == t0: print(json.dumps({"status": "NO_CHANGE"})); sys.exit(10)
     cur = funnel(months.get(today.strftime("%Y-%m"), []), today.strftime("%Y-%m"))
     summary = {"status": "UPDATED", "source": Path(src).name, "rows": len(R), "latest_row": max(r["d"] for r in R).isoformat(), "this_month": cur,
                "last7d": funnel(r7, "9999"), "waiting_post": len(W), "past_month_req_changed": changed_past,
+               "clips_source": (CLIP_COL + " (คอลัมน์ในชีต)") if CLIP_FROM_SHEET else CLIP_SRC.name,
+               "clips_asof": CLIP_LAST.isoformat() if CLIP_LAST else None,
+               # แถวที่ขึ้นว่าโพสต์แล้วแต่ไม่รู้จำนวนคลิป — ไม่ถูกนับ ต้องรายงานทุกครั้ง
+               "posted_rows_without_clip_count": sum(
+                   1 for r in R if post_kind(r["post"]) == "posted" and r.get("clip") is None),
                "top_products_this_month": [(i["n"], i["c"]) for i in products(months.get(today.strftime("%Y-%m"), []))["items"][:5]]}
     if "--dry" in sys.argv: print(json.dumps(summary, ensure_ascii=False, default=str)); return
     # ถ้าหน้านี้มีงานค้างของคนอื่นอยู่ก่อน การ git add ทั้งไฟล์จะกวาดเข้า commit นี้ด้วย -> เขียนได้ แต่ห้าม commit
