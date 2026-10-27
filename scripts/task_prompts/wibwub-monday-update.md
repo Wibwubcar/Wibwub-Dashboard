@@ -28,7 +28,10 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 
 > **งานนี้มี 2 หน้าที่: (ก) ดาวน์โหลดไฟล์ออเดอร์จาก Shipnity  (ข) อัปเดต Top สินค้า**
 >
-> ⚠️ **ขั้นดาวน์โหลด (ขั้นที่ 0 ข้างล่าง) เป็นของงานนี้เท่านั้น ห้ามข้าม** — ไม่มีงานอื่นทำแทน
+> ⚠️ **ขั้นดาวน์โหลด (ขั้นที่ 0 ข้างล่าง) เป็นทางสำรอง — เช็คก่อนแล้วข้ามได้ถ้าไฟล์มาแล้ว**
+> ตั้งแต่ 27 ต.ค. 2569 คนที่ export เป็นหลักคือ `wibwub-daily-stock` (09:00/19:00 Step 0)
+> เพราะงานนี้รัน 10:35 ซึ่งหลังการประชุม 09:00 ทำให้รอบเช้าของหน้าสต๊อกใช้ไฟล์เมื่อวานทุกวัน
+> งานนี้ยังต้องเช็คและ export ให้ถ้าไฟล์ของวันนี้ยังไม่มา **ห้ามตัดขั้นนี้ออก**
 > ไฟล์ `Data Shipnity/Data_DD-MM-YYYY.xlsx` ที่ได้จากขั้นนี้ถูกใช้ต่อโดย `update_stock.py`
 > (sold7d/burn ในหน้าสต๊อก), `shipnity_update.py` และ `products_update.py`
 > เคยมีข้อความเก่าบอกว่าขั้นนี้ย้ายไปงานอื่นแล้ว ซึ่ง**ไม่จริง** ทำให้ export หยุดไป
@@ -55,7 +58,22 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 
 ## ขั้นตอน
 
-### 0. ดาวน์โหลดไฟล์ออเดอร์จาก Shipnity (ทำก่อนเสมอ ห้ามข้าม)
+### 0. ดาวน์โหลดไฟล์ออเดอร์จาก Shipnity (เช็คก่อน — ข้ามได้ถ้าไฟล์ของวันนี้มาแล้ว)
+
+**0.0 เช็คก่อนทุกครั้ง ห้าม export ทับ**
+
+```bash
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/stock/wait_shipnity_export.py" --max-wait-min 0 --fresh-min 240
+```
+
+- `exit 0` (`status: FOUND`) → `wibwub-daily-stock` export ให้แล้วในรอบนี้
+  **ข้ามขั้น 0.1–0.2 ทั้งหมด** ไปทำ "Top สินค้า" ต่อเลย แล้วรายงานว่า
+  `ดาวน์โหลด Shipnity: ข้าม — daily-stock ทำให้แล้ว (<ชื่อไฟล์> <เวลา>)`
+  เหตุผลที่ต้องข้าม: ไฟล์ 33 MB ใช้เวลา export ราว 10 นาที และโหลดซ้ำไม่ได้อะไรเพิ่ม
+- `exit 3` (`status: TIMEOUT`) → ไฟล์ของวันนี้ยังไม่มา **ให้ทำขั้น 0.1 ต่อตามปกติ**
+  นี่คือกรณีที่รอบ 09:00 ของ daily-stock ล้ม งานนี้คือตัวสำรองที่กู้ให้
+
+**0.1 สั่ง export (ทำเฉพาะเมื่อขั้น 0.0 ได้ exit 3)**
 
 ```
 select_browser(deviceId ที่ osPlatform เป็น macOS) → tabs_context_mcp(createIfEmpty=true)
@@ -71,10 +89,13 @@ browser_batch([ navigate("https://www.shipnity.com/data/c/purchase"), wait 6, sc
    ค่าเริ่มต้นคือ **"แยกไฟล์"** 500 แถว/ไฟล์ ซึ่งจะได้ `Data-Page-1_*.xlsx` ที่เป็นไฟล์หลอก
    (มีแค่ ~500 แถวล่าสุด) ถ้าใช้ไฟล์นั้น sold7d/sold14d/burn ของทุก SKU จะผิดแบบไม่มี error
 5. กด **Export File** แล้ว **รอจนขึ้น 100%** — ไฟล์ ~33 MB ใช้เวลาราว **10 นาที**
-   ห้ามปิดแท็บก่อนเสร็จ ระหว่างรอให้เช็กด้วย `find` (อย่าใช้ `ls` กับ glob — zsh ล้มถ้าไม่แมตช์)
+   ห้ามปิดแท็บก่อนเสร็จ ระหว่างรอให้ใช้สคริปต์รอ (รอจนไฟล์เข้าหรือครบ 20 นาที)
    ```bash
-   find "$BASE/Data Shipnity" "$HOME/Downloads" -maxdepth 1 -name 'Data_*.xlsx' -newermt "today" 2>/dev/null
+   python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/stock/wait_shipnity_export.py" --max-wait-min 20
    ```
+   **ห้ามใช้ `find ... -newermt "today"`** — `find` บนเครื่องนี้คือ `bfs` ซึ่งตอบ
+   `Invalid timestamp` แล้วคืน exit 0 ทำให้เข้าใจผิดว่า "ไม่พบไฟล์"
+   และ `ls` กับ glob ที่ไม่แมตช์จะล้มทั้งคำสั่งเพราะ zsh nomatch
 6. download-mover จะย้ายไฟล์เข้า `Data Shipnity/` ให้เองภายใน 5 วินาที **ห้าม cp/mv เอง**
 
 **ด่านตรวจก่อนไปขั้นถัดไป**
