@@ -2632,177 +2632,164 @@ if('serviceWorker' in navigator){
 </div>
 
 <style id="mks-css-m">
-/* เมนู "การตลาด vs ยอดขาย" — สไตล์เดียวกับ Ads Dashboard
-   ไฟล์นี้ถูกฝังเข้าหน้าเว็บโดย scripts/marketing/marketing_ui.py — อย่าแก้ในหน้า HTML */
-.mks{font-size:13px;color:var(--txt,#0F0F0F)}
+/* เมนู "การตลาด vs ยอดขาย" — ดีไซน์ที่ผู้ใช้อนุมัติ 28 ต.ค. 69
+   ไฟล์นี้ถูกฝังเข้าหน้าเว็บโดย scripts/marketing/marketing_ui.py — อย่าแก้ในหน้า HTML
+   ใช้ตัวแปรสีของหน้าแม่ (--card/--border/--muted) เพื่อให้กลืนกับหน้า Dashboard/Mobile */
+.mks{font-size:13.5px;color:var(--text,#111827);line-height:1.55}
 .mks *{box-sizing:border-box}
+.mks-n{font-variant-numeric:tabular-nums}
 
 /* ── แถบเลือกช่วงวันที่ ─────────────────────────────── */
 .mks-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.mks-pre{display:flex;gap:6px;flex-wrap:wrap}
-.mks-b{padding:6px 13px;border:1px solid var(--border,#e8e8e8);background:var(--card,#fff);
-  border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;color:#555;
-  transition:all .15s;white-space:nowrap}
-.mks-b:hover{border-color:#1A5CDB;color:#1A5CDB}
-.mks-b.on{background:#1A5CDB;border-color:#1A5CDB;color:#fff}
-.mks-dates{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
-.mks-dates input{padding:5px 8px;border:1px solid var(--border,#e8e8e8);border-radius:7px;
-  font-size:12.5px;font-family:inherit;color:inherit;background:var(--card,#fff)}
-.mks-range{font-size:11.5px;color:var(--muted,#999);width:100%}
-
-/* ── KPI ───────────────────────────────────────────── */
-.mks-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
-.mks-k{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
-  padding:13px 14px;position:relative;overflow:hidden}
-.mks-k::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--kc,#1A5CDB)}
-.mks-kl{font-size:11px;color:var(--muted,#999);font-weight:600;margin-bottom:5px}
-.mks-kv{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
-.mks-ks{font-size:11px;margin-top:4px;color:var(--muted,#999)}
-.mks-up{color:#16a34a;font-weight:700}
-.mks-dn{color:#dc2626;font-weight:700}
+.mks-pre{display:inline-flex;border:1px solid var(--border,#E3E6EB);border-radius:12px;overflow:hidden;background:var(--card,#fff)}
+.mks-b{padding:8px 13px;border:0;background:transparent;cursor:pointer;font-size:13px;
+  font-family:inherit;color:#4B5563;white-space:nowrap}
+.mks-pre .mks-b+.mks-b{border-left:1px solid var(--border,#E3E6EB)}
+.mks-b:hover{color:#2457F5}
+.mks-b.on{background:#2457F5;color:#fff;font-weight:600}
+.mks-dates{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;
+  background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:12px;padding:4px 9px}
+.mks-dates input{padding:4px 2px;border:0;font-size:12.5px;font-family:inherit;color:inherit;background:transparent}
+.mks-dates .mks-b{padding:4px 10px;font-size:12.5px;font-weight:600;color:#2457F5}
+.mks-range{font-size:12px;color:var(--muted,#6B7280);width:100%}
 
 /* ── การ์ด ─────────────────────────────────────────── */
-.mks-card{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
-  padding:14px 15px;margin-bottom:14px}
-.mks-t{font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;
-  gap:8px;flex-wrap:wrap}
-.mks-t small{font-weight:500;color:var(--muted,#999);font-size:11px}
+.mks-card{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;
+  padding:18px;margin-bottom:14px}
+.mks-h2{font-size:15px;font-weight:700;margin-bottom:12px}
+.mks-h2 small{font-weight:500;color:var(--muted,#6B7280);font-size:12px;margin-left:7px}
 
-/* ── แท่งแนวนอน: สัดส่วนค่าการตลาด ────────────────── */
-.mks-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:12px}
-.mks-hn{width:112px;flex:0 0 112px;font-weight:600;display:flex;align-items:center;gap:6px}
-.mks-hn i{width:9px;height:9px;border-radius:2px;flex:0 0 9px}
-.mks-ht{flex:1;background:rgba(0,0,0,.045);border-radius:5px;height:17px;position:relative;min-width:40px}
-.mks-hf{height:100%;border-radius:5px;min-width:2px}
-.mks-hv{width:118px;flex:0 0 118px;text-align:right;font-variant-numeric:tabular-nums}
-.mks-hp{width:52px;flex:0 0 52px;text-align:right;color:var(--muted,#999);font-variant-numeric:tabular-nums}
-.mks-hd{width:62px;flex:0 0 62px;text-align:right;font-size:11px}
-.mks-pie{display:flex;gap:16px;align-items:flex-start}
-.mks-donut{flex:0 0 168px;color:var(--txt,#0F0F0F)}
-.mks-bars{flex:1;min-width:0;padding-top:4px}
-.mks-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
-.mks-two>.mks-card{margin-bottom:0}
-/* ในเลย์เอาต์ 2 คอลัมน์ การ์ดแคบ -> วางโดนัทไว้บน ให้แท่งได้ความกว้างเต็มใบ
-   ไม่งั้นช่องยอดเงิน/%/▲▼ เบียดจนแท่งเหลือไม่กี่พิกเซล */
-.mks-two .mks-pie{flex-direction:column;align-items:center;gap:12px}
-.mks-two .mks-bars{width:100%;padding-top:0}
-.mks-sub{font-size:10.5px;color:var(--muted,#999);margin:-4px 0 10px 121px}
-.mks-wait{color:#b45309;font-style:italic;font-weight:600}
+/* ── ขายได้ 100 บาท เงินไปไหน ───────────────────────── */
+.mks-line{font-size:18px;font-weight:600;line-height:1.5}
+.mks-line b{font-weight:700}
+.mks-stack{display:flex;height:44px;border-radius:10px;overflow:hidden;margin-top:15px;background:#EDF0F4}
+.mks-stack span{display:block}
+.mks-slegs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.mks-sl .t{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#4B5563}
+.mks-sl .t i{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.mks-sl .v{font-size:16px;font-weight:700;margin-top:2px}
+.mks-sl .p{font-size:12px;color:var(--muted,#6B7280)}
+.mks-warn{background:#FFF6ED;border:1px solid #F3C99A;color:#B54708;border-radius:10px;
+  padding:9px 12px;font-size:12.5px;margin-top:12px}
 
-/* ── กราฟแนวโน้มรายวัน ────────────────────────────── */
-.mks-chart{width:100%;overflow-x:auto}
-.mks-chart svg{display:block}
-.mks-leg{display:flex;flex-wrap:wrap;gap:13px;font-size:11px;color:var(--muted,#999);margin-top:9px}
-.mks-leg span{display:flex;align-items:center;gap:5px}
-.mks-leg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+/* ── KPI ───────────────────────────────────────────── */
+.mks-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.mks-k{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;padding:16px 17px}
+.mks-kl{font-size:12.5px;color:#4B5563;font-weight:500}
+.mks-kv{font-size:25px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1.2}
+.mks-ks{font-size:12.5px;color:var(--muted,#6B7280);margin-top:1px}
+.mks-up{color:#0F7B4F;font-weight:600}
+.mks-dn{color:#B42318;font-weight:600}
+.mks-fl{color:var(--muted,#6B7280)}
 
-/* ── ตาราง ─────────────────────────────────────────── */
+/* ── 2 กล่องเคียงกัน + แถวแถบแนวนอน ─────────────────── */
+.mks-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.mks-two .mks-card{margin-bottom:0}
+.mks-rows{display:flex;flex-direction:column;gap:11px}
+.mks-row{display:grid;grid-template-columns:minmax(94px,1.1fr) minmax(0,2fr) auto auto;gap:10px;
+  align-items:center;font-size:13px}
+.mks-nm{display:flex;align-items:center;gap:7px;color:#4B5563}
+.mks-nm i{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.mks-tr{height:9px;border-radius:5px;background:#EDF0F4;overflow:hidden}
+.mks-tr span{display:block;height:100%}
+.mks-rv{font-weight:600;min-width:74px;text-align:right}
+.mks-rd{min-width:62px;text-align:right;font-size:12px}
+.mks-sub{font-size:12px;color:var(--muted,#6B7280);margin-top:11px}
+
+/* ── กราฟแนวโน้มรายวัน (SVG — ไม่พึ่ง Chart.js เพราะหน้า Mobile ไม่ได้โหลด) ── */
+.mks-chart{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:4px}
+.mks-leg{display:flex;flex-wrap:wrap;gap:13px;margin-top:9px;font-size:12px;color:var(--muted,#6B7280)}
+.mks-leg span{display:flex;align-items:center;gap:6px}
+.mks-leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* ── ส่วนพับ ───────────────────────────────────────── */
+.mks-det{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;
+  padding:14px 18px;margin-bottom:14px}
+.mks-det>summary{cursor:pointer;font-weight:600;font-size:13.5px}
+.mks-body{margin-top:12px;font-size:13px;color:#4B5563}
+.mks-body p{margin:0 0 9px}
+.mks-body b{color:var(--text,#111827)}
+.mks-tb{width:100%;border-collapse:collapse;font-size:13px}
+.mks-tb th{text-align:right;font-weight:600;color:#4B5563;font-size:12px;padding:7px 8px;
+  border-bottom:1px solid var(--border,#E3E6EB);white-space:nowrap}
+.mks-tb td{text-align:right;padding:9px 8px;border-bottom:1px solid #F1F3F6}
+.mks-tb th:first-child,.mks-tb td:first-child{text-align:left}
+.mks-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.mks-chip{display:inline-flex;align-items:center;gap:6px;background:#F7F9FC;
+  border:1px solid var(--border,#E3E6EB);border-radius:999px;padding:4px 10px;font-size:12px;color:#4B5563}
 .mks-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.mks-tb{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
-.mks-tb th,.mks-tb td{padding:7px 10px;border-bottom:1px solid var(--border,#e8e8e8);text-align:right}
-.mks-tb th{font-size:10.5px;color:var(--muted,#999);font-weight:700;background:rgba(0,0,0,.02)}
-.mks-tb th:first-child,.mks-tb td:first-child,
-.mks-tb th:nth-child(2),.mks-tb td:nth-child(2){text-align:left}
-.mks-tb tr:last-child td{border-bottom:none}
-.mks-tb td{font-variant-numeric:tabular-nums}
-.mks-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
-.mks-paid{background:#dcfce7;color:#15803d}
-.mks-pend{background:#fef3c7;color:#b45309}
-.mks-tier{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10.5px;
-  background:rgba(139,92,246,.12);color:#6d28d9;font-weight:600}
-.mks-tier.na{background:rgba(0,0,0,.05);color:var(--muted,#999);font-weight:500}
+.mks-empty{color:var(--muted,#6B7280);padding:14px 0}
 
-/* ── ป้ายวันที่ข้อมูล + หมายเหตุ ───────────────────── */
-.mks-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-.mks-bd{font-size:10.5px;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.04);
-  color:var(--muted,#999);white-space:nowrap}
-.mks-bd b{color:#444;font-weight:700}
-.mks-bd.warn{background:#fef3c7;color:#b45309}
-.mks-bd.warn b{color:#92400e}
-.mks-note{font-size:11.5px;color:var(--muted,#999);line-height:1.85}
-.mks-note b{color:#b45309}
-.mks-empty{padding:26px;text-align:center;color:var(--muted,#999);font-size:12.5px}
-
-/* ── Mobile ────────────────────────────────────────── */
-@media(max-width:700px){
-  .mks-kpi{grid-template-columns:1fr 1fr;gap:8px}
-  .mks-k{padding:11px}
-  .mks-kv{font-size:17px}
-  .mks-dates{margin-left:0;width:100%}
-  .mks-dates input{flex:1;min-width:0}
-  .mks-hn{width:78px;flex:0 0 78px;font-size:11px}
-  .mks-hv{width:92px;flex:0 0 92px;font-size:11px}
-  .mks-hp{width:44px;flex:0 0 44px;font-size:11px}
-  .mks-card{padding:12px}
-  .mks-two{grid-template-columns:1fr;gap:0}
-  .mks-two>.mks-card{margin-bottom:12px}
-  .mks-hd{width:52px;flex:0 0 52px;font-size:10px}
-  .mks-sub{margin-left:87px}
-  .mks-pie{flex-direction:column;align-items:center;gap:10px}
-  .mks-donut{flex:0 0 auto;width:150px;height:150px}
-  .mks-bars{width:100%;padding-top:0}
+@media(max-width:900px){
+  .mks-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mks-two{grid-template-columns:minmax(0,1fr)}
+  .mks-two .mks-card{margin-bottom:0}
+  .mks-slegs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mks-line{font-size:16px}
 }
-
-@media(max-width:1000px) and (min-width:701px){ .mks-two{grid-template-columns:1fr} .mks-two>.mks-card{margin-bottom:14px} }
+@media(max-width:560px){
+  .mks-kpi,.mks-slegs{grid-template-columns:minmax(0,1fr)}
+  .mks-card,.mks-det{padding:14px}
+  .mks-row{grid-template-columns:minmax(76px,1fr) minmax(0,1.3fr) auto}
+  .mks-rd{display:none}
+  .mks-dates{margin-left:0}
+}
 
 </style>
 
 <script id="mks-js-m">
-/* เมนู "การตลาด vs ยอดขาย"
+/* เมนู "การตลาด vs ยอดขาย" — ดีไซน์ที่ผู้ใช้อนุมัติ 28 ต.ค. 69
    ข้อมูลรายวันอยู่ใน MKT_SPEND (เขียนโดย scripts/marketing/marketing_update.py)
    หน้าเว็บคำนวณทุกตัวเลขเองตามช่วงวันที่ที่เลือก — อย่าแก้ไฟล์นี้ในหน้า HTML
    แก้ที่ scripts/marketing/mks_ui.js แล้วรัน scripts/marketing/marketing_ui.py
 
-   Facebook Ads / Event ยังไม่มีข้อมูล -> na:true
-   ห้ามนับเป็น 0 ในสูตร % ต่อยอดขาย ให้ข้ามไปและขึ้นหมายเหตุแทน */
+   กราฟวาดเป็น SVG เอง ไม่ใช้ Chart.js เพราะ WIBWUB_Mobile.html ไม่ได้โหลดไลบรารีนั้น
 
-/* g = กลุ่มของวง "ยอดขาย เทียบ ค่าการตลาด" — เพิ่มหมวดใหม่แล้ววงนั้นคิดเองอัตโนมัติ
+   นิยามที่ผู้ใช้อนุมัติ: ค่าการตลาดทั้งหมด = ค่าแอด 4 แพลตฟอร์ม + KOL
+   + คอมแอฟฟิลิเอต TikTok (+ Event เมื่อมีข้อมูล) — ใช้ชุดเดียวกันทุกจุดในหน้านี้
+   ของเดิมการ์ดไม่รวมคอมแอฟแต่วงกลมรวม ทำให้สัดส่วนรวมได้ 110.8% ซึ่งเป็นบั๊ก */
+
+/* g = กลุ่มของแถบ "เงินไปไหน" — เพิ่มหมวดใหม่แล้วสูตรคิดเองอัตโนมัติ
    พอ Event / Facebook Ads มีข้อมูลจริง แค่ปลด na ออก ไม่ต้องแก้สูตรที่อื่น */
 const MKS_CAT = [
-  {k:'ads_sh', n:'Ads Shopee',   c:'#ee4d2d', g:'ads'},
-  {k:'ads_tk', n:'Ads TikTok',   c:'#111111', g:'ads'},
-  {k:'ads_lz', n:'Ads Lazada',   c:'#1b04a1', g:'ads'},
-  {k:'ads_fb', n:'Ads Facebook', c:'#1877f2', g:'ads'},
-  {k:'kol',    n:'KOL',          c:'#8b5cf6', g:'kol'},
-  {k:'event',  n:'Event',        c:'#f59e0b', g:'event'}
+  {k:'ads_sh', n:'Ads Shopee',   c:'#EE4D2D', g:'ads'},
+  {k:'ads_tk', n:'Ads TikTok',   c:'#111827', g:'ads'},
+  {k:'ads_lz', n:'Ads Lazada',   c:'#3B2CC4', g:'ads'},
+  {k:'ads_fb', n:'Ads Facebook', c:'#1877F2', g:'ads'},
+  {k:'kol',    n:'KOL',          c:'#A78BFA', g:'kol'},
+  {k:'event',  n:'Event',        c:'#D1D5DB', g:'event'}
 ];
 /* หมวดไหน "รอข้อมูล" ไม่ได้ hardcode ไว้ — marketing_update.py ส่ง missing มาให้
    พอกรอกค่า Event/Facebook ลง data Ads/mkt_manual.json แล้วรันสคริปต์
    คีย์นั้นจะหลุดจาก missing เอง ทุกกราฟและสูตร % จะเริ่มนับทันที ไม่ต้องแก้ไฟล์นี้ */
 function mksNA(k){ return ((typeof MKT_SPEND!=='undefined' && MKT_SPEND.missing)||[]).indexOf(k)>=0; }
 MKS_CAT.forEach(c=>Object.defineProperty(c,'na',{get:function(){return mksNA(this.k);}}));
-/* ชื่อ/สีของแต่ละกลุ่มในวงรวม */
-const MKS_GRP = [
-  {g:'ads',   n:'ค่า Ads',   c:'#1A5CDB'},
-  {g:'kol',   n:'ค่า KOL',   c:'#8b5cf6'},
-  {g:'event', n:'ค่า Event', c:'#f59e0b'}
-];
-/* ช่องทางยอดขาย — ต้องครบเท่าสูตร TOTAL_REV บนหน้าเว็บ (เรียงตามยอดปกติ)
-   ถ้า marketing_update.py เพิ่มคีย์ใหม่ ต้องเพิ่มที่นี่ด้วย ไม่งั้นยอดรวมจะขาด */
+
+/* ช่องทางยอดขาย — ต้องครบเท่าคีย์ที่ marketing_update.py ส่งมา ไม่งั้นยอดรวมจะขาด
+   ⚠️ `kol` ใน keys เป็น "ค่าใช้จ่าย" ไม่ใช่ช่องทางขาย ห้ามเอามารวมเป็นยอดขาย */
 const MKS_REV_CAT = [
-  {k:'sh',   n:'Shopee',    c:'#ee4d2d'},
-  {k:'tk',   n:'TikTok',    c:'#111111'},
-  {k:'fb',   n:'Facebook',  c:'#1877f2'},
-  {k:'line', n:'Line',      c:'#06c755'},
-  {k:'care', n:'Carcare',   c:'#14b8a6'},
-  {k:'lz',   n:'Lazada',    c:'#1b04a1'},
-  {k:'pos',  n:'POS',       c:'#f59e0b'},
-  {k:'web',  n:'Website',   c:'#64748b'},
-  {k:'mkt',  n:'สินค้าการตลาด', c:'#a855f7'},
-  {k:'beuk', n:'เบิกของ',    c:'#94a3b8'},
-  {k:'oth',  n:'อื่น ๆ',     c:'#cbd5e1'}
+  {k:'sh',   n:'Shopee',    c:'#EE4D2D'},
+  {k:'tk',   n:'TikTok',    c:'#111827'},
+  {k:'fb',   n:'Facebook',  c:'#1877F2'},
+  {k:'line', n:'LINE',      c:'#06A755'},
+  {k:'care', n:'Carcare',   c:'#0E7490'},
+  {k:'lz',   n:'Lazada',    c:'#3B2CC4'},
+  {k:'pos',  n:'POS',       c:'#0F766E'},
+  {k:'web',  n:'Website',   c:'#64748B'},
+  {k:'mkt',  n:'สินค้าการตลาด', c:'#A855F7'},
+  {k:'beuk', n:'เบิกของ',    c:'#9CA3AF'},
+  {k:'oth',  n:'อื่น ๆ',     c:'#CBD5E1'}
 ];
 const MKS_REVK = MKS_REV_CAT.map(c=>c.k);
+
 /* ── ค่าธรรมเนียมแพลตฟอร์ม ────────────────────────────────────────────
    อัตราคงที่ที่ผู้ใช้กำหนด มาจาก data Ads/platform_fee.json (ไม่ hardcode ที่นี่)
    คิดจาก "ยอดขายของช่องทางนั้น × อัตรา" ไม่ใช่ยอดรวม เพราะแต่ละเจ้าคิดคนละอัตรา
-   ช่องทางที่ไม่มีอัตรา (Facebook/LINE/POS/เว็บ ฯลฯ) = ไม่คิดค่าธรรมเนียม ไม่ใช่ 0 เพราะขาดข้อมูล
-   แต่เพราะมันขายตรงไม่ผ่านแพลตฟอร์ม จึงไม่มีค่าธรรมเนียมจริง ๆ */
+   ช่องทางขายตรง (Facebook/LINE/POS/เว็บ) ไม่มีค่าธรรมเนียมจริง ๆ ไม่ใช่ขาดข้อมูล */
 function mksFeeRates(){ return (typeof MKT_SPEND!=='undefined' && MKT_SPEND.fee_rates) || {}; }
 /* อัตราของช่องทางหนึ่งเขียนได้ 2 แบบ
      0.30                                   = คงที่ตลอด
-     [{from:'2026-01-01',rate:0.2154}, …]   = เปลี่ยนตามวันที่ (เรียงจากเก่าไปใหม่)
-   คืนอัตราที่ใช้กับ "วันนั้น" — ถ้าวันนั้นเก่ากว่าช่วงแรกสุด ให้ใช้ช่วงแรก */
+     [{from:'2026-01-01',rate:0.2154}, …]   = เปลี่ยนตามวันที่ (เรียงจากเก่าไปใหม่) */
 function mksRateOn(spec, d){
   if(typeof spec==='number') return spec;
   if(!Array.isArray(spec) || !spec.length) return 0;
@@ -2810,23 +2797,20 @@ function mksRateOn(spec, d){
   for(const s of spec){ if(d>=s.from) r=s.rate; else break; }
   return r;
 }
-/* ช่วงที่เลือกอาจคร่อมหลายอัตรา จึงต้องคิดรายวันแล้วบวกกัน
-   คืนอัตราเฉลี่ยถ่วงน้ำหนักด้วยยอดขายไว้โชว์ด้วย */
 /* ค่าการตลาดบางก้อนไม่มีคอลัมน์รายวัน แต่คิดจาก "ยอดขายช่องทางนั้น × อัตรา"
    เช่น คอมแอฟฟิลิเอต TikTok ที่หักผ่านระบบ settlement ของแพลตฟอร์ม
    นิยามอยู่ใน data Ads/platform_fee.json -> marketing_rates (ไม่ hardcode ที่นี่)
-   ⚠️ อัตราค่าธรรมเนียมของช่องทางนั้นต้องหักก้อนนี้ออกไปแล้ว ไม่งั้นนับซ้ำ
-      fee_update.py ทำให้อัตโนมัติตอนบันทึก */
+   ⚠️ อัตราค่าธรรมเนียมของช่องทางนั้นต้องหักก้อนนี้ออกไปแล้ว ไม่งั้นนับซ้ำ */
 function mksMktRateCats(){
   const M=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.mkt_rates)||{};
-  return Object.keys(M).map(k=>({k:k, n:M[k].label||k, c:M[k].color||'#c084fc',
+  return Object.keys(M).map(k=>({k:k, n:M[k].label||k, c:M[k].color||'#8B5CF6',
                                  g:M[k].group||'kol', base:M[k].base, spec:M[k].rates||[],
                                  na:false, rate:true}));
 }
 function mksFeeCats(){
   const R=mksFeeRates(), L=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.fee_labels)||{};
   return Object.keys(R).map(k=>{ const c=MKS_REV_CAT.find(x=>x.k===k)||{};
-    return {k:k, n:L[k]||c.n||k, c:c.c||'#dc2626', spec:R[k]}; });
+    return {k:k, n:L[k]||c.n||k, c:c.c||'#6B7280', spec:R[k]}; });
 }
 const MKS_SRC = [
   {k:'sales',   n:'ยอดขาย'},
@@ -2839,6 +2823,12 @@ const MKS_SRC = [
 let MKS_ST = {preset:'mtd', from:null, to:null};
 
 function mksN(v){ return Math.round(v||0).toLocaleString('en-US'); }
+function mksB(v){ return '฿'+mksN(v); }
+function mksP(v,d){ return isFinite(v)&&v!=null ? (v*100).toFixed(d==null?1:d)+'%' : '–'; }
+function mksX(v){ return isFinite(v)&&v>0 ? v.toFixed(2)+'x' : '–'; }
+function mksDiv(a,b){ return b? a/b : NaN; }
+function mksEsc(s){ return String(s==null?'':s).replace(/[&<>"]/g,
+  c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
 function mksD(s){ const p=(s||'').split('-'); return p.length===3 ? (+p[2])+'/'+(+p[1]) : (s||'-'); }
 /* บวก/ลบวันแบบ UTC ล้วน — ห้ามใช้ new Date('YYYY-MM-DD') + toISOString()
    เพราะสตริงเปล่าถูกตีเป็น UTC แต่ setDate/getDate ทำงานตามเขตเวลาเครื่อง (+07)
@@ -2853,6 +2843,13 @@ function mksDiffDays(a,b){
   const x=a.split('-').map(Number), y=b.split('-').map(Number);
   return Math.round((Date.UTC(y[0],y[1]-1,y[2])-Date.UTC(x[0],x[1]-1,x[2]))/864e5);
 }
+const MKS_TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+function mksTH(d,y){ return (+d.slice(8,10))+' '+MKS_TH[+d.slice(5,7)-1]+
+  (y?' '+((+d.slice(0,4))+543):''); }
+function mksTHR(a,b){ return a===b? mksTH(a,1) : mksTH(a)+' – '+mksTH(b,1); }
+function TH_MF_SHORT(m){ return MKS_TH[+m.slice(5,7)-1]+' '+((+m.slice(0,4)+543)%100); }
+function mksMonthEnd(d){ const x=new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7), 0));
+  return x.toISOString().slice(0,10); }
 
 /* วันทั้งหมดที่มีข้อมูล (เรียงแล้ว) */
 function mksAll(){ return Object.keys(MKT_SPEND.days).sort(); }
@@ -2891,47 +2888,36 @@ function mksProvMonths(from,to){
       const e=mksMonthEnd(s.from); if(e>=from) out.add(s.from.slice(0,7)); } }); });
   return [...out].sort();
 }
-function mksTH(d){
-  const N=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  return (+d.slice(8,10))+' '+N[+d.slice(5,7)-1];
-}
-function TH_MF_SHORT(m){
-  const N=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
-  return N[+m.slice(5,7)-1]+' '+((+m.slice(0,4)+543)%100);
-}
-function mksMonthEnd(d){ const x=new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7), 0));
-  return x.toISOString().slice(0,10); }
 
-/* รวมตัวเลขในช่วง — คืน null สำหรับหมวดที่ยังไม่มีข้อมูล */
+/* รวมตัวเลขในช่วง — คืน null สำหรับหมวดที่ยังไม่มีข้อมูล (ห้ามนับเป็น 0) */
 function mksAgg(from,to){
   const K=MKT_SPEND.keys, ix={}; K.forEach((k,i)=>ix[k]=i);
   let rev=0, days=0; const sp={}, rv={};
   MKS_CAT.forEach(c=>{ sp[c.k]= c.na ? null : 0; });
   MKS_REVK.forEach(k=>rv[k]=0);
-  mksAll().forEach(d=>{
-    if(d<from||d>to) return;
-    const r=MKT_SPEND.days[d]; days++;
-    MKS_REVK.forEach(k=>{ if(ix[k]!=null){ rev+=r[ix[k]]||0; rv[k]+=r[ix[k]]||0; } });
-    MKS_CAT.forEach(c=>{ if(!c.na && ix[c.k]!=null) sp[c.k]+=r[ix[c.k]]||0; });
-  });
-  const spend=mksSpendCats().reduce((s,c)=>s+(sp[c.k]||0),0);
-  /* ค่าธรรมเนียมคิดทีเดียวจากยอดรวมของช่วง ไม่ต้องคิดรายวัน เพราะอัตราคงที่
-     ผลลัพธ์เท่ากันและคลาดเคลื่อนจากการปัดเศษน้อยกว่า */
   const fv={}; let fee=0;
   mksFeeCats().forEach(c=>{ fv[c.k]=0; });
   const MR=mksMktRateCats();
   MR.forEach(c=>{ sp[c.k]=0; });
   mksAll().forEach(d=>{
     if(d<from||d>to) return;
-    const r=MKT_SPEND.days[d];
+    const r=MKT_SPEND.days[d]; days++;
+    MKS_REVK.forEach(k=>{ if(ix[k]!=null){ rev+=r[ix[k]]||0; rv[k]+=r[ix[k]]||0; } });
+    MKS_CAT.forEach(c=>{ if(!c.na && ix[c.k]!=null) sp[c.k]+=r[ix[c.k]]||0; });
     mksFeeCats().forEach(c=>{ if(ix[c.k]==null) return;
       fv[c.k]+=(r[ix[c.k]]||0)*mksRateOn(c.spec,d); });
     MR.forEach(c=>{ if(ix[c.base]==null) return;
       sp[c.k]+=(r[ix[c.base]]||0)*mksRateOn(c.spec,d); });
   });
   mksFeeCats().forEach(c=>{ fee+=fv[c.k]; });
+  /* ⚠️ ต้องรวม "หลัง" ลูปเสมอ — ของเดิมรวมก่อน ทำให้คอมแอฟฟิลิเอตหล่นหายจากการ์ด
+     ทั้งที่ยังอยู่ในวงกลม สัดส่วนเลยรวมกันได้ 110.8% */
+  const spend=mksSpendCats().reduce((s,c)=>s+(sp[c.k]||0),0);
+  const ads=MKS_CAT.filter(c=>c.g==='ads').reduce((s,c)=>s+(sp[c.k]||0),0);
+  const kol=MKS_CAT.filter(c=>c.g==='kol').reduce((s,c)=>s+(sp[c.k]||0),0)
+          + MR.reduce((s,c)=>s+(sp[c.k]||0),0);
   const net=rev-fee;
-  return {rev, rv, sp, spend, days, fv, fee, net,
+  return {rev, rv, sp, spend, ads, kol, days, fv, fee, net, left:rev-fee-spend,
           pct: rev? spend/rev*100 : null, roi: spend? rev/spend : null,
           pctNet: net>0? spend/net*100 : null, roiNet: spend? net/spend : null};
 }
@@ -2946,181 +2932,91 @@ function mksPrevRange(from,to){
 /* inv = true สำหรับตัวชี้วัดที่ "ลดลง = ดี" (เช่น % ค่าการตลาดต่อยอดขาย)
    ลูกศรยังชี้ตามทิศจริงเสมอ เปลี่ยนแค่สี ไม่งั้นอ่านผิดว่ายอดลด */
 function mksDelta(cur,prev,inv){
-  if(prev==null||cur==null||!prev) return '';
+  if(prev==null||cur==null||!prev||!isFinite(cur)||!isFinite(prev)) return '<span class="mks-fl">–</span>';
   const d=(cur-prev)/Math.abs(prev)*100;
-  if(!isFinite(d)) return '';
+  if(!isFinite(d)) return '<span class="mks-fl">–</span>';
+  if(Math.abs(d)<0.5) return '<span class="mks-fl">เท่าเดิม</span>';
   const up=d>=0, good=inv? !up : up;
   return '<span class="'+(good?'mks-up':'mks-dn')+'">'+(up?'▲':'▼')+' '+Math.abs(d).toFixed(1)+'%</span>';
 }
 
-/* ── กราฟแนวโน้มรายวัน: แท่งค่าการตลาด (ซ้อนสี) + เส้นยอดขาย ───────────── */
+/* ── กราฟแนวโน้มรายวัน: แท่งค่าการตลาด (ซ้อนสี) + เส้นยอดขาย ─────────────
+   วาดเป็น SVG เอง — หน้า Mobile ไม่ได้โหลด Chart.js */
 function mksTrend(from,to,w){
   const K=MKT_SPEND.keys, ix={}; K.forEach((k,i)=>ix[k]=i);
   const ds=mksAll().filter(d=>d>=from&&d<=to);
   if(!ds.length) return '<div class="mks-empty">ไม่มีข้อมูลในช่วงนี้</div>';
-  const H=200, PL=4, PB=20, PT=8;
+  const H=220, PL=4, PB=20, PT=8;
   const bw=Math.max(7, Math.min(26, (w-PL*2)/ds.length - 3));
   const step=bw+3, W=Math.max(w, ds.length*step+PL*2);
   const cats=mksSpendCats().filter(c=>!c.na);
   const rev=ds.map(d=>MKS_REVK.reduce((s,k)=>s+(ix[k]!=null?MKT_SPEND.days[d][ix[k]]||0:0),0));
-  const spd=ds.map(d=>cats.reduce((s,c)=>s+(MKT_SPEND.days[d][ix[c.k]]||0),0));
+  const spd=ds.map(d=>cats.reduce((s,c)=>s+(c.rate
+      ? (MKT_SPEND.days[d][ix[c.base]]||0)*mksRateOn(c.spec,d)
+      : (MKT_SPEND.days[d][ix[c.k]]||0)),0));
   const rMax=Math.max(1,...rev), sMax=Math.max(1,...spd);
   const bh=H-PT-PB;
   let g='';
   ds.forEach((d,i)=>{
     const x=PL+i*step; let y=H-PB;
     cats.forEach(c=>{
-      const v=MKT_SPEND.days[d][ix[c.k]]||0; if(v<=0) return;
+      const v=c.rate? (MKT_SPEND.days[d][ix[c.base]]||0)*mksRateOn(c.spec,d)
+                    : (MKT_SPEND.days[d][ix[c.k]]||0);
+      if(v<=0) return;
       const h=v/sMax*bh; y-=h;
       g+='<rect x="'+x+'" y="'+y.toFixed(1)+'" width="'+bw+'" height="'+h.toFixed(1)+'" fill="'+c.c+'"><title>'+
          mksD(d)+' · '+c.n+' '+mksN(v)+'</title></rect>';
     });
   });
   const pts=ds.map((d,i)=>(PL+i*step+bw/2).toFixed(1)+','+(H-PB-rev[i]/rMax*bh).toFixed(1)).join(' ');
-  g+='<polyline points="'+pts+'" fill="none" stroke="#16a34a" stroke-width="2" stroke-linejoin="round"/>';
+  g+='<polyline points="'+pts+'" fill="none" stroke="#0F7B4F" stroke-width="2" stroke-linejoin="round"/>';
   ds.forEach((d,i)=>{
     g+='<circle cx="'+(PL+i*step+bw/2).toFixed(1)+'" cy="'+(H-PB-rev[i]/rMax*bh).toFixed(1)+
-       '" r="2.6" fill="#16a34a"><title>'+mksD(d)+' · ยอดขาย '+mksN(rev[i])+'</title></circle>';
+       '" r="2.6" fill="#0F7B4F"><title>'+mksD(d)+' · ยอดขาย '+mksN(rev[i])+'</title></circle>';
   });
   const every=Math.ceil(ds.length/14);
   ds.forEach((d,i)=>{ if(i%every) return;
-    g+='<text x="'+(PL+i*step+bw/2).toFixed(1)+'" y="'+(H-6)+'" font-size="9.5" fill="#999" text-anchor="middle">'+
+    g+='<text x="'+(PL+i*step+bw/2).toFixed(1)+'" y="'+(H-6)+'" font-size="9.5" fill="#9AA0AA" text-anchor="middle">'+
        mksD(d)+'</text>'; });
   return '<div class="mks-chart"><svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'">'+
-    '<line x1="'+PL+'" y1="'+(H-PB)+'" x2="'+(W-PL)+'" y2="'+(H-PB)+'" stroke="#e8e8e8"/>'+g+'</svg></div>'+
-    '<div class="mks-leg"><span><i style="background:#16a34a"></i>ยอดขาย (สูงสุด '+mksN(rMax)+'/วัน)</span>'+
+    '<line x1="'+PL+'" y1="'+(H-PB)+'" x2="'+(W-PL)+'" y2="'+(H-PB)+'" stroke="#E8EAEE"/>'+g+'</svg></div>'+
+    '<div class="mks-leg"><span><i style="background:#0F7B4F"></i>ยอดขาย (สูงสุด '+mksN(rMax)+'/วัน)</span>'+
     cats.map(c=>'<span><i style="background:'+c.c+'"></i>'+c.n+'</span>').join('')+
     '<span>แท่งรวมสูงสุด '+mksN(sMax)+'/วัน</span></div>';
 }
 
-/* ── สัดส่วนค่าการตลาด: แท่งแนวนอน (ยอดเล็กอ่านออกเสมอ) ─────────────── */
-function mksSplit(A){
-  const mx=Math.max(1,...mksSpendCats().map(c=>A.sp[c.k]||0));
-  const pie=mksDonut(mksSpendCats().filter(c=>!c.na).map(c=>({n:c.n,c:c.c,v:A.sp[c.k]||0})),
-                     A.spend, 'ค่าการตลาด');
-  return '<div class="mks-pie">'+pie+'<div class="mks-bars">'+mksSpendCats().map(c=>{
-    const v=A.sp[c.k];
-    if(v==null) return '<div class="mks-h"><div class="mks-hn"><i style="background:'+c.c+
-      ';opacity:.25"></i>'+c.n+'</div><div class="mks-ht"></div>'+
-      '<div class="mks-hv mks-wait">รอข้อมูล</div><div class="mks-hp">–</div></div>';
-    const pct=A.spend? v/A.spend*100 : 0;
-    return '<div class="mks-h"><div class="mks-hn"><i style="background:'+c.c+'"></i>'+c.n+'</div>'+
-      '<div class="mks-ht"><div class="mks-hf" style="width:'+(v/mx*100).toFixed(2)+'%;background:'+c.c+'"></div></div>'+
-      '<div class="mks-hv">'+mksN(v)+'</div><div class="mks-hp">'+pct.toFixed(1)+'%</div></div>';
-  }).join('')+'</div></div>';
+/* ── แถวแถบแนวนอน (ใช้ทั้ง 2 กล่อง) ───────────────────────────────── */
+function mksRow(n,c,v,mx,right,dl){
+  return '<div class="mks-row"><div class="mks-nm"><i style="background:'+c+'"></i>'+n+'</div>'+
+    '<div class="mks-tr"><span style="width:'+(mx?Math.max(0,v/mx*100):0).toFixed(1)+'%;background:'+c+'"></span></div>'+
+    '<div class="mks-rv mks-n">'+right+'</div><div class="mks-rd mks-n">'+(dl||'')+'</div></div>';
 }
 
-/* ── โดนัท: สัดส่วนเป็นชิ้นเค้ก ──────────────────────────────────────────
-   ใช้ stroke-dasharray บนวงกลม (เส้นเดียวต่อชิ้น) แทนการเขียน path arc เอง
-   ชิ้นที่ใหญ่พอ (>=6%) ใส่ตัวเลข % ลงบนวง ชิ้นเล็กกว่านั้นอ่านจากแท่งด้านข้าง
-   title ของแต่ละชิ้นมีชื่อ+ยอด+% ครบทุกชิ้นเสมอ                       */
-function mksDonut(items,total,label){
-  if(!total) return '';
-  const S=168, cx=S/2, cy=S/2, r=58, sw=28, C=2*Math.PI*r;
-  let off=0, arcs='', labs='';
-  items.forEach(it=>{
-    const v=it.v||0; if(v<=0) return;
-    const frac=v/total, len=frac*C;
-    arcs+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+it.c+'" stroke-width="'+sw+
-      '" stroke-dasharray="'+len.toFixed(2)+' '+(C-len).toFixed(2)+'" stroke-dashoffset="'+(-off).toFixed(2)+
-      '" transform="rotate(-90 '+cx+' '+cy+')"><title>'+it.n+' · '+mksN(v)+' บาท · '+
-      (frac*100).toFixed(1)+'%</title></circle>';
-    if(frac>=0.06){
-      const mid=(off+len/2)/C*2*Math.PI - Math.PI/2;
-      labs+='<text x="'+(cx+Math.cos(mid)*r).toFixed(1)+'" y="'+(cy+Math.sin(mid)*r+3.5).toFixed(1)+
-        '" font-size="10.5" font-weight="700" fill="#fff" text-anchor="middle">'+
-        Math.round(frac*100)+'%</text>';
-    }
-    off+=len;
-  });
-  return '<svg class="mks-donut" viewBox="0 0 '+S+' '+S+'" width="'+S+'" height="'+S+
-    '" role="img" aria-label="สัดส่วน'+label+'">'+arcs+labs+
-    '<text x="'+cx+'" y="'+(cy-4)+'" font-size="15" font-weight="800" fill="currentColor" text-anchor="middle">'+
-    mksN(total)+'</text>'+
-    '<text x="'+cx+'" y="'+(cy+12)+'" font-size="10" fill="#8a8f9c" text-anchor="middle">บาท</text></svg>';
-}
-
-/* ── วงรวม: ยอดขาย vs ค่า Ads vs ค่า KOL ────────────────────────────────
-   ค่าการตลาดเป็น "ส่วนหนึ่งของ" ยอดขาย ไม่ใช่ก้อนแยก วงนี้จึงเอายอดขายเป็นวงเต็ม
-   แล้วแบ่งเป็น ค่า Ads / ค่า KOL / ส่วนที่เหลือ — อ่านได้ทันทีว่าขายได้ 100 บาท
-   จ่ายค่าโฆษณากี่บาท จ่าย KOL กี่บาท                                      */
-function mksRatio(A){
-  const items=[], gaps=[];
-  MKS_GRP.forEach(G=>{
-    const mem=mksSpendCats().filter(c=>c.g===G.g);
-    const have=mem.filter(c=>!c.na);
-    if(!have.length){ gaps.push(G.n); return; }          // ทั้งกลุ่มยังไม่มีข้อมูล -> ไม่ใส่ชิ้น
-    const miss=mem.filter(c=>c.na).map(c=>c.n);
-    items.push({n:G.n, c:G.c, v:have.reduce((s,c)=>s+(A.sp[c.k]||0),0),
-                d:have.map(c=>c.n.replace('Ads ','')).join(' + ')+
-                  (miss.length? ' (ยังไม่รวม '+miss.join(', ')+')':'')});
-  });
-  if(A.fee>0) items.push({n:'ค่าธรรมเนียมแพลตฟอร์ม', c:'#dc2626', v:A.fee,
-    d:mksFeeCats().map(c=>c.n+' '+mksRatePct(A,c)+' = '+mksN(A.fv[c.k]||0)).join(' · ')});
-  const used=items.reduce((s,i)=>s+i.v,0);
-  items.unshift({n:'ยอดขายส่วนที่เหลือ', c:'#16a34a', v:Math.max(0,A.rev-used),
-                 d:'หลังหักค่าการตลาด'+(A.fee>0?'และค่าธรรมเนียม':'')+'ที่มีข้อมูลแล้ว'});
-  const rows=items.map(it=>'<div class="mks-h"><div class="mks-hn"><i style="background:'+it.c+'"></i>'+it.n+
-    '</div><div class="mks-ht"><div class="mks-hf" style="width:'+(A.rev?it.v/A.rev*100:0).toFixed(2)+
-    '%;background:'+it.c+'"></div></div><div class="mks-hv">'+mksN(it.v)+'</div>'+
-    '<div class="mks-hp">'+(A.rev?(it.v/A.rev*100).toFixed(2):'0')+'%</div></div>'+
-    '<div class="mks-sub">'+it.d+'</div>').join('')+
-    (gaps.length? '<div class="mks-sub" style="margin-left:0;color:#b45309">ยังไม่มีข้อมูล '+
-       gaps.join(' และ ')+' จึงยังไม่มีชิ้นในวงนี้</div>':'');
-  return '<div class="mks-pie">'+mksDonut(items, A.rev, 'ยอดขายเทียบค่าการตลาด')+
-    '<div class="mks-bars">'+rows+'</div></div>';
-}
-
-/* ── ยอดขายแยกตามช่องทาง ───────────────────────────────────────────── */
-function mksSplitRev(A,P){
-  const cats=MKS_REV_CAT.filter(c=>(A.rv[c.k]||0)>0 || (P&&(P.rv[c.k]||0)>0))
-    .sort((a,b)=>(A.rv[b.k]||0)-(A.rv[a.k]||0));
-  const mx=Math.max(1,...cats.map(c=>A.rv[c.k]||0));
-  const pie=mksDonut(cats.map(c=>({n:c.n,c:c.c,v:A.rv[c.k]||0})), A.rev, 'ยอดขายรายช่องทาง');
-  return '<div class="mks-pie">'+pie+'<div class="mks-bars">'+cats.map(c=>{
-    const v=A.rv[c.k]||0, pct=A.rev? v/A.rev*100 : 0;
-    const d=P? mksDelta(v,P.rv[c.k]) : '';
-    return '<div class="mks-h"><div class="mks-hn"><i style="background:'+c.c+'"></i>'+c.n+'</div>'+
-      '<div class="mks-ht"><div class="mks-hf" style="width:'+(v/mx*100).toFixed(2)+'%;background:'+c.c+'"></div></div>'+
-      '<div class="mks-hv">'+mksN(v)+'</div><div class="mks-hp">'+pct.toFixed(1)+'%</div>'+
-      '<div class="mks-hd">'+(d||'<span style="color:var(--muted,#999)">–</span>')+'</div></div>';
-  }).join('')+'</div></div>';
-}
-
-/* ── KOL ─────────────────────────────────────────────────────────────── */
-/* ⛔ ห้ามเอาแถวรายคนกลับมาที่นี่อีก — ไม่มีชื่อบัญชี KOL ไม่มีชื่อแคมเปญ
-   repo นี้เป็น public และ GitHub Pages เสิร์ฟไฟล์นี้สาธารณะ (ยืนยันแล้ว HTTP 200
-   แบบไม่ล็อกอิน) 28 ต.ค. 69: เคยฝังชื่อบัญชี 335 ราย + ยอดจ่ายรายคน 497 แถว
-   ไว้ในบล็อก MKT_SPEND ค้างอยู่ 8 วัน ตั้งแต่ commit d61dce1
-   ข้อมูลที่หน้านี้ได้รับมีแค่: ยอดรวมรายวัน · ยอดรวมรายวันแยกตามระดับ · ยอดรอจ่ายรายวัน
-   รายละเอียดรายคนดูได้ที่ data Ads/kol_rows_private.json บนเครื่อง (ไม่ขึ้น git) */
+/* ── KOL ตามระดับ (ไม่มีรายชื่อรายคน — ข้อมูลส่วนบุคคล) ──────────────── */
 function mksKol(from,to){
-  const td=MKT_SPEND.kol_tier||{}, pd=MKT_SPEND.kol_pend||{};
-  const tiers={}; let tot=0;
+  const td=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.kol_tier)||{};
+  const tiers={};
   Object.keys(td).forEach(d=>{ if(d<from||d>to) return;
-    Object.keys(td[d]).forEach(k=>{ tiers[k]=(tiers[k]||0)+td[d][k]; tot+=td[d][k]; }); });
-  /* แถว "รอจ่าย" มักลงวันทำจ่ายเป็นวันข้างหน้า (เลย asof) ถ้ากรองด้วยช่วงเดียวกัน
-     จะหายไปทั้งหมด -> เอาเฉพาะที่อยู่ในช่วงที่เลือก หรือหลังช่วงนั้น */
-  let pt=0; Object.keys(pd).forEach(d=>{ if(d>=from) pt+=pd[d]; });
-  if(!tot&&!pt) return '<div class="mks-empty">ไม่มีรายการ KOL ในช่วงนี้</div>';
+    Object.keys(td[d]).forEach(k=>tiers[k]=(tiers[k]||0)+td[d][k]); });
+  const tot=Object.keys(tiers).reduce((s,k)=>s+tiers[k],0);
   let h='';
-  if(tot){   /* ช่วงที่มีแต่รายการรอจ่าย -> ไม่ต้องขึ้นตารางเปล่า "รวม 0 บาท" */
-    h+='<div class="mks-t">สรุปตามระดับ KOL <small>เฉพาะที่จ่ายแล้ว · รวม '+mksN(tot)+' บาท</small></div>';
-    h+='<div class="mks-scroll"><table class="mks-tb"><thead><tr><th>ระดับ</th>'+
-       '<th>ยอดจ่าย</th><th>%</th></tr></thead><tbody>';
-    Object.keys(tiers).sort((a,b)=>tiers[b]-tiers[a]).forEach(t=>{
-      h+='<tr><td><span class="mks-tier'+(t==='ยังไม่ระบุระดับ'?' na':'')+'">'+t+'</span></td>'+
-         '<td>'+mksN(tiers[t])+'</td><td>'+(tiers[t]/tot*100).toFixed(1)+'%</td></tr>';
-    });
-    h+='</tbody></table></div>';
+  if(!tot) h='<div class="mks-empty">ไม่มีรายการ KOL ที่จ่ายแล้วในช่วงนี้</div>';
+  else {
+    h='<div class="mks-scroll"><table class="mks-tb"><thead><tr><th>ระดับ</th><th>ยอดจ่าย</th><th>%</th></tr></thead><tbody>'+
+      Object.keys(tiers).sort((a,b)=>tiers[b]-tiers[a]).map(k=>
+        '<tr><td>'+mksEsc(k)+'</td><td class="mks-n">'+mksB(tiers[k])+'</td>'+
+        '<td class="mks-n">'+mksP(tiers[k]/tot)+'</td></tr>').join('')+
+      '<tr><td><b>รวม</b></td><td class="mks-n"><b>'+mksB(tot)+'</b></td><td class="mks-n"><b>100%</b></td></tr>'+
+      '</tbody></table></div><div class="mks-sub">ไม่มีรายชื่อรายคนบนหน้านี้ (ข้อมูลส่วนบุคคล) '+
+      'รายละเอียดรายคนอยู่ในไฟล์ที่ไม่ถูก commit</div>';
   }
-  if(pt){
-    h+='<div class="mks-note" style="margin-top:9px"><b>รอจ่าย '+mksN(pt)+
-       ' บาท</b> — ยังไม่นับรวมในยอดค่าการตลาดด้านบน</div>';
+  const pend=(typeof MKT_SPEND!=='undefined' && MKT_SPEND.kol_pend)||{};
+  const pk=Object.keys(pend).filter(d=>d>=from);
+  if(pk.length){
+    const pt=pk.reduce((s,d)=>s+pend[d],0);
+    h+='<div class="mks-warn" style="margin-top:12px"><b>รอจ่าย '+mksB(pt)+' ('+pk.length+
+       ' รายการ)</b> — ยังไม่นับรวมในค่าการตลาดด้านบน</div>';
   }
-  h+='<div class="mks-sub" style="margin-left:0;margin-top:9px">รายชื่อ KOL และยอดจ่ายรายคน'+
-     'ไม่แสดงบนหน้านี้ (ข้อมูลส่วนบุคคล) — ดูได้ที่ไฟล์ในเครื่อง '+
-     '<code>data Ads/kol_rows_private.json</code></div>';
   return h;
 }
 
@@ -3136,7 +3032,7 @@ function mksRender(){
     const A=mksAgg(f,t), [pf,pt]=mksPrevRange(f,t);
     const P=(pf>=lo)? mksAgg(pf,pt) : null;
     const miss=MKS_CAT.filter(c=>c.na);
-    const w=Math.max(300,(el.clientWidth||680)-34);
+    const w=Math.max(300,(el.clientWidth||680)-38);
 
     let h='<div class="mks">';
 
@@ -3146,99 +3042,122 @@ function mksRender(){
          .map(p=>'<button class="mks-b'+(MKS_ST.preset===p[0]?' on':'')+
            '" onclick="mksSet(\''+p[0]+'\')">'+p[1]+'</button>').join('')+
        '</div><div class="mks-dates"><input type="date" id="'+id+'-f" value="'+f+'" min="'+lo+'" max="'+hi+'">'+
-       '<span style="color:var(--muted,#999)">ถึง</span>'+
+       '<span style="color:var(--muted,#6B7280)">–</span>'+
        '<input type="date" id="'+id+'-t" value="'+t+'" min="'+lo+'" max="'+hi+'">'+
        '<button class="mks-b" onclick="mksCustom(\''+id+'\')">ใช้ช่วงนี้</button></div>'+
-       '<div class="mks-range">ช่วงที่เลือก '+f+' ถึง '+t+' ('+A.days+' วัน)'+
-       (P?' · เทียบกับ '+pf+' ถึง '+pt:' · ไม่มีช่วงก่อนหน้าให้เทียบ (ข้อมูลเริ่ม '+lo+')')+'</div></div>';
+       '<div class="mks-range">ช่วงที่เลือก <b>'+mksTHR(f,t)+'</b> ('+A.days+' วัน)'+
+       (P?' · เทียบกับ '+mksTHR(pf,pt):' · ไม่มีช่วงก่อนหน้าให้เทียบ (ข้อมูลเริ่ม '+mksTH(lo,1)+')')+'</div></div>';
 
     /* วันที่ขาดจะ "ไม่ถูกนับเป็น 0" อยู่แล้ว เพราะ mksAgg วนเฉพาะวันที่มีจริง
        ป้ายนี้มีไว้กันอ่านผิดว่ายอดเดือนนั้นต่ำ ทั้งที่จริงคือข้อมูลยังดึงมาไม่ครบ */
     const want=mksDiffDays(f,t)+1, gap=Math.max(0, want-A.days);
 
-    /* ป้ายวันที่ข้อมูล */
-    const C=MKT_SPEND.cov||{};
-    h+='<div class="mks-badges">'+MKS_SRC.map(s=>'<span class="mks-bd">'+s.n+' <b>'+(C[s.k]||'–')+'</b></span>').join('')+
-       miss.map(c=>'<span class="mks-bd warn">'+c.n+' <b>รอข้อมูล</b></span>').join('')+
-       (gap>0?'<span class="mks-bd warn">ช่วงนี้ยังไม่มีข้อมูล <b>'+gap+' วัน</b> จาก '+want+'</span>':'')+'</div>';
+    /* 1 ─ ขายได้ 100 บาท เงินไปไหนบ้าง */
+    const parts=[{n:'ค่าธรรมเนียมแพลตฟอร์ม', v:A.fee,  c:'#6B7280'},
+                 {n:'ค่าแอด 4 แพลตฟอร์ม',    v:A.ads,  c:'#2457F5'},
+                 {n:'KOL + คอมแอฟฟิลิเอต',   v:A.kol,  c:'#8B5CF6'},
+                 {n:'เหลือ',                 v:Math.max(0,A.left), c:'#0F7B4F'}];
+    const ptot=parts.reduce((s,p)=>s+p.v,0)||1;
+    const per100=A.rev? A.left/A.rev*100 : null;
+    h+='<div class="mks-card"><div class="mks-h2">ขายได้ 100 บาท เงินไปไหนบ้าง</div>'+
+       '<div class="mks-line">ขายได้ <b>'+mksB(A.rev)+'</b> · เหลือหลังหักค่าแพลตฟอร์มและการตลาด <b>'+
+       mksB(A.left)+'</b> (<b>'+(per100!=null?per100.toFixed(1):'–')+' บาท</b> ต่อ 100)</div>'+
+       '<div class="mks-stack">'+parts.map(p=>'<span style="width:'+(p.v/ptot*100).toFixed(3)+
+         '%;background:'+p.c+'" title="'+p.n+' '+mksB(p.v)+'"></span>').join('')+'</div>'+
+       '<div class="mks-slegs">'+parts.map(p=>'<div class="mks-sl"><div class="t"><i style="background:'+p.c+
+         '"></i>'+p.n+'</div><div class="v mks-n">'+mksB(p.v)+'</div>'+
+         '<div class="p mks-n">'+mksP(mksDiv(p.v,A.rev))+' ของยอดขาย</div></div>').join('')+'</div>'+
+       (miss.length? '<div class="mks-warn">ยังไม่มีข้อมูล '+miss.map(c=>c.n).join(' และ ')+
+         ' ในช่วงนี้ — “ค่าการตลาดทั้งหมด” จึงยังไม่รวมก้อนนี้ (ไม่ได้นับเป็น 0)</div>':'')+
+       (gap>0? '<div class="mks-warn">ช่วงที่เลือกมีข้อมูลจริง '+A.days+' วัน จาก '+want+
+         ' วัน — '+gap+' วันที่ขาดไม่ถูกนับเป็น 0 แต่ยอดรวมของช่วงนี้จึงต่ำกว่าความเป็นจริง</div>':'')+
+       '</div>';
 
-    /* KPI */
+    /* 2 ─ การ์ด 4 ใบ */
     const kpi=[
-      {l:'ยอดขายรวม', v:mksN(A.rev), c:'#16a34a', d:P?mksDelta(A.rev,P.rev):'', s:'ทุกช่องทาง '+MKS_REV_CAT.length+' ช่อง'},
-      {l:'ค่าการตลาดรวม', v:mksN(A.spend), c:'#1A5CDB', d:P?mksDelta(A.spend,P.spend):'', s:'บาท'},
-      {l:'% ต่อยอดขาย', v:(A.pct!=null?A.pct.toFixed(2)+'%':'–'), c:'#f59e0b',
-       d:P&&P.pct!=null?mksDelta(A.pct,P.pct,true):'', s:'ยิ่งต่ำยิ่งดี'},
-      {l:'ยอดขาย/ค่าการตลาด', v:(A.roi!=null?A.roi.toFixed(2)+'x':'–'), c:'#8b5cf6',
-       d:P&&P.roi!=null?mksDelta(A.roi,P.roi):'', s:'ยิ่งสูงยิ่งดี'}
+      {l:'ยอดขายรวม', v:mksB(A.rev), s:'นับครบ '+MKS_REV_CAT.length+' ช่องทาง', d:P?mksDelta(A.rev,P.rev):''},
+      {l:'ค่าการตลาดทั้งหมด', v:mksB(A.spend), s:'ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟ',
+       d:P?mksDelta(A.spend,P.spend,true):''},
+      {l:'การตลาด ÷ ยอดขาย', v:(A.pct!=null?A.pct.toFixed(1)+'%':'–'), s:'ยิ่งต่ำยิ่งดี',
+       d:P&&P.pct!=null?mksDelta(A.pct,P.pct,true):''},
+      {l:'ยอดขาย ÷ การตลาด', v:mksX(A.roi), s:'ได้ยอดขายกี่เท่าของเงินที่ลง',
+       d:P&&P.roi!=null?mksDelta(A.roi,P.roi):''}
     ];
-    /* ค่าธรรมเนียมแพลตฟอร์ม — โผล่เฉพาะเมื่อมีอัตราตั้งไว้ ถ้าไม่มีหน้าเว็บจะเหมือนเดิมทุกอย่าง */
-    if(A.fee>0){
-      const fc=mksFeeLabel(A);
-      kpi.push({l:'ค่าธรรมเนียมแพลตฟอร์ม', v:mksN(A.fee), c:'#dc2626',
-        d:P&&P.fee?mksDelta(A.fee,P.fee,true):'', s:fc});
-      kpi.push({l:'ยอดขายหลังหักค่าธรรมเนียม', v:mksN(A.net), c:'#0d9488',
-        d:P&&P.net?mksDelta(A.net,P.net):'',
-        s:'ค่าการตลาดคิดเป็น '+(A.pctNet!=null?A.pctNet.toFixed(2)+'%':'–')+' ของยอดนี้'});
-    }
-    h+='<div class="mks-kpi">'+kpi.map(k=>'<div class="mks-k" style="--kc:'+k.c+'">'+
-       '<div class="mks-kl">'+k.l+'</div><div class="mks-kv">'+k.v+'</div>'+
-       '<div class="mks-ks">'+(k.d||k.s)+(k.d?' จากช่วงก่อน':'')+'</div></div>').join('')+'</div>';
+    h+='<div class="mks-kpi">'+kpi.map(k=>'<div class="mks-k">'+
+       '<div class="mks-kl">'+k.l+'</div><div class="mks-kv mks-n">'+k.v+'</div>'+
+       '<div class="mks-ks">'+k.s+'</div><div class="mks-ks">'+(k.d||'')+'</div></div>').join('')+'</div>';
 
-    /* วงรวม: ขายได้เท่าไร จ่าย Ads เท่าไร จ่าย KOL เท่าไร */
-    h+='<div class="mks-card"><div class="mks-t">ยอดขาย เทียบ ค่า Ads และ ค่า KOL '+
-       '<small>วงเต็ม = ยอดขายรวม '+mksN(A.rev)+' บาท</small></div>'+mksRatio(A)+'</div>';
+    /* 3 ─ 2 กล่องข้างกัน */
+    const chs=MKS_REV_CAT.map(c=>({c:c, v:A.rv[c.k]||0, p:P?(P.rv[c.k]||0):null}))
+      .filter(x=>x.v>0||(x.p||0)>0).sort((a,b)=>b.v-a.v);
+    const mx1=Math.max(1,...chs.map(x=>x.v));
+    let box1='<div class="mks-card"><div class="mks-h2">ยอดขายมาจากช่องทางไหน<small>รวม '+mksB(A.rev)+
+      (P?' · ▲▼ เทียบช่วงก่อน':'')+'</small></div><div class="mks-rows">'+
+      chs.map(x=>mksRow(x.c.n, x.c.c, x.v, mx1, mksB(x.v), P?mksDelta(x.v,x.p):'')).join('')+'</div></div>';
+    const mkCats=mksSpendCats().slice().sort((a,b)=>{
+      const av=a.na?-1:(A.sp[a.k]||0), bv=b.na?-1:(A.sp[b.k]||0); return bv-av; });
+    const mx2=Math.max(1,...mkCats.map(c=>A.sp[c.k]||0));
+    const shown=mkCats.reduce((s,c)=>s+(A.sp[c.k]||0),0);
+    let box2='<div class="mks-card"><div class="mks-h2">ค่าการตลาดไปลงที่ไหน<small>รวม '+mksB(A.spend)+
+      '</small></div><div class="mks-rows">'+
+      mkCats.map(c=>{ const v=A.sp[c.k];
+        return v==null ? mksRow(c.n, c.c, 0, mx2, '<span class="mks-fl">รอข้อมูล</span>', '')
+                       : mksRow(c.n, c.c, v, mx2, mksB(v), mksP(mksDiv(v,A.spend))); }).join('')+
+      '</div><div class="mks-sub">รวม '+mksP(mksDiv(shown,A.spend))+' ของค่าการตลาดทั้งหมด'+
+      (miss.length? ' · ยังไม่รวม '+miss.map(c=>c.n).join(' และ ')+' (รอข้อมูล)':'')+'</div></div>';
+    h+='<div class="mks-two">'+box1+box2+'</div>';
 
-    /* ยอดขายแยกช่องทาง + สัดส่วนค่าการตลาด (เรียงคู่กันบนจอกว้าง) */
-    h+='<div class="mks-two">';
-    h+='<div class="mks-card"><div class="mks-t">ยอดขายแยกตามช่องทาง <small>รวม '+mksN(A.rev)+' บาท'+
-       (P?' · ▲▼ เทียบช่วงก่อน':'')+'</small></div>'+mksSplitRev(A,P)+'</div>';
-    h+='<div class="mks-card"><div class="mks-t">สัดส่วนค่าการตลาด <small>รวม '+mksN(A.spend)+' บาท</small></div>'+
-       mksSplit(A)+'</div>';
-    h+='</div>';
+    /* 4 ─ แนวโน้มรายวัน */
+    h+='<div class="mks-card" style="margin-top:14px"><div class="mks-h2">ยอดขายและค่าการตลาดรายวัน'+
+       '<small>เส้น = ยอดขาย · แท่ง = ค่าการตลาด (ซ้อนตามหมวด)</small></div>'+mksTrend(f,t,w)+'</div>';
 
-    /* แนวโน้มรายวัน */
-    h+='<div class="mks-card"><div class="mks-t">แนวโน้มรายวัน <small>เส้น = ยอดขาย · แท่ง = ค่าการตลาด</small></div>'+
-       mksTrend(f,t,w)+'</div>';
+    /* 5 ─ KOL ตามระดับ (พับ) */
+    h+='<details class="mks-det"><summary>KOL ตามระดับ</summary><div class="mks-body">'+
+       mksKol(f,t)+'</div></details>';
 
-    /* KOL */
-    h+='<div class="mks-card">'+mksKol(f,t)+'</div>';
-
-    /* หมายเหตุ */
-    h+='<div class="mks-note">';
-    if(miss.length) h+='<b>⚠️ % ต่อยอดขายยังไม่รวม '+miss.map(c=>c.n).join(' และ ')+
-      '</b> — ยังไม่มีข้อมูล จึงเว้นไว้ ไม่ได้นับเป็น 0<br>';
-    if(MKT_SPEND.tiers_unmapped_n)
-      h+='มีแคมเปญ '+MKT_SPEND.tiers_unmapped_n+' รายการที่ยังไม่ได้ระบุระดับ KOL '+
-         '(ชื่อแคมเปญไม่แสดงบนหน้านี้ · แก้ที่ <code>data Ads/kol_campaign_tier.json</code>)<br>';
-    h+='ยอดขาย TikTok รายวันเป็นยอดก่อนหักคำสั่งซื้อที่ยกเลิก จึงสูงกว่าหน้า Sales '+
-       'ราว 1% (ต.ค. ต่างกัน 24,572 บาท) ช่องอื่นตรงกันทุกบาท<br>';
-    /* recon = วันสุดท้ายที่ยอดกระทบกับหน้า "ยอดขาย & รายได้" แล้ว
-       วันหลังจากนั้นเป็นข้อมูลสดจากแพลตฟอร์ม/Shipnity ซึ่งยังไม่ผ่านการกระทบยอด
-       ต้องบอกให้ชัด ไม่งั้นมีคนเอาไปใช้เป็นตัวเลขทางการแล้วไม่ตรงกับฝ่ายบัญชี */
+    /* 6 ─ ที่มาของตัวเลข + หมายเหตุทั้งหมด (พับ) */
+    const C=MKT_SPEND.cov||{};
+    let nt='';
+    nt+='<p><b>ค่าการตลาดทั้งหมด = ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟฟิลิเอต TikTok</b> '+
+        '(บวก Event เมื่อมีข้อมูล) ใช้นิยามนี้ทุกจุดในหน้า ทั้งการ์ด แถบสัดส่วน และกล่อง “ไปลงที่ไหน” '+
+        'จึงรวมกันได้ 100% พอดี</p>';
+    if(miss.length) nt+='<p><b>⚠️ ยังไม่รวม '+miss.map(c=>c.n).join(' และ ')+
+        '</b> — ยังไม่มีข้อมูล จึงเว้นไว้ ไม่ได้นับเป็น 0</p>';
+    const un=MKT_SPEND.tiers_unmapped_n||0;
+    if(un) nt+='<p>มีแคมเปญ KOL ที่ยังไม่ได้ระบุระดับ <b>'+un+' รายการ</b> '+
+        '(แก้ที่ <code>data Ads/kol_campaign_tier.json</code>)</p>';
     const rc=MKT_SPEND.recon;
     if(rc && t>rc){
-      const n=mksDiffDays(mksAdd(rc,1), t);
-      h+='<b>ℹ️ '+n+' วันล่าสุด ('+mksTH(mksAdd(rc,1))+' – '+mksTH(t)+') ยังไม่ผ่านการกระทบยอด</b>'+
+      const n2=mksDiffDays(mksAdd(rc,1), t)+1;
+      nt+='<p><b>ℹ️ '+n2+' วันล่าสุด ('+mksTH(mksAdd(rc,1))+' – '+mksTH(t)+') ยังไม่ผ่านการกระทบยอด</b>'+
          ' — เป็นข้อมูลสดจากแพลตฟอร์มและ Shipnity ตัวเลขอาจขยับเล็กน้อยเมื่อกระทบยอดแล้ว'+
-         ' · ช่วงถึง '+mksTH(rc)+' ตรงกับหน้า "ยอดขาย & รายได้" ทุกบาท<br>';
+         ' · ช่วงถึง '+mksTH(rc)+' ตรงกับหน้า “ยอดขาย &amp; รายได้” ทุกบาท</p>';
     }
     const prov=A.fee>0? mksProvMonths(f,t) : [];
-    if(prov.length) h+='<b>⚠️ '+prov.map(m=>TH_MF_SHORT(m)).join(' · ')+
+    if(prov.length) nt+='<p><b>⚠️ '+prov.map(m=>TH_MF_SHORT(m)).join(' · ')+
       ' ยังเป็นอัตราชั่วคราว</b> — ยอดเงินจากแพลตฟอร์มยังเข้าไม่ครบเดือน '+
-      'ตัวเลขค่าธรรมเนียมและยอดหลังหักยังขยับได้ จะปิดยอดเป็นตัวจริงวันที่ 5 ของเดือนถัดไป<br>';
-    if(A.fee>0) h+='<b>ค่าธรรมเนียมแพลตฟอร์มเป็นอัตราที่ตั้งไว้เอง</b> ('+mksFeeLabel(A)+
-      ') คิดจากยอดขายของช่องทางนั้น ไม่ใช่ยอดเรียกเก็บจริงจากแพลตฟอร์ม · '+
+      'ตัวเลขค่าธรรมเนียมและยอดหลังหักยังขยับได้ จะปิดยอดเป็นตัวจริงวันที่ 5 ของเดือนถัดไป</p>';
+    if(A.fee>0) nt+='<p><b>ค่าธรรมเนียมแพลตฟอร์มเป็นอัตราที่ตั้งไว้เอง</b> ('+mksFeeLabel(A)+
+      ') คิดจากยอดขายรายวันของช่องทางนั้น ไม่ใช่ยอดเรียกเก็บจริงจากแพลตฟอร์ม · '+
       'ช่องทางขายตรง (Facebook · LINE · POS · เว็บไซต์ ฯลฯ) ไม่มีค่าธรรมเนียม · '+
-      'แก้อัตราได้ที่ <code>data Ads/platform_fee.json</code><br>';
-    h+='<b>ยอดขายหน้านี้นับครบทุกช่องทาง</b> รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ '+
+      'แก้อัตราได้ที่ <code>data Ads/platform_fee.json</code></p>';
+    nt+='<p><b>คอมแอฟฟิลิเอต TikTok</b> ไม่มีคอลัมน์รายวัน คิดเป็นอัตราของยอดขาย TikTok รายวันตาม '+
+        '<code>marketing_rates</code> ใน <code>data Ads/platform_fee.json</code></p>';
+    nt+='<p><b>ยอดขายหน้านี้นับครบทุกช่องทาง</b> รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ '+
       'จึงมากกว่าหน้า <b>Ads Dashboard</b> ที่นับเฉพาะ 3 ช่องทางที่ยิงโฆษณา (ต่างกันราว 8–9%) '+
-      'ช่องทางที่ซ้ำกันตรงกันทุกบาท<br>';
-    h+='ยอดขาย Shopee/TikTok/Lazada ใช้ข้อมูลรายวันจาก Ads Dashboard · ช่องทางที่เหลือจาก Shipnity · '+
-       'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done<br>';
-    if(gap>0) h+='<b>ช่วงที่เลือกมีข้อมูลจริง '+A.days+' วัน จาก '+want+' วัน</b> — '+gap+
-      ' วันที่ขาดไม่ได้ถูกนับเป็น 0 แต่ยอดรวมของช่วงนี้จึงต่ำกว่าความเป็นจริง<br>';
-    h+='ข้อมูลรายวันมีตั้งแต่ '+lo+' ถึง '+hi;
-    h+='</div></div>';
+      'ช่องทางที่ซ้ำกันตรงกันทุกบาท</p>';
+    nt+='<p>ยอดขาย TikTok รายวันเป็นยอดก่อนหักคำสั่งซื้อที่ยกเลิก จึงสูงกว่าหน้า Sales ราว 1% '+
+        'ช่องอื่นตรงกันทุกบาท</p>';
+    nt+='<p>ยอดขาย Shopee/TikTok/Lazada ใช้ข้อมูลรายวันจาก Ads Dashboard · ช่องทางที่เหลือจาก Shipnity · '+
+        'KOL นับตามวันที่ทำจ่าย เฉพาะ Status = Done · ค่าแอด Facebook มาจากไฟล์เดียวกับหน้า Ads '+
+        '(<code>facebook/fb_daily.json</code>)</p>';
+    nt+='<p><b>ข้อมูลถึงวันไหน</b></p><div class="mks-chips">'+
+        MKS_SRC.map(s=>'<span class="mks-chip">'+s.n+' ถึง '+(C[s.k]?mksTH(C[s.k],1):'–')+'</span>').join('')+
+        '</div>';
+    nt+='<p class="mks-sub">ข้อมูลรายวันมีตั้งแต่ '+mksTH(lo,1)+' ถึง '+mksTH(hi,1)+'</p>';
+    h+='<details class="mks-det"><summary>ตัวเลขในหน้านี้มาจากไหน</summary><div class="mks-body">'+nt+'</div></details>';
+
+    h+='</div>';
     el.innerHTML=h;
   });
 }
