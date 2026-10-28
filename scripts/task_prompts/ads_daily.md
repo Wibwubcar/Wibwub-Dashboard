@@ -5,10 +5,11 @@
 
 หน้าเว็บ `data Ads/WIBWUB_Ads_Dashboard_redesign.html` (ตัวที่ WIBWUB_Dashboard.html ฝังจริงตั้งแต่ 28 ต.ค. 69 · ของเดิม `_new` เก็บไว้เป็นทางถอย ห้ามลบ) อ่านข้อมูลจาก `data Ads/ads_daily.json` (รายวัน — Shopee/TikTok/Lazada), `data Ads/ads_periods.json` (รายเดือน) และ `data Ads/ads_tk_campaigns.json` (แคมเปญย่อย GMV Max) งานนี้ทำให้ไฟล์เหล่านี้ทันสมัยถึง "เมื่อวาน" — ห้ามแก้ HTML
 
-### ขั้น 0 — หาโฟลเดอร์ All (สำคัญ)
-ใน shell ให้หาโฟลเดอร์ All ที่เชื่อมไว้กับงานนี้ ตามลำดับ:
-`for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -f "$d/scripts/ads/ads_daily_update.py" ] && echo "$d" && break; done`
-ใช้ผลลัพธ์เป็น `BASE` ในทุกคำสั่ง ถ้าไม่เจอ หรือ shell ตอบว่า "No folders are connected": หยุดและรายงานทันทีว่าต้องเชื่อมโฟลเดอร์ All ให้งานนี้
+### ขั้น 0 — ไม่มีขั้นหาโฟลเดอร์ ห้ามใช้ shell ค้นหา
+สคริปต์ทุกตัวใน `scripts/` หาโฟลเดอร์ All เองจากตำแหน่งไฟล์ (marker `sw.js` + `.git`) จึงไม่ต้องหา `BASE` ก่อน ให้เขียนพาธเต็มในคำสั่ง `python3` ได้เลย
+**ห้ามรันลูป `for` / `[ -f ... ]` / ตั้งตัวแปร `BASE=` / `cd` เพื่อหาพาธ** — คำสั่งผสมแบบนี้สร้างกฎอนุญาตถาวรไม่ได้ จึงเด้งกล่องขออนุญาตที่ไม่มีคนกดแล้วค้างทั้งรอบ **คำสั่ง shell แรกของรอบต้องขึ้นต้นด้วย `python3` เสมอ**
+ถ้าคำสั่ง `python3` ตอบว่าไม่พบไฟล์ ให้ลองพาธสำรองที่ขึ้นต้นด้วย `~/mnt/All/` หนึ่งครั้ง ถ้ายังไม่ได้: หยุดและรายงานทันทีว่าเข้าโฟลเดอร์ All ไม่ได้ ห้ามเดาพาธเอง
+> เกิดจริงกับงานนี้ 26 ต.ค. 69 (ค้าง 37 ชม. รอบเช้า/เย็นหายหมด) และ 28 ต.ค. 69 20:45 — ลูปนี้เป็นกับดักที่ยิงเป็นครั้งคราว แล้วแต่รอบนั้นจะรันบล็อกนี้จริงไหม
 
 สคริปต์: `scripts/ads/hook.js`, `scripts/ads/collect.js`, `scripts/ads/ads_daily_update.py`, `scripts/ads/sync_periods.js` — ถ้าหายหรือพัง ให้หยุดและรายงาน ห้ามเขียนวิธีอื่นเอง ตัวเลขทุกตัวให้สคริปต์คำนวณ ห้ามคิดหรือแก้เอง
 
@@ -64,14 +65,19 @@ for k in ['sh_real','sh_ads','tk_real','tk_ads','lz_real','lz_ads']:
    (ถ้า Lazada ล้ม ให้ตัด 2 ไฟล์ท้ายออก — สคริปต์รับ Lazada แบบไม่บังคับ แต่ถ้าจะใส่ต้องใส่ทั้งคู่) — exit 10 = ข้อมูลรายวันไม่เปลี่ยน (ทำขั้นต่อไปได้) · ถ้า error ว่าขาดวันที่/ค่าติดลบ: หยุดและรายงาน ห้ามเขียนไฟล์เอง
 6. `python3 ads_daily_update.py camp work/tk_camp.json` — exit 10 = แคมเปญไม่เปลี่ยน · ถ้า error ว่าผลรวมไม่ตรงหรือมีมากกว่า 100 แคมเปญ: รายงาน (ขั้นอื่นทำต่อได้)
 7. `python3 ads_daily_update.py commit` — sync รายเดือน + bump sw.js + commit เฉพาะไฟล์ Ads (exit 10 = ไม่มีอะไรเปลี่ยน) · auto-push จะ push เอง ไม่ต้อง push
-   - ถ้า git ล็อกค้าง ให้ย้ายไป .git/stale-* (ห้ามลบไฟล์): `for f in HEAD.lock objects/maintenance.lock index.lock; do [ -e "$BASE/.git/$f" ] && mv "$BASE/.git/$f" "$BASE/.git/stale-$(date +%s)-$(basename $f)"; done`
+   - ถ้า git ล็อกค้าง ให้ย้ายไป `.git/stale-*` (ห้ามลบไฟล์) ด้วยคำสั่งนี้ — **ห้ามเขียนเป็นลูป shell** เพราะลูปสร้างกฎอนุญาตถาวรไม่ได้แล้วงานจะค้าง:
+```bash
+python3 -c 'import pathlib,time,sys; g=pathlib.Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/.git"); [p.rename(g/("stale-%d-%s"%(time.time(),p.name))) for n in ("HEAD.lock","objects/maintenance.lock","index.lock") for p in [g/n] if p.exists()] and None; print("moved")'
+```
 
 8. **เมนู "การตลาด vs ยอดขาย"** — ทำต่อทุกครั้งหลังขั้น 7 (ไม่ว่าขั้น 7 จะ exit 0 หรือ 10):
 ```bash
-cd "$BASE"
-python3 scripts/marketing/kol_fetch.py          # ดึงยอด KOL จากชีต -> data Ads/kol_monthly.json
-python3 scripts/marketing/marketing_update.py   # รวม Ads + KOL + ยอดขาย -> เขียนลง 2 หน้า
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/kol_fetch.py"
 ```
+```bash
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/marketing_update.py"
+```
+(`kol_fetch.py` ดึงยอด KOL จากชีต → `data Ads/kol_monthly.json` · `marketing_update.py` รวม Ads + KOL + ยอดขาย → เขียนลง 2 หน้า)
    exit `0` = อัปเดตแล้ว · `10` = ไม่มีอะไรเปลี่ยน (ทั้งคู่ถือว่าผ่าน) · `2` = ไม่ผ่านด่านตรวจ ให้รายงานแล้วไปต่อ
    ถ้ามีไฟล์เปลี่ยน ให้ commit:
 ```bash
