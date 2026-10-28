@@ -24,6 +24,7 @@
   · ค่าโฆษณา = คอลัมน์ "จำนวนเงินที่ใช้จ่ายไป (THB)" เท่านั้น ห้ามใช้ไฟล์ยอดรวม FB_*.csv
   · เป้าหมายของแคมเปญ = ค่าที่ "ไม่ว่าง" ของคอลัมน์ "ตัวระบุผลลัพธ์" ของแคมเปญนั้น
     (บางวันว่างเพราะวันนั้นไม่มีผลลัพธ์ ไม่ใช่เพราะเป้าหมายเปลี่ยน)
+    ถ้ามีหลายแบบในแคมเปญเดียว ตัดสินด้วยค่าโฆษณา — ดูบล็อก "ตัดสินเป้าหมาย" ใน main()
   · คลิกทั้งหมดไม่มีเป็นคอลัมน์นับ -> ถอดจาก CTR(ทั้งหมด)/100 x อิมเพรสชัน
     ตรวจแล้วปัดเป็นจำนวนเต็มพอดีทุกแถว (คลาดสูงสุด 0.0001) และ spend/clicks ตรงกับ
     คอลัมน์ CPC(ทั้งหมด) ทุกแถว
@@ -186,8 +187,9 @@ def main():
 
     files, skipped, owner = pick_files()
 
-    accounts, camps, acc_days, days = [], {}, {}, {}
-    seen_goal = {}          # (acc, campaign) -> ตัวระบุผลลัพธ์ที่ไม่ว่าง
+    accounts, camps, acc_days, days = {}, {}, {}, {}
+    seen_goal = {}          # (acc, campaign) -> ตัวระบุผลลัพธ์ที่ใช้เป็นเป้าหมาย
+    ind_spend = {}          # (acc, campaign) -> {ตัวระบุ: ค่าโฆษณาของแถวที่มีตัวระบุนั้น}
     cpas_sum = {}           # (acc, campaign) -> จำนวนการซื้อ CPAS รวม (ใช้เดาเป้าหมาย)
     have_opt = {}           # ชื่อคอลัมน์ทางเลือก -> มีในไฟล์ไหม
     rows_all = []
@@ -200,8 +202,12 @@ def main():
         if miss: die('ไฟล์ขาดคอลัมน์ที่ต้องใช้', {'file': Path(fp).name, 'missing': miss})
         for ok, oc in COL_OPT.items():
             have_opt[ok] = have_opt.get(ok, True) and (oc in rows[0])
-        accounts.append({'key': key, 'label': ACC_LABEL.get(key, key),
-                         'id': acct_id, 'file': Path(fp).name, 'rows': len(rows)})
+        # 1 รายการ = 1 บัญชี ไม่ใช่ 1 ไฟล์ — ตั้งแต่ backfill ย้อนหลัง (28 ต.ค. 69)
+        # บัญชีหนึ่งมีไฟล์เดือนละใบ ถ้า append ต่อไฟล์ accounts จะยาว 44 รายการ
+        # แล้วหน้า Ads จะขึ้น "44 บัญชี" และวาดตารางซ้ำบัญชีเดิม 9-10 รอบ
+        ac = accounts.setdefault(key, {'key': key, 'label': ACC_LABEL.get(key, key),
+                                       'id': acct_id, 'files': [], 'rows': 0, 'months': []})
+        ac['files'].append(Path(fp).name); ac['rows'] += len(rows); ac['months'].append(f_from[:7])
         for r in rows:
             d = (r[COL['d']] or '').strip()
             if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
@@ -223,10 +229,39 @@ def main():
                     die('เจอตัวระบุผลลัพธ์ที่ยังไม่รู้จัก — ต้องเพิ่มใน GOALS ก่อน',
                         {'file': Path(fp).name, 'ind': ind})
                 k = (key, r[COL['camp']])
-                if seen_goal.get(k, ind) != ind:
-                    die('แคมเปญเดียวมีตัวระบุผลลัพธ์ 2 แบบ — ต้องตัดสินใจก่อนว่าจะใช้อันไหน',
-                        {'camp': k, 'a': seen_goal[k], 'b': ind})
-                seen_goal[k] = ind
+                e = ind_spend.setdefault(k, {})
+                e[ind] = e.get(ind, 0.0) + num(r[COL['spend']])
+
+    # ── ตัดสินเป้าหมายของแต่ละแคมเปญ ─────────────────────────────────────────
+    # เดิมเจอตัวระบุ 2 แบบในแคมเปญเดียว = die ทันที ซึ่งถูกตอนมีข้อมูลเดือนเดียว
+    # แต่พอ backfill ย้อน 10 เดือน (28 ต.ค. 69) เจอแคมเปญวัตถุประสงค์ "การมีส่วนร่วม"
+    # ที่วันเดียวมี 2 ชุดโฆษณาให้ผลคนละแบบ (1 แชท + 1 การซื้อ จาก 4,288 บาททั้งเดือน)
+    # — ไม่ใช่การเปลี่ยนเป้าหมาย แค่ผลพลอยได้ของแคมเปญที่ไม่ได้ยิงเพื่อคอนเวอร์ชั่น
+    # กติกา: ตัวระบุที่กินค่าโฆษณา >= 80% ของแถวที่มีตัวระบุ = เป้าหมายของแคมเปญ
+    #        ไม่ถึงนั้น = ไม่ชี้เป้าหมายเดียว ('none') ให้หน้าเว็บจัดลงกลุ่ม "อื่น ๆ"
+    #        แต่ถ้าแคมเปญนั้นใช้เงินเกิน 20,000 บาท ให้หยุด — เงินระดับนั้นต้องมีคนดูก่อน
+    mixed = []
+    camp_spend_all = {}
+    for key, r in rows_all:
+        k = (key, r[COL['camp']])
+        camp_spend_all[k] = camp_spend_all.get(k, 0.0) + num(r[COL['spend']])
+    for k, e in ind_spend.items():
+        top, tv = max(e.items(), key=lambda x: x[1])
+        tot_i = sum(e.values())
+        if len(e) == 1 or (tot_i and tv / tot_i >= 0.8):
+            seen_goal[k] = top
+            if len(e) > 1:
+                mixed.append({'acc': k[0], 'camp': k[1], 'ใช้': top.split(':')[-1],
+                              'สัดส่วน': round(tv / tot_i, 3),
+                              'อื่น ๆ': {i.split(':')[-1]: round(v, 2) for i, v in e.items() if i != top}})
+            continue
+        if camp_spend_all.get(k, 0.0) > 20000:
+            die('แคมเปญเดียวมีตัวระบุผลลัพธ์หลายแบบและใช้เงินเกิน 20,000 บาท — '
+                'ต้องตัดสินใจก่อนว่าจะใช้อันไหน', {'camp': list(k), 'ค่าโฆษณา': round(camp_spend_all[k], 2),
+                                                 'ตัวระบุ': {i.split(':')[-1]: round(v, 2) for i, v in e.items()}})
+        mixed.append({'acc': k[0], 'camp': k[1], 'ใช้': 'none (ไม่ชี้เป้าหมายเดียว)',
+                      'ค่าโฆษณา': round(camp_spend_all.get(k, 0.0), 2),
+                      'ตัวระบุ': {i.split(':')[-1]: round(v, 2) for i, v in e.items()}})
 
     # ── ประกอบรายวัน + รายแคมเปญ ────────────────────────────────────────────
     for key, r in rows_all:
@@ -302,7 +337,11 @@ def main():
         if c['goal'] == 'none' and c['omni'] > 0:
             c['goal'] = 'omni'; c['goal_label'] = GOALS['catalog_segment_actions:omni_purchase'][1]
         c['mo'] = {m: [round(v[k], 2) for k in SUM_KEYS + ['res']] for m, v in sorted(c['mo'].items())}
-        c['dd'] = {d: [round(v[k], 2) for k in SUM_KEYS + ['res']] for d, v in sorted(c['dd'].items())}
+        # วันที่ทุกค่าเป็น 0 ไม่ต้องเขียนลงไฟล์ — หน้าเว็บบวกเอา วันที่ไม่มีคีย์ = 0 อยู่แล้ว
+        # (28 ต.ค. 69 หลัง backfill 10 เดือน: 7,812 จาก 22,426 วันเป็น 0 ล้วน เพราะแถว
+        #  not_delivering ของชุดโฆษณาที่ปิดไปแล้ว ตัดออกได้ ~580 KB จาก 2.1 MB)
+        c['dd'] = {d: r for d, r in ((d, [round(v[k], 2) for k in SUM_KEYS + ['res']])
+                                     for d, v in sorted(c['dd'].items())) if any(r)}
 
     for bucket in (days, *acc_days.values()):
         for d in bucket:
@@ -331,7 +370,7 @@ def main():
     data = {
         'generated': datetime.now().astimezone().isoformat(timespec='seconds'),
         'from': dates[0], 'to': dates[-1], 'days_n': len(dates),
-        'accounts': accounts, 'goals': {v[0]: {'label': v[1], 'res': v[2], 'cpr': v[3]}
+        'accounts': sorted(accounts.values(), key=lambda a: a['key']), 'goals': {v[0]: {'label': v[1], 'res': v[2], 'cpr': v[3]}
                                         for v in GOALS.values()},
         'keys': SUM_KEYS, 'camp_keys': SUM_KEYS + ['res'],
         'has_value_cols': {k: bool(v) for k, v in have_opt.items()},
@@ -346,13 +385,14 @@ def main():
     summary = {'from': dates[0], 'to': dates[-1], 'days': len(dates),
                'spend_total': tot['spend'],
                'spend_by_account': {a['label']: round(sum(v['spend'] for v in acc_days[a['key']].values()), 2)
-                                    for a in accounts},
+                                    for a in accounts.values()},
                'chats': tot['msg'], 'purchases_onsite': tot['purch'], 'purchases_cpas': tot['omni'],
                'มูลค่าการซื้อ CPAS': tot['omni_val'], 'มูลค่าการซื้อบนเพจ': tot['pval'],
                'ROAS ถ่วงน้ำหนัก': (round((tot['omni_val'] + tot['pval']) / tot['spend'], 2)
                                     if tot['spend'] and (tot['omni_val'] + tot['pval']) else None),
                'คอลัมน์มูลค่าที่พบ': {k: bool(v) for k, v in have_opt.items()},
                'แคมเปญที่มีมูลค่าทั้ง 2 คอลัมน์ (เสี่ยงนับซ้ำ)': both_val[:5],
+               'แคมเปญที่มีตัวระบุผลลัพธ์หลายแบบ': mixed,
                'leads': tot['lead'], 'campaigns': len(camps),
                'วันที่ขาดช่วง': gap, 'วันที่ไม่มียอดเลย': miss_d,
                'ไฟล์ที่ใช้': [Path(f[0]).name for f in files],

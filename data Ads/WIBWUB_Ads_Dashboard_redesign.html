@@ -799,7 +799,10 @@ function renderFb(){
     });
   });
   const BDG={red:'🔴 ควรดู',green:'🟢 ดี',yellow:'🟡 กลาง ๆ',low:'⚪ ข้อมูลน้อย'};
-  const metLab=gk=>HIGH[gk]?'ROAS':'ต้นทุนต่อ'+(((FB.goals||{})[gk]||{}).res||'ผลลัพธ์');
+  /* ป้ายผลลัพธ์บางอันเป็นอังกฤษ ('lead') ต่อท้ายคำไทยตรง ๆ จะติดกันเป็น "ต้นทุนต่อlead" */
+  const metLab=gk=>{ if(HIGH[gk]) return 'ROAS';
+    const r=((FB.goals||{})[gk]||{}).res||'ผลลัพธ์';
+    return 'ต้นทุนต่อ'+(/^[A-Za-z]/.test(r)?' ':'')+r; };
   const metVal=(gk,v)=>Number.isFinite(v)?(HIGH[gk]?x2(v):baht2(v)):muted('–');
   const jrows=gkeys.map(gk=>{
     const g=JG[gk], med=JR.find(r=>r.gk===gk).med;
