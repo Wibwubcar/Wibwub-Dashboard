@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>การตลาด vs ยอดขาย (ทดลอง)</title>
+<!-- หน้าทดลอง — อ่านบล็อก MKT_SPEND ชุดเดียวกับหน้าจริงใน WIBWUB_Dashboard.html
+     ไม่แก้ไฟล์นั้น ไม่แก้สคริปต์ข้อมูล ไม่มีตัวเลข hardcode
+     ค่าธรรมเนียมและคอมแอฟฟิลิเอตคิดจากอัตรารายช่วงใน fee_rates / mkt_rates ทุกวัน -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{--bg:#F4F5F7;--card:#FFFFFF;--bd:#E3E6EB;--ink:#111827;--ink2:#4B5563;--muted:#6B7280;
+  --pri:#2457F5;--pos:#0F7B4F;--neg:#B42318;--warn:#B54708;--warn-bg:#FFF6ED;
+  --fee:#6B7280;--kol:#8B5CF6;--left:#0F7B4F;--r:16px;}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:14px;line-height:1.55}
+.num{font-variant-numeric:tabular-nums}
+.wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+.head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.head h1{font-size:21px;font-weight:700;letter-spacing:-.01em}
+.head .sub{font-size:12.5px;color:var(--muted)}
+.lab{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.seg{display:inline-flex;background:#fff;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink2);padding:8px 13px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--bd)}
+.seg button.on{background:var(--pri);color:#fff;font-weight:600}
+.dates{display:none;gap:6px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:5px 9px}
+.dates.on{display:flex}
+.dates input{font:inherit;font-size:12.5px;border:0;color:var(--ink)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:18px}
+h2{font-size:15px;font-weight:700;margin-bottom:12px}
+.money .line{font-size:19px;font-weight:600;line-height:1.5}
+.money .line b{font-weight:700}
+.stack{display:flex;height:44px;border-radius:10px;overflow:hidden;margin-top:15px;background:#EDF0F4}
+.stack span{display:block}
+.slegs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.sl .t{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--ink2)}
+.sl .t i{width:9px;height:9px;border-radius:3px}
+.sl .v{font-size:16px;font-weight:700;margin-top:2px}
+.sl .p{font-size:12px;color:var(--muted)}
+.note{background:var(--warn-bg);border:1px solid #F3C99A;color:var(--warn);border-radius:10px;padding:9px 12px;font-size:12.5px;margin-top:12px}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}
+.kpi .k-l{font-size:12.5px;color:var(--ink2);font-weight:500}
+.kpi .k-v{font-size:26px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
+.kpi .k-s{font-size:12.5px;color:var(--muted);margin-top:1px}
+.d-up{color:var(--pos);font-weight:600}.d-dn{color:var(--neg);font-weight:600}.d-fl{color:var(--muted)}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.rows{display:flex;flex-direction:column;gap:11px}
+.row{display:grid;grid-template-columns:minmax(96px,1.1fr) minmax(0,2fr) auto auto;gap:10px;align-items:center;font-size:13px}
+.row .nm{display:flex;align-items:center;gap:7px;color:var(--ink2)}
+.row .nm i{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.bar{height:9px;border-radius:5px;background:#EDF0F4;overflow:hidden}
+.bar span{display:block;height:100%}
+.row .v{font-weight:600;min-width:74px;text-align:right}
+.row .d{min-width:62px;text-align:right;font-size:12px}
+.cw{position:relative;height:280px;margin-top:14px}
+details{margin-top:14px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px}
+details summary{cursor:pointer;font-weight:600;font-size:13.5px}
+details .body{margin-top:12px;font-size:13px;color:var(--ink2)}
+details .body p{margin-bottom:9px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:right;font-weight:600;color:var(--ink2);font-size:12px;padding:7px 8px;border-bottom:1px solid var(--bd)}
+td{text-align:right;padding:9px 8px;border-bottom:1px solid #F1F3F6}
+th:first-child,td:first-child{text-align:left}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#F7F9FC;border:1px solid var(--bd);border-radius:999px;padding:4px 10px;font-size:12px;color:var(--ink2)}
+.scroll{overflow-x:auto}
+.err{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}
+  .slegs{grid-template-columns:repeat(2,minmax(0,1fr))}.money .line{font-size:17px}}
+@media(max-width:560px){.kpis,.slegs{grid-template-columns:minmax(0,1fr)}.wrap{padding:14px 12px 44px}
+  .row{grid-template-columns:minmax(78px,1fr) minmax(0,1.3fr) auto}.row .d{display:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <div>
+      <h1>การตลาด vs ยอดขาย <span style="font-size:12px;color:var(--warn);background:var(--warn-bg);border-radius:6px;padding:3px 8px;vertical-align:4px">หน้าทดลอง</span></h1>
+      <div class="sub" id="sub">กำลังโหลด…</div>
+    </div>
+    <div class="lab">
+      <div class="seg" id="seg">
+        <button data-p="7">7 วัน</button><button data-p="30">30 วัน</button>
+        <button data-p="thisMonth">เดือนนี้</button><button data-p="lastMonth">เดือนก่อน</button>
+        <button data-p="custom">กำหนดเอง</button>
+      </div>
+      <div class="dates" id="dates"><input type="date" id="dFrom"><span style="color:var(--muted)">–</span><input type="date" id="dTo"></div>
+    </div>
+  </div>
+  <div id="main"><div class="err">กำลังโหลดข้อมูล…</div></div>
+</div>
+<script>
+(function(){
+'use strict';
+const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const nf0=new Intl.NumberFormat('th-TH',{maximumFractionDigits:0});
+const baht=v=>'฿'+nf0.format(Math.round(v||0));
+const pct=(v,d)=>Number.isFinite(v)?(v*100).toFixed(d==null?1:d)+'%':'–';
+const x2=v=>Number.isFinite(v)&&v>0?v.toFixed(2)+'x':'–';
+const div=(a,b)=>b?a/b:NaN;
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const pd=s=>{const[y,m,d]=s.split('-').map(Number);return new Date(Date.UTC(y,m-1,d));};
+const iso=d=>d.toISOString().slice(0,10);
+const add=(s,n)=>{const d=pd(s);d.setUTCDate(d.getUTCDate()+n);return iso(d);};
+const between=(a,b)=>Math.round((pd(b)-pd(a))/864e5)+1;
+const thD=(s,y)=>{const d=pd(s);return d.getUTCDate()+' '+TH[d.getUTCMonth()]+(y?' '+(d.getUTCFullYear()+543):'');};
+const thR=(a,b)=>a===b?thD(a,1):thD(a)+' – '+thD(b,1);
+
+/* ช่องทางยอดขาย — ต้องตรงกับ keys ของ MKT_SPEND · `kol` ใน keys เป็น "ค่าใช้จ่าย" ไม่ใช่ช่องทางขาย */
+const REV=[{k:'sh',n:'Shopee',c:'#EE4D2D'},{k:'tk',n:'TikTok',c:'#111827'},{k:'lz',n:'Lazada',c:'#3B2CC4'},
+  {k:'fb',n:'Facebook',c:'#1877F2'},{k:'line',n:'LINE',c:'#06A755'},{k:'care',n:'Carcare',c:'#0E7490'},
+  {k:'web',n:'เว็บไซต์',c:'#7C3AED'},{k:'mkt',n:'ตลาดนัด',c:'#B45309'},{k:'pos',n:'หน้าร้าน',c:'#0F766E'},
+  {k:'beuk',n:'เบิกของ',c:'#9CA3AF'},{k:'oth',n:'อื่น ๆ',c:'#64748B'}];
+let M=null,DAYS=[],MIN='',MAX='',ch=null;
+const st={preset:'thisMonth',from:'',to:''};
+
+function rate(spec,day){
+  if(typeof spec==='number') return spec;
+  let r=0; for(const x of spec||[]){ if(day>=x.from) r=x.rate; else break; } return r;
+}
+function sum(a,b){
+  const I={}; M.keys.forEach((k,i)=>I[k]=i);
+  const o={n:0,days:[],rev:0,fee:0,kol:0,aff:0,event:0,ads:{},ch:{},feeBy:{}};
+  ['ads_sh','ads_tk','ads_lz','ads_fb'].forEach(k=>o.ads[k]=0);
+  REV.forEach(r=>o.ch[r.k]=0);
+  const fr=M.fee_rates||{}, mr=M.mkt_rates||{};
+  for(const d of DAYS){ if(d<a||d>b) continue; const row=M.days[d]; o.n++; o.days.push(d);
+    REV.forEach(r=>{const v=row[I[r.k]]||0; o.ch[r.k]+=v; o.rev+=v;});
+    ['sh','tk','lz'].forEach(k=>{const f=(row[I[k]]||0)*rate(fr[k],d); o.fee+=f; o.feeBy[k]=(o.feeBy[k]||0)+f;});
+    Object.keys(o.ads).forEach(k=>o.ads[k]+=row[I[k]]||0);
+    o.kol+=row[I['kol']]||0; o.event+=row[I['event']]||0;
+    for(const key in mr){const b2=mr[key]; o.aff+=(row[I[b2.base]]||0)*rate(b2.rates,d);}
+  }
+  o.adsAll=Object.values(o.ads).reduce((s,v)=>s+v,0);
+  /* นิยามที่ผู้ใช้อนุมัติ 28 ต.ค. 69: ค่าการตลาดทั้งหมด = ค่าแอด 4 แพลตฟอร์ม + KOL
+     + คอมแอฟฟิลิเอต TikTok (+ Event เมื่อมีข้อมูล) — ใช้ชุดเดียวกันทุกจุดในหน้านี้
+     หน้าเดิมการ์ดไม่รวมคอมแอฟแต่วงกลมรวม ทำให้ % รวมได้ 110.8% */
+  o.mkt=o.adsAll+o.kol+o.aff+o.event;
+  o.left=o.rev-o.fee-o.mkt;
+  return o;
+}
+function range(p){
+  if(p==='custom') return [st.from||MIN,st.to||MAX];
+  if(/^\d+$/.test(p)){const a=add(MAX,-(+p-1));return [a<MIN?MIN:a,MAX];}
+  const m=MAX.slice(0,7);
+  if(p==='thisMonth'){const a=m+'-01';return [a<MIN?MIN:a,MAX];}
+  const d=pd(m+'-01'); d.setUTCMonth(d.getUTCMonth()-1);
+  const a=iso(d), b=add(m+'-01',-1); return [a<MIN?MIN:a, b>MAX?MAX:b];
+}
+function setPreset(p){
+  st.preset=p;
+  document.querySelectorAll('#seg button').forEach(b=>b.classList.toggle('on',b.dataset.p===p));
+  document.getElementById('dates').classList.toggle('on',p==='custom');
+  const [a,b]=range(p); st.from=a; st.to=b;
+  document.getElementById('dFrom').value=a; document.getElementById('dTo').value=b;
+  render();
+}
+function delta(cur,prev,cost){
+  if(!Number.isFinite(cur)||!Number.isFinite(prev)||!prev) return '<span class="d-fl">–</span>';
+  const r=(cur-prev)/Math.abs(prev); if(Math.abs(r)<0.005) return '<span class="d-fl">เท่าเดิม</span>';
+  const up=r>0, good=cost?!up:up;
+  return `<span class="${good?'d-up':'d-dn'}">${up?'▲':'▼'} ${(Math.abs(r)*100).toFixed(1)}%</span>`;
+}
+function kpi(l,v,s,d){return `<div class="card kpi"><div class="k-l">${l}</div><div class="k-v num">${v}</div>`+
+  `<div class="k-s num">${s||'&nbsp;'}</div><div class="k-s">${d||''}</div></div>`;}
+
+function render(){
+  const a=st.from,b=st.to,R=sum(a,b),n=between(a,b);
+  const pa=add(a,-n),pb=add(a,-1),PR=(pa>=MIN)?sum(pa,pb):null;
+  /* 1. ขายได้ 100 บาท เงินไปไหน */
+  const parts=[{n:'ค่าธรรมเนียมแพลตฟอร์ม',v:R.fee,c:'#6B7280'},
+               {n:'ค่าแอด 4 แพลตฟอร์ม',v:R.adsAll,c:'#2457F5'},
+               {n:'KOL + คอมแอฟฟิลิเอต',v:R.kol+R.aff,c:'#8B5CF6'},
+               {n:'เหลือ',v:Math.max(0,R.left),c:'#0F7B4F'}];
+  const tot=parts.reduce((s,p)=>s+p.v,0)||1;
+  const per100=R.rev?R.left/R.rev*100:NaN;
+  const money=`<div class="card money">
+    <h2>ขายได้ 100 บาท เงินไปไหนบ้าง</h2>
+    <div class="line">ขายได้ <b>${baht(R.rev)}</b> · เหลือหลังหักค่าแพลตฟอร์มและการตลาด
+      <b>${baht(R.left)}</b> (<b>${Number.isFinite(per100)?per100.toFixed(1):'–'} บาท</b> ต่อ 100)</div>
+    <div class="stack">${parts.map(p=>`<span style="width:${(p.v/tot*100).toFixed(3)}%;background:${p.c}"></span>`).join('')}</div>
+    <div class="slegs">${parts.map(p=>`<div class="sl"><div class="t"><i style="background:${p.c}"></i>${p.n}</div>
+      <div class="v num">${baht(p.v)}</div><div class="p num">${pct(div(p.v,R.rev))} ของยอดขาย</div></div>`).join('')}</div>
+    ${R.event?'':'<div class="note">ยังไม่มีข้อมูลค่าใช้จ่าย Event ในช่วงนี้ — ตัวเลข “ค่าการตลาดทั้งหมด” จึงยังไม่รวม Event</div>'}</div>`;
+  /* 2. การ์ด 4 ใบ */
+  const kpis=`<div class="kpis">
+    ${kpi('ยอดขายรวม',baht(R.rev),'นับครบ 11 ช่องทาง',delta(R.rev,PR&&PR.rev))}
+    ${kpi('ค่าการตลาดทั้งหมด',baht(R.mkt),'ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟ',delta(R.mkt,PR&&PR.mkt,1))}
+    ${kpi('การตลาด ÷ ยอดขาย',pct(div(R.mkt,R.rev)),'&nbsp;',delta(div(R.mkt,R.rev),PR&&div(PR.mkt,PR.rev),1))}
+    ${kpi('ยอดขาย ÷ การตลาด',x2(div(R.rev,R.mkt)),'ได้ยอดขายกี่เท่าของเงินที่ลง',delta(div(R.rev,R.mkt),PR&&div(PR.rev,PR.mkt)))}</div>`;
+  /* 3. สองกล่อง */
+  const chs=REV.map(r=>({...r,v:R.ch[r.k],p:PR?PR.ch[r.k]:null})).filter(r=>r.v>0).sort((x,y)=>y.v-x.v);
+  const mx1=Math.max(...chs.map(r=>r.v),1);
+  const boxRev=`<div class="card"><h2>ยอดขายมาจากช่องทางไหน</h2><div class="rows">`+
+    chs.map(r=>`<div class="row"><div class="nm"><i style="background:${r.c}"></i>${r.n}</div>
+      <div class="bar"><span style="width:${(r.v/mx1*100).toFixed(1)}%;background:${r.c}"></span></div>
+      <div class="v num">${baht(r.v)}</div><div class="d num">${delta(r.v,r.p)}</div></div>`).join('')+'</div></div>';
+  const mk=[{n:'Ads Shopee',v:R.ads.ads_sh,c:'#EE4D2D'},{n:'Ads TikTok',v:R.ads.ads_tk,c:'#111827'},
+    {n:'Ads Facebook',v:R.ads.ads_fb,c:'#1877F2'},{n:'คอมแอฟฟิลิเอต TikTok',v:R.aff,c:'#8B5CF6'},
+    {n:'KOL',v:R.kol,c:'#A78BFA'},{n:'Ads Lazada',v:R.ads.ads_lz,c:'#3B2CC4'},
+    {n:'Event',v:R.event,c:'#D1D5DB'}];
+  const mkTot=R.mkt||1, mx2=Math.max(...mk.map(r=>r.v),1);
+  const boxMkt=`<div class="card"><h2>ค่าการตลาดไปลงที่ไหน</h2><div class="rows">`+
+    mk.map(r=>`<div class="row"><div class="nm"><i style="background:${r.c}"></i>${r.n}</div>
+      <div class="bar"><span style="width:${(r.v/mx2*100).toFixed(1)}%;background:${r.c}"></span></div>
+      <div class="v num">${r.v?baht(r.v):'รอข้อมูล'}</div><div class="d num">${r.v?pct(div(r.v,mkTot)):''}</div></div>`).join('')+
+    `</div><div style="font-size:12px;color:var(--muted);margin-top:11px">รวม ${pct(div(mk.reduce((s,r)=>s+r.v,0),mkTot))} ของค่าการตลาดทั้งหมด</div></div>`;
+  /* 4. กราฟ */
+  const chart=`<div class="card" style="margin-top:14px"><h2>ยอดขายและค่าการตลาดรายวัน</h2>
+    <div class="cw"><canvas id="cDay"></canvas></div></div>`;
+  /* 5-6. details */
+  const tiers={}; const td=M.kol_tier||{};
+  Object.keys(td).forEach(d=>{ if(d<a||d>b) return; Object.keys(td[d]).forEach(k=>tiers[k]=(tiers[k]||0)+td[d][k]); });
+  const tTot=Object.values(tiers).reduce((s,v)=>s+v,0);
+  const kolTbl=tTot?`<table><thead><tr><th>ระดับ</th><th>ยอดจ่าย</th><th>%</th></tr></thead><tbody>`+
+    Object.keys(tiers).sort((x,y)=>tiers[y]-tiers[x]).map(k=>
+      `<tr><td>${esc(k)}</td><td class="num">${baht(tiers[k])}</td><td class="num">${pct(div(tiers[k],tTot))}</td></tr>`).join('')+
+    `</tbody></table><div style="font-size:12px;color:var(--muted);margin-top:9px">ไม่มีรายชื่อรายคนบนหน้านี้ (ข้อมูลส่วนบุคคล)</div>`
+    :'<div style="color:var(--muted)">ไม่มีรายการ KOL ที่จ่ายแล้วในช่วงนี้</div>';
+  const cov=M.cov||{};
+  const chips=[['ยอดขาย',cov.sales],['Shopee',cov.shopee],['TikTok',cov.tiktok],['Lazada',cov.lazada],
+    ['Shipnity',cov.shipnity],['KOL',cov.kol]].filter(x=>x[1])
+    .map(([n2,d])=>`<span class="chip">${n2} ถึง ${thD(d,1)}</span>`).join('');
+  const feeTxt=['sh','tk','lz'].map(k=>{const r=rate((M.fee_rates||{})[k],b);
+    return r?`${{sh:'Shopee',tk:'TikTok',lz:'Lazada'}[k]} ~${(r*100).toFixed(2)}% = ${baht(R.feeBy[k]||0)}`:null;}).filter(Boolean).join(' · ');
+
+  document.getElementById('main').innerHTML=`${money}${kpis}<div class="two">${boxRev}${boxMkt}</div>${chart}
+    <details><summary>ตัวเลขในหน้านี้มาจากไหน</summary><div class="body">
+      <p><b>ค่าการตลาดทั้งหมด = ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟฟิลิเอต TikTok</b> (บวก Event เมื่อมีข้อมูล)
+        ใช้นิยามนี้ทุกจุดในหน้า ทั้งการ์ด แถบสัดส่วน และกล่อง “ไปลงที่ไหน” จึงรวมกันได้ 100% พอดี</p>
+      <p><b>ค่าธรรมเนียมแพลตฟอร์ม</b> คิดจากอัตรารายช่วงใน <code>data Ads/platform_fee.json</code> คูณยอดขายรายวันของช่องทางนั้น ไม่ใช่ยอดเงินที่ตรึงไว้ — ช่วงนี้ ${esc(feeTxt||'ยังไม่มีอัตรา')}</p>
+      <p><b>คอมแอฟฟิลิเอต TikTok</b> คิดเป็นอัตราของยอดขาย TikTok รายวันตาม <code>marketing_rates</code> เช่นเดียวกัน</p>
+      <p><b>ยอดขายหน้านี้นับครบ 11 ช่องทาง</b> จึงมากกว่าหน้า Ads Dashboard ที่นับเฉพาะ Shopee + TikTok + Lazada — ตั้งใจให้ต่าง</p>
+      <p><b>ค่าแอด Facebook</b> มาจากไฟล์เดียวกับหน้า Ads (<code>facebook/fb_daily.json</code>) ผ่าน <code>marketing_update.py</code> ตัวเลขจึงอาจช้ากว่าหน้า Ads ได้ไม่กี่ชั่วโมงถ้ายังไม่ถึงรอบ 09:45 / 20:45</p>
+      <p><b>ข้อมูลถึงวันไหน</b></p><div class="chips">${chips}</div>
+    </div></details>
+    <details><summary>KOL ตามระดับ</summary><div class="body">${kolTbl}</div></details>`;
+  document.getElementById('sub').textContent=`ช่วงที่เลือก ${thR(a,b)} (${n} วัน)`+(PR?` · เทียบกับ ${thR(pa,pb)}`:'');
+  draw(R);
+}
+function draw(R){
+  const I={}; M.keys.forEach((k,i)=>I[k]=i);
+  const fr=M.fee_rates||{}, mr=M.mkt_rates||{};
+  const labels=R.days.map(d=>thD(d));
+  const rev=R.days.map(d=>REV.reduce((s,r)=>s+(M.days[d][I[r.k]]||0),0));
+  const mkt=R.days.map(d=>{const row=M.days[d];
+    let v=['ads_sh','ads_tk','ads_lz','ads_fb'].reduce((s,k)=>s+(row[I[k]]||0),0)+(row[I['kol']]||0)+(row[I['event']]||0);
+    for(const key in mr){const b2=mr[key]; v+=(row[I[b2.base]]||0)*rate(b2.rates,d);}
+    return v;});
+  if(ch) ch.destroy();
+  ch=new Chart(document.getElementById('cDay'),{data:{labels,datasets:[
+      {type:'bar',label:'ค่าการตลาด',data:mkt,backgroundColor:'#2457F5',borderRadius:4,order:2},
+      {type:'line',label:'ยอดขาย',data:rev,borderColor:'#0F7B4F',backgroundColor:'#0F7B4F',borderWidth:2,
+       pointRadius:labels.length>20?0:3,tension:.25,order:1}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
+        tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',borderColor:'#E3E6EB',borderWidth:1,padding:11,
+          callbacks:{label:c=>' '+c.dataset.label+': '+baht(c.parsed.y)}}},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:14,font:{size:11}}},
+        y:{grid:{color:'#EEF0F3'},border:{display:false},
+           ticks:{font:{size:11},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3)+'K':v}}}}});
+}
+/* ---------- boot ---------- */
+/* MKT_SPEND ไม่ได้อยู่ในไฟล์ json — มันถูกฝังอยู่ในหน้าจริง จึงต้องดึงหน้านั้นมาแล้วตัดเอาบล็อกออกมา
+   (สเปกห้ามแก้สคริปต์ข้อมูลและห้ามแก้ WIBWUB_Dashboard.html ตอนนี้) */
+fetch('../WIBWUB_Dashboard.html?t='+Date.now(),{cache:'no-store'})
+.then(r=>{if(!r.ok)throw new Error('WIBWUB_Dashboard.html '+r.status);return r.text();})
+.then(t=>{
+  const m=t.match(/const MKT_SPEND = ([\s\S]*?);\n\/\* MKT_SPEND:AUTO-END/);
+  if(!m) throw new Error('หาบล็อก MKT_SPEND ไม่เจอ');
+  M=JSON.parse(m[1]); DAYS=Object.keys(M.days).sort(); MIN=DAYS[0]; MAX=DAYS[DAYS.length-1];
+  ['dFrom','dTo'].forEach(id=>{const e=document.getElementById(id);e.min=MIN;e.max=MAX;});
+  document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>setPreset(b.dataset.p));
+  const onD=()=>{const a=document.getElementById('dFrom').value,b=document.getElementById('dTo').value;
+    if(a&&b){st.from=a<b?a:b;st.to=a<b?b:a;render();}};
+  document.getElementById('dFrom').onchange=onD; document.getElementById('dTo').onchange=onD;
+  setPreset('thisMonth');
+}).catch(e=>{document.getElementById('main').innerHTML=
+  `<div class="err">โหลดข้อมูลไม่สำเร็จ (${esc(e.message)})<br><span style="font-size:12.5px">หน้านี้อ่านบล็อก MKT_SPEND จาก ../WIBWUB_Dashboard.html — ต้องเปิดผ่านเว็บเซิร์ฟเวอร์ ไม่ใช่ file://</span></div>`;});
+})();
+</script>
+</body>
+</html>
