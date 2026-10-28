@@ -2,8 +2,18 @@
 """Facebook Ads รายวัน — แหล่งความจริงเดียวของตัวเลข FB ทั้งระบบ
 
 อ่าน  : data Ads/facebook/daily/FBD_*.csv  (1 ไฟล์ = 1 บัญชี · 1 แถว = 1 แคมเปญ x 1 วัน)
-เขียน : data Ads/facebook/fb_daily.json                  <- marketing_update.py อ่านตัวนี้ (ads_fb)
-        data Ads/WIBWUB_Ads_Dashboard.html บล็อก FB_ADS  <- ส่วน Facebook Ads บนหน้าเว็บ
+เขียน : data Ads/facebook/fb_daily.json   <- ไฟล์เดียว ผู้อ่าน 2 ราย:
+          · marketing_update.py            (ads_fb ของหน้า "การตลาด vs ยอดขาย")
+          · data Ads/WIBWUB_Ads_Dashboard_new.html  แท็บ Facebook (fetch ตอนเปิดหน้า)
+
+28 ต.ค. 69 — เลิกฝังบล็อก FB_ADS ลง HTML:
+  เดิมเขียนบล็อกลง `data Ads/WIBWUB_Ads_Dashboard.html` แต่ไฟล์นั้น **ไม่ได้ถูกฝัง
+  ที่ไหนเลย** — `WIBWUB_Dashboard.html` ฝัง iframe ของ `WIBWUB_Ads_Dashboard_new.html`
+  (คนละไฟล์) แท็บ Facebook จึงไม่เคยขึ้นให้ใครเห็นตั้งแต่ commit feaf8db
+  ไฟล์ `_new` อ่านข้อมูลด้วย fetch อยู่แล้ว (ads_daily.json / ads_periods.json)
+  จึงให้แท็บ Facebook อ่าน fb_daily.json ตรง ๆ ไม่ต้องมีขั้นฝังบล็อกอีก
+  (ไฟล์เก่ายังมีคนใช้อยู่ในฐานะ "แหล่งข้อมูลรายเดือน": DATA_PERIODS/TK_BREAKDOWN
+   ที่ scripts/ads/sync_periods.js แปลงเป็น ads_periods.json — ห้ามลบไฟล์นั้น)
 
 ทำไมต้องมีไฟล์กลาง (27 ต.ค. 69):
   เดิม ads_fb ต้องกรอกมือใน mkt_manual.json ซึ่งไม่มีใครกรอก -> หน้า "การตลาด vs ยอดขาย"
@@ -47,9 +57,7 @@ def _find_base():
 BASE = _find_base()
 SRC = BASE / 'data Ads' / 'facebook' / 'daily'
 OUT = BASE / 'data Ads' / 'facebook' / 'fb_daily.json'
-PAGE = BASE / 'data Ads' / 'WIBWUB_Ads_Dashboard.html'
-START = '/* FB_ADS:AUTO-START */'
-END = '/* FB_ADS:AUTO-END */'
+# ไม่มีพาธ HTML แล้ว — หน้าเว็บ fetch ไฟล์ json เอง (ดูหัวไฟล์)
 
 # ชื่อบัญชีที่ผู้ใช้เรียก -> ใช้ในตารางบนหน้าเว็บ (คีย์ = ส่วนที่ 2 ของชื่อไฟล์ FBD_<คีย์>_<id>_...)
 ACC_LABEL = {'WibWub-AD-1': 'WibWub AD 1', 'AD-1': 'AD 1', 'AD-2': 'AD 2',
@@ -149,7 +157,7 @@ def main():
             'acc': key, 'name': r[COL['camp']], 'goal': gk,
             'goal_label': GOALS[goal][1] if goal else 'ไม่มีผลลัพธ์ในรายงาน',
             'obj': r[COL['obj']], 'deliv': r[COL['deliv']], 'res': 0.0, 'roas_days': [],
-            'mo': {}, **dict.fromkeys(SUM_KEYS, 0.0)})
+            'mo': {}, 'dd': {}, **dict.fromkeys(SUM_KEYS, 0.0)})
         c['res'] += res
         c['deliv'] = r[COL['deliv']] or c['deliv']
         for k in SUM_KEYS: c[k] += rec[k]
@@ -159,6 +167,11 @@ def main():
         mo = c['mo'].setdefault(d[:7], dict.fromkeys(SUM_KEYS + ['res'], 0.0))
         mo['res'] += res
         for k in SUM_KEYS: mo[k] += rec[k]
+        # รายวันของแคมเปญ: หน้า _new เลือกช่วงเป็น "วันที่" ไม่ใช่ "เดือน" ถ้ามีแต่รายเดือน
+        # ตารางบัญชี/แคมเปญจะคิดเต็มเดือนทั้งที่ผู้ใช้เลือก 7 วัน แล้วไม่ตรงกับการ์ดด้านบน
+        dd = c['dd'].setdefault(d, dict.fromkeys(SUM_KEYS + ['res'], 0.0))
+        dd['res'] += res
+        for k in SUM_KEYS: dd[k] += rec[k]
         if r[COL['roas']].strip(): c['roas_days'].append(num(r[COL['roas']]))
 
     for c in camps.values():
@@ -169,6 +182,7 @@ def main():
         del c['roas_days']
         for k in SUM_KEYS + ['res']: c[k] = round(c[k], 2)
         c['mo'] = {m: [round(v[k], 2) for k in SUM_KEYS + ['res']] for m, v in sorted(c['mo'].items())}
+        c['dd'] = {d: [round(v[k], 2) for k in SUM_KEYS + ['res']] for d, v in sorted(c['dd'].items())}
 
     for bucket in (days, *acc_days.values()):
         for d in bucket:
@@ -186,6 +200,13 @@ def main():
     camp_sum = round(sum(c['spend'] for c in camps.values()), 2)
     if abs(camp_sum - tot['spend']) > 0.01:
         die('ผลรวมรายแคมเปญไม่เท่าผลรวมรายวัน', {'camp': camp_sum, 'day': tot['spend']})
+    # รายวันรายแคมเปญต้องบวกกลับได้เท่ารายวันรวมทุกวัน ไม่งั้นตารางในหน้าเว็บจะไม่ตรงการ์ด
+    si = SUM_KEYS.index('spend')
+    for d in dates:
+        cd = round(sum(c['dd'][d][si] for c in camps.values() if d in c['dd']), 2)
+        if abs(cd - days[d]['spend']) > 0.01:
+            die('ค่าโฆษณารายวันของแคมเปญรวมไม่เท่ายอดรายวัน',
+                {'วันที่': d, 'camp': cd, 'day': days[d]['spend']})
 
     data = {
         'generated': datetime.now().astimezone().isoformat(timespec='seconds'),
@@ -214,7 +235,6 @@ def main():
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False, indent=1)); return 0
 
     changed = []
-    blob = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
     # เทียบแบบ "ถอด generated ออกแล้วเทียบโครงสร้าง" — ไฟล์เขียนด้วย indent แต่ blob เป็น
     # compact ถ้าเทียบเป็นสตริงตรง ๆ จะไม่เท่ากันทุกครั้ง แล้ว commit ไฟล์เปล่าทุกรอบ
     try:
@@ -227,23 +247,9 @@ def main():
         OUT.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding='utf-8')
         changed.append(OUT.name)
 
-    if not PAGE.exists(): die('ไม่พบไฟล์', str(PAGE))
-    t = PAGE.read_text(encoding='utf-8')
-    if START not in t or END not in t:
-        die(f'ไม่พบบล็อก {START} ใน {PAGE.name} — ต้องเพิ่มบล็อกในหน้าเว็บก่อน')
-    block = START + '\nconst FB_ADS = ' + blob + ';\n' + END
-    new = re.sub(re.escape(START) + r'[\s\S]*?' + re.escape(END), lambda _: block, t)
-    if _strip_gen(new) != _strip_gen(t):
-        PAGE.write_text(new, encoding='utf-8'); changed.append(PAGE.name)
-
     print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE',
                       'changed': changed, **summary}, ensure_ascii=False))
     return 0 if changed else 10
-
-
-def _strip_gen(s):
-    """ตัด generated ออกก่อนเทียบ — ไม่งั้นรันซ้ำจะนับว่าเปลี่ยนทุกครั้งแล้ว commit เปล่า"""
-    return re.sub(r'"generated"\s*:\s*"[^"]*"', '', s)
 
 
 def _gaps(dates):
