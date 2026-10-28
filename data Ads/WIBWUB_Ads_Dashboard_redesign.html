@@ -21,7 +21,7 @@
 body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:14px;line-height:1.55}
 .num{font-variant-numeric:tabular-nums}
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
-.head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+.head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 .head h1{font-size:21px;font-weight:700;letter-spacing:-.01em}
 .head .sub{font-size:12.5px;color:var(--muted)}
 .lab{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -29,17 +29,24 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',syst
 .seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink2);padding:8px 13px;cursor:pointer}
 .seg button+button{border-left:1px solid var(--bd)}
 .seg button.on{background:var(--pri);color:#fff;font-weight:600}
+.seg.sm button{font-size:12.5px;padding:6px 11px}
 .dates{display:none;gap:6px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:5px 9px}
 .dates.on{display:flex}
 .dates input{font:inherit;font-size:12.5px;border:0;color:var(--ink)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs button{font:inherit;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--bd);border-radius:999px;padding:7px 15px;color:var(--ink2);cursor:pointer}
+.tabs button i{width:8px;height:8px;border-radius:3px;background:currentColor}
+.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--bd);border-radius:999px;padding:5px 11px;font-size:12.5px;color:var(--ink2)}
 .chip i{width:7px;height:7px;border-radius:50%;background:var(--pos)}
 .chip.warn{background:var(--warn-bg);border-color:#F3C99A;color:var(--warn)} .chip.warn i{background:var(--warn)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:18px}
+.card+.card{margin-top:14px}
 .hero{background:#111827;color:#fff;border:0;margin-bottom:14px}
 .hero .big{font-size:19px;font-weight:600;line-height:1.5}
 .hero .big b{font-weight:700}
+.hero.one .big{font-size:17px}
 .hero .bar{margin-top:14px;height:30px;border-radius:9px;background:#243244;overflow:hidden;display:flex}
 .hero .bar span{display:block;background:var(--pri)}
 .hero .leg{display:flex;gap:18px;margin-top:9px;font-size:12.5px;color:#C3CAD6;flex-wrap:wrap}
@@ -50,32 +57,46 @@ body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',syst
 .d-up{color:var(--pos);font-weight:600} .d-dn{color:var(--neg);font-weight:600} .d-fl{color:var(--muted)}
 .two{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:14px;margin-bottom:14px}
 h2{font-size:15px;font-weight:700;margin-bottom:12px}
+.ch{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.ch h2{margin:0}
+.ch .sp{margin-left:auto}
+.note{font-size:12px;color:var(--muted);margin-top:9px}
 table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:right;font-weight:600;color:var(--ink2);font-size:12px;padding:7px 8px;border-bottom:1px solid var(--bd)}
+th{text-align:right;font-weight:600;color:var(--ink2);font-size:12px;padding:7px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
 td{text-align:right;padding:10px 8px;border-bottom:1px solid #F1F3F6}
 th:first-child,td:first-child{text-align:left}
+tr.tot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0;background:#FAFBFC}
+tr.sub2 td{background:#FAFBFC;font-weight:600}
+td.name{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr.go{cursor:pointer} tr.go:hover td{background:#F7F9FC}
 .pf{display:inline-flex;align-items:center;gap:8px;font-weight:600}
 .pf i{width:9px;height:9px;border-radius:3px}
 .mini{height:7px;border-radius:4px;background:#EDF0F4;overflow:hidden;min-width:60px}
 .mini span{display:block;height:100%;background:var(--pri)}
 .mini.hi span{background:var(--orange)}
+.barc{display:flex;align-items:center;gap:9px;justify-content:flex-end}
+.barc b{min-width:48px;display:inline-block}
 .ins{display:flex;flex-direction:column;gap:12px}
 .ins .it{display:flex;gap:10px;align-items:flex-start}
 .ins .n{flex:0 0 22px;height:22px;border-radius:7px;background:#EEF2FE;color:var(--pri);font-size:12px;font-weight:700;display:grid;place-items:center}
 .ins .tx{font-size:13px;color:var(--ink2)} .ins .tx b{color:var(--ink)}
 .cw{position:relative;height:270px}
+.wk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
+.wk .cw{height:180px}
 .fbgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
 .fbgrid .f-l{font-size:12.5px;color:var(--ink2)} .fbgrid .f-v{font-size:19px;font-weight:700;margin-top:2px}
 .fbgrid .f-s{font-size:12px;color:var(--muted)}
 .link{color:var(--pri);font-weight:600;text-decoration:none;font-size:13px}
+button.link{background:none;border:0;cursor:pointer;font-family:inherit}
+.sel{font:inherit;font-size:13px;background:#fff;border:1px solid var(--bd);border-radius:10px;padding:7px 10px;color:var(--ink)}
 details{margin-top:14px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px}
 details summary{cursor:pointer;font-weight:600;font-size:13.5px}
 details .body{margin-top:12px;font-size:13px;color:var(--ink2)}
 details .body p{margin-bottom:9px}
+details .body h3{font-size:13px;font-weight:700;color:var(--ink);margin:14px 0 8px}
 .scroll{overflow-x:auto}
 .err{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
-@media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.hero .big{font-size:17px}}
+@media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wk{grid-template-columns:minmax(0,1fr)}.hero .big{font-size:17px}.hero.one .big{font-size:15.5px}}
 @media(max-width:560px){.kpis{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:minmax(0,1fr)}.wrap{padding:14px 12px 44px}}
 </style>
 </head>
@@ -95,18 +116,29 @@ details .body p{margin-bottom:9px}
       <div class="dates" id="dates"><input type="date" id="dFrom"><span style="color:var(--muted)">–</span><input type="date" id="dTo"></div>
     </div>
   </div>
+  <nav class="tabs" id="tabs">
+    <button data-v="overview">ภาพรวม</button>
+    <button data-v="shopee"><i style="color:#EE4D2D"></i>Shopee</button>
+    <button data-v="tiktok"><i style="color:#111827"></i>TikTok</button>
+    <button data-v="lazada"><i style="color:#3B2CC4"></i>Lazada</button>
+    <button data-v="facebook"><i style="color:#1877F2"></i>Facebook</button>
+  </nav>
   <div id="main"><div class="err">กำลังโหลดข้อมูล…</div></div>
 </div>
 <script>
 (function(){
 'use strict';
-const C={sh:'#EE4D2D',tk:'#111827',lz:'#3B2CC4',fb:'#1877F2',pri:'#2457F5',soft:'#C9D6F5'};
+const C={sh:'#EE4D2D',tk:'#111827',lz:'#3B2CC4',fb:'#1877F2',pri:'#2457F5',soft:'#C9D6F5',ink2:'#4B5563'};
 const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const THF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const MK=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 const nf0=new Intl.NumberFormat('th-TH',{maximumFractionDigits:0});
+const nf2=new Intl.NumberFormat('th-TH',{minimumFractionDigits:2,maximumFractionDigits:2});
 const baht=v=>'฿'+nf0.format(Math.round(v||0));
+const baht2=v=>'฿'+nf2.format(v||0);
 const int=v=>nf0.format(Math.round(v||0));
 const pct=(v,d)=>Number.isFinite(v)?(v*100).toFixed(d==null?1:d)+'%':'–';
+const pct2=v=>Number.isFinite(v)?v.toFixed(2)+'%':'–';
 const x2=v=>Number.isFinite(v)&&v>0?v.toFixed(2)+'x':'–';
 const div=(a,b)=>b?a/b:NaN;
 const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -116,42 +148,81 @@ const add=(s,n)=>{const d=pd(s);d.setUTCDate(d.getUTCDate()+n);return iso(d);};
 const between=(a,b)=>Math.round((pd(b)-pd(a))/864e5)+1;
 const thD=(s,y)=>{const d=pd(s);return d.getUTCDate()+' '+TH[d.getUTCMonth()]+(y?' '+(d.getUTCFullYear()+543):'');};
 const thR=(a,b)=>a===b?thD(a,1):thD(a)+' – '+thD(b,1);
+const muted=s=>'<span style="color:var(--muted)">'+s+'</span>';
 
-let D=null,P=null,FB=null,DAYS=[],MIN='',MAX='',ch1=null,ch2=null;
-const st={preset:'thisMonth',from:'',to:''};
+let D=null,P=null,TKC=null,FB=null,DAYS=[],MIN='',MAX='';
+const charts={};
+const st={preset:'thisMonth',from:'',to:'',view:'overview',shMonth:'',tkMonth:'',tkCamp:'gmax',shAll:false,tkAll:false};
+let R=null,PR=null,NN=0,PA='',PB='';
 
-/* ---------- รวมตัวเลขตามช่วง ---------- */
+/* ---------- รวมตัวเลขตามช่วง ----------
+   โครงเดียวกับ sumRange() ของหน้าจริง (_new) เพื่อให้ตัวเลขตรงกันทุกตัว */
 function sum(a,b){
-  const r={n:0,days:[],sh:{real:0,ord:0,spend:0,gmv:0,adsDays:0},tk:{real:0,ord:0,spend:0,gmv:0},
-           lz:{real:0,ord:0,spend:0,gmv:0,days:0},fb:{spend:0,msg:0,purch:0,omni:0,oval:0,pval:0}};
+  const r={n:0,days:[],
+    sh:{real:0,ord:0,spend:0,broad:0,direct:0,adsOrd:0,adsDays:0,t:{product:{b:0,d:0,s:0,o:0},search:{b:0,d:0,s:0,o:0},live:{b:0,d:0,s:0,o:0}}},
+    tk:{real:0,ord:0,spend:0,gmv:0,adsOrd:0,t:{product:{g:0,s:0,o:0},live:{g:0,s:0,o:0}}},
+    lz:{real:0,ord:0,spend:0,gmv:0,adsOrd:0,imp:0,clicks:0,days:0},
+    fb:{spend:0,msg:0,purch:0,omni:0,lead:0,oval:0,pval:0,imp:0,clicks:0,ad3Spend:0}};
   for(const d of DAYS){ if(d<a||d>b) continue; const v=D.days[d]; r.n++; r.days.push(d);
     r.sh.real+=v.sh_real.gmv; r.sh.ord+=v.sh_real.orders;
-    if(v.sh_ads){ r.sh.adsDays++; for(const k of ['product','search','live']){const x=v.sh_ads[k]||{};
-      r.sh.spend+=x.spend||0; r.sh.gmv+=x.gmv_broad||0;} }
+    /* ค่าโฆษณา Shopee ย้อนได้แค่ ~185 วัน วันเก่ากว่านั้นไม่มีคีย์ sh_ads
+       ต้องข้ามและนับ adsDays ไว้เตือน — ห้ามนับเป็น 0 เพราะจะเพี้ยนทั้ง ROAS และ % */
+    if(v.sh_ads){ r.sh.adsDays++;
+      for(const k of ['product','search','live']){ const x=v.sh_ads[k]||{}, t=r.sh.t[k];
+        t.b+=x.gmv_broad||0; t.d+=x.gmv_direct||0; t.s+=x.spend||0; t.o+=x.orders||0;
+        r.sh.broad+=x.gmv_broad||0; r.sh.direct+=x.gmv_direct||0; r.sh.spend+=x.spend||0; r.sh.adsOrd+=x.orders||0; } }
     r.tk.real+=v.tk_real.gmv; r.tk.ord+=v.tk_real.orders;
-    for(const k of ['product','live']){const x=(v.tk_ads||{})[k]||{}; r.tk.spend+=x.spend||0; r.tk.gmv+=x.gmv||0;}
-    if(v.lz_real&&v.lz_ads){ r.lz.days++; r.lz.real+=v.lz_real.gmv||0; r.lz.ord+=v.lz_real.orders||0;
-      r.lz.spend+=v.lz_ads.spend||0; r.lz.gmv+=v.lz_ads.revenue||0; }
+    for(const k of ['product','live']){ const x=(v.tk_ads||{})[k]||{}, t=r.tk.t[k];
+      t.g+=x.gmv||0; t.s+=x.spend||0; t.o+=x.orders||0;
+      r.tk.gmv+=x.gmv||0; r.tk.spend+=x.spend||0; r.tk.adsOrd+=x.orders||0; }
+    /* Lazada เริ่มเก็บ 1 ก.ย. 2569 — วันก่อนหน้าไม่มีคีย์ ให้ข้าม ไม่นับเป็น 0 */
+    if(v.lz_real&&v.lz_ads){ const L=v.lz_ads; r.lz.days++;
+      r.lz.real+=v.lz_real.gmv||0; r.lz.ord+=v.lz_real.orders||0;
+      r.lz.gmv+=L.revenue||0; r.lz.spend+=L.spend||0; r.lz.adsOrd+=L.orders||0;
+      r.lz.imp+=L.imp||0; r.lz.clicks+=L.clicks||0; }
   }
-  if(FB){ const K=FB.keys; const ad3=(FB.acc_days||{})['AD3']||{};
-    for(const d in ad3){ if(d<a||d>b) continue; r.fb.ad3Spend=(r.fb.ad3Spend||0)+ad3[d][K.indexOf('spend')]; }
+  if(fbOn()){ const K=FB.keys, g=k=>K.indexOf(k);
+    const ad3=(FB.acc_days||{})['AD3']||{};
+    for(const d in ad3){ if(d<a||d>b) continue; r.fb.ad3Spend+=ad3[d][g('spend')]||0; }
     for(const d in FB.days){ if(d<a||d>b) continue; const row=FB.days[d];
-    r.fb.spend+=row[K.indexOf('spend')]; r.fb.msg+=row[K.indexOf('msg')];
-    r.fb.purch+=row[K.indexOf('purch')]; r.fb.omni+=row[K.indexOf('omni')];
-    r.fb.oval+=row[K.indexOf('omni_val')]||0; r.fb.pval+=row[K.indexOf('pval')]||0; } }
+      r.fb.spend+=row[g('spend')]||0; r.fb.msg+=row[g('msg')]||0; r.fb.purch+=row[g('purch')]||0;
+      r.fb.omni+=row[g('omni')]||0; r.fb.lead+=row[g('lead')]||0;
+      r.fb.oval+=row[g('omni_val')]||0; r.fb.pval+=row[g('pval')]||0;
+      r.fb.imp+=row[g('imp')]||0; r.fb.clicks+=row[g('clicks')]||0; } }
   /* ยอดขายนับ 3 ช่องทางที่ขายบนแพลตฟอร์ม · ค่าแอด "สาม" ใช้เป็นตัวตั้งของ % และ ROAS
      ส่วน "รวม" บวก Facebook เข้ามาด้วย (ยอดขายของ FB ไปลงช่องทางอื่น จึงไม่เอามาหาร) */
   r.real=r.sh.real+r.tk.real+r.lz.real; r.ord=r.sh.ord+r.tk.ord+r.lz.ord;
   r.spend3=r.sh.spend+r.tk.spend+r.lz.spend; r.spendAll=r.spend3+r.fb.spend;
   return r;
 }
-function dayRow(d){ const v=D.days[d],S=v.sh_ads||{},T=v.tk_ads||{},L=v.lz_ads,R=v.lz_real;
+function dayV(d){ const v=D.days[d],S=v.sh_ads||{},T=v.tk_ads||{},L=v.lz_ads,LR=v.lz_real;
   const g=(o,k,f)=>((o[k]||{})[f]||0);
-  const a3=g(S,'product','spend')+g(S,'search','spend')+g(S,'live','spend')
-          +g(T,'product','spend')+g(T,'live','spend')+(L?L.spend||0:0);
-  const fb=FB&&FB.days[d]?FB.days[d][FB.keys.indexOf('spend')]:0;
-  return {real:v.sh_real.gmv+v.tk_real.gmv+(R?R.gmv||0:0), ads:a3+fb, hasFb:!!(FB&&FB.days[d])};
+  const o={hasSh:!!v.sh_ads, hasLz:!!(L&&LR),
+    shR:v.sh_real.gmv, shO:v.sh_real.orders,
+    shB:g(S,'product','gmv_broad')+g(S,'search','gmv_broad')+g(S,'live','gmv_broad'),
+    shD:g(S,'product','gmv_direct')+g(S,'search','gmv_direct')+g(S,'live','gmv_direct'),
+    shSp:g(S,'product','spend'), shSs:g(S,'search','spend'), shSl:g(S,'live','spend'),
+    tkR:v.tk_real.gmv, tkO:v.tk_real.orders,
+    tkGp:g(T,'product','gmv'), tkGl:g(T,'live','gmv'), tkSp:g(T,'product','spend'), tkSl:g(T,'live','spend'),
+    lzR:LR?LR.gmv||0:null, lzO:LR?LR.orders||0:null,
+    lzS:L?L.spend||0:null, lzG:L?L.revenue||0:null, lzAO:L?L.orders||0:null,
+    lzI:L?L.imp||0:null, lzC:L?L.clicks||0:null};
+  o.shS=o.shSp+o.shSs+o.shSl; o.tkS=o.tkSp+o.tkSl; o.tkG=o.tkGp+o.tkGl;
+  o.fbS=fbOn()&&FB.days[d]?FB.days[d][FB.keys.indexOf('spend')]:null;
+  o.real=o.shR+o.tkR+(o.lzR||0);
+  o.ads=o.shS+o.tkS+(o.lzS||0)+(o.fbS||0);
+  return o;
 }
+/* ---------- Facebook helpers (ชุดเดียวกับหน้าจริง) ---------- */
+function fbOn(){ return !!(FB&&FB.days&&Object.keys(FB.days).length); }
+function fbDays(a,b){ return fbOn()?Object.keys(FB.days).filter(d=>d>=a&&d<=b).sort():[]; }
+function fbSum(src,dates,keys){ const o={}; keys.forEach(k=>o[k]=0);
+  dates.forEach(d=>{ const a=src[d]; if(a) keys.forEach((k,i)=>o[k]+=a[i]||0); }); return o; }
+function fbTot(a,b){ return fbSum(FB.days,fbDays(a,b),FB.keys); }
+function fbAcc(k,a,b){ return fbSum((FB.acc_days||{})[k]||{},fbDays(a,b),FB.keys); }
+/* แคมเปญเดียว -> null ถ้าไม่มีวันไหนอยู่ในช่วง (ห้ามคืน 0 จะโชว์แถวเปล่า) */
+function fbCamp(c,a,b){ const ds=Object.keys(c.dd||{}).filter(d=>d>=a&&d<=b);
+  if(!ds.length) return null; const o=fbSum(c.dd,ds,FB.camp_keys); o._n=ds.length; return o; }
 
 /* ---------- ช่วงวันที่ ---------- */
 function range(p){
@@ -168,29 +239,100 @@ function setPreset(p){
   document.getElementById('dates').classList.toggle('on',p==='custom');
   const [a,b]=range(p); st.from=a; st.to=b;
   document.getElementById('dFrom').value=a; document.getElementById('dTo').value=b;
-  render();
+  st.shMonth=''; st.tkMonth=''; render();
+}
+function setView(v){
+  if(!['overview','shopee','tiktok','lazada','facebook'].includes(v)) v='overview';
+  st.view=v;
+  if(location.hash!=='#'+v) history.replaceState(null,'','#'+v);
+  render(); window.scrollTo(0,0);
 }
 
-/* ---------- ส่วนประกอบ ---------- */
+/* ---------- ส่วนประกอบร่วม ---------- */
 function delta(cur,prev,cost){
   if(!Number.isFinite(cur)||!Number.isFinite(prev)||!prev) return '<span class="d-fl">เทียบช่วงก่อนไม่ได้</span>';
   const r=(cur-prev)/Math.abs(prev); if(Math.abs(r)<0.005) return '<span class="d-fl">เท่าเดิม</span>';
   const up=r>0, good=cost?!up:up;
   return `<span class="${good?'d-up':'d-dn'}">${up?'▲':'▼'} ${(Math.abs(r)*100).toFixed(1)}%</span>`;
 }
+/* อัตราส่วนต้องเทียบเป็น "จุด" (percentage point) ไม่ใช่ % ของตัวเอง
+   เหมือนหน้าจริง — 17.2% จาก 17.5% คือลดลง 0.3 จุด ไม่ใช่ลดลง 1.7% */
+function deltaPt(cur,prev){
+  if(!Number.isFinite(cur)||!Number.isFinite(prev)) return '<span class="d-fl">เทียบช่วงก่อนไม่ได้</span>';
+  const dd=(cur-prev)*100; if(Math.abs(dd)<0.05) return '<span class="d-fl">เท่าเดิม</span>';
+  return `<span class="${dd>0?'d-dn':'d-up'}">${dd>0?'▲':'▼'} ${Math.abs(dd).toFixed(1)} จุด</span>`;
+}
 function kpi(l,v,s,d){return `<div class="card kpi"><div class="k-l">${l}</div><div class="k-v num">${v}</div>`+
-  `<div class="k-s num">${s||''}</div><div class="k-s">${d||''}</div></div>`;}
+  `<div class="k-s num">${s||'&nbsp;'}</div><div class="k-s">${d||''}</div></div>`;}
+/* แถบสีแบบตารางภาพรวม: สีส้มเมื่อเกินเกณฑ์ (ค่าแอดต่อยอดขาย > 25%) */
+function barc(v,mx,hi,fmt){
+  const w=Number.isFinite(v)&&mx?Math.min(100,v/mx*100):0;
+  return `<div class="barc"><div class="mini${hi?' hi':''}" style="width:88px"><span style="width:${w.toFixed(1)}%"></span></div>`+
+    `<b class="num">${fmt?fmt(v):pct(v)}</b></div>`;
+}
+function destroyCharts(){ Object.keys(charts).forEach(k=>{ try{charts[k].destroy();}catch(e){} delete charts[k]; }); }
+function yTick(v){ return v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?Math.round(v/1e3)+'K':v; }
+/* กราฟรายวัน: ความสูงของแท่ง = ยอดขาย · ส่วนล่างสีเข้ม = ค่าแอด (ซ้อนกัน) */
+function stackChart(key,canvasId,days,ads,real,color,labTop,labBottom){
+  const labels=days.map(d=>thD(d)), rest=real.map((v,i)=>Math.max(0,(v||0)-(ads[i]||0)));
+  if(charts[key]) charts[key].destroy();
+  charts[key]=new Chart(document.getElementById(canvasId),{type:'bar',
+    data:{labels,datasets:[
+      {label:labBottom,data:ads,backgroundColor:color,stack:'s',borderRadius:{topLeft:0,topRight:0,bottomLeft:5,bottomRight:5}},
+      {label:labTop,data:rest,backgroundColor:C.soft,stack:'s',borderRadius:{topLeft:5,topRight:5,bottomLeft:0,bottomRight:0}}]},
+    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',
+        borderColor:'#E3E6EB',borderWidth:1,padding:11,displayColors:false,
+        callbacks:{label:c=>{const i=c.dataIndex,A=ads[i]||0,T=(real[i]||0);
+          return [labTop+' '+baht(T),labBottom+' '+baht(A),'คิดเป็น '+pct(div(A,T))];}}}},
+      scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:14,font:{size:11}}},
+              y:{stacked:true,grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+}
+function lineChart(key,canvasId,labels,data,color,fmt,type){
+  if(charts[key]) charts[key].destroy();
+  charts[key]=new Chart(document.getElementById(canvasId),{type:type||'line',
+    data:{labels,datasets:[{label:'',data,borderColor:color,backgroundColor:type==='bar'?color:'transparent',
+      borderWidth:2,borderRadius:4,pointRadius:labels.length>20?0:3,tension:.25}]},
+    options:{responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',
+        borderColor:'#E3E6EB',borderWidth:1,padding:10,displayColors:false,callbacks:{label:c=>' '+fmt(c.parsed.y)}}},
+      scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:12,font:{size:11}}},
+              y:{beginAtZero:true,grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+}
+/* เดือนที่มีไฟล์ export (ใช้กับตารางแคมเปญ) · ค่าเริ่มต้น = เดือนของวันสุดท้ายในช่วงที่เลือก */
+function monthKeys(){ return MK.filter(k=>P&&P.months&&P.months[k]); }
+function defMonth(){ const ks=monthKeys(), m=MK[+st.to.slice(5,7)-1];
+  return ks.includes(m)?m:ks[ks.length-1]; }
+function monthSel(id,cur){ return `<select class="sel" id="${id}">`+monthKeys().slice().reverse()
+  .map(k=>`<option value="${k}"${k===cur?' selected':''}>${THF[MK.indexOf(k)]} 2569</option>`).join('')+'</select>'; }
+function moreBtn(id,n,all){ return n>15?`<button class="link" id="${id}" style="margin-top:10px">${all?'แสดงน้อยลง':'แสดงทั้งหมด '+n+' แคมเปญ'}</button>`:''; }
 
+/* ======================= routing ======================= */
 function render(){
-  const a=st.from,b=st.to,R=sum(a,b),n=between(a,b);
-  const pa=add(a,-n),pb=add(a,-1), PR=(pa>=MIN)?sum(pa,pb):null;
+  const a=st.from,b=st.to;
+  R=sum(a,b); NN=between(a,b); PA=add(a,-NN); PB=add(a,-1);
+  PR=(PA>=MIN)?sum(PA,PB):null;
+  document.querySelectorAll('#tabs button').forEach(t=>t.classList.toggle('on',t.dataset.v===st.view));
+  document.getElementById('sub').textContent=`ช่วงที่เลือก ${thR(a,b)} (${NN} วัน)`+(PR?` · เทียบกับ ${thR(PA,PB)}`:'');
+  destroyCharts();
+  ({overview:renderOv,shopee:renderSh,tiktok:renderTk,lazada:renderLz,facebook:renderFb}[st.view])();
+}
+function statusChips(){
   const cov=D.coverage||{};
-  /* 1. แถบสถานะข้อมูล */
   const cs=[['ทุกแพลตฟอร์ม',MAX]].concat([['Shopee',cov.shopee],['TikTok',cov.tiktok],['Lazada',cov.lazada]]
-      .filter(x=>x[1])).concat(FB?[['Facebook',FB.to]]:[]);
-  const chips=cs.map(([n2,d],i)=>{const late=d<MAX;
-    return `<span class="chip${late?' warn':''}"><i></i>${i?n2+' ถึง '+thD(d):'ข้อมูลครบถึง '+thD(d,1)}</span>`;}).join('');
-  /* 2. กล่องสรุป */
+      .filter(x=>x[1])).concat(fbOn()?[['Facebook',FB.to]]:[]);
+  return '<div class="chips">'+cs.map(([n2,d],i)=>{const late=d<MAX;
+    return `<span class="chip${late?' warn':''}"><i></i>${i?n2+' ถึง '+thD(d):'ข้อมูลครบถึง '+thD(d,1)}</span>`;}).join('')+'</div>';
+}
+/* ประโยคสรุป 1 บรรทัดของแท็บช่องทาง — โครงเดียวกับกล่องสรุปของภาพรวม */
+function oneLine(txt,legs){
+  return `<div class="card hero one"><div class="big">${txt}</div>`+
+    (legs?`<div class="leg">${legs.map(s=>'<span>'+s+'</span>').join('')}</div>`:'')+'</div>';
+}
+function dayTableHtml(id){ return `<div class="scroll" id="${id}"></div>`; }
+
+/* ======================= ภาพรวม ======================= */
+function renderOv(){
   const roas=div(R.real,R.spend3), ratio=div(R.spend3,R.real);
   const pratio=PR?div(PR.spend3,PR.real):NaN;
   let trend='<span class="d-fl">เทียบช่วงก่อนไม่ได้</span>';
@@ -204,36 +346,31 @@ function render(){
     <div class="bar"><span style="width:${w.toFixed(2)}%"></span></div>
     <div class="leg"><span>■ ค่าแอด ${baht(R.spend3)}</span><span>ยอดขายจริง ${baht(R.real)}</span>
       <span>นับ Shopee + TikTok + Lazada ไม่รวม Facebook</span></div></div>`;
-  /* 3. การ์ด 4 ใบ */
   const kpis=`<div class="kpis">
     ${kpi('ยอดขายจริง',baht(R.real),'3 ช่องทางที่ขายบนแพลตฟอร์ม',delta(R.real,PR&&PR.real))}
     ${kpi('ค่าโฆษณา',baht(R.spendAll),'ไม่รวม FB '+baht(R.spend3),delta(R.spendAll,PR&&PR.spendAll,1))}
-    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'ไม่รวมค่าแอด Facebook',delta(ratio,pratio,1))}
-    ${kpi('ออเดอร์จริง',int(R.ord),'&nbsp;',delta(R.ord,PR&&PR.ord))}</div>`;
-  /* 4. ตารางแพลตฟอร์ม */
-  const rows=[{k:'sh',n:'Shopee',c:C.sh,o:R.sh},{k:'tk',n:'TikTok',c:C.tk,o:R.tk},{k:'lz',n:'Lazada',c:C.lz,o:R.lz}]
+    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'ไม่รวมค่าแอด Facebook',deltaPt(ratio,pratio))}
+    ${kpi('ออเดอร์จริง',int(R.ord),'',delta(R.ord,PR&&PR.ord))}</div>`;
+  const rows=[{k:'sh',v:'shopee',n:'Shopee',c:C.sh,o:R.sh},{k:'tk',v:'tiktok',n:'TikTok',c:C.tk,o:R.tk},{k:'lz',v:'lazada',n:'Lazada',c:C.lz,o:R.lz}]
     .filter(r=>r.o.real||r.o.spend).sort((x,y)=>y.o.spend-x.o.spend);
   const mx=Math.max(0.0001,...rows.map(r=>div(r.o.spend,r.o.real)||0));
   const trs=rows.map(r=>{const rt=div(r.o.spend,r.o.real);
-    return `<tr class="go" data-go="${r.k}"><td><span class="pf"><i style="background:${r.c}"></i>${r.n}</span></td>
+    return `<tr class="go" data-go="${r.v}"><td><span class="pf"><i style="background:${r.c}"></i>${r.n}</span></td>
       <td class="num">${baht(r.o.real)}</td><td class="num">${baht(r.o.spend)}</td>
-      <td><div style="display:flex;align-items:center;gap:9px;justify-content:flex-end">
-        <div class="mini${rt>0.25?' hi':''}" style="width:88px"><span style="width:${Math.min(100,rt/mx*100||0).toFixed(1)}%"></span></div>
-        <b class="num" style="min-width:48px;display:inline-block">${pct(rt)}</b></div></td>
+      <td>${barc(rt,mx,rt>0.25)}</td>
       <td class="num">${x2(div(r.o.real,r.o.spend))}</td></tr>`;}).join('')
     + (R.fb.spend?`<tr class="go" data-go="facebook"><td><span class="pf"><i style="background:${C.fb}"></i>Facebook</span></td>
-        <td class="num" style="color:var(--muted)">—</td><td class="num">${baht(R.fb.spend)}</td>
-        <td class="num" style="color:var(--muted)">—</td><td class="num" style="color:var(--muted)">—</td></tr>`:'');
+        <td class="num">${muted('—')}</td><td class="num">${baht(R.fb.spend)}</td>
+        <td class="num">${muted('—')}</td><td class="num">${muted('—')}</td></tr>`:'');
   const table=`<div class="card"><h2>แต่ละแพลตฟอร์มคุ้มแค่ไหน</h2><div class="scroll"><table id="tPf">
     <thead><tr><th>แพลตฟอร์ม</th><th>ยอดขายจริง</th><th>ค่าแอด</th><th>ค่าแอด ÷ ยอดขาย</th><th>ROAS</th></tr></thead>
     <tbody>${trs}</tbody></table></div>
-    <div style="font-size:12px;color:var(--muted);margin-top:9px">แถบเป็นสีส้มเมื่อค่าแอดเกิน 25% ของยอดขาย · กดแถวเพื่อดูรายละเอียดแพลตฟอร์มนั้น
+    <div class="note">แถบเป็นสีส้มเมื่อค่าแอดเกิน 25% ของยอดขาย · กดแถวเพื่อไปแท็บของแพลตฟอร์มนั้น
     · Facebook ไม่มียอดขายในหน้านี้เพราะยอดไปลงช่องทาง Facebook/LINE</div></div>`;
-  /* 5. สิ่งที่ควรรู้ */
   const ins=[];
   if(rows.length){ const w1=rows.slice().sort((x,y)=>div(y.o.spend,y.o.real)-div(x.o.spend,x.o.real))[0];
     ins.push(`<b>${w1.n}</b> ใช้ค่าแอดหนักสุดเทียบยอดขาย <b>${pct(div(w1.o.spend,w1.o.real))}</b> (ROAS ${x2(div(w1.o.real,w1.o.spend))})`);}
-  if(R.days.length){ let bd=R.days[0],bv=-1; R.days.forEach(d=>{const v=dayRow(d).real; if(v>bv){bv=v;bd=d;}});
+  if(R.days.length){ let bd=R.days[0],bv=-1; R.days.forEach(d=>{const v=dayV(d).real; if(v>bv){bv=v;bd=d;}});
     ins.push(`ยอดขายสูงสุดวันที่ <b>${thD(bd,1)}</b> ${baht(bv)} คิดเป็น <b>${pct(div(bv,R.real))}</b> ของทั้งช่วง`);}
   if(PR){ let best=null; rows.forEach(r=>{const p=PR[r.k].real; if(!p) return; const g=(r.o.real-p)/p;
       if(!best||Math.abs(g)>Math.abs(best.g)) best={n:r.n,g};});
@@ -243,31 +380,27 @@ function render(){
     ins.push(`ค่าแอด Shopee ไม่มีข้อมูล <b>${int(miss)}</b> วัน (${thD(gap[0],1)}${gap.length>1?' – '+thD(gap[gap.length-1],1):''}) วันที่ขาด<b>ไม่ถูกนับเป็น 0</b>`);}
   const insHtml=`<div class="card"><h2>สิ่งที่ควรรู้ช่วงนี้</h2><div class="ins">`+
     ins.slice(0,4).map((t,i)=>`<div class="it"><div class="n">${i+1}</div><div class="tx">${t}</div></div>`).join('')+`</div></div>`;
-  /* 6. กราฟรายวัน + 7. การ์ด FB */
   const rev=R.fb.oval+R.fb.pval;
-  const fbCard=`<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
-      <h2 style="margin:0"><span class="pf"><i style="background:${C.fb};width:10px;height:10px;border-radius:3px"></i>Facebook Ads</span></h2>
-      <a class="link" style="margin-left:auto" href="WIBWUB_Ads_Dashboard_new.html#facebook">ดูแยก 5 บัญชี →</a></div>
+  const fbCard=`<div class="card"><div class="ch">
+      <h2><span class="pf"><i style="background:${C.fb};width:10px;height:10px;border-radius:3px"></i>Facebook Ads</span></h2>
+      <button class="link sp" data-go="facebook">ดูแยก 5 บัญชี →</button></div>
     <div class="fbgrid">
       <div><div class="f-l">ค่าโฆษณา</div><div class="f-v num">${baht(R.fb.spend)}</div><div class="f-s num">${delta(R.fb.spend,PR&&PR.fb.spend,1)}</div></div>
-      <div><div class="f-l">คนทักแชท</div><div class="f-v num">${int(R.fb.msg)}</div><div class="f-s num">${R.fb.msg?'฿'+(R.fb.spend/R.fb.msg).toFixed(2)+' ต่อแชท':'–'}</div></div>
+      <div><div class="f-l">คนทักแชท</div><div class="f-v num">${int(R.fb.msg)}</div><div class="f-s num">${R.fb.msg?baht2(R.fb.spend/R.fb.msg)+' ต่อแชท':'–'}</div></div>
       <div><div class="f-l">ยอดซื้อที่ FB นับ</div><div class="f-v num">${int(R.fb.purch+R.fb.omni)}</div><div class="f-s num">บนเพจ ${int(R.fb.purch)} · CPAS ${int(R.fb.omni)}</div></div>
       <div><div class="f-l">ROAS แคตตาล็อก (AD3)</div><div class="f-v num">${R.fb.oval&&R.fb.ad3Spend?x2(div(R.fb.oval,R.fb.ad3Spend)):'ไม่มีในไฟล์'}</div>
         <div class="f-s num">${R.fb.oval?'มูลค่า '+baht(R.fb.oval)+' ÷ ค่าแอด AD3 '+baht(R.fb.ad3Spend||0):'ต้อง export ใหม่ให้มีคอลัมน์มูลค่า'}</div></div>
     </div></div>`;
-  const chart=`<div class="card"><div style="display:flex;align-items:center;margin-bottom:12px">
-      <h2 style="margin:0">ยอดขายและค่าแอดรายวัน</h2>
-      <button id="btnTbl" class="link" style="margin-left:auto;background:none;border:0;cursor:pointer;font-family:inherit">ดูตาราง</button></div>
+  const chart=`<div class="card"><div class="ch"><h2>ยอดขายและค่าแอดรายวัน</h2>
+      <button id="btnTbl" class="link sp">ดูตาราง</button></div>
     <div class="cw"><canvas id="cDay"></canvas></div>
-    <div style="font-size:12px;color:var(--muted);margin-top:9px">ความสูงของแท่ง = ยอดขายจริง · ส่วนสีเข้มด้านล่าง = ค่าแอด (รวม Facebook)</div>
+    <div class="note">ความสูงของแท่ง = ยอดขายจริง · ส่วนสีเข้มด้านล่าง = ค่าแอด (รวม Facebook)</div>
     <div id="tblWrap" style="display:none;margin-top:14px" class="scroll"></div></div>`;
-  const mon=`<div class="card" style="margin-top:14px"><h2>แนวโน้มรายเดือน</h2>
+  const mon=`<div class="card"><h2>แนวโน้มรายเดือน</h2>
     <div class="cw" style="height:220px"><canvas id="cMon"></canvas></div>
-    <div style="font-size:12px;color:var(--muted);margin-top:9px">ตัวเลขจากไฟล์รายงานรายเดือนของแต่ละแพลตฟอร์ม ไม่ขึ้นกับช่วงวันที่ด้านบน</div></div>`;
-
-  document.getElementById('main').innerHTML=
-    `<div class="chips">${chips}</div>${hero}${kpis}<div class="two">${table}${insHtml}</div>${chart}
-     <div style="margin-top:14px">${fbCard}</div>${mon}
+    <div class="note">ตัวเลขจากไฟล์รายงานรายเดือนของแต่ละแพลตฟอร์ม ไม่ขึ้นกับช่วงวันที่ด้านบน</div></div>`;
+  document.getElementById('main').innerHTML=statusChips()+hero+kpis+`<div class="two">${table}${insHtml}</div>${chart}
+     <div style="margin-top:14px">${fbCard}</div><div style="margin-top:14px">${mon}</div>
      <details><summary>ตัวเลขในหน้านี้มาจากไหน</summary><div class="body">
        <p><b>ยอดขายจริง</b> นับเฉพาะ Shopee + TikTok + Lazada ซึ่งเป็นช่องทางที่ขายบนแพลตฟอร์มโดยตรง ไม่รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ จึงน้อยกว่าหน้า “การตลาด vs ยอดขาย” ที่นับครบ 11 ช่องทาง — ตั้งใจให้ต่าง เพราะถ้าเอายอดที่ไม่ได้มาจากโฆษณามารวมด้วย ROAS จะดูดีเกินจริง</p>
        <p><b>ค่าแอด ÷ ยอดขาย และ ROAS</b> คิดจากค่าแอด 3 แพลตฟอร์มเท่านั้น ไม่รวม Facebook เพราะยอดที่ Facebook ทำได้ไปลงช่องทาง Facebook/LINE (ยกเว้น AD3 ที่เป็น CPAS ยอดไปลง Shopee ซึ่งนับอยู่แล้ว) ส่วนการ์ด “ค่าโฆษณา” รวม Facebook ไว้ด้วย</p>
@@ -277,65 +410,422 @@ function render(){
        <p><b>ค่าธรรมเนียมแพลตฟอร์ม · ต้นทุนรวม · ROAS หลังหักค่าธรรมเนียม</b> ย้ายไปอยู่หน้า “การตลาด vs ยอดขาย” ทั้งหมดแล้ว เพื่อไม่ให้ข้อมูลชุดเดียวกันโชว์ 2 ที่</p>
        <p style="color:var(--muted)" id="srcNote"></p>
      </div></details>`;
-  document.getElementById('sub').textContent=`ช่วงที่เลือก ${thR(a,b)} (${n} วัน)`+(PR?` · เทียบกับ ${thR(pa,pb)}`:'');
   document.getElementById('srcNote').textContent=(D.source_note||'')+' '+((P&&P.note)||'');
-  document.querySelectorAll('#tPf tr.go').forEach(tr=>tr.onclick=()=>{
-    location.href='WIBWUB_Ads_Dashboard_new.html#'+({sh:'shopee',tk:'tiktok',lz:'lazada',facebook:'facebook'}[tr.dataset.go]);});
+  document.querySelectorAll('#tPf tr.go,[data-go]').forEach(el=>el.onclick=()=>setView(el.dataset.go));
   document.getElementById('btnTbl').onclick=()=>{const w=document.getElementById('tblWrap');
     const open=w.style.display==='none';
     if(open&&!w.innerHTML) w.innerHTML=`<table><thead><tr><th>วันที่</th><th>ยอดขายจริง</th><th>ค่าแอด</th><th>÷ยอดขาย</th></tr></thead><tbody>`+
-      R.days.slice().reverse().map(d=>{const v=dayRow(d);
+      R.days.slice().reverse().map(d=>{const v=dayV(d);
         return `<tr><td>${thD(d,1)}</td><td class="num">${baht(v.real)}</td><td class="num">${baht(v.ads)}</td><td class="num">${pct(div(v.ads,v.real))}</td></tr>`;}).join('')+'</tbody></table>';
     w.style.display=open?'block':'none'; document.getElementById('btnTbl').textContent=open?'ซ่อนตาราง':'ดูตาราง';};
-  drawDay(R); drawMon();
-}
-
-function drawDay(R){
-  const labels=R.days.map(d=>thD(d)), ads=R.days.map(d=>dayRow(d).ads),
-        rest=R.days.map(d=>{const v=dayRow(d);return Math.max(0,v.real-v.ads);});
-  if(ch1) ch1.destroy();
-  ch1=new Chart(document.getElementById('cDay'),{type:'bar',
-    data:{labels,datasets:[
-      {label:'ค่าแอด',data:ads,backgroundColor:C.pri,stack:'s',borderRadius:{topLeft:0,topRight:0,bottomLeft:5,bottomRight:5}},
-      {label:'ยอดขายส่วนที่เหลือ',data:rest,backgroundColor:C.soft,stack:'s',borderRadius:{topLeft:5,topRight:5,bottomLeft:0,bottomRight:0}}]},
-    options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',
-        borderColor:'#E3E6EB',borderWidth:1,padding:11,displayColors:false,
-        callbacks:{label:c=>{const i=c.dataIndex,a=ads[i],r=ads[i]+rest[i];
-          return ['ยอดขายจริง '+baht(r),'ค่าแอด '+baht(a),'คิดเป็น '+pct(div(a,r))];}}}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:14,font:{size:11}}},
-              y:{stacked:true,grid:{color:'#EEF0F3'},border:{display:false},
-                 ticks:{font:{size:11},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3)+'K':v}}}}});
+  stackChart('day','cDay',R.days,R.days.map(d=>dayV(d).ads),R.days.map(d=>dayV(d).real),C.pri,'ยอดขายจริง','ค่าแอด');
+  drawMon();
 }
 function drawMon(){
   if(!P||!P.months) return;
-  const ks=MK.filter(k=>P.months[k]), labels=ks.map(k=>TH[MK.indexOf(k)]);
+  const ks=monthKeys(), labels=ks.map(k=>TH[MK.indexOf(k)]);
   const get=(k,p)=>((P.months[k]||{})[p]||{}).spend||0;
-  if(ch2) ch2.destroy();
-  ch2=new Chart(document.getElementById('cMon'),{type:'bar',
-    data:{labels,datasets:[{label:'Shopee',data:ks.map(k=>get(k,'shopee')),backgroundColor:C.sh,borderRadius:4},
-      {label:'TikTok',data:ks.map(k=>get(k,'tiktok')),backgroundColor:C.tk,borderRadius:4},
-      {label:'Lazada',data:ks.map(k=>get(k,'lazada')),backgroundColor:C.lz,borderRadius:4}]},
+  /* Lazada ไม่มีไฟล์ export รายเดือน จึงรวมเองจากรายวัน */
+  const lz=ks.map(k=>{const mm=String(MK.indexOf(k)+1).padStart(2,'0'); let s=0;
+    for(const d of DAYS){ if(d.slice(5,7)!==mm) continue; const v=D.days[d]; if(v.lz_ads) s+=v.lz_ads.spend||0; } return s;});
+  const ds=[{label:'Shopee',data:ks.map(k=>get(k,'shopee')),backgroundColor:C.sh,borderRadius:4},
+    {label:'TikTok',data:ks.map(k=>get(k,'tiktok')),backgroundColor:C.tk,borderRadius:4}];
+  if(lz.some(v=>v)) ds.push({label:'Lazada',data:lz,backgroundColor:C.lz,borderRadius:4});
+  charts.mon=new Chart(document.getElementById('cMon'),{type:'bar',data:{labels,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
         tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+baht(c.parsed.y)}}},
       scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
-              y:{grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:v=>v>=1e6?(v/1e6).toFixed(1)+'M':v>=1e3?(v/1e3)+'K':v}}}}});
+              y:{grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+}
+
+/* ======================= Shopee ======================= */
+function renderSh(){
+  const s=R.sh, p=PR&&PR.sh, ratio=div(s.spend,s.real);
+  const missNote=s.adsDays<R.n
+    ? `<span style="color:#FDA29B">ค่าแอดมีข้อมูล ${int(s.adsDays)} จาก ${int(R.n)} วัน</span>` : '';
+  const head=oneLine(
+    `Shopee: ค่าแอด <b>${baht(s.spend)}</b> กับยอดขายจริง <b>${baht(s.real)}</b> — ใช้ค่าแอดไป <b>${pct(ratio)}</b> ของยอดขาย (ROAS <b>${x2(div(s.real,s.spend))}</b>)`,
+    [`ยอดที่ Shopee นับให้โฆษณา broad ${baht(s.broad)}`,`direct ${baht(s.direct)}`,
+     `${int(s.ord)} ออเดอร์จริง · ${int(s.adsOrd)} ออเดอร์จาก Ads`, missNote].filter(Boolean));
+  const kpis=`<div class="kpis">
+    ${kpi('ยอดขายจริง',baht(s.real),int(s.ord)+' ออเดอร์',delta(s.real,p&&p.real))}
+    ${kpi('ค่าโฆษณา',baht(s.spend),'ทุกประเภทโฆษณา',delta(s.spend,p&&p.spend,1))}
+    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'',deltaPt(ratio,p&&div(p.spend,p.real)))}
+    ${kpi('ROAS จากยอดจริง',x2(div(s.real,s.spend)),'ตามแพลตฟอร์ม (broad) '+x2(div(s.broad,s.spend)),delta(div(s.real,s.spend),p&&div(p.real,p.spend)))}</div>`;
+  if(!st.shMonth) st.shMonth=defMonth();
+  const M=(P.months||{})[st.shMonth]||{}, S=M.shopee||{};
+  const list=(S.campaigns||[]).slice().sort((x,y)=>(y.spend||0)-(x.spend||0));
+  const shown=st.shAll?list:list.slice(0,15);
+  const mx=Math.max(0.0001,...list.map(c=>c.spend||0));
+  const trs=shown.map(c=>`<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td>
+      <td class="num">${baht(c.spend)}</td>
+      <td>${barc(c.spend||0,mx,false,v=>pct(div(v,S.spend)))}</td>
+      <td class="num">${baht(c.revenue)}</td><td class="num">${x2(c.roas||div(c.revenue,c.spend))}</td>
+      <td class="num">${int(c.orders)}</td><td class="num">${c.orders?baht2(c.cpa||c.spend/c.orders):'–'}</td>
+      <td class="num">${int(c.imp)}</td><td class="num">${int(c.clicks)}</td>
+      <td class="num">${c.ctr!=null?pct2(+c.ctr):'–'}</td></tr>`).join('')
+    || `<tr><td colspan="10" style="text-align:center;padding:18px;color:var(--muted)">ไม่มีข้อมูลแคมเปญในเดือนนี้</td></tr>`;
+  const camp=`<div class="card"><div class="ch"><h2>แคมเปญ Shopee</h2>
+      <span class="note" style="margin:0">ตามไฟล์ export รายเดือน ไม่ขึ้นกับช่วงวันที่ด้านบน</span>
+      <span class="sp">${monthSel('shMonthSel',st.shMonth)}</span></div>
+    <div class="scroll"><table>
+      <thead><tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>สัดส่วนค่าแอด</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th><th>Impressions</th><th>คลิก</th><th>CTR</th></tr></thead>
+      <tbody>${trs}<tr class="tot"><td>รวมทั้งเดือน</td><td class="num">${baht(S.spend)}</td><td class="num">100%</td>
+        <td class="num">${baht(S.revenue)}</td><td class="num">${x2(div(S.revenue,S.spend))}</td><td class="num">${int(S.orders)}</td>
+        <td class="num">${S.orders?baht2(S.spend/S.orders):'–'}</td><td class="num">${int(S.imp)}</td><td class="num">${int(S.clicks)}</td>
+        <td class="num">${S.imp?pct2(S.clicks/S.imp*100):'–'}</td></tr></tbody></table></div>
+    ${moreBtn('shMore',list.length,st.shAll)}</div>`;
+  const chart=`<div class="card"><h2>ยอดขายและค่าแอดรายวัน — Shopee</h2>
+    <div class="cw"><canvas id="cShDay"></canvas></div>
+    <div class="note">ความสูงของแท่ง = ยอดขายจริงของ Shopee · ส่วนสีเข้มด้านล่าง = ค่าแอด Shopee · วันที่ไม่มีข้อมูลค่าแอดจะไม่มีส่วนสีเข้ม (ไม่ได้แปลว่าไม่ได้ลงโฆษณา)</div></div>`;
+  const types=[['โฆษณาสินค้า','product'],['โฆษณาคำค้นหา/ร้านค้า','search'],['Live','live']].map(([n,k])=>{const x=s.t[k];
+    return `<tr><td>${n}</td><td class="num">${baht(x.s)}</td><td class="num">${pct(div(x.s,s.spend),0)}</td>
+      <td class="num">${baht(x.b)}</td><td class="num">${baht(x.d)}</td><td class="num">${x2(div(x.b,x.s))}</td>
+      <td class="num">${int(x.o)}</td><td class="num">${x.o?baht2(x.s/x.o):'–'}</td></tr>`;}).join('');
+  const dayRows=R.days.slice().reverse().map(d=>{const v=dayV(d);
+    if(!v.hasSh) return `<tr><td>${thD(d)}</td><td class="num">${int(v.shR)}</td><td class="num">${int(v.shO)}</td>
+      <td colspan="8" style="color:var(--muted);text-align:center">ไม่มีข้อมูลค่าโฆษณา (เกินช่วงที่ Shopee ย้อนดูได้)</td></tr>`;
+    return `<tr><td>${thD(d)}</td><td class="num">${int(v.shR)}</td><td class="num">${int(v.shO)}</td><td class="num">${int(v.shB)}</td>
+      <td class="num">${int(v.shD)}</td><td class="num">${int(v.shSp)}</td><td class="num">${int(v.shSs)}</td><td class="num">${int(v.shSl)}</td>
+      <td class="num">${int(v.shS)}</td><td class="num">${pct(div(v.shS,v.shR))}</td><td class="num">${x2(div(v.shR,v.shS))}</td></tr>`;}).join('');
+  const det=`<details><summary>รายละเอียดและหมายเหตุ — Shopee</summary><div class="body">
+    <h3>แยกตามประเภทโฆษณา (${thR(st.from,st.to)})</h3>
+    <div class="scroll"><table><thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>สัดส่วน</th><th>ยอด broad</th><th>ยอด direct</th><th>ROAS</th><th>ออเดอร์</th><th>ต้นทุน/ออเดอร์</th></tr></thead>
+      <tbody>${types}<tr class="tot"><td>รวม</td><td class="num">${baht(s.spend)}</td><td class="num">100%</td>
+        <td class="num">${baht(s.broad)}</td><td class="num">${baht(s.direct)}</td><td class="num">${x2(div(s.broad,s.spend))}</td>
+        <td class="num">${int(s.adsOrd)}</td><td class="num">${s.adsOrd?baht2(s.spend/s.adsOrd):'–'}</td></tr></tbody></table></div>
+    <p class="note">ยอด broad = ออเดอร์ที่เกี่ยวข้องกับโฆษณาทั้งหมด · ยอด direct = เฉพาะสินค้าที่ลูกค้าคลิกจากโฆษณาโดยตรง · ROAS ในตารางนี้คิดจากยอด broad (ตามแพลตฟอร์ม)</p>
+    <h3>ตารางรายวัน</h3>
+    <div class="scroll"><table><thead><tr><th>วันที่</th><th>ยอดขายจริง</th><th>ออเดอร์</th><th>broad</th><th>direct</th><th>ค่าแอดสินค้า</th><th>ค่าแอดคำค้นหา</th><th>ค่าแอด Live</th><th>ค่าแอดรวม</th><th>÷ยอดจริง</th><th>ROAS จริง</th></tr></thead>
+      <tbody>${dayRows}<tr class="tot"><td>รวม ${R.n} วัน${s.adsDays<R.n?' (ค่าแอด '+s.adsDays+' วัน)':''}</td>
+        <td class="num">${int(s.real)}</td><td class="num">${int(s.ord)}</td><td class="num">${int(s.broad)}</td><td class="num">${int(s.direct)}</td>
+        <td class="num">${int(s.t.product.s)}</td><td class="num">${int(s.t.search.s)}</td><td class="num">${int(s.t.live.s)}</td>
+        <td class="num">${int(s.spend)}</td><td class="num">${pct(ratio)}</td><td class="num">${x2(div(s.real,s.spend))}</td></tr></tbody></table></div>
+    <h3>หมายเหตุ</h3>
+    <p><b>ค่าแอด Shopee ย้อนดูได้ประมาณ 185 วัน</b> วันที่เก่ากว่านั้นไม่มีข้อมูลและ<b>ไม่ถูกนับเป็น 0</b> ค่าแอดรวม · % ต่อยอดขาย · ROAS จึงคิดจากวันที่มีข้อมูลเท่านั้น ส่วนยอดขายจริงและออเดอร์ครบทุกวัน</p>
+    <p><b>ยอดจาก Ads สูงกว่ายอดขายจริงได้</b> เพราะ Shopee นับออเดอร์ให้โฆษณาถ้าลูกค้าเคยเห็นหรือคลิกภายในช่วงเวลาหนึ่ง (broad นับกว้างที่สุด · direct นับเฉพาะสินค้าที่คลิกโดยตรง) ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ และนับก่อนหักยกเลิก/คืนเงิน</p>
+    <p><b>ตารางแคมเปญเป็นยอดรวมทั้งเดือน</b> จากไฟล์ export ไม่ได้ตัดตามช่วงวันที่ด้านบน จึงเทียบกับการ์ดด้านบนตรง ๆ ไม่ได้</p>
+    </div></details>`;
+  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  const sel=document.getElementById('shMonthSel'); sel.onchange=()=>{st.shMonth=sel.value;st.shAll=false;render();};
+  const mb=document.getElementById('shMore'); if(mb) mb.onclick=()=>{st.shAll=!st.shAll;render();};
+  stackChart('shDay','cShDay',R.days,R.days.map(d=>dayV(d).shS),R.days.map(d=>dayV(d).shR),C.sh,'ยอดขายจริง','ค่าแอด');
+}
+
+/* ======================= TikTok ======================= */
+function renderTk(){
+  const t=R.tk, p=PR&&PR.tk, ratio=div(t.spend,t.real);
+  const head=oneLine(
+    `TikTok: ค่าแอด GMV Max <b>${baht(t.spend)}</b> กับยอดขายจริง <b>${baht(t.real)}</b> — ใช้ค่าแอดไป <b>${pct(ratio)}</b> ของยอดขาย (ROAS <b>${x2(div(t.real,t.spend))}</b>)`,
+    [`ยอดที่ TikTok นับให้ GMV Max ${baht(t.gmv)}`,`${int(t.ord)} ออเดอร์จริง · ${int(t.adsOrd)} ออเดอร์จาก Ads`,
+     'ยังไม่รวม Business Ads (มีแต่ยอดรายเดือน)']);
+  const kpis=`<div class="kpis">
+    ${kpi('ยอดขายจริง',baht(t.real),int(t.ord)+' ออเดอร์',delta(t.real,p&&p.real))}
+    ${kpi('ค่าโฆษณา (GMV Max)',baht(t.spend),'ยังไม่รวม Business Ads',delta(t.spend,p&&p.spend,1))}
+    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'',deltaPt(ratio,p&&div(p.spend,p.real)))}
+    ${kpi('ROAS จากยอดจริง',x2(div(t.real,t.spend)),'ตามแพลตฟอร์ม '+x2(div(t.gmv,t.spend)),delta(div(t.real,t.spend),p&&div(p.real,p.spend)))}</div>`;
+  if(!st.tkMonth) st.tkMonth=defMonth();
+  const M=(P.months||{})[st.tkMonth]||{}, TKm=M.tiktok||{}, tab=st.tkCamp;
+  let head2,trs,tot='',n=0,empty='ไม่มีข้อมูลแคมเปญในเดือนนี้';
+  if(tab==='biz'){
+    const src=TKm.bizAds||{}, list=(src.campaigns||[]).slice().sort((x,y)=>(y.spend||0)-(x.spend||0));
+    n=list.length; const shown=st.tkAll?list:list.slice(0,15), mx=Math.max(0.0001,...list.map(c=>c.spend||0));
+    const T=src.total;
+    head2='<tr><th>แคมเปญ</th><th>ค่าโฆษณา</th><th>สัดส่วนค่าแอด</th><th>Impressions</th><th>คลิก</th><th>CTR</th><th>CPM</th></tr>';
+    trs=shown.map(c=>`<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td class="num">${baht(c.spend)}</td>
+      <td>${barc(c.spend||0,mx,false,v=>pct(div(v,(T&&T.spend)||0)))}</td>
+      <td class="num">${int(c.imp)}</td><td class="num">${int(c.clicks)}</td>
+      <td class="num">${c.imp?pct2(c.clicks/c.imp*100):'–'}</td><td class="num">${c.imp?baht2(c.spend/c.imp*1000):'–'}</td></tr>`).join('');
+    if(T) tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td class="num">${baht(T.spend)}</td><td class="num">100%</td>
+      <td class="num">${int(T.imp)}</td><td class="num">${int(T.clicks)}</td><td class="num">${T.imp?pct2(T.clicks/T.imp*100):'–'}</td>
+      <td class="num">${T.imp?baht2(T.spend/T.imp*1000):'–'}</td></tr>`;
+  } else if(TKC&&TKC.months&&TKC.months[st.tkMonth]){
+    /* แคมเปญย่อยจาก API (ads_tk_campaigns.json) — ครบทุกแคมเปญ รวมที่ถูกลบแล้ว */
+    const X=TKC.months[st.tkMonth], key=tab==='gmax'?'product':'live';
+    const list=(X[key]||[]).slice().sort((x,y)=>(y.spend||0)-(x.spend||0));
+    n=list.length; const shown=st.tkAll?list:list.slice(0,15), mx=Math.max(0.0001,...list.map(c=>c.spend||0));
+    const T=list.reduce((a,c)=>(a.spend+=c.spend||0,a.revenue+=c.revenue||0,a.orders+=c.orders||0,a),{spend:0,revenue:0,orders:0});
+    head2=`<tr><th>${tab==='gmax'?'แคมเปญ':'ไลฟ์ / แคมเปญ'}</th><th>ค่าโฆษณา</th><th>สัดส่วนค่าแอด</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th></tr>`;
+    trs=shown.map(c=>`<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td class="num">${baht(c.spend)}</td>
+      <td>${barc(c.spend||0,mx,false,v=>pct(div(v,T.spend)))}</td>
+      <td class="num">${baht(c.revenue)}</td><td class="num">${x2(div(c.revenue,c.spend))}</td>
+      <td class="num">${int(c.orders)}</td><td class="num">${c.orders&&c.spend?baht2(c.spend/c.orders):'–'}</td></tr>`).join('');
+    tot=`<tr class="tot"><td>รวม ${thR(X.from,X.to)}</td><td class="num">${baht(T.spend)}</td><td class="num">100%</td>
+      <td class="num">${baht(T.revenue)}</td><td class="num">${x2(div(T.revenue,T.spend))}</td><td class="num">${int(T.orders)}</td>
+      <td class="num">${T.orders?baht2(T.spend/T.orders):'–'}</td></tr>`;
+  } else {
+    const src=(tab==='gmax'?TKm.gmvMax:TKm.gmvLive)||{};
+    const list=((tab==='gmax'?src.campaigns:src.sessions)||[]).slice().sort((x,y)=>(y.spend||0)-(x.spend||0));
+    n=list.length; const shown=st.tkAll?list:list.slice(0,15), mx=Math.max(0.0001,...list.map(c=>c.spend||0));
+    const T=src.total;
+    head2=`<tr><th>${tab==='gmax'?'แคมเปญ':'ไลฟ์ / แคมเปญ'}</th><th>ค่าโฆษณา</th><th>สัดส่วนค่าแอด</th><th>ยอดขาย (Ads)</th><th>ROAS</th><th>ออเดอร์</th><th>CPA</th></tr>`;
+    trs=shown.map(c=>`<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td class="num">${baht(c.spend)}</td>
+      <td>${barc(c.spend||0,mx,false,v=>pct(div(v,(T&&T.spend)||0)))}</td>
+      <td class="num">${baht(c.revenue)}</td><td class="num">${x2(c.roi||div(c.revenue,c.spend))}</td>
+      <td class="num">${int(c.orders)}</td><td class="num">${c.orders?baht2(c.cpa||c.spend/c.orders):'–'}</td></tr>`).join('');
+    if(T) tot=`<tr class="tot"><td>รวมทั้งเดือน</td><td class="num">${baht(T.spend)}</td><td class="num">100%</td>
+      <td class="num">${baht(T.revenue)}</td><td class="num">${x2(div(T.revenue,T.spend))}</td><td class="num">${int(T.orders)}</td>
+      <td class="num">${T.orders?baht2(T.spend/T.orders):'–'}</td></tr>`;
+    if(tab==='gmax'&&!n&&T&&T.spend) empty='เดือนนี้ไฟล์ export มีเฉพาะยอดรวม ไม่มีรายแคมเปญ';
+  }
+  const cols=(head2.match(/<th/g)||[]).length;
+  if(!trs) trs=`<tr><td colspan="${cols}" style="text-align:center;padding:18px;color:var(--muted)">${empty}</td></tr>`;
+  const camp=`<div class="card"><div class="ch"><h2>แคมเปญ TikTok</h2>
+      <div class="seg sm" id="segTkCamp"><button data-t="gmax">GMV Max</button><button data-t="glive">LIVE GMV Max</button><button data-t="biz">Business Ads</button></div>
+      <span class="sp">${monthSel('tkMonthSel',st.tkMonth)}</span></div>
+    <div class="scroll"><table><thead>${head2}</thead><tbody>${trs}${tot}</tbody></table></div>
+    ${moreBtn('tkMore',n,st.tkAll)}
+    <div class="note">ตามไฟล์ export / API รายเดือน ไม่ขึ้นกับช่วงวันที่ด้านบน</div></div>`;
+  const chart=`<div class="card"><h2>ยอดขายและค่าแอดรายวัน — TikTok</h2>
+    <div class="cw"><canvas id="cTkDay"></canvas></div>
+    <div class="note">ความสูงของแท่ง = ยอดขายจริงของ TikTok · ส่วนสีเข้มด้านล่าง = ค่าแอด GMV Max (Product + LIVE)</div></div>`;
+  const types=[['Product GMV Max','product'],['LIVE GMV Max','live']].map(([nm,k])=>{const x=t.t[k];
+    return `<tr><td>${nm}</td><td class="num">${baht(x.s)}</td><td class="num">${pct(div(x.s,t.spend),0)}</td>
+      <td class="num">${baht(x.g)}</td><td class="num">${x2(div(x.g,x.s))}</td><td class="num">${int(x.o)}</td>
+      <td class="num">${x.o?baht2(x.s/x.o):'–'}</td></tr>`;}).join('');
+  const dayRows=R.days.slice().reverse().map(d=>{const v=dayV(d);
+    return `<tr><td>${thD(d)}</td><td class="num">${int(v.tkR)}</td><td class="num">${int(v.tkO)}</td>
+      <td class="num">${int(v.tkGp)}</td><td class="num">${int(v.tkGl)}</td><td class="num">${int(v.tkSp)}</td><td class="num">${int(v.tkSl)}</td>
+      <td class="num">${int(v.tkS)}</td><td class="num">${pct(div(v.tkS,v.tkR))}</td><td class="num">${x2(div(v.tkR,v.tkS))}</td></tr>`;}).join('');
+  const det=`<details><summary>รายละเอียดและหมายเหตุ — TikTok</summary><div class="body">
+    <h3>แยกตามประเภทโฆษณา (${thR(st.from,st.to)})</h3>
+    <div class="scroll"><table><thead><tr><th>ประเภท</th><th>ค่าโฆษณา</th><th>สัดส่วน</th><th>ยอดจาก Ads</th><th>ROAS</th><th>ออเดอร์</th><th>ต้นทุน/ออเดอร์</th></tr></thead>
+      <tbody>${types}<tr class="tot"><td>รวม</td><td class="num">${baht(t.spend)}</td><td class="num">100%</td>
+        <td class="num">${baht(t.gmv)}</td><td class="num">${x2(div(t.gmv,t.spend))}</td><td class="num">${int(t.adsOrd)}</td>
+        <td class="num">${t.adsOrd?baht2(t.spend/t.adsOrd):'–'}</td></tr></tbody></table></div>
+    <p class="note">ตัวเลขรายวันเป็น GMV Max เท่านั้น (Product + LIVE) — ยังไม่รวม Business Ads (C-Ads) ซึ่งมีเฉพาะยอดรายเดือน ดูได้ในตารางแคมเปญแท็บ Business Ads</p>
+    <h3>ตารางรายวัน</h3>
+    <div class="scroll"><table><thead><tr><th>วันที่</th><th>ยอดขายจริง</th><th>ออเดอร์</th><th>GMV Max Product</th><th>GMV Max LIVE</th><th>ค่าแอด Product</th><th>ค่าแอด LIVE</th><th>ค่าแอดรวม</th><th>÷ยอดจริง</th><th>ROAS จริง</th></tr></thead>
+      <tbody>${dayRows}<tr class="tot"><td>รวม ${R.n} วัน</td><td class="num">${int(t.real)}</td><td class="num">${int(t.ord)}</td>
+        <td class="num">${int(t.t.product.g)}</td><td class="num">${int(t.t.live.g)}</td><td class="num">${int(t.t.product.s)}</td>
+        <td class="num">${int(t.t.live.s)}</td><td class="num">${int(t.spend)}</td><td class="num">${pct(ratio)}</td>
+        <td class="num">${x2(div(t.real,t.spend))}</td></tr></tbody></table></div>
+    <h3>หมายเหตุ</h3>
+    <p><b>ค่าโฆษณารายวันของ TikTok เป็น GMV Max เท่านั้น</b> (Product + LIVE) ยังไม่รวม Business Ads ซึ่งมีเฉพาะยอดรวมรายเดือน — การ์ด “ค่าโฆษณา” ด้านบนจึงต่ำกว่าค่าโฆษณา TikTok ทั้งหมดจริง</p>
+    <p><b>รายแคมเปญ GMV Max / LIVE</b> ดึงจาก API (<code>ads_tk_campaigns.json</code>) ครบทุกแคมเปญรวมที่ถูกลบแล้ว · เดือนที่ยังไม่มีไฟล์ API จะถอยไปใช้ไฟล์ export รายเดือนซึ่งบางเดือนมีแต่ยอดรวม</p>
+    <p><b>ยอดจาก GMV Max สูงกว่ายอดขายจริงได้</b> เพราะ TikTok นับ attribution เอง และนับก่อนหักยกเลิก/คืนเงิน จึงควรดู “ค่าแอด ÷ ยอดขายจริง” เป็นหลัก</p>
+    </div></details>`;
+  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  document.querySelectorAll('#segTkCamp button').forEach(b=>{b.classList.toggle('on',b.dataset.t===tab);
+    b.onclick=()=>{st.tkCamp=b.dataset.t;st.tkAll=false;render();};});
+  const sel=document.getElementById('tkMonthSel'); sel.onchange=()=>{st.tkMonth=sel.value;st.tkAll=false;render();};
+  const mb=document.getElementById('tkMore'); if(mb) mb.onclick=()=>{st.tkAll=!st.tkAll;render();};
+  stackChart('tkDay','cTkDay',R.days,R.days.map(d=>dayV(d).tkS),R.days.map(d=>dayV(d).tkR),C.tk,'ยอดขายจริง','ค่าแอด');
+}
+
+/* ======================= Lazada ======================= */
+function renderLz(){
+  const z=R.lz, p=(PR&&PR.lz&&PR.lz.days)?PR.lz:null, ratio=div(z.spend,z.real);
+  if(!z.days){
+    document.getElementById('main').innerHTML=statusChips()+
+      `<div class="card"><h2>ไม่มีข้อมูล Lazada ในช่วงที่เลือก</h2><div class="note">Lazada เริ่มเก็บ 1 ก.ย. 2569 — เลือกช่วงที่ครอบวันที่นั้นขึ้นไป</div></div>`;
+    return; }
+  const head=oneLine(
+    `Lazada: ค่าแอด <b>${baht(z.spend)}</b> กับยอดขายจริง <b>${baht(z.real)}</b> — ใช้ค่าแอดไป <b>${pct(ratio)}</b> ของยอดขาย (ROAS <b>${x2(div(z.real,z.spend))}</b>)`,
+    [`ยอดที่ Lazada นับให้โฆษณา ${baht(z.gmv)}`,`${int(z.ord)} ออเดอร์จริง · ${int(z.adsOrd)} ออเดอร์จาก Ads`,
+     `มีข้อมูล ${int(z.days)} วันในช่วงนี้`]);
+  const kpis=`<div class="kpis">
+    ${kpi('ยอดขายจริง',baht(z.real),int(z.ord)+' ออเดอร์',delta(z.real,p&&p.real))}
+    ${kpi('ค่าโฆษณา',baht(z.spend),'Sponsored รวมทุกแคมเปญ',delta(z.spend,p&&p.spend,1))}
+    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'',deltaPt(ratio,p&&div(p.spend,p.real)))}
+    ${kpi('ROAS จากยอดจริง',x2(div(z.real,z.spend)),'ตามแพลตฟอร์ม '+x2(div(z.gmv,z.spend)),delta(div(z.real,z.spend),p&&div(p.real,p.spend)))}</div>`;
+  /* Lazada ไม่มีรายแคมเปญในไฟล์ จึงสรุปเป็นรายเดือนแทน (รวมเองจากรายวัน) */
+  const by={}; R.days.forEach(d=>{const v=dayV(d); if(!v.hasLz) return; const m=d.slice(0,7);
+    const o=by[m]||(by[m]={real:0,ord:0,spend:0,gmv:0,imp:0,clicks:0,n:0});
+    o.real+=v.lzR; o.ord+=v.lzO; o.spend+=v.lzS; o.gmv+=v.lzG; o.imp+=v.lzI; o.clicks+=v.lzC; o.n++;});
+  const ms=Object.keys(by).sort(), mx=Math.max(0.0001,...ms.map(m=>div(by[m].spend,by[m].real)||0));
+  const trs=ms.map(m=>{const o=by[m], rt=div(o.spend,o.real);
+    return `<tr><td>${THF[+m.slice(5,7)-1]} 2569 <span style="color:var(--muted)">· ${o.n} วัน</span></td>
+      <td class="num">${baht(o.real)}</td><td class="num">${baht(o.spend)}</td>
+      <td>${barc(rt,mx,rt>0.25)}</td><td class="num">${x2(div(o.real,o.spend))}</td>
+      <td class="num">${baht(o.gmv)}</td><td class="num">${int(o.imp)}</td><td class="num">${int(o.clicks)}</td>
+      <td class="num">${o.imp?pct2(o.clicks/o.imp*100):'–'}</td></tr>`;}).join('');
+  const camp=`<div class="card"><div class="ch"><h2>สรุปรายเดือน — Lazada</h2>
+      <span class="note" style="margin:0">ไฟล์ Lazada ไม่มีรายละเอียดรายแคมเปญ (ต่างจาก Shopee/TikTok) จึงสรุปเป็นรายเดือนจากข้อมูลรายวันในช่วงที่เลือก</span></div>
+    <div class="scroll"><table><thead><tr><th>เดือน</th><th>ยอดขายจริง</th><th>ค่าโฆษณา</th><th>ค่าแอด ÷ ยอดขาย</th><th>ROAS จริง</th><th>ยอดจาก Ads</th><th>Impression</th><th>คลิก</th><th>CTR</th></tr></thead>
+      <tbody>${trs}<tr class="tot"><td>รวม ${z.days} วัน</td><td class="num">${baht(z.real)}</td><td class="num">${baht(z.spend)}</td>
+        <td class="num">${pct(ratio)}</td><td class="num">${x2(div(z.real,z.spend))}</td><td class="num">${baht(z.gmv)}</td>
+        <td class="num">${int(z.imp)}</td><td class="num">${int(z.clicks)}</td><td class="num">${z.imp?pct2(z.clicks/z.imp*100):'–'}</td></tr></tbody></table></div>
+    <div class="note">แถบเป็นสีส้มเมื่อค่าแอดเกิน 25% ของยอดขาย</div></div>`;
+  const chart=`<div class="card"><h2>ยอดขายและค่าแอดรายวัน — Lazada</h2>
+    <div class="cw"><canvas id="cLzDay"></canvas></div>
+    <div class="note">ความสูงของแท่ง = ยอดขายจริงของ Lazada · ส่วนสีเข้มด้านล่าง = ค่าแอด Sponsored</div></div>`;
+  const lzDays=R.days.filter(d=>dayV(d).hasLz);
+  const dayRows=lzDays.slice().reverse().map(d=>{const v=dayV(d);
+    return `<tr><td>${thD(d)}</td><td class="num">${int(v.lzR)}</td><td class="num">${int(v.lzO)}</td><td class="num">${int(v.lzS)}</td>
+      <td class="num">${pct(div(v.lzS,v.lzR))}</td><td class="num">${int(v.lzG)}</td><td class="num">${x2(div(v.lzR,v.lzS))}</td>
+      <td class="num">${int(v.lzI)}</td><td class="num">${int(v.lzC)}</td></tr>`;}).join('');
+  const det=`<details><summary>รายละเอียดและหมายเหตุ — Lazada</summary><div class="body">
+    <h3>ตารางรายวัน (${thR(st.from,st.to)})</h3>
+    <div class="scroll"><table><thead><tr><th>วันที่</th><th>ยอดขายจริง</th><th>ออเดอร์</th><th>ค่าโฆษณา</th><th>÷ยอดจริง</th><th>ยอดจาก Ads</th><th>ROAS จริง</th><th>Impression</th><th>คลิก</th></tr></thead>
+      <tbody>${dayRows}<tr class="tot"><td>รวม ${z.days} วัน</td><td class="num">${int(z.real)}</td><td class="num">${int(z.ord)}</td>
+        <td class="num">${int(z.spend)}</td><td class="num">${pct(ratio)}</td><td class="num">${int(z.gmv)}</td>
+        <td class="num">${x2(div(z.real,z.spend))}</td><td class="num">${int(z.imp)}</td><td class="num">${int(z.clicks)}</td></tr></tbody></table></div>
+    <h3>หมายเหตุ</h3>
+    <p><b>ข้อมูล Lazada เริ่มเก็บ 1 ก.ย. 2569</b> วันก่อนหน้านั้นไม่มีคีย์ในไฟล์และ<b>ไม่ถูกนับเป็น 0</b></p>
+    <p><b>ค่าโฆษณาเป็น Sponsored Product/Affiliate รวมทุกแคมเปญ</b> ยังไม่มีรายละเอียดรายแคมเปญเหมือน Shopee/TikTok · ยอดจาก Ads นับแบบ attribution ของ Lazada จึงควรดู “ค่าแอด ÷ ยอดขายจริง” และ “ROAS จากยอดจริง” เป็นหลักเช่นเดียวกับแพลตฟอร์มอื่น</p>
+    </div></details>`;
+  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  stackChart('lzDay','cLzDay',lzDays,lzDays.map(d=>dayV(d).lzS),lzDays.map(d=>dayV(d).lzR),C.lz,'ยอดขายจริง','ค่าแอด');
+}
+
+/* ======================= Facebook =======================
+   ตัวเลขทุกตัวมาจาก facebook/fb_daily.json ห้ามพิมพ์ทับลงใน HTML
+   (skill: wibwub-avoid-stale-hardcoded-labels) */
+function renderFb(){
+  const main=document.getElementById('main');
+  if(!fbOn()){ main.innerHTML=statusChips()+
+    `<div class="card"><h2>ไม่มีข้อมูล Facebook Ads</h2><div class="note">ยังไม่มีไฟล์ <code>data Ads/facebook/fb_daily.json</code> — รัน <code>python3 scripts/ads/fb_daily.py</code> หลังวางไฟล์ FBD_*.csv ไว้ใน <code>data Ads/facebook/daily/</code></div></div>`;
+    return; }
+  const dates=fbDays(st.from,st.to);
+  if(!dates.length){ main.innerHTML=statusChips()+
+    `<div class="card"><h2>ไม่มีข้อมูล Facebook ในช่วงที่เลือก</h2><div class="note">ไฟล์ Facebook ครอบคลุม ${thD(FB.from,1)} – ${thD(FB.to,1)} เท่านั้น</div></div>`;
+    return; }
+  const T=fbTot(st.from,st.to);
+  const pdts=PR?fbDays(PA,PB):[]; const Pv=pdts.length?fbSum(FB.days,pdts,FB.keys):null;
+  const rev=(T.omni_val||0)+(T.pval||0);
+  const ctr=v=>v.imp?v.clicks/v.imp*100:NaN, cpc=v=>v.clicks?v.spend/v.clicks:NaN;
+  const missN=between(st.from,st.to)-dates.length;
+  const head=oneLine(
+    `Facebook: ค่าแอด <b>${baht(T.spend)}</b> ได้แชท <b>${int(T.msg)}</b> ครั้ง (${T.msg?baht2(T.spend/T.msg):'–'} ต่อแชท) · ยอดซื้อที่ FB นับ <b>${int(T.purch+T.omni)}</b> รายการ`+
+    (rev?` มูลค่า <b>${baht(rev)}</b> (ROAS ${x2(div(rev,T.spend))})`:''),
+    [`${FB.accounts.length} บัญชี · ${dates.length} วันที่มีข้อมูล`,
+     `อิมเพรสชัน ${int(T.imp)} · คลิก ${int(T.clicks)}`,
+     missN>0?`<span style="color:#FDA29B">ช่วงที่เลือกกว้างกว่าไฟล์ ${int(missN)} วัน — วันที่ขาดไม่ถูกนับเป็น 0</span>`:''].filter(Boolean));
+  const kpis=`<div class="kpis">
+    ${kpi('ค่าโฆษณา',baht2(T.spend),'อิมเพรสชัน '+int(T.imp)+' · คลิก '+int(T.clicks),delta(T.spend,Pv&&Pv.spend,1))}
+    ${kpi('แชท',int(T.msg),'การสนทนาที่เริ่มขึ้น · รวมทุกบัญชี',delta(T.msg,Pv&&Pv.msg))}
+    ${kpi('ยอดซื้อ',int(T.purch+T.omni),'บนเพจ '+int(T.purch)+' · CPAS ที่ Shopee '+int(T.omni)+(T.lead?' · lead '+int(T.lead):''),delta(T.purch+T.omni,Pv&&(Pv.purch+Pv.omni)))}
+    ${kpi('มูลค่าการซื้อ',rev?baht(rev):muted('ไม่มีในไฟล์'),rev?('ROAS '+x2(div(rev,T.spend))+' · CPAS '+baht(T.omni_val||0)+' · บนเพจ '+baht(T.pval||0)):'ต้อง export ใหม่ให้มีคอลัมน์มูลค่าการซื้อ',rev?delta(rev,Pv&&(Pv.omni_val+Pv.pval)):'')}</div>`;
+  /* ── ตารางแยกบัญชี: 1 แถวต่อ (บัญชี × เป้าหมาย) + แถวรวมของบัญชี ── */
+  const rows=[]; let cpasNote=false,noGoalNote=false,msgNote=false;
+  const mxSpend=Math.max(0.0001,...FB.accounts.map(a=>fbAcc(a.key,st.from,st.to).spend||0));
+  FB.accounts.forEach(acc=>{
+    const mine=FB.camps.filter(c=>c.acc===acc.key).map(c=>({c,s:fbCamp(c,st.from,st.to)})).filter(x=>x.s);
+    if(!mine.length) return;
+    const byGoal={};
+    mine.forEach(({c,s})=>{ const g=byGoal[c.goal]||(byGoal[c.goal]={label:c.goal_label,roas:[],n:0});
+      FB.camp_keys.forEach(k=>g[k]=(g[k]||0)+s[k]);
+      /* เอา ROAS ถ่วงน้ำหนักของแต่ละแคมเปญมาเฉลี่ยกันไม่ได้ ต้องบวกมูลค่ากับค่าแอดก่อนแล้วค่อยหาร
+         ค่าเฉลี่ยรายวันเก็บไว้เป็นทางถอยเฉพาะแคมเปญที่ไฟล์ไม่มีมูลค่า */
+      if(c.roas!=null&&c.roas_src!=='value') g.roas.push(c.roas); g.n++; });
+    const gs=Object.entries(byGoal).sort((a,b)=>b[1].spend-a[1].spend);
+    const A=fbAcc(acc.key,st.from,st.to);
+    rows.push(`<tr class="sub2"><td>${esc(acc.label)}</td>
+      <td style="text-align:left;color:var(--muted)">${gs.length} เป้าหมาย · ${mine.length} แคมเปญ</td>
+      <td class="num">${baht2(A.spend)}</td>
+      <td>${barc(A.spend||0,mxSpend,false,v=>pct(div(v,T.spend)))}</td>
+      <td></td><td></td>
+      <td class="num">${((A.omni_val||0)+(A.pval||0))?x2(div((A.omni_val||0)+(A.pval||0),A.spend)):''}</td>
+      <td class="num">${int(A.imp)}</td><td class="num">${pct2(ctr(A))}</td><td class="num">${A.clicks?baht2(cpc(A)):'–'}</td>
+      <td class="num">${A.reach_d?(A.imp/A.reach_d).toFixed(2):'–'}</td></tr>`);
+    gs.forEach(([gk,g])=>{
+      const gi=(FB.goals||{})[gk]||{};
+      if(gk==='omni') cpasNote=true; if(gk==='none') noGoalNote=true; if(gk==='msg') msgNote=true;
+      const gr=(g.omni_val||0)+(g.pval||0);
+      const roas=gr?x2(div(gr,g.spend)):g.roas.length?(g.roas.reduce((a,b)=>a+b,0)/g.roas.length).toFixed(2)+'x':muted('ไม่มีในไฟล์');
+      rows.push(`<tr><td style="padding-left:22px;color:var(--ink2)">↳ ${esc(g.label)}</td>
+        <td style="text-align:left;color:var(--muted)">${gk==='none'?'':esc(gi.res||'ผลลัพธ์')}</td>
+        <td class="num">${baht(g.spend)}</td>
+        <td>${barc(g.spend||0,mxSpend,false,v=>pct(div(v,T.spend)))}</td>
+        <td class="num">${gk==='none'?muted('–'):int(g.res)}</td>
+        <td class="num">${g.res?baht2(g.spend/g.res):muted('–')}</td>
+        <td class="num">${roas}</td><td class="num">${int(g.imp)}</td>
+        <td class="num">${pct2(ctr(g))}</td><td class="num">${g.clicks?baht2(cpc(g)):'–'}</td>
+        <td class="num">${muted('–')}</td></tr>`);
+    });
+  });
+  rows.push(`<tr class="tot"><td>รวมทุกบัญชี</td><td style="text-align:left"></td>
+    <td class="num">${baht2(T.spend)}</td><td class="num">100%</td><td></td><td></td>
+    <td class="num">${rev?x2(div(rev,T.spend)):''}</td><td class="num">${int(T.imp)}</td>
+    <td class="num">${pct2(ctr(T))}</td><td class="num">${T.clicks?baht2(cpc(T)):'–'}</td>
+    <td class="num">${T.reach_d?(T.imp/T.reach_d).toFixed(2):'–'}</td></tr>`);
+  const accTable=`<div class="card"><div class="ch"><h2>แยกตามบัญชีและเป้าหมาย</h2>
+      <span class="note" style="margin:0">ผลลัพธ์/ต้นทุนอ่านตามเป้าหมายของแคมเปญ (คอลัมน์ “ตัวระบุผลลัพธ์”)</span></div>
+    <div class="scroll"><table><thead><tr><th>บัญชี / เป้าหมาย</th><th style="text-align:left">ผลลัพธ์ที่นับ</th><th>ค่าโฆษณา</th>
+      <th>สัดส่วนค่าแอด</th><th>ผลลัพธ์</th><th>ต้นทุน/ผลลัพธ์</th><th>ROAS</th><th>อิมเพรสชัน</th><th>CTR</th><th>CPC</th><th>ความถี่ (เฉลี่ย/วัน)</th></tr></thead>
+      <tbody>${rows.join('')}</tbody></table></div></div>`;
+  /* กราฟรายวัน: ค่าแอด vs มูลค่าการซื้อที่ FB นับ (ถ้าไฟล์ไม่มีมูลค่า โชว์ค่าแอดเดี่ยว) */
+  const kS=FB.keys.indexOf('spend'), kO=FB.keys.indexOf('omni_val'), kP=FB.keys.indexOf('pval');
+  const dSpend=dates.map(d=>FB.days[d][kS]||0);
+  const dRev=dates.map(d=>(FB.days[d][kO]||0)+(FB.days[d][kP]||0));
+  const chart=`<div class="card"><h2>มูลค่าการซื้อและค่าแอดรายวัน — Facebook</h2>
+    <div class="cw"><canvas id="cFbDay"></canvas></div>
+    <div class="note">${rev?'ความสูงของแท่ง = มูลค่าการซื้อที่ Facebook นับได้ (CPAS + บนเพจ) · ส่วนสีเข้มด้านล่าง = ค่าแอด':'ไฟล์ชุดนี้ไม่มีคอลัมน์มูลค่าการซื้อ กราฟจึงแสดงค่าแอดรายวันเท่านั้น'} · ยอดที่ปิดการขายกันในแชทแล้วไปลง Shipnity ไม่อยู่ในกราฟนี้</div></div>`;
+  const notes=['<b>ความถี่</b> โชว์เฉพาะแถวรวมของบัญชี เพราะ reach บวกข้ามวันไม่ได้ (คนเดิมถูกนับซ้ำ) ค่าที่เห็นคือ <b>ความถี่เฉลี่ยรายวัน</b> = Σอิมเพรสชัน ÷ Σreach รายวัน จึงไม่อยู่ในกราฟรายสัปดาห์'];
+  if(msgNote) notes.push('<b>ROAS ของบัญชีที่ยิงเพื่อทักแชท</b> (WibWub AD 1 / AD 1) นับเฉพาะยอดที่ Facebook ตามรอยได้เอง <b>ไม่รวมยอดที่ปิดการขายกันในแชทแล้วไปลงที่ Shipnity</b> ตัวเลขจริงจึงสูงกว่าที่เห็นบนหน้านี้ — ห้ามเอาไปตัดสินว่าแคมเปญทักแชทไม่คุ้ม');
+  if(cpasNote) notes.push('<b>AD3 เป็น CPAS</b> — ยอดซื้อเกิดที่ Shopee ไม่ใช่ที่เพจ ห้ามเอาไปเทียบกับยอดช่องทาง Facebook ใน Shipnity');
+  notes.push(rev
+    ? '<b>ROAS</b> คิดจาก <b>Σมูลค่าการซื้อ ÷ Σค่าโฆษณา</b> ของช่วงที่เลือก (ถ่วงน้ำหนักจริง) มูลค่ามาจากคอลัมน์ “ค่าคอนเวอร์ชั่นการซื้อสำหรับรายการที่แชร์” (CPAS) และ “ค่าคอนเวอร์ชั่นการซื้อ” (บนเพจ) · แคมเปญที่ยังไม่มีมูลค่าในไฟล์จะถอยไปใช้ค่าเฉลี่ย ROAS รายวันแทน'
+    : '<b>ROAS</b> ไฟล์ชุดนี้ยังไม่มีคอลัมน์มูลค่าการซื้อ (เพิ่มใน URL ตอน 28 ต.ค. 69) ค่าที่เห็นจึงเป็นค่าเฉลี่ยของ ROAS รายวันซึ่งถ่วงน้ำหนักไม่ได้ · ต้อง export ใหม่จึงจะได้ตัวเลขที่ถูก');
+  if(noGoalNote) notes.push('แคมเปญที่ขึ้น “ไม่มีผลลัพธ์ในรายงาน” คือแคมเปญที่คอลัมน์ “ตัวระบุผลลัพธ์” ว่างทุกวัน <b>และ</b>ไม่มีการซื้อสินค้าที่แชร์ในไฟล์ — มีค่าโฆษณาแต่ไม่มีผลลัพธ์ให้นับจริง ๆ (แคมเปญ CPAS ที่ตัวระบุว่างแต่มีการซื้อ ถูกนับเป็น “ยอดขาย CPAS” ให้แล้ว)');
+  const cr=FB.camps.map(c=>({c,s:fbCamp(c,st.from,st.to)})).filter(x=>x.s).sort((a,b)=>b.s.spend-a.s.spend);
+  const campRows=cr.map(({c,s})=>{const accL=(FB.accounts.find(a=>a.key===c.acc)||{}).label||c.acc;
+    return `<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td>${esc(accL)}</td>
+      <td style="text-align:left">${esc(c.goal_label)}</td><td class="num">${baht(s.spend)}</td>
+      <td class="num">${c.goal==='none'?muted('–'):int(s.res)}</td>
+      <td class="num">${s.res?baht2(s.spend/s.res):muted('–')}</td>
+      <td class="num">${int(s.imp)}</td><td class="num">${pct2(ctr(s))}</td>
+      <td class="num">${s.clicks?baht2(cpc(s)):'–'}</td><td style="color:var(--muted)">${esc(c.deliv)}</td></tr>`;}).join('');
+  const det=`<details><summary>รายละเอียดและหมายเหตุ — Facebook</summary><div class="body">
+    <h3>รายสัปดาห์</h3>
+    <p class="note" style="margin-top:0">สัปดาห์เริ่มวันจันทร์ · อัตราส่วนคิดจากผลรวมของสัปดาห์ ไม่ใช่เฉลี่ยค่ารายวัน · * = สัปดาห์ไม่เต็ม</p>
+    <div class="wk">
+      <div><div style="font-size:12.5px;font-weight:600;margin-bottom:6px">ค่าโฆษณา</div><div class="cw"><canvas id="cFbSpend"></canvas></div></div>
+      <div><div style="font-size:12.5px;font-weight:600;margin-bottom:6px">CPM</div><div class="cw"><canvas id="cFbCpm"></canvas></div></div>
+      <div><div style="font-size:12.5px;font-weight:600;margin-bottom:6px">CTR</div><div class="cw"><canvas id="cFbCtr"></canvas></div></div>
+      <div><div style="font-size:12.5px;font-weight:600;margin-bottom:6px">CPC</div><div class="cw"><canvas id="cFbCpc"></canvas></div></div>
+    </div>
+    <h3>รายแคมเปญ — ${cr.length} แคมเปญที่มียอดในช่วงนี้</h3>
+    <div class="scroll" style="max-height:460px"><table><thead><tr><th>แคมเปญ</th><th>บัญชี</th><th style="text-align:left">เป้าหมาย</th><th>ค่าโฆษณา</th><th>ผลลัพธ์</th><th>ต้นทุน/ผลลัพธ์</th><th>อิมเพรสชัน</th><th>CTR</th><th>CPC</th><th>สถานะ</th></tr></thead>
+      <tbody>${campRows}</tbody></table></div>
+    <h3>หมายเหตุ</h3>
+    ${notes.map(n=>'<p>• '+n+'</p>').join('')}
+    <p><b>ที่มาของตัวเลข:</b> ไฟล์ <code>data Ads/facebook/daily/FBD_*.csv</code> ${FB.accounts.length} บัญชี → <code>scripts/ads/fb_daily.py</code> → <code>facebook/fb_daily.json</code> (สร้างเมื่อ ${esc(String(FB.generated||'').slice(0,16).replace('T',' '))}) ชุดเดียวกับที่หน้า <b>“การตลาด vs ยอดขาย”</b> ใช้เป็นค่าโฆษณา Facebook รายวัน — ตัวเลข 2 หน้าจึงตรงกันโดยโครงสร้าง</p>
+    <p><b>คลิก</b> ไม่มีคอลัมน์นับในรายงาน ถอดจาก CTR(ทั้งหมด) ÷ 100 × อิมเพรสชัน (ตรวจแล้วเป็นจำนวนเต็มพอดีทุกแถว)</p>
+    </div></details>`;
+  main.innerHTML=statusChips()+head+kpis+accTable+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  if(rev) stackChart('fbDay','cFbDay',dates,dSpend,dRev,C.fb,'มูลค่าการซื้อ','ค่าแอด');
+  else lineChart('fbDay','cFbDay',dates.map(d=>thD(d)),dSpend,C.fb,baht,'bar');
+  /* กราฟรายสัปดาห์อยู่ใน <details> — วาดได้เลย Chart.js จัดการขนาดเมื่อเปิดพับ */
+  const wk=fbWeeks(dates), labels=wk.map(x=>x.label+(x.days<7?' *':''));
+  lineChart('fbSpend','cFbSpend',labels,wk.map(x=>+x.spend.toFixed(2)),C.fb,baht,'bar');
+  lineChart('fbCpm','cFbCpm',labels,wk.map(x=>+x.cpm.toFixed(2)),'#1E8E3E',baht2);
+  lineChart('fbCtr','cFbCtr',labels,wk.map(x=>+x.ctr.toFixed(3)),'#D97706',pct2);
+  lineChart('fbCpc','cFbCpc',labels,wk.map(x=>+x.cpc.toFixed(2)),'#C5221F',baht2);
+  const dt=det&&document.querySelector('details');
+  if(dt) dt.addEventListener('toggle',()=>{ ['fbSpend','fbCpm','fbCtr','fbCpc'].forEach(k=>{ if(charts[k]) charts[k].resize(); }); });
+}
+/* สัปดาห์เริ่มวันจันทร์ · อัตราส่วนคิดจากผลรวมของสัปดาห์เสมอ ไม่ใช่เฉลี่ยค่ารายวัน */
+function fbWeeks(dates){
+  const wk=new Map();
+  dates.forEach(d=>{ const dt=pd(d), mon=add(d,-((dt.getUTCDay()+6)%7));
+    if(!wk.has(mon)) wk.set(mon,[]); wk.get(mon).push(d); });
+  return [...wk.entries()].sort((a,b)=>a[0]<b[0]?-1:1).map(([,ds])=>{
+    const s=fbSum(FB.days,ds,FB.keys), f=x=>x.slice(8,10)+'/'+x.slice(5,7);
+    return {label:f(ds[0])+'–'+f(ds[ds.length-1]),days:ds.length,...s,
+      cpm:s.imp?s.spend/s.imp*1000:0, ctr:s.imp?s.clicks/s.imp*100:0, cpc:s.clicks?s.spend/s.clicks:0};});
 }
 
 /* ---------- boot ---------- */
 const load=f=>fetch(f+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.json();});
-Promise.all([load('ads_daily.json'),load('ads_periods.json'),load('facebook/fb_daily.json').catch(()=>null)])
-.then(([d,p,fb])=>{
-  D=d;P=p;FB=fb;DAYS=Object.keys(d.days).sort();MIN=DAYS[0];MAX=DAYS[DAYS.length-1];
+Promise.all([load('ads_daily.json'),load('ads_periods.json'),
+             load('ads_tk_campaigns.json').catch(()=>null),
+             load('facebook/fb_daily.json').catch(()=>null)])
+.then(([d,p,tc,fb])=>{
+  D=d;P=p;TKC=tc;FB=fb;DAYS=Object.keys(d.days).sort();MIN=DAYS[0];MAX=DAYS[DAYS.length-1];
   ['dFrom','dTo'].forEach(id=>{const e=document.getElementById(id);e.min=MIN;e.max=MAX;});
   document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>setPreset(b.dataset.p));
+  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
   const onD=()=>{const a=document.getElementById('dFrom').value,b=document.getElementById('dTo').value;
-    if(a&&b){st.from=a<b?a:b;st.to=a<b?b:a;render();}};
+    if(a&&b){st.from=a<b?a:b;st.to=a<b?b:a;st.shMonth='';st.tkMonth='';render();}};
   document.getElementById('dFrom').onchange=onD; document.getElementById('dTo').onchange=onD;
+  window.addEventListener('hashchange',()=>setView((location.hash||'#overview').slice(1)));
+  st.view=['overview','shopee','tiktok','lazada','facebook'].includes((location.hash||'').slice(1))?location.hash.slice(1):'overview';
   setPreset('thisMonth');
 }).catch(e=>{document.getElementById('main').innerHTML=
-  `<div class="err">โหลดข้อมูลไม่สำเร็จ (${esc(e.message)})<br><span style="font-size:12.5px">หน้านี้อ่าน ads_daily.json · ads_periods.json · facebook/fb_daily.json ในโฟลเดอร์เดียวกัน — ถ้าเปิดด้วย file:// เบราว์เซอร์จะไม่ยอมโหลด ต้องเปิดผ่านเว็บเซิร์ฟเวอร์</span></div>`;});
+  `<div class="err">โหลดข้อมูลไม่สำเร็จ (${esc(e.message)})<br><span style="font-size:12.5px">หน้านี้อ่าน ads_daily.json · ads_periods.json · ads_tk_campaigns.json · facebook/fb_daily.json ในโฟลเดอร์เดียวกัน — ถ้าเปิดด้วย file:// เบราว์เซอร์จะไม่ยอมโหลด ต้องเปิดผ่านเว็บเซิร์ฟเวอร์</span></div>`;});
 })();
 </script>
 </body>
