@@ -67,7 +67,7 @@ td{text-align:right;padding:10px 8px;border-bottom:1px solid #F1F3F6}
 th:first-child,td:first-child{text-align:left}
 tr.tot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0;background:#FAFBFC}
 tr.sub2 td{background:#FAFBFC;font-weight:600}
-td.name{max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+td.name{text-align:left;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 tr.go{cursor:pointer} tr.go:hover td{background:#F7F9FC}
 .pf{display:inline-flex;align-items:center;gap:8px;font-weight:600}
 .pf i{width:9px;height:9px;border-radius:3px}
@@ -81,6 +81,12 @@ tr.go{cursor:pointer} tr.go:hover td{background:#F7F9FC}
 .ins .n{flex:0 0 22px;height:22px;border-radius:7px;background:#EEF2FE;color:var(--pri);font-size:12px;font-weight:700;display:grid;place-items:center}
 .ins .tx{font-size:13px;color:var(--ink2)} .ins .tx b{color:var(--ink)}
 .cw{position:relative;height:270px}
+.bdg{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.bdg.red{background:#FEF3F2;color:var(--neg)} .bdg.green{background:#ECFDF3;color:var(--pos)}
+.bdg.yellow{background:var(--warn-bg);color:var(--warn)} .bdg.low{background:#F2F4F7;color:var(--muted)}
+tr.grp td{background:#F7F9FC;font-weight:700;font-size:12.5px;border-bottom:1px solid var(--bd);padding:9px 8px}
+tr.grp td .m{font-weight:400;color:var(--muted)}
+.sumline{font-size:13.5px;margin-bottom:12px} .sumline b{font-weight:700}
 .wk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
 .wk .cw{height:180px}
 .fbgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
@@ -761,6 +767,81 @@ function renderFb(){
     : '<b>ROAS</b> ไฟล์ชุดนี้ยังไม่มีคอลัมน์มูลค่าการซื้อ (เพิ่มใน URL ตอน 28 ต.ค. 69) ค่าที่เห็นจึงเป็นค่าเฉลี่ยของ ROAS รายวันซึ่งถ่วงน้ำหนักไม่ได้ · ต้อง export ใหม่จึงจะได้ตัวเลขที่ถูก');
   if(noGoalNote) notes.push('แคมเปญที่ขึ้น “ไม่มีผลลัพธ์ในรายงาน” คือแคมเปญที่คอลัมน์ “ตัวระบุผลลัพธ์” ว่างทุกวัน <b>และ</b>ไม่มีการซื้อสินค้าที่แชร์ในไฟล์ — มีค่าโฆษณาแต่ไม่มีผลลัพธ์ให้นับจริง ๆ (แคมเปญ CPAS ที่ตัวระบุว่างแต่มีการซื้อ ถูกนับเป็น “ยอดขาย CPAS” ให้แล้ว)');
   const cr=FB.camps.map(c=>({c,s:fbCamp(c,st.from,st.to)})).filter(x=>x.s).sort((a,b)=>b.s.spend-a.s.spend);
+  /* ── แคมเปญไหนดี ไม่ดี ─────────────────────────────────────────────────
+     เทียบกับ "ค่ามัธยฐานถ่วงด้วยค่าแอด" ของกลุ่มเป้าหมายเดียวกันในช่วงที่เลือก
+     ไม่ใช่เกณฑ์ตายตัว — แคมเปญ CPAS ที่ ROAS 14x ก็ขึ้นแดงได้ถ้าเพื่อนในกลุ่มทำได้ 30x */
+  const HIGH={purchase:1,omni:1};   // กลุ่มที่ "สูงกว่า = ดีกว่า" (วัดด้วย ROAS)
+  const cmet=(gk,s)=>HIGH[gk]?((s.omni_val||0)+(s.pval||0))/(s.spend||NaN):(s.res?s.spend/s.res:NaN);
+  const cfreq=s=>s.reach_d?s.imp/s.reach_d:NaN;
+  const wmed=arr=>{ const v=arr.filter(x=>Number.isFinite(x[0])).sort((a,b)=>a[0]-b[0]);
+    const tot=v.reduce((a,x)=>a+x[1],0); if(!tot) return NaN;
+    let c=0; for(const x of v){ c+=x[1]; if(c>=tot/2) return x[0]; } return v[v.length-1][0]; };
+  const GORD=['omni','purchase','msg','lead','none'];
+  const JG={}; cr.forEach(x=>{ (JG[x.c.goal]=JG[x.c.goal]||[]).push(x); });
+  const gkeys=Object.keys(JG).sort((a,b)=>{const ia=GORD.indexOf(a),ib=GORD.indexOf(b);
+    return (ia<0?99:ia)-(ib<0?99:ib);});
+  const JR=[];
+  gkeys.forEach(gk=>{
+    const med=wmed(JG[gk].map(x=>[cmet(gk,x.s),x.s.spend]));
+    JG[gk].forEach(x=>{
+      const v=cmet(gk,x.s), f=cfreq(x.s), why=[];
+      if(x.s.spend>1000&&!x.s.res) why.push('ใช้เงิน '+baht(x.s.spend)+' แต่ผลลัพธ์ 0');
+      if(Number.isFinite(f)&&f>3) why.push('ความถี่เฉลี่ย '+f.toFixed(2)+' เกิน 3 (คนเดิมเห็นซ้ำเกินไป)');
+      let lab;
+      if(why.length) lab='red';
+      else if(x.s.spend<500) lab='low';
+      else if(!Number.isFinite(v)||!Number.isFinite(med)) lab='low';
+      else if(HIGH[gk]) lab = v>=med*1.2?'green' : v<=med*0.8?'red' : 'yellow';
+      else               lab = v<=med*0.8?'green' : v>=med*1.2?'red' : 'yellow';
+      if(!why.length&&lab==='red') why.push((HIGH[gk]?'ROAS':'ต้นทุนต่อผลลัพธ์')+'แย่กว่ามัธยฐานกลุ่มเกิน 20%');
+      JR.push({...x,gk,med,v,f,lab,why});
+    });
+  });
+  const BDG={red:'🔴 ควรดู',green:'🟢 ดี',yellow:'🟡 กลาง ๆ',low:'⚪ ข้อมูลน้อย'};
+  const metLab=gk=>HIGH[gk]?'ROAS':'ต้นทุนต่อ'+(((FB.goals||{})[gk]||{}).res||'ผลลัพธ์');
+  const metVal=(gk,v)=>Number.isFinite(v)?(HIGH[gk]?x2(v):baht2(v)):muted('–');
+  const jrows=gkeys.map(gk=>{
+    const g=JG[gk], med=JR.find(r=>r.gk===gk).med;
+    const gl=(((FB.goals||{})[gk]||{}).label)||(g[0].c.goal_label)||gk;
+    const sp=g.reduce((a,x)=>a+x.s.spend,0);
+    const head=`<tr class="grp" data-grp="${gk}"><td colspan="10">${esc(gl)}
+      <span class="m">· ${g.length} แคมเปญ · ค่าแอด ${baht(sp)} · วัดด้วย ${metLab(gk)} · มัธยฐานกลุ่ม ${Number.isFinite(med)?(HIGH[gk]?x2(med):baht2(med)):'–'}</span></td></tr>`;
+    const rs=JR.filter(r=>r.gk===gk).sort((a,b)=>b.s.spend-a.s.spend).map(r=>{
+      const accL=(FB.accounts.find(a=>a.key===r.c.acc)||{}).label||r.c.acc;
+      return `<tr data-lab="${r.lab}" data-acc="${esc(r.c.acc)}" data-grp="${gk}">
+        <td><span class="bdg ${r.lab}">${BDG[r.lab]}</span></td>
+        <td class="name" title="${esc(r.c.name)}${r.why.length?' — '+esc(r.why.join(' · ')):''}">${esc(r.c.name)}</td>
+        <td>${esc(accL)}</td><td style="text-align:left">${esc(r.c.goal_label)}</td>
+        <td class="num">${baht(r.s.spend)}</td>
+        <td class="num">${gk==='none'?muted('–'):int(r.s.res)}</td>
+        <td class="num"><b>${metVal(gk,r.v)}</b></td>
+        <td class="num">${pct2(r.s.imp?r.s.clicks/r.s.imp*100:NaN)}</td>
+        <td class="num">${r.s.imp?baht2(r.s.spend/r.s.imp*1000):'–'}</td>
+        <td class="num">${Number.isFinite(r.f)?r.f.toFixed(2):'–'}</td></tr>`;}).join('');
+    return head+rs;
+  }).join('');
+  const reds=JR.filter(r=>r.lab==='red'), redSp=reds.reduce((a,r)=>a+r.s.spend,0);
+  const accOpt=['<option value="">ทุกบัญชี</option>'].concat(FB.accounts
+    .filter(a=>cr.some(x=>x.c.acc===a.key)).map(a=>`<option value="${esc(a.key)}">${esc(a.label)}</option>`)).join('');
+  const judge=`<div class="card" style="margin-top:14px"><div class="ch"><h2>แคมเปญไหนดี ไม่ดี</h2>
+      <div class="seg sm sp" id="segJ"><button data-f="">ทั้งหมด</button><button data-f="red">🔴 ควรดู</button><button data-f="green">🟢 ดี</button></div>
+      <select class="sel" id="jAcc">${accOpt}</select></div>
+    <div class="sumline">แคมเปญที่ควรดู <b>${int(reds.length)}</b> ตัว ใช้เงินรวม <b>${baht(redSp)}</b>
+      (<b>${pct(div(redSp,T.spend))}</b> ของค่าแอด Facebook ในช่วงนี้)</div>
+    <div class="scroll"><table id="tJudge"><thead><tr><th>ป้าย</th><th>แคมเปญ</th><th>บัญชี</th>
+      <th style="text-align:left">เป้าหมาย</th><th>ค่าแอด</th><th>ผลลัพธ์</th><th>ตัววัดหลัก</th><th>CTR</th><th>CPM</th><th>ความถี่</th></tr></thead>
+      <tbody>${jrows}</tbody></table></div>
+    <div class="note" id="jEmpty" hidden>ไม่มีแคมเปญที่ตรงกับตัวกรอง</div>
+    <details style="margin-top:12px"><summary>เกณฑ์ป้ายคิดยังไง</summary><div class="body">
+      <p><b>แบ่งกลุ่มตามเป้าหมายของแคมเปญ</b> (คอลัมน์ “ตัวระบุผลลัพธ์” ในไฟล์) แล้วเทียบกันเฉพาะในกลุ่มเดียวกัน — แคมเปญ CPAS ที่ตัวระบุผลลัพธ์ว่างแต่มีการซื้อสินค้าที่แชร์ ถูกนับเป็นกลุ่ม “ยอดขาย CPAS” ให้แล้ว</p>
+      <p><b>ตัววัดของแต่ละกลุ่ม:</b> ทักแชท → ต้นทุนต่อแชท · ซื้อบนเพจ และ CPAS → ROAS (มูลค่าการซื้อ ÷ ค่าแอด) · ลูกค้าเป้าหมาย → ต้นทุนต่อ lead · อื่น ๆ → ต้นทุนต่อผลลัพธ์</p>
+      <p><b>เส้นเทียบคือค่ามัธยฐานของกลุ่มในช่วงที่เลือก ถ่วงด้วยค่าแอด</b> (เรียงค่าตัววัดแล้วไล่สะสมค่าแอดจนถึงครึ่งหนึ่ง) — ไม่ใช่ค่าเฉลี่ย เพราะแคมเปญตัวเดียวที่เพี้ยนจะลากค่าเฉลี่ยไปทั้งกลุ่ม</p>
+      <p>🟢 ดีกว่ามัธยฐานกลุ่มตั้งแต่ 20% ขึ้นไป · 🔴 แย่กว่าตั้งแต่ 20% ขึ้นไป · 🟡 อยู่ระหว่างนั้น</p>
+      <p>🔴 <b>ขึ้นเสมอ</b> ถ้าใช้เงินเกิน ฿1,000 แต่ผลลัพธ์เป็น 0 หรือความถี่เฉลี่ยเกิน 3 (คนเดิมเห็นโฆษณาซ้ำเกินไป) · แคมเปญที่ใช้เงินน้อยกว่า ฿500 ในช่วงที่เลือกขึ้น ⚪ “ข้อมูลน้อย” ไม่ตัดสิน</p>
+      <p><b>เป็นการเทียบกันเองในกลุ่ม ไม่ใช่เกณฑ์ตายตัว</b> — ถ้าทั้งกลุ่มทำได้ดีมาก ตัวที่ดีน้อยที่สุดก็ยังขึ้น 🔴 ได้ ให้ดูตัวเลขจริงข้าง ๆ ป้ายประกอบเสมอ</p>
+      <p><b>บัญชีที่ยิงเพื่อทักแชท</b> (WibWub AD 1 / AD 1) ROAS และมูลค่าการซื้อนับเฉพาะยอดที่ Facebook ตามรอยได้เอง <b>ไม่รวมยอดที่ปิดการขายกันในแชทแล้วไปลงที่ Shipnity</b> จึงวัดด้วยต้นทุนต่อแชทแทน — ห้ามเอา ROAS ของกลุ่มนี้ไปตัดสินว่าคุ้มหรือไม่คุ้ม</p>
+      <p><b>ความถี่</b> = Σอิมเพรสชัน ÷ Σreach รายวันของแคมเปญนั้น (reach บวกข้ามวันไม่ได้ คนเดิมถูกนับซ้ำ) จึงเป็นค่าเฉลี่ยรายวัน ไม่ใช่ความถี่สะสมทั้งช่วง</p>
+    </div></details></div>`;
   const campRows=cr.map(({c,s})=>{const accL=(FB.accounts.find(a=>a.key===c.acc)||{}).label||c.acc;
     return `<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td>${esc(accL)}</td>
       <td style="text-align:left">${esc(c.goal_label)}</td><td class="num">${baht(s.spend)}</td>
@@ -785,7 +866,22 @@ function renderFb(){
     <p><b>ที่มาของตัวเลข:</b> ไฟล์ <code>data Ads/facebook/daily/FBD_*.csv</code> ${FB.accounts.length} บัญชี → <code>scripts/ads/fb_daily.py</code> → <code>facebook/fb_daily.json</code> (สร้างเมื่อ ${esc(String(FB.generated||'').slice(0,16).replace('T',' '))}) ชุดเดียวกับที่หน้า <b>“การตลาด vs ยอดขาย”</b> ใช้เป็นค่าโฆษณา Facebook รายวัน — ตัวเลข 2 หน้าจึงตรงกันโดยโครงสร้าง</p>
     <p><b>คลิก</b> ไม่มีคอลัมน์นับในรายงาน ถอดจาก CTR(ทั้งหมด) ÷ 100 × อิมเพรสชัน (ตรวจแล้วเป็นจำนวนเต็มพอดีทุกแถว)</p>
     </div></details>`;
-  main.innerHTML=statusChips()+head+kpis+accTable+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  main.innerHTML=statusChips()+head+kpis+accTable+judge+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  /* ตัวกรองทำงานกับแถวที่เรนเดอร์ไว้แล้ว ไม่ต้องคำนวณใหม่ · หัวข้อกลุ่มที่ไม่เหลือแถวให้ซ่อนด้วย */
+  const jFilter=()=>{
+    const btn=document.querySelector('#segJ button.on'), f=btn?(btn.dataset.f||''):'';
+    const ac=document.getElementById('jAcc').value;
+    let shown=0; const live={};
+    document.querySelectorAll('#tJudge tbody tr[data-lab]').forEach(tr=>{
+      const ok=(!f||tr.dataset.lab===f)&&(!ac||tr.dataset.acc===ac);
+      tr.hidden=!ok; if(ok){shown++; live[tr.dataset.grp]=1;}});
+    document.querySelectorAll('#tJudge tbody tr.grp').forEach(tr=>{tr.hidden=!live[tr.dataset.grp];});
+    document.getElementById('jEmpty').hidden=shown>0;
+  };
+  document.querySelectorAll('#segJ button').forEach(b=>{ b.classList.toggle('on',b.dataset.f===''); 
+    b.onclick=()=>{ document.querySelectorAll('#segJ button').forEach(o=>o.classList.remove('on'));
+      b.classList.add('on'); jFilter(); };});
+  document.getElementById('jAcc').onchange=jFilter;
   if(rev) stackChart('fbDay','cFbDay',dates,dSpend,dRev,C.fb,'มูลค่าการซื้อ','ค่าแอด');
   else lineChart('fbDay','cFbDay',dates.map(d=>thD(d)),dSpend,C.fb,baht,'bar');
   /* กราฟรายสัปดาห์อยู่ใน <details> — วาดได้เลย Chart.js จัดการขนาดเมื่อเปิดพับ */
@@ -794,7 +890,7 @@ function renderFb(){
   lineChart('fbCpm','cFbCpm',labels,wk.map(x=>+x.cpm.toFixed(2)),'#1E8E3E',baht2);
   lineChart('fbCtr','cFbCtr',labels,wk.map(x=>+x.ctr.toFixed(3)),'#D97706',pct2);
   lineChart('fbCpc','cFbCpc',labels,wk.map(x=>+x.cpc.toFixed(2)),'#C5221F',baht2);
-  const dt=det&&document.querySelector('details');
+  const all=document.querySelectorAll('details'), dt=all[all.length-1];
   if(dt) dt.addEventListener('toggle',()=>{ ['fbSpend','fbCpm','fbCtr','fbCpc'].forEach(k=>{ if(charts[k]) charts[k].resize(); }); });
 }
 /* สัปดาห์เริ่มวันจันทร์ · อัตราส่วนคิดจากผลรวมของสัปดาห์เสมอ ไม่ใช่เฉลี่ยค่ารายวัน */
