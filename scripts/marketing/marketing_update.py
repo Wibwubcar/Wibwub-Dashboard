@@ -20,7 +20,12 @@
   · Event                         : กรอกมือใน `data Ads/mkt_manual.json`
       ยังไม่มีข้อมูล -> หน้าเว็บขึ้น "รอข้อมูล" และ **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
 
-⚠️ ชีต KOL มีข้อมูลส่วนบุคคล — ไฟล์นี้อ่านแค่ `kol_monthly.json` ซึ่งมีเฉพาะ
+⛔ ชีต KOL มีข้อมูลส่วนบุคคล · หน้าเว็บ 2 หน้าที่สคริปต์นี้เขียน ถูก GitHub Pages
+   เสิร์ฟสาธารณะ (repo เป็น public) -> ห้ามส่งชื่อบัญชี KOL / ชื่อแคมเปญ / แถวรายคน
+   ลงหน้าเว็บเด็ดขาด มีด่านตรวจ payload ก่อนเขียนไฟล์
+   (28 ต.ค. 69: เคยหลุดจริง 335 ชื่อ ค้างบนเน็ต 8 วัน ตั้งแต่ commit d61dce1)
+
+⚠️ ไฟล์นี้อ่านแค่ `kol_monthly.json` ซึ่งมีเฉพาะ
    วันที่ / ยอดเงิน / ชื่อช่อง (handle) / แคมเปญ / สถานะ
    ห้ามดึงชีตตรงจากที่นี่ และห้ามให้ชื่อจริง เลขบัญชี เลขบัตร ที่อยู่ เบอร์โทร หลุดเข้ามา
 
@@ -171,11 +176,20 @@ def main():
                   'generated': fbj.get('generated')}
 
     # ── KOL รายวัน ───────────────────────────────────────────────────────────
-    kol_rows = [r for r in (kol_raw.get('rows') or []) if r.get('d')]
-    kol_day = {}
-    for r in kol_rows:
-        if r['st'] == 'done':
-            kol_day[r['d']] = round(kol_day.get(r['d'], 0.0) + r['amt'], 2)
+    # ⛔ อ่านได้แค่ยอดรวมรายวัน (`days`) ที่ kol_fetch.py สรุปมาแล้ว
+    #    ห้ามกลับไปอ่าน `rows` รายคน และห้ามส่งแถวรายคนลงหน้าเว็บอีก
+    #    (28 ต.ค. 69: เคยส่ง rows ทั้งก้อน -> ชื่อบัญชี KOL 335 ราย + ยอดจ่ายรายคน
+    #     ถูกฝังในหน้าเว็บที่ GitHub Pages เสิร์ฟสาธารณะ ค้างอยู่ 8 วัน)
+    if 'days' not in kol_raw:
+        die('kol_monthly.json ยังเป็นรูปแบบเก่า (ไม่มีคีย์ days) — รัน '
+            'scripts/marketing/kol_fetch.py ก่อน',
+            {'คีย์ที่มี': sorted(kol_raw)[:12]})
+    if 'rows' in kol_raw:
+        die('kol_monthly.json มีคีย์ rows (ข้อมูลรายคน) ซึ่งห้าม commit — '
+            'รัน scripts/marketing/kol_fetch.py ให้เขียนไฟล์ใหม่ก่อน')
+    kol_day = {d: round(float(v), 2) for d, v in (kol_raw.get('days') or {}).items()}
+    kol_tier = kol_raw.get('tier_days') or {}
+    kol_pend = kol_raw.get('days_pending') or {}
 
     # ── ประกอบรายวัน ────────────────────────────────────────────────────────
     # เดิมตรึงไว้ที่ 2026-09-01 เพราะ ads_daily.json เริ่มเดือน ก.ย.
@@ -251,7 +265,7 @@ def main():
            'tiktok': (ads_raw.get('coverage') or {}).get('tiktok'),
            'lazada': (ads_raw.get('coverage') or {}).get('lazada'),
            'shipnity': max((d for d in ship), default=None),
-           'kol': max((r['d'] for r in kol_rows if r['st'] == 'done'), default=None),
+           'kol': max(kol_day, default=None),
            'kol_fetched': kol_raw.get('fetched_at')}
 
     # หมวดที่ยังไม่มีข้อมูลเลยในช่วงนี้ -> หน้าเว็บขึ้น "รอข้อมูล" และไม่นับเป็น 0
@@ -294,8 +308,9 @@ def main():
             die('marketing_rates ต้องมี rates เป็น list ของ {from, rate}', k)
 
     data = {'asof': asof, 'from': dates[0], 'to': dates[-1], 'keys': DAY_KEYS,
-            'days': rows, 'kol': kol_rows, 'cov': cov,
-            'tiers_unmapped': kol_raw.get('tiers_unmapped') or [],
+            'days': rows, 'cov': cov,
+            'kol_tier': kol_tier, 'kol_pend': kol_pend,
+            'tiers_unmapped_n': kol_raw.get('tiers_unmapped_n') or 0,
             'recon': recon,
             'fee_rates': fee_rates, 'fee_labels': fee_cfg.get('labels') or {},
             'mkt_rates': mkt_rates,
@@ -304,7 +319,8 @@ def main():
     tot = {k: round(sum(r[i] for r in rows.values()), 2) for i, k in enumerate(DAY_KEYS)}
     summary = {'asof': asof, 'range': f'{dates[0]} → {dates[-1]}', 'days': len(dates),
                'checks_vs_page': checks, 'totals_whole_range': tot,
-               'kol_rows': len(kol_rows), 'tiers_unmapped': data['tiers_unmapped'],
+               'kol_days': len(kol_day), 'kol_total': round(sum(kol_day.values()), 2),
+               'tiers_unmapped_n': data['tiers_unmapped_n'],
                'manual': man_out, 'still_missing': missing, 'facebook_src': fb_src,
                'manual_file': str(MANUAL.relative_to(BASE)),
                'size_kb': round(len(json.dumps(data, ensure_ascii=False)) / 1024, 1)}
@@ -312,8 +328,13 @@ def main():
     if a.dry_run:
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False, indent=1)); return 0
 
-    block = (START + '\nconst MKT_SPEND = ' +
-             json.dumps(data, ensure_ascii=False, separators=(',', ':')) + ';\n' + END)
+    payload = json.dumps(data, ensure_ascii=False, separators=(',', ':'))
+    # ⛔ ด่านความเป็นส่วนตัว — หน้าเว็บทั้ง 2 หน้าถูก GitHub Pages เสิร์ฟสาธารณะ
+    #    ห้ามมีชื่อบัญชี KOL / ชื่อแคมเปญ / แถวรายคน ติดไปในบล็อกนี้
+    bad = [k for k in ('"kol":[', '"camp"', '"rows"', '"tiers_unmapped":[') if k in payload]
+    if bad:
+        die('บล็อก MKT_SPEND มีข้อมูลรายคนหรือชื่อแคมเปญ — ไม่เขียนหน้าเว็บ', bad)
+    block = START + '\nconst MKT_SPEND = ' + payload + ';\n' + END
     changed = False
     for p, t in pages.items():
         if START not in t or END not in t:

@@ -10,3 +10,9 @@ __pycache__/
 *.bak*
 /HR/
 /downloads_archive/
+
+# ── ข้อมูลส่วนบุคคล — ห้าม commit เด็ดขาด ───────────────────────────────
+# repo นี้เป็น public + GitHub Pages เปิดสาธารณะ ไฟล์ที่ commit = ใครก็อ่านได้
+# 28 ต.ค. 69: kol_monthly.json เคยมีแถวรายคน (ชื่อบัญชี KOL 335 ราย + ยอดจ่าย
+# รายคน) ติดไปใน commit ตั้งแต่ 20 ต.ค. — ย้ายรายละเอียดมาไว้ในไฟล์นี้แทน
+data Ads/kol_rows_private.json
