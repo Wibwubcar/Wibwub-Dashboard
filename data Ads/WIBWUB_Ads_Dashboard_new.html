@@ -1123,7 +1123,7 @@ function renderFb(){
   ].map(kpiTile).join('');
 
   /* ── ตารางแยกบัญชี: 1 แถวต่อ (บัญชี × เป้าหมาย) + แถวรวมของบัญชี ───────── */
-  const rows=[]; let cpasNote=false, noGoalNote=false;
+  const rows=[]; let cpasNote=false, noGoalNote=false, msgNote=false;
   FB.accounts.forEach(acc=>{
     const mine=FB.camps.filter(c=>c.acc===acc.key).map(c=>({c,s:fbCamp(c,st.from,st.to)})).filter(x=>x.s);
     if (!mine.length) return;
@@ -1141,6 +1141,7 @@ function renderFb(){
       const gi=(FB.goals||{})[gk]||{};
       if (gk==='omni') cpasNote=true;
       if (gk==='none') noGoalNote=true;
+      if (gk==='msg') msgNote=true;
       /* ROAS: ไฟล์ให้มาเป็นอัตราส่วนรายวัน ไม่มีมูลค่าการซื้อให้ถ่วงน้ำหนักด้วยค่าโฆษณา
          -> โชว์ได้แค่ค่าเฉลี่ยของแคมเปญที่มีค่า · AD3 (CPAS) ไม่มีคอลัมน์นี้เลย */
       const gr = (g.omni_val||0) + (g.pval||0);
@@ -1179,6 +1180,9 @@ function renderFb(){
 
   const notes=['<b>ความถี่</b> โชว์เฉพาะแถวรวมของบัญชี เพราะ reach บวกข้ามวันไม่ได้ (คนเดิมถูกนับซ้ำ) '+
                'ค่าที่เห็นคือ <b>ความถี่เฉลี่ยรายวัน</b> = Σอิมเพรสชัน ÷ Σreach รายวัน จึงไม่อยู่ในกราฟรายสัปดาห์'];
+  if (msgNote) notes.push('<b>ROAS ของบัญชีที่ยิงเพื่อทักแชท</b> (WibWub AD 1 / AD 1) นับเฉพาะยอดที่ '+
+    'Facebook ตามรอยได้เอง <b>ไม่รวมยอดที่ปิดการขายกันในแชทแล้วไปลงที่ Shipnity</b> '+
+    'ตัวเลขจริงจึงสูงกว่าที่เห็นบนหน้านี้ — ห้ามเอาไปตัดสินว่าแคมเปญทักแชทไม่คุ้ม');
   if (cpasNote) notes.push('<b>AD3 เป็น CPAS</b> — ยอดซื้อเกิดที่ Shopee ไม่ใช่ที่เพจ ห้ามเอาไปเทียบกับยอดช่องทาง Facebook ใน Shipnity');
   notes.push(rev
     ? '<b>ROAS</b> คิดจาก <b>Σมูลค่าการซื้อ ÷ Σค่าโฆษณา</b> ของช่วงที่เลือก (ถ่วงน้ำหนักจริง) '+
