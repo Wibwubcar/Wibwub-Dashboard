@@ -96,8 +96,20 @@ COL = {
     'msg': 'การสนทนาผ่านการส่งข้อความที่เริ่มขึ้น', 'purch': 'การซื้อ',
     'roas': 'ROAS (ผลตอบแทนจากค่าใช้จ่ายในการโฆษณา) ของการซื้อ',
 }
+# คอลัมน์ "มีก็ใช้ ไม่มีก็ไม่พัง" — เพิ่งเพิ่มใน URL ตอน 28 ต.ค. 69 ไฟล์เก่ายังไม่มี
+# · omni_act = จำนวนการซื้อ CPAS · omni_val = มูลค่าการซื้อ CPAS
+# · pval     = มูลค่าการซื้อแบบปกติ (บนเพจ) — AD3 ว่าง แต่บัญชีอื่นน่าจะมี
+# ทดสอบกับ export จริงของ AD3 1-27 ต.ค.: มูลค่า 1,190,237 / ค่าโฆษณา 48,570.98 = 24.51x
+COL_OPT = {
+    'omni_act': 'การซื้อสินค้าที่แชร์',
+    'omni_val': 'ค่าคอนเวอร์ชั่นการซื้อสำหรับรายการที่แชร์เท่านั้น',
+    'pval': 'ค่าคอนเวอร์ชั่นการซื้อ',
+}
+# คอลัมน์ `catalog_segment_value_omni_purchase_roas` ขอมาได้แต่ค่าออกมาว่างเปล่า
+# (หัวคอลัมน์เป็น token ดิบด้วย) -> ROAS ต้องคำนวณเอง = Σมูลค่า ÷ Σค่าโฆษณา
 # ตัวเลขรายวันที่บวกข้ามวัน/ข้ามบัญชีได้ (reach ไม่อยู่ในนี้โดยเจตนา — ดูหัวไฟล์)
-SUM_KEYS = ['spend', 'imp', 'clicks', 'lclicks', 'msg', 'purch', 'omni', 'lead', 'reach_d']
+SUM_KEYS = ['spend', 'imp', 'clicks', 'lclicks', 'msg', 'purch', 'omni', 'lead', 'reach_d',
+            'omni_val', 'pval']
 
 
 def die(msg, detail=None):
@@ -176,6 +188,8 @@ def main():
 
     accounts, camps, acc_days, days = [], {}, {}, {}
     seen_goal = {}          # (acc, campaign) -> ตัวระบุผลลัพธ์ที่ไม่ว่าง
+    cpas_sum = {}           # (acc, campaign) -> จำนวนการซื้อ CPAS รวม (ใช้เดาเป้าหมาย)
+    have_opt = {}           # ชื่อคอลัมน์ทางเลือก -> มีในไฟล์ไหม
     rows_all = []
     not_mine = 0            # แถวที่วันนั้นเป็นของไฟล์อื่น (ช่วงคาบเดือน)
     for fp, key, acct_id, f_from, f_to in files:
@@ -184,6 +198,8 @@ def main():
         if not rows: die('ไฟล์ว่าง', Path(fp).name)
         miss = [c for c in COL.values() if c not in rows[0]]
         if miss: die('ไฟล์ขาดคอลัมน์ที่ต้องใช้', {'file': Path(fp).name, 'missing': miss})
+        for ok, oc in COL_OPT.items():
+            have_opt[ok] = have_opt.get(ok, True) and (oc in rows[0])
         accounts.append({'key': key, 'label': ACC_LABEL.get(key, key),
                          'id': acct_id, 'file': Path(fp).name, 'rows': len(rows)})
         for r in rows:
@@ -198,6 +214,9 @@ def main():
                 not_mine += 1
                 continue
             rows_all.append((key, r))
+            if COL_OPT['omni_act'] in r:
+                k2 = (key, r[COL['camp']])
+                cpas_sum[k2] = cpas_sum.get(k2, 0.0) + num(r[COL_OPT['omni_act']])
             ind = (r[COL['ind']] or '').strip()
             if ind:
                 if ind not in GOALS:
@@ -215,6 +234,12 @@ def main():
         imp = num(r[COL['imp']])
         goal = seen_goal.get((key, r[COL['camp']]), '')
         gk = GOALS[goal][0] if goal else 'none'
+        # แคมเปญ CPAS บางตัว "ตัวระบุผลลัพธ์" ว่างทุกวัน แต่มีการซื้อสินค้าที่แชร์จริง
+        # (28 ต.ค. 69: 3 แคมเปญของ AD3 = 798 การซื้อ / 442,723 บาท ถูกขึ้นเป็น
+        #  "ไม่มีผลลัพธ์ในรายงาน" ทั้งที่มีผลลัพธ์) -> เดาเป้าหมายจากคอลัมน์นี้แทน
+        if gk == 'none' and cpas_sum.get((key, r[COL['camp']]), 0) > 0:
+            gk, goal = 'omni', 'catalog_segment_actions:omni_purchase'
+        oa = num(r[COL_OPT['omni_act']]) if COL_OPT['omni_act'] in r else None
         # คลิกทั้งหมด: ไม่มีคอลัมน์นับ ถอดจาก CTR(ทั้งหมด) (ตรวจแล้วเป็นจำนวนเต็มพอดี)
         clicks = round(num(r[COL['ctr_all']]) / 100 * imp)
         res = num(r[COL['res']])
@@ -222,9 +247,12 @@ def main():
                'lclicks': num(r[COL['lclicks']]), 'msg': num(r[COL['msg']]),
                'purch': num(r[COL['purch']]),
                # ยอดซื้อ CPAS เกิดที่ Shopee ไม่โผล่ในคอลัมน์ "การซื้อ" ต้องแยกเก็บ
-               'omni': res if gk == 'omni' else 0.0,
+               # มีคอลัมน์นับตรง ๆ ก็ใช้เลย แม่นกว่าการอ่าน "ผลลัพธ์" ตามเป้าหมาย
+               'omni': (oa if oa is not None else (res if gk == 'omni' else 0.0)),
                'lead': res if gk == 'lead' else 0.0,
-               'reach_d': num(r[COL['reach']])}
+               'reach_d': num(r[COL['reach']]),
+               'omni_val': num(r[COL_OPT['omni_val']]) if COL_OPT['omni_val'] in r else 0.0,
+               'pval': num(r[COL_OPT['pval']]) if COL_OPT['pval'] in r else 0.0}
         for bucket in (days.setdefault(d, dict.fromkeys(SUM_KEYS, 0.0)),
                        acc_days.setdefault(key, {}).setdefault(d, dict.fromkeys(SUM_KEYS, 0.0))):
             for k in SUM_KEYS: bucket[k] += rec[k]
@@ -233,29 +261,46 @@ def main():
             'goal_label': GOALS[goal][1] if goal else 'ไม่มีผลลัพธ์ในรายงาน',
             'obj': r[COL['obj']], 'deliv': r[COL['deliv']], 'res': 0.0, 'roas_days': [],
             'mo': {}, 'dd': {}, **dict.fromkeys(SUM_KEYS, 0.0)})
-        c['res'] += res
+        # แคมเปญ CPAS ที่ตัวระบุว่าง: "ผลลัพธ์" ก็ว่างตาม -> ใช้จำนวนการซื้อแทน
+        # ⚠️ ต้องใช้ค่าเดียวกันทั้ง c / mo / dd ไม่งั้นยอดรวมของแคมเปญกับยอดที่หน้าเว็บ
+        #    บวกจากรายวันจะไม่ตรงกัน (28 ต.ค. 69: เคยต่างกัน 2,061 vs 1,281)
+        res_eff = oa if (oa is not None and gk == 'omni' and not res) else res
+        c['res'] += res_eff
         c['deliv'] = r[COL['deliv']] or c['deliv']
         for k in SUM_KEYS: c[k] += rec[k]
         # รายเดือน: ตัวเลือกช่วงวันที่ของหน้านี้เลือกเป็น "เดือน" ตารางบัญชี/แคมเปญ
         # จึงต้องมีรายเดือนให้บวก ไม่งั้นพอมีข้อมูลเดือนถัดไปตารางจะโชว์ยอดรวมทุกเดือน
         # ทั้งที่ผู้ใช้เลือกเดือนเดียว (บั๊กแบบเดียวกับที่เคยเจอใน period picker)
         mo = c['mo'].setdefault(d[:7], dict.fromkeys(SUM_KEYS + ['res'], 0.0))
-        mo['res'] += res
+        mo['res'] += res_eff
         for k in SUM_KEYS: mo[k] += rec[k]
         # รายวันของแคมเปญ: หน้า _new เลือกช่วงเป็น "วันที่" ไม่ใช่ "เดือน" ถ้ามีแต่รายเดือน
         # ตารางบัญชี/แคมเปญจะคิดเต็มเดือนทั้งที่ผู้ใช้เลือก 7 วัน แล้วไม่ตรงกับการ์ดด้านบน
         dd = c['dd'].setdefault(d, dict.fromkeys(SUM_KEYS + ['res'], 0.0))
-        dd['res'] += res
+        dd['res'] += res_eff
         for k in SUM_KEYS: dd[k] += rec[k]
         if r[COL['roas']].strip(): c['roas_days'].append(num(r[COL['roas']]))
 
+    both_val = []
     for c in camps.values():
-        # ROAS: FB ส่งมาเป็นอัตราส่วนรายวัน ไม่มีมูลค่าการซื้อให้บวก -> ได้แค่ค่าเฉลี่ยถ่วง
-        # ด้วยค่าโฆษณาไม่ได้ จึงเก็บเป็น "เฉลี่ยของวันที่มีค่า" + จำนวนวัน ให้หน้าเว็บบอกตรง ๆ
-        c['roas'] = round(sum(c['roas_days']) / len(c['roas_days']), 4) if c['roas_days'] else None
+        # ROAS แบบถูกต้อง = Σมูลค่าการซื้อ ÷ Σค่าโฆษณา (ถ่วงน้ำหนักจริง)
+        # ใช้ได้ต่อเมื่อไฟล์มีคอลัมน์มูลค่า ถ้าไม่มีก็ถอยไปใช้ค่าเฉลี่ยรายวันแบบเดิม
+        # ซึ่งถ่วงน้ำหนักไม่ได้ (ค่าเฉลี่ยของอัตราส่วน != อัตราส่วนของผลรวม)
+        rev = round(c['omni_val'] + c['pval'], 2)
+        if c['omni_val'] > 0 and c['pval'] > 0:
+            both_val.append(c['name'])     # ถ้าเจอ อาจนับมูลค่าซ้ำ 2 คอลัมน์ ต้องดูก่อนเชื่อ
+        c['rev'] = rev
+        if rev > 0 and c['spend'] > 0:
+            c['roas'] = round(rev / c['spend'], 4); c['roas_src'] = 'value'
+        elif c['roas_days']:
+            c['roas'] = round(sum(c['roas_days']) / len(c['roas_days']), 4); c['roas_src'] = 'avg'
+        else:
+            c['roas'] = None; c['roas_src'] = None
         c['roas_n'] = len(c['roas_days'])
         del c['roas_days']
         for k in SUM_KEYS + ['res']: c[k] = round(c[k], 2)
+        if c['goal'] == 'none' and c['omni'] > 0:
+            c['goal'] = 'omni'; c['goal_label'] = GOALS['catalog_segment_actions:omni_purchase'][1]
         c['mo'] = {m: [round(v[k], 2) for k in SUM_KEYS + ['res']] for m, v in sorted(c['mo'].items())}
         c['dd'] = {d: [round(v[k], 2) for k in SUM_KEYS + ['res']] for d, v in sorted(c['dd'].items())}
 
@@ -289,6 +334,7 @@ def main():
         'accounts': accounts, 'goals': {v[0]: {'label': v[1], 'res': v[2], 'cpr': v[3]}
                                         for v in GOALS.values()},
         'keys': SUM_KEYS, 'camp_keys': SUM_KEYS + ['res'],
+        'has_value_cols': {k: bool(v) for k, v in have_opt.items()},
         'months': sorted({d[:7] for d in dates}),
         'days': {d: [days[d][k] for k in SUM_KEYS] for d in dates},
         'acc_days': {a: {d: [v[k] for k in SUM_KEYS] for d, v in sorted(dd.items())}
@@ -302,6 +348,11 @@ def main():
                'spend_by_account': {a['label']: round(sum(v['spend'] for v in acc_days[a['key']].values()), 2)
                                     for a in accounts},
                'chats': tot['msg'], 'purchases_onsite': tot['purch'], 'purchases_cpas': tot['omni'],
+               'มูลค่าการซื้อ CPAS': tot['omni_val'], 'มูลค่าการซื้อบนเพจ': tot['pval'],
+               'ROAS ถ่วงน้ำหนัก': (round((tot['omni_val'] + tot['pval']) / tot['spend'], 2)
+                                    if tot['spend'] and (tot['omni_val'] + tot['pval']) else None),
+               'คอลัมน์มูลค่าที่พบ': {k: bool(v) for k, v in have_opt.items()},
+               'แคมเปญที่มีมูลค่าทั้ง 2 คอลัมน์ (เสี่ยงนับซ้ำ)': both_val[:5],
                'leads': tot['lead'], 'campaigns': len(camps),
                'วันที่ขาดช่วง': gap, 'วันที่ไม่มียอดเลย': miss_d,
                'ไฟล์ที่ใช้': [Path(f[0]).name for f in files],

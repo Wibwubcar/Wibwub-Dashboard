@@ -593,7 +593,7 @@ function buildSkeleton(){
     <section class="sec">
       <div class="range-title" data-rt></div>
       <div class="callout" id="fbCov" hidden></div>
-      ${kpiBox('fbKpis','k4')}
+      ${kpiBox('fbKpis')}
     </section>
     <section class="sec" id="fbBody">
       <div class="sec-h"><h2>แยกตามบัญชี</h2><span class="sub">ผลลัพธ์/ต้นทุนอ่านตามเป้าหมายของแคมเปญ (คอลัมน์ “ตัวระบุผลลัพธ์”)</span></div>
@@ -1100,6 +1100,7 @@ function renderFb(){
   const T=fbSum(FB.days, dates, FB.keys);
   const pd = PREV ? fbDays(PREVA, PREVB) : [];
   const Pv = pd.length ? fbSum(FB.days, pd, FB.keys) : null;
+  const rev = (T.omni_val||0) + (T.pval||0);
   const cpm = v => v.imp ? v.spend/v.imp*1000 : NaN;
   const ctr = v => v.imp ? v.clicks/v.imp*100 : NaN;
   const cpc = v => v.clicks ? v.spend/v.clicks : NaN;
@@ -1113,6 +1114,12 @@ function renderFb(){
     { lab:'ยอดซื้อ', val:int(T.purch+T.omni),
       sub:'บนเพจ '+int(T.purch)+' · CPAS ที่ Shopee '+int(T.omni)+(T.lead?' · lead '+int(T.lead):''),
       d:deltaHtml(T.purch+T.omni, Pv&&(Pv.purch+Pv.omni)) },
+    /* ROAS ที่ถูกต้องคือ Σมูลค่าการซื้อ ÷ Σค่าโฆษณา — ไฟล์เก่า (ก่อน 28 ต.ค. 69)
+       ไม่มีคอลัมน์มูลค่า จึงต้องขึ้นว่าไม่มีในไฟล์ ห้ามเอา ROAS รายวันมาเฉลี่ยแทน */
+    { lab:'มูลค่าการซื้อ', val:rev?baht(rev):'<span class="muted">ไม่มีในไฟล์</span>',
+      sub:rev?('ROAS '+x2(div(rev,T.spend))+' · CPAS '+baht(T.omni_val||0)+' · บนเพจ '+baht(T.pval||0))
+             :'ต้อง export ใหม่ให้มีคอลัมน์มูลค่าการซื้อ',
+      d:rev?deltaHtml(rev, Pv&&(Pv.omni_val+Pv.pval)):'' },
   ].map(kpiTile).join('');
 
   /* ── ตารางแยกบัญชี: 1 แถวต่อ (บัญชี × เป้าหมาย) + แถวรวมของบัญชี ───────── */
@@ -1124,7 +1131,9 @@ function renderFb(){
     mine.forEach(({c,s})=>{
       const g=byGoal[c.goal]||(byGoal[c.goal]={label:c.goal_label,roas:[],n:0});
       FB.camp_keys.forEach(k=>g[k]=(g[k]||0)+s[k]);
-      if (c.roas!=null) g.roas.push(c.roas);
+      /* เก็บเฉพาะ ROAS ที่มาจาก "เฉลี่ยรายวัน" ไว้เป็นทางถอย — เอา ROAS ถ่วงน้ำหนัก
+         ของแต่ละแคมเปญมาเฉลี่ยกันไม่ได้ ต้องบวกมูลค่ากับค่าโฆษณาก่อนแล้วค่อยหาร */
+      if (c.roas!=null && c.roas_src!=='value') g.roas.push(c.roas);
       g.n++;
     });
     const gs=Object.entries(byGoal).sort((a,b)=>b[1].spend-a[1].spend);
@@ -1134,8 +1143,10 @@ function renderFb(){
       if (gk==='none') noGoalNote=true;
       /* ROAS: ไฟล์ให้มาเป็นอัตราส่วนรายวัน ไม่มีมูลค่าการซื้อให้ถ่วงน้ำหนักด้วยค่าโฆษณา
          -> โชว์ได้แค่ค่าเฉลี่ยของแคมเปญที่มีค่า · AD3 (CPAS) ไม่มีคอลัมน์นี้เลย */
-      const roas = g.roas.length ? (g.roas.reduce((a,b)=>a+b,0)/g.roas.length).toFixed(2)+'x'
-                                 : '<span class="muted">ไม่มีในไฟล์</span>';
+      const gr = (g.omni_val||0) + (g.pval||0);
+      const roas = gr ? x2(div(gr, g.spend))
+                 : g.roas.length ? (g.roas.reduce((a,b)=>a+b,0)/g.roas.length).toFixed(2)+'x'
+                 : '<span class="muted">ไม่มีในไฟล์</span>';
       rows.push(`<tr><td>${esc(acc.label)}</td>
         <td style="text-align:left">${esc(g.label)}${gk==='none'?'':' <span class="muted">· '+esc(gi.res||'ผลลัพธ์')+'</span>'}</td>
         <td>${baht(g.spend)}</td>
@@ -1150,12 +1161,15 @@ function renderFb(){
     const A=fbAcc(acc.key, st.from, st.to);
     rows.push(`<tr class="accsum"><td>${esc(acc.label)} รวม</td>
       <td style="text-align:left" class="muted">${gs.length} เป้าหมาย · ${mine.length} แคมเปญ</td>
-      <td>${baht2(A.spend)}</td><td></td><td></td><td></td><td>${int(A.imp)}</td>
+      <td>${baht2(A.spend)}</td><td></td><td></td>
+      <td>${((A.omni_val||0)+(A.pval||0)) ? x2(div((A.omni_val||0)+(A.pval||0), A.spend)) : ''}</td>
+      <td>${int(A.imp)}</td>
       <td>${pct2(ctr(A))}</td><td>${A.clicks?baht2(cpc(A)):'–'}</td>
       <td>${A.reach_d?(A.imp/A.reach_d).toFixed(2):'–'}</td></tr>`);
   });
   rows.push(`<tr class="tot"><td>รวมทุกบัญชี</td><td style="text-align:left"></td>
-    <td>${baht2(T.spend)}</td><td></td><td></td><td></td><td>${int(T.imp)}</td>
+    <td>${baht2(T.spend)}</td><td></td><td></td>
+    <td>${rev ? x2(div(rev, T.spend)) : ''}</td><td>${int(T.imp)}</td>
     <td>${pct2(ctr(T))}</td><td>${T.clicks?baht2(cpc(T)):'–'}</td>
     <td>${T.reach_d?(T.imp/T.reach_d).toFixed(2):'–'}</td></tr>`);
   document.getElementById('tFbAcc').innerHTML = `
@@ -1166,10 +1180,15 @@ function renderFb(){
   const notes=['<b>ความถี่</b> โชว์เฉพาะแถวรวมของบัญชี เพราะ reach บวกข้ามวันไม่ได้ (คนเดิมถูกนับซ้ำ) '+
                'ค่าที่เห็นคือ <b>ความถี่เฉลี่ยรายวัน</b> = Σอิมเพรสชัน ÷ Σreach รายวัน จึงไม่อยู่ในกราฟรายสัปดาห์'];
   if (cpasNote) notes.push('<b>AD3 เป็น CPAS</b> — ยอดซื้อเกิดที่ Shopee ไม่ใช่ที่เพจ ห้ามเอาไปเทียบกับยอดช่องทาง Facebook ใน Shipnity');
-  notes.push('<b>ROAS</b> ไฟล์ให้มาเป็นอัตราส่วนรายวันไม่มีมูลค่าการซื้อ จึงถ่วงน้ำหนักด้วยค่าโฆษณาไม่ได้ '+
-             'ค่าที่เห็นคือค่าเฉลี่ยของแคมเปญที่มีค่า · บัญชี CPAS ไม่มีคอลัมน์นี้ในรายงานเลย');
-  if (noGoalNote) notes.push('แคมเปญที่ขึ้น “ไม่มีผลลัพธ์ในรายงาน” คือแคมเปญที่คอลัมน์ “ตัวระบุผลลัพธ์” ว่างทุกวันในช่วงนี้ '+
-             '— มีค่าโฆษณาแต่ไม่มีผลลัพธ์ให้นับ');
+  notes.push(rev
+    ? '<b>ROAS</b> คิดจาก <b>Σมูลค่าการซื้อ ÷ Σค่าโฆษณา</b> ของช่วงที่เลือก (ถ่วงน้ำหนักจริง) '+
+      'มูลค่ามาจากคอลัมน์ “ค่าคอนเวอร์ชั่นการซื้อสำหรับรายการที่แชร์” (CPAS) และ “ค่าคอนเวอร์ชั่นการซื้อ” (บนเพจ) '+
+      '· แคมเปญที่ยังไม่มีมูลค่าในไฟล์จะถอยไปใช้ค่าเฉลี่ย ROAS รายวันแทน'
+    : '<b>ROAS</b> ไฟล์ชุดนี้ยังไม่มีคอลัมน์มูลค่าการซื้อ (เพิ่มใน URL ตอน 28 ต.ค. 69) '+
+      'ค่าที่เห็นจึงเป็นค่าเฉลี่ยของ ROAS รายวันซึ่งถ่วงน้ำหนักไม่ได้ · ต้อง export ใหม่จึงจะได้ตัวเลขที่ถูก');
+  if (noGoalNote) notes.push('แคมเปญที่ขึ้น “ไม่มีผลลัพธ์ในรายงาน” คือแคมเปญที่คอลัมน์ “ตัวระบุผลลัพธ์” ว่างทุกวัน '+
+             '<b>และ</b>ไม่มีการซื้อสินค้าที่แชร์ในไฟล์ — มีค่าโฆษณาแต่ไม่มีผลลัพธ์ให้นับจริง ๆ '+
+             '(แคมเปญ CPAS ที่ตัวระบุว่างแต่มีการซื้อ ถูกนับเป็น “ยอดขาย CPAS” ให้แล้ว)');
   document.getElementById('fbAccNote').innerHTML = notes.map(n=>'• '+n).join('<br>');
   document.getElementById('fbNotes').innerHTML =
     '<b>ที่มาของตัวเลข:</b> ไฟล์ <code>data Ads/facebook/daily/FBD_*.csv</code> '+FB.accounts.length+' บัญชี '+
