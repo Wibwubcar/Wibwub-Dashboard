@@ -3,7 +3,7 @@
 
 ## WIBWUB Ads Dashboard — เติมข้อมูลรายวัน "ยอดขายจริง vs ยอดจาก Ads" + แคมเปญย่อย TikTok GMV Max
 
-หน้าเว็บ `data Ads/WIBWUB_Ads_Dashboard_new.html` อ่านข้อมูลจาก `data Ads/ads_daily.json` (รายวัน — Shopee/TikTok/Lazada), `data Ads/ads_periods.json` (รายเดือน) และ `data Ads/ads_tk_campaigns.json` (แคมเปญย่อย GMV Max) งานนี้ทำให้ไฟล์เหล่านี้ทันสมัยถึง "เมื่อวาน" — ห้ามแก้ HTML
+หน้าเว็บ `data Ads/WIBWUB_Ads_Dashboard_redesign.html` (ตัวที่ WIBWUB_Dashboard.html ฝังจริงตั้งแต่ 28 ต.ค. 69 · ของเดิม `_new` เก็บไว้เป็นทางถอย ห้ามลบ) อ่านข้อมูลจาก `data Ads/ads_daily.json` (รายวัน — Shopee/TikTok/Lazada), `data Ads/ads_periods.json` (รายเดือน) และ `data Ads/ads_tk_campaigns.json` (แคมเปญย่อย GMV Max) งานนี้ทำให้ไฟล์เหล่านี้ทันสมัยถึง "เมื่อวาน" — ห้ามแก้ HTML
 
 ### ขั้น 0 — หาโฟลเดอร์ All (สำคัญ)
 ใน shell ให้หาโฟลเดอร์ All ที่เชื่อมไว้กับงานนี้ ตามลำดับ:

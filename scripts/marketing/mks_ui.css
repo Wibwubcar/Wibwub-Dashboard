@@ -1,112 +1,102 @@
-/* เมนู "การตลาด vs ยอดขาย" — สไตล์เดียวกับ Ads Dashboard
-   ไฟล์นี้ถูกฝังเข้าหน้าเว็บโดย scripts/marketing/marketing_ui.py — อย่าแก้ในหน้า HTML */
-.mks{font-size:13px;color:var(--txt,#0F0F0F)}
+/* เมนู "การตลาด vs ยอดขาย" — ดีไซน์ที่ผู้ใช้อนุมัติ 28 ต.ค. 69
+   ไฟล์นี้ถูกฝังเข้าหน้าเว็บโดย scripts/marketing/marketing_ui.py — อย่าแก้ในหน้า HTML
+   ใช้ตัวแปรสีของหน้าแม่ (--card/--border/--muted) เพื่อให้กลืนกับหน้า Dashboard/Mobile */
+.mks{font-size:13.5px;color:var(--text,#111827);line-height:1.55}
 .mks *{box-sizing:border-box}
+.mks-n{font-variant-numeric:tabular-nums}
 
 /* ── แถบเลือกช่วงวันที่ ─────────────────────────────── */
 .mks-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:14px}
-.mks-pre{display:flex;gap:6px;flex-wrap:wrap}
-.mks-b{padding:6px 13px;border:1px solid var(--border,#e8e8e8);background:var(--card,#fff);
-  border-radius:8px;cursor:pointer;font-size:12.5px;font-weight:600;color:#555;
-  transition:all .15s;white-space:nowrap}
-.mks-b:hover{border-color:#1A5CDB;color:#1A5CDB}
-.mks-b.on{background:#1A5CDB;border-color:#1A5CDB;color:#fff}
-.mks-dates{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap}
-.mks-dates input{padding:5px 8px;border:1px solid var(--border,#e8e8e8);border-radius:7px;
-  font-size:12.5px;font-family:inherit;color:inherit;background:var(--card,#fff)}
-.mks-range{font-size:11.5px;color:var(--muted,#999);width:100%}
-
-/* ── KPI ───────────────────────────────────────────── */
-.mks-kpi{display:grid;grid-template-columns:repeat(4,1fr);gap:11px;margin-bottom:16px}
-.mks-k{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
-  padding:13px 14px;position:relative;overflow:hidden}
-.mks-k::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--kc,#1A5CDB)}
-.mks-kl{font-size:11px;color:var(--muted,#999);font-weight:600;margin-bottom:5px}
-.mks-kv{font-size:20px;font-weight:800;letter-spacing:-.4px;line-height:1.2}
-.mks-ks{font-size:11px;margin-top:4px;color:var(--muted,#999)}
-.mks-up{color:#16a34a;font-weight:700}
-.mks-dn{color:#dc2626;font-weight:700}
+.mks-pre{display:inline-flex;border:1px solid var(--border,#E3E6EB);border-radius:12px;overflow:hidden;background:var(--card,#fff)}
+.mks-b{padding:8px 13px;border:0;background:transparent;cursor:pointer;font-size:13px;
+  font-family:inherit;color:#4B5563;white-space:nowrap}
+.mks-pre .mks-b+.mks-b{border-left:1px solid var(--border,#E3E6EB)}
+.mks-b:hover{color:#2457F5}
+.mks-b.on{background:#2457F5;color:#fff;font-weight:600}
+.mks-dates{display:flex;gap:6px;align-items:center;margin-left:auto;flex-wrap:wrap;
+  background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:12px;padding:4px 9px}
+.mks-dates input{padding:4px 2px;border:0;font-size:12.5px;font-family:inherit;color:inherit;background:transparent}
+.mks-dates .mks-b{padding:4px 10px;font-size:12.5px;font-weight:600;color:#2457F5}
+.mks-range{font-size:12px;color:var(--muted,#6B7280);width:100%}
 
 /* ── การ์ด ─────────────────────────────────────────── */
-.mks-card{background:var(--card,#fff);border:1px solid var(--border,#e8e8e8);border-radius:10px;
-  padding:14px 15px;margin-bottom:14px}
-.mks-t{font-size:13px;font-weight:700;margin-bottom:11px;display:flex;align-items:center;
-  gap:8px;flex-wrap:wrap}
-.mks-t small{font-weight:500;color:var(--muted,#999);font-size:11px}
+.mks-card{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;
+  padding:18px;margin-bottom:14px}
+.mks-h2{font-size:15px;font-weight:700;margin-bottom:12px}
+.mks-h2 small{font-weight:500;color:var(--muted,#6B7280);font-size:12px;margin-left:7px}
 
-/* ── แท่งแนวนอน: สัดส่วนค่าการตลาด ────────────────── */
-.mks-h{display:flex;align-items:center;gap:9px;margin-bottom:8px;font-size:12px}
-.mks-hn{width:112px;flex:0 0 112px;font-weight:600;display:flex;align-items:center;gap:6px}
-.mks-hn i{width:9px;height:9px;border-radius:2px;flex:0 0 9px}
-.mks-ht{flex:1;background:rgba(0,0,0,.045);border-radius:5px;height:17px;position:relative;min-width:40px}
-.mks-hf{height:100%;border-radius:5px;min-width:2px}
-.mks-hv{width:118px;flex:0 0 118px;text-align:right;font-variant-numeric:tabular-nums}
-.mks-hp{width:52px;flex:0 0 52px;text-align:right;color:var(--muted,#999);font-variant-numeric:tabular-nums}
-.mks-hd{width:62px;flex:0 0 62px;text-align:right;font-size:11px}
-.mks-pie{display:flex;gap:16px;align-items:flex-start}
-.mks-donut{flex:0 0 168px;color:var(--txt,#0F0F0F)}
-.mks-bars{flex:1;min-width:0;padding-top:4px}
-.mks-two{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}
-.mks-two>.mks-card{margin-bottom:0}
-/* ในเลย์เอาต์ 2 คอลัมน์ การ์ดแคบ -> วางโดนัทไว้บน ให้แท่งได้ความกว้างเต็มใบ
-   ไม่งั้นช่องยอดเงิน/%/▲▼ เบียดจนแท่งเหลือไม่กี่พิกเซล */
-.mks-two .mks-pie{flex-direction:column;align-items:center;gap:12px}
-.mks-two .mks-bars{width:100%;padding-top:0}
-.mks-sub{font-size:10.5px;color:var(--muted,#999);margin:-4px 0 10px 121px}
-.mks-wait{color:#b45309;font-style:italic;font-weight:600}
+/* ── ขายได้ 100 บาท เงินไปไหน ───────────────────────── */
+.mks-line{font-size:18px;font-weight:600;line-height:1.5}
+.mks-line b{font-weight:700}
+.mks-stack{display:flex;height:44px;border-radius:10px;overflow:hidden;margin-top:15px;background:#EDF0F4}
+.mks-stack span{display:block}
+.mks-slegs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-top:12px}
+.mks-sl .t{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#4B5563}
+.mks-sl .t i{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.mks-sl .v{font-size:16px;font-weight:700;margin-top:2px}
+.mks-sl .p{font-size:12px;color:var(--muted,#6B7280)}
+.mks-warn{background:#FFF6ED;border:1px solid #F3C99A;color:#B54708;border-radius:10px;
+  padding:9px 12px;font-size:12.5px;margin-top:12px}
 
-/* ── กราฟแนวโน้มรายวัน ────────────────────────────── */
-.mks-chart{width:100%;overflow-x:auto}
-.mks-chart svg{display:block}
-.mks-leg{display:flex;flex-wrap:wrap;gap:13px;font-size:11px;color:var(--muted,#999);margin-top:9px}
-.mks-leg span{display:flex;align-items:center;gap:5px}
-.mks-leg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+/* ── KPI ───────────────────────────────────────────── */
+.mks-kpi{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+.mks-k{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;padding:16px 17px}
+.mks-kl{font-size:12.5px;color:#4B5563;font-weight:500}
+.mks-kv{font-size:25px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1.2}
+.mks-ks{font-size:12.5px;color:var(--muted,#6B7280);margin-top:1px}
+.mks-up{color:#0F7B4F;font-weight:600}
+.mks-dn{color:#B42318;font-weight:600}
+.mks-fl{color:var(--muted,#6B7280)}
 
-/* ── ตาราง ─────────────────────────────────────────── */
+/* ── 2 กล่องเคียงกัน + แถวแถบแนวนอน ─────────────────── */
+.mks-two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.mks-two .mks-card{margin-bottom:0}
+.mks-rows{display:flex;flex-direction:column;gap:11px}
+.mks-row{display:grid;grid-template-columns:minmax(94px,1.1fr) minmax(0,2fr) auto auto;gap:10px;
+  align-items:center;font-size:13px}
+.mks-nm{display:flex;align-items:center;gap:7px;color:#4B5563}
+.mks-nm i{width:9px;height:9px;border-radius:3px;flex:0 0 9px}
+.mks-tr{height:9px;border-radius:5px;background:#EDF0F4;overflow:hidden}
+.mks-tr span{display:block;height:100%}
+.mks-rv{font-weight:600;min-width:74px;text-align:right}
+.mks-rd{min-width:62px;text-align:right;font-size:12px}
+.mks-sub{font-size:12px;color:var(--muted,#6B7280);margin-top:11px}
+
+/* ── กราฟแนวโน้มรายวัน (SVG — ไม่พึ่ง Chart.js เพราะหน้า Mobile ไม่ได้โหลด) ── */
+.mks-chart{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-top:4px}
+.mks-leg{display:flex;flex-wrap:wrap;gap:13px;margin-top:9px;font-size:12px;color:var(--muted,#6B7280)}
+.mks-leg span{display:flex;align-items:center;gap:6px}
+.mks-leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
+
+/* ── ส่วนพับ ───────────────────────────────────────── */
+.mks-det{background:var(--card,#fff);border:1px solid var(--border,#E3E6EB);border-radius:16px;
+  padding:14px 18px;margin-bottom:14px}
+.mks-det>summary{cursor:pointer;font-weight:600;font-size:13.5px}
+.mks-body{margin-top:12px;font-size:13px;color:#4B5563}
+.mks-body p{margin:0 0 9px}
+.mks-body b{color:var(--text,#111827)}
+.mks-tb{width:100%;border-collapse:collapse;font-size:13px}
+.mks-tb th{text-align:right;font-weight:600;color:#4B5563;font-size:12px;padding:7px 8px;
+  border-bottom:1px solid var(--border,#E3E6EB);white-space:nowrap}
+.mks-tb td{text-align:right;padding:9px 8px;border-bottom:1px solid #F1F3F6}
+.mks-tb th:first-child,.mks-tb td:first-child{text-align:left}
+.mks-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.mks-chip{display:inline-flex;align-items:center;gap:6px;background:#F7F9FC;
+  border:1px solid var(--border,#E3E6EB);border-radius:999px;padding:4px 10px;font-size:12px;color:#4B5563}
 .mks-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
-.mks-tb{width:100%;border-collapse:collapse;font-size:12px;white-space:nowrap}
-.mks-tb th,.mks-tb td{padding:7px 10px;border-bottom:1px solid var(--border,#e8e8e8);text-align:right}
-.mks-tb th{font-size:10.5px;color:var(--muted,#999);font-weight:700;background:rgba(0,0,0,.02)}
-.mks-tb th:first-child,.mks-tb td:first-child,
-.mks-tb th:nth-child(2),.mks-tb td:nth-child(2){text-align:left}
-.mks-tb tr:last-child td{border-bottom:none}
-.mks-tb td{font-variant-numeric:tabular-nums}
-.mks-pill{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10.5px;font-weight:700}
-.mks-paid{background:#dcfce7;color:#15803d}
-.mks-pend{background:#fef3c7;color:#b45309}
-.mks-tier{display:inline-block;padding:2px 8px;border-radius:5px;font-size:10.5px;
-  background:rgba(139,92,246,.12);color:#6d28d9;font-weight:600}
-.mks-tier.na{background:rgba(0,0,0,.05);color:var(--muted,#999);font-weight:500}
+.mks-empty{color:var(--muted,#6B7280);padding:14px 0}
 
-/* ── ป้ายวันที่ข้อมูล + หมายเหตุ ───────────────────── */
-.mks-badges{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
-.mks-bd{font-size:10.5px;padding:3px 9px;border-radius:20px;background:rgba(0,0,0,.04);
-  color:var(--muted,#999);white-space:nowrap}
-.mks-bd b{color:#444;font-weight:700}
-.mks-bd.warn{background:#fef3c7;color:#b45309}
-.mks-bd.warn b{color:#92400e}
-.mks-note{font-size:11.5px;color:var(--muted,#999);line-height:1.85}
-.mks-note b{color:#b45309}
-.mks-empty{padding:26px;text-align:center;color:var(--muted,#999);font-size:12.5px}
-
-/* ── Mobile ────────────────────────────────────────── */
-@media(max-width:700px){
-  .mks-kpi{grid-template-columns:1fr 1fr;gap:8px}
-  .mks-k{padding:11px}
-  .mks-kv{font-size:17px}
-  .mks-dates{margin-left:0;width:100%}
-  .mks-dates input{flex:1;min-width:0}
-  .mks-hn{width:78px;flex:0 0 78px;font-size:11px}
-  .mks-hv{width:92px;flex:0 0 92px;font-size:11px}
-  .mks-hp{width:44px;flex:0 0 44px;font-size:11px}
-  .mks-card{padding:12px}
-  .mks-two{grid-template-columns:1fr;gap:0}
-  .mks-two>.mks-card{margin-bottom:12px}
-  .mks-hd{width:52px;flex:0 0 52px;font-size:10px}
-  .mks-sub{margin-left:87px}
-  .mks-pie{flex-direction:column;align-items:center;gap:10px}
-  .mks-donut{flex:0 0 auto;width:150px;height:150px}
-  .mks-bars{width:100%;padding-top:0}
+@media(max-width:900px){
+  .mks-kpi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mks-two{grid-template-columns:minmax(0,1fr)}
+  .mks-two .mks-card{margin-bottom:0}
+  .mks-slegs{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .mks-line{font-size:16px}
 }
-
-@media(max-width:1000px) and (min-width:701px){ .mks-two{grid-template-columns:1fr} .mks-two>.mks-card{margin-bottom:14px} }
+@media(max-width:560px){
+  .mks-kpi,.mks-slegs{grid-template-columns:minmax(0,1fr)}
+  .mks-card,.mks-det{padding:14px}
+  .mks-row{grid-template-columns:minmax(76px,1fr) minmax(0,1.3fr) auto}
+  .mks-rd{display:none}
+  .mks-dates{margin-left:0}
+}
