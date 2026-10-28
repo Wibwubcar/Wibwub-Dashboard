@@ -32,6 +32,21 @@
   · CPM/CTR/CPC รายสัปดาห์ให้หน้าเว็บคิดจากผลรวมของสัปดาห์ ไม่ใช่เฉลี่ยค่ารายวัน
     (ค่าเฉลี่ยของอัตราส่วนไม่เท่ากับอัตราส่วนของผลรวม)
 
+กติกาไฟล์ใน data Ads/facebook/daily/ (28 ต.ค. 69):
+  · ชื่อ `FBD_<บัญชี>_<id>_<from>_<to>.csv` · **1 บัญชี x 1 เดือน = 1 ไฟล์**
+    (เดือน = เดือนของ `from`) ถ้ามีหลายใบของคู่เดียวกัน ใช้ใบที่ `to` ใหม่สุด
+  · ก่อนหน้านี้อ่าน glob ทุกไฟล์แล้วบวกรวมกันหมด -> พอมีไฟล์ของบัญชีเดิม 2 ใบ
+    (เช่น 01-26 กับ 01-29) ค่าโฆษณา 1-26 ถูกนับ 2 รอบ **และด่านเดิมจับไม่ได้**
+    เพราะทั้ง days และ acc_days โตเท่ากัน ผลรวมจึงยังตรงกันเอง
+  · ไฟล์คาบเดือน (เช่น 10-01_11-01 ที่ดึงวันที่ 1 พ.ย. เพื่อปิดยอดเดือน ต.ค.)
+    ซ้อนกับไฟล์ของเดือนใหม่ -> **ตัดสินเป็น "รายวัน" ว่าวันนั้นเอาจากไฟล์ไหน**
+    (เดือนของ `from` ตรงกับเดือนของวันนั้นก่อน แล้วค่อยดู `to` ใหม่สุด)
+    แล้วเอา **ทุกแถว** ของวันนั้นจากไฟล์ที่เลือก
+    ⚠️ ห้าม dedupe ระดับแถวด้วย (แคมเปญ, วัน) — ไฟล์จริงมีหลายแถวต่อแคมเปญต่อวัน
+    (คนละชุดโฆษณา) เคยลองแล้วค่าโฆษณาหายไป 70,562 บาทจาก 292,512 โดยไม่มี error
+  · ทุกบัญชีในเดือนเดียวกันต้องมี `to` ตรงกัน ไม่งั้นแปลว่าบัญชีใดบัญชีหนึ่ง
+    โหลดไม่สำเร็จ แล้ววันท้าย ๆ จะขาดบัญชีนั้นแบบเงียบ ๆ -> หยุดทันที
+
 ใช้:  python3 scripts/ads/fb_daily.py [--dry-run]
 exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน · 2 = ไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
 """
@@ -97,21 +112,73 @@ def num(x):
     except ValueError: die('คอลัมน์ตัวเลขอ่านไม่ได้', s)
 
 
+FNAME = re.compile(r'^FBD_(.+?)_(\d+)_(\d{4}-\d{2}-\d{2})_(\d{4}-\d{2}-\d{2})(?:__.*)?$')
+
+
+def _days_between(a, b):
+    out, cur = [], datetime.strptime(a, '%Y-%m-%d').date()
+    last = datetime.strptime(b, '%Y-%m-%d').date()
+    while cur <= last:
+        out.append(cur.isoformat()); cur += timedelta(days=1)
+    return out
+
+
+def pick_files():
+    """([(path, บัญชี, id, from, to)], [ไฟล์ที่ข้าม], {(บัญชี, วัน): path ที่เป็นเจ้าของวันนั้น})
+
+    `__<stamp>` ท้ายชื่อมาจาก download-mover ตอนกันชื่อซ้ำ ไม่ใช่ส่วนของช่วงวันที่
+    """
+    best, skipped = {}, []
+    for fp in sorted(glob.glob(str(SRC / 'FBD_*.csv'))):
+        m = FNAME.match(Path(fp).stem)
+        if not m:
+            die('ชื่อไฟล์ไม่ตรงแพทเทิร์น FBD_<บัญชี>_<id>_<from>_<to>.csv', Path(fp).name)
+        key, acct_id, f_from, f_to = m.groups()
+        if f_from > f_to:
+            die('ช่วงวันที่ในชื่อไฟล์กลับหัว', Path(fp).name)
+        gk = (key, f_from[:7])          # 1 บัญชี x 1 เดือน = 1 ไฟล์
+        cur, score = best.get(gk), (f_to, Path(fp).stat().st_mtime)
+        if cur is None or score > cur[0]:
+            if cur: skipped.append(Path(cur[1]).name)
+            best[gk] = (score, fp, key, acct_id, f_from, f_to)
+        else:
+            skipped.append(Path(fp).name)
+    if not best:
+        die('ไม่พบไฟล์ FBD_*.csv', str(SRC))
+
+    # ด่าน: เดือนเดียวกัน ทุกบัญชีต้องมี to ตรงกัน
+    by_mo = {}
+    for (key, mo), v in best.items():
+        by_mo.setdefault(mo, {})[key] = v[5]
+    for mo, accs in sorted(by_mo.items()):
+        if len(set(accs.values())) > 1:
+            die('เดือนเดียวกันแต่ช่วงวันที่ของแต่ละบัญชีไม่ตรงกัน — น่าจะมีบัญชีที่โหลดไม่สำเร็จ '
+                'ให้โหลดบัญชีที่ค้างให้ครบก่อน (ถ้าปล่อยไว้ วันท้าย ๆ จะขาดบัญชีนั้นแบบเงียบ ๆ)',
+                {'เดือน': mo, 'to ของแต่ละบัญชี': accs})
+
+    # เจ้าของรายวัน: ไฟล์ที่เดือนของ from ตรงกับเดือนของวันนั้นก่อน แล้วค่อย to ใหม่สุด
+    owner, oscore = {}, {}
+    for _, fp, key, _, f_from, f_to in best.values():
+        for d in _days_between(f_from, f_to):
+            s = (1 if f_from[:7] == d[:7] else 0, f_to)
+            if (key, d) not in oscore or s > oscore[(key, d)]:
+                oscore[(key, d)] = s; owner[(key, d)] = fp
+    out = [(v[1], v[2], v[3], v[4], v[5]) for v in sorted(best.values(), key=lambda v: (v[4], v[2]))]
+    return out, sorted(skipped), owner
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
 
-    files = sorted(glob.glob(str(SRC / 'FBD_*.csv')))
-    if not files: die('ไม่พบไฟล์ FBD_*.csv', str(SRC))
+    files, skipped, owner = pick_files()
 
     accounts, camps, acc_days, days = [], {}, {}, {}
     seen_goal = {}          # (acc, campaign) -> ตัวระบุผลลัพธ์ที่ไม่ว่าง
     rows_all = []
-    for fp in files:
-        parts = Path(fp).stem.split('_')
-        if len(parts) < 3: die('ชื่อไฟล์ไม่ตรงแพทเทิร์น FBD_<บัญชี>_<id>_<from>_<to>.csv', Path(fp).name)
-        key, acct_id = parts[1], parts[2]
+    not_mine = 0            # แถวที่วันนั้นเป็นของไฟล์อื่น (ช่วงคาบเดือน)
+    for fp, key, acct_id, f_from, f_to in files:
         with open(fp, encoding='utf-8-sig', newline='') as fh:
             rows = list(csv.DictReader(fh))
         if not rows: die('ไฟล์ว่าง', Path(fp).name)
@@ -120,6 +187,16 @@ def main():
         accounts.append({'key': key, 'label': ACC_LABEL.get(key, key),
                          'id': acct_id, 'file': Path(fp).name, 'rows': len(rows)})
         for r in rows:
+            d = (r[COL['d']] or '').strip()
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
+                die('วันที่ในคอลัมน์ "เริ่มการรายงาน" ผิดรูปแบบ', {'file': Path(fp).name, 'd': d})
+            if not (f_from <= d <= f_to):
+                die('ไฟล์มีแถวที่อยู่นอกช่วงวันที่ในชื่อไฟล์ — ชื่อไฟล์กับข้อมูลไม่ตรงกัน',
+                    {'file': Path(fp).name, 'row_date': d})
+            # วันนี้เป็นของไฟล์อื่น (ช่วงที่ 2 ไฟล์คาบกัน) -> ข้ามทั้งแถว ห้ามบวกซ้ำ
+            if owner.get((key, d)) != fp:
+                not_mine += 1
+                continue
             rows_all.append((key, r))
             ind = (r[COL['ind']] or '').strip()
             if ind:
@@ -135,8 +212,6 @@ def main():
     # ── ประกอบรายวัน + รายแคมเปญ ────────────────────────────────────────────
     for key, r in rows_all:
         d = (r[COL['d']] or '').strip()
-        if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
-            die('วันที่ในคอลัมน์ "เริ่มการรายงาน" ผิดรูปแบบ', d)
         imp = num(r[COL['imp']])
         goal = seen_goal.get((key, r[COL['camp']]), '')
         gk = GOALS[goal][0] if goal else 'none'
@@ -229,6 +304,9 @@ def main():
                'chats': tot['msg'], 'purchases_onsite': tot['purch'], 'purchases_cpas': tot['omni'],
                'leads': tot['lead'], 'campaigns': len(camps),
                'วันที่ขาดช่วง': gap, 'วันที่ไม่มียอดเลย': miss_d,
+               'ไฟล์ที่ใช้': [Path(f[0]).name for f in files],
+               'ไฟล์ที่ข้าม (ใบเก่าของบัญชี x เดือนเดียวกัน)': skipped,
+               'แถวที่ข้ามเพราะวันนั้นเป็นของไฟล์อื่น': not_mine,
                'size_kb': round(len(json.dumps(data, ensure_ascii=False)) / 1024, 1)}
 
     if a.dry_run:
