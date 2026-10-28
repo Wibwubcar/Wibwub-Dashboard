@@ -2,7 +2,7 @@
  "source": "Payment KOL Wibwub (ยอดรวมเท่านั้น — ไม่มีแถวรายคน ไม่มีชื่อบัญชี KOL ไม่มีชื่อแคมเปญ)",
  "privacy": "รายละเอียดรายแถวอยู่ที่ data Ads/kol_rows_private.json ซึ่ง .gitignore ไว้ — ห้าม commit และห้ามส่งขึ้นหน้าเว็บ",
  "rule": "Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย",
- "fetched_at": "2026-10-28 20:48",
+ "fetched_at": "2026-10-28 22:53",
  "months": {
   "2025-01": {
    "amount": 26000.0,
