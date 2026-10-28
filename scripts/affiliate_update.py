@@ -53,6 +53,128 @@ def arr(path, name):
     except ValueError: return None
 
 
+# ── PRODUCTS[].vid — จำนวนวิดีโอขายสินค้าจากครีเอเตอร์ ────────────────────────
+# ที่มา: คอลัมน์ "วิดีโอ" ของ Transaction_Analysis_Product_List_<ช่วง>.xlsx
+# จับคู่ด้วย "รหัสสินค้า" (ฟิลด์ id ใน PRODUCTS) ไม่ใช่ชื่อ — ชื่อในไฟล์เป็นชื่อไทย
+# คนละชุดกับชื่อบนหน้า (เช่น id 1729451577908759108 = "เคลือบสีคาร์นัวบา" = WIBWUB Sugar)
+#
+# 28 ต.ค. 69: ก่อนมีสคริปต์นี้ vid ถูกใส่ด้วยมือ และ 2 ตัวสร้างกลับจากไฟล์ไม่ได้เลย
+# (Leather Wipes 670 แต่ไฟล์ให้ 644 · Interior 173 แต่ไฟล์ให้ 172 — ไล่ทั้ง 131 ไฟล์
+# ก็ไม่มีไฟล์ไหนให้ 670/173) ผู้ใช้ยืนยันว่า 1 รหัส = 1 สินค้า ไม่มีการรวมกลุ่ม
+# -> ยึดคอลัมน์ "วิดีโอ" ของรหัสเดียวเท่านั้น ห้ามบวกหลายรหัสเข้าด้วยกัน
+PROD_DIR = BASE / 'Data Affiliate' / 'สินค้า'
+PL_RE = re.compile(r'^Transaction_Analysis_Product_List_(\d{8})-(\d{8})')
+VID_HDR, ID_HDR = 'วิดีโอ', 'รหัสสินค้า'
+
+
+def pick_product_list():
+    """ไฟล์ Product_List ของช่วงล่าสุด — เรียงตาม (วันสิ้นสุด, วันเริ่ม, mtime)
+
+    ต้อง match ตั้งแต่ต้นชื่อ: โฟลเดอร์มีไฟล์ `_WRONG_RANGE_ignore_...` ปนอยู่
+    และมีไฟล์ซ้ำทั้งแบบ ` (1)` และแบบ `__<stamp>` ที่ mover เติมกันชื่อชน
+    """
+    best = None
+    for fp in PROD_DIR.glob('Transaction_Analysis_Product_List_*.xlsx'):
+        if fp.name.startswith(('~', '.')):
+            continue
+        m = PL_RE.match(fp.name)
+        if not m:
+            continue
+        key = (m.group(2), m.group(1), fp.stat().st_mtime)
+        if best is None or key > best[0]:
+            best = (key, fp, m.group(1), m.group(2))
+    return best
+
+
+def read_vid_map(fp):
+    """{รหัสสินค้า: จำนวนวิดีโอ} จาก sheet1.xml
+
+    openpyxl อ่านไฟล์ export ชุดนี้ได้ 1 คอลัมน์ 0 แถว (dimension ในไฟล์ผิด)
+    จึงต้องแกะ xml เองแบบเดียวกับ scripts/vid_merge.py · ค่าเป็น inline string
+    (<is><t>) ไม่มี sharedStrings · แถว 1 = header, แถว 2 = คำอธิบายคอลัมน์ (ไม่ใช่ข้อมูล)
+    """
+    import zipfile
+    with zipfile.ZipFile(fp) as zf:
+        xml = zf.open('xl/worksheets/sheet1.xml').read().decode('utf-8', 'replace')
+    row_re = re.compile(r'<row r="(\d+)"[^>]*>(.*?)</row>', re.DOTALL)
+    cell_re = re.compile(r'<c r="([A-Z]+)(\d+)"[^>]*>(?:<is><t[^>]*>(.*?)</t></is>|<v>(.*?)</v>)?</c>')
+    rows = {}
+    for rn, body in row_re.findall(xml):
+        cells = {}
+        for col, _, s, v in cell_re.findall(body):
+            cells[col] = (s if s else v) or ''
+        rows[int(rn)] = cells
+    if not rows:
+        die('อ่าน Product_List ไม่ได้ (ไม่มีแถวเลย)', fp.name)
+    hdr = rows.get(1) or {}
+    cols = {}
+    for col, val in hdr.items():
+        v = val.strip()
+        if v in (VID_HDR, ID_HDR) and v not in cols:
+            cols[v] = col
+    miss = [h for h in (VID_HDR, ID_HDR) if h not in cols]
+    if miss:
+        die('Product_List ไม่มีคอลัมน์ที่ต้องใช้ — รูปแบบไฟล์เปลี่ยน',
+            {'ขาด': miss, 'ไฟล์': fp.name, 'header': sorted(hdr.values())})
+    out = {}
+    for rn in sorted(rows):
+        if rn <= 2:                      # 1 = header · 2 = คำอธิบาย
+            continue
+        c = rows[rn]
+        pid = (c.get(cols[ID_HDR]) or '').strip()
+        raw = (c.get(cols[VID_HDR]) or '').strip().replace(',', '')
+        if not pid:
+            continue
+        if not re.fullmatch(r'\d+(\.0+)?', raw):
+            continue                     # ช่องว่าง/ค่าไม่ใช่ตัวเลข = ไม่นับ ห้ามเดาเป็น 0
+        out.setdefault(pid, int(float(raw)))
+    return out
+
+
+def write_vid(dry):
+    """เขียน vid ของทุกรายการใน PRODUCTS — ไม่ครบ = หยุด ไม่เขียนทับบางส่วน"""
+    best = pick_product_list()
+    if not best:
+        die('ไม่พบไฟล์ Transaction_Analysis_Product_List_<YYYYMMDD>-<YYYYMMDD>.xlsx',
+            str(PROD_DIR))
+    _, fp, d0, d1 = best
+    vmap = read_vid_map(fp)
+    t = AFF.read_text(encoding='utf-8')
+    m = re.search(r'const PRODUCTS = \[\n(.*?\n)\];', t, re.DOTALL)
+    if not m:
+        die('หา const PRODUCTS ใน Affiliate Dashboard ไม่เจอ')
+    block = m.group(1)
+    rows = [ln for ln in block.split('\n') if ln.strip().startswith('{')]
+    noid, nofile, changes = [], [], []
+    new = block
+    for ln in rows:
+        nm = re.search(r"name:'([^']*)'", ln)
+        pid = re.search(r"id:'(\d+)'", ln)
+        vid = re.search(r"vid:(\d+)", ln)
+        name = nm.group(1) if nm else '(ไม่มี name)'
+        if not pid:
+            noid.append(name); continue
+        if pid.group(1) not in vmap:
+            nofile.append({'name': name, 'id': pid.group(1)}); continue
+        if not vid:
+            noid.append(name + ' (ไม่มีช่อง vid)'); continue
+        want = vmap[pid.group(1)]
+        if int(vid.group(1)) != want:
+            changes.append({'name': name, 'จาก': int(vid.group(1)), 'เป็น': want})
+            new = new.replace(ln, ln[:vid.start()] + f'vid:{want}' + ln[vid.end():], 1)
+    # ── ด่าน: ขาดรหัส หรือหารหัสในไฟล์ไม่เจอ = หยุด ห้ามเขียน 0 ──────────────
+    if noid or nofile:
+        die('มีรายการใน PRODUCTS ที่จับคู่รหัสสินค้าไม่ได้ — ไม่เขียน vid เลย '
+            '(ห้ามเขียน 0 แทน) ให้เติม id ใน PRODUCTS หรือหาไฟล์ที่มีรหัสนั้น',
+            {'ไม่มี id บนหน้า': noid, 'หารหัสในไฟล์ไม่เจอ': nofile,
+             'ไฟล์': fp.name, 'รหัสในไฟล์': len(vmap)})
+    info = {'file': fp.name, 'range': f'{d0}-{d1}', 'products': len(rows),
+            'ids_in_file': len(vmap), 'changes': changes}
+    if changes and not dry:
+        AFF.write_text(t[:m.start(1)] + new + t[m.end(1):], encoding='utf-8')
+    return info
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
@@ -107,6 +229,8 @@ def main():
                'creators': len(aff.get('CREATORS') or []),
                'creator_months': len(aff.get('CREATOR_MONTHS') or [])}
 
+    summary['vid'] = write_vid(a.dry_run)
+
     if a.dry_run:
         summary['current_page'] = {k: (before[k][-1] if before.get(k) else None) for k in ('AF_GMV', 'AF_CR')}
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False)); return 0
@@ -123,7 +247,7 @@ def main():
             mism.append(f'{A}[-{n}:] != {B}[-{n}:] (ล่าสุด {x[-1]} vs {y[-1]})')
     summary['mobile_mismatch'] = mism
     after = {k: arr(AFF, k) for k in before}
-    changed = after != before
+    changed = after != before or bool(summary['vid']['changes'])
     if changed: W.bump_sw()
     print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary}, ensure_ascii=False))
     return 0 if changed else 10
