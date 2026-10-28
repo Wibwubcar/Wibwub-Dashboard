@@ -24,7 +24,7 @@
           --from 2026-10-01 --to 2026-10-28 --after "2026-10-29 08:20:00" [--dry-run]
 exit: 0 = ย้ายแล้ว · 2 = ไม่ผ่านด่านตรวจ (ไม่ย้ายอะไร)
 """
-import sys, csv, json, re, argparse, shutil
+import sys, csv, json, re, argparse, shutil, hashlib, time
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -33,11 +33,57 @@ from fb_daily import BASE, SRC, COL, ACC_LABEL          # noqa: E402  ใช้�
 
 DL = Path.home() / 'Downloads'
 DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
+# สมุดจดไฟล์ที่ถูกใช้ไปแล้ว — กันหยิบใบเดิมซ้ำให้บัญชีถัดไปในรอบเดียวกัน
+# (28 ต.ค. 69: ไฟล์ AD3 ถูกหยิบไปเป็นของ AD-4 เพราะตอนนั้น AD-4 ยังโหลดไม่เสร็จ
+#  และลบต้นทางใน Downloads ไม่ได้ ไฟล์เดิมจึงยังอยู่ให้หยิบซ้ำ)
+LEDGER = BASE / 'scripts' / 'ads' / 'work' / 'fb_used.json'
 
 
 def die(msg, detail=None):
     print(json.dumps({'status': 'ERROR', 'error': msg, 'detail': detail}, ensure_ascii=False))
     sys.exit(2)
+
+
+def sha(fp):
+    h = hashlib.sha256()
+    with open(fp, 'rb') as fh:
+        for chunk in iter(lambda: fh.read(1 << 20), b''):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def ledger_load():
+    """{sha: {acc, at}} เฉพาะของวันนี้ — ของเก่ากว่านั้นทิ้ง"""
+    try:
+        d = json.loads(LEDGER.read_text(encoding='utf-8'))
+    except Exception:
+        return {}
+    today = datetime.now().strftime('%Y-%m-%d')
+    return {k: v for k, v in d.items() if str(v.get('at', ''))[:10] == today}
+
+
+def ledger_add(used, digest, acc, name):
+    used[digest] = {'acc': acc, 'file': name, 'at': datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+    try:
+        LEDGER.parent.mkdir(parents=True, exist_ok=True)
+        LEDGER.write_text(json.dumps(used, ensure_ascii=False, indent=1), encoding='utf-8')
+    except Exception:
+        pass        # จดไม่ได้ก็ไม่ควรทำให้งานล้ม — ด่าน --after ยังกันอยู่อีกชั้น
+
+
+def size_stable(fp, tries=6, wait=0.5):
+    """รอจนขนาดไฟล์นิ่ง — กันอ่านไฟล์ที่เบราว์เซอร์ยังเขียนไม่เสร็จ"""
+    last = -1
+    for _ in range(tries):
+        try:
+            cur = fp.stat().st_size
+        except OSError:
+            return False
+        if cur == last and cur > 0:
+            return True
+        last = cur
+        time.sleep(wait)
+    return False
 
 
 def read_csv(fp):
@@ -61,6 +107,8 @@ def main():
                     help='รับเฉพาะไฟล์ที่ใหม่กว่าเวลานี้ "YYYY-MM-DD HH:MM:SS" '
                          '(ให้พรอมป์จับเวลาไว้ก่อนกดปุ่ม export)')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--no-ledger', action='store_true',
+                    help='ไม่ต้องเช็ค/จดสมุดไฟล์ที่ใช้แล้ว (ใช้ตอนทดสอบเท่านั้น)')
     a = ap.parse_args()
 
     if a.acc not in ACC_LABEL:
@@ -83,6 +131,7 @@ def main():
 
     # ── หาไฟล์ที่ "หน้าตาเป็น export ของ Ads Manager" ────────────────────────
     need = set(COL.values())
+    used = {} if a.no_ledger else ledger_load()
     cands, rejected = [], []
     for fp in dl.glob('*.csv'):
         if fp.name.startswith(('~', '.')): continue
@@ -91,13 +140,21 @@ def main():
             rejected.append({'file': fp.name, 'เหตุผล': 'เก่ากว่าเวลาที่กำหนด',
                              'mtime': mt.strftime('%Y-%m-%d %H:%M:%S')})
             continue
+        if not size_stable(fp):
+            rejected.append({'file': fp.name, 'เหตุผล': 'ขนาดไฟล์ยังไม่นิ่ง — น่าจะโหลดไม่เสร็จ'})
+            continue
+        digest = sha(fp)
+        if digest in used:
+            rejected.append({'file': fp.name, 'เหตุผล': 'ใช้ไปแล้วในรอบนี้',
+                             'ใช้เป็นของบัญชี': used[digest].get('acc')})
+            continue
         rows = read_csv(fp)
         if not rows:
             rejected.append({'file': fp.name, 'เหตุผล': 'อ่านไม่ได้หรือไม่มีแถว'}); continue
         miss = [c for c in need if c not in rows[0]]
         if miss:
             rejected.append({'file': fp.name, 'เหตุผล': 'ขาดคอลัมน์', 'missing': miss[:4]}); continue
-        cands.append((mt, fp, rows))
+        cands.append((mt, fp, rows, digest))
     if not cands:
         die('ไม่พบไฟล์ export ของ Facebook Ads ใน Downloads ที่ใหม่พอ — '
             'export อาจยังไม่เสร็จหรือถูกย้ายไปแล้ว **ห้ามเดาว่าสำเร็จ**',
@@ -105,7 +162,7 @@ def main():
              'ต้องใหม่กว่า': cutoff.strftime('%Y-%m-%d %H:%M:%S'),
              'ไฟล์ที่ไม่ผ่าน': rejected[:5]})
     cands.sort(key=lambda x: x[0])
-    mt, fp, rows = cands[-1]
+    mt, fp, rows, digest = cands[-1]
 
     # ── ตรวจเนื้อใน ─────────────────────────────────────────────────────────
     dates = sorted({(r[COL['d']] or '').strip() for r in rows})
@@ -124,19 +181,35 @@ def main():
     old = [p for p in SRC.glob(f'FBD_{a.acc}_*.csv')
            if p != dest and re.match(rf'^FBD_{re.escape(a.acc)}_\d+_{re.escape(mo)}-\d\d_', p.name)]
 
-    info = {'source': fp.name, 'modified': mt.strftime('%Y-%m-%d %H:%M:%S'),
+    info = {'source': fp.name, 'sha256': digest[:12], 'modified': mt.strftime('%Y-%m-%d %H:%M:%S'),
             'รับเฉพาะไฟล์ใหม่กว่า': cutoff.strftime('%Y-%m-%d %H:%M:%S'),
             'rows': len(rows), 'days_in_file': len(dates),
             'span_in_file': [dates[0], dates[-1]] if dates else None,
             'range_requested': [a.d_from, a.d_to], 'spend_in_file': spend,
-            'dest': dest.name, 'จะลบไฟล์เก่าเดือนเดียวกัน': [p.name for p in old]}
+            'dest': dest.name, 'จะลบไฟล์เก่าเดือนเดียวกัน': [p.name for p in old],
+            'ไฟล์ที่ไม่ผ่านด่าน': rejected[:4]}
     if a.dry_run:
         print(json.dumps({'status': 'DRY_RUN', **info}, ensure_ascii=False)); return 0
 
-    shutil.move(str(fp), str(dest))
+    # คัดลอกก่อน แล้วค่อยพยายามลบต้นทาง — ในแซนด์บ็อกซ์ของงานตั้งเวลา ลบไฟล์ใน
+    # Downloads ไม่ได้ ถ้าใช้ shutil.move จะล้มทั้งที่ข้อมูลพร้อมแล้ว
+    shutil.copy2(str(fp), str(dest))
+    if not a.no_ledger:
+        ledger_add(used, digest, a.acc, fp.name)
+    try:
+        fp.unlink()
+        info['ต้นทางใน Downloads'] = 'ลบแล้ว'
+    except Exception as e:
+        info['ต้นทางใน Downloads'] = f'ลบไม่ได้ ({type(e).__name__}) — ไม่ใช่ error ' \
+                                     'จดไว้ในสมุดแล้วจึงไม่ถูกหยิบซ้ำ'
+    removed = []
     for p in old:
-        p.unlink()
-    print(json.dumps({'status': 'MOVED', **info}, ensure_ascii=False))
+        try:
+            p.unlink(); removed.append(p.name)
+        except Exception:
+            pass
+    info['ลบไฟล์เก่าเดือนเดียวกันแล้ว'] = removed
+    print(json.dumps({'status': 'COPIED', **info}, ensure_ascii=False))
     return 0
 
 
