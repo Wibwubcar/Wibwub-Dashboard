@@ -15,8 +15,13 @@
   · ลบไฟล์เก่าของ **บัญชีเดียวกัน + เดือนเดียวกัน** เท่านั้น — ห้ามลบข้ามเดือน
     (เดือนก่อน ๆ ต้องเก็บไว้ ไม่งั้นยอดย้อนหลังหาย)
 
+  · `--after "<เวลาก่อนกดปุ่ม export>"` คือด่านที่แม่นที่สุด ใช้ทุกครั้ง: ไฟล์ที่เก่ากว่านั้น
+    จะไม่ถูกหยิบเลย กันไฟล์ทดสอบ/ไฟล์ของรอบก่อนที่ค้างอยู่ใน Downloads
+    (28 ต.ค. 69: มีไฟล์ทดสอบ `AD3-...-27-....csv` ที่หัวคอลัมน์ผ่านทุกด่านแต่เป็น
+     ยอดรวมทั้งช่วง ไม่ใช่รายวัน — ถ้าหยิบไปใช้ตัวเลขจะเพี้ยนแบบไม่มี error)
+
 ใช้:  python3 scripts/ads/fb_collect.py --acc AD-1 --id 597632760310102 \\
-          --from 2026-10-01 --to 2026-10-28 [--max-age-min 30] [--dry-run]
+          --from 2026-10-01 --to 2026-10-28 --after "2026-10-29 08:20:00" [--dry-run]
 exit: 0 = ย้ายแล้ว · 2 = ไม่ผ่านด่านตรวจ (ไม่ย้ายอะไร)
 """
 import sys, csv, json, re, argparse, shutil
@@ -52,6 +57,9 @@ def main():
     ap.add_argument('--downloads', default=str(DL))
     ap.add_argument('--max-age-min', type=int, default=30,
                     help='ไฟล์ต้องเพิ่งถูกสร้างไม่เกินกี่นาที กันหยิบไฟล์ของรอบก่อน')
+    ap.add_argument('--after', default='',
+                    help='รับเฉพาะไฟล์ที่ใหม่กว่าเวลานี้ "YYYY-MM-DD HH:MM:SS" '
+                         '(ให้พรอมป์จับเวลาไว้ก่อนกดปุ่ม export)')
     ap.add_argument('--dry-run', action='store_true')
     a = ap.parse_args()
 
@@ -66,6 +74,12 @@ def main():
     dl = Path(a.downloads)
     if not dl.is_dir(): die('ไม่พบโฟลเดอร์ Downloads', str(dl))
     cutoff = datetime.now() - timedelta(minutes=a.max_age_min)
+    if a.after:
+        try:
+            after = datetime.strptime(a.after.strip(), '%Y-%m-%d %H:%M:%S')
+        except ValueError:
+            die('--after ต้องเป็นรูปแบบ "YYYY-MM-DD HH:MM:SS"', a.after)
+        if after > cutoff: cutoff = after
 
     # ── หาไฟล์ที่ "หน้าตาเป็น export ของ Ads Manager" ────────────────────────
     need = set(COL.values())
@@ -74,6 +88,8 @@ def main():
         if fp.name.startswith(('~', '.')): continue
         mt = datetime.fromtimestamp(fp.stat().st_mtime)
         if mt < cutoff:
+            rejected.append({'file': fp.name, 'เหตุผล': 'เก่ากว่าเวลาที่กำหนด',
+                             'mtime': mt.strftime('%Y-%m-%d %H:%M:%S')})
             continue
         rows = read_csv(fp)
         if not rows:
@@ -86,6 +102,7 @@ def main():
         die('ไม่พบไฟล์ export ของ Facebook Ads ใน Downloads ที่ใหม่พอ — '
             'export อาจยังไม่เสร็จหรือถูกย้ายไปแล้ว **ห้ามเดาว่าสำเร็จ**',
             {'downloads': str(dl), 'อายุไม่เกิน(นาที)': a.max_age_min,
+             'ต้องใหม่กว่า': cutoff.strftime('%Y-%m-%d %H:%M:%S'),
              'ไฟล์ที่ไม่ผ่าน': rejected[:5]})
     cands.sort(key=lambda x: x[0])
     mt, fp, rows = cands[-1]
@@ -107,7 +124,8 @@ def main():
     old = [p for p in SRC.glob(f'FBD_{a.acc}_*.csv')
            if p != dest and re.match(rf'^FBD_{re.escape(a.acc)}_\d+_{re.escape(mo)}-\d\d_', p.name)]
 
-    info = {'source': fp.name, 'modified': mt.strftime('%Y-%m-%d %H:%M'),
+    info = {'source': fp.name, 'modified': mt.strftime('%Y-%m-%d %H:%M:%S'),
+            'รับเฉพาะไฟล์ใหม่กว่า': cutoff.strftime('%Y-%m-%d %H:%M:%S'),
             'rows': len(rows), 'days_in_file': len(dates),
             'span_in_file': [dates[0], dates[-1]] if dates else None,
             'range_requested': [a.d_from, a.d_to], 'spend_in_file': spend,
