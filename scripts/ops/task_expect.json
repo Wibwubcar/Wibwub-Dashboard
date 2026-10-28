@@ -1,0 +1,52 @@
+{
+  "_note": "หลักฐานว่างานตั้งเวลา 'มีผลงาน' จริง — ใช้กับงานฝั่ง code ที่อ่านสถานะจากไฟล์ไม่ได้",
+  "_why": "~/.claude/scheduled-tasks/<id>/ มีแค่ SKILL.md · lastRunAt/isRunning อยู่ในสโตร์ของแอป เข้าถึงได้ทาง MCP เท่านั้น ซึ่งถ้าฝั่ง code ค้างก็จะไม่ได้รันตัวตรวจไปด้วย -> ตรวจจากผลงานปลายทางแทน",
+  "_kinds": {
+    "git_grep": "commit ล่าสุดที่ข้อความตรง pattern (เป็นหลักฐานว่างานเขียนของออกมาจริง)",
+    "mtime": "เวลาแก้ไขไฟล์ล่าสุด",
+    "regex_date": "วันที่ YYYY-MM-DD ที่จับจาก group 1 ของ pattern ในไฟล์",
+    "none": "ตรวจจากไฟล์ไม่ได้ — รายงานเป็น ℹ️ ไม่นับเป็นปัญหา"
+  },
+  "_how_to_add": "งานฝั่ง code ที่ enabled ทุกตัวต้องมีในนี้ ไม่งั้น task_health.py จะขึ้น ⛔ ว่าไม่มีกติกาตรวจ",
+  "code_tasks": {
+    "wibwub-ads-daily": {
+      "label": "การตลาด vs ยอดขาย 09:45/20:45",
+      "kind": "git_grep",
+      "pattern": "^auto-update: การตลาด vs ยอดขาย",
+      "max_age_hours": 20,
+      "note": "exit 10 (ไม่มีอะไรเปลี่ยน) จะไม่ commit -> ค้างเกิน 20 ชม. แปลว่า 'ไม่มีผลงาน' อาจเป็นได้ทั้งไม่ได้รัน หรือรันแล้วไม่มีข้อมูลใหม่ 2 รอบติด ซึ่งก็ควรไปดูอยู่ดี"
+    },
+    "wibwub-tiktok-live-daily": {
+      "label": "TikTok Live รายวัน 09:00/20:00",
+      "kind": "git_grep",
+      "pattern": "^auto-update: TikTok Live รายวัน",
+      "max_age_hours": 20,
+      "note": "TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน"
+    },
+    "wibwub-tiktok-content": {
+      "label": "TikTok คอนเทนต์ 09:25/20:25",
+      "kind": "git_grep",
+      "pattern": "^auto-update: TikTok content",
+      "max_age_hours": 72,
+      "note": "ข้อความ commit จริงเป็นภาษาอังกฤษ 'auto-update: TikTok content <วันที่>' (เคยตั้ง pattern เป็นไทยแล้วไปแมตช์ commit มือของคนอื่น ได้ผลเพี้ยน) · คาบจริงที่สังเกตได้ 11-59 ชม. ขึ้นกับว่าทีมกรอกชีตเมื่อไร"
+    },
+    "wibwub-hr-attendance-1200-2200": {
+      "label": "HR → Google Sheet 10:30/20:30/00:30",
+      "kind": "mtime",
+      "file": "scripts/hr/hr_state.json",
+      "max_age_hours": 16
+    },
+    "wibwub-content-sheet": {
+      "label": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
+      "kind": "none",
+      "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ต้องรอชั้นที่ 2 (MCP list_task_runs)"
+    },
+    "wibwub-shipnity-monday": {
+      "label": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
+      "kind": "mtime",
+      "file": "Data Shipnity/Sales_Dashboard.html",
+      "max_age_hours": 192
+    }
+  },
+  "_note_git_grep": "git_grep ⛔ แปลว่า 'ไม่มีผลงาน' ไม่ใช่ 'ไม่ได้รัน' — งานที่รันแล้วได้ NO_CHANGE จะไม่ commit · ถ้าเจอ ⛔ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป · pattern ต้อง **ยึดหัวบรรทัด** ด้วย ^auto-update: เสมอ ไม่งั้นจะไปแมตช์ commit ที่คนทำเอง (28 ต.ค. 69: commit มือของผมมีคำว่า 'การตลาด vs ยอดขาย' อยู่ใน body ตัวตรวจเลยนึกว่างานยังมีผลงาน ทั้งที่ของจริงหยุดมา 2 วัน — false negative เต็ม ๆ)"
+}
