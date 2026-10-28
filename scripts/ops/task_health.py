@@ -14,7 +14,12 @@
     ตาม `scripts/ops/task_expect.json` แทน ซึ่งจับได้ทุกสาเหตุ ไม่ใช่แค่เซสชันค้าง
     (งานถูกปิด · รันแล้วล้มเงียบ · กล่องขออนุญาตไม่มีคนกด · สมาชิกหมดอายุ)
 
-ใช้:  python3 scripts/ops/task_health.py [--json] [--grace-min 60] [--delay-min 20]
+ตรวจ `.git/*.lock` ค้างด้วย — งานตั้งเวลาฝั่ง local **ลบไฟล์ใน .git ไม่ได้**
+(พิสูจน์แล้ว 28 ต.ค. 69: git ในแซนด์บ็อกซ์ขึ้น `unable to unlink '.git/objects/../tmp_obj_..':
+Operation not permitted`) ทุกรอบที่ commit จึงทิ้ง lock ไว้ให้ฝั่ง Mac มาเก็บ
+ถ้า lock ค้างนาน = ทุกงานหลังจากนั้น commit ไม่ได้ทั้งหมด
+
+ใช้:  python3 scripts/ops/task_health.py [--json] [--grace-min 60] [--delay-min 20] [--lock-min 30]
 exit: 0 = ปกติ · 3 = มี ⛔ (ให้ขึ้นบรรทัดแรกของรายงานรอบนั้น) · 2 = ตัวตรวจเองมีปัญหา
 """
 import sys, json, re, glob, argparse, subprocess
@@ -197,6 +202,44 @@ def check_code(now):
     return out
 
 
+def check_locks(now, lock_min):
+    """`.git/*.lock` ค้าง = ทุกงานหลังจากนั้น commit ไม่ได้
+
+    ไม่ลบให้ — หน้าที่ลบเป็นของฝั่ง Mac (launchd) เพราะแซนด์บ็อกซ์ของงานตั้งเวลา
+    ไม่มีสิทธิ์ลบไฟล์ใน .git · ตัวตรวจนี้แค่บอกว่ามีค้างอยู่
+    """
+    g = BASE / '.git'
+    out = []
+    try:
+        locks = sorted(g.rglob('*.lock'))
+    except Exception as e:
+        return [{'lv': '⛔', 'task': '(.git lock)', 'msg': f'อ่าน .git ไม่ได้: {type(e).__name__}'}]
+    old = []
+    for p in locks:
+        try:
+            age = (now - datetime.fromtimestamp(p.stat().st_mtime)).total_seconds() / 60
+        except OSError:
+            continue
+        if age > lock_min:
+            old.append(f'{p.relative_to(g)} ({age:.0f} นาที)')
+    if old:
+        out.append({'lv': '⛔', 'task': '(.git lock ค้าง)',
+                    'msg': 'ค้างอยู่ ' + ' · '.join(old[:4]) +
+                           ' — ทุกงานที่ commit หลังจากนี้จะล้มจนกว่าจะถูกลบ '
+                           '(ฝั่ง Mac เท่านั้นที่ลบได้ · งานตั้งเวลาลบเองไม่ได้)'})
+    # เศษ tmp_obj_* ที่ git ในแซนด์บ็อกซ์ลบไม่ได้ — ไม่บล็อกงาน แต่โตวันละ ~100 ไฟล์
+    try:
+        tmp = list(g.glob('objects/*/tmp_obj_*'))
+    except Exception:
+        tmp = []
+    if len(tmp) > 1500:
+        mb = sum(p.stat().st_size for p in tmp) / 1024 / 1024
+        out.append({'lv': '⚠️', 'task': '(.git objects)',
+                    'msg': f'เศษไฟล์ tmp_obj_* {len(tmp)} ไฟล์ ({mb:.0f} MB) — ไม่บล็อกงาน '
+                           'แต่ควรให้ฝั่ง Mac กวาดทิ้ง'})
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--json', action='store_true')
@@ -204,9 +247,11 @@ def main():
                     help='รอบที่เลยเวลามาแล้วเกินกี่นาทีจึงถือว่า "ไม่ได้รัน"')
     ap.add_argument('--delay-min', type=int, default=20,
                     help='เริ่มช้ากว่าที่ตั้งไว้กี่นาทีจึงเตือน')
+    ap.add_argument('--lock-min', type=int, default=30,
+                    help='.git/*.lock ค้างเกินกี่นาทีจึงถือว่าเป็นปัญหา')
     a = ap.parse_args()
     now = datetime.now()
-    rows = check_local(now, a.grace_min, a.delay_min) + check_code(now)
+    rows = check_locks(now, a.lock_min) + check_local(now, a.grace_min, a.delay_min) + check_code(now)
     bad = [r for r in rows if r['lv'] == '⛔']
     warn = [r for r in rows if r['lv'] == '⚠️']
     info = [r for r in rows if r['lv'] == 'ℹ️']
