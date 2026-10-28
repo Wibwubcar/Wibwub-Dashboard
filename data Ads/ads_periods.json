@@ -5829,7 +5829,7 @@
   "oct": {
    "cover": {
     "shopeeDay": 28,
-    "tiktokDay": 27
+    "tiktokDay": 28
    },
    "shopee": {
     "spend": 1096465.74,
@@ -6349,22 +6349,22 @@
     ]
    },
    "tiktok": {
-    "spend": 952567.1,
-    "revenue": 3598375.78,
-    "orders": 16986,
+    "spend": 965864.02,
+    "revenue": 3650053.05,
+    "orders": 17225,
     "roas": 3.78,
-    "cpa": 56.08,
+    "cpa": 56.07,
     "gmvMax": {
      "total": {
-      "spend": 931641.16,
-      "orders": 16986,
-      "revenue": 3598375.78,
+      "spend": 944586.38,
+      "orders": 17225,
+      "revenue": 3650053.05,
       "imp": 0,
       "clicks": 0,
       "roi": 3.86,
       "ctr": 0,
       "cvr": 0,
-      "cpa": 54.85
+      "cpa": 54.84
      },
      "campaigns": []
     },
@@ -6381,28 +6381,28 @@
     },
     "bizAds": {
      "total": {
-      "spend": 20925.94,
-      "imp": 536649,
-      "clicks": 8390,
-      "cpm": 38.99,
-      "ctr": 1.56
+      "spend": 21277.64,
+      "imp": 542344,
+      "clicks": 8542,
+      "cpm": 39.23,
+      "ctr": 1.58
      },
      "campaigns": [
       {
        "name": "C-Ads TOP  CREATOR",
-       "spend": 14754.6,
-       "imp": 314858,
-       "clicks": 7485,
-       "cpm": 46.86,
+       "spend": 14983,
+       "imp": 318654,
+       "clicks": 7583,
+       "cpm": 47.02,
        "ctr": 2.38
       },
       {
        "name": "06.10.26/แบรนด์ไทย",
-       "spend": 4375.07,
-       "imp": 218598,
-       "clicks": 895,
-       "cpm": 20.01,
-       "ctr": 0.41
+       "spend": 4498.37,
+       "imp": 220497,
+       "clicks": 949,
+       "cpm": 20.4,
+       "ctr": 0.43
       },
       {
        "name": "18.09.26/Followerพี่เป๊ก",
