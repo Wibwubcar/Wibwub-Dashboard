@@ -3,9 +3,19 @@
 
 ⚠️ ชีตต้นทางมีข้อมูลส่วนบุคคล: ชื่อ-นามสกุล เลขบัตรประชาชน เลขผู้เสียภาษี
    เลขบัญชีธนาคาร ที่อยู่ เบอร์โทร
-   สคริปต์นี้อ่าน **เฉพาะ 4 คอลัมน์**: วันที่ทำจ่าย · จำนวนที่ต้องจ่าย · Status · Month
-   และเขียนออกเป็น **ผลรวมรายเดือนเท่านั้น** ไม่มีแถวรายบุคคลหลุดออกมา
-   ห้ามเพิ่มคอลัมน์อื่นเข้ามาในสคริปต์นี้เด็ดขาด
+   สคริปต์นี้อ่าน **เฉพาะ 5 คอลัมน์**: วันที่ทำจ่าย · จำนวนที่ต้องจ่าย · Status · Month
+   · ชื่อช่อง KOL   ห้ามเพิ่มคอลัมน์อื่นเข้ามาในสคริปต์นี้เด็ดขาด
+
+⛔ ไฟล์ขาออกมี 2 ไฟล์ และ **แยกกันเด็ดขาด**
+   · `data Ads/kol_monthly.json`      = commit ได้ — ยอดรวมรายวัน/รายเดือน/รายระดับ
+                                        ไม่มีชื่อบัญชี KOL ไม่มีชื่อแคมเปญ ไม่มีแถวรายคน
+   · `data Ads/kol_rows_private.json` = **ห้าม commit** (.gitignore แล้ว) — แถวรายคน
+   28 ต.ค. 69: ก่อนหน้านี้แถวรายคน 497 แถว (ชื่อบัญชี 335 ราย + ยอดจ่ายรายคน
+   + ชื่อแคมเปญ) อยู่ใน kol_monthly.json ที่ commit **และถูกฝังลงหน้าเว็บทั้ง 2 หน้า**
+   ตั้งแต่ commit d61dce1 (20 ต.ค. 15:48) ค้างอยู่ 8 วัน ทั้งที่หัวไฟล์เขียนว่า
+   "aggregate only — no personal data" · repo Wibwubcar/Wibwub-Dashboard เป็น
+   **public** และ GitHub Pages เสิร์ฟไฟล์สาธารณะ (ยืนยันแล้ว HTTP 200 แบบไม่ล็อกอิน)
+   -> ห้ามเอา rows กลับเข้า kol_monthly.json หรือส่งขึ้นหน้าเว็บอีกเด็ดขาด
 
 กฎการนับ (ตามที่ตกลงไว้):
   · นับเฉพาะแถวที่ Status = Done
@@ -38,7 +48,8 @@ def _find_base():
 
 
 BASE = _find_base()
-OUT = BASE / 'data Ads' / 'kol_monthly.json'
+OUT = BASE / 'data Ads' / 'kol_monthly.json'        # commit ได้ — ยอดรวมเท่านั้น
+PRIV = BASE / 'data Ads' / 'kol_rows_private.json'  # ห้าม commit — แถวรายคน
 SHEET_ID = '1NEkm1bcHvXO0Ehs6cwaNDkBUUM1A9assALMp5V7S7lo'
 SA = Path.home() / 'wibwub-service-account.json'
 SKIP_TABS = {'Total Spending'}            # แท็บสรุป ไม่ใช่รายแคมเปญ
@@ -131,6 +142,24 @@ def to_amt(v):
     except ValueError: return None
 
 
+def git_ignored(path):
+    """(ถูก ignore จริงไหม, ถูก track อยู่ใน git ไหม, เหตุผลถ้าตรวจไม่ได้)
+
+    ไม่ใช้ gitw.py เพราะต้องใช้ ls-files/check-ignore ซึ่งไม่อยู่ในรายการอนุญาตของ gitw
+    (อ่านอย่างเดียว ไม่เปลี่ยนสถานะ repo)
+    """
+    import subprocess
+    rel = str(path.relative_to(BASE))
+    try:
+        ig = subprocess.run(['git', '-C', str(BASE), 'check-ignore', '-q', rel],
+                            capture_output=True)
+        tr = subprocess.run(['git', '-C', str(BASE), 'ls-files', '--error-unmatch', rel],
+                            capture_output=True)
+    except (FileNotFoundError, OSError) as e:
+        return False, False, f'เรียก git ไม่ได้: {type(e).__name__}'
+    return ig.returncode == 0, tr.returncode == 0, None
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
@@ -149,6 +178,8 @@ def main():
 
     months, pend, undated, camps, skipped = {}, {}, {'done': 0.0, 'n': 0}, {}, []
     rows_seen, rows_out = 0, []
+    # ยอดรวมรายวัน: นี่คือสิ่งเดียวที่หน้าเว็บต้องใช้ (คอลัมน์ kol ของตารางรายวัน)
+    days_done, days_pend, tier_days = {}, {}, {}
     tiers = json.loads(TIER_MAP.read_text(encoding='utf-8')).get('campaign_tier', {}) \
         if TIER_MAP.exists() else {}
     for ws in sh.worksheets():
@@ -174,9 +205,19 @@ def main():
             mo = to_date(r[ci[COL_DATE]] if len(r) > ci[COL_DATE] else None)
             kol = norm(r[ci['kol']]) if ci['kol'] is not None and len(r) > ci['kol'] else ''
             if mo and mo >= ROWS_FROM:
-                rows_out.append({'d': to_day(r[ci[COL_DATE]]), 'camp': ws.title,
-                                 'tier': tiers.get(ws.title), 'kol': kol,
-                                 'amt': round(amt, 2), 'st': 'done' if st == 'done' else 'pending'})
+                day = to_day(r[ci[COL_DATE]])
+                tier = tiers.get(ws.title)
+                rows_out.append({'d': day, 'camp': ws.title, 'tier': tier, 'kol': kol,
+                                 'amt': round(amt, 2),
+                                 'st': 'done' if st == 'done' else 'pending'})
+                if day:
+                    if st == 'done':
+                        days_done[day] = round(days_done.get(day, 0.0) + amt, 2)
+                        k = tier or 'ยังไม่ระบุระดับ'
+                        td = tier_days.setdefault(day, {})
+                        td[k] = round(td.get(k, 0.0) + amt, 2)
+                    else:
+                        days_pend[day] = round(days_pend.get(day, 0.0) + amt, 2)
             if st != 'done':
                 key = mo or 'undated'
                 p = pend.setdefault(key, {'amount': 0.0, 'n': 0})
@@ -195,27 +236,74 @@ def main():
     camps = {m: {k: round(v, 2) for k, v in sorted(d.items(), key=lambda x: -x[1])}
              for m, d in camps.items()}
 
-    out = {'source': 'Payment KOL Wibwub (aggregate only — no personal data)',
+    unmapped = sorted({r['camp'] for r in rows_out if not r['tier']})
+    # ⛔ ไฟล์นี้ commit ลง repo ที่เป็น public — ใส่ได้แค่ยอดรวม
+    #    ห้ามใส่: rows (แถวรายคน) · kol (ชื่อบัญชี) · camp/tabs_skipped/tiers_unmapped
+    #    (ชื่อแท็บ = ชื่อแคมเปญ ซึ่งบางชื่อมีชื่อเล่น KOL ปนอยู่) -> เก็บเป็น "จำนวน"
+    out = {'source': 'Payment KOL Wibwub (ยอดรวมเท่านั้น — ไม่มีแถวรายคน '
+                     'ไม่มีชื่อบัญชี KOL ไม่มีชื่อแคมเปญ)',
+           'privacy': 'รายละเอียดรายแถวอยู่ที่ data Ads/kol_rows_private.json '
+                      'ซึ่ง .gitignore ไว้ — ห้าม commit และห้ามส่งขึ้นหน้าเว็บ',
            'rule': 'Status=Done · เดือนจากวันที่ทำจ่าย · ยอดจากจำนวนที่ต้องจ่าย',
            'fetched_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M'),
            'months': dict(sorted(months.items())),
            'pending': dict(sorted(pend.items())),
            'undated_done': {'amount': round(undated['done'], 2), 'n': undated['n']},
-           'rows_from': ROWS_FROM, 'rows': sorted(rows_out, key=lambda r: (r['d'] or '', -r['amt'])),
-           'tiers_unmapped': sorted({r['camp'] for r in rows_out if not r['tier']}),
-           'tabs_skipped': skipped, 'rows_scanned': rows_seen}
+           'rows_from': ROWS_FROM,
+           'days': dict(sorted(days_done.items())),
+           'days_pending': dict(sorted(days_pend.items())),
+           'tier_days': {d: tier_days[d] for d in sorted(tier_days)},
+           'tiers_unmapped_n': len(unmapped),
+           'tabs_skipped_n': len(skipped), 'rows_scanned': rows_seen}
+
+    # ด่าน: ถ้าคีย์ต้องห้ามหลุดเข้ามา ให้ตายก่อนเขียนไฟล์
+    leak = [k for k in ('rows', 'tiers_unmapped', 'tabs_skipped', 'by_campaign') if k in out]
+    if leak:
+        die('มีคีย์ที่มีข้อมูลรายคน/ชื่อแคมเปญหลุดเข้า kol_monthly.json — ไม่เขียนไฟล์', leak)
+    blob = json.dumps(out, ensure_ascii=False)
+    hit = [r['kol'] for r in rows_out if r['kol'] and r['kol'] in blob]
+    if hit:
+        die('พบชื่อบัญชี KOL ในไฟล์ที่จะ commit — ไม่เขียนไฟล์', len(hit))
 
     # by_campaign = ชื่อแคมเปญ (บางชื่อมีชื่อเล่น KOL อยู่) -> ดูได้ตอน dry-run เท่านั้น
     # ไม่เขียนลงไฟล์ที่ commit ตามกฎ "เก็บเฉพาะยอดเงิน + วันที่ + ผลรวมรายเดือน"
+    ignored, tracked, why = git_ignored(PRIV)
+    priv = {'warning': '⛔ ข้อมูลส่วนบุคคล — ห้าม commit ห้ามส่งขึ้นหน้าเว็บ '
+                       'ห้ามวางในรายงาน (repo เป็น public + GitHub Pages สาธารณะ)',
+            'fetched_at': out['fetched_at'], 'rows_from': ROWS_FROM,
+            'rows': sorted(rows_out, key=lambda r: (r['d'] or '', -r['amt'])),
+            'tiers_unmapped': unmapped, 'tabs_skipped': skipped,
+            'by_campaign': camps}
+
     if a.dry_run:
-        print(json.dumps({'status': 'DRY_RUN', **out, 'by_campaign': camps},
+        print(json.dumps({'status': 'DRY_RUN', **out,
+                          'private_rows': len(rows_out),
+                          'private_file': {'path': str(PRIV.relative_to(BASE)),
+                                           'gitignored': ignored, 'tracked': tracked,
+                                           'why': why}},
                          ensure_ascii=False)); return 0
+
     prev = json.loads(OUT.read_text(encoding='utf-8')) if OUT.exists() else {}
     same = {k: v for k, v in prev.items() if k != 'fetched_at'} == \
            {k: v for k, v in out.items() if k != 'fetched_at'}
     OUT.write_text(json.dumps(out, ensure_ascii=False, indent=1), encoding='utf-8')
+
+    # ไฟล์ private เขียน "ต่อเมื่อ" git ยืนยันว่า ignore แล้วจริง
+    # ตรวจไม่ได้ = ไม่เขียน (ยอมเสียรายละเอียด ดีกว่าเสี่ยงหลุด) แต่ยอดรวมยังอัปเดตปกติ
+    if tracked:
+        die('kol_rows_private.json ถูก track อยู่ใน git — ข้อมูลส่วนบุคคลจะถูก commit '
+            'ให้เอาออกจาก index ก่อน (git rm --cached) แล้วเช็กว่า .gitignore ครอบถูก',
+            str(PRIV.relative_to(BASE)))
+    if ignored:
+        PRIV.write_text(json.dumps(priv, ensure_ascii=False, indent=1), encoding='utf-8')
+        priv_note = f'เขียนแล้ว {len(rows_out)} แถว (gitignored)'
+    else:
+        priv_note = ('ไม่ได้เขียน — git ยังไม่ยืนยันว่าไฟล์นี้ถูก ignore '
+                     + (why or 'ไม่พบใน .gitignore'))
     print(json.dumps({'status': 'NO_CHANGE' if same else 'UPDATED',
-                      'months': {k: v['amount'] for k, v in out['months'].items()}},
+                      'months': {k: v['amount'] for k, v in out['months'].items()},
+                      'days_with_amount': len(out['days']),
+                      'private_file': priv_note},
                      ensure_ascii=False))
     return 10 if same else 0
 
