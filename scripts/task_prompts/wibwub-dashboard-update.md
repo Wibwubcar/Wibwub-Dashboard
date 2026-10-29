@@ -2,6 +2,8 @@
 name: wibwub-dashboard-update
 description: อัปเดต WIBWUB Dashboard ทั้งหมด (Sales + Affiliate + TikTok + Ads) จาก Google Sheets ทุกวัน 09:00 และ 18:00 น.
 ---
+> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — งานถูกยุบเมื่อ 20 ต.ค. 69 แยกไปเป็น `wibwub-sales-update` / `wibwub-tiktok-content` / `wibwub-ads-daily` · เก็บไว้อ้างอิงเท่านั้น ห้ามแก้ที่นี่โดยคิดว่ามีผล
+
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 
