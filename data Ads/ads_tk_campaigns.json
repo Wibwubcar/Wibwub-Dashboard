@@ -335,15 +335,15 @@
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 224439.75,
-     "orders": 6984,
-     "revenue": 862971.32
+     "spend": 224433.35,
+     "orders": 6983,
+     "revenue": 862736.78
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 205726.06,
+     "spend": 205722.1,
      "orders": 2114,
-     "revenue": 778028.92
+     "revenue": 778027.77
     },
     {
      "name": "21.09.26/Banyakart",
@@ -353,39 +353,39 @@
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 114052.19,
+     "spend": 114049.67,
      "orders": 3276,
-     "revenue": 432441.39
+     "revenue": 432440.99
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 74111.42,
+     "spend": 74107.21,
      "orders": 1171,
-     "revenue": 456827.87
+     "revenue": 456826.98
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 62253,
+     "spend": 62242.91,
      "orders": 723,
-     "revenue": 178858.35
+     "revenue": 178857.98
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 55359.63,
+     "spend": 55356.3,
      "orders": 505,
-     "revenue": 169118.69
+     "revenue": 169118.29
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 34715.77,
+     "spend": 34715.71,
      "orders": 221,
-     "revenue": 133757.58
+     "revenue": 133757.33
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 31956.97,
+     "spend": 31953.85,
      "orders": 361,
-     "revenue": 162279.84
+     "revenue": 162279.69
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -395,9 +395,9 @@
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 2034.25,
+     "spend": 2033.64,
      "orders": 13,
-     "revenue": 6157.26
+     "revenue": 6157.14
     },
     {
      "name": "27.08.26/interior-refresh",
@@ -429,7 +429,7 @@
      "name": "10.10.26/แอ้นปายบ่าย",
      "spend": 153.23,
      "orders": 32,
-     "revenue": 10641.16
+     "revenue": 10641.11
     },
     {
      "name": "10.10.26/ปายแอ้น",
