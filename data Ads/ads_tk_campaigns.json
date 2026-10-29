@@ -331,19 +331,19 @@
   },
   "oct": {
    "from": "2026-10-01",
-   "to": "2026-10-27",
+   "to": "2026-10-28",
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 218020.19,
-     "orders": 6759,
-     "revenue": 836678.87
+     "spend": 224439.75,
+     "orders": 6984,
+     "revenue": 862971.32
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 197720.61,
-     "orders": 2029,
-     "revenue": 745133.47
+     "spend": 205726.06,
+     "orders": 2114,
+     "revenue": 778028.92
     },
     {
      "name": "21.09.26/Banyakart",
@@ -353,39 +353,39 @@
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 111093.68,
-     "orders": 3171,
-     "revenue": 418477.54
+     "spend": 114052.19,
+     "orders": 3276,
+     "revenue": 432441.39
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 71873.77,
-     "orders": 1127,
-     "revenue": 441077.82
+     "spend": 74111.42,
+     "orders": 1171,
+     "revenue": 456827.87
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 51254.11,
-     "orders": 611,
-     "revenue": 149625.36
+     "spend": 62253,
+     "orders": 723,
+     "revenue": 178858.35
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 50001.2,
-     "orders": 464,
-     "revenue": 153174.67
+     "spend": 55359.63,
+     "orders": 505,
+     "revenue": 169118.69
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 33878.87,
-     "orders": 212,
-     "revenue": 129647.9
+     "spend": 34715.77,
+     "orders": 221,
+     "revenue": 133757.58
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 31104.88,
-     "orders": 347,
-     "revenue": 157457.53
+     "spend": 31956.97,
+     "orders": 361,
+     "revenue": 162279.84
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -395,9 +395,9 @@
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 1037.96,
-     "orders": 6,
-     "revenue": 3240.32
+     "spend": 2034.25,
+     "orders": 13,
+     "revenue": 6157.26
     },
     {
      "name": "27.08.26/interior-refresh",
@@ -428,8 +428,8 @@
     {
      "name": "10.10.26/แอ้นปายบ่าย",
      "spend": 153.23,
-     "orders": 31,
-     "revenue": 10271.56
+     "orders": 32,
+     "revenue": 10641.16
     },
     {
      "name": "10.10.26/ปายแอ้น",
