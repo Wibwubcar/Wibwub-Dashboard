@@ -72,6 +72,23 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 - ถ้าสคริปต์คืน exit 2 ด้วยเหตุอื่น (ไม่พบ service account / ไม่พบแท็บ) ให้รายงานตรง ๆ
   **ห้ามเดาทางแก้เอง**
 
+## ขั้นที่ 2 — เขียนสถานะงานตั้งเวลาให้หน้า Dashboard (ทำทุกรอบ ไม่ว่าขั้นก่อนหน้าจะผ่านหรือไม่)
+
+```bash
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ops/task_health.py" --write-json
+```
+
+เขียน `scripts/ops/task_health.json` ให้ส่วน "🩺 สถานะงานอัตโนมัติ" บนหน้า Dashboard อ่าน
+**ต้องรันจากงานฝั่ง code เท่านั้น** — ฝั่ง local อยู่ในแซนด์บ็อกซ์ อ่านไฟล์เซสชันใน
+`~/Library/Application Support` ไม่ได้ จะได้ผล "ตรวจไม่ได้" ทุกแถว
+
+- exit `0` = ไม่มีงานค้าง · exit `3` = มี ⛔ หรืออ่านบางส่วนไม่ได้
+- **exit 3 ไม่ใช่ความผิดพลาดของรอบนี้** ให้เอาบรรทัดสรุปที่มันพิมพ์ออกมาขึ้นรายงานแล้วทำงานต่อ
+- **ห้ามไปหยุดงานที่ค้างเอง** หน้านี้รายงานอย่างเดียว
+- ถ้าคำสั่งนี้ล้ม ให้รายงานว่าเขียนสถานะไม่ได้ **ห้ามข้ามเงียบ ๆ** (หน้าเว็บจะขึ้นเตือนเองถ้าไฟล์เก่าเกิน 14 ชม.)
+
+ไฟล์นี้ต้องถูก commit ด้วย — รวมไว้ในคำสั่ง commit ของรอบ หรือปล่อยให้งานถัดไปที่ commit พาไป
+
 ## รายงานท้ายรอบ (สั้น ๆ ภาษาไทย)
 
 โหมดที่ได้ · แท็บ · จำนวนช่องที่เติม · confirm ot อัปเดตไหม · จำนวนช่องที่ข้ามเพราะมีค่าแล้ว · error ถ้ามี

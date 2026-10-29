@@ -1,0 +1,225 @@
+{
+ "checked_at": "2026-10-29 11:33",
+ "unreadable": [],
+ "thresholds": {
+  "not_started_min": 20,
+  "silent_min": 15,
+  "stale_hours": 14
+ },
+ "counts": {
+  "stop": 2,
+  "warn": 4,
+  "ok": 12
+ },
+ "tasks": [
+  {
+   "name": "wibwub-download-orders-monday",
+   "side": "local",
+   "last_round": "29 Oct 08:38",
+   "level": "⛔",
+   "status": "ค้าง",
+   "data_asof": "—",
+   "silent_min": 147,
+   "note": "เซสชันเงียบมา 147 นาที และรอบนี้ยังไม่ได้เขียนรายงานปิดท้าย (ค้างกลางคำสั่ง)",
+   "desc_mismatch": "08:30/09:15/19:30/20:15 vs cron 08:35/19:35"
+  },
+  {
+   "name": "ยอดขายจากชีต 09:25/20:25",
+   "side": "code",
+   "last_round": "23 Oct 19:22",
+   "level": "⛔",
+   "status": "ไม่เริ่ม",
+   "data_asof": "29 Oct 10:37",
+   "silent_min": 8169,
+   "note": "เลยเวลาที่ตั้งไว้ 128 นาทีแล้วยังไม่มีรอบใหม่",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-download-shopee-ads",
+   "side": "local",
+   "last_round": "29 Oct 08:18",
+   "level": "⚠️",
+   "status": "มีขั้นที่ล้ม",
+   "data_asof": "—",
+   "silent_min": 186,
+   "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-sales-update",
+   "side": "local",
+   "last_round": "29 Oct 09:33",
+   "level": "⚠️",
+   "status": "ล้มติดกัน 3 รอบ",
+   "data_asof": "—",
+   "silent_min": 119,
+   "note": "รอบล่าสุด 3 รอบติดกันมีขั้นที่คืน status ERROR — ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-tiktok-product-daily",
+   "side": "local",
+   "last_round": "29 Oct 10:08",
+   "level": "⚠️",
+   "status": "มีขั้นที่ล้ม",
+   "data_asof": "—",
+   "silent_min": 71,
+   "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
+   "desc_mismatch": "10:30 vs cron 09:55/20:55"
+  },
+  {
+   "name": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
+   "side": "code",
+   "last_round": "26 Oct 10:51",
+   "level": "⚠️",
+   "status": "ตรวจผลงานไม่ได้",
+   "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
+   "silent_min": 4361,
+   "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ",
+   "desc_mismatch": "09:45/20:45 vs cron 10:50"
+  },
+  {
+   "name": "wibwub-samp-request-sync",
+   "side": "local",
+   "last_round": "29 Oct 11:19",
+   "level": "⏳",
+   "status": "กำลังรัน",
+   "data_asof": "—",
+   "silent_min": 12,
+   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
+   "desc_mismatch": "09:35/20:35 vs cron 11:05/22:05"
+  },
+  {
+   "name": "HR → Google Sheet 10:30/20:30/00:30",
+   "side": "code",
+   "last_round": "29 Oct 10:31",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "29 Oct 00:31",
+   "silent_min": 61,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
+   "side": "code",
+   "last_round": "26 Oct 10:04",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "26 Oct 11:14",
+   "silent_min": 4407,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "TikTok Live รายวัน 09:00/20:00",
+   "side": "code",
+   "last_round": "29 Oct 09:10",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "28 Oct 20:11",
+   "silent_min": 141,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "08:37/19:37 vs cron 09:00/20:00"
+  },
+  {
+   "name": "TikTok คอนเทนต์ 09:25/20:25",
+   "side": "code",
+   "last_round": "29 Oct 09:37",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "26 Oct 20:37",
+   "silent_min": 115,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-daily-followers",
+   "side": "local",
+   "last_round": "29 Oct 09:53",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 97,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-daily-stock",
+   "side": "local",
+   "last_round": "29 Oct 09:07",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 126,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-download-tiktok-ads",
+   "side": "local",
+   "last_round": "29 Oct 08:27",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 183,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-fastmoss-competitor",
+   "side": "local",
+   "last_round": "29 Oct 09:57",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 92,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-monday-update",
+   "side": "local",
+   "last_round": "29 Oct 10:36",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 52,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "09:10/20:10 vs cron 10:35/21:35"
+  },
+  {
+   "name": "wibwub-shopee-live-daily",
+   "side": "local",
+   "last_round": "29 Oct 09:37",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 114,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-thursday-affiliate",
+   "side": "local",
+   "last_round": "29 Oct 10:27",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 58,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "08:50/19:50 vs cron 10:20/21:20"
+  },
+  {
+   "name": "การตลาด vs ยอดขาย 09:45/20:45",
+   "side": "code",
+   "last_round": "29 Oct 09:47",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "29 Oct 09:57",
+   "silent_min": 96,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": ""
+  }
+ ]
+}
