@@ -2,6 +2,8 @@
 name: wibwub-daily-followers
 description: ดาวน์โหลด TikTok Followers จาก TikTok Studio ทุกวัน 09:00/20:00 → อัปเดต soc_follow chart + Mobile KPI → commit
 ---
+> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — ตัวจริงอยู่ที่ `~/Documents/Claude/Scheduled/wibwub-daily-followers/SKILL.md` · ห้ามแก้ที่นี่โดยคิดว่ามีผล
+
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 

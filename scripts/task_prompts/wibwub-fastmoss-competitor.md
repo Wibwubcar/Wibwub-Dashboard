@@ -2,6 +2,8 @@
 name: wibwub-fastmoss-competitor
 description: ทุกวัน 08:05 — ดึงข้อมูล FastMoss ของ WIBWUB + munwow (cumulative + 28-day trend + top products) → อัปเดต WIBWUB_FastMoss_Competitor_Dashboard.html → commit + push_now.command
 ---
+> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — ตัวจริงอยู่ที่ `~/Documents/Claude/Scheduled/wibwub-fastmoss-competitor/SKILL.md` · ห้ามแก้ที่นี่โดยคิดว่ามีผล
+
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 

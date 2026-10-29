@@ -2,6 +2,8 @@
 name: wibwub-download-orders-monday
 description: Download daily order exports from Shopee, TikTok Shop, Lazada, and Line My Shop — ทุกวัน 08:20/19:20
 ---
+> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — ตัวจริงอยู่ที่ `~/Documents/Claude/Scheduled/wibwub-download-orders-monday/SKILL.md` · ห้ามแก้ที่นี่โดยคิดว่ามีผล
+
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 
