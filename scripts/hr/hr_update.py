@@ -220,18 +220,30 @@ def col(n):  # 0-based -> A1 letters
     while n: n, r = divmod(n - 1, 26); s = chr(65 + r) + s
     return s
 
+HR_LOCK_STRUCT_LIMIT = 15   # แก้ใหม่เกินเท่านี้ในรอบเดียว = น่าจะโครงสร้างเปลี่ยน
+
+
 def confirm_payload(d, sid):
     by = {}
     for r in d["DAY"]: by.setdefault(r["real"], []).append(r)
     mon_th = TH_MONTH[int(d["MONTH"][5:7]) - 1]
     L, LF, R, RF = [], [], [], []
+    # keymap: (แถว, คอลัมน์) -> key ที่ผูกกับ "ความหมายของรายการ" ไม่ใช่ที่อยู่ช่อง
+    # เพราะแท็บนี้ถูกล้างแล้วสร้างใหม่ทุกรอบ แถวจึงเลื่อนได้เมื่อมีรายการใหม่แทรกเข้ามา
+    # ชื่อที่ใช้คือ e["real"] = ชื่อมาตรฐานหลังจับคู่ชื่อพิมพ์ผิดแล้ว
+    kmapL, kmapR = {}, {}
+    L_HDRS = ["ลำดับ", "วันที่", "เดือน", "เวลาเลิกงาน", "หน่วย (นาที)"]
+    R_HDRS = ["สายวันที่", "วัน", "เวลาเข้างาน", "เกินเวลา (นาที)"]
     for e in d["EMP"]:
         if not e["ot"]: continue
         rows = sorted([r for r in by.get(e["real"], []) if r["otMin"] > 0], key=lambda r: r["date"])
         if not rows: continue
         L += [[e["real"]], ["ลำดับ","วันที่","เดือน","เวลาเลิกงาน","หน่วย (นาที)"]]; LF += ["name","hdr"]
         s0 = len(L) + 1
-        for i, r in enumerate(rows): L.append([i+1, int(r["date"][8:]), mon_th, hm(r["outTime"]), r["otMin"]]); LF.append("data")
+        for i, r in enumerate(rows):
+            L.append([i+1, int(r["date"][8:]), mon_th, hm(r["outTime"]), r["otMin"]]); LF.append("data")
+            for ci, h in enumerate(L_HDRS):
+                kmapL[(len(L) - 1, ci)] = "OT|%s|%s|%s" % (e["real"], r["date"], h)
         L.append(["รวม","","","",f"=SUM(E{s0}:E{len(L)})"]); LF.append("total"); L.append([]); LF.append("blank")
     for e in d["EMP"]:
         rows = sorted([r for r in by.get(e["real"], []) if r["lateMin"] > 0], key=lambda r: r["date"])
@@ -239,9 +251,16 @@ def confirm_payload(d, sid):
         R += [[e["real"]], ["สายวันที่","วัน","เวลาเข้างาน","เกินเวลา (นาที)"]]; RF += ["name","hdr"]
         s0 = len(R) + 1
         for r in rows:
-            x = dt.date.fromisoformat(r["date"]); R.append([x.day, DOWF[x.weekday()], hm(r["inTime"]), r["lateMin"]]); RF.append("data")
+            x = dt.date.fromisoformat(r["date"])
+            R.append([x.day, DOWF[x.weekday()], hm(r["inTime"]), r["lateMin"]]); RF.append("data")
+            for ci, h in enumerate(R_HDRS):
+                kmapR[(len(R) - 1, ci)] = "LATE|%s|%s|%s" % (e["real"], r["date"], h)
         R.append([f'="รวม "&SUM(J{s0}:J{len(R)})&" นาที"']); RF.append("total"); R.append([]); RF.append("blank")
     n = max(len(L), len(R), 1)
+    # รวม keymap ของสองตารางเป็นพิกัดจริงบนแท็บ (ซ้าย A-E = 0-4 · ขวา G-J = 6-9)
+    keymap = {}
+    for (ri, ci), k in kmapL.items(): keymap[(ri, ci)] = k
+    for (ri, ci), k in kmapR.items(): keymap[(ri, ci + 6)] = k
     vals = []
     for i in range(n):
         a = (L[i] if i < len(L) else []); a = a + [""] * (5 - len(a))
@@ -271,7 +290,7 @@ def confirm_payload(d, sid):
     blocks(RF, 6, 10, {"red": 1, "green": 0.949, "blue": 0.8}, 10)
     for c, fmt in ((3, {"type": "TIME", "pattern": "h:mm"}), (8, {"type": "TIME", "pattern": "h:mm"}), (4, {"type": "NUMBER", "pattern": "#,##0"})):
         req.append({"repeatCell": {"range": G(0, n, c, c+1), "cell": {"userEnteredFormat": {"numberFormat": fmt}}, "fields": "userEnteredFormat.numberFormat"}})
-    return vals, req
+    return vals, req, keymap
 
 def split_requests(req, limit=12000):
     out, cur, size = [], [], 0
@@ -327,34 +346,124 @@ def cmd_sheet(a):
         grid = {"range": f"'{tag}'!{col(c0+1)}{first+1}:{col(c1+1)}{last_row+1}",
                 "values": [[(v if v is not None else None) for v in r[c0:c1+1]] for r in block]}
     (WORK / "grid_update.json").write_text(json.dumps(grid, ensure_ascii=False), encoding="utf-8")
-    vals, req = confirm_payload(d, a.confirm_sheet_id)
-    digest = hashlib.md5(json.dumps(vals, ensure_ascii=False).encode()).hexdigest()
+    vals, req, keymap = confirm_payload(d, a.confirm_sheet_id)
     st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
-    confirm_changed = st.get(tag + "_confirm") != digest or a.force_confirm
-    confirm_blocked = []
-    last_vals = st.get(tag + "_confirm_vals")
-    if confirm_changed and last_vals is not None:
-        if not a.confirm_current: die("--confirm-current is required (get_values of the confirm tab) to check HR has not edited it", 2)
+    confirm_changed = True if a.force_confirm else None   # ตัดสินหลังใส่ค่าที่ล็อกแล้ว
+    confirm_blocked, dup_keys, lock_missing, new_locks = [], [], [], []
+    cc = []
+    if a.confirm_current and Path(a.confirm_current).exists():
         cc = json.loads(Path(a.confirm_current).read_text(encoding="utf-8")).get("values", [])
-        nz = lambda v: str(v).strip().replace(",", "")
-        for ri in range(max(len(cc), len(last_vals))):
-            for ci in range(10):
-                old = last_vals[ri][ci] if ri < len(last_vals) and ci < len(last_vals[ri]) else ""
-                now = cc[ri][ci] if ri < len(cc) and ci < len(cc[ri]) else ""
+    nz = lambda v: str(v).strip().replace(",", "")
+    cur_at = lambda ri, ci: (cc[ri][ci] if ri < len(cc) and ci < len(cc[ri]) else "")
+
+    # key ซ้ำในรอบเดียว (คนเดียว วันเดียว คอลัมน์เดียว มี 2 แถว) -> ไม่ล็อก ไม่ทับ รายงานแทน
+    seen = {}
+    for pos, k in keymap.items(): seen.setdefault(k, []).append(pos)
+    dup_keys = sorted(k for k, v in seen.items() if len(v) > 1)
+    pos_of = {k: v[0] for k, v in seen.items() if len(v) == 1}
+
+    locked = dict(st.get(tag + "_hr_locked") or {})
+    prev_keyed = st.get(tag + "_confirm_keyed")
+
+    if confirm_changed is None: confirm_changed = True
+    if confirm_changed:
+        if prev_keyed is None:
+            # ย้ายฐานครั้งเดียว — **ไม่ล็อกอะไรอัตโนมัติ**
+            # เทียบตำแหน่งเก่ากับผังใหม่ไม่ได้ เพราะแท็บถูกล้างและสร้างใหม่ทุกรอบ แถวเลื่อนได้
+            # (29 ต.ค. 69 วัดจริง: ฐานวีร์ 21 ต.ค. ย้าย J70 -> J72 · วรกานต์ 2 ต.ค. J81 -> J83
+            #  ส่วน J70/J81 ในผังใหม่กลายเป็นแถวชื่อ/หัวตาราง ถ้าเขียนตามที่อยู่เดิมจะผิดคน)
+            # ช่องที่ HR แก้ไว้ก่อนหน้านี้ ให้คนใส่ด้วย `sheet-lock "<key>" "<ค่า>"` ครั้งเดียว
+            confirm_blocked.append("ย้ายฐานเป็นแบบ key รอบนี้ — ไม่ล็อกอัตโนมัติ "
+                                   "ใช้ sheet-lock ใส่ช่องที่ HR แก้ไว้ก่อนหน้า")
+        else:
+            # ปกติ: เทียบด้วย key โดยอ่านค่าที่ "ที่อยู่ของรอบที่แล้ว" เพราะค่าบนชีตตอนนี้
+            # ถูกเขียนด้วยผังของรอบที่แล้ว ถ้าใช้ผังรอบนี้จะเห็นแถวเลื่อนเป็น "HR แก้" ไปทั้งแผง
+            for k, pair in prev_keyed.items():
+                try: a1, old = pair
+                except Exception: continue
                 if isinstance(old, str) and old.startswith("="): continue
-                if nz(old) != nz(now): confirm_blocked.append(f"{col(ci)}{ri+1}: was '{old}' now '{now}'")
-    if confirm_blocked: confirm_changed = False   # HR edited our tab: leave it alone and report
+                ci = ord(a1[0]) - 65; ri = int(a1[1:]) - 1
+                now = cur_at(ri, ci)
+                if nz(old) == nz(now): continue
+                confirm_blocked.append("%s (%s): was '%s' now '%s'" % (a1, k, old, now))
+                if k in dup_keys: continue
+                if nz(locked.get(k, "\x00")) != nz(now):
+                    locked[k] = now; new_locks.append("%s = %s (เดิม %s)" % (k, now, old))
+
+    # แก้ใหม่พรวดเดียวเยอะผิดปกติ = น่าจะโครงสร้างแท็บเปลี่ยน ไม่ใช่ HR แก้ทีละช่อง
+    structural = len(new_locks) > HR_LOCK_STRUCT_LIMIT
+    if structural:
+        confirm_changed = False
+        locked = dict(st.get(tag + "_hr_locked") or {})     # ไม่รับล็อกชุดนี้
+    elif confirm_changed:
+        # เขียนค่าของ HR กลับลงตำแหน่ง "ของรอบนี้" — ต้องเขียนค่าจริง ไม่ใช่ None
+        # เพราะ requests ล้างทั้งแท็บ (updateCells A1:J300 rows=[]) ก่อน values_update เสมอ
+        for k, v in sorted(locked.items()):
+            if k in dup_keys: continue
+            pos = pos_of.get(k)
+            if pos is None:
+                lock_missing.append(k); continue
+            ri, ci = pos
+            if ri < len(vals) and ci < len(vals[ri]): vals[ri][ci] = v
+    digest = hashlib.md5(json.dumps(vals, ensure_ascii=False).encode()).hexdigest()
     batches = split_requests(req) if confirm_changed else []
     for i, b in enumerate(batches):
         (WORK / f"confirm_req_{i+1}.json").write_text(json.dumps(b, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     (WORK / "confirm_values.json").write_text(json.dumps({"range": f"'{tag} confirm ot'!A1:J{len(vals)}", "values": vals}, ensure_ascii=False), encoding="utf-8")
     pend = {wkey: sorted(written | set(new_cells))}
-    if confirm_changed: pend.update({tag + "_confirm": digest, tag + "_confirm_vals": vals})
+    if confirm_changed:
+        keyed = {k: ["%s%d" % (col(ci), ri + 1),
+                     (vals[ri][ci] if ri < len(vals) and ci < len(vals[ri]) else "")]
+                 for (ri, ci), k in keymap.items() if k not in dup_keys}
+        pend.update({tag + "_confirm": digest, tag + "_confirm_vals": vals,
+                     tag + "_confirm_keyed": keyed, tag + "_hr_locked": locked})
     (WORK / "pending_digest.json").write_text(json.dumps(pend, ensure_ascii=False), encoding="utf-8")
     print(json.dumps({"grid_tab": tag, "grid_cells_to_write": changes, "grid_file": "work/grid_update.json" if grid else None,
-        "skipped_cells_not_empty": kept[:30], "confirm_changed": confirm_changed, "confirm_blocked_hr_edits": confirm_blocked[:20], "confirm_request_files": [f"work/confirm_req_{i+1}.json" for i in range(len(batches))],
+        "skipped_cells_not_empty": kept[:30], "confirm_changed": confirm_changed, "confirm_blocked_hr_edits": confirm_blocked[:20],
+        "confirm_hr_edits_new": new_locks, "confirm_locked_count": len(locked),
+        "confirm_locked_missing": lock_missing, "confirm_dup_keys": dup_keys[:10],
+        "confirm_structural_change": structural, "confirm_request_files": [f"work/confirm_req_{i+1}.json" for i in range(len(batches))],
         "confirm_values_file": "work/confirm_values.json" if confirm_changed else None,
         "after_success_run": "python3 hr_update.py sheet-done"}, ensure_ascii=False))
+
+def _lock_tag(a):
+    t, *_ = read_page(); d = compute(t)
+    mon = a.month or d["MONTH"]
+    y, m = map(int, mon.split("-"))
+    return f"{EN_MON[m-1]} {str(y)[2:]}"
+
+
+def cmd_sheet_lock(a):
+    """ใส่ค่าที่ HR แก้ไว้เป็นล็อกถาวร ด้วย key ไม่ใช่ที่อยู่ช่อง"""
+    tag = _lock_tag(a)
+    st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    locked = dict(st.get(tag + "_hr_locked") or {})
+    if len(a.pair) % 2: die('ต้องใส่เป็นคู่: sheet-lock "<key>" "<ค่า>"', 2)
+    for i in range(0, len(a.pair), 2):
+        locked[a.pair[i]] = a.pair[i + 1]
+    st[tag + "_hr_locked"] = locked
+    STATE.write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps({"tag": tag, "locked_count": len(locked),
+                      "locked": locked}, ensure_ascii=False))
+
+
+def cmd_sheet_unlock(a):
+    tag = _lock_tag(a)
+    st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    locked = dict(st.get(tag + "_hr_locked") or {})
+    gone = [k for k in a.key if locked.pop(k, None) is not None]
+    st[tag + "_hr_locked"] = locked
+    STATE.write_text(json.dumps(st, ensure_ascii=False), encoding="utf-8")
+    print(json.dumps({"tag": tag, "unlocked": gone, "not_found": [k for k in a.key if k not in gone],
+                      "locked_count": len(locked)}, ensure_ascii=False))
+
+
+def cmd_sheet_locks(a):
+    tag = _lock_tag(a)
+    st = json.loads(STATE.read_text(encoding="utf-8")) if STATE.exists() else {}
+    locked = st.get(tag + "_hr_locked") or {}
+    print(json.dumps({"tag": tag, "locked_count": len(locked), "locked": locked}, ensure_ascii=False))
+
 
 def cmd_sheet_done(a):
     p = WORK / "pending_digest.json"
@@ -517,7 +626,9 @@ def cmd_sheet_auto(a):
         sys.stdout = real
     plan = json.loads(buf.getvalue())
 
-    blocked = plan.get("confirm_blocked_hr_edits") or []
+    # PARTIAL เมื่อ "ข้ามแท็บ confirm จริง" เท่านั้น — รายการใน confirm_blocked_hr_edits
+    # เป็นแค่บันทึกว่า HR แก้ช่องไหน ซึ่งตอนนี้ระบบล็อกให้แล้วและยังเขียนแท็บต่อได้
+    blocked = bool(plan.get("confirm_structural_change"))
     applied = {"grid": 0, "confirm_requests": 0, "confirm_values": False}
 
     if a.dry_run:
@@ -568,13 +679,20 @@ def cmd_sheet_auto(a):
     plan.update({"mode": "PARTIAL" if blocked else "APPLIED", "applied": applied,
                  "state_saved": _b.getvalue().strip() == "saved", "after_success_run": None})
     if blocked:
-        plan["note"] = ("เขียนเฉพาะตารางเข้า-ออก · ข้ามแท็บ confirm ot เพราะ HR แก้เอง "
-                        "— ค่าที่ HR แก้ยังไม่ถูกรับเป็นฐานใหม่ ด่านยังติดอยู่")
+        plan["note"] = ("เขียนเฉพาะตารางเข้า-ออก · ข้ามแท็บ confirm ot เพราะโครงสร้างแท็บ"
+                        "เปลี่ยนไปมากผิดปกติ (แก้ใหม่เกิน %d ช่องในรอบเดียว) ให้คนตรวจก่อน"
+                        % HR_LOCK_STRUCT_LIMIT)
+    elif plan.get("confirm_locked_count"):
+        plan["note"] = ("ช่องที่ HR แก้ถูกล็อกไว้ %d ช่อง ระบบไม่เขียนทับ "
+                        "ส่วนช่องอื่นอัปเดตตามปกติ" % plan["confirm_locked_count"])
     print(json.dumps(plan, ensure_ascii=False))
 
 
 def main():
     p = argparse.ArgumentParser(); s = p.add_subparsers(dest="cmd", required=True)
+    _l = s.add_parser("sheet-lock");   _l.add_argument("pair", nargs="+"); _l.add_argument("--month"); _l.set_defaults(func=cmd_sheet_lock)
+    _u = s.add_parser("sheet-unlock"); _u.add_argument("key", nargs="+");  _u.add_argument("--month"); _u.set_defaults(func=cmd_sheet_unlock)
+    _k = s.add_parser("sheet-locks");  _k.add_argument("--month");         _k.set_defaults(func=cmd_sheet_locks)
     s.add_parser("state").add_argument("--month")
     m = s.add_parser("merge"); m.add_argument("--in", dest="in_file", required=True); m.add_argument("--out", dest="out_file", required=True)
     m.add_argument("--since", type=int); m.add_argument("--full", action="store_true"); m.add_argument("--month")
@@ -589,7 +707,8 @@ def main():
     n = s.add_parser("newmonth"); n.add_argument("--src-id", type=int, required=True); n.add_argument("--new-id", type=int, required=True)
     n.add_argument("--title", required=True); n.add_argument("--index", type=int, required=True); n.add_argument("--month", required=True)
     a = p.parse_args()
-    {"state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "sheet-auto": cmd_sheet_auto, "newmonth": cmd_newmonth, "archive": cmd_archive, "leave": cmd_leave, "prod": cmd_prod}[a.cmd](a)
+    {"sheet-lock": cmd_sheet_lock, "sheet-unlock": cmd_sheet_unlock, "sheet-locks": cmd_sheet_locks,
+     "state": cmd_state, "merge": cmd_merge, "commit": cmd_commit, "sheet": cmd_sheet, "sheet-done": cmd_sheet_done, "sheet-auto": cmd_sheet_auto, "newmonth": cmd_newmonth, "archive": cmd_archive, "leave": cmd_leave, "prod": cmd_prod}[a.cmd](a)
 
 if __name__ == "__main__":
     main()
