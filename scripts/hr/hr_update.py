@@ -525,13 +525,22 @@ def cmd_sheet_auto(a):
                      "after_success_run": None})
         print(json.dumps(plan, ensure_ascii=False)); return
 
-    if blocked:
-        plan.update({"mode": "BLOCKED", "note": "HR แก้แท็บ confirm ot เอง — ไม่แตะทั้งสองแท็บ ให้คนตรวจก่อน"})
-        print(json.dumps(plan, ensure_ascii=False)); sys.exit(2)
-
+    # PARTIAL (29 ต.ค. 69): HR แก้แท็บ confirm ot -> ข้ามเฉพาะแท็บนั้น
+    # ตารางเข้า-ออกยังเขียนต่อได้ เพราะเป็น append-only อยู่แล้ว (เติมเฉพาะช่องว่าง)
+    # ของเดิมหยุดทั้งสองแท็บ ทำให้เวลาเข้า-ออกของทั้งวันไม่เข้าชีตเลย
+    # (28-29 ต.ค. 69 ค้าง 2 วันติด รอบ 20:30 มี 42 ช่องรอเขียนแต่ไม่ได้เขียน)
     gf = WORK / "grid_update.json"
     grid = json.loads(gf.read_text(encoding="utf-8")) if gf.exists() else None
     if grid:
+        # ด่าน: payload ของตารางเข้า-ออกต้องใช้ None สำหรับช่องที่ไม่แตะเท่านั้น
+        # ถ้ามี "" ปนมาแปลว่ารูปแบบเปลี่ยน และการเขียนจะ "ลบ" ค่าที่ HR กรอกไว้
+        empties = [(ri, ci) for ri, row in enumerate(grid.get("values") or [])
+                   for ci, v in enumerate(row) if isinstance(v, str) and v == ""]
+        if empties:
+            plan.update({"mode": "ABORT", "note": "grid_update.json มีค่าว่าง '' ปนมา %d ช่อง "
+                                                  "— การเขียนจะลบของที่มีอยู่ ไม่เขียนทั้งรอบ" % len(empties),
+                         "empty_cells_sample": empties[:10]})
+            print(json.dumps(plan, ensure_ascii=False)); sys.exit(2)
         sh.values_update(grid["range"], params={"valueInputOption": "USER_ENTERED"},
                          body={"values": grid["values"]})
         applied["grid"] = plan.get("grid_cells_to_write", 0)
@@ -556,8 +565,11 @@ def cmd_sheet_auto(a):
         cmd_sheet_done(argparse.Namespace())
     finally:
         sys.stdout = _r
-    plan.update({"mode": "APPLIED", "applied": applied,
+    plan.update({"mode": "PARTIAL" if blocked else "APPLIED", "applied": applied,
                  "state_saved": _b.getvalue().strip() == "saved", "after_success_run": None})
+    if blocked:
+        plan["note"] = ("เขียนเฉพาะตารางเข้า-ออก · ข้ามแท็บ confirm ot เพราะ HR แก้เอง "
+                        "— ค่าที่ HR แก้ยังไม่ถูกรับเป็นฐานใหม่ ด่านยังติดอยู่")
     print(json.dumps(plan, ensure_ascii=False))
 
 
