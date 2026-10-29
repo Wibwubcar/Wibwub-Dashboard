@@ -104,9 +104,13 @@ def funnel(rs, mkey=None):
     if not has: return OrderedDict(req=req, appr=appr, shipped=appr, posted=None, clips=None, waiting=None, sale=0)
     # clips: บวกเฉพาะแถวที่ "รู้จำนวนจริง" · ไม่มีสักแถว = None (หน้าเว็บขึ้นว่าไม่มีข้อมูล)
     known = [r["clip"] for r in rs if r.get("clip") is not None]
+    # waiting = "อนุมัติแล้วแต่ยังไม่โพสต์" จึงต้องนับเฉพาะแถวที่ Status = Approve
+    # เดิมนับทุกแถวของเดือน ทำให้คำขอที่ถูกปฏิเสธแต่ช่อง "การลงโพสต์" ยังค้างเป็น
+    # "ยังไม่โพสต์" หลุดเข้ามาด้วย (29 ต.ค. 69: ต.ค. ได้ 228 ทั้งที่ของจริง 208+18 = 226)
+    appr_rows = [r for r in rs if r["st"] == "Approve"]
     return OrderedDict(req=req, appr=appr, shipped=appr, posted=sum(post_kind(r["post"]) == "posted" for r in rs),
                        clips=sum(known) if known else None,
-                       waiting=sum(post_kind(r["post"]) == "waiting" for r in rs), sale=0)
+                       waiting=sum(post_kind(r["post"]) == "waiting" for r in appr_rows), sale=0)
 
 def products(rs):
     items = OrderedDict(); un = dict(c=0, appr=0, rej=0, other=0)
