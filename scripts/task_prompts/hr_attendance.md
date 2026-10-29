@@ -1,3 +1,8 @@
+---
+name: hr_attendance
+description: ส่วน A ของงาน local wibwub-fastmoss-competitor (08:55/09:55/12:55/17:55/18:55/23:55) — Discord → WIBWUB_HR_Attendance.html · ไฟล์นี้ไม่เขียน Google Sheet (ตัวเขียนชีตคือ งาน code wibwub-hr-attendance-1200-2200 ผ่าน wibwub-hr-sheet.md)
+---
+
 ## 🧹 ปิดแท็บ Chrome เมื่อจบงาน (ทำทุกครั้ง)
 ก่อนจบงาน ไม่ว่าจะสำเร็จ ไม่มีข้อมูลใหม่ หรือเจอ error: เรียก `tabs_context_mcp` ดู tabId ทั้งหมดในกลุ่มแท็บของรอบนี้ แล้วปิดทุกแท็บด้วย `tabs_close_mcp` จนกลุ่มแท็บหายไป (ยกเว้นหน้าที่ต้องให้ผู้ใช้ login เอง ให้เหลือแท็บนั้นแท็บเดียวและบอกในรายงาน)
 

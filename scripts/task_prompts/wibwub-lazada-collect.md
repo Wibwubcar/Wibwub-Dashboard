@@ -1,6 +1,6 @@
 ---
 name: wibwub-lazada-collect
-description: ทุกวัน 08:30/19:30 (ต่อท้ายงานโหลด order ทันที) — ดึงยอดขาย + ค่าโฆษณา Lazada เก็บไว้ใน scripts/ads/work/ ให้ ads-daily หยิบไปใช้ตอน 09:15/20:15
+description: ส่วน B ของงาน local wibwub-download-orders-monday (08:35/19:35) — ดึงยอดขาย + ค่าโฆษณา Lazada เก็บไว้ใน scripts/ads/work/ ให้ ads-daily หยิบไปใช้ตอน 09:15/20:15
 ---
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)

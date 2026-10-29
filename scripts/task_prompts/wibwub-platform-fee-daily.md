@@ -1,6 +1,6 @@
 ---
 name: wibwub-platform-fee-daily
-description: ทุกวัน 10:30 — อัปเดตอัตราค่าธรรมเนียม TikTok ของเดือนปัจจุบัน (ชั่วคราว) และปิดยอดเดือนที่แล้วตั้งแต่วันที่ 5 เป็นต้นไป → data Ads/platform_fee.json
+description: ส่วน B ของงาน local wibwub-tiktok-product-daily (09:55/20:55) — อัปเดตอัตราค่าธรรมเนียม TikTok ของเดือนปัจจุบัน (ชั่วคราว) และปิดยอดเดือนที่แล้วตั้งแต่วันที่ 5 เป็นต้นไป → data Ads/platform_fee.json
 ---
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
