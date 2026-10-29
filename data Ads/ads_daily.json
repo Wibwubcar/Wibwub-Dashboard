@@ -13792,12 +13792,12 @@
    },
    "tk_ads": {
     "product": {
-     "gmv": 145945.09,
-     "spend": 38671.71,
-     "orders": 642
+     "gmv": 145706.82,
+     "spend": 38637.41,
+     "orders": 641
     },
     "live": {
-     "gmv": 369.6,
+     "gmv": 369.55,
      "spend": 0.0,
      "orders": 1
     }
