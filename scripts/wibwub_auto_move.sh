@@ -90,4 +90,16 @@ move_old 'Shop+-Ads-Overall-Data-*.csv'               "$ALL/data Ads/Shopee"
 move_old 'overview-v2_*.csv'                          "$ARCH/overview-v2"
 move_old 'WIBWUBCAR_หน้าแสดงรายละเอียดร้านค้า_*.xlsx' "$ALL/data Ads/TikTok/Business Ads"
 
+# ── เพิ่ม 29 ต.ค. 69: ไฟล์ที่งานตั้งเวลาโหลดแล้ว "คัดลอก" เข้าโฟลเดอร์งาน (sandbox ลบต้นทางไม่ได้) → ค้างใน Downloads
+#    ย้ายเฉพาะไฟล์อายุเกิน 1 วัน ไปเก็บใน downloads_archive (ไม่ลบ)
+move_old 'AD-1-*.csv'                                  "$ARCH/facebook"
+move_old 'AD-2-*.csv'                                  "$ARCH/facebook"
+move_old 'AD3-*.csv'                                   "$ARCH/facebook"
+move_old 'AD-4-*.csv'                                  "$ARCH/facebook"
+move_old 'Wi-Wu-AD-1*.csv'                             "$ARCH/facebook"
+move_old 'Top 30 Affiliate*ขอสินค้า*.csv'              "$ARCH/ขอสินค้า"
+move_old 'supply-sellercenter-export-sc_live_stream_list_export_*.xlsx' "$ARCH/shopee live list"
+move_old 'shopee-ads-*.csv'                            "$ARCH/shopee-ads"
+move_old 'wibwub_tk_prod_sku_*.json'                   "$ARCH/TikTok json"
+
 exit 0
