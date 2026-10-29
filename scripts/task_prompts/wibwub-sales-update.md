@@ -1,28 +1,31 @@
 ---
 name: wibwub-sales-update
-description: ทุกวัน 08:30/19:30 — อ่านชีตยอดขาย Shopee/TikTok/Lazada → อัปเดต SALES arrays ใน Dashboard + Mobile
+description: ทุกวัน 09:25/20:25 (งานฝั่ง code ตั้งแต่ 29 ต.ค. 69) — อ่านชีตยอดขาย Shopee/TikTok/Lazada ผ่าน service account → อัปเดต SALES arrays + MTD_COVERAGE ใน Dashboard + Mobile
 ---
 
-## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
+## ขั้น 0 — ไม่มีขั้นหาโฟลเดอร์ ห้ามใช้ shell ค้นหา
 
-พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
-จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
+`sales_update.py` หาโฟลเดอร์ All เองจากตำแหน่งไฟล์ (marker `sw.js` + `.git`)
+จึงไม่ต้องหาพาธ ไม่ต้องตั้งตัวแปร **คำสั่ง shell แรกของรอบต้องขึ้นต้นด้วย `python3` เสมอ**
 
-```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
-```
+**ห้ามรันลูป `for` / `[ -d ... ]` / ตั้งตัวแปร `BASE=` / `cd` เพื่อหาพาธ** — คำสั่งผสมแบบนั้น
+สร้างกฎอนุญาตถาวรไม่ได้ จึงเด้งกล่องขออนุญาตที่ไม่มีคนกดแล้วค้างทั้งรอบ
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
-- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
-  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+ถ้าคำสั่ง `python3` ตอบว่าไม่พบไฟล์ ให้ลองพาธสำรอง
+`~/mnt/All/scripts/sales_update.py` **หนึ่งครั้ง** ถ้ายังไม่ได้ → หยุดและรายงานว่าล้มเหลว
+ห้ามเดาพาธเอง ห้ามใช้พาธ `/sessions/<ชื่อ>/mnt/...` ที่ฝังไว้ในเอกสารเก่า
+
+> **เกิดจริง 28 ต.ค. 69 20:31 (งาน HR) และ 26/28 ต.ค. (งาน ads-daily):** ขั้น 0 แบบลูป
+> ทำให้รอบนั้นค้างที่คำสั่งแรกโดยไม่มีใครรู้ · งานนี้ย้ายมาฝั่ง code เมื่อ 29 ต.ค. 69
+> จึงตัดลูปออกทั้งหมด ไม่ต้องหวังให้เอเจนต์ "ข้าม" เอง
 
 ---
 
 
 ## WIBWUB — อัปเดตยอดขายรายเดือนจาก Google Sheets
 
-BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
+โฟลเดอร์ All (ใช้เขียนพาธเต็มในคำสั่ง **ห้ามทำเป็นตัวแปร shell**):
+`/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
 
 **ไม่ต้องใช้เบราว์เซอร์เลย** — อ่านชีตผ่าน service account (`~/wibwub-service-account.json`)
 
