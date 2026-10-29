@@ -14,39 +14,54 @@
       "kind": "git_grep",
       "pattern": "^auto-update: การตลาด vs ยอดขาย",
       "max_age_hours": 20,
-      "note": "exit 10 (ไม่มีอะไรเปลี่ยน) จะไม่ commit -> ค้างเกิน 20 ชม. แปลว่า 'ไม่มีผลงาน' อาจเป็นได้ทั้งไม่ได้รัน หรือรันแล้วไม่มีข้อมูลใหม่ 2 รอบติด ซึ่งก็ควรไปดูอยู่ดี"
+      "note": "exit 10 (ไม่มีอะไรเปลี่ยน) จะไม่ commit -> ค้างเกิน 20 ชม. แปลว่า 'ไม่มีผลงาน' อาจเป็นได้ทั้งไม่ได้รัน หรือรันแล้วไม่มีข้อมูลใหม่ 2 รอบติด ซึ่งก็ควรไปดูอยู่ดี",
+      "cron": "45 9,20 * * *"
     },
     "wibwub-tiktok-live-daily": {
       "label": "TikTok Live รายวัน 09:00/20:00",
       "kind": "git_grep",
       "pattern": "^auto-update: TikTok Live รายวัน",
       "max_age_hours": 20,
-      "note": "TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน"
+      "note": "TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน",
+      "cron": "0 9,20 * * *"
     },
     "wibwub-tiktok-content": {
       "label": "TikTok คอนเทนต์ 09:25/20:25",
       "kind": "git_grep",
       "pattern": "^auto-update: TikTok content",
       "max_age_hours": 72,
-      "note": "ข้อความ commit จริงเป็นภาษาอังกฤษ 'auto-update: TikTok content <วันที่>' (เคยตั้ง pattern เป็นไทยแล้วไปแมตช์ commit มือของคนอื่น ได้ผลเพี้ยน) · คาบจริงที่สังเกตได้ 11-59 ชม. ขึ้นกับว่าทีมกรอกชีตเมื่อไร"
+      "note": "ข้อความ commit จริงเป็นภาษาอังกฤษ 'auto-update: TikTok content <วันที่>' (เคยตั้ง pattern เป็นไทยแล้วไปแมตช์ commit มือของคนอื่น ได้ผลเพี้ยน) · คาบจริงที่สังเกตได้ 11-59 ชม. ขึ้นกับว่าทีมกรอกชีตเมื่อไร",
+      "cron": "25 9,20 * * *"
     },
     "wibwub-hr-attendance-1200-2200": {
       "label": "HR → Google Sheet 10:30/20:30/00:30",
       "kind": "mtime",
       "file": "scripts/hr/hr_state.json",
-      "max_age_hours": 16
+      "max_age_hours": 16,
+      "cron": "30 10,20,0 * * *"
     },
     "wibwub-content-sheet": {
       "label": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
       "kind": "none",
-      "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ต้องรอชั้นที่ 2 (MCP list_task_runs)"
+      "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ต้องรอชั้นที่ 2 (MCP list_task_runs)",
+      "cron": "50 10 */5 * *"
     },
     "wibwub-shipnity-monday": {
       "label": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
       "kind": "mtime",
       "file": "Data Shipnity/Sales_Dashboard.html",
-      "max_age_hours": 192
+      "max_age_hours": 192,
+      "cron": "0 10 * * 1"
+    },
+    "wibwub-sales-update": {
+      "label": "ยอดขายจากชีต 09:25/20:25",
+      "cron": "25 9,20 * * *",
+      "kind": "git_grep",
+      "pattern": "^auto-update: ยอดขายจากชีต",
+      "max_age_hours": 20,
+      "note": "ย้ายจากฝั่ง local มาฝั่ง code 29 ต.ค. 69 (VM ฝั่ง local ไม่มี gspread + ไม่มี service account) · NO_CHANGE จะไม่ commit ช่วงที่ทีมยังไม่กรอกชีตจึงอาจเกินเกณฑ์ได้"
     }
   },
-  "_note_git_grep": "git_grep ⛔ แปลว่า 'ไม่มีผลงาน' ไม่ใช่ 'ไม่ได้รัน' — งานที่รันแล้วได้ NO_CHANGE จะไม่ commit · ถ้าเจอ ⛔ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป · pattern ต้อง **ยึดหัวบรรทัด** ด้วย ^auto-update: เสมอ ไม่งั้นจะไปแมตช์ commit ที่คนทำเอง (28 ต.ค. 69: commit มือของผมมีคำว่า 'การตลาด vs ยอดขาย' อยู่ใน body ตัวตรวจเลยนึกว่างานยังมีผลงาน ทั้งที่ของจริงหยุดมา 2 วัน — false negative เต็ม ๆ)"
+  "_note_git_grep": "git_grep ⛔ แปลว่า 'ไม่มีผลงาน' ไม่ใช่ 'ไม่ได้รัน' — งานที่รันแล้วได้ NO_CHANGE จะไม่ commit · ถ้าเจอ ⛔ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป · pattern ต้อง **ยึดหัวบรรทัด** ด้วย ^auto-update: เสมอ ไม่งั้นจะไปแมตช์ commit ที่คนทำเอง (28 ต.ค. 69: commit มือของผมมีคำว่า 'การตลาด vs ยอดขาย' อยู่ใน body ตัวตรวจเลยนึกว่างานยังมีผลงาน ทั้งที่ของจริงหยุดมา 2 วัน — false negative เต็ม ๆ)",
+  "_cron_note": "cron ของฝั่ง code เก็บไว้ที่นี่เพราะสคริปต์อ่านสโตร์ของแอปไม่ได้ (อ่านได้ทาง MCP list_scheduled_tasks เท่านั้น) — ถ้าแก้เวลางานในแอป ต้องมาแก้ที่นี่ด้วย ไม่งั้นด่าน 'ไม่เริ่ม' จะเพี้ยน"
 }

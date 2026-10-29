@@ -317,6 +317,7 @@
     <div class="nav-item" data-sec="projects" onclick="go('projects',this)"><span class="nav-icon">📋</span><span>Projects & Tasks</span></div>
     <div class="nav-item" data-sec="procurement" id="nav-procurement-item" onclick="go('procurement',this)" style="display:none"><span class="nav-icon">📦</span><span>Forecast</span></div>
     <div class="nav-item" data-sec="prodreport" id="nav-prodreport-item" onclick="go('prodreport',this)" style="display:none"><span class="nav-icon">🏭</span><span>รายงานการผลิต</span></div>
+    <div class="nav-item" data-sec="taskhealth" onclick="go('taskhealth',this)"><span class="nav-icon">🩺</span><span>สถานะงานอัตโนมัติ</span><span id="th-badge" style="margin-left:auto;display:none;font-size:11px;font-weight:700;background:#ef4444;color:#fff;border-radius:10px;padding:1px 7px"></span></div>
     <div class="nav-sec" id="ns-admin" style="display:none">Admin</div>
     <div class="nav-item" data-sec="admin" id="nav-admin-item" onclick="go('admin',this)" style="display:none"><span class="nav-icon">⚙️</span><span>จัดการผู้ใช้</span></div>
   </nav>
@@ -1614,6 +1615,40 @@
     </section>
 
     <!-- ─── ADMIN SECTION ─── -->
+    <!-- ════ สถานะงานอัตโนมัติ (เพิ่ม 29 ต.ค. 69) ════
+         ผู้ใช้มองไม่เห็นเซสชันของงานตั้งเวลาในแอป จึงต้องมีหน้านี้ไว้ดูเองตอนเช้า
+         ข้อมูลมาจาก scripts/ops/task_health.json ซึ่งเขียนโดย task_health.py --write-json
+         ที่รันต่อท้ายงานฝั่ง code (ฝั่ง local อ่านไฟล์เซสชันไม่ได้)
+         repo เป็นสาธารณะ: JSON มีแค่ชื่องาน เวลา สถานะ ไม่มีพาธ/session id/ชื่อบัญชี -->
+    <section id="taskhealth" class="section">
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin-bottom:6px">
+        <h2 style="margin:0">🩺 สถานะงานอัตโนมัติ</h2>
+        <span id="th-checked" style="font-size:12px;color:var(--muted,#64748b)">กำลังโหลด…</span>
+      </div>
+      <div id="th-stale" style="display:none;margin:10px 0;padding:10px 14px;border-radius:10px;
+           background:#fef3c7;border:1px solid #f59e0b;color:#92400e;font-size:13px"></div>
+      <div id="th-unreadable" style="display:none;margin:10px 0;padding:10px 14px;border-radius:10px;
+           background:#fee2e2;border:1px solid #ef4444;color:#991b1b;font-size:13px"></div>
+      <div style="overflow-x:auto">
+        <table id="tbl-taskhealth" style="width:100%;border-collapse:collapse;font-size:13px;min-width:760px">
+          <thead><tr style="text-align:left;border-bottom:2px solid #e2e8f0">
+            <th style="padding:8px 10px">งาน</th><th style="padding:8px 10px">ฝั่ง</th>
+            <th style="padding:8px 10px">รอบล่าสุด</th><th style="padding:8px 10px">สถานะ</th>
+            <th style="padding:8px 10px">ข้อมูลถึง</th><th style="padding:8px 10px">เงียบ (นาที)</th>
+            <th style="padding:8px 10px">หมายเหตุ</th>
+          </tr></thead>
+          <tbody id="th-body"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12px;color:var(--muted,#64748b);margin-top:14px;line-height:1.7">
+        <strong>อ่านยังไง</strong> · ⛔ ต้องเข้าไปดู — <em>ไม่เริ่ม</em> = เลยเวลาที่ตั้งไว้เกิน 20 นาที
+        (งานฝั่ง local เริ่มช้าได้ถึง ~15 นาทีเป็นปกติ) · <em>ค้าง</em> = เงียบเกิน 15 นาที
+        แล้วรอบนั้นยังไม่ได้เขียนรายงานปิดท้าย<br>
+        ⚠️ น่าสงสัย — <em>ล้มติดกัน</em> ≥ 2 รอบ · <em>ข้อมูลค้าง</em> = งานรันผ่านแต่ผลงานไม่ขยับ ·
+        <em>ตรวจผลงานไม่ได้</em> = งานนั้นไม่มีผลงานในเครื่องให้ตรวจ <strong>ไม่ได้แปลว่าปกติ</strong><br>
+        หน้านี้ <strong>รายงานอย่างเดียว ไม่หยุดงานให้</strong>
+      </p>
+    </section>
     <section id="admin" class="section">
       <div class="admin-form-card">
         <h3>➕ เพิ่มผู้ใช้ใหม่</h3>
@@ -3996,6 +4031,76 @@ const MKT_SPEND = {"asof":"2026-10-28","from":"2026-01-01","to":"2026-10-28","ke
 </script>
 
 <script>document.addEventListener("DOMContentLoaded",function(){try{renderMktSpend("mks-dash");}catch(e){console.error(e);}});</script>
-<script>window.addEventListener("resize",function(){clearTimeout(window.mksResize);window.mksResize=setTimeout(function(){try{mksRender();}catch(e){}},250);});</script>
+<script>window.addEventListener("resize",function(){clearTimeout(window.mksResize);window.mksResize=setTimeout(function(){try{mksRender();}catch(e){}},250);});// ════ สถานะงานอัตโนมัติ (เพิ่ม 29 ต.ค. 69) ════
+// อ่าน scripts/ops/task_health.json · ถ้าไฟล์เก่ากว่า stale_hours = ตัวตรวจเองไม่ได้รัน
+// ซึ่งต้องเตือน ไม่งั้นหน้านี้จะโชว์ "ปกติ" ค้างไว้ทั้งที่ไม่มีใครตรวจแล้ว
+(function () {
+  var LV = { '⛔': { bg: '#fee2e2', fg: '#991b1b' }, '⚠️': { bg: '#fef3c7', fg: '#92400e' },
+             '⏳': { bg: '#e0e7ff', fg: '#3730a3' }, '✅': { bg: '#dcfce7', fg: '#166534' } };
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"]/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; });
+  }
+  function render(d) {
+    var chk = document.getElementById('th-checked');
+    var body = document.getElementById('th-body');
+    if (!body) return;
+    chk.textContent = 'ตรวจล่าสุด ' + (d.checked_at || '—');
+    var th = (d.thresholds || {}).stale_hours || 14;
+    var ageH = null;
+    if (d.checked_at) {
+      var p = d.checked_at.replace(' ', 'T');
+      var t = new Date(p);
+      if (!isNaN(t)) ageH = (Date.now() - t.getTime()) / 3600000;
+    }
+    var st = document.getElementById('th-stale');
+    if (ageH === null || ageH > th) {
+      st.style.display = 'block';
+      st.innerHTML = '⚠️ <strong>ตัวตรวจไม่ได้รัน</strong> — ผลล่าสุดนี้เก่ากว่า ' + th +
+        ' ชั่วโมง' + (ageH === null ? '' : ' (' + ageH.toFixed(0) + ' ชม.)') +
+        ' สถานะด้านล่างอาจไม่ตรงกับความจริงแล้ว';
+    } else { st.style.display = 'none'; }
+    var un = document.getElementById('th-unreadable');
+    if (d.unreadable && d.unreadable.length) {
+      un.style.display = 'block';
+      un.innerHTML = '⛔ <strong>ตรวจไม่ได้บางส่วน</strong> — ' + d.unreadable.map(esc).join(' · ');
+    } else { un.style.display = 'none'; }
+    var bad = 0;
+    body.innerHTML = (d.tasks || []).map(function (t) {
+      if (t.level === '⛔') bad++;
+      var c = LV[t.level] || { bg: '#f1f5f9', fg: '#334155' };
+      return '<tr style="border-bottom:1px solid #eef2f7">' +
+        '<td style="padding:7px 10px;font-weight:600">' + esc(t.name) + '</td>' +
+        '<td style="padding:7px 10px;color:#64748b">' + esc(t.side) + '</td>' +
+        '<td style="padding:7px 10px;white-space:nowrap">' + esc(t.last_round) + '</td>' +
+        '<td style="padding:7px 10px"><span style="background:' + c.bg + ';color:' + c.fg +
+          ';border-radius:8px;padding:2px 9px;white-space:nowrap;font-weight:600">' +
+          esc(t.level) + ' ' + esc(t.status) + '</span></td>' +
+        '<td style="padding:7px 10px;white-space:nowrap">' + esc(t.data_asof) + '</td>' +
+        '<td style="padding:7px 10px;text-align:right">' + esc(t.silent_min) + '</td>' +
+        '<td style="padding:7px 10px;color:#475569">' + esc(t.note) +
+          (t.desc_mismatch ? '<br><span style="color:#92400e">⚠️ description ไม่ตรง cron: ' +
+            esc(t.desc_mismatch) + '</span>' : '') + '</td></tr>';
+    }).join('');
+    var b = document.getElementById('th-badge');
+    if (b) { if (bad) { b.style.display = 'inline-block'; b.textContent = bad; }
+             else { b.style.display = 'none'; } }
+  }
+  function load() {
+    fetch('scripts/ops/task_health.json?t=' + Date.now())
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(render)
+      .catch(function (e) {
+        var chk = document.getElementById('th-checked');
+        if (chk) chk.textContent = 'อ่าน task_health.json ไม่ได้ (' + e.message + ') — ถือว่า "ตรวจไม่ได้" ไม่ใช่ "ปกติ"';
+        var st = document.getElementById('th-stale');
+        if (st) { st.style.display = 'block';
+                  st.innerHTML = '⚠️ <strong>ไม่มีผลตรวจ</strong> — ยังไม่เคยมีใครรันตัวตรวจ หรือไฟล์หาย'; }
+      });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+  else load();
+})();
+</script>
 </body>
 </html>
