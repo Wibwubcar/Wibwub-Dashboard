@@ -1,4 +1,4 @@
-import zipfile, re, os, glob
+import zipfile, re, os, glob, sys, shutil, datetime
 from collections import Counter
 from datetime import date
 
@@ -72,6 +72,10 @@ print("parsed existing VIDEOS entries:", len(existing))
 if not existing:
     raise SystemExit("STOP: entry_re matched 0 — schema changed, not writing")
 
+# สแนปช็อตก่อนแก้ ไว้ให้ด่านท้ายไฟล์เทียบ (29 ต.ค. 69)
+before={e['vid_id']:{'gmv':e['gmv'],'date':e['date']} for e in existing}
+before_total=sum(e['gmv'] for e in existing)
+
 vid_to_product={e['vid_id']:e['product'] for e in existing}
 existing_vids=set(vid_to_product)
 pid_names={}
@@ -100,7 +104,10 @@ for e in existing:
     e['date']=date_label(e)
 print("updated current-month(",cur_key,") values:",updated)
 
-min_gmv=min(e['gmv'] for e in existing)
+# A: เดิมเป็น min() ของทุกแถว พอมีแถว gmv 0 อยู่แม้แถวเดียว min_gmv จะเป็น 0 ตลอดไป
+#    แล้ว cands ด้านล่างรับวีดีโอใหม่ทุกตัวจาก export (รอบ 28 ต.ค. 69 มี 8,408/9,670 แถว
+#    ที่ gmv 0) จนตาราง VIDEOS มีแถวขยะ 11,243 จาก 14,002 แถว
+min_gmv=min([e['gmv'] for e in existing if e['gmv']>0] or [1])
 new_only=[v for v in new_data if v not in existing_vids]
 cands=sorted(({**new_data[v],'vid_id':v} for v in new_only if new_data[v]['gmv']>=min_gmv), key=lambda x:-x['gmv'])
 new_entries=[]
@@ -110,8 +117,12 @@ for c in cands:
         p=p.strip()
         if p in pid_to_name: name=pid_to_name[p]; break
     monthly={k:0.0 for k in schema_keys}; monthly[cur_key]=round(c['gmv'])
-    new_entries.append({'creator':c['creator'],'product':name or 'Unknown','vid_id':c['vid_id'],
-        'caption':'','gmv':round(c['gmv']),'units':0.0,'date':THAI[cur_key],**monthly})
+    ne={'creator':c['creator'],'product':name or 'Unknown','vid_id':c['vid_id'],
+        'caption':'','gmv':round(c['gmv']),'units':0.0,'date':'',**monthly}
+    # B: เดิมใส่ THAI[cur_key] ตายตัว แถว gmv 0 เลยได้ป้าย 'ต.ค.' แล้วรอบถัดไป date_label()
+    #    คำนวณใหม่ได้ '' กลายเป็น "ความเสียหาย" ปลอมที่ทำให้ทั้งรอบถูกย้อนทิ้ง
+    ne['date']=date_label(ne)
+    new_entries.append(ne)
 print("new video entries added:", len(new_entries))
 
 def esc(s): return s.replace('\\','\\\\').replace("'","\\'")
@@ -121,7 +132,48 @@ def fmt(e):
         esc(e['creator']),esc(e['product']),e['vid_id'],esc(e['caption']),round(e['gmv']),round(e['units']),e['date'],ms)
 lines=[fmt(e) for e in existing]+[fmt(e) for e in new_entries]
 new_block="const VIDEOS = [\n"+",\n".join(lines)+",\n];"
-html2=re.sub(r'const VIDEOS = \[.*?\n\];', lambda _: new_block, html, count=1, flags=re.DOTALL)
-assert html2!=html, "rewrite failed"
+html2,nsub=re.subn(r'const VIDEOS = \[.*?\n\];', lambda _: new_block, html, count=1, flags=re.DOTALL)
+if nsub!=1:
+    raise SystemExit("STOP: ไม่พบบล็อก VIDEOS — ไม่เขียนไฟล์")
+
+# ── ด่านก่อนเขียน (29 ต.ค. 69) ───────────────────────────────────────────────
+# ตีธงเฉพาะความเสียหายจริง · ยอดวีดีโอลดลงเป็นเรื่องปกติ (คืนเงิน/ยกเลิก/restate)
+# ถ้าตีธงทุกแถวที่ยอดลด งานจะข้ามรอบจนหน้า VIDEOS ค้างเหมือนเดิม
+after_ids={e['vid_id'] for e in existing}|{e['vid_id'] for e in new_entries}
+lost_date=[e['vid_id'] for e in existing
+           if before.get(e['vid_id'],{}).get('gmv',0)>0 and before[e['vid_id']]['date'] and not e['date']]
+missing=[v for v,b in before.items() if b['gmv']>0 and v not in after_ids]
+after_total=sum(e['gmv'] for e in existing)+sum(e['gmv'] for e in new_entries)
+drop_pct=(before_total-after_total)/before_total*100 if before_total else 0.0
+dropped=[(e['vid_id'],before[e['vid_id']]['gmv'],e['gmv']) for e in existing
+         if before.get(e['vid_id'],{}).get('gmv',0)>e['gmv']]
+blanked_zero=sum(1 for e in existing
+                 if before.get(e['vid_id'],{}).get('gmv',0)==0 and before[e['vid_id']]['date'] and not e['date'])
+
+print("--- ด่านตรวจ ---")
+print("  gmv รวม %.0f -> %.0f (%+.1f%%)"%(before_total,after_total,-drop_pct))
+print("  แถวที่ยอดลดลงแต่ยังอยู่ :",len(dropped),"| ยอดที่หายรวม %.0f"%sum(b-a for _,b,a in dropped))
+print("  แถว gmv 0 ที่ถูกล้าง date (ปกติ) :",blanked_zero)
+if lost_date or missing or drop_pct>20:
+    print("REFUSED: ไม่เขียนไฟล์ เพราะจะทำข้อมูลจริงหาย")
+    if lost_date: print("  แถว gmv>0 แต่ date หาย:",len(lost_date),lost_date[:10])
+    if missing:   print("  แถว gmv>0 หายไปจากตาราง:",len(missing),missing[:10])
+    if drop_pct>20: print("  gmv รวมลดเกิน 20%%: -%.1f%%"%drop_pct)
+    print("  ข้ามเฉพาะขั้น VIDEOS — ข้อมูล affiliate ในไฟล์ยังอยู่ครบ commit ต่อได้")
+    sys.exit(11)
+
+if html2==html:
+    print("NO_CHANGE: บล็อก VIDEOS เหมือนเดิมทุกตัวอักษร ไม่ได้เขียนไฟล์")
+    sys.exit(10)
+
+# .bak ทุกรอบที่จะเขียนจริง ไว้กู้ด้วยมือ (ไม่มีการคืนไฟล์อัตโนมัติแล้ว)
+# หมุน 3 ช่องชื่อคงที่ ทับช่องเก่าสุด — ไฟล์ละ ~4 MB วันละ 2 รอบ ถ้าตั้งชื่อตามเวลา
+# จะสะสมไม่จบ และงานฝั่ง local ลบไฟล์ไม่ได้ (เขียนทับทำได้)
+# ชื่อ .bak-* ติด .gitignore บรรทัด 10 (*.bak*) แล้ว จึงไม่หลุดขึ้น repo สาธารณะ
+_slots=[HTML+".bak-vidmerge-%d"%i for i in (1,2,3)]
+_free=[p for p in _slots if not os.path.exists(p)]
+bak=_free[0] if _free else min(_slots,key=os.path.getmtime)
+shutil.copy2(HTML,bak)
+print("backup:",os.path.basename(bak))
 open(HTML,'w',encoding='utf-8').write(html2)
 print("TOTAL VIDEOS written:",len(lines),"| updated:",updated,"| new:",len(new_entries))
