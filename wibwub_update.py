@@ -524,7 +524,10 @@ def process_affiliate():
             'orders': tot_ord,
             'comm_rate': round(tot_comm / total * 100, 1) if total else 0,
         })
-    creators.sort(key=lambda x: -x['t'])
+    # tie-break ด้วยชื่อ: c_gmv เป็น set การวนจึงสลับทุกครั้งที่รัน (PYTHONHASHSEED)
+    # sort เสถียร แถวที่ยอดเท่ากันเลยสลับที่กันทุกรอบ → CREATORS/CREATOR_MONTHS
+    # มี diff ~2,150 บรรทัดทั้งที่ตัวเลขไม่เปลี่ยน แล้วไปติด commit ของงานอื่น (29 ต.ค. 69)
+    creators.sort(key=lambda x: (-x['t'], x['n']))
 
     gmvD  = [sum(c_gmv[c['n']][i]  or 0 for c in creators) for i in range(len(MONTH_ORDER))]
     netD  = [sum(c_net[c['n']][i]  or 0 for c in creators) for i in range(len(MONTH_ORDER))]
