@@ -1629,6 +1629,8 @@
            background:#fef3c7;border:1px solid #f59e0b;color:#92400e;font-size:13px"></div>
       <div id="th-unreadable" style="display:none;margin:10px 0;padding:10px 14px;border-radius:10px;
            background:#fee2e2;border:1px solid #ef4444;color:#991b1b;font-size:13px"></div>
+      <div id="th-gaps" style="display:none;margin:10px 0;padding:10px 14px;border-radius:10px;
+           background:#fef3c7;border:1px solid #f59e0b;color:#92400e;font-size:13px"></div>
       <div style="overflow-x:auto">
         <table id="tbl-taskhealth" style="width:100%;border-collapse:collapse;font-size:13px;min-width:760px">
           <thead><tr style="text-align:left;border-bottom:2px solid #e2e8f0">
@@ -4060,6 +4062,17 @@ const MKT_SPEND = {"asof":"2026-10-28","from":"2026-01-01","to":"2026-10-28","ke
         ' ชั่วโมง' + (ageH === null ? '' : ' (' + ageH.toFixed(0) + ' ชม.)') +
         ' สถานะด้านล่างอาจไม่ตรงกับความจริงแล้ว';
     } else { st.style.display = 'none'; }
+    var gp = document.getElementById('th-gaps');
+    if (gp) {
+      if (d.gaps && d.gaps.length) {
+        gp.style.display = 'block';
+        gp.innerHTML = d.gaps.map(function (g) {
+          return '⚠️ <strong>เครื่องหลับ/แอปปิด ช่วง ' + esc(g.from) + ' – ' + esc(g.to) +
+            '</strong> (' + esc(g.hours) + ' ชม.) — รอบที่พลาดไปและไม่ย้อนกลับมาเอง: ' +
+            g.missed.map(esc).join(' · ');
+        }).join('<br>');
+      } else { gp.style.display = 'none'; }
+    }
     var un = document.getElementById('th-unreadable');
     if (d.unreadable && d.unreadable.length) {
       un.style.display = 'block';

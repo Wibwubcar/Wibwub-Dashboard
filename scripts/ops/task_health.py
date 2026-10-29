@@ -555,19 +555,88 @@ def build_status(now):
 
     order = {'⛔': 0, '⚠️': 1, '⏳': 2, '✅': 3}
     rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
-    return rows, unreadable
+    crons = [(r['name'], r.get('cron')) for r in rows]
+    starts = []
+    for by in ((code_sess or {}), (local_sess or {})):
+        for lst in by.values():
+            for x in lst:
+                t = _ms(x.get('createdAt'))
+                if t and t <= now:
+                    starts.append(t)
+    gaps = check_sleep_gaps(now, crons, starts)
+    return rows, unreadable, gaps
+
+
+GAP_HOURS = 2.0           # ไม่มีงานไหนเริ่มเลยนานกว่านี้ ทั้งที่มีรอบถึงกำหนด = น่าสงสัย
+
+
+def next_fire(cron, after, until):
+    """รอบที่ cron ควรยิงในช่วง (after, until] — ไล่ทีละนาที พอสำหรับช่วง 2-12 ชม."""
+    out = []
+    try:
+        m, h, dom, mon, dow = cron.split()
+    except ValueError:
+        return out
+    M, H = _field(m, 0, 59), _field(h, 0, 23)
+    DOM, MON = _field(dom, 1, 31), _field(mon, 1, 12)
+    DOW = {d % 7 for d in _field(dow, 0, 7)}
+    dom_any, dow_any = str(dom).strip() == '*', str(dow).strip() == '*'
+    t = after.replace(second=0, microsecond=0) + timedelta(minutes=1)
+    while t <= until:
+        if t.minute in M and t.hour in H and t.month in MON:
+            cd = (t.weekday() + 1) % 7
+            ok = (t.day in DOM) if dow_any else (cd in DOW) if dom_any else \
+                 (t.day in DOM or cd in DOW)
+            if ok:
+                out.append(t)
+        t += timedelta(minutes=1)
+    return out
+
+
+def check_sleep_gaps(now, crons, starts, hours_back=26):
+    """หาช่วงที่ไม่มีงานไหน 'เริ่ม' เลยนานผิดปกติ ทั้งที่มีรอบถึงกำหนดในช่วงนั้น
+
+    ทำไมต้องมี (29 ต.ค. 69): ระหว่าง 13:01-19:46 ไม่มีงานไหนรันเลยทั้งสองฝั่ง แล้วพอถึง
+    19:46:11 งานที่เลยกำหนด 3 ตัวยิงพร้อมกัน **วินาทีเดียวกัน** = พฤติกรรม "แอปปิดตอนถึง
+    กำหนด แล้วรันตอนเปิดแอปครั้งถัดไป" ไม่ใช่เซสชันค้าง (ตัวตรวจรายงาน 'ไม่มีเซสชันค้าง'
+    ซึ่งถูก แต่ไม่ได้บอกว่าหายไป 6 ชม.) รอบ HR 17:55/18:55 ที่พลาดไปไม่ย้อนกลับมาเอง
+    """
+    lo = now - timedelta(hours=hours_back)
+    pts = sorted(t for t in starts if t and t >= lo)
+    out = []
+    edges = [lo] + pts + [now]
+    for a, b in zip(edges, edges[1:]):
+        gap = (b - a).total_seconds() / 3600
+        if gap < GAP_HOURS:
+            continue
+        missed = []
+        for name, cron in crons:
+            if not cron:
+                continue
+            for t in next_fire(cron, a, b):
+                # รอบที่ถึงกำหนดช่วงท้ายของช่องว่าง = รอบที่ยิงปิดช่องว่างนั้นเอง
+                # ไม่ใช่รอบที่พลาด (เช่น ช่วงเงียบข้ามคืนแล้วรอบ 08:15 เริ่ม 08:18)
+                if (b - t).total_seconds() / 60 <= NOT_STARTED_MIN:
+                    continue
+                missed.append('%s %s' % (t.strftime('%H:%M'), name))
+        if missed:
+            out.append({'from': a.strftime('%d %b %H:%M'), 'to': b.strftime('%d %b %H:%M'),
+                        'hours': round(gap, 1), 'missed': sorted(set(missed))})
+    return out
 
 
 def write_status_json(now, path=None):
-    rows, unreadable = build_status(now)
+    rows, unreadable, gaps = build_status(now)
     data = {
         'checked_at': now.strftime('%Y-%m-%d %H:%M'),
         'unreadable': unreadable,
+        'gaps': gaps,
         'thresholds': {'not_started_min': NOT_STARTED_MIN, 'silent_min': SILENT_MIN,
                        'stale_hours': STALE_HOURS},
         'counts': {'stop': sum(1 for r in rows if r['level'] == '⛔'),
                    'warn': sum(1 for r in rows if r['level'] == '⚠️'),
-                   'ok': sum(1 for r in rows if r['level'] == '✅')},
+                   'ok': sum(1 for r in rows if r['level'] == '✅'),
+                   'gaps': len(gaps)},
         'tasks': [{k: r.get(k, '') for k in
                    ('name', 'side', 'last_round', 'level', 'status', 'data_asof',
                     'silent_min', 'note', 'desc_mismatch')} for r in rows],
@@ -597,7 +666,8 @@ def main():
         data, p = write_status_json(now)
         c = data['counts']
         print(json.dumps({'status': 'WROTE', 'file': p.name, 'checked_at': data['checked_at'],
-                          'counts': c, 'unreadable': data['unreadable']}, ensure_ascii=False))
+                          'counts': c, 'unreadable': data['unreadable'],
+                          'gaps': data['gaps']}, ensure_ascii=False))
         return 3 if (c['stop'] or data['unreadable']) else 0
     rows = check_locks(now, a.lock_min) + check_local(now, a.grace_min, a.delay_min) + check_code(now)
     bad = [r for r in rows if r['lv'] == '⛔']
