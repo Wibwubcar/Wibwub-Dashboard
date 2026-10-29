@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-29 11:33",
+ "checked_at": "2026-10-29 11:46",
  "unreadable": [],
  "thresholds": {
   "not_started_min": 20,
@@ -7,9 +7,9 @@
   "stale_hours": 14
  },
  "counts": {
-  "stop": 2,
+  "stop": 1,
   "warn": 4,
-  "ok": 12
+  "ok": 13
  },
  "tasks": [
   {
@@ -19,19 +19,8 @@
    "level": "⛔",
    "status": "ค้าง",
    "data_asof": "—",
-   "silent_min": 147,
-   "note": "เซสชันเงียบมา 147 นาที และรอบนี้ยังไม่ได้เขียนรายงานปิดท้าย (ค้างกลางคำสั่ง)",
-   "desc_mismatch": "08:30/09:15/19:30/20:15 vs cron 08:35/19:35"
-  },
-  {
-   "name": "ยอดขายจากชีต 09:25/20:25",
-   "side": "code",
-   "last_round": "23 Oct 19:22",
-   "level": "⛔",
-   "status": "ไม่เริ่ม",
-   "data_asof": "29 Oct 10:37",
-   "silent_min": 8169,
-   "note": "เลยเวลาที่ตั้งไว้ 128 นาทีแล้วยังไม่มีรอบใหม่",
+   "silent_min": 161,
+   "note": "เซสชันเงียบมา 161 นาที และรอบนี้ยังไม่ได้เขียนรายงานปิดท้าย (ค้างกลางคำสั่ง)",
    "desc_mismatch": ""
   },
   {
@@ -41,7 +30,7 @@
    "level": "⚠️",
    "status": "มีขั้นที่ล้ม",
    "data_asof": "—",
-   "silent_min": 186,
+   "silent_min": 200,
    "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
    "desc_mismatch": ""
   },
@@ -52,7 +41,7 @@
    "level": "⚠️",
    "status": "ล้มติดกัน 3 รอบ",
    "data_asof": "—",
-   "silent_min": 119,
+   "silent_min": 133,
    "note": "รอบล่าสุด 3 รอบติดกันมีขั้นที่คืน status ERROR — ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ",
    "desc_mismatch": ""
   },
@@ -63,9 +52,9 @@
    "level": "⚠️",
    "status": "มีขั้นที่ล้ม",
    "data_asof": "—",
-   "silent_min": 71,
+   "silent_min": 85,
    "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
-   "desc_mismatch": "10:30 vs cron 09:55/20:55"
+   "desc_mismatch": ""
   },
   {
    "name": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
@@ -74,20 +63,20 @@
    "level": "⚠️",
    "status": "ตรวจผลงานไม่ได้",
    "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
-   "silent_min": 4361,
+   "silent_min": 4374,
    "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ",
-   "desc_mismatch": "09:45/20:45 vs cron 10:50"
+   "desc_mismatch": ""
   },
   {
-   "name": "wibwub-samp-request-sync",
-   "side": "local",
-   "last_round": "29 Oct 11:19",
+   "name": "ยอดขายจากชีต 09:25/20:25",
+   "side": "code",
+   "last_round": "29 Oct 11:45",
    "level": "⏳",
    "status": "กำลังรัน",
-   "data_asof": "—",
-   "silent_min": 12,
+   "data_asof": "29 Oct 10:37",
+   "silent_min": 0,
    "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": "09:35/20:35 vs cron 11:05/22:05"
+   "desc_mismatch": ""
   },
   {
    "name": "HR → Google Sheet 10:30/20:30/00:30",
@@ -96,7 +85,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "29 Oct 00:31",
-   "silent_min": 61,
+   "silent_min": 75,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": ""
   },
@@ -107,7 +96,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "26 Oct 11:14",
-   "silent_min": 4407,
+   "silent_min": 4420,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": ""
   },
@@ -118,9 +107,9 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "28 Oct 20:11",
-   "silent_min": 141,
+   "silent_min": 155,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
-   "desc_mismatch": "08:37/19:37 vs cron 09:00/20:00"
+   "desc_mismatch": ""
   },
   {
    "name": "TikTok คอนเทนต์ 09:25/20:25",
@@ -129,7 +118,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "26 Oct 20:37",
-   "silent_min": 115,
+   "silent_min": 129,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": ""
   },
@@ -140,7 +129,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 97,
+   "silent_min": 111,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": ""
   },
@@ -151,7 +140,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 126,
+   "silent_min": 140,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": ""
   },
@@ -162,7 +151,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 183,
+   "silent_min": 196,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": ""
   },
@@ -173,7 +162,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 92,
+   "silent_min": 105,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": ""
   },
@@ -184,9 +173,20 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 52,
+   "silent_min": 65,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": "09:10/20:10 vs cron 10:35/21:35"
+   "desc_mismatch": ""
+  },
+  {
+   "name": "wibwub-samp-request-sync",
+   "side": "local",
+   "last_round": "29 Oct 11:19",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 26,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": ""
   },
   {
    "name": "wibwub-shopee-live-daily",
@@ -195,7 +195,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 114,
+   "silent_min": 128,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": ""
   },
@@ -206,9 +206,9 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 58,
+   "silent_min": 72,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": "08:50/19:50 vs cron 10:20/21:20"
+   "desc_mismatch": ""
   },
   {
    "name": "การตลาด vs ยอดขาย 09:45/20:45",
@@ -217,7 +217,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "29 Oct 09:57",
-   "silent_min": 96,
+   "silent_min": 109,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": ""
   }

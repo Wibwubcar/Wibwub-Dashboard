@@ -398,7 +398,14 @@ def desc_vs_cron(prompt_file, cron):
         return None, 'อ่าน cron ไม่ออก'
     if not want:
         return None, 'cron ไม่ใช่รูปแบบที่เทียบได้'
-    return (got == want), '%s vs cron %s' % ('/'.join(sorted(got)), '/'.join(sorted(want)))
+    # ถือว่า "ตรง" เมื่อ description ครอบคลุมเวลาของตัวเองครบ — เวลาส่วนเกินปล่อยผ่าน
+    # เพราะพรอมป์หลายไฟล์อ้างเวลาของงานอื่นไว้ในตารางอ้างอิงโดยตั้งใจ
+    # (เช่น wibwub-hr-sheet.md อ้างรอบของงาน local fastmoss · wibwub-content-sheet.md
+    #  อ้างทั้งรอบที่ตัวเองถูกเรียกจาก local และจาก code) ถ้าเทียบแบบเท่ากันเป๊ะจะขึ้นเตือนผิด
+    if want <= got:
+        return True, '%s ครอบคลุม cron %s' % ('/'.join(sorted(got)), '/'.join(sorted(want)))
+    return False, 'description %s · cron จริง %s' % ('/'.join(sorted(got)) or '—',
+                                                      '/'.join(sorted(want)))
 
 
 def build_status(now):

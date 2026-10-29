@@ -1,6 +1,6 @@
 ---
 name: wibwub-thursday-affiliate
-description: ทุกวัน 08:50/19:50 — โหลดไฟล์ TikTok Affiliate → อัปเดต Affiliate Dashboard + Mobile
+description: ทุกวัน 10:20/21:20 (ชื่องานหลอก — รันทุกวัน ไม่ใช่เฉพาะพฤหัส) — โหลดไฟล์ TikTok Affiliate → อัปเดต Affiliate Dashboard + Mobile
 ---
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)

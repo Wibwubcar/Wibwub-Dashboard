@@ -1,6 +1,6 @@
 ---
 name: wibwub-samp-request-sync
-description: ทุกวัน 09:35/20:35 — ดึงชีต "ขอสินค้า" มาอัปเดตแท็บ คำขอสินค้า ใน WIBWUB_Affiliate_Dashboard.html
+description: ทุกวัน 11:05/22:05 — ดึงชีต "ขอสินค้า" มาอัปเดตแท็บ คำขอสินค้า ใน WIBWUB_Affiliate_Dashboard.html
 ---
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)

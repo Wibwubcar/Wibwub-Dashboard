@@ -1,3 +1,8 @@
+---
+name: ads_daily
+description: เรียกจาก 2 ที่ — งาน local wibwub-download-orders-monday (08:35/19:35 เขียน data Ads/ads_daily.json) และงาน code wibwub-ads-daily (09:45/20:45 ทำขั้น KOL + marketing_update)
+---
+
 ## 🧹 ปิดแท็บ Chrome เมื่อจบงาน (ทำทุกครั้ง)
 ก่อนจบงาน ไม่ว่าจะสำเร็จ ไม่มีข้อมูลใหม่ หรือเจอ error: เรียก `tabs_context_mcp` ดู tabId ทั้งหมดในกลุ่มแท็บของรอบนี้ แล้วปิดทุกแท็บด้วย `tabs_close_mcp` (ยกเว้นหน้าที่ต้องให้ผู้ใช้ login เอง ให้เหลือแท็บนั้นแท็บเดียวและบอกในรายงาน)
 

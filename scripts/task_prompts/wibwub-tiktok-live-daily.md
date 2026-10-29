@@ -1,6 +1,6 @@
 ---
 name: wibwub-tiktok-live-daily
-description: ทุกวัน 08:37/19:37 (รอบเดียวกับ Shopee Live) — ยอดขายไลฟ์ TikTok Shop + งบ Ads ระหว่างไลฟ์ → TK_LIVE_DAILY ใน WIBWUB_Dashboard.html
+description: ทุกวัน 09:00/20:00 (งานฝั่ง code) — ยอดขายไลฟ์ TikTok Shop + งบ Ads ระหว่างไลฟ์ → TK_LIVE_DAILY ใน WIBWUB_Dashboard.html
 ---
 
 ## 📂 ขั้น 0 — ไม่มีขั้นหาโฟลเดอร์ ห้ามใช้ shell ค้นหา

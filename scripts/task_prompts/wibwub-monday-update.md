@@ -1,6 +1,6 @@
 ---
 name: wibwub-monday-update
-description: ทุกวัน 09:10/20:10 — อัปเดต Top สินค้า (ALL_PRODUCTS + PROD_MO) ใน WIBWUB_Mobile.html จาก Shipnity
+description: ทุกวัน 10:35/21:35 — อัปเดต Top สินค้า (ALL_PRODUCTS + PROD_MO) ใน WIBWUB_Mobile.html จาก Shipnity
 ---
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
