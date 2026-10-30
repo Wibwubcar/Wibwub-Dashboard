@@ -17,7 +17,7 @@
 ใช้:  python3 scripts/sales_update.py [--dry-run]
 exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน · 2 = ไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
 """
-import sys, json, argparse, re
+import sys, json, argparse, re, datetime as dt
 from pathlib import Path
 
 def _find_base():
@@ -205,6 +205,23 @@ def main():
     PER = {'shopee': 'Shopee', 'tiktok': 'TikTok', 'lazada': 'Lazada'}
     per_ch = {PER[k]: v for k, v in got.items() if k in PER}
     summary['sheet_asof'] = asof_ch
+    # เก็บ "วันสุดท้ายที่ชีตมีข้อมูล" แยกเป็นไฟล์ (30 ต.ค. 69)
+    # ห้ามให้ตัวตรวจไปอ่าน MTD_COVERAGE แทน เพราะเมื่องาน "เติมยอดจากหลังบ้าน" เริ่มทำงาน
+    # MTD_COVERAGE จะขยับทุกวันจาก ads_daily.json แม้ทีมจะยังไม่กรอกชีต -> ตัวตรวจจะสรุปผิด
+    # ว่าทีมกรอกทัน (false negative ที่แย่กว่าเตือนเกิน) ไฟล์นี้เป็นของชีตล้วน ไม่ปนหลังบ้าน
+    if not a.dry_run:
+        try:
+            (BASE / 'data Ads').mkdir(exist_ok=True)
+            (BASE / 'data Ads' / 'sheet_asof.json').write_text(json.dumps(
+                {'_note': 'วันสุดท้ายที่ชีตของแต่ละช่องทางมีข้อมูล — ของชีตล้วน '
+                          'ไม่รวมข้อมูลหลังบ้าน เขียนโดย sales_update.py ทุกรอบที่รันจริง',
+                 'shopee': asof_ch.get('shopee'), 'tiktok': asof_ch.get('tiktok'),
+                 'lazada': asof_ch.get('lazada'),
+                 'written_at': dt.datetime.now().strftime('%Y-%m-%d %H:%M:%S')},
+                ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+            summary['sheet_asof_file'] = 'data Ads/sheet_asof.json'
+        except OSError as e:
+            summary['sheet_asof_file_error'] = f'{type(e).__name__}: {e}'
     if not got:
         summary['asof_note'] = 'อ่านวันที่จากชีตไม่ได้เลย — คง SALES_ASOF เดิมไว้'
     elif len(set(got.values())) > 1:
