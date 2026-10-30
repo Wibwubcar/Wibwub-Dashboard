@@ -38,7 +38,10 @@ def _find_base():
 
 
 ALL = _find_base()
+# ~/Downloads ในแซนด์บ็อกซ์ชี้ไป /sessions/<ชื่อ>/Downloads ซึ่งไม่มีจริง (30 ต.ค. 69)
+# จึงใส่พาธจริงของเครื่องไว้ด้วย แล้วให้ลูปด้านล่างมองทุกที่ตามเดิม
 DL = os.path.expanduser('~/Downloads')
+DL_REAL = '/Users/thanasablilutanon/Downloads'
 
 
 def main():
@@ -52,13 +55,13 @@ def main():
     dest = os.path.join(ALL, a.dest)
     # มองทั้ง Downloads · downloads_archive (mover ย้ายไปพักไว้) · ปลายทางเอง (เผื่อ mover ส่งตรง)
     cand = []
-    for d in (DL, os.path.join(ALL, 'downloads_archive'), dest):
+    for d in (DL, DL_REAL, os.path.join(ALL, 'downloads_archive'), dest):
         cand += glob.glob(os.path.join(d, a.pattern))
         cand += glob.glob(os.path.join(d, '*', a.pattern))   # archive แยกโฟลเดอร์ย่อยตามแพตเทิร์น
     cand = [f for f in cand if os.path.isfile(f)]
     if not cand:
         print(json.dumps({'status': 'NOT_FOUND', 'pattern': a.pattern,
-                          'มองที่': [DL, 'downloads_archive', a.dest]}, ensure_ascii=False))
+                          'มองที่': [DL, DL_REAL, 'downloads_archive', a.dest]}, ensure_ascii=False))
         return 1
 
     newest = max(cand, key=os.path.getmtime)
