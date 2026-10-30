@@ -526,13 +526,29 @@ def build_status(now):
                      note='เซสชันเงียบมา %s นาที และรอบนี้ยังไม่ได้เขียนรายงานปิดท้าย '
                           '(ค้างกลางคำสั่ง)' % silent)
         elif acfg and acfg.get('kind') == 'none':
-            r.update(level='⚠️', status='ตรวจผลงานไม่ได้',
-                     note=(acfg.get('note') or 'งานนี้ไม่มีผลงานปลายทางในเครื่องให้ตรวจ')[:90])
+            # งานที่เขียนลงชีตอย่างเดียว (ไม่มีผลงานในเครื่อง) ถ้าอยู่ในกลุ่ม sheet_source
+            # ยังบอกความสดได้จากไฟล์ตัวแทน เช่น clips.json -> ใช้ 📝 แทน ⚠️
+            sw = sheet_wait_row(task_id, cfg_all, now)
+            if sw and not sw[1]:
+                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
+            elif sw and sw[1]:
+                r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
+            else:
+                r.update(level='⚠️', status='ตรวจผลงานไม่ได้',
+                         note=(acfg.get('note') or 'งานนี้ไม่มีผลงานปลายทางในเครื่องให้ตรวจ')[:90])
         elif acfg and age is None:
             r.update(level='⚠️', status='ตรวจผลงานไม่ได้', note=when or 'อ่านผลงานปลายทางไม่ได้')
         elif acfg and not fresh:
-            r.update(level='⚠️', status='ข้อมูลค้าง',
-                     note='งานรันผ่าน แต่ผลงานไม่ขยับมา %.0f ชม. (เกณฑ์ %d)' % (age, maxh))
+            # งานที่กินข้อมูลจากชีตที่ทีมกรอก: "ข้อมูลไม่ขยับ" มักแปลว่าทีมยังไม่กรอก
+            # ไม่ใช่ระบบพัง -> แยกเป็น 📝 ไม่นับในตัวเลขปัญหา · ⚠️/⛔ สงวนให้งานล้ม/ค้าง/ไม่เริ่ม
+            sw = sheet_wait_row(task_id, cfg_all, now)
+            if sw and not sw[1]:
+                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
+            elif sw and sw[1]:
+                r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
+            else:
+                r.update(level='⚠️', status='ข้อมูลค้าง',
+                         note='งานรันผ่าน แต่ผลงานไม่ขยับมา %.0f ชม. (เกณฑ์ %d)' % (age, maxh))
         elif fct.get('ended_with_text') is None:
             r.update(level='⚠️', status='ตรวจไม่ได้',
                      note='อ่านบันทึกของรอบล่าสุดไม่ได้ — ไม่ยืนยันว่าปกติ')
@@ -589,7 +605,7 @@ def build_status(now):
         rows.append(mk(c.get('label', tid), 'code', c.get('cron', ''), last, None, sl, c,
                        tid + '.md', tid))
 
-    order = {'⛔': 0, '⚠️': 1, '⏳': 2, '✅': 3}
+    order = {'⛔': 0, '⚠️': 1, '📝': 2, '⏳': 3, '✅': 4}
     rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
     crons = [(r['name'], r.get('cron')) for r in rows]
     starts = []
@@ -627,6 +643,85 @@ def next_fire(cron, after, until):
                 out.append(t)
         t += timedelta(minutes=1)
     return out
+
+
+def _parse_iso(v):
+    try:
+        return datetime.strptime(str(v)[:10], '%Y-%m-%d')
+    except (ValueError, TypeError):
+        return None
+
+
+def sheet_dates(spec):
+    """อ่าน 'วันสุดท้ายที่ชีตมีข้อมูล' ตาม spec · คืน ({ชื่อ: datetime}, ที่มา)"""
+    if not spec:
+        return {}, None
+    kind, rel = spec.get('kind'), spec.get('file')
+    fp = BASE / rel if rel else None
+    if fp is None or not fp.exists():
+        return {}, None
+    try:
+        if kind == 'json':
+            d = json.loads(fp.read_text(encoding='utf-8'))
+            out = {}
+            for label, key in (spec.get('map') or {}).items():
+                t = _parse_iso(d.get(key))
+                if t: out[label] = t
+            return out, rel
+        if kind == 'mtime':
+            return {'ไฟล์': datetime.fromtimestamp(fp.stat().st_mtime)}, rel
+        txt = fp.read_text(encoding='utf-8', errors='replace')
+        if kind == 'regex_kv':
+            m = re.search(spec['pattern'], txt)
+            if not m: return {}, None
+            out = {}
+            for k, v in re.findall(r"(\w+)\s*:\s*'([^']+)'", m.group(1)):
+                t = _parse_iso(v)
+                if t: out[k] = t
+            return out, rel
+        if kind == 'regex_date':
+            m = re.search(spec['pattern'], txt)
+            if not m: return {}, None
+            g = m.groups()
+            iso = ('%s-%s-%s' % (g[2], g[1], g[0])) if spec.get('order') == 'dmy' else '-'.join(g)
+            t = _parse_iso(iso)
+            return ({'ชีต': t} if t else {}), rel
+        if kind == 'all_posts':
+            # ALL_POSTS เก็บวันแบบ {lbl:'4/3/26',day:4,month:3,...} -> ประกอบเป็นวันที่เอง
+            best = None
+            for d_, mo in re.findall(r"day:(\d+),month:(\d+)", txt):
+                for yr in (datetime.now().year,):
+                    try: t = datetime(yr, int(mo), int(d_))
+                    except ValueError: continue
+                    if t <= datetime.now() and (best is None or t > best): best = t
+            return ({'ชีต': best} if best else {}), rel
+    except (OSError, ValueError, KeyError, json.JSONDecodeError):
+        return {}, None
+    return {}, None
+
+
+def sheet_wait_row(task_id, cfg_all, now):
+    """ถ้างานนี้กินข้อมูลจากชีตที่ทีมกรอก -> คืน (ข้อความ, มีช่องไหนเกินกำหนดไหม)"""
+    spec = (cfg_all.get('sheet_source') or {}).get(task_id)
+    if not spec:
+        return None
+    dates, src = sheet_dates(spec.get('from'))
+    note = ''
+    if not dates:
+        dates, src = sheet_dates(spec.get('fallback'))
+        if dates: note = ' (ค่าสำรอง)'
+    if not dates:
+        return ('รอทีมกรอกชีต — อ่านวันที่ของชีตไม่ได้', False)
+    per = spec.get('per_platform') or {}
+    parts, late = [], False
+    for label, t in sorted(dates.items()):
+        days = (now - t).days
+        lim = (per.get(label) or {}).get('max_days', spec.get('max_days', 7))
+        flag = ''
+        if days > lim:
+            late = True; flag = ' ⚠️เกิน %d วัน' % lim
+        parts.append('%s %s (%d วัน)%s' % (label, t.strftime('%d/%m'), days, flag))
+    return ('รอทีมกรอกชีต — ' + ' · '.join(parts) + note, late)
 
 
 def check_sleep_gaps(now, crons, starts, hours_back=26):
@@ -672,6 +767,7 @@ def write_status_json(now, path=None):
         'counts': {'stop': sum(1 for r in rows if r['level'] == '⛔'),
                    'warn': sum(1 for r in rows if r['level'] == '⚠️'),
                    'ok': sum(1 for r in rows if r['level'] == '✅'),
+                   'sheet_wait': sum(1 for r in rows if r['level'] == '📝'),
                    'gaps': len(gaps),
                    'known_errors_skipped': sum(int(r.get('known_error_hits') or 0) for r in rows)},
         'tasks': [{k: r.get(k, '') for k in

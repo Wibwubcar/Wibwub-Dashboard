@@ -81,5 +81,66 @@
       "since": "2026-10-30",
       "expect_text": "ข้าม: ย้ายไปฝั่ง code แล้ว"
     }
+  },
+  "sheet_source": {
+    "_note": "งานที่ข้อมูลมาจากชีตที่ทีมกรอกเอง — ถ้างานรันผ่านแต่ข้อมูลไม่ขยับ ให้ขึ้น 📝 รอทีมกรอกชีต ไม่ใช่ ⚠️ และไม่นับเป็นปัญหาของระบบ",
+    "_rules": "ใช้ได้เฉพาะเมื่อสถานะที่คำนวณได้คือ 'ข้อมูลค้าง' เท่านั้น ไม่เริ่ม/ค้าง/ล้ม ยังเป็น ⛔/⚠️ ตามเดิม · วันที่อ่านจาก from ก่อน ถ้าไม่มีค่อย fallback",
+    "wibwub-sales-update": {
+      "from": {
+        "file": "data Ads/sheet_asof.json",
+        "kind": "json",
+        "map": {
+          "Shopee": "shopee",
+          "TikTok": "tiktok",
+          "Lazada": "lazada"
+        }
+      },
+      "fallback": {
+        "file": "WIBWUB_Dashboard.html",
+        "kind": "regex_kv",
+        "pattern": "const MTD_COVERAGE = \\{([^}]*)\\}",
+        "note": "ค่าสำรอง — หลังงานเติมจากหลังบ้านเริ่มทำงาน ค่านี้จะรวมหลังบ้านด้วย"
+      },
+      "per_platform": {
+        "Shopee": {
+          "max_days": 8,
+          "note": "ทีมกรอกทุกวันจันทร์"
+        },
+        "Lazada": {
+          "max_days": 8,
+          "note": "ทีมกรอกทุกวันจันทร์"
+        },
+        "TikTok": {
+          "max_days": 3,
+          "note": "กรอกเกือบรายวัน"
+        }
+      }
+    },
+    "wibwub-tiktok-content": {
+      "from": {
+        "file": "WIBWUB_TikTok_Dashboard_v7.html",
+        "kind": "all_posts"
+      },
+      "max_days": 7,
+      "note": "ชีต CONTENT ทีมกรอกเมื่อมีคลิปใหม่"
+    },
+    "wibwub-content-sheet": {
+      "from": {
+        "file": "scripts/content/work/clips.json",
+        "kind": "mtime"
+      },
+      "max_days": 7,
+      "note": "เขียนลงชีตอย่างเดียว ใช้ clips.json เป็นตัวแทนความสด"
+    },
+    "wibwub-samp-request-sync": {
+      "from": {
+        "file": "WIBWUB_Affiliate_Dashboard.html",
+        "kind": "regex_date",
+        "pattern": "SAMPLE_DATA_ASOF = '(\\d{2})/(\\d{2})/(\\d{4})'",
+        "order": "dmy"
+      },
+      "max_days": 3,
+      "note": "ชีตขอสินค้าทีมกรอกเกือบรายวัน"
+    }
   }
 }
