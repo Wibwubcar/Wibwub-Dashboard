@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-29 19:52",
+ "checked_at": "2026-10-30 07:48",
  "unreadable": [],
  "gaps": [
   {
@@ -21,66 +21,36 @@
   "stale_hours": 14
  },
  "counts": {
-  "stop": 1,
-  "warn": 5,
-  "ok": 9,
-  "gaps": 1
+  "stop": 0,
+  "warn": 4,
+  "ok": 15,
+  "gaps": 1,
+  "known_errors_skipped": 2
  },
  "tasks": [
   {
-   "name": "wibwub-fastmoss-competitor",
-   "side": "local",
-   "last_round": "29 Oct 12:57",
-   "level": "⛔",
-   "status": "ไม่เริ่ม",
-   "data_asof": "—",
-   "silent_min": 412,
-   "note": "เลยเวลาที่ตั้งไว้ 58 นาทีแล้วยังไม่มีรอบใหม่",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "HR → Google Sheet 10:30/20:30/00:30",
+   "name": "TikTok คอนเทนต์ 09:25/20:25",
    "side": "code",
-   "last_round": "29 Oct 10:31",
+   "last_round": "29 Oct 20:36",
    "level": "⚠️",
    "status": "ข้อมูลค้าง",
-   "data_asof": "29 Oct 00:31",
-   "silent_min": 561,
-   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 19 ชม. (เกณฑ์ 16)",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "TikTok Live รายวัน 09:00/20:00",
-   "side": "code",
-   "last_round": "29 Oct 09:10",
-   "level": "⚠️",
-   "status": "ข้อมูลค้าง",
-   "data_asof": "28 Oct 20:11",
-   "silent_min": 641,
-   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 24 ชม. (เกณฑ์ 20)",
-   "desc_mismatch": ""
+   "data_asof": "26 Oct 20:37",
+   "silent_min": 671,
+   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 83 ชม. (เกณฑ์ 72)",
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-sales-update",
    "side": "local",
-   "last_round": "29 Oct 09:33",
+   "last_round": "29 Oct 20:32",
    "level": "⚠️",
-   "status": "ล้มติดกัน 3 รอบ",
+   "status": "ล้มติดกัน 4 รอบ",
    "data_asof": "—",
-   "silent_min": 619,
-   "note": "รอบล่าสุด 3 รอบติดกันมีขั้นที่คืน status ERROR — ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "wibwub-tiktok-product-daily",
-   "side": "local",
-   "last_round": "29 Oct 10:08",
-   "level": "⚠️",
-   "status": "มีขั้นที่ล้ม",
-   "data_asof": "—",
-   "silent_min": 571,
-   "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
-   "desc_mismatch": ""
+   "silent_min": 675,
+   "note": "รอบล่าสุด 4 รอบติดกันมีขั้นที่คืน status ERROR — ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ",
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
@@ -89,53 +59,34 @@
    "level": "⚠️",
    "status": "ตรวจผลงานไม่ได้",
    "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
-   "silent_min": 4861,
+   "silent_min": 5576,
    "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
-   "name": "wibwub-daily-stock",
-   "side": "local",
-   "last_round": "29 Oct 19:46",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "—",
-   "silent_min": 2,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": ""
+   "name": "ยอดขายจากชีต 09:25/20:25",
+   "side": "code",
+   "last_round": "29 Oct 20:32",
+   "level": "⚠️",
+   "status": "ข้อมูลค้าง",
+   "data_asof": "29 Oct 10:37",
+   "silent_min": 666,
+   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 21 ชม. (เกณฑ์ 20)",
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
-   "name": "wibwub-download-orders-monday",
-   "side": "local",
-   "last_round": "29 Oct 19:46",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "—",
-   "silent_min": 2,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "wibwub-download-shopee-ads",
-   "side": "local",
-   "last_round": "29 Oct 19:46",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "—",
-   "silent_min": 5,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "wibwub-download-tiktok-ads",
-   "side": "local",
-   "last_round": "29 Oct 19:49",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "—",
-   "silent_min": 2,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": ""
+   "name": "HR → Google Sheet 10:30/20:30/00:30",
+   "side": "code",
+   "last_round": "30 Oct 00:30",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "30 Oct 00:30",
+   "silent_min": 437,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
@@ -144,97 +95,166 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "26 Oct 11:14",
-   "silent_min": 4907,
+   "silent_min": 5622,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
-   "name": "TikTok คอนเทนต์ 09:25/20:25",
+   "name": "TikTok Live รายวัน 09:00/20:00",
    "side": "code",
-   "last_round": "29 Oct 09:37",
+   "last_round": "29 Oct 20:10",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "26 Oct 20:37",
-   "silent_min": 615,
+   "data_asof": "29 Oct 20:10",
+   "silent_min": 697,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-daily-followers",
    "side": "local",
-   "last_round": "29 Oct 09:53",
+   "last_round": "29 Oct 20:52",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 597,
+   "silent_min": 654,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-daily-stock",
+   "side": "local",
+   "last_round": "29 Oct 19:46",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 700,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-download-orders-monday",
+   "side": "local",
+   "last_round": "29 Oct 19:46",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 685,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-download-shopee-ads",
+   "side": "local",
+   "last_round": "29 Oct 19:46",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 720,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-download-tiktok-ads",
+   "side": "local",
+   "last_round": "29 Oct 19:49",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 713,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-fastmoss-competitor",
+   "side": "local",
+   "last_round": "29 Oct 23:56",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 468,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-monday-update",
    "side": "local",
-   "last_round": "29 Oct 10:36",
+   "last_round": "29 Oct 21:35",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 552,
+   "silent_min": 609,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-samp-request-sync",
    "side": "local",
-   "last_round": "29 Oct 11:19",
+   "last_round": "29 Oct 22:18",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 512,
+   "silent_min": 568,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-shopee-live-daily",
    "side": "local",
-   "last_round": "29 Oct 09:37",
+   "last_round": "29 Oct 20:37",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 614,
+   "silent_min": 669,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   },
   {
    "name": "wibwub-thursday-affiliate",
    "side": "local",
-   "last_round": "29 Oct 10:27",
+   "last_round": "29 Oct 21:27",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 558,
+   "silent_min": 493,
    "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-tiktok-product-daily",
+   "side": "local",
+   "last_round": "29 Oct 21:08",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "—",
+   "silent_min": 635,
+   "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": 2
   },
   {
    "name": "การตลาด vs ยอดขาย 09:45/20:45",
    "side": "code",
-   "last_round": "29 Oct 09:47",
+   "last_round": "29 Oct 20:47",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "29 Oct 09:57",
-   "silent_min": 596,
+   "data_asof": "29 Oct 20:48",
+   "silent_min": 660,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
-   "desc_mismatch": ""
-  },
-  {
-   "name": "ยอดขายจากชีต 09:25/20:25",
-   "side": "code",
-   "last_round": "29 Oct 11:45",
-   "level": "✅",
-   "status": "ปกติ",
-   "data_asof": "29 Oct 10:37",
-   "silent_min": 487,
-   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
-   "desc_mismatch": ""
+   "desc_mismatch": "",
+   "known_error_hits": ""
   }
  ]
 }

@@ -109,14 +109,17 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 สคริปต์จะ **หักคอมแอฟฟิลิเอตออกจากอัตราค่าธรรมเนียมให้เอง** แล้วเก็บเป็นอีกก้อน
 (`marketing_rates.aff_tk`) ที่หน้าเว็บวางไว้ข้างค่าจ้าง KOL — ไม่นับซ้ำ
 
-## ขั้นที่ 3 — เขียนลงหน้าเว็บ + commit
+## ขั้นที่ 3 — commit เฉพาะไฟล์อัตรา
+
+> **ห้ามรัน `marketing_update.py` ในงานนี้** (ตัดออก 30 ต.ค. 69)
+> มันต้องอ่าน `Data Shipnity` ทั้งก้อน (2.7 GB · 178 ไฟล์) ซึ่งแซนด์บ็อกซ์ของงาน local
+> ไม่มี cache และตัดคำสั่งที่เกิน ~180 วินาที จึงล้มทุกรอบ (29 ต.ค. 69 ล้มทั้งเช้าและค่ำ)
+> **งาน code `wibwub-ads-daily` (09:45/20:45) รันตัวนี้บนเครื่อง Mac จริงอยู่แล้ว**
+> หน้าเว็บจะรับอัตราใหม่จากรอบนั้นเอง ช้าสุด ~12 ชม. — หน้าที่ของงานนี้จบที่
+> เขียน `data Ads/platform_fee.json` ให้ถูกต้องแล้ว commit
 
 ```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/marketing/marketing_update.py"
-```
-
-```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/platform_fee.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/platform_fee.json"
 ```
 
 ```bash

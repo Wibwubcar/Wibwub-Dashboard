@@ -308,7 +308,21 @@ def _transcript(sess):
     return None
 
 
-def session_facts(sess, now):
+def known_errors_for(task_id, cfg_all):
+    """ข้อความ error ที่ยอมรับได้ของ 'งานนี้เท่านั้น'
+
+    ผูกกับชื่องาน + ข้อความเต็มประโยค ตั้งใจให้แคบ: error เดียวกันในงานอื่นต้องยังเตือน
+    และคำกว้าง ๆ (สั้นกว่า 25 ตัวอักษร) ถูกปฏิเสธ กันเผลอใส่ 'ERROR' แล้วปิดตาทั้งระบบ
+    """
+    out = []
+    for e in ((cfg_all.get('known_errors') or {}).get(task_id) or []):
+        t = (e.get('text') or '').strip()
+        if len(t) >= 25:
+            out.append(t)
+    return out
+
+
+def session_facts(sess, now, allow=()):
     """ข้อเท็จจริงที่อ่านได้จริงของเซสชันหนึ่งรอบ — ไม่เดาสถานะ
 
     **ไม่มีสัญญาณ "จบแล้ว" ที่เชื่อถือได้ฝั่ง code** — บันทึกของฝั่งนั้นไม่มี event
@@ -318,7 +332,8 @@ def session_facts(sess, now):
     """
     la = _ms(sess.get('lastActivityAt'))
     f = {'silent_min': round((now - la).total_seconds() / 60) if la else None,
-         'has_result': None, 'has_error': None, 'ended_with_text': None}
+         'has_result': None, 'has_error': None, 'ended_with_text': None,
+         'known_error_hits': 0}
     p = _transcript(sess)
     if not p:
         return f
@@ -328,6 +343,16 @@ def session_facts(sess, now):
         return f
     f['has_result'] = ('"type": "result"' in txt) or ('"type":"result"' in txt)
     f['has_error'] = any(e in txt for e in ERR_PATS)
+    f['known_error_hits'] = 0
+    if f['has_error'] and allow:
+        hits = sum(txt.count(a) for a in allow)
+        if hits:
+            f['known_error_hits'] = hits
+            # ยกเว้นได้เฉพาะเมื่อ "ทุก error ที่เจอ" อยู่ในรายการที่รู้จัก
+            # นับคร่าว ๆ จากจำนวนครั้งที่สตริง error โผล่ เทียบกับที่ยกเว้นได้
+            raw = sum(txt.count(e) for e in ERR_PATS)
+            if hits >= raw:
+                f['has_error'] = False
     # สัญญาณ "รอบนี้จบแล้ว" ที่เชื่อได้ที่สุด = ข้อความ assistant ก้อนสุดท้ายเป็น text
     # (รายงานปิดท้าย) ไม่ใช่ tool_use ที่ค้างรออนุญาต
     #   ตรวจกับเหตุการณ์จริง 28 ต.ค. 69: HR 20:30 ที่ค้าง -> ['tool_use'] ไม่มี text
@@ -439,7 +464,7 @@ def build_status(now):
     if reg is None:
         unreadable.append('ทะเบียนงาน local: อ่านไม่ได้')
 
-    def mk(name, side, cron, last_run, sched, sess_list, acfg, prompt_file):
+    def mk(name, side, cron, last_run, sched, sess_list, acfg, prompt_file, task_id=''):
         r = {'name': name, 'side': side, 'cron': cron}
         # ตัดเซสชันที่เกิดหลังเวลาที่กำลังตรวจทิ้ง เพื่อให้ --at ย้อนหลังได้จริง
         sess_list = [x for x in sess_list if (_ms(x.get('createdAt')) or now) <= now]
@@ -457,10 +482,14 @@ def build_status(now):
         started = bool(last_run and exp and last_run >= exp)
         late_min = round((now - exp).total_seconds() / 60) if exp else None
         sess = sess_list[-1] if sess_list else None
-        fct = session_facts(sess, now) if sess else {'silent_min': None,
-                                                     'has_result': None, 'has_error': None}
+        allow = known_errors_for(task_id, cfg_all)
+        fct = session_facts(sess, now, allow) if sess else {'silent_min': None,
+                                                     'has_result': None, 'has_error': None,
+                                                     'known_error_hits': 0}
         silent = fct['silent_min']
         r['silent_min'] = silent if silent is not None else ''
+        if fct.get('known_error_hits'):
+            r['known_error_hits'] = fct['known_error_hits']
         # "ผลงานออกแล้ว" ต้องหมายถึง **ออกสำหรับรอบนี้** คือใหม่กว่าเวลาที่รอบเริ่ม
         # ไม่ใช่แค่ "ยังไม่เกิน max_age_hours" — เกณฑ์ชั่วโมงมักยาวกว่าระยะห่างระหว่างรอบ
         # จึงมองไม่เห็นรอบที่ค้าง (28 ต.ค. 69: HR 20:30 ค้าง แต่ hr_state.json ของรอบ 10:30
@@ -513,7 +542,7 @@ def build_status(now):
         if len(recent) >= 2:
             bad = 0
             for s2 in reversed(recent):
-                if session_facts(s2, now).get('has_error'):
+                if session_facts(s2, now, allow).get('has_error'):
                     bad += 1
                 else:
                     break
@@ -545,13 +574,13 @@ def build_status(now):
             pass
         rows.append(mk(name, 'local', t.get('cronExpression', ''),
                        iso(t.get('lastRunAt')), iso(t.get('lastScheduledFor')),
-                       (local_sess or {}).get(t.get('id'), []), None, pf))
+                       (local_sess or {}).get(t.get('id'), []), None, pf, t.get('id', '')))
     # ฝั่ง code
     for tid, c in code_cfg.items():
         sl = (code_sess or {}).get(tid, [])
         last = _ms(sl[-1].get('createdAt')) if sl else None
         rows.append(mk(c.get('label', tid), 'code', c.get('cron', ''), last, None, sl, c,
-                       tid + '.md'))
+                       tid + '.md', tid))
 
     order = {'⛔': 0, '⚠️': 1, '⏳': 2, '✅': 3}
     rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
@@ -636,10 +665,11 @@ def write_status_json(now, path=None):
         'counts': {'stop': sum(1 for r in rows if r['level'] == '⛔'),
                    'warn': sum(1 for r in rows if r['level'] == '⚠️'),
                    'ok': sum(1 for r in rows if r['level'] == '✅'),
-                   'gaps': len(gaps)},
+                   'gaps': len(gaps),
+                   'known_errors_skipped': sum(int(r.get('known_error_hits') or 0) for r in rows)},
         'tasks': [{k: r.get(k, '') for k in
                    ('name', 'side', 'last_round', 'level', 'status', 'data_asof',
-                    'silent_min', 'note', 'desc_mismatch')} for r in rows],
+                    'silent_min', 'note', 'desc_mismatch', 'known_error_hits')} for r in rows],
     }
     p = Path(path) if path else (BASE / 'scripts' / 'ops' / 'task_health.json')
     p.write_text(json.dumps(data, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
