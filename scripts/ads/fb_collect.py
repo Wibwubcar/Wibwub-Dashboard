@@ -31,7 +31,14 @@ from datetime import datetime, timedelta
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from fb_daily import BASE, SRC, COL, ACC_LABEL          # noqa: E402  ใช้ชุดเดียวกัน ห้ามก๊อป
 
-DL = Path.home() / 'Downloads'
+# โฟลเดอร์ Downloads: ไล่หาตามลำดับ ไม่พึ่ง Path.home() อย่างเดียว
+# (30 ต.ค. 69: รอบ 08:15 ล้มเพราะในแซนด์บ็อกซ์ Path.home() = /sessions/<ชื่อ>
+#  ซึ่งไม่มีโฟลเดอร์ Downloads ทั้งที่ /Users/thanasablilutanon/Downloads เข้าถึงได้ปกติ
+#  เอเจนต์ต้องเสียเวลาไล่หา --downloads เองทุกเช้า)
+DL_CANDIDATES = [Path.home() / 'Downloads',
+                 Path.home() / 'mnt' / 'Downloads',
+                 Path('/Users/thanasablilutanon/Downloads')]
+DL = next((p for p in DL_CANDIDATES if p.is_dir()), DL_CANDIDATES[0])
 DATE_RE = re.compile(r'^\d{4}-\d{2}-\d{2}$')
 # สมุดจดไฟล์ที่ถูกใช้ไปแล้ว — กันหยิบใบเดิมซ้ำให้บัญชีถัดไปในรอบเดียวกัน
 # (28 ต.ค. 69: ไฟล์ AD3 ถูกหยิบไปเป็นของ AD-4 เพราะตอนนั้น AD-4 ยังโหลดไม่เสร็จ
@@ -120,7 +127,9 @@ def main():
     if not a.id.isdigit(): die('--id ต้องเป็นตัวเลขล้วน', a.id)
 
     dl = Path(a.downloads)
-    if not dl.is_dir(): die('ไม่พบโฟลเดอร์ Downloads', str(dl))
+    if not dl.is_dir():
+        die('ไม่พบโฟลเดอร์ Downloads',
+            'ลองแล้ว: ' + ' · '.join(str(p) for p in ([dl] if a.downloads != str(DL) else DL_CANDIDATES)))
     cutoff = datetime.now() - timedelta(minutes=a.max_age_min)
     if a.after:
         try:
