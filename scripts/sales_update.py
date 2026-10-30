@@ -204,6 +204,34 @@ def backfill_current_month(sales, asof_ch, today=None):
     return rep, per_ch_new
 
 
+def write_backfill_label(filled):
+    """เขียน MTD_BACKFILL ลงหน้าเว็บ — บอกว่าช่วงไหนของเดือนนี้มาจากหลังบ้าน
+
+    เขียนทุกรอบรวมถึงตอนว่าง ({}) เพื่อให้ป้ายหายเองเมื่อทีมกรอกชีตตามทันแล้ว
+    """
+    TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+          'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+    mo = TH[dt.date.today().month - 1]
+    parts = []
+    for label, d in sorted((filled or {}).items()):
+        span = d.get('ช่วงที่เติม')
+        if span:
+            a, b = span.split('..')
+            parts.append("%s:'%s-%s %s'" % (label, int(a), int(b), mo))
+    body = '{ ' + ', '.join(parts) + ' }' if parts else '{}'
+    out = []
+    for pg in PAGES:
+        f = BASE / pg
+        if not f.exists():
+            continue
+        h = f.read_text(encoding='utf-8')
+        new = re.sub(r'const MTD_BACKFILL = \{[^}]*\};',
+                     'const MTD_BACKFILL = %s;' % body, h, count=1)
+        if new != h:
+            f.write_text(new, encoding='utf-8'); out.append(pg)
+    return {'label': body, 'pages': out}
+
+
 def write_asof(asof, per_ch=None):
     """เขียน SALES_ASOF + MTD_COVERAGE ลงหน้าเว็บ — ขยับไปข้างหน้าเท่านั้น
 
@@ -340,6 +368,8 @@ def main():
             per_ch[lbl] = d_
     if backfill:
         summary['backfill'] = backfill
+        if not a.dry_run:
+            summary['backfill']['label'] = write_backfill_label(backfill.get('filled'))
     summary['sheet_asof'] = asof_ch
     # เก็บ "วันสุดท้ายที่ชีตมีข้อมูล" แยกเป็นไฟล์ (30 ต.ค. 69)
     # ห้ามให้ตัวตรวจไปอ่าน MTD_COVERAGE แทน เพราะเมื่องาน "เติมยอดจากหลังบ้าน" เริ่มทำงาน
