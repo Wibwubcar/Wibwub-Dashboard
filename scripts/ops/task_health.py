@@ -497,6 +497,13 @@ def build_status(now):
         done_this_round = (art_at is not None and last_run is not None
                            and art_at >= last_run - timedelta(minutes=2))
         fresh = (maxh is not None and age is not None and age <= maxh)
+        # งาน local ที่ปลดระวางแล้ว: พรอมป์เหลือแค่ตอบ "ข้าม" จึงไม่มีผลงานปลายทาง
+        # และไม่ควรถูกนับว่าล้ม — ผู้ใช้หาสวิตช์ปิดในแอปไม่เจอ จึงทำให้ว่างแทน
+        retired = (cfg_all.get('retired_local_tasks') or {}).get(task_id)
+        if retired and started:
+            r.update(level='✅', status='ปลดระวางแล้ว',
+                     note='ย้ายไป %s — รอบนี้ตอบข้ามตามที่ตั้งใจ' % retired.get('moved_to', 'งานอื่น'))
+            return r
         # ── ตัดสินสถานะ ──
         # หมายเหตุสำคัญ (29 ต.ค. 69): สัญญาณที่เชื่อได้มีแค่ 2 อย่างคือ "เวลาเริ่มรอบ"
         # (จากทะเบียน/ไฟล์เซสชัน) กับ "ผลงานปลายทาง" (task_expect.json)

@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-10-30 07:48",
+ "checked_at": "2026-10-30 08:48",
  "unreadable": [],
  "gaps": [
   {
@@ -22,7 +22,7 @@
  },
  "counts": {
   "stop": 0,
-  "warn": 4,
+  "warn": 3,
   "ok": 15,
   "gaps": 1,
   "known_errors_skipped": 2
@@ -35,20 +35,20 @@
    "level": "⚠️",
    "status": "ข้อมูลค้าง",
    "data_asof": "26 Oct 20:37",
-   "silent_min": 671,
-   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 83 ชม. (เกณฑ์ 72)",
+   "silent_min": 731,
+   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 84 ชม. (เกณฑ์ 72)",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
   {
-   "name": "wibwub-sales-update",
+   "name": "wibwub-download-shopee-ads",
    "side": "local",
-   "last_round": "29 Oct 20:32",
+   "last_round": "30 Oct 08:15",
    "level": "⚠️",
-   "status": "ล้มติดกัน 4 รอบ",
+   "status": "มีขั้นที่ล้ม",
    "data_asof": "—",
-   "silent_min": 675,
-   "note": "รอบล่าสุด 4 รอบติดกันมีขั้นที่คืน status ERROR — ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ",
+   "silent_min": 26,
+   "note": "รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
@@ -59,20 +59,20 @@
    "level": "⚠️",
    "status": "ตรวจผลงานไม่ได้",
    "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
-   "silent_min": 5576,
+   "silent_min": 5636,
    "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
   {
-   "name": "ยอดขายจากชีต 09:25/20:25",
-   "side": "code",
-   "last_round": "29 Oct 20:32",
-   "level": "⚠️",
-   "status": "ข้อมูลค้าง",
-   "data_asof": "29 Oct 10:37",
-   "silent_min": 666,
-   "note": "งานรันผ่าน แต่ผลงานไม่ขยับมา 21 ชม. (เกณฑ์ 20)",
+   "name": "wibwub-download-orders-monday",
+   "side": "local",
+   "last_round": "30 Oct 08:38",
+   "level": "⏳",
+   "status": "กำลังรัน",
+   "data_asof": "—",
+   "silent_min": 1,
+   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
@@ -83,7 +83,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "30 Oct 00:30",
-   "silent_min": 437,
+   "silent_min": 497,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -95,7 +95,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "26 Oct 11:14",
-   "silent_min": 5622,
+   "silent_min": 5682,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -107,7 +107,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "29 Oct 20:10",
-   "silent_min": 697,
+   "silent_min": 757,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -119,7 +119,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 654,
+   "silent_min": 714,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -131,31 +131,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 700,
-   "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": "",
-   "known_error_hits": ""
-  },
-  {
-   "name": "wibwub-download-orders-monday",
-   "side": "local",
-   "last_round": "29 Oct 19:46",
-   "level": "✅",
-   "status": "ปกติ",
-   "data_asof": "—",
-   "silent_min": 685,
-   "note": "รอบล่าสุดเริ่มตามเวลา",
-   "desc_mismatch": "",
-   "known_error_hits": ""
-  },
-  {
-   "name": "wibwub-download-shopee-ads",
-   "side": "local",
-   "last_round": "29 Oct 19:46",
-   "level": "✅",
-   "status": "ปกติ",
-   "data_asof": "—",
-   "silent_min": 720,
+   "silent_min": 760,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -163,11 +139,11 @@
   {
    "name": "wibwub-download-tiktok-ads",
    "side": "local",
-   "last_round": "29 Oct 19:49",
+   "last_round": "30 Oct 08:26",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 713,
+   "silent_min": 18,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -179,7 +155,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 468,
+   "silent_min": 528,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -191,8 +167,20 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 609,
+   "silent_min": 669,
    "note": "รอบล่าสุดเริ่มตามเวลา",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-sales-update",
+   "side": "local",
+   "last_round": "29 Oct 20:32",
+   "level": "✅",
+   "status": "ปลดระวางแล้ว",
+   "data_asof": "—",
+   "silent_min": 735,
+   "note": "ย้ายไป งานฝั่ง code ชื่อเดียวกัน (09:25/20:25) — รอบนี้ตอบข้ามตามที่ตั้งใจ",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
@@ -203,7 +191,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 568,
+   "silent_min": 628,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -215,7 +203,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 669,
+   "silent_min": 729,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -227,7 +215,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 493,
+   "silent_min": 553,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -239,7 +227,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "—",
-   "silent_min": 635,
+   "silent_min": 695,
    "note": "รอบล่าสุดเริ่มตามเวลา",
    "desc_mismatch": "",
    "known_error_hits": 2
@@ -251,8 +239,20 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "29 Oct 20:48",
-   "silent_min": 660,
+   "silent_min": 720,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "ยอดขายจากชีต 09:25/20:25",
+   "side": "code",
+   "last_round": "29 Oct 20:32",
+   "level": "✅",
+   "status": "ปลดระวางแล้ว",
+   "data_asof": "29 Oct 10:37",
+   "silent_min": 726,
+   "note": "ย้ายไป งานฝั่ง code ชื่อเดียวกัน (09:25/20:25) — รอบนี้ตอบข้ามตามที่ตั้งใจ",
    "desc_mismatch": "",
    "known_error_hits": ""
   }
