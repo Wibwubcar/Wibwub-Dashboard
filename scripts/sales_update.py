@@ -81,6 +81,129 @@ def sheet_asof(rows):
     return best
 
 
+# ═════════════════════════════════════════════════════════════════════════════
+# เติมยอดเดือนปัจจุบันจากข้อมูลหลังบ้าน (30 ต.ค. 69)
+#
+# ปัญหา: ทีมกรอกชีต Shopee/Lazada ทุกวันจันทร์ ยอดเดือนปัจจุบันบนหน้าเว็บจึงค้าง
+#        ทั้งสัปดาห์ ทั้งที่ data Ads/ads_daily.json มียอดจริงรายวันอยู่แล้ว
+# กติกา: ชีตเป็นหลักเสมอ · เติมเฉพาะ "วันหลัง sheet_asof ของแพลตฟอร์มนั้น"
+#        · เฉพาะเดือนปัจจุบัน · พอทีมกรอกชีตวันจันทร์ ค่าชีตจะแทนที่ส่วนที่เติมเอง
+#        · TikTok ไม่เติมยอดขาย/ออเดอร์ (ชีตกรอกเกือบรายวัน และหลังบ้านต่างจากชีต)
+# ═════════════════════════════════════════════════════════════════════════════
+BF_MAP = {'shopee': ('sh_real', 'SH_REV', 'SH_ORD', 'Shopee'),
+          'lazada': ('lz_real', 'LZ_REV', 'LZ_ORD', 'Lazada')}
+BF_TOL = 0.01          # ช่วงที่มีทั้งชีตและหลังบ้านต้องต่างกันไม่เกิน 1%
+
+
+def _daysum(days, key, field, lo, hi):
+    """รวมค่าจาก ads_daily ช่วง [lo, hi] · คืน (ผลรวม, วันที่มีคีย์, วันที่ขาดคีย์)"""
+    tot, have, miss = 0.0, [], []
+    for d in sorted(days):
+        if not (lo <= d <= hi):
+            continue
+        v = (days[d] or {}).get(key)
+        if not isinstance(v, dict) or v.get(field) is None:
+            miss.append(d); continue
+        tot += v[field] or 0
+        have.append(d)
+    return tot, have, miss
+
+
+def backfill_current_month(sales, asof_ch, today=None):
+    """เติม SH_/LZ_ ของเดือนปัจจุบันจาก ads_daily.json · คืน (รายงาน, วันที่ใหม่รายช่อง)"""
+    rep = {'filled': {}, 'skipped': {}, 'checks': {}}
+    per_ch_new = {}
+    fp = BASE / 'data Ads' / 'ads_daily.json'
+    if not fp.exists():
+        rep['skipped']['ทั้งหมด'] = 'ไม่พบ data Ads/ads_daily.json'
+        return rep, per_ch_new
+    try:
+        days = (json.loads(fp.read_text(encoding='utf-8')) or {}).get('days') or {}
+    except (ValueError, OSError) as e:
+        rep['skipped']['ทั้งหมด'] = 'อ่าน ads_daily.json ไม่ได้: %s' % type(e).__name__
+        return rep, per_ch_new
+
+    today = today or dt.date.today()
+    mon = today.strftime('%Y-%m')
+    # ด่าน: ถ้าไฟล์ยังไม่มี "เมื่อวาน" แปลว่างานที่เขียนไฟล์นี้ยังไม่ได้รัน -> ไม่เติม
+    yday = (today - dt.timedelta(days=1)).isoformat()
+    if yday not in days:
+        rep['skipped']['ทั้งหมด'] = 'ads_daily.json ยังไม่มีวันที่ %s — ไม่เติม' % yday
+        return rep, per_ch_new
+
+    first = mon + '-01'
+    last_in_file = max([d for d in days if d.startswith(mon)] or [''])
+    for ch, (key, rev_k, ord_k, label) in BF_MAP.items():
+        asof = asof_ch.get(ch)
+        if not asof or not asof.startswith(mon):
+            rep['skipped'][label] = 'ไม่มี sheet_asof ของเดือนนี้'; continue
+        # ── ด่าน 1%: ช่วงที่มีทั้งชีตและหลังบ้าน (1..asof) ต้องตรงกัน
+        # ถ้าชีตไม่มีค่าเลยในเดือนนี้ (เช่น Lazada ออเดอร์ที่ทีมกรอกเฉพาะแถวปิดเดือน)
+        # จะเทียบช่วงทับซ้อนของเดือนนี้ไม่ได้ -> ใช้ "เดือนที่ปิดแล้วล่าสุด" เป็นด่านแทน
+        # และต้องเอายอดหลังบ้าน **ทั้งเดือน** มาใช้ ไม่ใช่บวกเฉพาะวันหลัง asof
+        # (ไม่งั้นจะได้ยอดไม่ครบเดือน แล้วด่าน "ห้ามลด" จะตีกลับ — เจอจริง 30 ต.ค. 69
+        #  LZ_ORD 53 -> 13 เพราะบวกแค่วันที่ 26-27)
+        ok, whole = {}, {}
+        prev_mon = (dt.date.fromisoformat(first) - dt.timedelta(days=1)).strftime('%Y-%m')
+        for field, arr_k in (('gmv', rev_k), ('orders', ord_k)):
+            arr = sales.get(arr_k) or []
+            sheet_val = arr[-1] if arr else None
+            if sheet_val:
+                back, _, _ = _daysum(days, key, field, first, asof)
+                diff = abs(back - sheet_val) / sheet_val
+                ok[field] = diff <= BF_TOL
+                rep['checks']['%s %s' % (label, field)] = {
+                    'ช่วงเทียบ': '%s..%s' % (first[-2:], asof[-2:]),
+                    'ชีต': round(sheet_val, 2), 'หลังบ้าน': round(back, 2),
+                    'ต่าง%': round(diff * 100, 2), 'ผ่าน': ok[field]}
+            else:
+                prev_sheet = arr[-2] if len(arr) >= 2 else None
+                prev_back, _, _ = _daysum(days, key, field, prev_mon + '-01', prev_mon + '-31')
+                if not prev_sheet or not prev_back:
+                    ok[field] = False
+                    rep['checks']['%s %s' % (label, field)] = {
+                        'ช่วงเทียบ': prev_mon, 'ผ่าน': False,
+                        'เหตุผล': 'ชีตเดือนนี้ว่าง และเทียบเดือนที่ปิดแล้วไม่ได้'}
+                else:
+                    diff = abs(prev_back - prev_sheet) / prev_sheet
+                    ok[field] = diff <= BF_TOL
+                    whole[field] = True      # ชีตว่าง -> ต้องใช้ยอดหลังบ้านทั้งเดือน
+                    rep['checks']['%s %s' % (label, field)] = {
+                        'ช่วงเทียบ': prev_mon + ' (เดือนที่ปิดแล้ว)',
+                        'ชีต': round(prev_sheet, 2), 'หลังบ้าน': round(prev_back, 2),
+                        'ต่าง%': round(diff * 100, 2), 'ผ่าน': ok[field],
+                        'หมายเหตุ': 'ชีตเดือนนี้ว่าง -> ใช้ยอดหลังบ้านทั้งเดือน'}
+        # ── เติมวันหลัง asof
+        nxt = (dt.date.fromisoformat(asof) + dt.timedelta(days=1)).isoformat()
+        if nxt > last_in_file:
+            rep['skipped'][label] = 'ไม่มีวันใหม่กว่าชีต (ชีตถึง %s)' % asof; continue
+        def _span(field):
+            lo = first if whole.get(field) else nxt
+            return _daysum(days, key, field, lo, last_in_file)
+        add_rev, have, _ = _span('gmv')
+        if not have:
+            rep['skipped'][label] = 'ไม่มีคีย์ %s หลังวันที่ %s' % (key, asof); continue
+        done = {}
+        if ok.get('gmv'):
+            base_rev = 0 if whole.get('gmv') else (sales[rev_k][-1] or 0)
+            sales[rev_k][-1] = round(base_rev + add_rev, 2)
+            done['ยอดขาย'] = round(add_rev, 2)
+        else:
+            rep['skipped']['%s ยอดขาย' % label] = 'ด่าน 1% ไม่ผ่าน — ใช้ชีตอย่างเดียว'
+        add_ord, have_o, _ = _span('orders')
+        if ok.get('orders') and add_ord:
+            base_ord = 0 if whole.get('orders') else (sales[ord_k][-1] or 0)
+            sales[ord_k][-1] = int(base_ord + add_ord)
+            done['ออเดอร์'] = int(add_ord)
+        elif add_ord:
+            rep['skipped']['%s ออเดอร์' % label] = 'ด่าน 1% ไม่ผ่าน — ใช้ชีตอย่างเดียว'
+        if done:
+            done['ช่วงที่เติม'] = '%s..%s' % (have[0][-2:], have[-1][-2:])
+            rep['filled'][label] = done
+            per_ch_new[label] = have[-1]
+    return rep, per_ch_new
+
+
 def write_asof(asof, per_ch=None):
     """เขียน SALES_ASOF + MTD_COVERAGE ลงหน้าเว็บ — ขยับไปข้างหน้าเท่านั้น
 
@@ -149,6 +272,8 @@ def arrays(path):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true', help='คำนวณและตรวจอย่างเดียว ไม่เขียนไฟล์')
+    ap.add_argument('--no-backfill', action='store_true',
+                    help='ไม่ต้องเติมยอดเดือนปัจจุบันจากหลังบ้าน (ใช้ชีตอย่างเดียว)')
     a = ap.parse_args()
 
     if not BASE.exists(): die('BASE ไม่พบ — Google Drive ยังไม่ sync?', str(BASE))
@@ -171,6 +296,11 @@ def main():
     except Exception as e:
         die('process_sales ล้มเหลว', f'{type(e).__name__}: {e}')
     if not sales: die('process_sales() คืนค่าว่าง')
+
+    # ── เติมยอดเดือนปัจจุบันจากหลังบ้าน (ก่อนด่านตรวจ เพื่อให้ด่าน "ห้ามลด" ตรวจค่าที่เติมแล้วด้วย)
+    asof_pre = {k: sheet_asof(sheets.get(k)) for k in ('shopee', 'lazada')}
+    asof_pre['tiktok'] = tiktok_asof(sheets.get('tiktok'))
+    backfill, per_ch_bf = ({}, {}) if a.no_backfill else backfill_current_month(sales, asof_pre)
 
     # ── ด่านตรวจก่อนเขียน ────────────────────────────────────────────────────
     n = {k: len(v) for k, v in sales.items() if isinstance(v, list)}
@@ -199,11 +329,17 @@ def main():
 
     # ── SALES_ASOF: ขอบ "กระทบยอดแล้ว" ที่หน้า การตลาด vs ยอดขาย ใช้ ─────────
     # อ่านวันสุดท้ายจากชีตเอง แทนที่จะปล่อยให้ค่าค้างอยู่กับที่
-    asof_ch = {k: sheet_asof(sheets.get(k)) for k in ('shopee', 'lazada')}
-    asof_ch['tiktok'] = tiktok_asof(sheets.get('tiktok'))
+    asof_ch = asof_pre
     got = {k: v for k, v in asof_ch.items() if v}
     PER = {'shopee': 'Shopee', 'tiktok': 'TikTok', 'lazada': 'Lazada'}
     per_ch = {PER[k]: v for k, v in got.items() if k in PER}
+    # MTD_COVERAGE รายช่องทาง = วันล่าสุดที่ "มีข้อมูล" ไม่ว่าจะมาจากชีตหรือหลังบ้าน
+    # ส่วนวันของชีตล้วนเก็บแยกไว้ใน data Ads/sheet_asof.json ให้ตัวตรวจอ่าน
+    for lbl, d_ in (per_ch_bf or {}).items():
+        if d_ and d_ > per_ch.get(lbl, ''):
+            per_ch[lbl] = d_
+    if backfill:
+        summary['backfill'] = backfill
     summary['sheet_asof'] = asof_ch
     # เก็บ "วันสุดท้ายที่ชีตมีข้อมูล" แยกเป็นไฟล์ (30 ต.ค. 69)
     # ห้ามให้ตัวตรวจไปอ่าน MTD_COVERAGE แทน เพราะเมื่องาน "เติมยอดจากหลังบ้าน" เริ่มทำงาน
