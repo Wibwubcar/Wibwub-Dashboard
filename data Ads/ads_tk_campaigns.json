@@ -331,19 +331,19 @@
   },
   "oct": {
    "from": "2026-10-01",
-   "to": "2026-10-29",
+   "to": "2026-10-30",
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 232509.8,
-     "orders": 7210,
-     "revenue": 893313.99
+     "spend": 239580.28,
+     "orders": 7432,
+     "revenue": 922377.55
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 212742.35,
-     "orders": 2189,
-     "revenue": 804470.8
+     "spend": 221272.33,
+     "orders": 2282,
+     "revenue": 838994.2
     },
     {
      "name": "21.09.26/Banyakart",
@@ -353,39 +353,39 @@
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 116635.16,
-     "orders": 3357,
-     "revenue": 443299.47
-    },
-    {
-     "name": "18.08.26/AllProduct",
-     "spend": 75617.88,
-     "orders": 1198,
-     "revenue": 465211.23
+     "spend": 119191.23,
+     "orders": 3442,
+     "revenue": 454076.2
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 72347.99,
-     "orders": 833,
-     "revenue": 204856.51
+     "spend": 83369.48,
+     "orders": 968,
+     "revenue": 237174.56
+    },
+    {
+     "name": "18.08.26/AllProduct",
+     "spend": 79155.64,
+     "orders": 1246,
+     "revenue": 487319.75
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 59040.45,
-     "orders": 541,
-     "revenue": 181078.75
+     "spend": 60637.25,
+     "orders": 553,
+     "revenue": 185424.74
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 36529.75,
-     "orders": 236,
-     "revenue": 141126.43
+     "spend": 38714.33,
+     "orders": 250,
+     "revenue": 148571.36
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 33294.79,
-     "orders": 381,
-     "revenue": 170255.46
+     "spend": 33822.03,
+     "orders": 388,
+     "revenue": 173267.15
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -395,9 +395,9 @@
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 3115.08,
-     "orders": 20,
-     "revenue": 8655.53
+     "spend": 3626.72,
+     "orders": 23,
+     "revenue": 9920.58
     },
     {
      "name": "27.08.26/interior-refresh",
