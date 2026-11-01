@@ -336,12 +336,19 @@ def main():
         die('บล็อก MKT_SPEND มีข้อมูลรายคนหรือชื่อแคมเปญ — ไม่เขียนหน้าเว็บ', bad)
     block = START + '\nconst MKT_SPEND = ' + payload + ';\n' + END
     changed = False
-    for p, t in pages.items():
+    for p in PAGES:
+        fp = BASE / p
+        # ⛔ อ่านไฟล์ใหม่ตอนจะเขียน ห้ามใช้สำเนาใน pages[] ที่อ่านไว้ตอนเริ่ม:
+        #    ระหว่างนั้นสคริปต์ประมวลผล Shipnity หลายนาที งานอื่น (เช่น
+        #    update_followers.py) อาจแก้ไฟล์เดียวกันไปแล้ว ถ้าเขียนสำเนาเก่ากลับ
+        #    ทั้งไฟล์ การแก้ของงานนั้นจะถูกย้อนทิ้งเงียบ ๆ ไม่มี error
+        #    เกิดจริง 1 พ.ย. 69: commit 70c8909 ย้อน 83275b9 → followers 31,757 กลับเป็น 31,713
+        t = fp.read_text(encoding='utf-8')
         if START not in t or END not in t:
             die(f'ไม่พบบล็อก {START} ใน {p} — รัน marketing_section.py ก่อน')
         new = re.sub(re.escape(START) + r'[\s\S]*?' + re.escape(END), lambda _: block, t)
         if new != t:
-            (BASE / p).write_text(new, encoding='utf-8'); changed = True
+            fp.write_text(new, encoding='utf-8'); changed = True
     notes = []
     if changed:
         r = subprocess.run([sys.executable, str(BASE / 'scripts' / 'bump_sw.py')],
