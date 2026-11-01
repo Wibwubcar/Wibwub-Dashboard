@@ -331,19 +331,19 @@
   },
   "oct": {
    "from": "2026-10-01",
-   "to": "2026-10-30",
+   "to": "2026-10-31",
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 239580.28,
-     "orders": 7432,
-     "revenue": 922375.32
+     "spend": 248222.9,
+     "orders": 7711,
+     "revenue": 958286.94
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 221272.33,
-     "orders": 2282,
-     "revenue": 838988.66
+     "spend": 229097.3,
+     "orders": 2368,
+     "revenue": 871032.72
     },
     {
      "name": "21.09.26/Banyakart",
@@ -353,39 +353,39 @@
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 119191.23,
-     "orders": 3442,
-     "revenue": 454075.43
+     "spend": 123069.73,
+     "orders": 3567,
+     "revenue": 471283.5
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 83369.48,
-     "orders": 968,
-     "revenue": 237171.55
+     "spend": 92349.02,
+     "orders": 1078,
+     "revenue": 263036.91
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 79155.64,
-     "orders": 1246,
-     "revenue": 487318.34
+     "spend": 81280.34,
+     "orders": 1282,
+     "revenue": 501733.42
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 60637.25,
-     "orders": 553,
-     "revenue": 185424.48
+     "spend": 64536.57,
+     "orders": 591,
+     "revenue": 198044.15
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 38714.33,
-     "orders": 250,
-     "revenue": 148570.92
+     "spend": 39355.22,
+     "orders": 255,
+     "revenue": 150808.15
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 33822.03,
-     "orders": 388,
-     "revenue": 173266.62
+     "spend": 34441.44,
+     "orders": 398,
+     "revenue": 176709.84
     },
     {
      "name": "17.08.26/Refresh wipe",
@@ -395,9 +395,9 @@
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 3626.72,
-     "orders": 23,
-     "revenue": 9920.58
+     "spend": 4464.03,
+     "orders": 30,
+     "revenue": 13063.66
     },
     {
      "name": "27.08.26/interior-refresh",
