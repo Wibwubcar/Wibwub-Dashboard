@@ -19,8 +19,11 @@ const run={
     return out; },
   async sh_ads(){ const c=cap(/get_time_graph/); const out={}; days.forEach(d=>out[d]={});
     for(const [k,ct] of [['product','product_homepage_v2'],['search','shop_homepage'],['live','live_stream_homepage']]){
-      const o=JSON.parse(c.b); o.campaign_type=ct; o.start_time=ts(P.from); o.end_time=ts(P.to)+86399;
+      // agg_interval=96 คือรายวัน ต้องตั้งเองทุกครั้ง: ถ้ายืมมาจากหน้าที่เลือกช่วงวันเดียวจะได้ 4 = รายชั่วโมง
+      // แล้ว 24 แถวของวันนั้นจะเขียนทับกันเหลือชั่วโมงสุดท้าย ค่าโฆษณาต่ำกว่าจริง 20-40 เท่าแบบไม่มี error
+      const o=JSON.parse(c.b); o.campaign_type=ct; o.agg_interval=96; o.start_time=ts(P.from); o.end_time=ts(P.to)+86399;
       const j=await postJSON(c,o); if(j.code!==0) throw new Error(k+' code '+j.code+' '+j.msg);
+      if(j.data.report_by_time.length!==days.length) throw new Error(k+' ได้ '+j.data.report_by_time.length+' แถว แต่ขอ '+days.length+' วัน — agg_interval ไม่ใช่รายวัน');
       for(const r of j.data.report_by_time){ const d=new Date((+r.key+7*3600)*1000).toISOString().slice(0,10); if(!out[d]) continue; const m=r.metrics;
         out[d][k]={gmv_broad:Math.round(m.broad_gmv/1e5), gmv_direct:Math.round((m.direct_gmv||0)/1e5), spend:Math.round(m.cost/1e5), orders:m.broad_order||0}; }
       await sleep(500); }
