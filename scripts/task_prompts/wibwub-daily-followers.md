@@ -8,10 +8,16 @@ description: ดาวน์โหลด TikTok Followers จาก TikTok Studi
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 
 พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
-จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
+งานนี้รันบนเครื่อง Mac มีพาธเดียว · **คำสั่ง shell แรกของรอบต้องเป็น `python3`**
+ห้ามเป็นลูป `for` ของ bash (สร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา)
+พาธ `/sessions/<ชื่อ>/mnt/All` ของแซนด์บ็อกซ์เดิม **ตายแล้ว**
 
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+python3 -c "
+import os
+BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
+print('BASE OK' if os.path.isdir(BASE + '/scripts') else '⛔ ไม่พบ BASE')
+"
 ```
 
 - ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
@@ -86,8 +92,7 @@ browser_batch([
 ## Step 4 — รัน update_followers.py
 
 ```bash
-cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-python3 update_followers.py
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/update_followers.py"
 ```
 
 ถ้า script ไม่มี ให้รัน inline:
@@ -153,8 +158,9 @@ print(f"✅ Updated: {latest_count:,} followers ({latest_date})")
 เท่ากับ `end` ของเดือนก่อนหน้า และ `end` ของแต่ละเดือนตรงกับ `TK_FOL` ใน `WIBWUB_Mobile.html`:
 
 ```bash
-cd "$BASE" && python3 - <<'EOF'
-import re,sys
+python3 - <<'EOF'
+import os, re, sys
+os.chdir('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All')
 d=open('WIBWUB_Dashboard.html',encoding='utf-8').read()
 seg=d[d.find('const FOL_DATA'):]
 ent=[]
@@ -276,16 +282,11 @@ echo "✅ Committed — autopush จะ push ให้เองใน 2 นา�
 วันจะเลื่อนออกจากกัน แล้วฝั่ง code จะเจอ clips.json เก่าเกิน 180 นาที → exit 3 ทุกรอบ
 
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do
-  [ -f "$d/scripts/content/content_sheet_update.py" ] && BASE="$d" && break
-done
-echo "BASE=$BASE"
-[ -z "$BASE" ] && echo "หาโฟลเดอร์ All ไม่เจอ — หยุดส่วน B รายงาน" && exit 0
-
-# ใช้ python3 ตัดสิน จะได้ไม่ต้องพึ่งไวยากรณ์ date/stat ที่ต่างกันระหว่าง macOS กับ Linux
-python3 - "$BASE" <<'PY'
+python3 - <<'PY'
 import sys, os, datetime as dt
-base = sys.argv[1]
+base = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
+if not os.path.isfile(base + '/scripts/content/content_sheet_update.py'):
+    print('⛔ ไม่พบ content_sheet_update.py — หยุดส่วน B รายงาน'); sys.exit(1)
 today = dt.date.today()
 if (today.day - 1) % 5 != 0:
     print(f"วันนี้วันที่ {today.day} ไม่ใช่รอบ (รอบคือ 1,6,11,16,21,26,31) -> ข้ามส่วน B")
@@ -309,7 +310,7 @@ PY
 
 อ่านไฟล์นี้ด้วย Read tool แล้วทำตาม **เฉพาะขั้นที่ 2 และ 3 เท่านั้น**:
 
-`$BASE/scripts/task_prompts/wibwub-content-sheet.md`
+`/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/task_prompts/wibwub-content-sheet.md`
 
 - **ข้ามขั้นที่ 1 (`plan`) และขั้นที่ 4 (`write`)** สองขั้นนั้นใช้ service account งานนี้รันไม่ได้
   ถ้าเผลอรันจะได้ `ไม่พบ service account` แล้วจบ
@@ -323,7 +324,7 @@ PY
 
 ## ขั้น B2 — บันทึกไฟล์แล้ว commit
 
-เขียนผลเป็น JSON array ลง `$BASE/scripts/content/work/clips.json` รูปแบบนี้
+เขียนผลเป็น JSON array ลง `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/content/work/clips.json` รูปแบบนี้
 
 ```json
 [{"ok":true,"video_id":"76xxxxxxxxxxxxxxxxx","retention5":58,"views":232000,
@@ -333,8 +334,8 @@ PY
 แล้ว commit **เฉพาะไฟล์นี้ไฟล์เดียว**
 
 ```bash
-python3 "$BASE/scripts/gitw.py" add scripts/content/work/clips.json
-python3 "$BASE/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add scripts/content/work/clips.json
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "content: เก็บตัวเลขคลิป TikTok $(date +%Y-%m-%d)"
 ```
 
