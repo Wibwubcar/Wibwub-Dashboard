@@ -3,19 +3,22 @@ name: wibwub-daily-stock
 description: ดึงสต๊อกล่าสุดจาก Shipnity ทุกวัน 08:40/19:40 → อัปเดต Procurement_Dashboard.html → commit
 ---
 
-## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
+## 📂 ขั้น 0 — ยืนยันว่าโฟลเดอร์ All อยู่ที่เดิม (ทำก่อนทุกอย่าง)
 
-พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
-จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
+งานนี้รันบนเครื่อง Mac มีพาธเดียว · **คำสั่ง shell แรกของรอบต้องเป็น `python3`**
+ห้ามเป็นลูป `for` ของ bash (ลูปสร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา)
 
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+python3 -c "
+import os
+BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
+print('BASE OK' if os.path.isdir(BASE + '/scripts') else '⛔ ไม่พบ BASE')
+"
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
-- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
-  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+- `BASE OK` → ใช้พาธเต็มนี้ในทุกคำสั่งถัดไป (ห้ามใช้ตัวแปร shell ห้ามใช้พาธ relative)
+- `⛔ ไม่พบ BASE` → **หยุดทันที** รายงาน `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
+  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน · พาธ `/sessions/<ชื่อ>/mnt/All` ของแซนด์บ็อกซ์เดิมตายแล้ว
 
 ---
 
@@ -263,65 +266,27 @@ print(f"✅ Saved {len(products)} products")
 ## Step 4 — Run update_stock.py
 
 ```bash
-cd "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-python3 update_stock.py
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/update_stock.py"
 ```
 
-ถ้า update_stock.py ไม่มี ให้ใช้ inline script นี้แทน:
+⛔ **ห้ามเขียนสคริปต์คำนวณสถานะเองแทน** ถ้า `update_stock.py` หายไปให้หยุดแล้วรายงาน
+เกณฑ์ 4 ระดับของจริง: `urgent` ≤7 วัน · `low` 8-14 · `watch` 15-30 · `ok` >30 · `oos` เมื่อ avail ≤ 0
+สคริปต์สำรองที่เคยอยู่ในพรอมป์นี้ใช้เกณฑ์ 20/45 วันซึ่ง**ผิด** และไม่มี tier `watch` เลย
+ถ้าเผลอรันจะเขียนสถานะผิดทั้ง 15 สินค้าโดยที่หน้าเว็บยังดูปกติ — จึงตัดออก
 
-```python
-import json, re
-from datetime import datetime, timedelta
-from pathlib import Path
-
-BASE = Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All")
-raw = json.loads((BASE / "Data Shipnity/stock/stock_snapshot.json").read_text(encoding='utf-8'))
-raw_list = raw["products"] if isinstance(raw, dict) and "products" in raw else raw
-ship_map = {p["code"]: p for p in raw_list if isinstance(p, dict) and p.get("code")}
-
-DASHBOARD = BASE / "Procurement_Dashboard.html"
-html = DASHBOARD.read_text(encoding='utf-8')
-m = re.search(r'const PRODUCTS = (\[.*?\]);', html, re.DOTALL)
-products = json.loads(m.group(1))
-today = datetime.now().date()
-
-for p in products:
-    ship = ship_map.get(p.get("sku",""))
-    if not ship: continue
-    p["stock"] = ship.get("total",0) or 0
-    p["reserved"] = ship.get("reserved",0) or 0
-    p["avail"] = ship.get("available",0) or 0
-    burn = p.get("burn",0) or 0
-    avail = p["avail"]
-    if avail <= 0:
-        p["days"] = 0; p["stockout"] = today.strftime("%Y-%m-%d"); p["status"] = "oos"
-    elif burn <= 0:
-        p["days"] = 999; p["stockout"] = "2099-12-31"; p["status"] = "ok"
-    else:
-        days = int(avail/burn); p["days"] = days
-        p["stockout"] = (today+timedelta(days=days)).strftime("%Y-%m-%d")
-        p["status"] = "oos" if days<=0 else "critical" if days<=20 else "low" if days<=45 else "ok"
-
-new_json = json.dumps(products, ensure_ascii=False, separators=(',',':'))
-html_new = re.sub(r'const PRODUCTS = \[.*?\];', f'const PRODUCTS = {new_json};', html, flags=re.DOTALL)
-date_str = today.strftime("%d/%m/%Y")
-html_new = re.sub(r'(id="table-note">)[^<]*', rf'\g<1>อัปเดตล่าสุด: {date_str} — Shipnity live', html_new)
-DASHBOARD.write_text(html_new, encoding='utf-8')
-print(f"✅ Updated Procurement_Dashboard.html — {date_str}")
-```
+หมายเหตุ: `update_stock.py` **commit `Procurement_Dashboard.html` ให้เองในตัว** ขั้นถัดไปจึงเหลือแค่ sw.js + snapshot
 
 ---
 
 ## Step 5 — Bump sw.js + Git commit
 
 ```bash
-# Bump sw.js
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ (sw.js จะไม่ถูก bump)
-echo "sw.js: v${CURRENT} → v${NEW}"
+# Bump sw.js — ห้ามใช้ sed -i (BSD sed บน macOS พังเงียบ ๆ sw.js จะไม่ถูก bump)
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"
 
-# Git commit (ไม่ push เอง — sandbox push ติด proxy HTTP 403)
+# commit ส่วนที่ update_stock.py ไม่ได้ add ให้ (ไม่ต้อง push — launchd autopush ทำให้เอง)
 # ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add Procurement_Dashboard.html sw.js "Data Shipnity/stock_snapshot.json"
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add Procurement_Dashboard.html sw.js "Data Shipnity/stock/stock_snapshot.json"
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" commit -m "auto-update: Stock forecast $(date +%Y-%m-%d) — Shipnity live"
 echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"
 
@@ -333,7 +298,9 @@ echo "✅ Committed — autopush จะ push ให้เองใน 2 นา�
 
 - ถ้า Shipnity ต้องการ login: หยุดและรายงาน
 - ไม่ต้อง git push — launchd com.wibwub.autopush push ให้เองทุก 2 นาที
-- ไฟล์ที่อัปเดต: Procurement_Dashboard.html, sw.js, Data Shipnity/stock_snapshot.json
+- ไฟล์ที่อัปเดต: `Procurement_Dashboard.html` · `sw.js` · `Data Shipnity/stock/stock_snapshot.json`
+- ⚠️ พาธ snapshot ใน `git add` ต้องมีโฟลเดอร์ย่อย **`stock/`** และเป็น **s เล็ก** ตามชื่อจริงบนดิสก์
+  (macOS ไม่สนตัวพิมพ์ใหญ่เล็ก แต่ git สน — เขียนผิดแล้ว git ไม่เห็นไฟล์ snapshot จึงไม่ถูก commit เงียบ ๆ)
 - navigate ค้าง → ตรวจสอบว่าใช้ browser_batch ไม่ใช่ navigate standalone
 
 ---
