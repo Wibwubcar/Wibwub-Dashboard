@@ -102,24 +102,76 @@ def main():
         mon.setdefault(n, {}).setdefault(l['d'][:7], 0.0)
         mon[n][l['d'][:7]] += l['s']
 
+    # ── เดือนที่จะแสดง: derive จากข้อมูลจริง ห้ามตรึงปี/เดือน ────────────
+    # ของเดิมเป็น ['2026-01'..'2026-10'] ตายตัว -> พ.ย. ไม่ขึ้น และปี 2570 พังทั้งก้อน
+    # ต้องต่อเนื่องไม่มีช่องว่าง เพราะ PROD_MO เป็นอาเรย์ที่ index ต้องตรงกับป้ายเดือน
+    seen = sorted({m for d in mon.values() for m in d})
+    if not seen: die('ไม่มีข้อมูลรายเดือนจาก Shipnity')
+    hi = (asof or seen[-1])[:7]
+    months = []
+    y, mth = int(seen[0][:4]), int(seen[0][5:7])
+    while '%04d-%02d' % (y, mth) <= hi:
+        months.append('%04d-%02d' % (y, mth))
+        y, mth = (y + 1, 1) if mth == 12 else (y, mth + 1)
+
     unknown = [n for n in NAME_MAP for x in NAME_MAP[n] if x not in tot]
     if unknown: die('ชื่อสินค้าใน NAME_MAP ไม่มีใน Shipnity แล้ว — ตรวจ map', unknown)
 
-    rows, warn = [], []
+    # ── ด่านตรวจ NAME_MAP ────────────────────────────────────────────────
+    # v เป็นยอด "สะสมทั้งปีถึง asof" ของเดิมจึงเทียบยอดสะสมรอบนี้ (ถึง 25 ต.ค.)
+    # กับยอดสะสมรอบก่อน (ถึง 18 ต.ค.) ซึ่งเป็นคนละช่วงเวลา -> ยอดขายที่เกิดขึ้นจริง
+    # ระหว่างนั้นถูกนับเป็น "ผิดปกติ" ทุกครั้ง (1 พ.ย. 69 ตีกลับ 15/15 สินค้า
+    # ทั้งที่ส่วนต่างเท่ากับยอดขาย 19-25 ต.ค. พอดีทุกตัว)
+    # เปลี่ยนมาเทียบ "เดือนที่ปิดแล้ว" จาก PROD_MO บนหน้าเว็บแทน — ช่วงเดียวกันเป๊ะ
+    # และยังจับ map ผิด/SKU ใหม่ได้เหมือนเดิม ส่วนเดือนปัจจุบันยังโตอยู่จึงไม่เอามาเทียบ
+    old_mo = {}
+    if mP:
+        for mm in re.finditer(r"\{n:'([^']+)',\s*mo:\[([^\]]*)\]\}", mP.group(2)):
+            old_mo[mm.group(1)] = [None if x.strip() in ('null', '') else float(x)
+                                   for x in mm.group(2).split(',')]
+    cur_mon = (asof or '')[:7]
+
+    rows, warn, shrink = [], [], []
     for n, v_old, q_old, mk, mkq in cur:
         src = NAME_MAP.get(n)
         if not src: die(f'ไม่มี NAME_MAP สำหรับ "{n}" — เพิ่ม map ก่อน')
         v = round(sum(tot[x]['v'] for x in src), 2)
         q = sum(tot[x]['q'] for x in src)
-        d = abs(v - float(v_old)) / float(v_old) * 100 if float(v_old) else 0
-        if d > 2: warn.append(f'{n}: {float(v_old):,.0f} -> {v:,.0f} ({d:+.1f}%)')
+        # (ก) ช่วงเดียวกัน: ผลรวมเดือนที่ปิดแล้ว ต้องตรงกับที่หน้าเว็บมีอยู่
+        prev = old_mo.get(n)
+        if prev:
+            closed = [m for m in months if m != cur_mon]
+            new_closed = sum(sum(mon.get(x, {}).get(m, 0) for x in src) for m in closed)
+            old_closed = sum(prev[i] or 0 for i, m in enumerate(months)
+                             if i < len(prev) and m != cur_mon)
+            if old_closed:
+                d = abs(new_closed - old_closed) / old_closed * 100
+                if d > 2:
+                    warn.append(f'{n}: เดือนที่ปิดแล้ว {old_closed:,.0f} -> {new_closed:,.0f} ({d:+.1f}%)')
+        # (ข) ยอดสะสมห้ามหดลง (ของเดิมได้ผลนี้มาฟรีจากการเทียบยอดสะสม)
+        if float(v_old) and v < float(v_old) * 0.98:
+            shrink.append(f'{n}: {float(v_old):,.0f} -> {v:,.0f}')
         rows.append({'n': n, 'v': int(v) if v == int(v) else v, 'q': q, 'mk': int(mk), 'mkq': int(mkq)})
-    if warn: die('ยอดต่างจากเดิมเกิน 2% — น่าจะ map ผิดหรือมี SKU ใหม่ ไม่เขียนทับ', warn)
+    if warn: die('ยอดเดือนที่ปิดแล้วต่างจากหน้าเว็บเกิน 2% — น่าจะ map ผิดหรือมี SKU ใหม่ ไม่เขียนทับ', warn)
+    if shrink: die('ยอดสะสมลดลงเกิน 2% — น่าจะอ่านไฟล์ไม่ครบ ไม่เขียนทับ', shrink)
 
     rows.sort(key=lambda r: -r['v'])
-    months = [f'2026-{i:02d}' for i in range(1, 11)]
     pm = [{'n': r['n'], 'mo': [round(sum(mon.get(x, {}).get(m, 0) for x in NAME_MAP[r['n']])) for m in months]}
           for r in rows]
+
+    # ── ป้ายชื่อเดือนต้องยาวเท่า PROD_MO เสมอ ───────────────────────────
+    # PROD_MO_LBL เป็นค่าตายตัวที่ไม่มีสคริปต์ไหนเขียน (ค้างที่ 'ต.ค. (1-18)')
+    # ถ้าอาเรย์ข้อมูลยาวขึ้นแต่ป้ายไม่ตาม กราฟจะเลื่อนชื่อเดือนผิดทั้งแถว
+    TH = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+          'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+    multi_year = len({m[:4] for m in months}) > 1
+    labels = []
+    for m in months:
+        lbl = TH[int(m[5:7]) - 1] + (' %s' % (int(m[:4]) + 543 - 2500) if multi_year else '')
+        if m == cur_mon and asof:
+            lbl += ' (1-%d)' % int(asof[8:10])
+        labels.append(lbl)
+    newL = ','.join("'%s'" % x for x in labels)
 
     newA = '\n' + ',\n'.join(
         "  {n:'%s', v:%s, q:%d, mk:%d, mkq:%d}" % (r['n'], r['v'], r['q'], r['mk'], r['mkq']) for r in rows)
@@ -136,6 +188,8 @@ def main():
     if mP:
         mP2 = re.search(r'(const PROD_MO\s*=\s*\[)([\s\S]*?)(\n\];)', out)
         out = out[:mP2.start(2)] + newP + out[mP2.end(2):]
+    out = re.sub(r'const PROD_MO_LBL\s*=\s*\[[^\]]*\]',
+                 lambda _: 'const PROD_MO_LBL=[' + newL + ']', out, count=1)
     if out == html:
         print(json.dumps({'status': 'NO_CHANGE', **summary}, ensure_ascii=False)); return 10
 
