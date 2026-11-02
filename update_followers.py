@@ -188,7 +188,13 @@ print("✅ WIBWUB_Mobile.html อัปเดตแล้ว")
 TH_MONTHS_ABBR = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']
 TH_MONTHS_FULL_REV = {v: k for k, v in MONTH_MAP.items()}  # 7 -> 'กรกฎาคม'
 
-def build_fol_month_entry(cur_month, rows):
+def build_fol_month_entry(cur_month, rows, require_complete=False):
+    """สร้าง entry FOL_DATA ของเดือนที่ขอจาก FollowerHistory
+
+    require_complete=True ใช้ตอนซ่อม "เดือนที่ปิดแล้ว": จะคืน None ถ้าข้อมูลไม่ครบ
+    เดือน หรือไม่มีค่าปลายเดือนก่อนหน้ามาเป็น start — ไม่งั้น start/net/pct จะเพี้ยน
+    เพราะ fallback ไปใช้ค่าวันแรกของเดือนแทน
+    """
     abbr = TH_MONTHS_ABBR[cur_month - 1]
     full_name = TH_MONTHS_FULL_REV[cur_month]
     year_be = datetime.now().year + 543
@@ -208,6 +214,11 @@ def build_fol_month_entry(cur_month, rows):
         return None  # ไม่มีข้อมูลเดือนนี้ใน CSV — ข้าม ไม่แตะไฟล์เดิม
 
     month_rows.sort(key=lambda x: x[0])
+    if require_complete:
+        import calendar
+        ndays = calendar.monthrange(year_be - 543, cur_month)[1]
+        if prev_month_last is None or len(month_rows) < ndays:
+            return None
     start = prev_month_last if prev_month_last is not None else month_rows[0][1]
     end = month_rows[-1][1]
     net = end - start
@@ -236,26 +247,47 @@ def build_fol_month_entry(cur_month, rows):
             f"         days:[{days_js}],\n"
             f"         vals:[{vals_js}]}}")
 
-def update_fol_data(html, cur_month, rows):
+def update_fol_data(html, cur_month, rows, repair=False):
     full_name = TH_MONTHS_FULL_REV[cur_month]
     year_be = datetime.now().year + 543
-    new_entry = build_fol_month_entry(cur_month, rows)
+    new_entry = build_fol_month_entry(cur_month, rows, require_complete=repair)
     if not new_entry:
-        print(f"⚠️  FOL_DATA: ไม่พบข้อมูล {full_name} {year_be} ใน FollowerHistory.csv — ข้าม")
+        if not repair:
+            print(f"⚠️  FOL_DATA: ไม่พบข้อมูล {full_name} {year_be} ใน FollowerHistory.csv — ข้าม")
         return html, False
     pattern = re.compile(
         r"\{label:'" + re.escape(f"{full_name} {year_be}") + r"',.*?vals:\[[^\]]*\]\}",
         re.DOTALL
     )
     if not pattern.search(html):
-        print(f"⚠️  FOL_DATA: ไม่พบ entry เดือน {full_name} {year_be} ในไฟล์ (เดือนใหม่? ต้องเพิ่ม entry เองในโค้ด) — ข้าม")
-        return html, False
+        if repair:
+            return html, False      # โหมดซ่อมไม่สร้างเดือนใหม่
+        # ขึ้นเดือนใหม่ — ต่อ entry ท้าย FOL_DATA เองแทนการข้าม ไม่งั้นกราฟ
+        # "Follower รายวัน" จะค้างที่เดือนก่อนทั้งเดือน จนมีคนไปเพิ่ม entry ด้วยมือ
+        i = html.find('const FOL_DATA = [')
+        j = html.find('\n      ];', i) if i >= 0 else -1
+        if i < 0 or j < 0:
+            print("⚠️  FOL_DATA: หาท้ายอาเรย์ไม่เจอ — ไม่เพิ่ม entry เดือนใหม่")
+            return html, False
+        html2 = html[:j] + '\n        ' + new_entry + ',' + html[j:]
+        print(f"✅ FOL_DATA: เพิ่ม entry เดือนใหม่ {full_name} {year_be}")
+        return html2, True
     html2 = pattern.sub(lambda m: new_entry, html, count=1)
     return html2, True
 
 dash, fol_updated = update_fol_data(dash, cur_month, rows)
 if fol_updated:
     print("✅ FOL_DATA (Follower รายวัน) อัปเดตแล้ว")
+
+# ── ซ่อม "เดือนที่ปิดแล้ว" ด้วย ถ้า CSV ยังครอบคลุมครบเดือน ──────────────
+# พอขึ้นเดือนใหม่ cur_month จะเป็นเดือนใหม่ วันท้ายของเดือนก่อนจึงค้างตลอดไป
+# ไม่มีรอบไหนย้อนไปเขียนให้ (เกิดจริง 30 ต.ค. 69 — ถูก marketing_update เขียนทับ
+# แล้วไม่มีใครเติมคืน) CSV เก็บย้อนหลัง ~60 วัน จึงซ่อมได้ภายในเดือนถัดไป
+# ข้าม ม.ค. เพราะเดือนก่อนอยู่คนละปี (year_be ในตัวสร้าง entry จะผิด)
+if cur_month != 1:
+    dash, prev_fixed = update_fol_data(dash, cur_month - 1, rows, repair=True)
+    if prev_fixed:
+        print(f"✅ FOL_DATA: ซ่อมเดือน {TH_MONTHS_FULL_REV[cur_month - 1]} ให้ครบเดือนแล้ว")
 
 # เขียนไฟล์ครั้งเดียว หลังจากแก้ทั้ง soc_follow และ FOL_DATA แล้ว
 DASH.write_text(dash, encoding='utf-8')
