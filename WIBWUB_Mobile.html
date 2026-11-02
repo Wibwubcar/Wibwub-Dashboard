@@ -870,8 +870,22 @@ const TK_NET=[456036,544073,642947,708730,934535,632058,1429605,1502415,2196259.
 const LZ_CANCEL_PCT=[16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92,21.92];
 const LZ_COST_PCT=[22.67,24.61,24.36,24.86,25.0,26.34,30.99,29.67,29.93,32.36,0];
 const LZ_ADS=[5760,5680,7220,5710,6590,8420,9710,11333,11180,6620];
+// ── ช่องที่ "รอชีต" ไม่ใช่ศูนย์จริง ─────────────────────────────────────
+// sales_update เขียน SALES_PENDING ทุกรอบ: {"ชื่ออาเรย์":[index เดือน]}
+// เกิดเมื่อเดือนใหม่ถูกต่อช่องจากหลังบ้าน แต่ด่าน 1% ของช่องนั้นไม่ผ่าน
+// ค่าในอาเรย์เป็น 0 ก็จริง แต่อ่านว่า "ขายไม่ได้เลย" ซึ่งผิด -> ต้องขึ้น "รอชีต"
+const SALES_PENDING = {"TK_ORD":[10]};
+const pend   = (name, i) => (SALES_PENDING[name] || []).indexOf(i) >= 0;
+const PEND_T = 'รอชีต';
+const ordTxt = (name, arr, i) => pend(name, i) ? PEND_T : arr[i].toLocaleString();
+const pendMonths = sfx => new Set(Object.keys(SALES_PENDING)
+  .filter(n => n.endsWith(sfx)).reduce((a, n) => a.concat(SALES_PENDING[n]), []));
+const _pendOrd = pendMonths('_ORD');
+
 const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]+OTH_REV[i]);
-const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]+OTH_ORD[i]);
+// เดือนที่มีช่องทางรอชีต -> null กราฟเว้นช่อง ไม่ใช่แท่งต่ำผิดความหมาย
+const TOTAL_ORD = SH_ORD.map((_,i)=>_pendOrd.has(i) ? null
+  : SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]+OTH_ORD[i]);
 
 const CHANNELS=[
   {n:'Shopee',v:35516360,color:'#ee4d2d'},
@@ -1270,7 +1284,7 @@ function initSalesOv(){
         <div style="width:${Math.round(LZ_ORD[i]/maxO*100)}%;background:var(--lz)"></div>
       </div>
       <div style="font-size:10px;color:var(--muted);margin-top:2px">
-        <span style="color:var(--sh)">SH ${SH_ORD[i].toLocaleString()}</span> · TK ${TK_ORD[i].toLocaleString()} · <span style="color:var(--lz)">LZ ${LZ_ORD[i]}</span>
+        <span style="color:var(--sh)">SH ${SH_ORD[i].toLocaleString()}</span> · TK ${ordTxt('TK_ORD',TK_ORD,i)} · <span style="color:var(--lz)">LZ ${LZ_ORD[i]}</span>
       </div>
     </div>`;}).join('');
 }
@@ -1284,7 +1298,7 @@ function setSMo(idx,el){
   document.getElementById('s-mo-kpi').innerHTML=`
     <div class="kc" style="padding:9px"><div class="kc-lbl">ยอดรวม ${M5[idx]}</div><div class="kc-val" style="font-size:14px">${fmtB(TOTAL_REV[idx])}</div><div class="kc-sub">MoM ${mo}</div></div>
     <div class="kc" style="padding:9px"><div class="kc-lbl">Shopee</div><div class="kc-val" style="font-size:14px;color:var(--sh)">${fmtB(SH_REV[idx])}</div><div class="kc-sub">${SH_ORD[idx].toLocaleString()} orders</div></div>
-    <div class="kc" style="padding:9px"><div class="kc-lbl">TikTok</div><div class="kc-val" style="font-size:14px">${fmtB(TK_REV[idx])}</div><div class="kc-sub">${TK_ORD[idx].toLocaleString()} orders</div></div>`;
+    <div class="kc" style="padding:9px"><div class="kc-lbl">TikTok</div><div class="kc-val" style="font-size:14px">${fmtB(TK_REV[idx])}</div><div class="kc-sub">${ordTxt('TK_ORD',TK_ORD,idx)} orders</div></div>`;
   renderPlt(idx);
 }
 
@@ -1318,7 +1332,7 @@ function renderPlt(idx){
   <div class="plt-row">
     <div class="plt-top"><div class="plt-name"><div class="plt-dot" style="background:#333"></div>TikTok Shop</div><div class="plt-val">${fmtB(TK_REV[idx])}</div></div>
     <div class="bar-bg"><div class="bar-fill" style="width:${Math.round(TK_REV[idx]/maxR*100)}%;background:#333"></div></div>
-    <div class="bar-sub">${TK_ORD[idx].toLocaleString()} orders · ยกเลิก ${TK_CANCEL[idx]}%</div>
+    <div class="bar-sub">${ordTxt('TK_ORD',TK_ORD,idx)} orders · ยกเลิก ${TK_CANCEL[idx]}%</div>
     <div style="display:flex;gap:12px;margin-top:6px;font-size:11px">
       <span>Affiliate: <b>${fmtB(TK_AFI[idx])}</b></span>
       <span>ROAS: <b>${tkR}×</b></span>
@@ -1418,7 +1432,7 @@ function initMoTables(){
     `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(SH_REV[i])}</td><td>${SH_ORD[i].toLocaleString()}</td><td>${SH_CANCEL[i]}%</td><td>${fmtB(SH_ADS[i])}</td><td style="color:var(--sh)">${(SH_REV[i]/SH_ADS[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-tk').innerHTML=M5.map((m,i)=>
-    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${TK_ORD[i].toLocaleString()}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
+    `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(TK_REV[i])}</td><td>${ordTxt('TK_ORD',TK_ORD,i)}</td><td>${fmtB(TK_AFI[i])}</td><td>${fmtB(TK_ADSSPEND[i])}</td><td>${(TK_REV[i]/TK_ADSSPEND[i]).toFixed(2)}×</td></tr>`
   ).join('');
   document.getElementById('mo-tb-lz').innerHTML=M5.map((m,i)=>
     `<tr${i===M5.length-1?' class="hl"':''}><td>${m}</td><td>${fmtB(LZ_REV[i])}</td><td>${LZ_ORD[i]}</td><td>${LZ_CANCEL[i]}%</td><td>${LZ_COST_PCT[i]}%</td></tr>`

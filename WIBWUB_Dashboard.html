@@ -1877,6 +1877,20 @@ const POS_ORD = [1,3,9,2,4,9,5,5,5,4,0]; const OTH_ORD = [0,0,0,0,1,0,2,6,7,6,0]
    FB_ORD,LINE_ORD,WEB_ORD,CARE_ORD,MKT_ORD,BEUK_ORD,POS_ORD,OTH_ORD]
     .forEach(a => { while (a.length < n) a.push(0); });
 })();
+// ── ช่องที่ "รอชีต" ไม่ใช่ศูนย์จริง ─────────────────────────────────────
+// sales_update เขียน SALES_PENDING ทุกรอบ: {"ชื่ออาเรย์":[index เดือน]}
+// เกิดเมื่อเดือนใหม่ถูกต่อช่องจากหลังบ้าน แต่ด่าน 1% ของช่องนั้นไม่ผ่าน
+// (เช่น TK_ORD: ชีตนับออเดอร์ไม่เหมือน Compass ต่างกัน ~8% มาตลอด)
+// ค่าในอาเรย์เป็น 0 ก็จริง แต่อ่านว่า "ขายไม่ได้เลย" ซึ่งผิด -> ต้องขึ้น "รอชีต"
+// ว่าง {} = ไม่มีช่องไหนรอ ป้ายหายเอง เมื่อชีตมีแถวของเดือนนั้นแล้ว
+const SALES_PENDING = {"TK_ORD":[10]};
+const pend   = (name, i) => (SALES_PENDING[name] || []).indexOf(i) >= 0;
+// กราฟ: ใส่ null ให้เว้นช่อง ไม่ลากเส้นดิ่งลงศูนย์
+const nzArr  = (name, arr) => arr.map((v, i) => pend(name, i) ? null : v);
+const PEND_T = 'รอชีต';
+// เดือนที่มีช่องทางใดรอชีตอยู่ -> ยอดรวมของเดือนนั้นยังไม่ครบ ห้ามโชว์เป็นเลขเต็ม
+const pendMonths = sfx => new Set(Object.keys(SALES_PENDING)
+  .filter(n => n.endsWith(sfx)).reduce((a, n) => a.concat(SALES_PENDING[n]), []));
 const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.89,5.68,6.21,0];
 const TK_CANCEL_PCT = [9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.69,6.03,7.19];
 const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92,21.92];
@@ -1929,7 +1943,7 @@ charts['ov_pie'] = new Chart('ov_pie',{type:'doughnut',data:{labels:['Shopee 60.
 
 charts['ov_orders'] = new Chart('ov_orders',{type:'line',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,borderColor:SHOPEE,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===M5.length-1?6:3),pointBackgroundColor:SHOPEE},
-  {label:'TikTok',data:TK_ORD,borderColor:TIKTOK,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===M5.length-1?6:3),pointBackgroundColor:TIKTOK},
+  {label:'TikTok',data:nzArr('TK_ORD',TK_ORD),borderColor:TIKTOK,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===M5.length-1?6:3),pointBackgroundColor:TIKTOK},
   {label:'Lazada',data:LZ_ORD,borderColor:LAZADA,tension:.4,fill:false,pointRadius:M5.map((_,i)=>i===M5.length-1?6:3),pointBackgroundColor:LAZADA},
 ]},options:{...BASE,scales:{y:{beginAtZero:true}}}});
 
@@ -1949,7 +1963,7 @@ charts['sl_line'] = new Chart('sl_line',{type:'line',data:{labels:M5,datasets:[
 
 charts['sl_orders'] = new Chart('sl_orders',{type:'bar',data:{labels:M5,datasets:[
   {label:'Shopee',data:SH_ORD,backgroundColor:SH_ORD.map((_,i)=>i===M5.length-1?SHOPEE:SHOPEE+'44'),borderRadius:3,stack:'s'},
-  {label:'TikTok',data:TK_ORD,backgroundColor:TK_ORD.map((_,i)=>i===M5.length-1?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
+  {label:'TikTok',data:nzArr('TK_ORD',TK_ORD),backgroundColor:TK_ORD.map((_,i)=>i===M5.length-1?TIKTOK:TIKTOK+'44'),borderRadius:3,stack:'s'},
   {label:'Lazada',data:LZ_ORD,backgroundColor:LZ_ORD.map((_,i)=>i===M5.length-1?LAZADA:LAZADA+'44'),borderRadius:3,stack:'s'},
 ]},options:{...BASE,scales:{x:{stacked:true},y:{stacked:true}}}});
 
@@ -2788,15 +2802,19 @@ function setMonthRange(s, e) {
   const tkAdsPct       = tkRev>0 ? tkAds/tkRev*100 : 0;
   const tkAfiPct       = tkRev>0 ? tkAfi/tkRev*100 : 0;
   const TOTAL_REV = SH_REV.map((_,i)=>SH_REV[i]+TK_REV[i]+LZ_REV[i]+FB_REV[i]+LINE_REV[i]+WEB_REV[i]+CARE_REV[i]+MKT_REV[i]+BEUK_REV[i]+POS_REV[i]+OTH_REV[i]);
-  const TOTAL_ORD = SH_ORD.map((_,i)=>SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]+OTH_ORD[i]);
+  const _pendOrd = pendMonths('_ORD');
+  const TOTAL_ORD = SH_ORD.map((_,i)=>_pendOrd.has(i) ? null
+    : SH_ORD[i]+TK_ORD[i]+LZ_ORD[i]+FB_ORD[i]+LINE_ORD[i]+WEB_ORD[i]+CARE_ORD[i]+MKT_ORD[i]+BEUK_ORD[i]+POS_ORD[i]+OTH_ORD[i]);
 
   // Month summary bar
-  set('monthSummary', `${isRange?'สะสม':''} ${MN} 2569: ${f(totRev)} · ${fn(totOrd)} orders`);
+  const _ordIncomplete = (isRange ? Array.from({length:e-s+1},(_,k)=>s+k) : [m]).some(i=>_pendOrd.has(i));
+  set('monthSummary', `${isRange?'สะสม':''} ${MN} 2569: ${f(totRev)} · ${fn(totOrd)} orders`
+    + (_ordIncomplete ? ' (ออเดอร์ยังไม่ครบ — บางช่องทางรอชีต)' : ''));
 
   // ── OVERVIEW ──
   set('v-ov-rev', f(totRev));
   const rd = delta(TOTAL_REV, s); set('s-ov-rev', rd.t); cls('s-ov-rev', rd.c);
-  set('v-ov-ord', fn(totOrd));
+  set('v-ov-ord', fn(totOrd) + (_ordIncomplete ? '*' : ''));
   const od = delta(TOTAL_ORD, s); set('s-ov-ord', od.t); cls('s-ov-ord', od.c);
   set('v-ov-new', fn(totNew));
   set('s-ov-new', `${fp(totNew/totOrd*100)} ของออเดอร์`); cls('s-ov-new','neutral');
@@ -2872,7 +2890,10 @@ function setMonthRange(s, e) {
   set('v-tk-totalcost', f(tkTotCost)); set('s-tk-totalcost', `= ${fp(tkTotCostPct)} ของยอดขาย`);
   setH('sub-tk-totalcost', `Ads+GMV ${f(tkAdsSpend)}<br>+ ค่าธรรมเนียม+Afi ${f(tkFeeComm)}`);
   set('v-tk-live', f(tkLive));
-  const tkOd = delta(TK_ORD,s); set('v-tk-ord',fn(tkOrd)); set('s-tk-ord',tkOd.t); cls('s-tk-ord',tkOd.c);
+  const _tkOrdPend = !isRange && pend('TK_ORD', m);
+  const tkOd = delta(TK_ORD,s);
+  set('v-tk-ord', _tkOrdPend ? PEND_T : fn(tkOrd));
+  set('s-tk-ord', _tkOrdPend ? 'ชีตยังไม่มีแถวเดือนนี้' : tkOd.t); cls('s-tk-ord', _tkOrdPend ? 'neutral' : tkOd.c);
   set('v-tk-cancel', fn(tkCC)); set('s-tk-cancel', `${fp(tkCancelPct)} cancel rate`); cls('s-tk-cancel','dn');
   set('v-tk-new', fn(tkNew)); set('s-tk-new', `${fp(tkOrd>0?tkNew/tkOrd*100:0)} ของออเดอร์`);
 
@@ -2962,7 +2983,7 @@ function doExport(){
   if(['overview','sales'].includes(pg)){
     filename='wibwub_sales_summary.csv';
     headers=['เดือน','Shopee GMV','TikTok GMV','Lazada GMV','รวม GMV','Shopee Orders','TikTok Orders','Lazada Orders'];
-    M5.forEach((m,i)=>rows.push([m,SH_REV[i],TK_REV[i],LZ_REV[i],SH_REV[i]+TK_REV[i]+LZ_REV[i],SH_ORD[i],TK_ORD[i],LZ_ORD[i]]));
+    M5.forEach((m,i)=>rows.push([m,SH_REV[i],TK_REV[i],LZ_REV[i],SH_REV[i]+TK_REV[i]+LZ_REV[i],SH_ORD[i],pend('TK_ORD',i)?PEND_T:TK_ORD[i],LZ_ORD[i]]));
   } else if(pg==='shopee'){
     filename='wibwub_shopee.csv';
     headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Ads Spend','ค่าธรรมเนียม','ลูกค้าใหม่','ลูกค้าเก่า'];
@@ -2970,7 +2991,7 @@ function doExport(){
   } else if(pg==='tiktok'){
     filename='wibwub_tiktok.csv';
     headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Affiliate GMV','% Affiliate','ยอด Ads','ยอด Live','Ads Spend','ค่าธรรมเนียม+Comm'];
-    M5.forEach((m,i)=>rows.push([m,TK_REV[i],TK_ORD[i],TK_CANCEL_PCT[i],TK_AFI[i],TK_AFIPCT[i],TK_ADS[i],TK_LIVE[i],TK_ADSSPEND[i],TK_FEECOMM[i]]));
+    M5.forEach((m,i)=>rows.push([m,TK_REV[i],pend('TK_ORD',i)?PEND_T:TK_ORD[i],TK_CANCEL_PCT[i],TK_AFI[i],TK_AFIPCT[i],TK_ADS[i],TK_LIVE[i],TK_ADSSPEND[i],TK_FEECOMM[i]]));
   } else if(pg==='lazada'){
     filename='wibwub_lazada.csv';
     headers=['เดือน','ยอดขาย','ออเดอร์','% ยกเลิก','Ads Spend','ค่าธรรมเนียม','คูปอง','% ค่าใช้จ่าย'];
