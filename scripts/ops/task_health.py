@@ -163,7 +163,8 @@ def _git_last(pattern):
 def check_code(now):
     out = []
     try:
-        cfg = json.loads(EXPECT.read_text(encoding='utf-8'))['code_tasks']
+        cfg_all = json.loads(EXPECT.read_text(encoding='utf-8'))
+        cfg = cfg_all['code_tasks']
     except Exception as e:
         return [{'lv': '⛔', 'task': '(task_expect.json)',
                  'msg': f'อ่านไม่ได้: {type(e).__name__} — ตรวจฝั่ง code ไม่ได้ทั้งหมด'}]
@@ -194,6 +195,16 @@ def check_code(now):
             out.append({'lv': '⛔', 'task': label, 'msg': 'ไม่พบหลักฐานว่าเคยมีผลงานเลย'}); continue
         age = hrs(now, seen)
         lv = '⛔' if age > maxh else '✅'
+        # งานที่กินข้อมูลจากชีตที่ทีมกรอก: ผลงานไม่ขยับมักแปลว่าทีมยังไม่กรอก ไม่ใช่งานล้ม
+        # ตัวตรวจหน้าสถานะ (build_status) คิดแบบนี้อยู่แล้ว — ตรงนี้เคยไม่คิด จึงรายงานสวนกันเอง
+        # (2 พ.ย. 69: sales-update ฝั่ง code หน้าสถานะขึ้น 📝 แต่คำสั่งนี้ขึ้น ⛔ แล้วคืน exit 3)
+        if lv == '⛔':
+            sw = sheet_wait_row(tid, cfg_all, now)
+            if sw:
+                out.append({'lv': '⚠️' if sw[1] else 'ℹ️', 'task': label,
+                            'msg': ('%s · ผลงานล่าสุด %s (%s ชม.)'
+                                    % (sw[0], seen.strftime('%d %b %H:%M'), age))})
+                continue
         # git_grep: ไม่มี commit ไม่ได้แปลว่าไม่ได้รัน (NO_CHANGE ก็ไม่ commit) -> เขียนให้ตรง
         tail = (' — ไม่มีผลงาน อาจรันแล้วแต่ไม่มีข้อมูลใหม่ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป'
                 if lv == '⛔' and kind == 'git_grep' else '')
@@ -308,14 +319,21 @@ def _transcript(sess):
     return None
 
 
-def known_errors_for(task_id, cfg_all):
+def known_errors_for(task_id, cfg_all, side=''):
     """ข้อความ error ที่ยอมรับได้ของ 'งานนี้เท่านั้น'
 
     ผูกกับชื่องาน + ข้อความเต็มประโยค ตั้งใจให้แคบ: error เดียวกันในงานอื่นต้องยังเตือน
     และคำกว้าง ๆ (สั้นกว่า 25 ตัวอักษร) ถูกปฏิเสธ กันเผลอใส่ 'ERROR' แล้วปิดตาทั้งระบบ
+
+    คีย์แบบ 'local:<id>' / 'code:<id>' ชนะคีย์ชื่อเปล่า เพราะ id ซ้ำกันข้ามฝั่งได้
+    (wibwub-sales-update มีทั้งสองฝั่ง) คีย์ชื่อเปล่ายังใช้ได้เพื่อความเข้ากันได้ย้อนหลัง
     """
+    ke = cfg_all.get('known_errors') or {}
+    spec = ke.get('%s:%s' % (side, task_id)) if side else None
+    if spec is None:
+        spec = ke.get(task_id)
     out = []
-    for e in ((cfg_all.get('known_errors') or {}).get(task_id) or []):
+    for e in (spec or []):
         t = (e.get('text') or '').strip()
         if len(t) >= 25:
             out.append(t)
@@ -448,7 +466,13 @@ def build_status(now):
         code_cfg = cfg_all['code_tasks']
     except Exception as e:
         code_cfg = {}
+        cfg_all = {}
         unreadable.append('task_expect.json: %s' % type(e).__name__)
+    for k in (cfg_all.get('retired_local_tasks') or {}):
+        if k.startswith('_') or k.split(':', 1)[0] in ('local', 'code'):
+            continue
+        unreadable.append("task_expect.json: retired_local_tasks คีย์ '%s' ไม่มีคำนำหน้าฝั่ง "
+                          "(local:/code:) — ตัวตรวจข้ามคีย์นี้" % k)
 
     # ── ทะเบียนงาน local ────────────────────────────────────────────────────
     reg = None
@@ -482,7 +506,7 @@ def build_status(now):
         started = bool(last_run and exp and last_run >= exp)
         late_min = round((now - exp).total_seconds() / 60) if exp else None
         sess = sess_list[-1] if sess_list else None
-        allow = known_errors_for(task_id, cfg_all)
+        allow = known_errors_for(task_id, cfg_all, side)
         fct = session_facts(sess, now, allow) if sess else {'silent_min': None,
                                                      'has_result': None, 'has_error': None,
                                                      'known_error_hits': 0}
@@ -499,7 +523,10 @@ def build_status(now):
         fresh = (maxh is not None and age is not None and age <= maxh)
         # งาน local ที่ปลดระวางแล้ว: พรอมป์เหลือแค่ตอบ "ข้าม" จึงไม่มีผลงานปลายทาง
         # และไม่ควรถูกนับว่าล้ม — ผู้ใช้หาสวิตช์ปิดในแอปไม่เจอ จึงทำให้ว่างแทน
-        retired = (cfg_all.get('retired_local_tasks') or {}).get(task_id)
+        # คีย์ต้องเป็น '<ฝั่ง>:<id>' เท่านั้น ห้ามรับ id เปล่า: id ซ้ำกันข้ามฝั่งได้
+        # เกิดจริง (2 พ.ย. 69): wibwub-sales-update มีทั้ง local (ปลดระวาง) และ code (ตัวจริง)
+        # คีย์เปล่าเลยทำให้ฝั่ง code ขึ้น ✅ "ปลดระวางแล้ว" ทั้งที่ผลงานค้างมา 103 ชม.
+        retired = (cfg_all.get('retired_local_tasks') or {}).get('%s:%s' % (side, task_id))
         if retired and started:
             r.update(level='✅', status='ปลดระวางแล้ว',
                      note='ย้ายไป %s — รอบนี้ตอบข้ามตามที่ตั้งใจ' % retired.get('moved_to', 'งานอื่น'))
