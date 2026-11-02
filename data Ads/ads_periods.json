@@ -6932,9 +6932,41 @@
     "orders": 0,
     "roas": 0,
     "cpa": 0,
-    "gmvMax": null,
-    "gmvLive": null,
-    "bizAds": null
+    "gmvMax": {
+     "total": {
+      "spend": 0,
+      "orders": 0,
+      "revenue": 0,
+      "imp": 0,
+      "clicks": 0,
+      "roi": 0,
+      "ctr": 0,
+      "cvr": 0,
+      "cpa": 0
+     },
+     "campaigns": []
+    },
+    "gmvLive": {
+     "total": {
+      "spend": 0,
+      "orders": 0,
+      "revenue": 0,
+      "views": 0,
+      "roi": 0,
+      "cpa": 0
+     },
+     "sessions": []
+    },
+    "bizAds": {
+     "total": {
+      "spend": 0,
+      "imp": 0,
+      "clicks": 0,
+      "cpm": 0,
+      "ctr": 0
+     },
+     "campaigns": []
+    }
    }
   }
  }

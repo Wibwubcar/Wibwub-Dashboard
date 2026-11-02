@@ -192,7 +192,13 @@ ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
    คอลัมน์: `[2]`=spend · `[3]`=impressions · `[7]`=clicks(all)
 3. TikTok revenue/orders รวม = **gmvMax + gmvLive เท่านั้น**
    (bizAds มีแค่ spend/imp/clicks เป็น impression-based ไม่มี revenue/orders)
-4. แก้ `DATA_PERIODS.<เดือนปัจจุบัน>.tiktok` และ `TK_BREAKDOWN.<เดือนปัจจุบัน>.{gmvMax,gmvLive,bizAds}`
+4. **ก่อนเขียน ให้สร้างโครงเดือนก่อนเสมอ** (ขึ้นเดือนใหม่แล้วคีย์ยังไม่มี = เขียนไม่ได้):
+   ```
+   python3 "<BASE>/scripts/ads/ensure_month.py"
+   ```
+   ไม่ต้องใส่ `--month` (ใช้เดือนปัจจุบัน) · มีคีย์อยู่แล้วจะไม่แตะไฟล์เลย
+   ถ้าตอบ `"TK_BREAKDOWN": "สร้างใหม่"` แปลว่าเดือนนี้เพิ่งมีช่อง ให้เขียนข้อมูลลงไปตามปกติ
+   แล้วแก้ `DATA_PERIODS.<เดือนปัจจุบัน>.tiktok` และ `TK_BREAKDOWN.<เดือนปัจจุบัน>.{gmvMax,gmvLive,bizAds}`
    ใน `data Ads/WIBWUB_Ads_Dashboard.html`
    ไฟล์นี้ minified บรรทัดเดียว → ใช้ Python แทนที่ substring แบบ exact-match **ห้ามใช้ Edit tool**
 5. อัปเดต badge `#ads-updated` และ `.pb-sub` ให้ตรงวันข้อมูลล่าสุดจริงของทั้ง Shopee และ TikTok
