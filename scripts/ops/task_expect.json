@@ -38,7 +38,8 @@
       "kind": "mtime",
       "file": "scripts/hr/hr_state.json",
       "max_age_hours": 16,
-      "cron": "30 10,20,0 * * *"
+      "cron": "30 10,20,0 * * *",
+      "warn_file": "scripts/hr/hr_warn.json"
     },
     "wibwub-content-sheet": {
       "label": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",

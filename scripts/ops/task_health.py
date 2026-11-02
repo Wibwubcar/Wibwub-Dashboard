@@ -576,6 +576,21 @@ def build_status(now):
                 r['repeat'] = bad
                 r['note'] = ('รอบล่าสุด %d รอบติดกันมีขั้นที่คืน status ERROR '
                              '— ซ้ำแบบนี้มักไม่ใช่เหตุบังเอิญ' % bad)
+        # ── ไฟล์เตือนที่สคริปต์ของงานเขียนเอง (warn_file ใน task_expect.json) ──
+        # ใช้กับกรณีที่ "งานรันผ่านจริงแต่ทำครึ่งเดียว" ซึ่งสัญญาณจากเวลา/ไฟล์ผลงาน
+        # มองไม่เห็น (เช่น HR เขียนตารางเข้า-ออกครบ แต่ไม่มีแท็บ confirm ot ให้เขียน)
+        # ไม่ทับ ⛔ เพราะงานล้ม/ค้างสำคัญกว่า · สคริปต์ลบไฟล์นี้เองเมื่อหายปัญหา
+        wf = (acfg or {}).get('warn_file')
+        if wf and r['level'] != '⛔':
+            wp = BASE / wf
+            try:
+                w = json.loads(wp.read_text(encoding='utf-8')) if wp.exists() else None
+            except (ValueError, OSError):
+                w = None
+            if w and w.get('note'):
+                r['level'] = w.get('level') or r['level']
+                r['status'] = w.get('status') or r['status']
+                r['note'] = w['note'][:160]
         # description vs cron
         if prompt_file and cron:
             okd, detail = desc_vs_cron(prompt_file, cron)

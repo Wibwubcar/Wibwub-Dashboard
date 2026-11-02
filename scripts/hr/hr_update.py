@@ -593,6 +593,25 @@ def _open_sheet():
     return gspread.authorize(cred).open_by_key(SHEET_ID)
 
 
+WARN = HERE / "hr_warn.json"
+
+
+def _write_warn(ctag, rows_waiting):
+    """เขียน/ล้างไฟล์เตือนให้หน้าสถานะ 🩺 (task_health อ่านผ่าน warn_file)
+
+    ล้างทุกรอบที่ไม่มีปัญหา เพื่อให้ป้ายหายเองเมื่อ HR สร้างแท็บแล้ว
+    """
+    if rows_waiting:
+        WARN.write_text(json.dumps({
+            "level": "📝", "status": "รอ HR สร้างแท็บ",
+            "note": "ไม่มีแท็บ '%s' — ข้อมูล OT %d แถวรออยู่ "
+                    "(ตารางเข้า-ออกเขียนครบตามปกติ)" % (ctag, rows_waiting),
+            "written_at": dt.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+    elif WARN.exists():
+        WARN.unlink()
+
+
 def cmd_sheet_auto(a):
     sh = _open_sheet()
     t, *_ = read_page(); d0 = compute(t)
@@ -625,6 +644,26 @@ def cmd_sheet_auto(a):
     finally:
         sys.stdout = real
     plan = json.loads(buf.getvalue())
+
+    # ── ไม่มีแท็บ confirm ot ของเดือนนี้ -> ข้ามครึ่งหลังแบบรู้ตัว ──────────
+    # ของเดิมปล่อยให้ cmd_sheet ปั้น request ด้วย confirm_sheet_id = 0 ซึ่งไม่มีจริง
+    # แล้วไปตายที่ Google ว่า "No grid with id: 0" ทุกรอบตั้งแต่วันขึ้นเดือน
+    # (ตารางเข้า-ออกเขียนสำเร็จไปแล้วก่อน crash จึงดูเหมือนงานปกติ)
+    # แท็บนี้ทีม HR สร้างเอง สคริปต์ห้ามสร้าง -> รายงานให้คนเห็นแล้วรอ
+    # พอมีแท็บแล้ว รอบถัดไป cmd_sheet สร้าง payload ทั้งเดือนใหม่ จึงเติมย้อนเองได้
+    confirm_waiting = 0
+    if cws is None:
+        cvf = WORK / "confirm_values.json"
+        if cvf.exists():
+            try:
+                confirm_waiting = max(0, len(json.loads(cvf.read_text(encoding="utf-8"))
+                                             .get("values") or []) - 2)
+            except (ValueError, OSError):
+                confirm_waiting = 0
+        plan["confirm_changed"] = False
+        plan["confirm_tab_missing"] = ctag
+        plan["confirm_rows_waiting"] = confirm_waiting
+        plan["confirm_request_files"] = []
 
     # PARTIAL เมื่อ "ข้ามแท็บ confirm จริง" เท่านั้น — รายการใน confirm_blocked_hr_edits
     # เป็นแค่บันทึกว่า HR แก้ช่องไหน ซึ่งตอนนี้ระบบล็อกให้แล้วและยังเขียนแท็บต่อได้
@@ -676,9 +715,13 @@ def cmd_sheet_auto(a):
         cmd_sheet_done(argparse.Namespace())
     finally:
         sys.stdout = _r
-    plan.update({"mode": "PARTIAL" if blocked else "APPLIED", "applied": applied,
+    _write_warn(ctag, confirm_waiting if cws is None else 0)
+    plan.update({"mode": "PARTIAL" if (blocked or cws is None) else "APPLIED", "applied": applied,
                  "state_saved": _b.getvalue().strip() == "saved", "after_success_run": None})
-    if blocked:
+    if cws is None:
+        plan["note"] = ("เขียนเฉพาะตารางเข้า-ออก · ไม่มีแท็บ '%s' — ข้อมูล OT %d แถวรออยู่ "
+                        "(ทีม HR สร้างแท็บ แล้วรอบถัดไปจะเติมย้อนให้เอง)" % (ctag, confirm_waiting))
+    elif blocked:
         plan["note"] = ("เขียนเฉพาะตารางเข้า-ออก · ข้ามแท็บ confirm ot เพราะโครงสร้างแท็บ"
                         "เปลี่ยนไปมากผิดปกติ (แก้ใหม่เกิน %d ช่องในรอบเดียว) ให้คนตรวจก่อน"
                         % HR_LOCK_STRUCT_LIMIT)
