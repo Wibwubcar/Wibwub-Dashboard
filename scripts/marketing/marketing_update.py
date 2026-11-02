@@ -17,8 +17,11 @@
       scripts/ads/fb_daily.py ซึ่งอ่าน data Ads/facebook/daily/FBD_*.csv)
       **แหล่งเดียว** — ชุดเดียวกับส่วน Facebook Ads ในหน้า Ads Dashboard
       ห้ามกรอก ads_fb มือใน mkt_manual.json (สคริปต์จะตายถ้าเจอ)
-  · Event                         : กรอกมือใน `data Ads/mkt_manual.json`
-      ยังไม่มีข้อมูล -> หน้าเว็บขึ้น "รอข้อมูล" และ **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
+  · Event                         : `data Ads/event_daily.json` (จาก
+      scripts/marketing/event_fetch.py ซึ่งอ่านชีต Annual Budget 2026 แท็บ `MKT Event`)
+      **แหล่งเดียว** ห้ามกรอกมือใน mkt_manual.json (สคริปต์จะตายถ้าเจอ)
+      ยึด "วันที่จ่าย" เป็นวันของค่าใช้จ่าย · ชีตยังไม่มีคอลัมน์นั้น -> ยังไม่มีรายวัน
+      -> หน้าเว็บขึ้น "รอข้อมูล" และ **ไม่นับเป็น 0** ในสูตร % ต่อยอดขาย
 
 ⛔ ชีต KOL มีข้อมูลส่วนบุคคล · หน้าเว็บ 2 หน้าที่สคริปต์นี้เขียน ถูก GitHub Pages
    เสิร์ฟสาธารณะ (repo เป็น public) -> ห้ามส่งชื่อบัญชี KOL / ชื่อแคมเปญ / แถวรายคน
@@ -57,7 +60,12 @@ MANUAL = BASE / 'data Ads' / 'mkt_manual.json'
 MANUAL_KEYS = ['ads_fb', 'event']
 # ads_fb มีแหล่งเดียว = fb_daily.json (สคริปต์เขียน ไม่ใช่คนกรอก) — ดูหัวไฟล์
 FBD = BASE / 'data Ads' / 'facebook' / 'fb_daily.json'
-AUTO_KEYS = {'ads_fb': FBD}
+# Event ก็มีแหล่งเดียวแล้ว = event_daily.json (จาก event_fetch.py) — 2 พ.ย. 69
+EVD = BASE / 'data Ads' / 'event_daily.json'
+AUTO_KEYS = {'ads_fb': FBD, 'event': EVD}
+# สคริปต์ที่ต้องรันเพื่อแก้ตัวเลขของแต่ละคีย์ (ใช้ในข้อความ die ให้ชี้ถูกตัว)
+AUTO_FIX = {'ads_fb': 'scripts/ads/fb_daily.py',
+            'event': 'scripts/marketing/event_fetch.py'}
 # อัตราค่าธรรมเนียมแพลตฟอร์ม — ผู้ใช้กำหนดเป็นอัตราคงที่ แก้ที่ไฟล์นี้ได้เลย
 # ส่งขึ้นหน้าเว็บเป็น fee_rates แล้วหน้าเว็บคูณกับยอดขายรายวันเอง
 # เก็บเป็น "อัตรา" ไม่ใช่ "ยอดเงิน" เพราะยอดขายรายวันเปลี่ยนได้ทีหลัง (ออเดอร์ยกเลิก/ยืนยันเพิ่ม)
@@ -147,7 +155,7 @@ def main():
                         {d: k})
                 if k in AUTO_KEYS:
                     die(f'{k} ดึงอัตโนมัติแล้ว ห้ามกรอกมือใน mkt_manual.json — '
-                        f'ถ้าตัวเลขไม่ตรง ให้แก้ที่ต้นทางแล้วรัน scripts/ads/fb_daily.py',
+                        f'ถ้าตัวเลขไม่ตรง ให้แก้ที่ต้นทางแล้วรัน {AUTO_FIX[k]}',
                         {d: k, 'แหล่ง': str(AUTO_KEYS[k].relative_to(BASE))})
                 if not isinstance(x, (int, float)) or x < 0:
                     die('ยอดใน mkt_manual.json ต้องเป็นตัวเลขไม่ติดลบ', {d: {k: x}})
@@ -174,6 +182,28 @@ def main():
         fb_src = {'from': fbj.get('from'), 'to': fbj.get('to'),
                   'spend': (fbj.get('total') or {}).get('spend'),
                   'generated': fbj.get('generated')}
+
+    # ── Event รายวัน (อัตโนมัติ) ─────────────────────────────────────────────
+    # เขียนทับลง man[] ช่องเดียวกับที่เคยกรอกมือ เพื่อไม่ต้องแก้สูตร/หน้าเว็บ
+    # `days` ว่าง = ชีตยังไม่มีคอลัมน์ "วันที่จ่าย" -> event อยู่ใน missing ต่อไป
+    # หน้าเว็บจึงขึ้น "รอข้อมูล" เหมือนเดิม **ห้ามเติม 0 แทน** (0 แปลว่า "ไม่มีค่าใช้จ่าย")
+    ev_src = None
+    if EVD.exists():
+        try:
+            evj = json.loads(EVD.read_text(encoding='utf-8'))
+        except Exception as e:
+            die('อ่าน event_daily.json ไม่ได้ (JSON เสีย?)', f'{type(e).__name__}: {e}')
+        for d, x in (evj.get('days') or {}).items():
+            if not re.fullmatch(r'\d{4}-\d{2}-\d{2}', d):
+                die('วันที่ใน event_daily.json ผิดรูปแบบ', d)
+            if not isinstance(x, (int, float)) or x < 0:
+                die('ยอด Event ต้องเป็นตัวเลขไม่ติดลบ', {d: x})
+            man.setdefault(d, {})['event'] = round(float(x), 2)
+        ev_src = {'status': evj.get('status'),
+                  'has_pay_date_col': evj.get('has_pay_date_col'),
+                  'days_n': len(evj.get('days') or {}),
+                  'pending': evj.get('pending'),
+                  'generated': evj.get('generated')}
 
     # ── KOL รายวัน ───────────────────────────────────────────────────────────
     # ⛔ อ่านได้แค่ยอดรวมรายวัน (`days`) ที่ kol_fetch.py สรุปมาแล้ว
@@ -322,6 +352,7 @@ def main():
                'kol_days': len(kol_day), 'kol_total': round(sum(kol_day.values()), 2),
                'tiers_unmapped_n': data['tiers_unmapped_n'],
                'manual': man_out, 'still_missing': missing, 'facebook_src': fb_src,
+               'event_src': ev_src,
                'manual_file': str(MANUAL.relative_to(BASE)),
                'size_kb': round(len(json.dumps(data, ensure_ascii=False)) / 1024, 1)}
 
