@@ -90,7 +90,11 @@ def sheet_asof(rows):
 #        · เฉพาะเดือนปัจจุบัน · พอทีมกรอกชีตวันจันทร์ ค่าชีตจะแทนที่ส่วนที่เติมเอง
 #        · TikTok ไม่เติมยอดขาย/ออเดอร์ (ชีตกรอกเกือบรายวัน และหลังบ้านต่างจากชีต)
 # ═════════════════════════════════════════════════════════════════════════════
+# tk_real มาจาก Compass (แหล่งเดียวกับที่หน้า Ads ใช้) มี gmv+orders ครบทุกวัน
+# เพิ่มเข้ามา 2 พ.ย. 69 เพราะตอนขึ้นเดือนใหม่ชีตยังไม่มีแถว ถ้าเติมแค่ 2 ช่องทาง
+# TikTok จะโชว์ 0 ทั้งเดือนทั้งที่มียอดจริง
 BF_MAP = {'shopee': ('sh_real', 'SH_REV', 'SH_ORD', 'Shopee'),
+          'tiktok': ('tk_real', 'TK_REV', 'TK_ORD', 'TikTok'),
           'lazada': ('lz_real', 'LZ_REV', 'LZ_ORD', 'Lazada')}
 BF_TOL = 0.01          # ช่วงที่มีทั้งชีตและหลังบ้านต้องต่างกันไม่เกิน 1%
 
@@ -109,7 +113,41 @@ def _daysum(days, key, field, lo, hi):
     return tot, have, miss
 
 
-def backfill_current_month(sales, asof_ch, today=None):
+TH_ABBR = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+           'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+
+
+def ensure_current_month(sales, today=None):
+    """ต่อช่องเดือนปัจจุบันให้ทุกอาเรย์ ถ้าชีตยังไม่มีแถวของเดือนนี้
+
+    ชีตยอดรายเดือนมีแถวใหม่ช้ากว่าวันขึ้นเดือนหลายวัน ระหว่างนั้นหน้าเว็บจะไม่มี
+    เดือนใหม่เลย (อาเรย์ยาวเท่าเดิม) และ backfill ก็เขียนไม่ได้เพราะมันเขียนลง
+    ช่องสุดท้ายซึ่งยังเป็นเดือนก่อน — ต่อช่องว่างไว้ให้ backfill เติมจากหลังบ้าน
+    พอชีตมีแถวจริง process_sales จะคืนเดือนนี้มาเอง ฟังก์ชันนี้จะไม่ทำอะไร
+    และค่าชีตจะทับค่าที่ backfill ไว้ (ชีตชนะเสมอ)
+
+    คืน label เดือนที่ต่อ หรือ None ถ้าไม่ต้องต่อ
+    """
+    today = today or dt.date.today()
+    lbl = TH_ABBR[today.month - 1]
+    m4 = sales.get('M4') or []
+    if not m4 or m4[-1] == lbl:
+        return None
+    if len(m4) != today.month - 1:
+        # ชีตขาดเดือนกลาง ๆ หรือข้ามปี — ไม่เดาเอง ปล่อยให้คนดู
+        return None
+    # จับความยาวไว้ก่อนวน: ถ้าอ่าน len(m4) ในลูป พอ M4 ถูกต่อแล้วอาเรย์ที่เหลือ
+    # จะยาวไม่ตรงกับมันอีก แล้วเลยไม่ถูกต่อเลย (เจอจริงตอน dry-run รอบแรก)
+    n = len(m4)
+    for k, v in sales.items():
+        if isinstance(v, list) and len(v) == n:
+            v.append(lbl if k == 'M4' else 0)
+    sales['n_months'] = len(sales['M4'])
+    sales['latest_month'] = lbl
+    return lbl
+
+
+def backfill_current_month(sales, asof_ch, today=None, appended=False):
     """เติม SH_/LZ_ ของเดือนปัจจุบันจาก ads_daily.json · คืน (รายงาน, วันที่ใหม่รายช่อง)"""
     rep = {'filled': {}, 'skipped': {}, 'checks': {}}
     per_ch_new = {}
@@ -135,7 +173,12 @@ def backfill_current_month(sales, asof_ch, today=None):
     last_in_file = max([d for d in days if d.startswith(mon)] or [''])
     for ch, (key, rev_k, ord_k, label) in BF_MAP.items():
         asof = asof_ch.get(ch)
-        if not asof or not asof.startswith(mon):
+        if appended:
+            # ช่องเดือนนี้เพิ่งต่อขึ้นมา ชีตยังไม่มีแถว -> ไม่มี asof ให้เทียบ
+            # ใช้วันสุดท้ายของเดือนก่อนเป็น asof เพื่อให้เติมทั้งเดือนจากหลังบ้าน
+            # (ค่าในช่องเป็น 0 -> เข้าสาขา "ชีตเดือนนี้ว่าง" ที่เทียบเดือนที่ปิดแล้ว)
+            asof = (dt.date.fromisoformat(first) - dt.timedelta(days=1)).isoformat()
+        elif not asof or not asof.startswith(mon):
             rep['skipped'][label] = 'ไม่มี sheet_asof ของเดือนนี้'; continue
         # ── ด่าน 1%: ช่วงที่มีทั้งชีตและหลังบ้าน (1..asof) ต้องตรงกัน
         # ถ้าชีตไม่มีค่าเลยในเดือนนี้ (เช่น Lazada ออเดอร์ที่ทีมกรอกเฉพาะแถวปิดเดือน)
@@ -328,7 +371,11 @@ def main():
     # ── เติมยอดเดือนปัจจุบันจากหลังบ้าน (ก่อนด่านตรวจ เพื่อให้ด่าน "ห้ามลด" ตรวจค่าที่เติมแล้วด้วย)
     asof_pre = {k: sheet_asof(sheets.get(k)) for k in ('shopee', 'lazada')}
     asof_pre['tiktok'] = tiktok_asof(sheets.get('tiktok'))
-    backfill, per_ch_bf = ({}, {}) if a.no_backfill else backfill_current_month(sales, asof_pre)
+    appended = None if a.no_backfill else ensure_current_month(sales)
+    backfill, per_ch_bf = (({}, {}) if a.no_backfill else
+                           backfill_current_month(sales, asof_pre, appended=bool(appended)))
+    if appended:
+        backfill['month_appended'] = appended
 
     # ── ด่านตรวจก่อนเขียน ────────────────────────────────────────────────────
     n = {k: len(v) for k, v in sales.items() if isinstance(v, list)}

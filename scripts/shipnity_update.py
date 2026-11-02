@@ -146,8 +146,13 @@ def write_channels(raw, asof, dry=False):
             mm = pat.search(t)
             if not mm: continue                      # อาเรย์นี้ไม่มีในหน้านี้ -> ข้าม
             old = [x.strip() for x in mm.group(2).split(',') if x.strip()]
-            if len(old) != nmo:
-                die(f'{name} ใน {page} ยาว {len(old)} ไม่เท่า M5 ({nmo}) — ไม่เขียนทับ')
+            # สั้นกว่า M5 = sales_update เพิ่งต่อเดือนใหม่เข้ามา (ชีตยอดรายเดือนยังไม่มี
+            # แถวของเดือนนี้) ไม่ใช่ความผิดปกติ — vals ด้านล่างยาว nmo อยู่แล้ว เขียนทับ
+            # ได้เลยแล้วอาเรย์จะยาวเท่า M5 เอง · ยาวเกิน M5 ถึงจะผิดจริง (M5 หด) ห้ามเขียน
+            if len(old) > nmo:
+                die(f'{name} ใน {page} ยาว {len(old)} เกิน M5 ({nmo}) — ไม่เขียนทับ')
+            if len(old) < nmo:
+                rep.setdefault(page, {}).setdefault('_ต่อเดือนใหม่', []).append(name)
             new = ','.join(str(v) for v in vals)
             if mm.group(2).strip() != new:
                 rep.setdefault(page, {})[name] = {'old': old, 'new': [str(v) for v in vals]}
