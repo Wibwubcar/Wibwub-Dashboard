@@ -3,300 +3,189 @@ name: wibwub-download-tiktok-ads
 description: ดาวน์โหลด TikTok Ads data ทุกวัน 08:10/19:10 — GMV Max Campaign Overview + Business Ads Campaign Report
 ---
 
-## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
+> 🔁 **ไฟล์นี้คือสำเนาของพรอมป์ตัวจริง** ที่ `~/Documents/Claude/Scheduled/wibwub-download-tiktok-ads/SKILL.md`
+> (งาน local อ่านไฟล์นั้น · ไม่มีสคริปต์หรืองานไหนอ่านไฟล์นี้) · มีไว้ให้ git เก็บประวัติ
+> **แก้ที่นี่แล้วไม่มีผล** — แก้ไฟล์ตัวจริงก่อน แล้วคัดลอกมาทับไฟล์นี้ในคอมมิตเดียวกัน
+> เวอร์ชันเก่าที่ยาวกว่า (302 บรรทัด) ซึ่งไม่ตรงกับของที่รันอยู่ ดูได้จาก git history และไฟล์ .bak-2026-11-02-mirror
 
-พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
-จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
 
-```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+## WIBWUB TikTok Ads Download — ทุกวัน 08:25 / 19:25
+
+ดาวน์โหลด TikTok Ads data 2 ประเภทและบันทึกไปยังโฟลเดอร์งาน
+
+### Paths (พาธเต็มเท่านั้น ห้ามใช้พาธ relative / `$BASE`)
+- GMV Max folder: `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/GMV Max/`
+- Business Ads folder: `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/Business Ads/`
+- Downloads: `/Users/thanasablilutanon/Downloads/`
+
+⛔ พาธ `/sessions/<ชื่อ>/mnt/...` ของแซนด์บ็อกซ์เดิม **ตายแล้ว** เจอที่ไหนให้ถือว่าผิด
+⛔ **ไม่ต้อง `cp` ไฟล์ทั้งสองชนิด** — LaunchAgent `com.wibwub.download-mover` มีกฎครบแล้ว
+   (`Campaign overview data *.xlsx` → GMV Max · `WIBWUBCAR-Campaign Report-*.xlsx` → Business Ads)
+   และย้ายให้ภายใน ~5 วินาที · `cp` ในพรอมป์แข่งกับตัวย้ายแล้วมักแพ้ จนรายงานผิดว่า "ไม่พบไฟล์"
+   หน้าที่ของรอบนี้คือ **ตรวจว่าไฟล์ถึงโฟลเดอร์ปลายทางจริง**
+
+### ⚠️ Chrome Navigation Rule
+ต้องใช้ browser_batch ทุกครั้ง ห้าม navigate standalone:
+```
+browser_batch([navigate(url="...", tabId=TAB), computer(action="wait", duration=5, tabId=TAB), computer(action="screenshot", tabId=TAB)])
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
-- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
-  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+### ⚠️ ต้องระบุ browser ที่ Mac เสมอ ห้ามปล่อยให้เลือกอัตโนมัติ
+ก่อน tabs_context_mcp ครั้งแรก: `select_browser(deviceId="b75a6bb0-5b78-4e44-92a8-75224f1ce4ee")`
+(ถ้า deviceId นี้ไม่ connected แล้ว ให้เรียก `list_connected_browsers` ก่อน แล้วเลือกตัวที่ `osPlatform` เป็น macOS / `isLocal:true` เท่านั้น — ห้ามเลือก Windows/PC)
 
 ---
 
-
-## WIBWUB TikTok Ads Download — ทุกวัน 08:10 / 19:10
-
-โหลดไฟล์ดิบ 2 ชุดจาก TikTok Ads Manager เก็บเข้าโฟลเดอร์งาน (เป็นคลังย้อนหลัง
-ไม่มีสคริปต์ไหนอ่านอัตโนมัติ — `wibwub-ads-daily` ดึงตัวเลขจาก API สดแยกต่างหาก)
-
-| ชุด | ชื่อไฟล์ที่โหลดได้ | ปลายทาง |
-|---|---|---|
-| GMV Max Campaign overview | `Campaign overview data YYYYMMDD - YYYYMMDD.xlsx` | `data Ads/TikTok/GMV Max/` |
-| Business Ads Campaign Report | `WIBWUBCAR-Campaign Report-YYYY-MM-01 to YYYY-MM-DD.xlsx` | `data Ads/TikTok/Business Ads/` |
-
-BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
+## 🛡️ Session Check ก่อนทำทุกอย่าง
+Navigate ไปที่ https://ads.tiktok.com/i18n/dashboard?aadvid=7229166192752148482
+- ถ้าเห็น Dashboard = session OK
+- ถ้า redirect ไป login = session expired → log แล้วหยุด รายงาน "TikTok Ads session expired"
 
 ---
 
-## 🚚 การย้ายไฟล์ — **ห้าม `cp` เอง**
+## PART 1 — GMV Max Campaign Overview
 
-launchd `com.wibwub.download-mover` (WatchPaths `~/Downloads`) ย้ายไฟล์ทั้ง 2 แบบ
-เข้าโฟลเดอร์ปลายทางให้เองภายใน ~5 วินาที ผ่าน `scripts/wibwub_auto_move.sh`
+### เป้าหมาย
+ดาวน์โหลด Campaign overview data (daily totals: spend, orders, revenue) สำหรับเดือนปัจจุบัน
 
-> **บั๊กเดิม (แก้แล้ว 20 ต.ค. 2569):** พรอมป์เวอร์ชันก่อนสั่ง `cp` จาก `~/Downloads`
-> หลังรอ 10 วินาที — ซึ่ง**แข่งกับ mover แล้วแพ้เกือบทุกครั้ง** ไฟล์ถูกย้ายไปแล้ว
-> `cp` จึงหาไม่เจอและรายงาน "⛔ ไม่พบไฟล์" ทั้งที่โหลดสำเร็จ
-> ซ้ำร้าย mover เดิมทิ้งไฟล์ไว้ที่ `data Ads/Tiktok/` (ราก) ไม่ใช่โฟลเดอร์ย่อย
-> ตอนนี้ mover ย้ายเข้า `Business Ads/` และ `GMV Max/` ตรง ๆ แล้ว
-
-**หน้าที่ของงานนี้คือ: กดโหลด → รอ → ตรวจว่าไฟล์โผล่ที่ปลายทาง** เท่านั้น
-ชื่อซ้ำ mover จะต่อท้าย `__YYYYMMDD_HHMMSS` ให้เอง (ไม่เขียนทับ) — ไฟล์เหมือนกันทุกไบต์จะถูกเก็บเข้า archive/dup
-
----
-
-## ⚠️ กฎ Chrome
-
-- ก่อน `tabs_context_mcp` ครั้งแรก: `select_browser(deviceId="b75a6bb0-5b78-4e44-92a8-75224f1ce4ee")`
-  (ถ้าไม่ connected → `list_connected_browsers` แล้วเลือกตัวที่ `osPlatform` = macOS / `isLocal:true` เท่านั้น ห้ามเลือก Windows)
-- navigate ต้องอยู่ใน `browser_batch` เสมอ:
-  `browser_batch([navigate(url=..., tabId=TAB), computer(wait 5), computer(screenshot)])`
-- **UI สลับภาษาไทย/อังกฤษได้** ทุก selector ต้องจับทั้งสองภาษา ห้าม hardcode ภาษาเดียว
-
-### Session check
-Navigate `https://ads.tiktok.com/i18n/dashboard?aadvid=7229166192752148482`
-ถ้า redirect ไปหน้า login → รายงาน "TikTok Ads session expired — ต้อง re-login" แล้ว**หยุด** (ห้ามพยายาม login เอง)
-
----
-
-## 0. ข้ามรอบถ้าโหลดไว้แล้ว (idempotency)
-
-งานรันวันละ 2 รอบ รอบเย็นควรโหลดทับเพราะข้อมูลเดินต่อ แต่ถ้าถูกสั่งรันซ้ำติด ๆ กัน
-(retry / รันมือ) ให้ข้าม เพื่อไม่ให้ archive บวมด้วยไฟล์ `__stamp` ที่ต่างกันไม่กี่บาท
-
-```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ads/check_downloads.py" tiktok
-```
-ถ้าทั้งสองโฟลเดอร์มีไฟล์ของ **ชั่วโมงนี้** อยู่แล้ว → รายงาน "ข้ามรอบ (โหลดไปแล้ว)" แล้วจบ
-
----
-
-## PART 1 — GMV Max Campaign overview
-
-### 1.1 คำนวณวันที่
-
+### ขั้นตอน
+1. คำนวณวันที่:
 ```python
 from datetime import datetime, timedelta, timezone
-tz = timezone(timedelta(hours=7))
-now = datetime.now(tz)
-first = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
-today0 = now.replace(hour=0, minute=0, second=0, microsecond=0)
-start_ms = int(first.timestamp() * 1000)
-end_ms   = int((today0 + timedelta(hours=23, minutes=59, seconds=59)).timestamp() * 1000)
+tz_th = timezone(timedelta(hours=7))
+today = datetime.now(tz_th)
+first = today.replace(day=1)
+# Unix ms สำหรับ URL params
+start_ms = int(first.timestamp() * 1000 - 7*3600000)  # UTC
+end_ms = int(today.timestamp() * 1000 + (23*3600 + 59*60)*1000)
 ```
 
-> **บั๊กเดิม:** สูตรเก่าใช้ `today.timestamp() + 23ชม.59น.` โดย `today` เป็น**เวลาปัจจุบัน**
-> ไม่ใช่เที่ยงคืน → ถ้ารันหลัง 00:01 end จะข้ามไปวันถัดไป ได้ไฟล์ชื่อ
-> `... - 20261021` ทั้งที่วันนี้คือ 20 (เห็นจริงในไฟล์ `Campaign overview data 20261001 - 20261021.xlsx`)
-> ต้อง normalize เป็นเที่ยงคืนก่อนเสมอ และสูตรเก่ายัง `- 7*3600000` ที่ start เกินมาอีก (timestamp เป็น UTC อยู่แล้ว)
+2. Navigate ไป GMV Max ด้วย date params:
+URL: `https://ads.tiktok.com/i18n/gmv-max/dashboard?aadvid=7229166192752148482&oec_seller_id=7494549095358892612&bc_id=7229165256428240898&type=product&list_start_date={start_ms}&list_end_date={end_ms}`
 
-### 1.2 เปิดหน้า
-
-`https://ads.tiktok.com/i18n/gmv-max/dashboard?aadvid=7229166192752148482&oec_seller_id=7494549095358892612&bc_id=7229165256428240898&type=product&list_start_date={start_ms}&list_end_date={end_ms}`
-
-รอ 5 วิ → screenshot → ยืนยันว่าช่วงวันที่บนหน้าตรงกับที่ขอ (ถ้าไม่ตรง ให้รายงานแล้วหยุด ห้ามโหลดข้อมูลผิดช่วง)
-
-### 1.3 กดปุ่มส่งออก
-
+3. รอ 5 วินาที → หาปุ่ม download:
 ```javascript
-const L = ['ส่งออกข้อมูล','ส่งออก','Export data','Export','ดาวน์โหลด','Download'];
-const b = Array.from(document.querySelectorAll('button,[role="button"],a'))
-  .find(e => L.some(x => (e.textContent||'').trim().includes(x)) && e.offsetParent);
-b ? (b.click(), 'clicked: ' + b.textContent.trim()) : 'NOT FOUND';
+// หา input fields เพื่อ verify date range
+const inputs = Array.from(document.querySelectorAll('input[type="text"]'))
+  .filter(e => e.getBoundingClientRect().top > 360 && e.getBoundingClientRect().top < 440);
+inputs.map(e => e.value)
 ```
-ถ้าได้ `NOT FOUND` → ใช้ `find` tool ด้วยคำว่า `Export` และ `ส่งออก` ก่อน แล้วค่อย fallback ไปหาปุ่มมุมขวาบนของตาราง
 
-### 1.4 ตรวจผล (รอ 20 วิ)
+4. คลิกปุ่ม Download (ส่งออกข้อมูล) — หาจาก button ที่ pos บนขวา:
+```javascript
+const btn = Array.from(document.querySelectorAll('button,[role="button"]'))
+  .find(b => b.getBoundingClientRect().top > 360 && b.getBoundingClientRect().top < 420 && b.getBoundingClientRect().left > 1150);
+if (btn) btn.click();
+```
+หรือ find tool: "ส่งออกข้อมูล"
 
+5. รอ 10 วินาที (ให้ตัวย้ายทำงาน) → **ตรวจที่โฟลเดอร์ปลายทาง ไม่ใช่ Downloads**:
 ```bash
-ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/GMV Max/" | head -3
+python3 -c "
+import glob, os, time
+d = glob.glob('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/GMV Max/*Campaign overview data*.xlsx')
+f = max(d, key=os.path.getmtime) if d else None
+age = (time.time() - os.path.getmtime(f))/60 if f else None
+print('ไฟล์ล่าสุด:', os.path.basename(f) if f else 'ไม่มี', '| %.0f นาที' % age if age is not None else '')
+print('✅ GMV Max OK' if age is not None and age < 15 else '⛔ GMV Max: ยังไม่ถึงปลายทาง')
+"
 ```
-ต้องเห็นไฟล์ `Campaign overview data {YYYYMMDD} - {YYYYMMDD}.xlsx` ที่ mtime เป็นเวลานี้
+⛔ ถ้ายังไม่ถึง: ตรวจซ้ำอีกครั้งหลัง 10 วินาที · ยังไม่มาอีกให้ดูว่าไฟล์ค้างใน `/Users/thanasablilutanon/Downloads` ไหม
+ถ้าค้างอยู่จริงให้ `cp` เอง **แล้วรายงานว่าตัวย้ายไม่ทำงาน** (เป็นเรื่องผิดปกติ ไม่ใช่ขั้นตอนปกติ)
 
 ---
 
 ## PART 2 — Business Ads Campaign Report
 
-### 2.1 เปิดหน้า Campaign
+### เป้าหมาย
+ดาวน์โหลด Campaign performance report (C-Ads campaigns spend/impressions/clicks)
 
-`https://ads.tiktok.com/i18n/manage/campaign?aadvid=7229166192752148482&st={YYYY-MM-01}&et={YYYY-MM-DD}`
-(`et` = **วันนี้** ตามเขตเวลาไทย — ใช้ `today0` จากข้อ 1.1 ห้ามบวก 1 วัน)
+### ขั้นตอน
+1. Navigate ไป Campaign page:
+URL: `https://ads.tiktok.com/i18n/manage/campaign?aadvid=7229166192752148482&st={YYYY-MM-01}&et={YYYY-MM-DD}`
+(ใช้ first_of_month และ today)
 
-รอ 5 วิ → screenshot
+2. รอ 5 วินาที → screenshot
 
-### 2.2 กด **“… More” (เพิ่มเติม) → “Export data” (ส่งออกข้อมูล)**
-
-> **บั๊กเดิมข้อใหญ่ที่สุด:** พรอมป์เก่าสั่งกด **“ดูรายงาน” / “View report”**
-> ปุ่มนั้น**ไม่ใช่ export** — มันเปิดพาเนลสรุปของ AI ที่ไม่มีปุ่มดาวน์โหลดไฟล์
-> ปุ่มส่งออกจริงอยู่ใน **เมนู “… More” มุมขวาบนของแถบตาราง** (แถวเดียวกับ “View report”)
-> รายการในเมนูเรียงว่า: Export/Import · Label · Automated rules · **Export data** · Keyboard shortcuts
-> **ต้องเลือกรายการที่ 4 “Export data” เท่านั้น** — “Export/Import” (รายการแรก) คือการนำเข้า/ส่งออก
-> *โครงสร้างแคมเปญ* ไม่ใช่ตัวเลขผลลัพธ์
-
+3. คลิก "ดูรายงาน" (View Reports) จาก sidebar:
 ```javascript
-// ขั้นที่ 1 — เปิดเมนู More
-const more = Array.from(document.querySelectorAll('button,[role="button"],span,div'))
-  .filter(e => e.offsetParent && /^(More|เพิ่มเติม|\.\.\. ?More)$/.test((e.textContent||'').trim()))
-  .pop();
-more ? (more.click(), 'opened') : 'MORE NOT FOUND';
-```
-รอ 1 วิ แล้ว:
-```javascript
-// ขั้นที่ 2 — เลือก "Export data" (ห้ามจับ "Export/Import" ซึ่งขึ้นต้นด้วย Export เหมือนกัน)
-const OK  = ['Export data','ส่งออกข้อมูล'];
-const BAD = ['Export/Import','ส่งออก/นำเข้า','นำเข้า'];
-const it = Array.from(document.querySelectorAll('[role="menuitem"],li,div,span'))
-  .filter(e => e.offsetParent)
-  .find(e => { const t=(e.textContent||'').trim();
-               return OK.some(x=>t===x||t.startsWith(x)) && !BAD.some(x=>t.includes(x)); });
-it ? (it.click(), 'export clicked') : 'EXPORT ITEM NOT FOUND';
+const btn = Array.from(document.querySelectorAll('button')).find(b => b.textContent.includes('ดูรายงาน'));
+if (btn) btn.click();
 ```
 
-### 2.3 รอไฟล์ (async — ไม่ใช่ดาวน์โหลดทันที)
+4. รอ dialog/panel เปิด → หาปุ่ม download Campaign Report:
+   - ใช้ find tool: "download" หรือ "ดาวน์โหลด" ใน dialog
+   - ถ้ามีหลาย format → เลือก Excel (.xlsx)
 
-หลังกด จะมีป้าย **“Exporting data”** โผล่มุมขวาบนของ header พร้อมสปินเนอร์
-เบื้องหลังเป็น 2 จังหวะ (ตรวจยืนยันแล้วจาก network เมื่อ 20 ต.ค. 2569):
-
-1. `POST /api/v4/i18n/statistics/op/campaign/task_create/real_time/?aadvid=...` → คืน `download_id` + `status:"PENDING"`
-2. `POST /api/v4/i18n/statistics/reporting/task_query/?aadvid=...` โพลซ้ำจน `status:"SUCCESS"`
-   แล้วคืน `data.url` เป็นลิงก์ signed (`ads.tiktok.com/wsos_v2/statistics/object/...&expire=&sign=`)
-   เบราว์เซอร์ดาวน์โหลดจากลิงก์นั้นเอง
-
-ปกติเสร็จใน 5–15 วินาที **ให้รออย่างน้อย 20 วินาที** ก่อนสรุปว่าไม่สำเร็จ
-ลิงก์มีอายุ ~1 ชั่วโมง (`expire`) — ถ้าจะ retry ให้กด export ใหม่ ไม่ต้องไปงมลิงก์เดิม
-
-### 2.4 ตรวจผล
-
+5. รอ 10 วินาที (ให้ตัวย้ายทำงาน) → **ตรวจที่โฟลเดอร์ปลายทาง**:
 ```bash
-ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/Business Ads/" | head -3
+python3 -c "
+import glob, os, time
+d = glob.glob('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/TikTok/Business Ads/WIBWUBCAR-Campaign Report-*.xlsx')
+f = max(d, key=os.path.getmtime) if d else None
+age = (time.time() - os.path.getmtime(f))/60 if f else None
+print('ไฟล์ล่าสุด:', os.path.basename(f) if f else 'ไม่มี', '| %.0f นาที' % age if age is not None else '')
+print('✅ Business Ads OK' if age is not None and age < 15 else '⛔ Business Ads: ยังไม่ถึงปลายทาง')
+"
 ```
-ต้องเห็น `WIBWUBCAR-Campaign Report-{YYYY-MM-01} to {YYYY-MM-DD}.xlsx` mtime เป็นเวลานี้
-ถ้ายังไม่มี รอเพิ่มอีก 15 วิ แล้วตรวจซ้ำ 1 ครั้ง ก่อนรายงานว่าไม่สำเร็จ
+⛔ ยังไม่ถึง → เงื่อนไขเดียวกับ PART 1 (ตรวจซ้ำ แล้วค่อยดูว่าค้างใน Downloads ไหม)
 
 ---
 
-## PART 3 — อัปเดต Ads Dashboard
+## สรุปผล
 
-ทำต่อทันทีเมื่อได้ไฟล์ใหม่ ห้ามจบงานแค่ download
-(เดิม schedule นี้โหลดไฟล์อย่างเดียว ไม่เคย parse → Dashboard ค้างข้อมูลเก่าแม้โหลดไฟล์ใหม่ทุกวัน)
+```
+TikTok Ads Download — {TODAY}
+📅 ช่วงข้อมูล: 01/{MONTH} – {TODAY}
 
-1. **GMV Max overview**: แถวสุดท้ายเป็น `Total` (day/date = `-`) ซึ่งรวมทุกแถวไว้แล้ว
-   **ใช้แถวนี้ตรง ๆ ห้าม sum เอง** (จะ double-count) — ดึง spend, orders, revenue, roi, cpa
-2. **Business Ads report**: หลายแถวต่อ campaign ต่อวัน + แถวรวม (Campaign ID = `-`)
-   aggregate เฉพาะ Campaign ID จริง แล้วเช็ค `sum(campaigns) == แถว '-'` ก่อนใช้
-   คอลัมน์: `[2]`=spend · `[3]`=impressions · `[7]`=clicks(all)
-3. TikTok revenue/orders รวม = **gmvMax + gmvLive เท่านั้น**
-   (bizAds มีแค่ spend/imp/clicks เป็น impression-based ไม่มี revenue/orders)
-4. **ก่อนเขียน ให้สร้างโครงเดือนก่อนเสมอ** (ขึ้นเดือนใหม่แล้วคีย์ยังไม่มี = เขียนไม่ได้):
+✅/⛔ GMV Max: {filename หรือ error}
+✅/⛔ Business Ads: {filename หรือ error}
+
+หมายเหตุ: {ถ้ามี session ปัญหา ฯลฯ}
+```
+
+## หากมีปัญหา
+- Session expired → log "TikTok Ads session expired — re-login required" แล้วหยุด
+- ไม่พบไฟล์หลัง download → retry 1 ครั้ง รอ 15 วินาที
+- navigate ค้าง → ใช้ browser_batch เท่านั้น
+
+## ⚠️ ขั้นตอนต่อ (สำคัญ — ห้ามข้าม): อัปเดต WIBWUB_Ads_Dashboard.html หลังดาวน์โหลด
+
+**Root cause ของปัญหาเดิม (พบ 2026-07-30):** Schedule นี้ดาวน์โหลดไฟล์ดิบเข้า `data Ads/TikTok/{GMV Max,Business Ads}/`
+เท่านั้น ไม่เคย parse/อัปเดต `data Ads/WIBWUB_Ads_Dashboard.html` เอง ทำให้ Dashboard ค้างข้อมูลเก่าแม้ดาวน์โหลดไฟล์ใหม่ทุกวัน
+→ ทุกครั้งที่ดาวน์โหลดไฟล์ xlsx ใหม่เสร็จ ให้ทำต่อทันที ห้ามจบงานแค่ download:
+
+1. **GMV Max Campaign overview**: ไฟล์ export มักมีแถวสุดท้ายเป็น "Total" (day/date = `-`) ที่เป็นผลรวมของทุกแถวก่อนหน้าอยู่แล้ว
+   **ใช้แถว Total นี้ตรงๆ** ห้าม sum ทุกแถวเองอีกรอบ (จะ double-count) — ค่าที่ต้องดึง: spend, orders, revenue, roi, cpa
+2. **Business Ads Campaign Report**: ไฟล์มีหลายแถวต่อ campaign ต่อวัน + แถวรวม (Campaign ID = `-`) เป็นผลรวม
+   Aggregate ตาม Campaign ID จริงเท่านั้น (ไม่รวม key `-` เข้าไปใน list แคมเปญ) แล้วเช็คว่า sum(campaigns) == แถว `-` เพื่อ verify ก่อนใช้
+   Column: `[2]`=spend, `[3]`=impressions, `[7]`=clicks(all)
+3. รวม TikTok revenue/orders รวม = gmvMax + gmvLive เท่านั้น (bizAds มีแค่ spend/imp/clicks ไม่มี revenue/orders เพราะเป็น impression-based ไม่ใช่ product-sales)
+4. **ก่อนเขียน ให้สร้างโครงเดือนก่อนเสมอ** (ขึ้นเดือนใหม่แล้วคีย์ยังไม่มี = เขียนไม่ได้
+   เกิดจริงกับงาน Shopee Ads รอบ 2 พ.ย. 08:22 — ดึงข้อมูลได้แต่รายงานขึ้น ⛔):
    ```
    python3 "<BASE>/scripts/ads/ensure_month.py"
    ```
    ไม่ต้องใส่ `--month` (ใช้เดือนปัจจุบัน) · มีคีย์อยู่แล้วจะไม่แตะไฟล์เลย
-   ถ้าตอบ `"TK_BREAKDOWN": "สร้างใหม่"` แปลว่าเดือนนี้เพิ่งมีช่อง ให้เขียนข้อมูลลงไปตามปกติ
-   แล้วแก้ `DATA_PERIODS.<เดือนปัจจุบัน>.tiktok` และ `TK_BREAKDOWN.<เดือนปัจจุบัน>.{gmvMax,gmvLive,bizAds}`
-   ใน `data Ads/WIBWUB_Ads_Dashboard.html`
-   ไฟล์นี้ minified บรรทัดเดียว → ใช้ Python แทนที่ substring แบบ exact-match **ห้ามใช้ Edit tool**
-5. อัปเดต badge `#ads-updated` และ `.pb-sub` ให้ตรงวันข้อมูลล่าสุดจริงของทั้ง Shopee และ TikTok
-6. ตรวจ + commit:
+5. แก้ `DATA_PERIODS.<เดือนปัจจุบัน>.tiktok` และ `TK_BREAKDOWN.<เดือนปัจจุบัน>.{gmvMax,gmvLive,bizAds}` ใน `data Ads/WIBWUB_Ads_Dashboard.html`
+   (ไฟล์นี้ minified บรรทัดเดียวยาวมาก — ใช้ Python อ่าน/แทนที่ substring แบบ exact-match, ห้ามใช้ Edit tool บรรทัดปกติ)
+6. อัปเดต badge `#ads-updated` และ `.pb-sub` labels ให้ตรงกับวันที่ข้อมูลล่าสุดจริงของทั้ง Shopee และ TikTok
+7. Validate JS (`node --check` หลัง extract `<script>` blocks), bump `sw.js` cache version, `git add`+`git commit` (push ต้องให้ user double-click `push_now.command`)
 
-```bash
-export BASE
-python3 - <<'PY'
-import re, os, subprocess, tempfile, pathlib
-p = pathlib.Path(os.environ['BASE'])/'data Ads/WIBWUB_Ads_Dashboard.html'
-js = pathlib.Path(tempfile.gettempdir())/'ads_check.js'
-js.write_text('\n;\n'.join(re.findall(r'<script[^>]*>([\s\S]*?)</script>', p.read_text(encoding='utf-8'))), encoding='utf-8')
-r = subprocess.run(['node','--check',str(js)], capture_output=True, text=True)
-print('node --check', 'OK' if r.returncode==0 else 'FAIL\n'+r.stderr[:400])
-PY
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed ต้องใส่ '' และเคยพังเงียบ ๆ มาแล้ว
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "auto-update: TikTok Ads $(date +%Y-%m-%d)"
-```
 
-> ไฟล์ `.xlsx` **ไม่ต้อง `git add`** — `.gitignore` บรรทัดแรกคือ `*.xlsx` คำสั่ง add จึงเป็น no-op
-> ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองใน 2 นาที (ไม่มี error 403 แบบ sandbox เดิม)
+## ⚠️ กฎการย้ายไฟล์จาก Downloads (สำคัญมาก)
 
----
+**ปัญหา:** Sandbox (Linux) ลบไฟล์จาก Downloads ไม่ได้ — `mv` และ `rm` จาก Downloads ล้มเหลวด้วย "Operation not permitted"
 
-## RULES
+**วิธีที่ถูกต้องสำหรับ sandbox:**
+- ใช้ `cp` เพื่อ copy ไปยังโฟลเดอร์งาน (ทำได้ ✅)
+- ห้ามใช้ `mv` หรือ `rm` กับไฟล์ใน Downloads จาก sandbox (ล้มเหลว ❌)
 
-- ทำทุกอย่างใน bash/python + Chrome tools ห้าม spawn subagents
-- ห้าม `cp`/`mv`/`rm` ไฟล์ใน `~/Downloads` เอง — mover จัดการให้แล้ว
-- ห้ามกด "เติมเงิน" / "เข้าร่วมแคมเปญ" / แก้ ROAS / แก้ budget ใด ๆ บนหน้า Ads
-  ถ้ามีป๊อปอัปโผล่ ให้กด X ปิดอย่างเดียว
-- ตัวเลขทุกตัวมาจากไฟล์จริง ห้ามกรอกค่าสมมุติ ถ้าหาไฟล์ไม่เจอให้รายงานว่าไม่เจอ
-- session expired → รายงานแล้วหยุด ห้าม login เอง
+**ระบบย้ายอัตโนมัติ (ไม่ต้องทำอะไรเพิ่ม):**
+มี macOS LaunchAgent `com.wibwub.download-mover` ทำงานอยู่เบื้องหลังตลอดเวลา
+เมื่อ schedule cp ไฟล์ไปโฟลเดอร์งานแล้ว LaunchAgent จะ **mv (ย้าย)** ไฟล์ต้นฉบับออกจาก Downloads อัตโนมัติภายใน 5 วินาที
+— ไม่ต้อง double-click อะไรทั้งนั้น ทุกอย่างเป็นอัตโนมัติ
 
-## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
-
-```
-TikTok Ads Download — {วันที่} {รอบเช้า/เย็น}
-📅 ช่วงข้อมูล: 01/{เดือน} – {วันนี้}
-✅/⛔ GMV Max: {ชื่อไฟล์ หรือ เหตุผลที่ไม่ได้}
-✅/⛔ Business Ads: {ชื่อไฟล์ หรือ เหตุผลที่ไม่ได้}
-📊 Dashboard: {commit id หรือ "ไม่มีข้อมูลใหม่"}
-หมายเหตุ: {ปัญหาที่เจอ}
-```
-
----
-
-## 🚨 ทำงานไม่ได้ = ต้องรายงานว่าล้มเหลว ห้ามขึ้นว่าสำเร็จ
-
-**กรณีที่ถือว่าล้มเหลว**
-
-1. **เข้าโฟลเดอร์ All ไม่ได้** (ขั้น 0 ไม่เจอพาธ)
-2. **เปิดเว็บไม่ได้** — `navigate`/`browser_batch` คืนข้อความใดข้อความหนึ่งนี้
-   - `The approval prompt for this browser action went unanswered for 5 minutes` (กล่องขออนุญาตไม่มีคนกด)
-   - `Navigation to this domain is not allowed` (สิทธิ์โดเมนถูกปฏิเสธ)
-   - `Tab ... is not in Claude's tab group` / เชื่อมต่อส่วนขยายไม่ได้
-3. **สคริปต์ที่พรอมป์ระบุหายหรือพัง**
-
-**สิ่งที่ต้องทำเมื่อล้มเหลว**
-
-1. **ลองครั้งเดียวพอ ห้ามวนลองซ้ำ** — เคยเสียเวลา 5 นาทีต่อหนึ่งเว็บโดยไม่ได้อะไร
-   (22 ต.ค. 69 งาน HR ลองทั้ง `browser_batch` และ `javascript_tool` ตรงไปที่แท็บที่ล็อกอินค้างอยู่
-   ก็โดนกล่องเดียวกันทั้งคู่ — แท็บที่เปิดค้างไว้ช่วยไม่ได้)
-2. ปิดแท็บที่เปิดไว้ด้วย `tabs_close_mcp`
-3. จบงานโดยขึ้นต้นบรรทัดแรกด้วย
-   `❌ ล้มเหลว — <สาเหตุสั้น ๆ> ไม่ได้ข้อมูลใหม่รอบนี้`
-   แล้วบอกด้วยว่าข้อมูลล่าสุดในไฟล์อยู่ถึงวันไหน
-
-**ห้ามทำเด็ดขาด**
-
-- ❌ ห้ามหันไปใช้ไฟล์เก่าแล้วรายงานว่า "สำเร็จ" — ถ้าดึงของใหม่ไม่ได้ ถือว่าล้มเหลว
-- ❌ ห้ามเขียน ✅ หรือคำว่า "เสร็จ/สำเร็จ/OK" เมื่อขั้นใดขั้นหนึ่งข้างบนไม่ผ่าน
-- ❌ ห้ามเดาตัวเลข หรือคัดลอกตัวเลขจากรอบก่อนมาใส่
-
-> ใช้ไฟล์เดิมได้เฉพาะกรณีที่พรอมป์ระบุไว้ชัดเจนว่าเป็นทางสำรองที่ยอมรับได้
-> (เช่น ads-daily ใช้ `work/*.json` ที่ครอบช่วง `from→to` พอดี) และต้อง**รายงานตรง ๆ
-> ว่ารอบนี้ใช้ของเดิม ไม่ได้ดึงใหม่**
-
----
-
-## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
-
-งานตั้งเวลา **ไม่มีคนนั่งกดอนุญาต** ถ้าคำสั่งไม่แมตช์กฎที่อนุญาตไว้แล้ว
-(`Bash(python3 *)` / `Bash(git *)` / `Bash(ls *)` ฯลฯ) งานจะค้างทั้งรอบ
-สังเกตง่าย ๆ: ถ้ากล่องขออนุญาตมีแค่ปุ่ม **"Allow once"** โดยไม่มี "Always allow"
-แปลว่าคำสั่งนั้นสร้างกฎถาวรไม่ได้ จะถามใหม่ทุกครั้งตลอดไป
-
-**เขียนคำสั่งให้เรียบง่ายที่สุด — 1 คำสั่ง = 1 โปรแกรม + พาธเต็ม**
-
-| ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
-|---|---|---|
-| `git ...` ทุกรูปแบบ | `git -C` เปิดช่องให้ push หลุด · `cd ... && git` ขึ้นต้นด้วย cd จึงไม่แมตช์กฎ `Bash(git add:*)` → งานค้างรออนุญาต | `python3 "<BASE>/scripts/gitw.py" add/commit/status/log` |
-| `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
-| `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
-| `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
-| `cmd1; cmd2; cmd3` ต่อกันยาว ๆ | คำสั่งผสมแมตช์กฎไม่ได้ | แยกเป็นคนละคำสั่ง |
-
-**ถ้าต้องมีตรรกะ (วนลูป / เช็คเงื่อนไข / ประกอบพาธ): เขียนเป็นสคริปต์ python
-ไว้ใน `scripts/` แล้วเรียกด้วยพาธเต็ม** เช่น `python3 "<path เต็ม>/scripts/ads/check_downloads.py" tiktok`
-วิธีนี้ทั้งอ่านง่ายกว่า ทดสอบแยกได้ และไม่ติดกำแพงสิทธิ์
+**Script ที่เกี่ยวข้อง (อยู่ใน All/scripts/):**
+- `wibwub_auto_move.sh` — script ย้ายไฟล์ (ถูกเรียกโดย LaunchAgent)
+- `com.wibwub.download-mover.plist` — LaunchAgent config (WatchPaths ~/Downloads)
