@@ -149,7 +149,7 @@ def ensure_current_month(sales, today=None):
 
 def backfill_current_month(sales, asof_ch, today=None, appended=False):
     """เติม SH_/LZ_ ของเดือนปัจจุบันจาก ads_daily.json · คืน (รายงาน, วันที่ใหม่รายช่อง)"""
-    rep = {'filled': {}, 'skipped': {}, 'checks': {}}
+    rep = {'filled': {}, 'skipped': {}, 'checks': {}, 'pending': {}}
     per_ch_new = {}
     fp = BASE / 'data Ads' / 'ads_daily.json'
     if not fp.exists():
@@ -233,6 +233,8 @@ def backfill_current_month(sales, asof_ch, today=None, appended=False):
             done['ยอดขาย'] = round(add_rev, 2)
         else:
             rep['skipped']['%s ยอดขาย' % label] = 'ด่าน 1% ไม่ผ่าน — ใช้ชีตอย่างเดียว'
+            if appended:
+                rep['pending'].setdefault(rev_k, []).append(len(sales[rev_k]) - 1)
         add_ord, have_o, _ = _span('orders')
         if ok.get('orders') and add_ord:
             base_ord = 0 if whole.get('orders') else (sales[ord_k][-1] or 0)
@@ -240,6 +242,10 @@ def backfill_current_month(sales, asof_ch, today=None, appended=False):
             done['ออเดอร์'] = int(add_ord)
         elif add_ord:
             rep['skipped']['%s ออเดอร์' % label] = 'ด่าน 1% ไม่ผ่าน — ใช้ชีตอย่างเดียว'
+            if appended:
+                # ช่องนี้เป็น 0 เพราะด่านตีกลับ ไม่ใช่เพราะไม่มีออเดอร์จริง
+                # หน้าเว็บต้องขึ้น "รอชีต" ไม่ใช่ 0 (ไม่งั้นอ่านว่าขายไม่ได้เลย)
+                rep['pending'].setdefault(ord_k, []).append(len(sales[ord_k]) - 1)
         if done:
             done['ช่วงที่เติม'] = '%s..%s' % (have[0][-2:], have[-1][-2:])
             rep['filled'][label] = done
@@ -273,6 +279,26 @@ def write_backfill_label(filled):
         if new != h:
             f.write_text(new, encoding='utf-8'); out.append(pg)
     return {'label': body, 'pages': out}
+
+
+def write_pending(pending):
+    """เขียน SALES_PENDING — ช่องที่ยังรอชีต (ด่านตีกลับ) ไม่ใช่ศูนย์จริง
+
+    เขียนทุกรอบรวมถึงตอนว่าง ({}) เพื่อให้ป้าย "รอชีต" หายเองเมื่อชีตมีแถวแล้ว
+    """
+    body = '{' + ','.join('"%s":[%s]' % (k, ','.join(str(i) for i in sorted(set(v))))
+                          for k, v in sorted((pending or {}).items())) + '}'
+    out = []
+    for pg in PAGES:
+        f = BASE / pg
+        if not f.exists():
+            continue
+        h = f.read_text(encoding='utf-8')
+        new = re.sub(r'const SALES_PENDING = \{[^}]*\};',
+                     'const SALES_PENDING = %s;' % body, h, count=1)
+        if new != h:
+            f.write_text(new, encoding='utf-8'); out.append(pg)
+    return {'pending': body, 'pages': out}
 
 
 def write_asof(asof, per_ch=None):
@@ -417,6 +443,7 @@ def main():
         summary['backfill'] = backfill
         if not a.dry_run:
             summary['backfill']['label'] = write_backfill_label(backfill.get('filled'))
+            summary['backfill']['pending_label'] = write_pending(backfill.get('pending'))
     summary['sheet_asof'] = asof_ch
     # เก็บ "วันสุดท้ายที่ชีตมีข้อมูล" แยกเป็นไฟล์ (30 ต.ค. 69)
     # ห้ามให้ตัวตรวจไปอ่าน MTD_COVERAGE แทน เพราะเมื่องาน "เติมยอดจากหลังบ้าน" เริ่มทำงาน
