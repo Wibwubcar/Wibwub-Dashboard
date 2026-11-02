@@ -11,6 +11,10 @@
 
 /* g = กลุ่มของแถบ "เงินไปไหน" — เพิ่มหมวดใหม่แล้วสูตรคิดเองอัตโนมัติ
    พอ Event / Facebook Ads มีข้อมูลจริง แค่ปลด na ออก ไม่ต้องแก้สูตรที่อื่น */
+/* เกณฑ์ที่ผู้ใช้กำหนด: ค่าสื่อ (ค่าแอด 4 แพลตฟอร์ม + KOL) ต้องไม่เกิน 20% ของยอดขาย
+   เกินแล้วการ์ดขึ้นสีเตือน · Event กับคอมแอฟไม่อยู่ในเกณฑ์นี้ (มีการ์ด/บรรทัดของตัวเอง) */
+const MKS_TARGET_PCT = 20;
+
 const MKS_CAT = [
   {k:'ads_sh', n:'Ads Shopee',   c:'#EE4D2D', g:'ads'},
   {k:'ads_tk', n:'Ads TikTok',   c:'#111827', g:'ads'},
@@ -174,11 +178,22 @@ function mksAgg(from,to){
      ทั้งที่ยังอยู่ในวงกลม สัดส่วนเลยรวมกันได้ 110.8% */
   const spend=mksSpendCats().reduce((s,c)=>s+(sp[c.k]||0),0);
   const ads=MKS_CAT.filter(c=>c.g==='ads').reduce((s,c)=>s+(sp[c.k]||0),0);
-  const kol=MKS_CAT.filter(c=>c.g==='kol').reduce((s,c)=>s+(sp[c.k]||0),0)
-          + MR.reduce((s,c)=>s+(sp[c.k]||0),0);
+  const kolSheet=MKS_CAT.filter(c=>c.g==='kol').reduce((s,c)=>s+(sp[c.k]||0),0);
+  const afcom=MR.reduce((s,c)=>s+(sp[c.k]||0),0);
+  const kol=kolSheet+afcom;
+  /* ⚠️ `core` = ฐานของเกณฑ์ 20% ที่ผู้ใช้กำหนด (2 พ.ย. 69)
+        = ค่าแอด 4 แพลตฟอร์ม + KOL จากชีต **เท่านั้น**
+        ไม่รวม Event (เป็นงบก้อน เกิดเป็นครั้ง ไม่ใช่ค่าสื่อรายวัน)
+        ไม่รวมคอมแอฟ (เป็น % ของยอดขาย ยิ่งขายดียิ่งโต ใส่เข้าไปแล้วเกณฑ์ไม่มีความหมาย)
+     ส่วน `spend`/`pct` ยังเป็นยอดรวมทุกก้อนเหมือนเดิม ใช้ในการ์ด "ค่าการตลาดทั้งหมด" */
+  const core=ads+kolSheet;
+  const evt=MKS_CAT.filter(c=>c.g==='event').reduce((s,c)=>s+(sp[c.k]||0),0);
   const net=rev-fee;
-  return {rev, rv, sp, spend, ads, kol, days, fv, fee, net, left:rev-fee-spend,
+  return {rev, rv, sp, spend, ads, kol, kolSheet, afcom, core, evt, days, fv, fee, net,
+          left:rev-fee-spend,
           pct: rev? spend/rev*100 : null, roi: spend? rev/spend : null,
+          pctCore: rev? core/rev*100 : null,
+          pctEvt: rev? evt/rev*100 : null,
           pctNet: net>0? spend/net*100 : null, roiNet: spend? net/spend : null};
 }
 
@@ -336,16 +351,37 @@ function mksRender(){
     /* 2 ─ การ์ด 4 ใบ */
     const kpi=[
       {l:'ยอดขายรวม', v:mksB(A.rev), s:'นับครบ '+MKS_REV_CAT.length+' ช่องทาง', d:P?mksDelta(A.rev,P.rev):''},
-      {l:'ค่าการตลาดทั้งหมด', v:mksB(A.spend), s:'ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟ',
+      {l:'ค่าการตลาดทั้งหมด', v:mksB(A.spend), s:'ค่าแอด 4 แพลตฟอร์ม + KOL + คอมแอฟ + Event',
        d:P?mksDelta(A.spend,P.spend,true):''},
-      {l:'การตลาด ÷ ยอดขาย', v:(A.pct!=null?A.pct.toFixed(1)+'%':'–'), s:'ยิ่งต่ำยิ่งดี',
-       d:P&&P.pct!=null?mksDelta(A.pct,P.pct,true):''},
+      {l:'ค่าสื่อ ÷ ยอดขาย', v:(A.pctCore!=null?A.pctCore.toFixed(1)+'%':'–'),
+       s:'เป้าไม่เกิน '+MKS_TARGET_PCT+'% · ค่าแอด 4 แพลตฟอร์ม + KOL (ไม่รวม Event / คอมแอฟ)',
+       cls:(A.pctCore!=null&&A.pctCore>MKS_TARGET_PCT?'mks-over':''),
+       d:P&&P.pctCore!=null?mksDelta(A.pctCore,P.pctCore,true):''},
       {l:'ยอดขาย ÷ การตลาด', v:mksX(A.roi), s:'ได้ยอดขายกี่เท่าของเงินที่ลง',
        d:P&&P.roi!=null?mksDelta(A.roi,P.roi):''}
     ];
-    h+='<div class="mks-kpi">'+kpi.map(k=>'<div class="mks-k">'+
+    h+='<div class="mks-kpi">'+kpi.map(k=>'<div class="mks-k'+(k.cls?' '+k.cls:'')+'">'+
        '<div class="mks-kl">'+k.l+'</div><div class="mks-kv mks-n">'+k.v+'</div>'+
        '<div class="mks-ks">'+k.s+'</div><div class="mks-ks">'+(k.d||'')+'</div></div>').join('')+'</div>';
+
+    /* 2b ─ การ์ด Event แยกใบ มี % ต่อยอดขายของตัวเอง
+       แยกออกมาเพราะไม่อยู่ในเกณฑ์ 20% และเป็นงบก้อนที่เกิดเป็นครั้ง ไม่ใช่ค่าสื่อรายวัน
+       ไม่เอาไปต่อเป็นการ์ดใบที่ 5 เพราะแถว KPI เป็นกริด 4 ใบ จะเหลือใบโดด ๆ */
+    const evNA=mksNA('event');
+    h+='<div class="mks-card mks-ev"><div class="mks-h2">Event'+
+       '<small>'+(evNA? 'ยังไม่มีข้อมูลรายวันในช่วงนี้'
+                       : 'แยกจากเกณฑ์ '+MKS_TARGET_PCT+'% — ไม่ใช่ค่าสื่อรายวัน')+'</small></div>'+
+       '<div class="mks-evg">'+
+         '<div><div class="mks-kl">ค่าใช้จ่าย Event</div><div class="mks-kv mks-n">'+
+           (evNA? '<span class="mks-fl">รอข้อมูล</span>' : mksB(A.evt))+'</div></div>'+
+         '<div><div class="mks-kl">% ต่อยอดขาย</div><div class="mks-kv mks-n">'+
+           (evNA? '<span class="mks-fl">–</span>'
+                : (A.pctEvt!=null? A.pctEvt.toFixed(1)+'%' : '–'))+'</div></div>'+
+       '</div>'+
+       (evNA? '<div class="mks-warn">ยอดมาจากชีต Annual Budget 2026 แท็บ MKT Event '+
+              'โดยยึด “วันที่จ่าย” — ชีตยังไม่มีคอลัมน์นั้น จึงยังไม่มีรายวัน '+
+              '<b>ไม่ได้นับเป็น 0</b> และไม่ถูกรวมใน “ค่าการตลาดทั้งหมด”</div>':'')+
+       '</div>';
 
     /* 3 ─ 2 กล่องข้างกัน */
     const chs=MKS_REV_CAT.map(c=>({c:c, v:A.rv[c.k]||0, p:P?(P.rv[c.k]||0):null}))

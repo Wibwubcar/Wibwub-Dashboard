@@ -45,6 +45,10 @@
 .mks-kv{font-size:25px;font-weight:700;letter-spacing:-.02em;margin-top:3px;line-height:1.2}
 .mks-ks{font-size:12.5px;color:var(--muted,#6B7280);margin-top:1px}
 .mks-up{color:#0F7B4F;font-weight:600}
+/* เกินเกณฑ์ 20% — เตือนด้วยขอบ+พื้นอ่อน ไม่เปลี่ยนสีตัวเลขทั้งก้อนให้อ่านยาก */
+.mks-k.mks-over{border-color:#F3C99A;background:#FFF9F2}
+.mks-k.mks-over .mks-kv{color:#B54708}
+.mks-ev .mks-evg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:4px}
 .mks-dn{color:#B42318;font-weight:600}
 .mks-fl{color:var(--muted,#6B7280)}
 
