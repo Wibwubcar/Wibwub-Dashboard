@@ -105,11 +105,64 @@ def build(camps):
     return block, totals
 
 
+MK = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec']
+ADS_HTML = 'data Ads/WIBWUB_Ads_Dashboard.html'
+
+
+def _base():
+    d = os.path.abspath(os.path.dirname(__file__))
+    while d != '/':
+        if os.path.isfile(os.path.join(d, 'sw.js')):
+            return d
+        d = os.path.dirname(d)
+    die('หา BASE ไม่เจอ (ไล่ขึ้นไม่พบ sw.js)')
+
+
+def month_key(period):
+    """คีย์เดือนจากวันสุดท้ายของช่วงใน CSV เช่น '01/11/2026 - 02/11/2026' -> 'nov'"""
+    parts = [x.strip() for x in (period or '').split('-')]
+    tail = parts[-1] if parts else ''
+    bits = tail.split('/')
+    if len(bits) < 2 or not bits[1].isdigit():
+        return None
+    m = int(bits[1])
+    return MK[m - 1] if 1 <= m <= 12 else None
+
+
+def ensure_month(key, shopee_day, pull_note):
+    """สร้างโครงเดือนใหม่ใน DATA_PERIODS ถ้ายังไม่มี — คืน dict รายงาน
+
+    มีแล้วไม่แตะ · ใส่เฉพาะโครงว่าง (cover + shopee/tiktok ศูนย์) ไม่ได้เดาตัวเลข
+    ปุ่มเลือกช่วงกับ entry ของ ADS_PERIOD_DEFS หน้าเว็บสร้างเองตอนโหลด
+    """
+    fp = os.path.join(_base(), ADS_HTML)
+    if not os.path.isfile(fp):
+        return {'ok': False, 'reason': 'ไม่พบ ' + ADS_HTML}
+    s = io.open(fp, encoding='utf-8').read()
+    i = s.find('const DATA_PERIODS =')
+    if i < 0:
+        return {'ok': False, 'reason': 'ไม่พบ DATA_PERIODS'}
+    if ('\n  %s: {' % key) in s[i:]:
+        return {'ok': True, 'created': False, 'month': key}
+    j = s.index('\n};', i)
+    skel = (",\n  %s: {\n"
+            "    /* โครงเดือนใหม่สร้างโดย shopee_block_from_csv.py --ensure-month */\n"
+            "    cover:{ shopeeDay:%d, tiktokDay:0, shopeePull:'%s', tiktokPull:'' },\n"
+            "    shopee:{spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0,"
+            "top5:[],worst5:[],all:[]},\n"
+            "    tiktok:{spend:0,revenue:0,orders:0,imp:0,clicks:0,roas:0,ctr:0,cvr:0,cpa:0,"
+            "top5:[],worst5:[],all:[]}\n  }") % (key, shopee_day, pull_note.replace("'", "\u2019"))
+    io.open(fp, 'w', encoding='utf-8').write(s[:j] + skel + s[j:])
+    return {'ok': True, 'created': True, 'month': key, 'file': ADS_HTML}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('csv')
     ap.add_argument('--check', help='ไฟล์ที่เก็บบล็อกเดิม — เทียบ byte-identical')
     ap.add_argument('--out', help='เขียนบล็อกที่สร้างได้ลงไฟล์นี้')
+    ap.add_argument('--ensure-month', action='store_true',
+                    help='สร้างโครง DATA_PERIODS.<เดือนของ CSV> ถ้ายังไม่มี (มีแล้วไม่แตะ)')
     a = ap.parse_args()
     if not os.path.isfile(a.csv):
         die('ไม่พบไฟล์ CSV', a.csv)
@@ -127,6 +180,18 @@ def main():
             rep['first_diff_at'] = i
             rep['old_at_diff'] = old[max(0, i - 60):i + 60]
             rep['new_at_diff'] = block[max(0, i - 60):i + 60]
+    if a.ensure_month:
+        mk = month_key(period)
+        if not mk:
+            rep['ensure_month'] = {'ok': False, 'reason': 'อ่านเดือนจากช่วงใน CSV ไม่ได้: %r' % period}
+        else:
+            day = 0
+            try:
+                day = int(period.split('-')[-1].strip().split('/')[0])
+            except ValueError:
+                pass
+            rep['ensure_month'] = ensure_month(
+                mk, day, 'สร้างโครงจาก %s (ช่วง %s)' % (os.path.basename(a.csv), period))
     if a.out:
         io.open(a.out, 'w', encoding='utf-8').write(block)
     print(json.dumps(rep, ensure_ascii=False, indent=1))

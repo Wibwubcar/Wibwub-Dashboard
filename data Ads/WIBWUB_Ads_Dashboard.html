@@ -1367,7 +1367,43 @@ const ADS_PERIOD_DEFS = {
   oct: { keys:['oct'],  get label(){ return adsMonLabel('oct'); },  get badge(){ return adsMonBadge('oct'); } },
   nov: { keys:['nov'],  get label(){ return adsMonLabel('nov'); },  get badge(){ return adsMonBadge('nov'); } },
 };
-let curPickedPeriod = 'oct'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
+// ── เดือนใหม่: สร้าง entry ใน ADS_PERIOD_DEFS + ปุ่มเลือกช่วงเองจาก DATA_PERIODS ──
+// ปุ่มรายเดือนกับ entry ของ defs เขียนมือทั้งคู่ พอ shopee_block_from_csv สร้าง
+// คีย์เดือนใหม่ให้แล้ว ข้อมูลจะมีอยู่แต่ไม่มีปุ่มให้กดและ defs ไม่มี entry
+// (adsPickPeriod จะอ่าน .keys ของ undefined แล้ว throw)
+(function adsAutoMonths(){
+  const grid = document.querySelector('.ads-period-grid');
+  const TH_FULL = {jan:'มกราคม',feb:'กุมภาพันธ์',mar:'มีนาคม',apr:'เมษายน',may:'พฤษภาคม',jun:'มิถุนายน',
+                   jul:'กรกฎาคม',aug:'สิงหาคม',sep:'กันยายน',oct:'ตุลาคม',nov:'พฤศจิกายน',dec:'ธันวาคม'};
+  adsMonths().forEach(m => {
+    if (!ADS_PERIOD_DEFS[m]) {
+      ADS_PERIOD_DEFS[m] = { keys:[m],
+        get label(){ return adsMonLabel(m); }, get badge(){ return adsMonBadge(m); } };
+    }
+    if (grid && !document.getElementById('adsPeriodBtn-' + m)) {
+      const b = document.createElement('button');
+      b.className = 'ads-period-btn';
+      b.id = 'adsPeriodBtn-' + m;
+      b.onclick = function(){ adsPickPeriod(m, b); };
+      b.innerHTML = `<span class="pb-label">${TH_FULL[m]} 2569</span>`
+                  + `<span class="pb-sub" id="adsPeriodSub-${m}"></span>`;
+      grid.appendChild(b);
+    }
+    const sub = document.getElementById('adsPeriodSub-' + m);
+    if (sub) sub.textContent = adsMonBadge(m);
+  });
+  // ป้าย "เดือนนี้" ต้องตามเดือนล่าสุดจริง ไม่ใช่ค้างที่ปุ่มที่เขียนมือไว้
+  document.querySelectorAll('.pb-current-tag').forEach(t => t.remove());
+  const curBtn = document.getElementById('adsPeriodBtn-' + adsCurKey());
+  const lbl = curBtn && curBtn.querySelector('.pb-label');
+  if (lbl && !lbl.querySelector('.pb-current-tag')) {
+    const tag = document.createElement('span');
+    tag.className = 'pb-current-tag'; tag.textContent = 'เดือนนี้';
+    lbl.appendChild(document.createTextNode(' ')); lbl.appendChild(tag);
+  }
+})();
+
+let curPickedPeriod = adsCurKey(); // เดือนล่าสุดที่มีข้อมูล (เดิม hardcode 'oct')
 
 function adsPickPeriod(key, btn){
   curPickedPeriod = key;
