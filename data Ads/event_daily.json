@@ -1,0 +1,69 @@
+{
+ "generated": "2026-11-02T21:35:03+07:00",
+ "source": {
+  "sheet": "Annual Budget 2026",
+  "tab": "MKT Event",
+  "id": "1qOGnN2fgoVM93Ky26utRVFu_fVrtaVXr0J3cDTMEZmA"
+ },
+ "status": "WAIT_PAY_DATE_COL",
+ "has_pay_date_col": false,
+ "days": {},
+ "months": {
+  "2026-05": {
+   "actual": 50000.0,
+   "budget": 50000.0
+  },
+  "2026-08": {
+   "actual": 48500.0,
+   "budget": 50000.0
+  },
+  "2026-10": {
+   "actual": 0.0,
+   "budget": 25000.0
+  },
+  "2026-11": {
+   "actual": 107000.0,
+   "budget": 107000.0
+  }
+ },
+ "pending": {
+  "actual_no_pay_date": {
+   "2026-05": 50000.0,
+   "2026-08": 48500.0,
+   "2026-11": 107000.0
+  },
+  "budget_no_actual": 65000.0
+ },
+ "events_n": 7,
+ "blocks": [
+  {
+   "quarter": "Q2 2026",
+   "months": [
+    4,
+    5,
+    6
+   ],
+   "pay_date_cols": []
+  },
+  {
+   "quarter": "Q3 2026",
+   "months": [
+    7,
+    8,
+    9
+   ],
+   "pay_date_cols": []
+  },
+  {
+   "quarter": "Q4 2026",
+   "months": [
+    10,
+    11,
+    12
+   ],
+   "pay_date_cols": []
+  }
+ ],
+ "note": "ยังไม่มีคอลัมน์ \"วันที่จ่าย\" ในชีต -> days ว่างโดยตั้งใจ หน้าเว็บต้องขึ้น \"รอข้อมูล\" ห้ามเดาวันที่ · ยอด Actual ที่มีอยู่แล้วรายงานไว้ใน pending.actual_no_pay_date",
+ "privacy": "ชื่องานและงบรายงานอยู่ที่ data Ads/event_rows_private.json (gitignored) — ไฟล์นี้เก็บยอดรวมเท่านั้นเพราะ repo เป็น public"
+}

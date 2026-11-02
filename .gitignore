@@ -17,6 +17,10 @@ __pycache__/
 # รายคน) ติดไปใน commit ตั้งแต่ 20 ต.ค. — ย้ายรายละเอียดมาไว้ในไฟล์นี้แทน
 data Ads/kol_rows_private.json
 
+# 2 พ.ย. 69: ชื่องาน Event + งบรายงาน จากชีต Annual Budget 2026 แท็บ MKT Event
+# ไฟล์ที่ commit (data Ads/event_daily.json) เก็บยอดรวมเท่านั้น — ดู scripts/marketing/event_fetch.py
+data Ads/event_rows_private.json
+
 # คู่มือย้ายงาน — เอกสารภายใน ไม่ต้องขึ้น repo สาธารณะ (29 ต.ค. 69)
 scripts/task_prompts/_ย้ายงานไปฝั่ง-Claude.md
 
