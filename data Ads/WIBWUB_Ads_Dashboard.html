@@ -1301,17 +1301,39 @@ function renderKPIs(){
 // reads from it, so bumping cover.shopeeDay / cover.tiktokDay during a data sync updates the
 // period picker, the header badge and every .pb-sub at once. See skill:
 // wibwub-avoid-stale-hardcoded-labels.
-function adsCover(){ return (DATA_PERIODS.oct && DATA_PERIODS.oct.cover) || {shopeeDay:0,tiktokDay:0}; }
+// ── เดือนล่าสุดและชื่อเดือน derive จาก DATA_PERIODS ทุกครั้ง ห้าม hardcode ──
+// เดิมฟังก์ชันชุดนี้ผูกกับ 'oct' ตายตัวและเขียนคำว่า "ต.ค." ลงในข้อความ พอขึ้น
+// เดือนใหม่ ป้ายทั้งหน้าจะยังบอก ต.ค. ทั้งที่ข้อมูลเป็นของเดือนใหม่แล้ว
+const ADS_MK = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const ADS_TH = {jan:'ม.ค.',feb:'ก.พ.',mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',
+                jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.',oct:'ต.ค.',nov:'พ.ย.',dec:'ธ.ค.'};
+// เรียงตามปฏิทิน ไม่ใช่ตามลำดับที่เขียนในไฟล์
+function adsMonths(){ return ADS_MK.filter(m => DATA_PERIODS[m]); }
+function adsCurKey(){ const a = adsMonths(); return a[a.length-1] || 'oct'; }
+function adsCurTH(){ return ADS_TH[adsCurKey()] || ''; }
+function adsCover(){ const k=adsCurKey(); return (DATA_PERIODS[k] && DATA_PERIODS[k].cover) || {shopeeDay:0,tiktokDay:0}; }
+// เดือนล่าสุดที่ TikTok มีข้อมูลจริง — ใช้ตอนเดือนปัจจุบันยังไม่มี (tiktokDay=0)
+function adsTkLastKey(){ const a=adsMonths(); for(let i=a.length-1;i>=0;i--){
+  const c=(DATA_PERIODS[a[i]]||{}).cover; if(c && c.tiktokDay>0) return a[i]; } return null; }
+// ป้ายของเดือน: เฉพาะ "เดือนปัจจุบัน" เท่านั้นที่เป็น (บางส่วน · ช่วงข้อมูล)
+// เดือนที่ปิดแล้วต้องเป็นป้ายธรรมดา — เดิม entry ของ oct เรียก adsCoverPhrase()
+// ตายตัว พอขึ้นเดือนใหม่ ต.ค. จะกลายเป็น "ต.ค. 2569 (บางส่วน · Shopee ถึง 2 พ.ย.)"
+function adsMonLabel(k){ return k===adsCurKey() ? `${ADS_TH[k]} 2569 (บางส่วน · ${adsCoverPhrase()})` : `${ADS_TH[k]} 2569`; }
+function adsMonBadge(k){ return k===adsCurKey() ? `${ADS_TH[k]} 2569 (${adsCoverPhraseShort()})` : `${ADS_TH[k]} 2569`; }
 // TikTok ยังไม่มีข้อมูล ต.ค. (tiktokDay=0) → แสดงข้อมูลล่าสุดที่มีจริง = 30 ก.ย. (ปิดเดือนแล้ว)
-function adsTkLong(c){ return c.tiktokDay>0 ? `TikTok ถึง ${c.tiktokDay} ต.ค.` : 'TikTok ถึง 30 ก.ย.'; }
+function adsTkLong(c){
+  if(c.tiktokDay>0) return `TikTok ถึง ${c.tiktokDay} ${adsCurTH()}`;
+  const k=adsTkLastKey();
+  return k ? `TikTok ถึง ${DATA_PERIODS[k].cover.tiktokDay} ${ADS_TH[k]}` : 'TikTok ยังไม่มีข้อมูล';
+}
 function adsCoverMaxDay(){ const c=adsCover(); return Math.max(c.shopeeDay, c.tiktokDay); }
 // adsPullTime: cover.*Pull เป็น "ย่อหน้า audit" ยาว (ขึ้นต้น '21 ต.ค. 19:50 น. (scheduled ...')
 // เดิม adsCoverPhrase ตัดแค่ส่วนวันที่นำหน้าออก -> ย่อหน้าทั้งก้อนหลุดเข้า .pb-sub และ
 // ADS_PERIOD_DEFS.oct.label กลายเป็นกำแพงตัวอักษร (badge รอดเพราะใช้ split(' (')[0]).
 // ดึงเฉพาะเวลา 'HH:MM น.' ออกมา — ไม่มีเวลา = คืนค่าว่าง ไม่ลากข้อความอื่นมา
 function adsPullTime(v){ const m=String(v||'').match(/^\d+ (?:ก\.ย\.|ต\.ค\.) (\d{1,2}:\d{2} น\.)/); return m?` ${m[1]}`:''; }
-function adsCoverPhrase(){ const c=adsCover(); return `Shopee ถึง ${c.shopeeDay} ต.ค.${adsPullTime(c.shopeePull)} · ${adsTkLong(c)}${adsPullTime(c.tiktokPull)}`; }
-function adsCoverPhraseShort(){ const c=adsCover(); return `Shopee 1-${c.shopeeDay} ต.ค. · ` + (c.tiktokDay>0 ? `TikTok 1-${c.tiktokDay} ต.ค.` : 'TikTok ยังไม่มีข้อมูล ต.ค.'); }
+function adsCoverPhrase(){ const c=adsCover(); return `Shopee ถึง ${c.shopeeDay} ${adsCurTH()}${adsPullTime(c.shopeePull)} · ${adsTkLong(c)}${adsPullTime(c.tiktokPull)}`; }
+function adsCoverPhraseShort(){ const c=adsCover(), m=adsCurTH(); return `Shopee 1-${c.shopeeDay} ${m} · ` + (c.tiktokDay>0 ? `TikTok 1-${c.tiktokDay} ${m}` : `TikTok ยังไม่มีข้อมูล ${m}`); }
 function adsSyncCoverageLabels(){
   const c = adsCover();
   /* matches both 'Shopee ถึง 9 ก.ย. · TikTok ถึง 9 ก.ย.' and the variant that carries pull times
@@ -1329,7 +1351,9 @@ function adsSyncCoverageLabels(){
 
 // ── Period Picker ─────────────────────────────────────────────────
 const ADS_PERIOD_DEFS = {
-  all: { keys:['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov'],  label:'ทั้งหมด (ม.ค. – ต.ค. 2569)', badge:`1 ม.ค. – ${adsCoverMaxDay()} ต.ค. 2569` },
+  all: { get keys(){ return adsMonths(); },
+         get label(){ const a=adsMonths(); return `ทั้งหมด (${ADS_TH[a[0]]} – ${ADS_TH[a[a.length-1]]} 2569)`; },
+         get badge(){ return `1 ${ADS_TH[adsMonths()[0]]} – ${adsCoverMaxDay()} ${adsCurTH()} 2569`; } },
   jan: { keys:['jan'],  label:'มกราคม 2569',                    badge:'ม.ค. 2569' },
   feb: { keys:['feb'],  label:'กุมภาพันธ์ 2569',                badge:'ก.พ. 2569' },
   mar: { keys:['mar'],  label:'มีนาคม 2569',                    badge:'มี.ค. 2569' },
@@ -1340,8 +1364,8 @@ const ADS_PERIOD_DEFS = {
   aug: { keys:['aug'],  label:'ส.ค. 2569 (เต็มเดือน · Shopee 1-31 · TikTok 1-31)',  badge:'ส.ค. 2569 (Shopee 1-31 · TikTok 1-31)' },
   sep: { keys:['sep'],  label:'ก.ย. 2569 (เต็มเดือน · Shopee 1-30 · TikTok 1-30)',  badge:'ก.ย. 2569 (Shopee 1-30 · TikTok 1-30)' },
   // label/badge derived from DATA_PERIODS.oct.cover — never hand-type the coverage days here.
-  oct: { keys:['oct'],  label:`ต.ค. 2569 (บางส่วน · ${adsCoverPhrase()})`,  badge:`ต.ค. 2569 (${adsCoverPhraseShort()})` },
-  nov: { keys:['nov'],  label:`พ.ย. 2569 (บางส่วน · ${adsCoverPhrase()})`,  badge:`พ.ย. 2569 (${adsCoverPhraseShort()})` },
+  oct: { keys:['oct'],  get label(){ return adsMonLabel('oct'); },  get badge(){ return adsMonBadge('oct'); } },
+  nov: { keys:['nov'],  get label(){ return adsMonLabel('nov'); },  get badge(){ return adsMonBadge('nov'); } },
 };
 let curPickedPeriod = 'oct'; // default: current month (was bug: defaulted to "all" → showed sum of whole year)
 
