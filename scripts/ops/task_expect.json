@@ -18,12 +18,12 @@
       "cron": "45 9,20 * * *"
     },
     "wibwub-tiktok-live-daily": {
-      "label": "TikTok Live รายวัน 09:00/20:00",
+      "label": "TikTok Live รายวัน 10:30/20:30",
       "kind": "git_grep",
       "pattern": "^auto-update: TikTok Live รายวัน",
-      "max_age_hours": 20,
-      "note": "TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน",
-      "cron": "0 9,20 * * *"
+      "max_age_hours": 26,
+      "note": "คาบจริงคือวันละครั้ง (ขยับได้หลัง tiktok-product-daily จบ ~10:14) เกณฑ์ 20 ชม. จึงเตือนหมาป่าทุกวัน -> 26 · TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน",
+      "cron": "30 10,20 * * *"
     },
     "wibwub-tiktok-content": {
       "label": "TikTok คอนเทนต์ 09:25/20:25",
