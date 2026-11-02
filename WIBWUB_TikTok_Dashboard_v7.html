@@ -2288,7 +2288,7 @@ function mkBar(id, posts, key, color, yMax, pct, targetVal){
     options:{
       responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}, tooltip:{callbacks:{
-        title: ctx => posts[ctx[0].dataIndex].lbl+' '+(['','','','มี.ค.','เม.ย.','พ.ค.','มิ.ย.'][posts[0].month]||''),
+        title: ctx => posts[ctx[0].dataIndex].lbl+' '+(M_ABBR[posts[0].month]||''),
         afterTitle: ctx => posts[ctx[0].dataIndex].content.slice(0,55),
       }}},
       scales:{
@@ -2380,8 +2380,10 @@ function sortMonth(m, key, th){
   document.querySelectorAll(`#m-${m} th`).forEach(t=>t.classList.remove('sorted'));
   th.classList.add('sorted');
   th.textContent = ({views:'Views',ret:'5s Ret',watch:'Watch%',er:'ER%'}[key])+(s.asc?' ↑':' ↓');
-  const mNum = {mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9};
-  const sorted = [...mPosts(mNum[m]||5)].sort((a,b)=>s.asc?a[s.key]-b[s.key]:b[s.key]-a[s.key]);
+  // เลิก hardcode แผนที่เดือน — เดือนใหม่ที่สร้างจาก ALL_POSTS จะไม่อยู่ในนั้น
+  // แล้ว mPosts(undefined||5) จะเอาข้อมูล พ.ค. ไปใส่ตารางเดือนอื่นแบบเงียบ ๆ
+  const mNum = M_ID.indexOf(m);
+  const sorted = [...mPosts(mNum)].sort((a,b)=>s.asc?a[s.key]-b[s.key]:b[s.key]-a[s.key]);
   buildTable(m+'-tb', sorted);
 }
 
@@ -2414,6 +2416,199 @@ function switchMonth(id, btn){
     CHARTS[k].update();
   });
 }
+
+// ═══════════════════════════════════════════════════════════════════════════
+// เดือนใหม่: สร้างปุ่มแท็บ + พาเนลเองจาก ALL_POSTS
+// ───────────────────────────────────────────────────────────────────────────
+// เดิมปุ่มแท็บกับพาเนลเขียนมือทุกเดือน (พาเนลละ ~350 บรรทัด) พอชีตมีเดือนใหม่
+// ข้อมูลเข้า ALL_POSTS แล้วแต่ไม่มีใครเห็น — ต.ค. 69 มี 16 คลิปแต่ปุ่มจบที่ ก.ย.
+// บล็อกนี้ไล่เดือนที่มีใน ALL_POSTS ถ้าเดือนไหนยังไม่มี #m-<id> ก็สร้างให้ครบ
+// ทั้งหัว / KPI / แถบเป้า / Pillar / กราฟ 5 อัน / Top 5 / ตาราง
+// พาเนล มี.ค.–ก.ย. ที่เขียนมือไว้แล้วไม่ถูกแตะ (เช็ค getElementById ก่อนสร้าง)
+const M_ID   = ['','jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+const M_TH   = ['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน',
+                'กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
+const M_ABBR = ['','ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+// สีของเดือนที่ยังไม่มีใน :root — bg/dk คำนวณจากสีหลัก ไม่ต้องมาเติมตารางทุกปี
+const M_NEWCOL = {10:'#0d9488', 11:'#7c3aed', 12:'#b45309'};
+
+function _mix(hex, t){            // t=1 ขาวล้วน · t=0 สีเดิม
+  const n = parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255;
+  const f = v => Math.round(v + (255-v)*t).toString(16).padStart(2,'0');
+  return '#'+f(r)+f(g)+f(b);
+}
+function _shade(hex, t){          // t=1 ดำล้วน
+  const n = parseInt(hex.slice(1),16), r=n>>16, g=(n>>8)&255, b=n&255;
+  const f = v => Math.round(v*(1-t)).toString(16).padStart(2,'0');
+  return '#'+f(r)+f(g)+f(b);
+}
+function _injectMonthCss(id, base){
+  const bg = _mix(base,0.90), dk = _shade(base,0.40), bd = _mix(base,0.55);
+  const st = document.createElement('style');
+  st.textContent = `:root{--${id}:${base};--${id}-bg:${bg};--${id}-dk:${dk}}`
+    + `.mtab.${id}.active{color:var(--${id});border-bottom-color:var(--${id})}`
+    + `.kkv.${id}{color:var(--${id})}`
+    + `.mhd.${id}{background:var(--${id}-bg);border:.5px solid ${bd}}`;
+  document.head.appendChild(st);
+}
+
+const _n0 = v => Math.round(v).toLocaleString();
+function _monthStats(ps){
+  const S = k => ps.reduce((a,p)=>a+(p[k]||0),0);
+  const X = k => ps.reduce((a,p)=>Math.max(a,p[k]||0),0);
+  const n = ps.length;
+  return {n, views:S('views'), eng:S('eng'), love:S('love'), comment:S('comment'),
+          share:S('share'), save:S('save'),
+          vAvg:Math.round(S('views')/n), eAvg:Math.round(S('eng')/n),
+          ret:+(S('ret')/n).toFixed(1),  retMax:+X('ret').toFixed(1),
+          watch:+(S('watch')/n).toFixed(1), watchMax:+X('watch').toFixed(2),
+          er:+(S('er')/n).toFixed(2),    erMax:+X('er').toFixed(2)};
+}
+function _tgt(name, avg, target, id){
+  const w = Math.min(100, Math.round(avg/target*100));
+  const hit = avg >= target;
+  return `<div class="tgt"><div class="tgt-info"><div class="tgt-name">${name}</div>`
+    + `<div class="tgt-sub">avg ${avg}% · เป้า ${target}%</div>`
+    + `<div class="pb-wrap"><div class="pb-fill" style="width:${w}%;background:var(--${id})"></div></div></div>`
+    + `<span class="tgt-pill ${hit?'pill-hit':'pill-miss'}">${hit?'ถึงเป้า':'ต่ำกว่าเป้า'}</span></div>`;
+}
+function _top5(ps, key, kind, mNum){
+  const lab = {v:p=>`👁 ${p.views.toLocaleString()} views`, r:p=>`⏱ ${p.ret}%`,
+               w:p=>`👁 Watch ${p.watch}%`, e:p=>`💬 ER ${p.er}%`}[kind];
+  return [...ps].sort((a,b)=>b[key]-a[key]).slice(0,5).map((p,i)=>
+    `<div class="t5i"><div class="rnk ${['rk1','rk2','rk3'][i]||''}">${i+1}</div>`
+    + `<div style="flex:1;min-width:0"><div class="ti">${p.url
+        ? `<a href="${p.url}" target="_blank" style="color:inherit;text-decoration:none;border-bottom:1px dashed #aaa">${p.content} ↗</a>`
+        : p.content}</div><div class="tm">`
+    + `<span class="chip">👁 <span class="cv">${p.views.toLocaleString()}</span></span>`
+    + `<span class="hi hi-${kind}">${lab(p)}${kind==='w'&&i===0?' ⭐':''}</span>`
+    + `<span class="chip">Ret <span class="cv">${p.ret}%</span></span>`
+    + `<span class="chip">Watch <span class="cv">${p.watch}%</span></span>`
+    + `<span class="chip">ER <span class="cv">${p.er}%</span></span>`
+    + `<span class="pill ${pillCls[p.pillar]||''}">${p.pillar}</span>`
+    + `<span style="font-size:10px;color:var(--t3)">${p.lbl} ${M_ABBR[mNum]}</span>`
+    + `</div></div></div>`).join('');
+}
+function _buildMonthPanel(mNum){
+  const id = M_ID[mNum], th = M_TH[mNum], ps = mPosts(mNum), s = _monthStats(ps);
+  const days = [...new Set(ps.map(p=>p.day))].sort((a,b)=>a-b);
+  const pil = {};
+  ps.forEach(p=>{ const k=p.pillar||'Other';
+    (pil[k] = pil[k] || {n:0,views:0,eng:0}); pil[k].n++; pil[k].views+=p.views||0; pil[k].eng+=p.eng||0; });
+  const pilHtml = Object.entries(pil).sort((a,b)=>b[1].views-a[1].views).map(([k,v])=>
+    `<div class="pil-card"><div class="pil-name">${k}</div><div class="pil-cnt">${v.n} คลิป</div>`
+    + `<div class="pil-v">${_n0(v.views)}</div><div class="pil-e">views · eng ${_n0(v.eng)}</div></div>`).join('');
+  const best = [...ps].sort((a,b)=>b.views-a.views)[0];
+  const topPil = Object.entries(pil).sort((a,b)=>b[1].views-a[1].views)[0];
+  const el = document.createElement('div');
+  el.id = 'm-'+id; el.className = 'mpnl';
+  el.innerHTML = `
+    <div class="mhd ${id}"><div>
+      <div class="mhd-title">${th} 2026</div>
+      <div class="mhd-sub">${days.join(', ')} ${th} · ${s.n} คลิป</div>
+    </div></div>
+    <div class="kstrip">
+      <div class="kk"><div class="kkl">Views รวม</div><div class="kkv ${id}">${_n0(s.views)}</div><div class="kks">avg ${_n0(s.vAvg)}/คลิป</div></div>
+      <div class="kk"><div class="kkl">Engagement รวม</div><div class="kkv ${id}">${_n0(s.eng)}</div><div class="kks">avg ${_n0(s.eAvg)}/คลิป</div></div>
+      <div class="kk"><div class="kkl">5s Retention เฉลี่ย</div><div class="kkv ${id}">${s.ret}%</div><div class="kks">สูงสุด ${s.retMax}%</div></div>
+      <div class="kk"><div class="kkl">Watch Time เฉลี่ย</div><div class="kkv ${id}">${s.watch}%</div><div class="kks">สูงสุด ${s.watchMax}%</div></div>
+      <div class="kk"><div class="kkl">Eng Rate เฉลี่ย</div><div class="kkv ${id}">${s.er}%</div><div class="kks">สูงสุด ${s.erMax}%</div></div>
+      <div class="kk"><div class="kkl">Save รวม</div><div class="kkv ${id}">${_n0(s.save)}</div><div class="kks">❤ ${s.love} 💬 ${s.comment} 🔁 ${s.share}</div></div>
+    </div>
+    <div class="tgt-row">
+      ${_tgt('5-Sec Retention', s.ret, 40, id)}
+      ${_tgt('Avg. Watch Time', s.watch, 20, id)}
+      ${_tgt('Engagement Rate', s.er, 5, id)}
+    </div>
+    <div class="sec">Pillar Breakdown — ${th}</div>
+    <div class="pil-grid">${pilHtml}</div>
+    <div class="cc">
+      <div class="ct">Views รายวัน — ${th}<span class="ct-badge" style="background:var(--${id}-bg);color:var(--${id}-dk)">${s.n} คลิป</span></div>
+      <div class="cw" style="height:200px"><canvas id="${id}-views"></canvas></div>
+    </div>
+    <div class="g2">
+      <div class="cc" style="margin:0">
+        <div class="ct">5-Sec Retention % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 40%</span></div>
+        <div class="leg"><span class="li"><span class="lx" style="border-color:var(--red)"></span>เป้า 40%</span></div>
+        <div class="cw" style="height:200px"><canvas id="${id}-ret"></canvas></div>
+      </div>
+      <div class="cc" style="margin:0">
+        <div class="ct">Avg. Watch Time % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 20%</span></div>
+        <div class="leg"><span class="li"><span class="lx" style="border-color:var(--pur)"></span>เป้า 20%</span></div>
+        <div class="cw" style="height:200px"><canvas id="${id}-watch"></canvas></div>
+      </div>
+    </div>
+    <div class="cc">
+      <div class="ct">Engagement Rate % <span class="ct-badge" style="background:var(--rbg);color:var(--rdk)">เป้า 5%</span></div>
+      <div class="leg"><span class="li"><span class="lx" style="border-color:var(--grn)"></span>เป้า 5%</span></div>
+      <div class="cw" style="height:200px"><canvas id="${id}-er"></canvas></div>
+    </div>
+    <div class="cc">
+      <div class="ct">Engagement รายวัน — ${th}</div>
+      <div class="cw" style="height:180px"><canvas id="${id}-eng"></canvas></div>
+    </div>
+    <div class="sec">Top 5 Content ยอดเยี่ยม — ${th}</div>
+    <div class="stabs">
+      <button class="stab active" onclick="sst('${id}','v',this)">🏆 ยอดวิวสูงสุด</button>
+      <button class="stab" onclick="sst('${id}','r',this)">⏱ 5-Sec Retention สูงสุด</button>
+      <button class="stab" onclick="sst('${id}','w',this)">👁 Avg. Watch Time สูงสุด</button>
+      <button class="stab" onclick="sst('${id}','e',this)">💬 Engagement Rate สูงสุด</button>
+    </div>
+    <div id="sp-v-${id}" class="spnl active">${_top5(ps,'views','v',mNum)}</div>
+    <div id="sp-r-${id}" class="spnl">${_top5(ps,'ret','r',mNum)}</div>
+    <div id="sp-w-${id}" class="spnl">${_top5(ps,'watch','w',mNum)}</div>
+    <div id="sp-e-${id}" class="spnl">${_top5(ps,'er','e',mNum)}</div>
+    <div class="sec" style="margin-top:16px">สรุปตัวเลขเดือน ${th}</div>
+    <div class="ins-box">🔍 <strong>${th}:</strong> ${s.n} คลิป · views รวม ${_n0(s.views)}
+      (avg ${_n0(s.vAvg)}/คลิป) · Pillar ที่ทำวิวได้มากสุดคือ <strong>${topPil?topPil[0]:'—'}</strong>
+      (${topPil?_n0(topPil[1].views):0} views จาก ${topPil?topPil[1].n:0} คลิป) ·
+      คลิปที่วิวสูงสุดคือวันที่ ${best?best.lbl:'—'} (${best?best.views.toLocaleString():0} views,
+      Ret ${best?best.ret:0}% · Watch ${best?best.watch:0}% · ER ${best?best.er:0}%) ·
+      เทียบเป้า: Ret ${s.ret}%/40% · Watch ${s.watch}%/20% · ER ${s.er}%/5%
+      <br><span style="font-size:11px;color:var(--t3)">ส่วนนี้สร้างจากข้อมูลอัตโนมัติ — ข้อเสนอแนะเชิงกลยุทธ์ยังต้องเขียนเพิ่มเอง</span></div>
+    <div class="sec">รายละเอียดคลิปทั้งหมด — ${th}</div>
+    <div class="tw"><table>
+      <thead><tr>
+        <th>#</th><th>วันที่</th><th>Pillar</th><th>Content</th>
+        <th onclick="sortMonth('${id}','views',this)">Views ↕</th>
+        <th>Eng</th><th>❤</th><th>💬</th><th>🔁</th><th>💾</th>
+        <th onclick="sortMonth('${id}','ret',this)">5s Ret ↕</th>
+        <th onclick="sortMonth('${id}','watch',this)">Watch% ↕</th>
+        <th onclick="sortMonth('${id}','er',this)">ER% ↕</th>
+      </tr></thead>
+      <tbody id="${id}-tb"></tbody>
+    </table></div>`;
+  return el;
+}
+
+(function autoMonths(){
+  const months = [...new Set(ALL_POSTS.map(p=>p.month))].filter(m=>m>=1&&m<=12).sort((a,b)=>a-b);
+  const tabs = document.querySelector('.mtabs');
+  const wrap = tabs ? tabs.parentNode : null;
+  months.forEach(mNum=>{
+    const id = M_ID[mNum];
+    if (document.getElementById('m-'+id)) return;        // พาเนลเขียนมือ — ห้ามแตะ
+    const base = MONTH_COLOR[mNum] || M_NEWCOL[mNum] || '#475569';
+    MONTH_COLOR[mNum] = base;
+    _injectMonthCss(id, base);
+    const btn = document.createElement('button');
+    btn.className = 'mtab ' + id;
+    btn.textContent = '📅 ' + M_TH[mNum] + ' 2026';
+    btn.onclick = function(){ switchMonth(id, btn); };
+    if (tabs) tabs.appendChild(btn);
+    const panel = _buildMonthPanel(mNum);
+    if (wrap) wrap.appendChild(panel);
+    const ps = mPosts(mNum);
+    mkBar(id+'-views', ps,'views',base, null, false);
+    mkBar(id+'-ret',   ps,'ret',  base,   50, true, 40);
+    mkBar(id+'-watch', ps,'watch',base,   28, true, 20);
+    mkBar(id+'-er',    ps,'er',   base,    6, true, 5);
+    mkBar(id+'-eng',   ps,'eng',  base, null, false);
+    buildTable(id+'-tb', ps);
+    sortState[id] = {key:'views', asc:false};
+  });
+})();
+
 </script>
 </body>
 </html>
