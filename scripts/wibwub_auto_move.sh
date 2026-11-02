@@ -66,10 +66,17 @@ mkdir -p "$ALL/Data Affiliate/ขอสินค้า"
 for f in "$DL"/wibwub_samp_req_*.csv;                    do safe_mv "$f" "$ALL/Data Affiliate/ขอสินค้า/"; done
 
 # ── ไฟล์ที่งานตั้งเวลาอ่านจาก Downloads โดยตรง (เช่น tiktok product daily โหลด json แล้วอ่านทันที)
-#    → ย้ายเฉพาะไฟล์ที่อายุเกิน 1 วัน (1440 นาที) และไม่ทับไฟล์เดิม (ชื่อซ้ำจะต่อท้ายด้วยเวลา)
+#    → ย้ายเฉพาะไฟล์ที่อายุเกิน OLD_MIN นาที และไม่ทับไฟล์เดิม (ชื่อซ้ำจะต่อท้ายด้วยเวลา)
+#
+# 2 พ.ย. 69: ลด 1440 -> 180 นาที ตามที่ผู้ใช้อนุมัติ · เกณฑ์เดิมคือ "ข้ามวัน" ทำให้ไฟล์
+# ของรอบเช้าค้างใน Downloads ทั้งวันจนปนกับรอบเย็น แล้วสคริปต์ที่เลือกไฟล์ด้วย `ls -t`
+# หยิบผิดตัว · 180 นาที ยาวพอสำหรับทุกงาน เพราะงานที่โหลดแล้วอ่านทันทีใช้เวลาไม่เกิน ~20 นาที
+# และรอบเช้า/เย็นห่างกัน ~11 ชม.
+OLD_MIN=180
+
 move_old() {  # $1=pattern (glob ของ find)  $2=ปลายทาง
   local pat="$1" dst="$2"
-  find "$DL" -maxdepth 1 -type f -name "$pat" -mmin +1440 -print0 2>/dev/null |
+  find "$DL" -maxdepth 1 -type f -name "$pat" -mmin +$OLD_MIN -print0 2>/dev/null |
   while IFS= read -r -d '' f; do
     mkdir -p "$dst"
     local b; b=$(basename "$f")
@@ -101,5 +108,40 @@ move_old 'Top 30 Affiliate*ขอสินค้า*.csv'              "$ARCH/�
 move_old 'supply-sellercenter-export-sc_live_stream_list_export_*.xlsx' "$ARCH/shopee live list"
 move_old 'shopee-ads-*.csv'                            "$ARCH/shopee-ads"
 move_old 'wibwub_tk_prod_sku_*.json'                   "$ARCH/TikTok json"
+
+# ── Lazada: ไฟล์ออเดอร์ที่โหลดมาชื่อเป็น hash 32 ตัว (เช่น d46d670c....xlsx) ────────
+# ไม่มีกฎ safe_mv เพราะเดาไม่ได้ว่าไฟล์ hash ตัวไหนคือ Lazada (Downloads มี .xlsx จากหลายที่)
+# งาน download-orders คัดลอกเข้าโฟลเดอร์งานเองพร้อมเปลี่ยนชื่อเป็น Lazada_Orders_YYYYMMDD.xlsx
+# ตัวต้นฉบับจึงค้างอยู่ตลอด (2 พ.ย. 69 ค้างอยู่ 3 ตัวตั้งแต่ 1 พ.ย.)
+#
+# ⛔ เงื่อนไขที่ผู้ใช้กำหนด: **ย้ายเฉพาะไฟล์ที่ตรงกับสำเนาในโฟลเดอร์งานทุกไบต์** เท่านั้น
+#    ไฟล์ที่ยังไม่มีสำเนา = ยังไม่ถูกคัดลอก ห้ามแตะ (เกิดจริง: รอบเช้า 1-2 พ.ย. ไม่ได้คัดลอก
+#    ถ้าย้ายทิ้งไปด้วยจะเสียข้อมูลวันนั้นถาวร เพราะไฟล์พวกนี้ไม่ได้ track ใน git)
+#    ย้ายไป downloads_archive **ไม่ลบ**
+LZ_WORK="$ALL/data ยอดขาย plaform/Lazada"
+lz_hash_move() {
+  local f b stamp g matched
+  for f in "$DL"/*.xlsx; do
+    [ -f "$f" ] || continue
+    b=$(basename "$f")
+    # ชื่อต้องเป็น hash 32 ตัวพอดี (รับท้าย " (1)" ของเบราว์เซอร์ด้วย) — ห้ามใช้ glob หลวม ๆ
+    # แบบ [0-9a-f]*.xlsx เพราะมันแมตช์ชื่อไทย/ชื่อร้านที่ขึ้นต้นด้วยตัวเลขด้วย
+    [[ "$b" =~ ^[0-9a-f]{32}(\ \([0-9]+\))?\.xlsx$ ]] || continue
+    matched=""
+    for g in "$LZ_WORK"/*.xlsx; do
+      [ -f "$g" ] || continue
+      if cmp -s "$f" "$g"; then matched="$g"; break; fi
+    done
+    if [ -z "$matched" ]; then
+      echo "[WIBWUB] ข้าม (ยังไม่มีสำเนาในโฟลเดอร์งาน): $b"
+      continue
+    fi
+    mkdir -p "$ARCH/lazada-hash"
+    stamp=$(date -r "$f" +%Y%m%d_%H%M%S)
+    mv -n "$f" "$ARCH/lazada-hash/${b%.xlsx}__$stamp.xlsx" &&
+      echo "[WIBWUB] moved: $b → downloads_archive/lazada-hash (ตรงกับ $(basename "$matched"))"
+  done
+}
+lz_hash_move
 
 exit 0
