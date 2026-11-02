@@ -1,261 +1,310 @@
 ---
 name: wibwub-download-orders-monday
-description: Download daily order exports from Shopee, TikTok Shop, Lazada, and Line My Shop — ทุกวัน 08:20/19:20
+description: ทุกวัน 08:35/19:35 (ชื่องานหลอก — ไม่ใช่เฉพาะวันจันทร์) — ส่วน A โหลด order Shopee/TikTok/Lazada/Line My Shop · ส่วน B ดึง Lazada · **เป็นตัวเขียน data Ads/ads_daily.json** (ads_daily_update.py) ซึ่งงานอื่นใช้ต่อ จึงต้องเสร็จก่อนรอบ sales-update 09:25
 ---
-> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — ตัวจริงอยู่ที่ `~/Documents/Claude/Scheduled/wibwub-download-orders-monday/SKILL.md` · ห้ามแก้ที่นี่โดยคิดว่ามีผล
+
+> 🔁 **ไฟล์นี้คือสำเนาของพรอมป์ตัวจริง** ที่ `~/Documents/Claude/Scheduled/wibwub-download-orders-monday/SKILL.md`
+> (งาน local อ่านไฟล์นั้น ไม่ได้อ่านไฟล์นี้) · มีไว้ให้ git เก็บประวัติ
+> **แก้ที่นี่แล้วไม่มีผล** — แก้ไฟล์ตัวจริงก่อน แล้วคัดลอกมาทับไฟล์นี้ในคอมมิตเดียวกัน
 
 
-## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
+Download order export files from all 4 WIBWUB e-commerce platforms and save them to the correct folders. Complete all 4 platforms every time.
 
-พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
-จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
-
-```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+## ⚠️ Chrome Navigation Rule — สำคัญมาก
+ห้ามใช้ `navigate` แบบ standalone เด็ดขาด — จะค้างไม่ return ทำให้ task หยุดทำงาน
+ต้องใช้ `navigate` + `wait` ในคู่เสมอ:
+```
+navigate(url="...", tabId=TAB_ID)  # ผ่าน browser_batch หรือ standalone ก็ได้
+computer(action="wait", duration=4, tabId=TAB_ID)
+computer(action="screenshot", tabId=TAB_ID)
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
-- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
-  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+## ⚡ Session Recovery — ทำก่อนทุก platform
+ถ้า page redirect ไปหน้า login ให้ทำตาม Recovery Steps ของแต่ละ platform ด้านล่างทันที อย่ายอมแพ้และ skip
 
----
+## Save folder base
+งานนี้รันบนเครื่อง Mac (ไม่ใช่แซนด์บ็อกซ์ Linux แล้ว) · cwd คือ `/Users/thanasablilutanon/Downloads`
+พาธเต็มของโฟลเดอร์ปลายทาง — **ใช้พาธเต็มทุกคำสั่ง ห้ามใช้พาธ relative และห้ามใช้ `$BASE`**:
 
+```
+/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/
+  ├── Shopee/
+  ├── Tiktok/
+  ├── Lazada/
+  └── Line My Shop/
+```
 
-## WIBWUB Orders Download — ทุกวัน 08:20 / 19:20
+⛔ **พาธ `/sessions/<ชื่อ>/mnt/...` ในพรอมป์เก่าตายแล้ว** (แซนด์บ็อกซ์เดิม) ถ้าเจอที่ไหนอีกให้ถือว่าผิด
 
-โหลดไฟล์คำสั่งซื้อจาก 4 แพลตฟอร์ม ทำให้ครบทุกตัวทุกรอบ
-ถ้าตัวไหน session หมด **ให้ข้ามตัวนั้นแล้วทำตัวอื่นต่อ** ห้ามหยุดทั้งงาน และต้องรายงานว่าตัวไหนหมด
+Use the Chrome MCP (`mcp__Claude_in_Chrome__*`) for all browser automation.
+ไฟล์ที่โหลดเสร็จ **ไม่ต้อง `cp` เอง** 3 ใน 4 แพลตฟอร์ม — ดูหัวข้อ "กฎการย้ายไฟล์" ท้ายส่วน A
 
-BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
-ปลายทาง = `$BASE/data ยอดขาย plaform/{Shopee,Tiktok,Lazada,Line My Shop}/`
-
----
-
-## 🚚 การย้ายไฟล์ — **ห้าม `cp` เอง 3 ใน 4 แพลตฟอร์ม**
-
-launchd `com.wibwub.download-mover` (WatchPaths `~/Downloads`) ย้ายไฟล์ให้เองภายใน ~5 วิ
-ผ่าน `scripts/wibwub_auto_move.sh` โดยจับจากชื่อไฟล์:
-
-| แพลตฟอร์ม | ชื่อไฟล์ที่โหลดได้ | mover จับ? | สิ่งที่งานนี้ต้องทำ |
-|---|---|---|---|
-| Shopee | `Order.all.order_creation_date.YYYYMMDD_YYYYMMDD.zip` | ✅ | **ตรวจปลายทางอย่างเดียว** |
-| TikTok | `ทั้งหมด คำสั่งซื้อ-YYYY-MM-DD-HH_MM.xlsx` | ✅ | **ตรวจปลายทางอย่างเดียว** |
-| Line My Shop | `Order Report YYYYMMDD.xlsx` | ✅ | **ตรวจปลายทางอย่างเดียว** |
-| Lazada | ชื่อเป็น hash สุ่ม `.xlsx` | ❌ (เดาชื่อไม่ได้) | **ต้อง `mv` + เปลี่ยนชื่อเอง** |
-
-> **บั๊กเดิม (แก้แล้ว 20 ต.ค. 2569):** พรอมป์เก่าสั่ง `cp` ทั้ง 4 ตัวจาก `~/Downloads`
-> — แข่งกับ mover แล้วแพ้ ไฟล์ถูกย้ายไปก่อน `cp` จึงว่าง รายงาน "ไม่พบไฟล์" ทั้งที่โหลดสำเร็จ
-> และคำสั่ง Shopee เดิม `ls -t "/Users/.../Order.all.*.zip"` ใส่ `*` **ในเครื่องหมายคำพูด**
-> shell จึงไม่ขยาย glob ได้ผลว่างทุกครั้ง
-> นอกจากนี้ Line My Shop เคยได้ไฟล์ซ้ำสองชื่อ (ตัว mover + ตัว cp ที่เปลี่ยนชื่อ) — เลิก cp แล้ว
-> ใช้ชื่อเดิมของ LINE (`Order Report YYYYMMDD.xlsx`) เป็นมาตรฐาน
-
-ชื่อซ้ำ mover ต่อท้าย `__YYYYMMDD_HHMMSS` ให้เอง ไม่เขียนทับ · `mv`/`rm` ใน `~/Downloads` ใช้ได้ปกติบน macOS
-(ข้อความเก่าที่ว่า "sandbox ลบไฟล์ไม่ได้" เป็นเรื่องของ Cowork Linux ตัดทิ้งแล้ว)
-
----
-
-## ⚠️ กฎ Chrome
-
-- ก่อนเริ่ม: `select_browser(deviceId="b75a6bb0-5b78-4e44-92a8-75224f1ce4ee")` แล้ว `tabs_context_mcp(createIfEmpty=true)`
-  (ถ้าไม่ connected → `list_connected_browsers` เลือกตัวที่ `osPlatform` = macOS / `isLocal:true` เท่านั้น)
-- `navigate` ต้องตามด้วย `wait` เสมอ ใช้ `browser_batch` ครอบ:
-  `browser_batch([navigate(url=..., tabId=TAB), computer(wait 8), computer(screenshot)])`
-
-### 🔐 กฎเรื่อง session — สำคัญ
-**ถ้าเจอหน้า login: ห้ามกรอกรหัสผ่าน ห้ามกดปุ่มเข้าสู่ระบบ ห้ามกด OTP ใด ๆ**
-ให้บันทึกว่าแพลตฟอร์มนั้น session หมด แล้วไปทำตัวถัดไป และสรุปท้ายรอบให้ชัดว่า
-"ต้องให้คนเข้าไป login ใน Chrome เอง แล้วค่อยรันซ้ำ"
-(พรอมป์เวอร์ชันเก่าสั่งให้คลิกปุ่มเข้าสู่ระบบโดยอาศัย autofill ของเบราว์เซอร์ — เลิกทำแล้ว)
-
-สถานะที่ตรวจพบเมื่อ 20 ต.ค. 2569: Shopee + TikTok Shop = OK · **Lazada = หมด** · **LINE = หมด**
+⚠️ **ต้องระบุ browser ที่ Mac เสมอ ห้ามปล่อยให้เลือกอัตโนมัติ** — ก่อนเริ่ม platform แรก:
+`select_browser(deviceId="b75a6bb0-5b78-4e44-92a8-75224f1ce4ee")` แล้วค่อย `tabs_context_mcp(createIfEmpty=true)`
+(ถ้า deviceId นี้ไม่ connected แล้ว ให้เรียก `list_connected_browsers` ก่อน แล้วเลือกตัวที่ `osPlatform` เป็น macOS / `isLocal:true` เท่านั้น — ห้ามเลือก Windows/PC)
 
 ---
 
 ## Platform 1 — Shopee
+URL: https://seller.shopee.co.th/portal/sale/order
 
-1. `https://seller.shopee.co.th/portal/sale/order` รอ 8 วิ → screenshot
-   ถ้าเด้งไปหน้า login → ข้าม บันทึก "Shopee session expired"
-2. แท็บ **ทั้งหมด** → ปุ่ม **ส่งออก** → **ส่งออกรายการสั่งซื้อ** → **ทั้งหมด**
-3. ช่วงวันที่: วันที่ 1 ของเดือนปัจจุบัน → วันนี้
-4. กด Export → รอจนขึ้นลิงก์ดาวน์โหลด → กดลิงก์
-5. ตรวจปลายทาง (รอ 15 วิ หลังกดโหลด):
+### Session Check
+ถ้า page URL ยังเป็น `/sale/order` = session OK
+ถ้า redirect ไปหน้าอื่น = session expired → navigate ไปที่ https://seller.shopee.co.th แล้วรอ 5 วินาที แล้ว navigate กลับ
+
+### Steps
+1. Navigate to: https://seller.shopee.co.th/portal/sale/order
+2. Wait 5 seconds → screenshot
+3. Click tab "ทั้งหมด" (use find tool with query "ทั้งหมด tab")
+4. Click "ส่งออก" dropdown
+5. Select "ส่งออกรายการสั่งซื้อ" → "ทั้งหมด"
+6. Set date range: first day of current month → today
+7. Click Export → wait for download
+8. Click download link when ready
+
+File: ZIP named `Order.all.YYYYMMDD_YYYYMMDD.zip`
+ตัวย้ายอัตโนมัติพาเข้าโฟลเดอร์ Shopee ให้เอง (กฎ `Order.all.*`) — **ห้าม cp** แค่ตรวจว่าถึงจริง:
 ```bash
-BASE="/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All"
-ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Shopee/" | head -3      # ต้องเห็นไฟล์ mtime เป็นเวลานี้
+python3 -c "
+import glob, os, time
+d = glob.glob('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Shopee/Order.all.*')
+f = max(d, key=os.path.getmtime) if d else None
+age = (time.time() - os.path.getmtime(f))/60 if f else None
+print('ไฟล์ล่าสุด:', os.path.basename(f) if f else 'ไม่มี', '| อายุ %.0f นาที' % age if age is not None else '')
+print('OK' if age is not None and age < 15 else 'ยังไม่ถึง — รอ 10 วิแล้วตรวจอีกครั้ง')
+"
 ```
+ถ้ายังไม่ถึงหลังตรวจซ้ำ 2 ครั้ง ให้ cp เองจาก `/Users/thanasablilutanon/Downloads` (ตัวย้ายอาจไม่ทำงาน) แล้วรายงานว่าต้อง cp เอง
 
 ---
 
 ## Platform 2 — TikTok Shop
+URL: https://seller-th.tiktok.com/order/list?tab=all
 
-### 2.1 เปิดหน้ารายการคำสั่งซื้อ — **ห้ามใช้ `/order/list`**
+### Session Check + Recovery
+1. Navigate to URL, wait 5s, take screenshot
+2. Check page text with get_page_text:
+   - ถ้ามี "จัดการคำสั่งซื้อ" หรือ "WIBWUBCAR" = session OK
+   - ถ้ามี "เข้าสู่ระบบ" หรือ "login" = session expired
 
-> **บั๊กเดิมข้อใหญ่ที่สุดของแพลตฟอร์มนี้:** URL เก่า `https://seller-th.tiktok.com/order/list?tab=all`
-> โหลดแล้ว **พื้นที่เนื้อหาว่างเปล่า** (sidebar ขึ้น แต่ตารางไม่ render · `get_page_text` คืนค่าว่าง · ไม่มี console error)
-> งานจึงตายตรงนี้เงียบ ๆ — ตรวจสอบแล้วเมื่อ 20 ต.ค. 2569 ว่า **ไม่มีรายการ export ของวันนั้นเกิดขึ้นเลย**
+### Recovery Steps (ถ้า session หมด)
+Navigate to https://seller-th.tiktok.com/ แล้วรอ 10 วินาที — ถ้า TikTok Shop ใช้ cookie เดียวกับ TikTok Ads ที่ login อยู่ จะ auto-login
+ถ้าไม่ได้ → navigate ไปที่ https://seller-th.tiktok.com/ → find "เข้าสู่ระบบ" button → คลิก → รอ
 
-ใช้ URL นี้แทน (เส้นทางจริงหลังกดเมนู):
-```
-https://seller-th.tiktok.com/order?selected_sort=6&tab=all
-```
-รอ 10 วิ → screenshot → ต้องเห็นหัวข้อ **จัดการคำสั่งซื้อ** + ตารางรายการ
-ถ้ายังว่าง: คลิกเมนูซ้าย **จัดการคำสั่งซื้อ** (ราว x=62 y=162) รอ 10 วิ แล้วคลิกแท็บ **ทั้งหมด** (แท็บซ้ายสุด)
-ถ้ามี "เข้าสู่ระบบ" ในหน้า → ข้าม บันทึก "TikTok Shop session expired"
+### Steps (หลัง session OK)
+1. Click เมนูซ้าย "จัดการคำสั่งซื้อ" ถ้าไม่เห็นรายการ
+2. Click tab "ทั้งหมด" 
+3. Click "ดาวน์โหลด" button (top-right area, ไม่ใช่ "ส่งออก"):
+   ```javascript
+   // หา ดาวน์โหลด button
+   const btn = Array.from(document.querySelectorAll('button'))
+     .find(b => (b.textContent||'').trim().includes('ดาวน์โหลด') && 
+                 b.getBoundingClientRect().top > 0);
+   if (btn) btn.click();
+   ```
+4. Dialog เปิด → เลือก "คำสั่งซื้อที่กรอง" → เลือก Excel
+5. Click "ส่งออก" ใน dialog
+6. รอ progress circle เปลี่ยนเป็น "ดาวน์โหลด" (สีแดง) ใน Export History
+7. Click "ดาวน์โหลด" button ใน history row
 
-### 2.2 กดปุ่ม **ดาวน์โหลด** (ไม่ใช่ "ส่งออก")
-อยู่มุมขวาบนของตาราง ข้าง ๆ "เรียงตาม" (ราว x=1225 y=283) → พาเนลด้านขวาเปิดขึ้น
-ในพาเนลมี 2 ส่วน: ฟอร์มสั่ง export ด้านบน + **ประวัติการส่งออก** ด้านล่าง (เก็บ 7 วัน)
-
-### 2.3 **โหลดของรอบก่อนก่อน** แล้วค่อยสั่ง export ของรอบนี้
-
-> **ทำไมต้องสลับลำดับแบบนี้:** ร้านนี้มี **~87,000 คำสั่งซื้อ** วัดจริงเมื่อ 20 ต.ค. 2569
-> ว่า generate **เกิน 18 นาทียังไม่เสร็จ** — นานกว่าที่งานตั้งเวลาจะรอไหว
-> พรอมป์เก่ารอไม่กี่วินาทีแล้วไปต่อ จึงไม่เคยได้ไฟล์สักครั้ง
-> แต่ของเก่าเสร็จแน่นอนและค้างอยู่ในประวัติ 7 วัน ดังนั้น
-> **แต่ละรอบ: โหลดไฟล์ที่พร้อมแล้ว → สั่ง export ใหม่ทิ้งไว้ให้รอบถัดไป**
-> (รอบเช้า/เย็นห่างกัน ~11 ชม. เหลือเฟือ) ข้อมูลจึงช้ากว่าจริงครึ่งรอบ ซึ่งยอมรับได้
-> เพราะไฟล์ชุดนี้เป็นคลังย้อนหลัง ไม่ใช่ตัวเลขสดบนหน้าเว็บ
-
-**ขั้นที่ 1 — โหลดของที่พร้อม:** ดูแถวบนสุดของ *ประวัติการส่งออก* ที่ปุ่มเป็น **ดาวน์โหลด**
-(ไม่ใช่สปินเนอร์) และยังไม่มีไฟล์ชื่อนั้นในโฟลเดอร์ปลายทาง → กดปุ่มนั้น
-รอ 20 วิ แล้วตรวจปลายทางตามข้อ 2.4
-ถ้าทุกแถวเป็นสปินเนอร์หมด → ข้ามขั้นนี้ ไม่ต้องรอ
-
-**ขั้นที่ 2 — สั่ง export ของรอบนี้:** ในฟอร์มด้านบนของพาเนล
-- ช่วงคำสั่งซื้อ: **คำสั่งซื้อที่กรอง (…คำสั่งซื้อ)** — ตัวเลือกแรก (ค่าตั้งต้นถูกอยู่แล้ว)
-- รูปแบบการส่งออก: **ค่าตั้งต้นคือ CSV ต้องกดเปลี่ยนเป็น Excel** (คลังเก็บเป็น `.xlsx`)
-- กด **ส่งออก** → เห็นแถวใหม่ขึ้นในประวัติพร้อมสปินเนอร์ = สำเร็จ **แล้วไปแพลตฟอร์มถัดไปทันที ห้ามรอ**
-
-หมายเหตุ: พาเนล **ไม่ refresh เอง** ถ้าต้องดูสถานะล่าสุดให้กด X ปิด แล้วกดปุ่ม **ดาวน์โหลด** เปิดใหม่
-(บางครั้งต้องกด 2 ครั้ง เพราะคลิกแรกไปปิด tooltip)
-
-### 2.4 ตรวจปลายทาง
+File: `ทั้งหมด คำสั่งซื้อ-YYYY-MM-DD-HH_MM.xlsx`
+ตัวย้ายอัตโนมัติพาเข้าโฟลเดอร์ Tiktok ให้เอง (กฎ `*คำสั่งซื้อ*.xlsx`) — **ห้าม cp** แค่ตรวจ:
 ```bash
-ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Tiktok/" | head -3
+python3 -c "
+import glob, os, time
+d = glob.glob('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Tiktok/*คำสั่งซื้อ*.xlsx')
+f = max(d, key=os.path.getmtime) if d else None
+age = (time.time() - os.path.getmtime(f))/60 if f else None
+print('ไฟล์ล่าสุด:', os.path.basename(f) if f else 'ไม่มี')
+print('OK' if age is not None and age < 15 else 'ยังไม่ถึง')
+"
 ```
 
 ---
 
 ## Platform 3 — Lazada
+URL: https://sellercenter.lazada.co.th/apps/order/list?status=all
 
-`https://sellercenter.lazada.co.th/apps/order/list?status=all` รอ 10 วิ
+Lazada uses queue-based export — trigger, then do Line My Shop, then come back.
 
-- ถ้า URL เด้งไป `/apps/seller/login` → **ข้าม** บันทึก "Lazada session expired — ต้อง login เอง"
-  (ห้ามกดปุ่มเข้าสู่ระบบ แม้เบราว์เซอร์จะ autofill รหัสไว้แล้วก็ตาม)
-- ถ้าเข้าได้:
-  1. ปุ่ม **ส่งออก** (มุมซ้ายเหนือตาราง ข้าง ๆ "Page 1, 1-20 of …") → **Export All** → **ยืนยัน**
-  2. เป็นคิว ใช้เวลา **~10 นาที** (วัดจริง 20 ต.ค. 2569: สั่ง 11:32 เสร็จราว 11:42)
-     **ไม่ต้องรอ** → ไปทำ Line My Shop ก่อน แล้วค่อยกลับมา
-  3. กลับมา: **reload หน้าก่อน** แล้วค่อย **ส่งออก** → **Export History**
-     > วงกลมเปอร์เซ็นต์ที่เด้งขึ้นหลังกดยืนยัน **ค้างอยู่ที่ตัวเลขเดิมไม่อัปเดต** (เห็นค้าง 80.0% นานหลายนาที
-     > ทั้งที่งานเสร็จไปแล้ว) อย่าใช้ตัวเลขนั้นตัดสิน — ดูคอลัมน์ Status ใน Export History หลัง reload เท่านั้น
-     แถวบนสุดต้องขึ้น **ความสำเร็จ** (ถ้ายังเป็น "ในการประมวลผล" ให้รอแล้ว reload ใหม่)
-     → กดลิงก์ **Download Result File** ของแถวนั้น
-  4. ไฟล์ชื่อเป็น hash — mover จับไม่ได้ ต้องย้ายเองทันที:
-```bash
-HASH=$(ls -t ~/Downloads/*.xlsx 2>/dev/null \
-  | grep -v "คำสั่งซื้อ\|Order Report\|Campaign\|WIBWUBCAR\|Submit\|Data_" | head -1)
-DST="$BASE/data ยอดขาย plaform/Lazada/Lazada_Orders_$(date +%Y%m%d).xlsx"
-if [ -n "$HASH" ] && [ ! -e "$DST" ]; then
-  mv -n "$HASH" "$DST" && echo "✅ Lazada: $(basename "$DST")"
-elif [ -e "$DST" ]; then echo "ℹ️ Lazada: มีไฟล์ของวันนี้อยู่แล้ว"
-else echo "⛔ Lazada: ไม่พบไฟล์ใน Downloads"; fi
+### Session Check + Recovery
+1. Navigate to URL, wait 5s
+2. Check URL after navigation:
+   - ถ้า URL เป็น `/apps/order/list` = session OK
+   - ถ้า redirect ไป `/apps/seller/login` = session expired → Recovery
+
+### Recovery Steps (ถ้า session หมด)
+```javascript
+// ตรวจ URL ปัจจุบัน
+window.location.href
 ```
-  (ใช้ `mv -n` ไม่ทับของเดิม · ถ้ามีไฟล์ของวันนี้แล้ว แปลว่ารอบเช้าโหลดไว้ ให้ข้าม)
+ถ้าเป็น login page → หา "เข้าสู่ระบบ" button (credentials อยู่ใน browser แล้ว):
+```javascript
+// Click เข้าสู่ระบบ — browser จะ autofill user/pass
+const loginBtn = Array.from(document.querySelectorAll('button'))
+  .find(b => b.type === 'submit' || b.textContent.trim() === 'เข้าสู่ระบบ');
+if (loginBtn) loginBtn.click();
+```
+Wait 5s → navigate กลับไปที่ order list URL
+
+### Steps (หลัง session OK)
+1. Export (JS):
+```javascript
+// Step 1: Open dropdown
+const exportBtn = Array.from(document.querySelectorAll('button'))
+  .find(b => b.textContent.trim() === 'ส่งออก');
+exportBtn.click();
+```
+```javascript
+// Step 2: Click Export All
+const exportAll = Array.from(document.querySelectorAll('li, a, div, span, button'))
+  .find(el => el.textContent.trim() === 'Export All' && el.offsetParent !== null);
+exportAll.click();
+```
+2. Confirm dialog: find "ยืนยัน" button → click
+3. **Do NOT wait** — proceed to Line My Shop immediately
+
+### Come back after Line My Shop — check Export History:
+```javascript
+// Click Export → Export History
+const exportBtn = Array.from(document.querySelectorAll('button'))
+  .find(b => b.textContent.trim() === 'ส่งออก');
+exportBtn.click();
+// Then click Export History in dropdown
+const hist = Array.from(document.querySelectorAll('li,a,div,span'))
+  .find(el => el.textContent.trim() === 'Export History' && el.offsetParent);
+if (hist) hist.click();
+```
+```javascript
+// Get download links
+const links = Array.from(document.querySelectorAll('a'))
+  .filter(a => a.textContent.trim() === 'Download Result File');
+links.map(a => a.href) // index 0 = newest
+```
+Navigate directly to the CDN URL: `https://sg-test-11.slatic.net/other/batch/[HASH].xlsx`
+
+File: ชื่อเป็น hash 32 ตัว เช่น `d46d670c5df0a375877f08a63e3726af.xlsx`
+
+⚠️ **แพลตฟอร์มเดียวที่ต้อง cp เอง** — ตัวย้ายอัตโนมัติรู้จักแค่ชื่อ `Lazada_Orders_*.xlsx`
+ไฟล์ชื่อ hash จึงค้างใน Downloads ตลอด (เกิดจริง: 1 พ.ย. รอบเช้า Lazada ไม่ถูกคัดลอกเลย)
+เลือกไฟล์ด้วย**แพทเทิร์น hash + อายุไฟล์** ห้ามใช้ `ls -t *.xlsx | grep -v` แบบเดิม — มันคว้าไฟล์อะไรก็ได้ที่เพิ่งโหลด:
+```bash
+python3 -c "
+import glob, os, re, shutil, time
+from datetime import datetime
+DL  = '/Users/thanasablilutanon/Downloads'
+DST = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Lazada'
+pat = re.compile(r'^[0-9a-f]{32}( \(\d+\))?\.xlsx$')
+c = [f for f in glob.glob(DL + '/*.xlsx')
+     if pat.match(os.path.basename(f)) and (time.time() - os.path.getmtime(f)) < 1800]
+if not c:
+    print('⛔ ไม่พบไฟล์ Lazada ชื่อ hash ที่โหลดใน 30 นาทีล่าสุด — อย่าคัดลอกไฟล์อื่นมาแทน')
+    raise SystemExit(1)
+src = max(c, key=os.path.getmtime)
+out = os.path.join(DST, 'Lazada_Orders_%s.xlsx' % datetime.now().strftime('%Y%m%d'))
+if os.path.exists(out):
+    out = out[:-5] + '_' + datetime.now().strftime('%H%M') + '.xlsx'
+shutil.copy2(src, out)
+print('✅ Lazada:', os.path.basename(src), '->', os.path.basename(out),
+      '| %.1f MB' % (os.path.getsize(out)/1e6))
+"
+```
+ไฟล์ hash ต้นฉบับยังค้างใน Downloads ได้ ไม่ต้องลบ (ตัวย้ายจะเก็บให้ภายหลัง)
 
 ---
 
 ## Platform 4 — Line My Shop
+URL: https://oaplus.line.biz/channels/5000113570/e-commerce/report
 
-`https://oaplus.line.biz/channels/5000113570/e-commerce/report` (Channel ID = 5000113570 = รหัสเปิดไฟล์ด้วย)
+Channel ID = 5000113570 (also the file password)
 
-- ถ้าเด้งไป `account.line.biz/login` หรือ `access.line.me` → **ข้าม** บันทึก "LINE session expired — ต้อง login เอง"
-- ถ้าเข้าได้:
-  1. ตั้งวันที่เริ่ม = วันนี้ − 87 วัน (ระบบจำกัด 90 วัน) รูปแบบ `DD/MM/YYYY`
-  2. กด **ดาวน์โหลด** → ถ้ามี dialog ยืนยัน (ช่วง > 30 วัน) กด **ดาวน์โหลด** สีน้ำเงิน
-  3. ตรวจปลายทาง — mover ย้ายให้เอง ใช้ชื่อเดิม `Order Report YYYYMMDD.xlsx`:
+### ⚡ สำคัญ: Domain นี้ใช้งานได้ใน Claude Chrome ถ้า session ยังอยู่
+### Session Check + Recovery
+1. Navigate to https://oaplus.line.biz/channels/5000113570/e-commerce/report
+2. Wait 5s → screenshot
+3. Check page title/content:
+   - ถ้ามี "รายงาน" หรือ "WIBWUB.CAR" = session OK ✅
+   - ถ้า redirect ไป `access.line.me` = session expired → Recovery
+
+### Recovery Steps (ถ้า session หมด)
+Tab 1415001339 (LINE Login tab) มักจะเปิดอยู่แล้วในกลุ่ม Claude Chrome
+Navigate tab นั้นไปที่ https://access.line.me → รอ user login (หรือถ้ามี auto-login จะเข้าเองเลย)
+แล้ว navigate tab ใหม่ไปที่ https://oaplus.line.biz/channels/5000113570/e-commerce/report
+
+หรือสร้าง tab ใหม่:
+```python
+# tabs_create_mcp() แล้ว navigate ไปที่ URL
+```
+ถ้า session ยังไม่กลับมา → แจ้ง user ว่าต้อง login LINE ใน Claude Chrome tab แล้วรัน schedule ใหม่
+
+### Steps (หลัง session OK)
+1. คำนวณวันที่:
+```python
+from datetime import datetime, timedelta
+today = datetime.now()
+start = today - timedelta(days=87)  # 87 วัน = ไม่เกิน 90
+start_str = start.strftime("%d/%m/%Y")
+# เช่น "05/04/2026"
+```
+
+2. Click start date field (find tool: "วันที่เริ่ม" หรือ triple_click ที่ field แรก)
+3. พิมพ์ start date ใหม่ (เช่น "05/04/2026") → Enter
+4. Calendar จะเปิด → navigate ไปเดือนที่ถูกต้อง (กดลูกศรซ้าย) แล้วคลิกวันที่
+5. Find "ดาวน์โหลด" button → click (ref-based)
+6. ถ้ามี confirmation dialog (>30 วัน) → find "ดาวน์โหลด" blue button → click
+
+File: `Order Report YYYYMMDD.xlsx` (password-encrypted, password = 5000113570)
+ตัวย้ายอัตโนมัติพาเข้าโฟลเดอร์ Line My Shop ให้เอง (กฎ `Order Report *.xlsx`) — **ห้าม cp** แค่ตรวจ:
 ```bash
-ls -lt "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Line My Shop/" | head -3
+python3 -c "
+import glob, os, time
+d = glob.glob('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data ยอดขาย plaform/Line My Shop/Order Report *.xlsx')
+f = max(d, key=os.path.getmtime) if d else None
+age = (time.time() - os.path.getmtime(f))/60 if f else None
+print('ไฟล์ล่าสุด:', os.path.basename(f) if f else 'ไม่มี')
+print('OK' if age is not None and age < 15 else 'ยังไม่ถึง')
+"
 ```
+(ชื่อ `LineMyShop_Orders_*.xlsx` ในโฟลเดอร์เป็นของเก่าสมัยยัง cp เอง ไม่ต้องสร้างใหม่)
 
 ---
 
-## RULES
+## Summary Table
+| Platform | URL | Format | Recovery |
+|---|---|---|---|
+| Shopee | seller.shopee.co.th | ZIP | Auto via cookies |
+| TikTok | seller-th.tiktok.com | .xlsx | Navigate homepage |
+| Lazada | sellercenter.lazada.co.th | .xlsx | Click login btn (browser autofill) |
+| Line My Shop | oaplus.line.biz | .xlsx encrypted (pw=5000113570) | Needs manual LINE login if expired |
 
-- ทำทุกอย่างใน bash + Chrome tools ห้าม spawn subagents
-- **ห้าม login เอง ห้ามกรอกรหัสผ่าน/OTP** — session หมดให้ข้ามแล้วรายงาน
-- ห้าม `cp` ไฟล์จาก Downloads ยกเว้น Lazada ที่ต้อง `mv` เปลี่ยนชื่อ
-- ห้ามกดปุ่มที่ไม่เกี่ยวกับการส่งออก (ยกเลิกออเดอร์ / เปลี่ยนสถานะ / โปรโมชัน)
-- แพลตฟอร์มไหนพัง ให้ทำตัวที่เหลือจนครบ แล้วรายงานว่าตัวไหนไม่สำเร็จเพราะอะไร
+## Completion Report
+After all platforms done:
+- ✅ Shopee: [filename] (covers YYYY/MM/DD–DD)
+- ✅ TikTok: [filename]
+- ✅ Lazada: [filename]
+- ✅ Line My Shop: [filename]
+- ⛔ [platform]: session expired — [action taken]
 
-## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
 
-```
-Orders Download — {วันที่} {รอบเช้า/เย็น}
-✅/⛔ Shopee:      {ชื่อไฟล์ หรือ เหตุผล}
-✅/⛔ TikTok:      {ชื่อไฟล์ หรือ เหตุผล}
-✅/⛔ Lazada:      {ชื่อไฟล์ หรือ เหตุผล}
-✅/⛔ Line My Shop:{ชื่อไฟล์ หรือ เหตุผล}
-🔐 ต้อง login เอง: {รายชื่อแพลตฟอร์มที่ session หมด — ถ้าไม่มีเขียน "ไม่มี"}
-```
+## ⚠️ กฎการย้ายไฟล์จาก Downloads (สำคัญมาก)
 
----
+**ตัวย้ายอัตโนมัติเป็นเจ้าของการจัดไฟล์ ไม่ใช่พรอมป์นี้** — LaunchAgent `com.wibwub.download-mover`
+เฝ้า `~/Downloads` อยู่ตลอด พอไฟล์โหลดเสร็จจะ **ย้าย** เข้าโฟลเดอร์งานเองภายใน ~5 วินาที
 
-## 🚨 ทำงานไม่ได้ = ต้องรายงานว่าล้มเหลว ห้ามขึ้นว่าสำเร็จ
-
-**กรณีที่ถือว่าล้มเหลว**
-
-1. **เข้าโฟลเดอร์ All ไม่ได้** (ขั้น 0 ไม่เจอพาธ)
-2. **เปิดเว็บไม่ได้** — `navigate`/`browser_batch` คืนข้อความใดข้อความหนึ่งนี้
-   - `The approval prompt for this browser action went unanswered for 5 minutes` (กล่องขออนุญาตไม่มีคนกด)
-   - `Navigation to this domain is not allowed` (สิทธิ์โดเมนถูกปฏิเสธ)
-   - `Tab ... is not in Claude's tab group` / เชื่อมต่อส่วนขยายไม่ได้
-3. **สคริปต์ที่พรอมป์ระบุหายหรือพัง**
-
-**สิ่งที่ต้องทำเมื่อล้มเหลว**
-
-1. **ลองครั้งเดียวพอ ห้ามวนลองซ้ำ** — เคยเสียเวลา 5 นาทีต่อหนึ่งเว็บโดยไม่ได้อะไร
-   (22 ต.ค. 69 งาน HR ลองทั้ง `browser_batch` และ `javascript_tool` ตรงไปที่แท็บที่ล็อกอินค้างอยู่
-   ก็โดนกล่องเดียวกันทั้งคู่ — แท็บที่เปิดค้างไว้ช่วยไม่ได้)
-2. ปิดแท็บที่เปิดไว้ด้วย `tabs_close_mcp`
-3. จบงานโดยขึ้นต้นบรรทัดแรกด้วย
-   `❌ ล้มเหลว — <สาเหตุสั้น ๆ> ไม่ได้ข้อมูลใหม่รอบนี้`
-   แล้วบอกด้วยว่าข้อมูลล่าสุดในไฟล์อยู่ถึงวันไหน
-
-**ห้ามทำเด็ดขาด**
-
-- ❌ ห้ามหันไปใช้ไฟล์เก่าแล้วรายงานว่า "สำเร็จ" — ถ้าดึงของใหม่ไม่ได้ ถือว่าล้มเหลว
-- ❌ ห้ามเขียน ✅ หรือคำว่า "เสร็จ/สำเร็จ/OK" เมื่อขั้นใดขั้นหนึ่งข้างบนไม่ผ่าน
-- ❌ ห้ามเดาตัวเลข หรือคัดลอกตัวเลขจากรอบก่อนมาใส่
-
-> ใช้ไฟล์เดิมได้เฉพาะกรณีที่พรอมป์ระบุไว้ชัดเจนว่าเป็นทางสำรองที่ยอมรับได้
-> (เช่น ads-daily ใช้ `work/*.json` ที่ครอบช่วง `from→to` พอดี) และต้อง**รายงานตรง ๆ
-> ว่ารอบนี้ใช้ของเดิม ไม่ได้ดึงใหม่**
----
-
-## 🚫 กฎคำสั่ง shell (ทุกงาน — รวมคำสั่งที่คิดขึ้นเองระหว่างรัน)
-
-งานตั้งเวลา **ไม่มีคนนั่งกดอนุญาต** ถ้าคำสั่งไม่แมตช์กฎที่อนุญาตไว้แล้ว
-(`Bash(python3 *)` / `Bash(git *)` / `Bash(ls *)` ฯลฯ) งานจะค้างทั้งรอบ
-สังเกตง่าย ๆ: ถ้ากล่องขออนุญาตมีแค่ปุ่ม **"Allow once"** โดยไม่มี "Always allow"
-แปลว่าคำสั่งนั้นสร้างกฎถาวรไม่ได้ จะถามใหม่ทุกครั้งตลอดไป
-
-**เขียนคำสั่งให้เรียบง่ายที่สุด — 1 คำสั่ง = 1 โปรแกรม + พาธเต็ม**
-
-| ❌ ห้าม | เหตุผลที่โดนถาม | ✅ ใช้แบบนี้ |
+| แพลตฟอร์ม | กฎในตัวย้าย | ต้อง cp เองไหม |
 |---|---|---|
-| `git ...` ทุกรูปแบบ | `git -C` เปิดช่องให้ push หลุด · `cd ... && git` ขึ้นต้นด้วย cd จึงไม่แมตช์กฎ `Bash(git add:*)` → งานค้างรออนุญาต | `python3 "<BASE>/scripts/gitw.py" add/commit/status/log` |
-| `cd "<path>" && python3 x.py` | ขึ้นต้นด้วย cd ไม่แมตช์ `Bash(python3 *)` | `python3 "<path เต็ม>/x.py"` |
-| `BASE="..."` แล้วใช้ `$BASE` | ตัวแปร = simple_expansion สร้างกฎถาวรไม่ได้ | เขียนพาธเต็มตรง ๆ ทุกครั้ง |
-| `for d in ...; do ... done` / `if [ ... ]` | ลูป/เงื่อนไขใน bash ก็เข้าข่ายเดียวกัน | ย้ายตรรกะไปไว้ในสคริปต์ python แล้วเรียกไฟล์นั้น |
-| `cmd1; cmd2; cmd3` ต่อกันยาว ๆ | คำสั่งผสมแมตช์กฎไม่ได้ | แยกเป็นคนละคำสั่ง |
+| Shopee | `Order.all.*` | ❌ ไม่ต้อง — ตรวจปลายทางพอ |
+| TikTok | `*คำสั่งซื้อ*.xlsx` | ❌ ไม่ต้อง |
+| Line My Shop | `Order Report *.xlsx` | ❌ ไม่ต้อง |
+| **Lazada** | ไม่มีกฎ (ชื่อเป็น hash) | ✅ **ต้อง cp + เปลี่ยนชื่อเอง** |
 
-**ถ้าต้องมีตรรกะ (วนลูป / เช็คเงื่อนไข / ประกอบพาธ): เขียนเป็นสคริปต์ python
-ไว้ใน `scripts/` แล้วเรียกด้วยพาธเต็ม** เช่น `python3 "<path เต็ม>/scripts/ads/check_downloads.py" tiktok`
-วิธีนี้ทั้งอ่านง่ายกว่า ทดสอบแยกได้ และไม่ติดกำแพงสิทธิ์
+⛔ **ห้าม `cp` ไฟล์ที่ตัวย้ายดูแลอยู่** — ตัวย้ายยิงภายใน 5 วิ `cp` ในพรอมป์จะแพ้เกือบทุกครั้ง
+แล้วรายงานว่า "ไม่พบไฟล์" ทั้งที่โหลดสำเร็จ · ให้ตรวจที่**โฟลเดอร์ปลายทาง** ไม่ใช่ที่ Downloads
+`mv`/`rm` ใน Downloads เป็นหน้าที่ของตัวย้าย พรอมป์นี้ไม่ต้องลบอะไรเลย
 
+**Script ที่เกี่ยวข้อง (อยู่ใน All/scripts/):**
+- `wibwub_auto_move.sh` — script ย้ายไฟล์ (ถูกเรียกโดย LaunchAgent)
+- `com.wibwub.download-mover.plist` — LaunchAgent config (WatchPaths ~/Downloads)
 ---
 ---
 
@@ -269,15 +318,17 @@ Orders Download — {วันที่} {รอบเช้า/เย็น}
 เหตุผลที่ย้ายมารวมที่นี่: ฝั่ง code เปิดเว็บในรอบตั้งเวลาไม่ได้ตั้งแต่เวอร์ชัน 2.1.308 (22 ต.ค. 69 20:32)
 งานนี้เป็นงาน local ที่มีสิทธิ์โดเมนครบที่สุด (19 โดเมน) จึงยกงาน Ads มาไว้ด้วยกัน
 
-## ขั้น 0 ร่วม — หาโฟลเดอร์ All
+## ขั้น 0 ร่วม — ยืนยันว่าโฟลเดอร์ All อยู่ที่เดิม
 
+**คำสั่ง shell แรกของรอบต้องเป็น `python3` ห้ามเป็นลูป `for` ของ bash** (ลูปทำให้รอบค้างจนหมดเวลา)
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do
-  [ -f "$d/scripts/ads/ads_daily_update.py" ] && BASE="$d" && break
-done
-echo "BASE=$BASE"
+python3 -c "
+import os
+BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
+print('BASE OK' if os.path.isfile(BASE + '/scripts/ads/ads_daily_update.py') else '⛔ ไม่พบ BASE')
+"
 ```
-ไม่เจอ → หยุดส่วน B และ C แล้วรายงาน ห้ามเดาพาธ
+⛔ ไม่พบ → หยุดส่วน B และ C แล้วรายงาน **ห้ามเดาพาธ ห้ามไปหาที่อื่น**
 
 ---
 
@@ -285,7 +336,7 @@ echo "BASE=$BASE"
 
 อ่านไฟล์นี้ด้วย Read tool แล้วทำตามทุกขั้นตอน:
 
-`$BASE/scripts/task_prompts/wibwub-lazada-collect.md`
+`/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/task_prompts/wibwub-lazada-collect.md`
 
 - โดเมน `sellercenter.lazada.co.th` อยู่ในรายการอนุญาตของงานนี้แล้ว ใช้ได้เลย
 - ผลลัพธ์ต้องได้ `scripts/ads/work/lz_real.json` และ `work/lz_ads.json`
@@ -299,7 +350,7 @@ echo "BASE=$BASE"
 
 อ่านไฟล์นี้ด้วย Read tool แล้วทำตามทุกขั้นตอน:
 
-`$BASE/scripts/task_prompts/ads_daily.md`
+`/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/task_prompts/ads_daily.md`
 
 ### โดเมนที่ต้องใช้
 | โดเมน | สถานะ |
