@@ -560,10 +560,12 @@ def build_status(now):
             sw = None if sp else sheet_wait_row(task_id, cfg_all, now)
             if sp:
                 r.update(**self_paced_row(sp, cron, now))
-            elif sw and not sw[1]:
-                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
             elif sw and sw[1]:
                 r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
+            elif sw and sw[2]:
+                r.update(level='✅', status='ปกติ', note=sw[0])
+            elif sw:
+                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
             else:
                 r.update(level='⚠️', status='ตรวจผลงานไม่ได้',
                          note=(acfg.get('note') or 'งานนี้ไม่มีผลงานปลายทางในเครื่องให้ตรวจ')[:90])
@@ -573,10 +575,14 @@ def build_status(now):
             # งานที่กินข้อมูลจากชีตที่ทีมกรอก: "ข้อมูลไม่ขยับ" มักแปลว่าทีมยังไม่กรอก
             # ไม่ใช่ระบบพัง -> แยกเป็น 📝 ไม่นับในตัวเลขปัญหา · ⚠️/⛔ สงวนให้งานล้ม/ค้าง/ไม่เริ่ม
             sw = sheet_wait_row(task_id, cfg_all, now)
-            if sw and not sw[1]:
-                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
-            elif sw and sw[1]:
+            if sw and sw[1]:
                 r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
+            elif sw and sw[2]:
+                # ชีตมาครบตามรอบของตัวเองแล้ว (เช่นรายสัปดาห์ถึงวันอาทิตย์ที่ปิดสัปดาห์)
+                # ผลงานยังไม่ขยับเพราะไม่มีอะไรใหม่ให้เขียน ไม่ใช่งานค้าง
+                r.update(level='✅', status='ปกติ', note=sw[0])
+            elif sw:
+                r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
             else:
                 r.update(level='⚠️', status='ข้อมูลค้าง',
                          note='งานรันผ่าน แต่ผลงานไม่ขยับมา %.0f ชม. (เกณฑ์ %d)' % (age, maxh))
@@ -746,8 +752,20 @@ def sheet_dates(spec):
     return {}, None
 
 
+def last_sunday(now):
+    """วันอาทิตย์ล่าสุดที่ปิดสัปดาห์แล้ว — ถ้าวันนี้เป็นอาทิตย์ยังไม่นับ (สัปดาห์ยังไม่จบ)"""
+    d = now.date()
+    return d - timedelta(days=((d.weekday() + 1) % 7) or 7)
+
+
 def sheet_wait_row(task_id, cfg_all, now):
-    """ถ้างานนี้กินข้อมูลจากชีตที่ทีมกรอก -> คืน (ข้อความ, มีช่องไหนเกินกำหนดไหม)"""
+    """ถ้างานนี้กินข้อมูลจากชีตที่ทีมกรอก -> คืน (ข้อความ, เกินกำหนดไหม, มาตามรอบแล้วไหม)
+
+    cadence `weekly_monday` (3 พ.ย. 69): ทีมกรอกทุกวันจันทร์ ข้อมูลจึงควรถึง
+    "วันอาทิตย์ที่ปิดสัปดาห์แล้ว" ถ้าถึงแล้วคือ **ปกติ** ห้ามขึ้นว่าค้าง
+    เกณฑ์ max_days แบบเดิมใช้กับชีตรายวันเท่านั้น — เอามาใช้กับชีตรายสัปดาห์
+    จะขึ้นเตือนทุกวันพุธเป็นต้นไปทั้งที่ทีมกรอกครบตามรอบของตัวเองแล้ว
+    """
     spec = (cfg_all.get('sheet_source') or {}).get(task_id)
     if not spec:
         return None
@@ -757,17 +775,39 @@ def sheet_wait_row(task_id, cfg_all, now):
         dates, src = sheet_dates(spec.get('fallback'))
         if dates: note = ' (ค่าสำรอง)'
     if not dates:
-        return ('รอทีมกรอกชีต — อ่านวันที่ของชีตไม่ได้', False)
+        return ('รอทีมกรอกชีต — อ่านวันที่ของชีตไม่ได้', False, False)
     per = spec.get('per_platform') or {}
-    parts, late = [], False
+    parts, late, waiting = [], False, False
     for label, t in sorted(dates.items()):
+        pcfg = per.get(label) or {}
+        cad = pcfg.get('cadence') or spec.get('cadence')
         days = (now - t).days
-        lim = (per.get(label) or {}).get('max_days', spec.get('max_days', 7))
+        if cad == 'weekly_monday':
+            exp = last_sunday(now)
+            grace = pcfg.get('grace_days', spec.get('grace_days', 2))
+            if t.date() >= exp:
+                parts.append('%s %s ครบถึง %s' % (label, t.strftime('%d/%m'),
+                                                  exp.strftime('%d/%m')))
+            # ผ่อนผันได้เฉพาะรอบจันทร์ที่เพิ่งผ่านมา ถ้าข้อมูลเก่ากว่า 1 รอบ
+            # (ข้ามจันทร์ไปแล้วอย่างน้อย 2 ครั้ง) ให้ขึ้นเตือนทันที ไม่ต้องรอพ้น grace
+            elif (now.date() - exp).days <= grace and (exp - t.date()).days <= 7:
+                waiting = True
+                parts.append('%s %s — รอรอบกรอกวันจันทร์ (ควรถึง %s)'
+                             % (label, t.strftime('%d/%m'), exp.strftime('%d/%m')))
+            else:
+                late = True
+                parts.append('%s %s ⚠️ข้ามรอบจันทร์ (ควรถึง %s)'
+                             % (label, t.strftime('%d/%m'), exp.strftime('%d/%m')))
+            continue
+        lim = pcfg.get('max_days', spec.get('max_days', 7))
         flag = ''
         if days > lim:
             late = True; flag = ' ⚠️เกิน %d วัน' % lim
+        else:
+            waiting = True
         parts.append('%s %s (%d วัน)%s' % (label, t.strftime('%d/%m'), days, flag))
-    return ('รอทีมกรอกชีต — ' + ' · '.join(parts) + note, late)
+    head = 'รอทีมกรอกชีต — ' if (late or waiting) else 'ชีตมาตามรอบแล้ว — '
+    return (head + ' · '.join(parts) + note, late, not (late or waiting))
 
 
 def self_paced_row(spec, cron, now):
