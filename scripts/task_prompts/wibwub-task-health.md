@@ -51,10 +51,17 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 ```
 
 ```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: สถานะงานอัตโนมัติ $(date +%Y-%m-%d\ %H:%M)"
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: สถานะงานอัตโนมัติ $(date +%Y-%m-%d)"
 ```
 
+- **ข้อความ commit ใช้ `$(date +%Y-%m-%d)` เท่านั้น ห้ามเติมเวลา `%H:%M` และห้ามมีช่องว่าง
+  escape (`\ `) ใน `$( )`** — เกิดจริง 3 พ.ย. 69 19:12: รอบแรกของงานนี้ใช้
+  `$(date +%Y-%m-%d\ %H:%M)` แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด **ค้าง 4 ชั่วโมง**
+  และทำให้รอบ 20:00/21:00/22:00/23:00 ถูกข้ามทั้งหมด
+  (พรอมป์อื่นทุกตัวใช้ `$(date +%Y-%m-%d)` เปล่า ๆ และผ่านมาตลอด)
+  เวลาที่ตรวจอยู่ในฟิลด์ `checked_at` ของ JSON แล้ว ไม่ต้องใส่ในข้อความ commit
 - **add แล้วต้อง commit คำสั่งถัดไปทันที** ไม่งั้นงานอื่นจะกวาด index ไปใช้
+  (เกิดจริงรอบ 19:12: add ไปแล้วแต่ commit ค้าง ไฟล์จึงถูกงาน ads-daily 19:47 พาไป commit)
 - **add เฉพาะ `scripts/ops/task_health.json` ไฟล์เดียว** ห้าม `add -A` — ไฟล์ dirty อื่นในรีโป
   เป็นของงานอื่นที่ยังทำไม่เสร็จ
 - ถ้าไม่มีอะไรเปลี่ยน commit จะคืน exit 1 พร้อม "nothing to commit" → ถือว่าปกติ ไม่ใช่ error
