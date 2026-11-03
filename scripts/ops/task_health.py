@@ -555,8 +555,12 @@ def build_status(now):
         elif acfg and acfg.get('kind') == 'none':
             # งานที่เขียนลงชีตอย่างเดียว (ไม่มีผลงานในเครื่อง) ถ้าอยู่ในกลุ่ม sheet_source
             # ยังบอกความสดได้จากไฟล์ตัวแทน เช่น clips.json -> ใช้ 📝 แทน ⚠️
-            sw = sheet_wait_row(task_id, cfg_all, now)
-            if sw and not sw[1]:
+            # งานที่ Claude เก็บเอง (self_paced_tasks) ห้ามขึ้น "รอทีมกรอกชีต" — ไม่มีทีมให้รอ
+            sp = (cfg_all.get('self_paced_tasks') or {}).get(task_id)
+            sw = None if sp else sheet_wait_row(task_id, cfg_all, now)
+            if sp:
+                r.update(**self_paced_row(sp, cron, now))
+            elif sw and not sw[1]:
                 r.update(level='📝', status='รอทีมกรอกชีต', note=sw[0])
             elif sw and sw[1]:
                 r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
@@ -764,6 +768,19 @@ def sheet_wait_row(task_id, cfg_all, now):
             late = True; flag = ' ⚠️เกิน %d วัน' % lim
         parts.append('%s %s (%d วัน)%s' % (label, t.strftime('%d/%m'), days, flag))
     return ('รอทีมกรอกชีต — ' + ' · '.join(parts) + note, late)
+
+
+def self_paced_row(spec, cron, now):
+    """งานที่ Claude เก็บข้อมูลเองตามรอบของตัวเอง — ไม่ได้รอทีมกรอกชีต
+
+    เกิดจริง 3 พ.ย. 69: "ชีตคอนเทนต์ ทุก 5 วัน 10:50" ขึ้น 📝 "รอทีมกรอกชีต"
+    ทั้งที่ Claude เป็นคนเก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26)
+    ผู้ใช้อ่านแล้วเข้าใจผิดว่าต้องไปตามทีมให้กรอก -> ต้องบอกว่ารอรอบถัดไปวันไหนแทน
+    """
+    nxt = next_fire(cron, now, now + timedelta(days=12)) if cron else []
+    return {'level': '⏳',
+            'status': 'รอรอบถัดไป %s' % (nxt[0].strftime('%d/%m') if nxt else '—'),
+            'note': spec.get('note') or 'งานนี้เก็บข้อมูลเอง ไม่ได้รอทีมกรอกชีต'}
 
 
 def check_sleep_gaps(now, crons, starts, hours_back=26):
