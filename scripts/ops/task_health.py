@@ -548,10 +548,17 @@ def build_status(now):
                          note='งานฝั่ง local เริ่มช้าได้ถึง ~15 นาทีเป็นปกติ')
         elif silent is not None and silent <= SILENT_MIN:
             r.update(level='⏳', status='กำลังรัน', note='เริ่มแล้ว เพิ่งมีความเคลื่อนไหว')
-        elif fct.get('ended_with_text') is False:
+        elif fct.get('ended_with_text') is False and not done_this_round:
             r.update(level='⛔', status='ค้าง',
                      note='เซสชันเงียบมา %s นาที และรอบนี้ยังไม่ได้เขียนรายงานปิดท้าย '
                           '(ค้างกลางคำสั่ง)' % silent)
+        elif fct.get('ended_with_text') is False:
+            # ไม่มีรายงานปิดท้าย **แต่ผลงานของรอบนี้ออกแล้ว** -> รอบนั้นทำงานจบจริง
+            # ไม่ใช่งานค้าง (3 พ.ย. 69: ads-daily รอบ 09:45 ขึ้น ⛔ ค้าง ทั้งที่ทะเบียน
+            # บอก succeeded และผลงานถูก commit ไปแล้ว เพราะเซสชันไม่ได้เขียนบรรทัดปิดท้าย)
+            # ไม่ต้องตรวจความสดต่อ: done_this_round หมายถึงผลงานใหม่กว่าเวลาที่รอบเริ่มอยู่แล้ว
+            r.update(level='✅', status='ปกติ',
+                     note='ผลงานรอบนี้ออกแล้ว (เซสชันไม่ได้เขียนรายงานปิดท้าย)')
         elif acfg and acfg.get('kind') == 'none':
             # งานที่เขียนลงชีตอย่างเดียว (ไม่มีผลงานในเครื่อง) ถ้าอยู่ในกลุ่ม sheet_source
             # ยังบอกความสดได้จากไฟล์ตัวแทน เช่น clips.json -> ใช้ 📝 แทน ⚠️
