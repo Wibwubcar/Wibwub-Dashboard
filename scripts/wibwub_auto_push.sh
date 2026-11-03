@@ -22,6 +22,15 @@ if [ "$UNPUSHED" -gt "0" ]; then
       exit 0
     fi
   fi
-  git push origin main >> "$REPO/scripts/auto_push.log" 2>&1
-  echo "$(date '+%Y-%m-%d %H:%M') pushed $UNPUSHED commits" >> "$REPO/scripts/auto_push.log"
+  # GIT_TERMINAL_PROMPT=0: ไม่มี TTY ให้กรอกรหัสอยู่แล้ว ให้ล้มทันทีแทนการค้างรอ
+  GIT_TERMINAL_PROMPT=0 git push origin main >> "$REPO/scripts/auto_push.log" 2>&1
+  PUSH_RC=$?
+  # ต้องเช็ครหัสจบ — ของเดิม echo "pushed" ทุกครั้งไม่ว่า push จะล้มหรือไม่
+  # เกิดจริง 3 พ.ย. 69 19:47-23:15: credential หายจาก keychain push ล้มทุกรอบ
+  # แต่ log ยังขึ้น "pushed 3 commits" ตลอด ทำให้ตรวจไม่เจอว่า push พังมา 3 ชั่วโมงครึ่ง
+  if [ "$PUSH_RC" -eq 0 ]; then
+    echo "$(date '+%Y-%m-%d %H:%M') pushed $UNPUSHED commits" >> "$REPO/scripts/auto_push.log"
+  else
+    echo "$(date '+%Y-%m-%d %H:%M') ❌ push ล้มเหลว (rc=$PUSH_RC) — ยังค้าง $UNPUSHED commit(s) ดูบรรทัดก่อนหน้า" >> "$REPO/scripts/auto_push.log"
+  fi
 fi
