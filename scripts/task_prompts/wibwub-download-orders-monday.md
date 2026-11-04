@@ -335,14 +335,29 @@ After all platforms done:
 ## ขั้น 0 ร่วม — ยืนยันว่าโฟลเดอร์ All อยู่ที่เดิม
 
 **คำสั่ง shell แรกของรอบต้องเป็น `python3` ห้ามเป็นลูป `for` ของ bash** (ลูปทำให้รอบค้างจนหมดเวลา)
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]`**
+> เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`: stat ตอบ **False** 5 รอบติด
+> ทั้งที่ `Grep`/`cat`/`python3 "<BASE>/scripts/..."` อ่านและรันไฟล์ในพาธเดียวกันได้ปกติ
+> แปลว่า stat บนโฟลเดอร์ Google Drive เชื่อไม่ได้ (ไม่ใช่ว่า BASE หาย) — **ให้ลองเปิดไฟล์จริง**
+> พาธสำรอง `/sessions/<ชื่อ>/mnt/All` **ยังไม่ตาย** และเป็นโฟลเดอร์เดียวกับ Drive จริง เขียนได้
+> (ยืนยันด้วย commit `0fab409`) · ชื่อ `<ชื่อ>` เปลี่ยนทุกเซสชัน ห้ามฝังตายตัว ให้ใช้ glob หาเอง
+
 ```bash
 python3 -c "
-import os
-BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
-print('BASE OK' if os.path.isfile(BASE + '/scripts/ads/ads_daily_update.py') else '⛔ ไม่พบ BASE')
+import glob
+for B in ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'] + sorted(glob.glob('/sessions/*/mnt/All')):
+    try:
+        open(B + '/sw.js').read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
 "
 ```
-⛔ ไม่พบ → หยุดส่วน B และ C แล้วรายงาน **ห้ามเดาพาธ ห้ามไปหาที่อื่น**
+- `BASE OK <พาธ>` → ใช้**พาธที่พิมพ์ออกมาตัวนั้น**เป็น `BASE` ในทุกคำสั่งถัดไป
+- `⛔ ไม่พบ BASE` (เปิดไฟล์ไม่ได้ทุกพาธ) → หยุดส่วน B และ C แล้วรายงาน **ห้ามเดาพาธ ห้ามไปหาที่อื่น**
 
 ---
 

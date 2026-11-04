@@ -10,17 +10,29 @@ description: ดาวน์โหลด TikTok Followers จาก TikTok Studi
 พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
 งานนี้รันบนเครื่อง Mac มีพาธเดียว · **คำสั่ง shell แรกของรอบต้องเป็น `python3`**
 ห้ามเป็นลูป `for` ของ bash (สร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา)
-พาธ `/sessions/<ชื่อ>/mnt/All` ของแซนด์บ็อกซ์เดิม **ตายแล้ว**
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]`**
+> เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`: stat ตอบ **False** 5 รอบติด
+> ทั้งที่ `Grep`/`cat`/`python3 "<BASE>/scripts/..."` อ่านและรันไฟล์ในพาธเดียวกันได้ปกติ
+> แปลว่า stat บนโฟลเดอร์ Google Drive เชื่อไม่ได้ (ไม่ใช่ว่า BASE หาย) — **ให้ลองเปิดไฟล์จริง**
+> พาธสำรอง `/sessions/<ชื่อ>/mnt/All` **ยังไม่ตาย** และเป็นโฟลเดอร์เดียวกับ Drive จริง เขียนได้
+> (ยืนยันด้วย commit `0fab409`) · ชื่อ `<ชื่อ>` เปลี่ยนทุกเซสชัน ห้ามฝังตายตัว ให้ใช้ glob หาเอง
 
 ```bash
 python3 -c "
-import os
-BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
-print('BASE OK' if os.path.isdir(BASE + '/scripts') else '⛔ ไม่พบ BASE')
+import glob
+for B in ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'] + sorted(glob.glob('/sessions/*/mnt/All')):
+    try:
+        open(B + '/sw.js').read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
 "
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
+- `BASE OK <พาธ>` → ใช้**พาธที่พิมพ์ออกมาตัวนั้น**เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
 - **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
   → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
   ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
