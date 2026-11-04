@@ -54,12 +54,16 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: สถานะงานอัตโนมัติ <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
-- **ข้อความ commit ใช้ `$(date +%Y-%m-%d)` เท่านั้น ห้ามเติมเวลา `%H:%M` และห้ามมีช่องว่าง
-  escape (`\ `) ใน `$( )`** — เกิดจริง 3 พ.ย. 69 19:12: รอบแรกของงานนี้ใช้
-  `$(date +%Y-%m-%d\ %H:%M)` แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด **ค้าง 4 ชั่วโมง**
-  และทำให้รอบ 20:00/21:00/22:00/23:00 ถูกข้ามทั้งหมด
-  (พรอมป์อื่นทุกตัวใช้ `$(date +%Y-%m-%d)` เปล่า ๆ และผ่านมาตลอด)
-  เวลาที่ตรวจอยู่ในฟิลด์ `checked_at` ของ JSON แล้ว ไม่ต้องใส่ในข้อความ commit
+- **ข้อความ commit ให้พิมพ์วันที่เป็นตัวอักษรตรง ๆ** (เช่น `2026-11-04` — รู้วันที่จาก
+  หัวเซสชันได้เลย ไม่ต้องรัน `date`) **ห้ามใช้ `$(date ...)` ทุกรูปแบบ** และห้ามเติมเวลา `%H:%M`
+  - ตั้งแต่ 4 พ.ย. 69 มี hook `PreToolUse` **ตีกลับคำสั่งที่มี `$( )` ทันที** ถ้าบรรทัดนั้น
+    เรียกสคริปต์ใน `All/scripts/` (เตือนไว้ใน log `~/Library/Logs/wibwub_hook_denies.log`)
+    → ใส่ `$(date)` มาก็ commit ไม่ผ่าน ต้องรันใหม่อยู่ดี เสียรอบเปล่า ๆ
+  - **ที่มา — เกิดจริง 3 พ.ย. 69 19:12:** รอบแรกของงานนี้ใช้ `$(date +%Y-%m-%d\ %H:%M)`
+    แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด **ค้าง 4 ชั่วโมง** รอบ 20:00/21:00/22:00/23:00
+    ถูกข้ามทั้งหมด · ต้นเหตุคือตัวแยกคำสั่งอ่าน `$( )` ไม่ออก (bashMiss:too-complex)
+    จึงข้ามรายการอนุญาตแล้วถามคนเสมอ — ไม่เกี่ยวกับว่ามีกฎ allow หรือไม่
+  - เวลาที่ตรวจอยู่ในฟิลด์ `checked_at` ของ JSON แล้ว ไม่ต้องใส่ในข้อความ commit
 - **add แล้วต้อง commit คำสั่งถัดไปทันที** ไม่งั้นงานอื่นจะกวาด index ไปใช้
   (เกิดจริงรอบ 19:12: add ไปแล้วแต่ commit ค้าง ไฟล์จึงถูกงาน ads-daily 19:47 พาไป commit)
 - **add เฉพาะ `scripts/ops/task_health.json` ไฟล์เดียว** ห้าม `add -A` — ไฟล์ dirty อื่นในรีโป
