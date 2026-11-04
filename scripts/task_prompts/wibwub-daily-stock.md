@@ -15,6 +15,14 @@ description: ดึงสต๊อกล่าสุดจาก Shipnity ทุ
 > แปลว่า stat บนโฟลเดอร์ Google Drive เชื่อไม่ได้ (ไม่ใช่ว่า BASE หาย) — **ให้ลองเปิดไฟล์จริง**
 > และพาธ `/sessions/<ชื่อ>/mnt/All` **ยังไม่ตาย** (รอบ download-orders 4 พ.ย. 08:38 ใช้ตัวนี้สำเร็จ)
 > ชื่อ `<ชื่อ>` เปลี่ยนทุกเซสชัน ห้ามฝังตายตัว ให้ใช้ glob หาเอง
+>
+> **พาธสำรองเป็นโฟลเดอร์เดียวกับ Google Drive จริง เขียนได้ ไม่ใช่สำเนา** — ยืนยันแล้ว:
+> รอบ `wibwub-download-shopee-ads` 3 พ.ย. 69 19:17 ทำงานผ่าน
+> `/sessions/<ชื่อ>/mnt/All` ทั้งรอบ (แก้ `data Ads/WIBWUB_Ads_Dashboard.html`,
+> รัน `bump_sw.py`, `gitw.py add/commit`) ได้ commit **`0fab409`** ซึ่งอยู่ในรีโปเดียวกัน
+> และถูก push ขึ้น GitHub แล้ว · ข้อควรรู้: git ผ่านพาธนี้อาจขึ้น
+> `warning: unable to unlink '.git/objects/.../tmp_obj_...': Operation not permitted`
+> **เป็นคำเตือน ไม่ใช่ error** commit ยังสำเร็จ · และยัง**ห้ามลบ `.git/*.lock`** ตามกฎเดิม
 
 ```bash
 python3 -c "
