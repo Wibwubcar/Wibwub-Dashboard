@@ -654,9 +654,14 @@ def build_status(now):
             pf = m[0] if m else None
         except Exception:
             pass
+        # งาน local ก็ตรวจผลงานปลายทางได้ถ้ามีกติกาใน task_expect.json -> local_tasks
+        # (ก่อน 4 พ.ย. 69 ส่งเป็น None ตายตัว ทุกงาน local จึงมี data_asof '—' และขึ้น ✅
+        #  แค่เพราะ "รอบเริ่มตามเวลา" — daily-stock ล้ม 4 รอบติดโดยตัวตรวจไม่เห็นเลย)
         rows.append(mk(name, 'local', t.get('cronExpression', ''),
                        iso(t.get('lastRunAt')), iso(t.get('lastScheduledFor')),
-                       (local_sess or {}).get(t.get('id'), []), None, pf, t.get('id', '')))
+                       (local_sess or {}).get(t.get('id'), []),
+                       (cfg_all.get('local_tasks') or {}).get(t.get('id', '')),
+                       pf, t.get('id', '')))
     # ฝั่ง code
     for tid, c in code_cfg.items():
         sl = (code_sess or {}).get(tid, [])

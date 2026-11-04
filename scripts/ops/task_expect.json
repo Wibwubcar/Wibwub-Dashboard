@@ -1,149 +1,224 @@
 {
-  "_note": "หลักฐานว่างานตั้งเวลา 'มีผลงาน' จริง — ใช้กับงานฝั่ง code ที่อ่านสถานะจากไฟล์ไม่ได้",
-  "_why": "~/.claude/scheduled-tasks/<id>/ มีแค่ SKILL.md · lastRunAt/isRunning อยู่ในสโตร์ของแอป เข้าถึงได้ทาง MCP เท่านั้น ซึ่งถ้าฝั่ง code ค้างก็จะไม่ได้รันตัวตรวจไปด้วย -> ตรวจจากผลงานปลายทางแทน",
-  "_kinds": {
-    "git_grep": "commit ล่าสุดที่ข้อความตรง pattern (เป็นหลักฐานว่างานเขียนของออกมาจริง)",
-    "mtime": "เวลาแก้ไขไฟล์ล่าสุด",
-    "regex_date": "วันที่ YYYY-MM-DD ที่จับจาก group 1 ของ pattern ในไฟล์",
-    "none": "ตรวจจากไฟล์ไม่ได้ — รายงานเป็น ℹ️ ไม่นับเป็นปัญหา"
+ "_note": "หลักฐานว่างานตั้งเวลา 'มีผลงาน' จริง — ใช้กับงานฝั่ง code ที่อ่านสถานะจากไฟล์ไม่ได้",
+ "_why": "~/.claude/scheduled-tasks/<id>/ มีแค่ SKILL.md · lastRunAt/isRunning อยู่ในสโตร์ของแอป เข้าถึงได้ทาง MCP เท่านั้น ซึ่งถ้าฝั่ง code ค้างก็จะไม่ได้รันตัวตรวจไปด้วย -> ตรวจจากผลงานปลายทางแทน",
+ "_kinds": {
+  "git_grep": "commit ล่าสุดที่ข้อความตรง pattern (เป็นหลักฐานว่างานเขียนของออกมาจริง)",
+  "mtime": "เวลาแก้ไขไฟล์ล่าสุด",
+  "regex_date": "วันที่ YYYY-MM-DD ที่จับจาก group 1 ของ pattern ในไฟล์",
+  "none": "ตรวจจากไฟล์ไม่ได้ — รายงานเป็น ℹ️ ไม่นับเป็นปัญหา"
+ },
+ "_how_to_add": "งานฝั่ง code ที่ enabled ทุกตัวต้องมีในนี้ ไม่งั้น task_health.py จะขึ้น ⛔ ว่าไม่มีกติกาตรวจ",
+ "code_tasks": {
+  "wibwub-ads-daily": {
+   "label": "การตลาด vs ยอดขาย 09:45/20:45",
+   "kind": "git_grep",
+   "pattern": "^auto-update: การตลาด vs ยอดขาย",
+   "max_age_hours": 20,
+   "note": "exit 10 (ไม่มีอะไรเปลี่ยน) จะไม่ commit -> ค้างเกิน 20 ชม. แปลว่า 'ไม่มีผลงาน' อาจเป็นได้ทั้งไม่ได้รัน หรือรันแล้วไม่มีข้อมูลใหม่ 2 รอบติด ซึ่งก็ควรไปดูอยู่ดี",
+   "cron": "45 9,20 * * *"
   },
-  "_how_to_add": "งานฝั่ง code ที่ enabled ทุกตัวต้องมีในนี้ ไม่งั้น task_health.py จะขึ้น ⛔ ว่าไม่มีกติกาตรวจ",
-  "code_tasks": {
-    "wibwub-ads-daily": {
-      "label": "การตลาด vs ยอดขาย 09:45/20:45",
-      "kind": "git_grep",
-      "pattern": "^auto-update: การตลาด vs ยอดขาย",
-      "max_age_hours": 20,
-      "note": "exit 10 (ไม่มีอะไรเปลี่ยน) จะไม่ commit -> ค้างเกิน 20 ชม. แปลว่า 'ไม่มีผลงาน' อาจเป็นได้ทั้งไม่ได้รัน หรือรันแล้วไม่มีข้อมูลใหม่ 2 รอบติด ซึ่งก็ควรไปดูอยู่ดี",
-      "cron": "45 9,20 * * *"
-    },
-    "wibwub-tiktok-live-daily": {
-      "label": "TikTok Live รายวัน 10:30/20:30",
-      "kind": "git_grep",
-      "pattern": "^auto-update: TikTok Live รายวัน",
-      "max_age_hours": 26,
-      "note": "คาบจริงคือวันละครั้ง (ขยับได้หลัง tiktok-product-daily จบ ~10:14) เกณฑ์ 20 ชม. จึงเตือนหมาป่าทุกวัน -> 26 · TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน",
-      "cron": "30 10,20 * * *"
-    },
-    "wibwub-tiktok-content": {
-      "label": "TikTok คอนเทนต์ 09:25/20:25",
-      "kind": "git_grep",
-      "pattern": "^auto-update: TikTok content",
-      "max_age_hours": 72,
-      "note": "ข้อความ commit จริงเป็นภาษาอังกฤษ 'auto-update: TikTok content <วันที่>' (เคยตั้ง pattern เป็นไทยแล้วไปแมตช์ commit มือของคนอื่น ได้ผลเพี้ยน) · คาบจริงที่สังเกตได้ 11-59 ชม. ขึ้นกับว่าทีมกรอกชีตเมื่อไร",
-      "cron": "25 9,20 * * *"
-    },
-    "wibwub-hr-attendance-1200-2200": {
-      "label": "HR → Google Sheet 10:30/20:30/00:30",
-      "kind": "mtime",
-      "file": "scripts/hr/hr_state.json",
-      "max_age_hours": 16,
-      "cron": "30 10,20,0 * * *",
-      "warn_file": "scripts/hr/hr_warn.json"
-    },
-    "wibwub-content-sheet": {
-      "label": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
-      "kind": "none",
-      "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ต้องรอชั้นที่ 2 (MCP list_task_runs)",
-      "cron": "50 10 */5 * *"
-    },
-    "wibwub-shipnity-monday": {
-      "label": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
-      "kind": "mtime",
-      "file": "Data Shipnity/Sales_Dashboard.html",
-      "max_age_hours": 192,
-      "cron": "0 10 * * 1"
-    },
-    "wibwub-sales-update": {
-      "label": "ยอดขายจากชีต 09:25/20:25",
-      "cron": "25 9,20 * * *",
-      "kind": "git_grep",
-      "pattern": "^auto-update: ยอดขายจากชีต",
-      "max_age_hours": 20,
-      "note": "ย้ายจากฝั่ง local มาฝั่ง code 29 ต.ค. 69 (VM ฝั่ง local ไม่มี gspread + ไม่มี service account) · NO_CHANGE จะไม่ commit ช่วงที่ทีมยังไม่กรอกชีตจึงอาจเกินเกณฑ์ได้"
-    }
+  "wibwub-tiktok-live-daily": {
+   "label": "TikTok Live รายวัน 10:30/20:30",
+   "kind": "git_grep",
+   "pattern": "^auto-update: TikTok Live รายวัน",
+   "max_age_hours": 26,
+   "note": "คาบจริงคือวันละครั้ง (ขยับได้หลัง tiktok-product-daily จบ ~10:14) เกณฑ์ 20 ชม. จึงเตือนหมาป่าทุกวัน -> 26 · TK_LIVE_DAILY.dates เรียงจากเก่าไปใหม่ เริ่ม 2026-04-01 จับด้วย regex แล้วได้วันแรกไม่ใช่วันล่าสุด จึงใช้ commit เป็นหลักฐานแทน",
+   "cron": "30 10,20 * * *"
   },
-  "_note_git_grep": "git_grep ⛔ แปลว่า 'ไม่มีผลงาน' ไม่ใช่ 'ไม่ได้รัน' — งานที่รันแล้วได้ NO_CHANGE จะไม่ commit · ถ้าเจอ ⛔ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป · pattern ต้อง **ยึดหัวบรรทัด** ด้วย ^auto-update: เสมอ ไม่งั้นจะไปแมตช์ commit ที่คนทำเอง (28 ต.ค. 69: commit มือของผมมีคำว่า 'การตลาด vs ยอดขาย' อยู่ใน body ตัวตรวจเลยนึกว่างานยังมีผลงาน ทั้งที่ของจริงหยุดมา 2 วัน — false negative เต็ม ๆ)",
-  "_cron_note": "cron ของฝั่ง code เก็บไว้ที่นี่เพราะสคริปต์อ่านสโตร์ของแอปไม่ได้ (อ่านได้ทาง MCP list_scheduled_tasks เท่านั้น) — ถ้าแก้เวลางานในแอป ต้องมาแก้ที่นี่ด้วย ไม่งั้นด่าน 'ไม่เริ่ม' จะเพี้ยน",
-  "known_errors": {
-    "_note": "error ที่ 'รู้ว่าเกิดได้และยอมรับได้' — ตัวตรวจจะไม่ยกเป็น ⚠️ มีขั้นที่ล้ม ผูกกับ (ชื่องาน + ข้อความ error เต็มประโยค) เท่านั้น",
-    "_rules": "ห้ามใส่คำกว้าง ๆ อย่าง 'range' หรือ 'ERROR' เฉย ๆ · ข้อความต้องยาวพอจะระบุเคสได้เอง (บังคับอย่างน้อย 25 ตัวอักษร) · error เดียวกันในงานที่ไม่ได้ระบุไว้ ยังขึ้นเตือนตามเดิม · ตัวตรวจรายงานทุกรอบว่ายกเว้นไปกี่ครั้ง (known_error_hits)",
-    "wibwub-tiktok-product-daily": [
-      {
-        "text": "ช่วงวันที่บนหน้าเว็บไม่ตรงกับเดือนที่จะบันทึก — เลือกเดือนใหม่ก่อน",
-        "why": "ด่าน --range ของ fee_update ผ่านไม่ได้สำหรับเดือนปัจจุบัน เพราะ TikTok ปิดวันที่อนาคต เลือกเต็มเดือนไม่ได้ · พรอมป์สั่งให้รันต่อด้วย --no-range-check ซึ่งถูกต้องแล้ว (ส่วน B ค่าธรรมเนียม · บันทึกไว้ตั้งแต่ก่อน 30 ต.ค. 69)"
-      }
-    ]
+  "wibwub-tiktok-content": {
+   "label": "TikTok คอนเทนต์ 09:25/20:25",
+   "kind": "git_grep",
+   "pattern": "^auto-update: TikTok content",
+   "max_age_hours": 72,
+   "note": "ข้อความ commit จริงเป็นภาษาอังกฤษ 'auto-update: TikTok content <วันที่>' (เคยตั้ง pattern เป็นไทยแล้วไปแมตช์ commit มือของคนอื่น ได้ผลเพี้ยน) · คาบจริงที่สังเกตได้ 11-59 ชม. ขึ้นกับว่าทีมกรอกชีตเมื่อไร",
+   "cron": "25 9,20 * * *"
   },
-  "retired_local_tasks": {
-    "_note": "คีย์ต้องเป็น '<ฝั่ง>:<id>' (local: / code:) เพราะ id ซ้ำกันข้ามฝั่งได้ คีย์ชื่อเปล่าถูกข้ามและขึ้นเตือนบนหน้าสถานะ · งาน local ที่ 'ปลดระวาง' แล้ว — พรอมป์เหลือคำสั่งเดียวคือตอบ 'ข้าม' แล้วจบ ตัวตรวจต้องถือว่า ✅ ปกติ ไม่ใช่ล้ม/ไม่มีผลงาน (ผู้ใช้หาสวิตช์ปิดในแอปไม่เจอ จึงทำให้ว่างแทนการปิด)",
-    "local:wibwub-sales-update": {
-      "moved_to": "งานฝั่ง code ชื่อเดียวกัน (09:25/20:25)",
-      "since": "2026-10-30",
-      "expect_text": "ข้าม: ย้ายไปฝั่ง code แล้ว"
-    }
+  "wibwub-hr-attendance-1200-2200": {
+   "label": "HR → Google Sheet 10:30/20:30/00:30",
+   "kind": "mtime",
+   "file": "scripts/hr/hr_state.json",
+   "max_age_hours": 16,
+   "cron": "30 10,20,0 * * *",
+   "warn_file": "scripts/hr/hr_warn.json"
   },
-  "sheet_source": {
-    "_note": "งานที่ข้อมูลมาจากชีตที่ทีมกรอกเอง — ถ้างานรันผ่านแต่ข้อมูลไม่ขยับ ให้ขึ้น 📝 รอทีมกรอกชีต ไม่ใช่ ⚠️ และไม่นับเป็นปัญหาของระบบ",
-    "_rules": "ใช้ได้เฉพาะเมื่อสถานะที่คำนวณได้คือ 'ข้อมูลค้าง' เท่านั้น ไม่เริ่ม/ค้าง/ล้ม ยังเป็น ⛔/⚠️ ตามเดิม · วันที่อ่านจาก from ก่อน ถ้าไม่มีค่อย fallback · cadence 'weekly_monday' = ชีตรายสัปดาห์ เทียบกับวันอาทิตย์ที่ปิดสัปดาห์แล้ว ไม่ใช้ max_days (ถ้าครบตามรอบให้ขึ้น ✅ ปกติ ไม่ใช่ 📝)",
-    "wibwub-sales-update": {
-      "from": {
-        "file": "data Ads/sheet_asof.json",
-        "kind": "json",
-        "map": {
-          "Shopee": "shopee",
-          "TikTok": "tiktok",
-          "Lazada": "lazada"
-        }
-      },
-      "fallback": {
-        "file": "WIBWUB_Dashboard.html",
-        "kind": "regex_kv",
-        "pattern": "const MTD_COVERAGE = \\{([^}]*)\\}",
-        "note": "ค่าสำรอง — หลังงานเติมจากหลังบ้านเริ่มทำงาน ค่านี้จะรวมหลังบ้านด้วย"
-      },
-      "per_platform": {
-        "Shopee": {
-          "cadence": "weekly_monday",
-          "note": "ทีมกรอกทุกวันจันทร์"
-        },
-        "Lazada": {
-          "cadence": "weekly_monday",
-          "note": "ทีมกรอกทุกวันจันทร์"
-        },
-        "TikTok": {
-          "cadence": "weekly_monday",
-          "note": "ทีมกรอกทุกวันจันทร์"
-        }
-      },
-      "cadence": "weekly_monday",
-      "grace_days": 2,
-      "note": "ทีมกรอกทุกวันจันทร์ ข้อมูลถึงวันอาทิตย์ที่ปิดสัปดาห์แล้ว = ปกติ · ผ่อนผันถึงวันอังคาร (grace_days 2) หลังจากนั้นถือว่าข้ามรอบจันทร์"
-    },
-    "wibwub-tiktok-content": {
-      "from": {
-        "file": "WIBWUB_TikTok_Dashboard_v7.html",
-        "kind": "all_posts"
-      },
-      "max_days": 7,
-      "note": "ชีต CONTENT ทีมกรอกเมื่อมีคลิปใหม่"
-    },
-    "wibwub-samp-request-sync": {
-      "from": {
-        "file": "WIBWUB_Affiliate_Dashboard.html",
-        "kind": "regex_date",
-        "pattern": "SAMPLE_DATA_ASOF = '(\\d{2})/(\\d{2})/(\\d{4})'",
-        "order": "dmy"
-      },
-      "max_days": 3,
-      "note": "ชีตขอสินค้าทีมกรอกเกือบรายวัน"
-    }
+  "wibwub-content-sheet": {
+   "label": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
+   "kind": "none",
+   "note": "เขียนลง Google Sheet อย่างเดียว ไม่มีไฟล์ในเครื่องและไม่ commit อะไร -> ตรวจจากไฟล์ไม่ได้ ต้องรอชั้นที่ 2 (MCP list_task_runs)",
+   "cron": "50 10 */5 * *"
   },
-  "self_paced_tasks": {
-    "_note": "งานที่ Claude เก็บข้อมูลเองตามรอบของตัวเอง — ไม่มีทีมให้รอ ถ้าผลงานยังไม่ขยับให้ขึ้น ⏳ \"รอรอบถัดไป <วันที่>\" ห้ามขึ้น \"รอทีมกรอกชีต\"",
-    "_why": "เกิดจริง 3 พ.ย. 69: ชีตคอนเทนต์ขึ้น \"รอทีมกรอกชีต\" ทั้งที่ Claude เก็บเองทุก 5 วัน ผู้ใช้อ่านแล้วเข้าใจผิดว่าต้องไปตามทีม",
-    "wibwub-content-sheet": {
-      "note": "Claude เก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26) ไม่ได้รอทีมกรอก"
-    }
+  "wibwub-shipnity-monday": {
+   "label": "Shipnity รายสัปดาห์ (จันทร์ 10:04)",
+   "kind": "mtime",
+   "file": "Data Shipnity/Sales_Dashboard.html",
+   "max_age_hours": 192,
+   "cron": "0 10 * * 1"
+  },
+  "wibwub-sales-update": {
+   "label": "ยอดขายจากชีต 09:25/20:25",
+   "cron": "25 9,20 * * *",
+   "kind": "git_grep",
+   "pattern": "^auto-update: ยอดขายจากชีต",
+   "max_age_hours": 20,
+   "note": "ย้ายจากฝั่ง local มาฝั่ง code 29 ต.ค. 69 (VM ฝั่ง local ไม่มี gspread + ไม่มี service account) · NO_CHANGE จะไม่ commit ช่วงที่ทีมยังไม่กรอกชีตจึงอาจเกินเกณฑ์ได้"
   }
+ },
+ "_note_git_grep": "git_grep ⛔ แปลว่า 'ไม่มีผลงาน' ไม่ใช่ 'ไม่ได้รัน' — งานที่รันแล้วได้ NO_CHANGE จะไม่ commit · ถ้าเจอ ⛔ ให้ไปดูว่างานยังรันอยู่ไหมก่อนสรุป · pattern ต้อง **ยึดหัวบรรทัด** ด้วย ^auto-update: เสมอ ไม่งั้นจะไปแมตช์ commit ที่คนทำเอง (28 ต.ค. 69: commit มือของผมมีคำว่า 'การตลาด vs ยอดขาย' อยู่ใน body ตัวตรวจเลยนึกว่างานยังมีผลงาน ทั้งที่ของจริงหยุดมา 2 วัน — false negative เต็ม ๆ)",
+ "_cron_note": "cron ของฝั่ง code เก็บไว้ที่นี่เพราะสคริปต์อ่านสโตร์ของแอปไม่ได้ (อ่านได้ทาง MCP list_scheduled_tasks เท่านั้น) — ถ้าแก้เวลางานในแอป ต้องมาแก้ที่นี่ด้วย ไม่งั้นด่าน 'ไม่เริ่ม' จะเพี้ยน",
+ "known_errors": {
+  "_note": "error ที่ 'รู้ว่าเกิดได้และยอมรับได้' — ตัวตรวจจะไม่ยกเป็น ⚠️ มีขั้นที่ล้ม ผูกกับ (ชื่องาน + ข้อความ error เต็มประโยค) เท่านั้น",
+  "_rules": "ห้ามใส่คำกว้าง ๆ อย่าง 'range' หรือ 'ERROR' เฉย ๆ · ข้อความต้องยาวพอจะระบุเคสได้เอง (บังคับอย่างน้อย 25 ตัวอักษร) · error เดียวกันในงานที่ไม่ได้ระบุไว้ ยังขึ้นเตือนตามเดิม · ตัวตรวจรายงานทุกรอบว่ายกเว้นไปกี่ครั้ง (known_error_hits)",
+  "wibwub-tiktok-product-daily": [
+   {
+    "text": "ช่วงวันที่บนหน้าเว็บไม่ตรงกับเดือนที่จะบันทึก — เลือกเดือนใหม่ก่อน",
+    "why": "ด่าน --range ของ fee_update ผ่านไม่ได้สำหรับเดือนปัจจุบัน เพราะ TikTok ปิดวันที่อนาคต เลือกเต็มเดือนไม่ได้ · พรอมป์สั่งให้รันต่อด้วย --no-range-check ซึ่งถูกต้องแล้ว (ส่วน B ค่าธรรมเนียม · บันทึกไว้ตั้งแต่ก่อน 30 ต.ค. 69)"
+   }
+  ]
+ },
+ "retired_local_tasks": {
+  "_note": "คีย์ต้องเป็น '<ฝั่ง>:<id>' (local: / code:) เพราะ id ซ้ำกันข้ามฝั่งได้ คีย์ชื่อเปล่าถูกข้ามและขึ้นเตือนบนหน้าสถานะ · งาน local ที่ 'ปลดระวาง' แล้ว — พรอมป์เหลือคำสั่งเดียวคือตอบ 'ข้าม' แล้วจบ ตัวตรวจต้องถือว่า ✅ ปกติ ไม่ใช่ล้ม/ไม่มีผลงาน (ผู้ใช้หาสวิตช์ปิดในแอปไม่เจอ จึงทำให้ว่างแทนการปิด)",
+  "local:wibwub-sales-update": {
+   "moved_to": "งานฝั่ง code ชื่อเดียวกัน (09:25/20:25)",
+   "since": "2026-10-30",
+   "expect_text": "ข้าม: ย้ายไปฝั่ง code แล้ว"
+  }
+ },
+ "sheet_source": {
+  "_note": "งานที่ข้อมูลมาจากชีตที่ทีมกรอกเอง — ถ้างานรันผ่านแต่ข้อมูลไม่ขยับ ให้ขึ้น 📝 รอทีมกรอกชีต ไม่ใช่ ⚠️ และไม่นับเป็นปัญหาของระบบ",
+  "_rules": "ใช้ได้เฉพาะเมื่อสถานะที่คำนวณได้คือ 'ข้อมูลค้าง' เท่านั้น ไม่เริ่ม/ค้าง/ล้ม ยังเป็น ⛔/⚠️ ตามเดิม · วันที่อ่านจาก from ก่อน ถ้าไม่มีค่อย fallback · cadence 'weekly_monday' = ชีตรายสัปดาห์ เทียบกับวันอาทิตย์ที่ปิดสัปดาห์แล้ว ไม่ใช้ max_days (ถ้าครบตามรอบให้ขึ้น ✅ ปกติ ไม่ใช่ 📝)",
+  "wibwub-sales-update": {
+   "from": {
+    "file": "data Ads/sheet_asof.json",
+    "kind": "json",
+    "map": {
+     "Shopee": "shopee",
+     "TikTok": "tiktok",
+     "Lazada": "lazada"
+    }
+   },
+   "fallback": {
+    "file": "WIBWUB_Dashboard.html",
+    "kind": "regex_kv",
+    "pattern": "const MTD_COVERAGE = \\{([^}]*)\\}",
+    "note": "ค่าสำรอง — หลังงานเติมจากหลังบ้านเริ่มทำงาน ค่านี้จะรวมหลังบ้านด้วย"
+   },
+   "per_platform": {
+    "Shopee": {
+     "cadence": "weekly_monday",
+     "note": "ทีมกรอกทุกวันจันทร์"
+    },
+    "Lazada": {
+     "cadence": "weekly_monday",
+     "note": "ทีมกรอกทุกวันจันทร์"
+    },
+    "TikTok": {
+     "cadence": "weekly_monday",
+     "note": "ทีมกรอกทุกวันจันทร์"
+    }
+   },
+   "cadence": "weekly_monday",
+   "grace_days": 2,
+   "note": "ทีมกรอกทุกวันจันทร์ ข้อมูลถึงวันอาทิตย์ที่ปิดสัปดาห์แล้ว = ปกติ · ผ่อนผันถึงวันอังคาร (grace_days 2) หลังจากนั้นถือว่าข้ามรอบจันทร์"
+  },
+  "wibwub-tiktok-content": {
+   "from": {
+    "file": "WIBWUB_TikTok_Dashboard_v7.html",
+    "kind": "all_posts"
+   },
+   "max_days": 7,
+   "note": "ชีต CONTENT ทีมกรอกเมื่อมีคลิปใหม่"
+  },
+  "wibwub-samp-request-sync": {
+   "from": {
+    "file": "WIBWUB_Affiliate_Dashboard.html",
+    "kind": "regex_date",
+    "pattern": "SAMPLE_DATA_ASOF = '(\\d{2})/(\\d{2})/(\\d{4})'",
+    "order": "dmy"
+   },
+   "max_days": 3,
+   "note": "ชีตขอสินค้าทีมกรอกเกือบรายวัน"
+  }
+ },
+ "self_paced_tasks": {
+  "_note": "งานที่ Claude เก็บข้อมูลเองตามรอบของตัวเอง — ไม่มีทีมให้รอ ถ้าผลงานยังไม่ขยับให้ขึ้น ⏳ \"รอรอบถัดไป <วันที่>\" ห้ามขึ้น \"รอทีมกรอกชีต\"",
+  "_why": "เกิดจริง 3 พ.ย. 69: ชีตคอนเทนต์ขึ้น \"รอทีมกรอกชีต\" ทั้งที่ Claude เก็บเองทุก 5 วัน ผู้ใช้อ่านแล้วเข้าใจผิดว่าต้องไปตามทีม",
+  "wibwub-content-sheet": {
+   "note": "Claude เก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26) ไม่ได้รอทีมกรอก"
+  }
+ },
+ "_note_local": "งาน local: ไม่บังคับต้องมีทุกตัว (ไม่มี = data_asof '—' เหมือนเดิม) แต่งานที่ commit อะไรเป็นประจำควรใส่ ไม่งั้นตัวตรวจเห็นแค่ 'รอบเริ่มตามเวลา' แล้วขึ้น ✅ ทั้งที่รอบนั้นล้ม (เกิดจริง 3-4 พ.ย. 69: daily-stock ล้ม 4 รอบติด หน้า Forecast ค้าง 2 วัน ตัวตรวจขึ้น ✅ ทุกชั่วโมง)",
+ "local_tasks": {
+  "wibwub-daily-stock": {
+   "label": "สต๊อก / Forecast 08:40/19:40",
+   "kind": "git_grep",
+   "pattern": "^auto: update stock",
+   "max_age_hours": 14,
+   "note": "update_stock.py commit เองในตัว ข้อความขึ้นต้น 'auto: update stock' (ไม่ใช่ auto-update:)"
+  },
+  "wibwub-daily-followers": {
+   "label": "TikTok Followers 10:00/21:00",
+   "kind": "git_grep",
+   "pattern": "^auto-update: TikTok followers",
+   "max_age_hours": 14
+  },
+  "wibwub-fastmoss-competitor": {
+   "label": "FastMoss คู่แข่ง",
+   "kind": "git_grep",
+   "pattern": "^auto: update FastMoss",
+   "max_age_hours": 26,
+   "note": "รอบเดียวต่อวัน"
+  },
+  "wibwub-tiktok-product-daily": {
+   "label": "TikTok สินค้า + SKU",
+   "kind": "git_grep",
+   "pattern": "^auto: update TikTok product",
+   "max_age_hours": 14
+  },
+  "wibwub-download-orders-monday": {
+   "label": "โหลด order + ads_daily 08:35/19:35",
+   "kind": "git_grep",
+   "pattern": "^auto: ads daily",
+   "max_age_hours": 14,
+   "note": "ผลงานที่วัดได้คือ ads_daily.json (ส่วน C) ส่วนไฟล์ order ที่โหลดมาไม่ได้ commit"
+  },
+  "wibwub-download-shopee-ads": {
+   "label": "โหลด Shopee Ads 08:20/19:20",
+   "kind": "git_grep",
+   "pattern": "^auto: Shopee Ads",
+   "max_age_hours": 14
+  },
+  "wibwub-download-tiktok-ads": {
+   "label": "โหลด TikTok Ads 09:40/20:40",
+   "kind": "git_grep",
+   "pattern": "^auto: TikTok Ads",
+   "max_age_hours": 14
+  },
+  "wibwub-samp-request-sync": {
+   "label": "คำขอสินค้า",
+   "kind": "git_grep",
+   "pattern": "^auto-update: คำขอสินค้า",
+   "max_age_hours": 14
+  },
+  "wibwub-thursday-affiliate": {
+   "label": "Affiliate ครีเอเตอร์ (พฤหัส)",
+   "kind": "git_grep",
+   "pattern": "^auto-update: Affiliate",
+   "max_age_hours": 192,
+   "note": "รายสัปดาห์"
+  },
+  "wibwub-monday-update": {
+   "label": "Top สินค้าขายดี (จันทร์)",
+   "kind": "git_grep",
+   "pattern": "^auto-update: Top สินค้า",
+   "max_age_hours": 192,
+   "note": "รายสัปดาห์"
+  },
+  "wibwub-shopee-live-daily": {
+   "label": "Shopee Live รายวัน 09:35/20:35",
+   "kind": "git_grep",
+   "pattern": "^(auto-update: Shopee Live|Update Shopee Live)",
+   "max_age_hours": 26,
+   "note": "พรอมป์สั่งข้อความ 'auto-update: Shopee Live รายวัน' แต่รอบจริงเคยเขียน 'Update Shopee Live daily data through ...' จึงรับทั้งสองแบบ ถ้าแก้พรอมป์ให้คงที่แล้วให้ตัดอันหลังออก"
+  }
+ }
 }
