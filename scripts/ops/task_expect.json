@@ -221,5 +221,82 @@
       "max_age_hours": 48,
       "note": "วัดจากวันที่ล่าสุดใน SH_LIVE_DAILY แทนข้อความ commit (4 พ.ย. 69) — รอบ 3-4 พ.ย. เขียนข้อมูลสำเร็จแต่ commit ไม่ผ่านเพราะ .git/index.lock ของงานอื่น ไฟล์จึงไปติดใน commit ของงานอื่น (0ccfffa, 78a034f) แล้ว git_grep หาไม่เจอ = เตือนผิด · เกณฑ์ 48 ชม. เพราะ Shopee ให้ดึงได้แค่ถึงเมื่อวาน อายุจึงแกว่าง 24-48 ชม. แม้ทุกอย่างปกติ"
     }
+  },
+  "skill_sync": {
+    "_note": "เทียบ SKILL.md ตัวจริง (~/Documents/Claude/Scheduled/<คีย์>/SKILL.md) กับพรอมป์ในรีโป · เพิ่ม 4 พ.ย. 69 หลัง 076ca94 แก้แต่ในรีโป แล้ว daily-stock ยังล้มรอบที่ 5 โดยตัวตรวจขึ้น ✅",
+    "_modes": "copy = ตัวจริงต้องตรงกับ scripts/task_prompts/<repo> ทุกไบต์ · markers = ตัวจริงเป็น wrapper ต่างจากรีโปโดยตั้งใจ ดูแค่แพทเทิร์นที่เลิกใช้แล้ว (ดู DRIFT_MARKERS ใน task_health.py) · ทุกโหมดถูกตรวจ markers ด้วย",
+    "_skipped": "ไม่ใส่: drhybrid-dashboard-monthly-update (ห้ามแตะ) · extract-may-now, extract-may-tiktok-data (งานเก่า ไม่มีคู่ในรีโป)",
+    "wibwub-ads-daily": {
+      "mode": "markers"
+    },
+    "wibwub-content-sheet": {
+      "mode": "markers"
+    },
+    "wibwub-daily-followers": {
+      "mode": "copy",
+      "repo": "wibwub-daily-followers.md"
+    },
+    "wibwub-daily-stock": {
+      "mode": "copy",
+      "repo": "wibwub-daily-stock.md"
+    },
+    "wibwub-dashboard-update": {
+      "mode": "markers"
+    },
+    "wibwub-download-orders-monday": {
+      "mode": "copy",
+      "repo": "wibwub-download-orders-monday.md"
+    },
+    "wibwub-download-shopee-ads": {
+      "mode": "markers"
+    },
+    "wibwub-download-tiktok-ads": {
+      "mode": "markers"
+    },
+    "wibwub-fastmoss-competitor": {
+      "mode": "markers"
+    },
+    "wibwub-hr-attendance": {
+      "mode": "markers"
+    },
+    "wibwub-hr-attendance-1200-2200": {
+      "mode": "markers"
+    },
+    "wibwub-hr-attendance-2359": {
+      "mode": "markers"
+    },
+    "wibwub-lazada-collect": {
+      "mode": "markers"
+    },
+    "wibwub-monday-update": {
+      "mode": "markers"
+    },
+    "wibwub-platform-fee-daily": {
+      "mode": "markers"
+    },
+    "wibwub-sales-update": {
+      "mode": "markers"
+    },
+    "wibwub-samp-request-sync": {
+      "mode": "markers"
+    },
+    "wibwub-shipnity-monday": {
+      "mode": "markers"
+    },
+    "wibwub-shopee-live-daily": {
+      "mode": "markers"
+    },
+    "wibwub-thursday-affiliate": {
+      "mode": "markers"
+    },
+    "wibwub-tiktok-content": {
+      "mode": "markers"
+    },
+    "wibwub-tiktok-live-daily": {
+      "mode": "markers"
+    },
+    "wibwub-tiktok-product-daily": {
+      "mode": "markers"
+    }
   }
 }

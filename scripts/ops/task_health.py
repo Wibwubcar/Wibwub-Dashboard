@@ -22,7 +22,7 @@ Operation not permitted`) ทุกรอบที่ commit จึงทิ้�
 ใช้:  python3 scripts/ops/task_health.py [--json] [--grace-min 60] [--delay-min 20] [--lock-min 30]
 exit: 0 = ปกติ · 3 = มี ⛔ (ให้ขึ้นบรรทัดแรกของรายงานรอบนั้น) · 2 = ตัวตรวจเองมีปัญหา
 """
-import sys, io, json, re, glob, argparse, subprocess
+import sys, io, json, re, glob, argparse, subprocess, hashlib
 from pathlib import Path
 from datetime import datetime, timedelta
 
@@ -415,6 +415,76 @@ def artifact_age(cfg, now):
     return hrs(now, seen), seen.strftime('%d %b %H:%M'), seen
 
 
+# ═════════════════════════════════════════════════════════════════════════════
+# SKILL.md ตัวจริง vs พรอมป์ในรีโป (4 พ.ย. 69)
+#
+# ที่มา: 076ca94 แก้ขั้น 0 ของ daily-stock ใน `scripts/task_prompts/` แต่ตัวจริงที่
+# งานตั้งเวลาอ่านอยู่ที่ `~/Documents/Claude/Scheduled/<งาน>/SKILL.md` ไม่ถูกแก้
+# → รอบ 19:00 ของวันเดียวกันยังล้มที่ `⛔ ไม่พบ BASE` เป็นรอบที่ 5 โดยตัวตรวจขึ้น ✅
+#
+# ⚠️ ห้ามเทียบ sha ทุกงาน — ตัวจริงของ 22 งานเป็น wrapper สั้น ๆ ที่สั่งว่า
+#    "อ่านไฟล์ในรีโปแล้วทำตาม" + กติกาประจำรอบของตัวเอง ต่างจากรีโปโดยตั้งใจ
+#    จึงแยกโหมด: copy = ต้องตรงทุกไบต์ · markers = ดูแค่ว่ามีแพทเทิร์นที่เลิกใช้แล้วไหม
+# ⚠️ รันได้เฉพาะบนเครื่อง Mac — งาน local อยู่ในแซนด์บ็อกซ์ อ่าน ~/Documents ไม่ได้
+#    อ่านไม่ได้ให้เงียบ ห้ามขึ้น ⚠️ ปลอมทุกรอบ
+# ═════════════════════════════════════════════════════════════════════════════
+LIVE_SKILL_DIR = Path.home() / 'Documents' / 'Claude' / 'Scheduled'
+
+DRIFT_MARKERS = [
+    ('os.path.isdir(BASE', 'เช็ค BASE ด้วย stat (stat บนโฟลเดอร์ Drive ตอบ False หลอก)'),
+    ('os.path.isfile(BASE', 'เช็ค BASE ด้วย stat (stat บนโฟลเดอร์ Drive ตอบ False หลอก)'),
+    ('$(date', 'ใช้ $(date) ในคำสั่ง (เด้งกล่องขออนุญาตที่ไม่มีคนกด → รอบค้าง)'),
+    ('mv ".git/', 'สั่งย้าย lock ของคนอื่น'),
+    ('stale-%d-%s', 'สั่งย้าย lock ของคนอื่น'),
+    ('รอ 20 วินาที', 'สั่งวน retry lock เอง (gitw.py รอและ unstage ให้แล้ว)'),
+]
+
+
+def check_skill_sync():
+    """เทียบ SKILL.md ตัวจริงกับพรอมป์ในรีโป ตามกติกาใน task_expect.json -> skill_sync"""
+    try:
+        cfg = json.loads(EXPECT.read_text(encoding='utf-8')).get('skill_sync') or {}
+    except Exception:
+        return []
+    out, unread = [], []
+    for folder in sorted(k for k in cfg if not k.startswith('_')):
+        spec = cfg[folder] or {}
+        live = LIVE_SKILL_DIR / folder / 'SKILL.md'
+        try:
+            lt = live.read_text(encoding='utf-8')
+        except OSError:
+            unread.append(folder)
+            continue
+        why = []
+        if spec.get('mode') == 'copy':
+            rel = spec.get('repo') or (folder + '.md')
+            rp = BASE / 'scripts' / 'task_prompts' / rel
+            try:
+                rt = rp.read_text(encoding='utf-8')
+            except OSError:
+                why.append('ไม่พบพรอมป์คู่ในรีโป (%s)' % rel)
+            else:
+                if hashlib.sha256(lt.encode()).hexdigest() != \
+                   hashlib.sha256(rt.encode()).hexdigest():
+                    why.append('ตัวจริงไม่ตรงกับ scripts/task_prompts/%s '
+                               '(%d vs %d ไบต์) — การแก้ในรีโปยังไม่มีผลกับรอบจริง'
+                               % (rel, len(lt.encode()), len(rt.encode())))
+        for pat, reason in DRIFT_MARKERS:
+            if pat in lt and reason not in why:
+                why.append(reason)
+        if why:
+            out.append({'lv': '⚠️', 'task': '(SKILL.md) ' + folder,
+                        'msg': ' · '.join(why)})
+    if unread and len(unread) == len(cfg):
+        return [{'lv': 'ℹ️', 'task': '(SKILL.md)',
+                 'msg': 'อ่านตัวจริงไม่ได้ทั้งหมด — ตัวตรวจนี้รันได้เฉพาะบนเครื่อง Mac '
+                        '(งาน local อยู่ในแซนด์บ็อกซ์)'}]
+    for f in unread:
+        out.append({'lv': '⚠️', 'task': '(SKILL.md) ' + f,
+                    'msg': 'มีในกติกาแต่อ่านไฟล์ตัวจริงไม่ได้ — งานถูกลบหรือเปลี่ยนชื่อโฟลเดอร์?'})
+    return out
+
+
 DESC_TIME = re.compile(r'[0-2]?\d:[0-5]\d')
 
 
@@ -680,6 +750,10 @@ def build_status(now):
                 if t and t <= now:
                     starts.append(t)
     gaps = check_sleep_gaps(now, crons, starts)
+    # SKILL.md ตัวจริงไม่ตรงกับรีโป = การแก้ไม่มีผลกับรอบจริง ต้องขึ้นหน้าเว็บด้วย
+    for d in check_skill_sync():
+        if d['lv'] == '⚠️':
+            unreadable.append('%s: %s' % (d['task'], d['msg']))
     return rows, unreadable, gaps
 
 
@@ -913,7 +987,8 @@ def main():
                           'counts': c, 'unreadable': data['unreadable'],
                           'gaps': data['gaps']}, ensure_ascii=False))
         return 3 if (c['stop'] or data['unreadable']) else 0
-    rows = check_locks(now, a.lock_min) + check_local(now, a.grace_min, a.delay_min) + check_code(now)
+    rows = (check_locks(now, a.lock_min) + check_skill_sync()
+            + check_local(now, a.grace_min, a.delay_min) + check_code(now))
     bad = [r for r in rows if r['lv'] == '⛔']
     warn = [r for r in rows if r['lv'] == '⚠️']
     info = [r for r in rows if r['lv'] == 'ℹ️']
