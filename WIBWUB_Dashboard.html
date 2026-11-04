@@ -299,8 +299,9 @@
 <aside class="sidebar">
   <div class="sb-logo"><img src="logo-header.png" alt="WIBWUB" style="height:26px;filter:brightness(0)invert(1);display:block;"></div>
   <nav id="sideNav" style="flex:1;padding:12px 0;overflow-y:auto;">
+    <div class="nav-item active" data-sec="aioffice" onclick="go('aioffice',this)"><span class="nav-icon">🤖</span><span>ออฟฟิศ AI</span></div>
     <div class="nav-sec" id="ns-overview">ภาพรวม</div>
-    <div class="nav-item active" data-sec="overview" onclick="go('overview',this)"><span class="nav-icon">🏠</span><span>ภาพรวมธุรกิจ</span></div>
+    <div class="nav-item" data-sec="overview" onclick="go('overview',this)"><span class="nav-icon">🏠</span><span>ภาพรวมธุรกิจ</span></div>
     <div class="nav-sec" id="ns-sales">ยอดขาย</div>
     <div class="nav-item" data-sec="sales" onclick="go('sales',this)"><span class="nav-icon">💰</span><span>ยอดขาย & รายได้</span></div>
     <div class="nav-item" data-sec="shopee" onclick="go('shopee',this)"><span class="nav-icon">🧡</span><span>Shopee</span></div>
@@ -386,7 +387,21 @@
   <div class="content">
 
     <!-- ═══ OVERVIEW ═══ -->
-    <section id="overview" class="section active">
+    <!-- ═══ ออฟฟิศ AI (เพิ่ม 4 พ.ย. 69) — หน้าแรกหลังล็อกอินของทุกคน ═══
+         iframe โหลดตอนเปิด section (data-src) แล้ววัดความสูงจาก contentDocument
+         เพราะโดเมนเดียวกัน จึงไม่มี scrollbar ซ้อน · AI_Office.html อ่าน
+         scripts/ops/task_health.json ด้วย path แบบ relative จึงต้องอยู่ที่ root -->
+    <section id="aioffice" class="section active" style="padding:0;margin:-26px;">
+      <iframe
+        data-src="AI_Office.html"
+        id="aioffice-iframe"
+        scrolling="no"
+        style="width:100%;height:1400px;border:none;display:block;overflow:hidden"
+        title="ออฟฟิศ AI">
+      </iframe>
+    </section>
+
+    <section id="overview" class="section">
       <div class="kpi-grid">
         <div class="kpi or">
           <div class="kpi-label">รายได้รวมทุก Platform</div>
@@ -1705,7 +1720,7 @@
 document.getElementById('pdate').textContent = new Date().toLocaleDateString('th-TH',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
 
 const SALES_SECTIONS = ['overview','sales','shopee','tiktok','lazada'];
-const TITLES = {mktspend:'📊 การตลาด vs ยอดขาย',overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',prodreport:'🏭 รายงานการผลิต',admin:'⚙️ จัดการผู้ใช้'};
+const TITLES = {aioffice:'🤖 ออฟฟิศ AI',mktspend:'📊 การตลาด vs ยอดขาย',overview:'ภาพรวมธุรกิจ',sales:'ยอดขาย & รายได้ (ทุก Platform)',shopee:'🧡 Shopee',tiktok:'🎵 TikTok Shop',lazada:'💙 Lazada',products:'🏆 Top สินค้าขายดี',ads:'📢 Ads Dashboard',social:'Social Media',affiliate:'🤝 Affiliate',hr:'HR & พนักงาน',projects:'Projects & Tasks',procurement:'📦 Forecast',prodreport:'🏭 รายงานการผลิต',admin:'⚙️ จัดการผู้ใช้'};
 
 // ── HR iframe auth helper ──────────────────────────────────────────────────────
 // Sends current user's ID token to the HR iframe so it can authenticate
@@ -1732,10 +1747,46 @@ document.addEventListener('DOMContentLoaded', ()=>{
   }
 });
 
-let currentPage = 'overview';
+let currentPage = 'aioffice';
+// "ออฟฟิศ AI" เปิดให้ทุก role เสมอ — ไม่แก้ ROLE_SECTIONS_MAP เพื่อไม่กระทบสิทธิ์เมนูอื่น
+// (และ custom permissions จาก Firestore ก็ปิดเมนูนี้ไม่ได้ เพราะไม่ได้อยู่ใน PERM_SECTIONS)
+const ALWAYS_SECTIONS = ['aioffice'];
+function secAllowed(role){
+  const base = ROLE_SECTIONS_MAP[role] || ROLE_SECTIONS_MAP['head_marketing'];
+  return base.concat(ALWAYS_SECTIONS.filter(s => !base.includes(s)));
+}
+
+// ── ออฟฟิศ AI: โหลด iframe ตอนเปิด section แล้วปรับความสูงให้พอดีเนื้อหา ──
+let _aioRO = null;
+function _aioFit(){
+  const f = document.getElementById('aioffice-iframe'); if(!f) return;
+  try{
+    const doc = f.contentDocument; if(!doc || !doc.body) return;
+    const h = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+    if(h > 200) f.style.height = h + 'px';
+    if(!_aioRO && window.ResizeObserver){
+      _aioRO = new ResizeObserver(()=>{ try{
+        const hh = Math.max(doc.body.scrollHeight, doc.documentElement.scrollHeight);
+        if(hh > 200) f.style.height = hh + 'px';
+      }catch(e){} });
+      _aioRO.observe(doc.body);
+    }
+  }catch(e){}
+}
+function _aioOpen(){
+  const f = document.getElementById('aioffice-iframe'); if(!f) return;
+  if(!f.src && f.dataset.src){
+    // ผูก listener ก่อนตั้ง src เสมอ (inline onload ใช้ไม่ได้ เพราะ iframe ที่ยังไม่มี src
+    // ยิง load ของ about:blank ไปตั้งแต่ตอน parse ก่อนสคริปต์นี้ถูกนิยาม)
+    f.addEventListener('load', ()=>{ _aioFit(); setTimeout(_aioFit,300); setTimeout(_aioFit,1500); });
+    f.src = f.dataset.src;                              // โหลดครั้งแรกตอนเปิด section
+  } else _aioFit();                                     // เปิดซ้ำ: วัดใหม่เผื่อเนื้อหาเปลี่ยน
+}
+window.addEventListener('resize', ()=>{ if(currentPage === 'aioffice') _aioFit(); });
+
 function go(id, el) {
   const role = window._userRole || '';
-  const allowed = ROLE_SECTIONS_MAP[role] || ROLE_SECTIONS_MAP['head_marketing'];
+  const allowed = secAllowed(role);
   if (!allowed.includes(id)) return;
   currentPage = id;
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
@@ -1747,6 +1798,7 @@ function go(id, el) {
   document.getElementById('monthBar').style.display = SALES_SECTIONS.includes(id) ? 'flex' : 'none';
   if (id === 'admin') { loadAdminUsers(); renderPermissionsMatrix(); }
   if (id === 'prodreport') { const pf=document.getElementById('prodreport-iframe'); if(pf&&!pf.src) pf.src=pf.dataset.src; }
+  if (id === 'aioffice') { _aioOpen(); }
   // Re-send token when navigating to HR (iframe may have just become visible)
   if (id === 'hr') {
     const u = firebase.auth().currentUser;
@@ -3253,7 +3305,7 @@ auth.onAuthStateChanged(async user => {
 
 function applyRoleNav(role){
   resetNavVisibility();
-  const allowed=ROLE_SECTIONS_MAP[role]||ROLE_SECTIONS_MAP['head_marketing'];
+  const allowed=secAllowed(role);
 
   // Show/hide each nav-item by data-sec
   document.querySelectorAll('#sideNav .nav-item').forEach(el=>{
@@ -3275,7 +3327,8 @@ function applyRoleNav(role){
   });
 
   // Navigate to default page for this role
-  const defaultPage=ROLE_DEFAULT_PAGE[role]||'overview';
+  // 4 พ.ย. 69: ทุกคนเริ่มที่ "ออฟฟิศ AI" (ROLE_DEFAULT_PAGE คงไว้เป็นหน้าเดิมของแต่ละ role)
+  const defaultPage='aioffice';
   const targetNavEl=document.querySelector(`[data-sec="${defaultPage}"]`);
   if(targetNavEl) go(defaultPage, targetNavEl);
 }
