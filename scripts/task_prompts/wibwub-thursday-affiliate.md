@@ -114,7 +114,10 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 ```
 
 ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองภายใน 2 นาที
-ถ้า git ติด `index.lock`: รอ 20 วินาทีแล้วลองใหม่ สูงสุด 3 ครั้ง **ห้ามลบ lock ของคนอื่น**
+ถ้า git ติด `index.lock`: **ห้ามวน retry เอง** — `gitw.py` รอ lock ให้แล้วสูงสุด 5 นาที
+และถ้าสุดท้าย commit ไม่ผ่าน จะ unstage ไฟล์ของตัวเองคืนให้เอง (เนื้อไฟล์ไม่หาย)
+**exit 3 = ไม่ได้ commit** ให้รายงานตรง ๆ ว่ารอบนี้ข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit
+**ห้ามลบ lock ของคนอื่น**
 
 ---
 
