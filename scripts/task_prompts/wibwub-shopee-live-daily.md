@@ -81,7 +81,7 @@ exit `0` = อัปเดต + bump sw.js แล้ว · `10` = ไม่ม�
 ```bash
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add WIBWUB_Dashboard.html sw.js "data ยอดขาย plaform/Shopee Live/"
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "auto-update: Shopee Live รายวัน $(date +%Y-%m-%d)"
+    commit -m "auto-update: Shopee Live รายวัน <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
 ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองภายใน 2 นาที

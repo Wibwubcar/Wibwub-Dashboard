@@ -51,7 +51,7 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 ```
 
 ```bash
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: สถานะงานอัตโนมัติ $(date +%Y-%m-%d)"
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto-update: สถานะงานอัตโนมัติ <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
 - **ข้อความ commit ใช้ `$(date +%Y-%m-%d)` เท่านั้น ห้ามเติมเวลา `%H:%M` และห้ามมีช่องว่าง

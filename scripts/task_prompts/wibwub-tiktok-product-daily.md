@@ -117,7 +117,7 @@ cd "$BASE" && python3 tiktok_sku_merge.py tiktok_sku_daily_new.json
 python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add WIBWUB_Dashboard.html sw.js tiktok_product_daily_new.json tiktok_sku_daily_new.json
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "auto: TikTok product/SKU $(date +%Y-%m-%d)"
+    commit -m "auto: TikTok product/SKU <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
 ไม่ต้อง `git push` — launchd `com.wibwub.autopush` push ให้เองภายใน 2 นาที

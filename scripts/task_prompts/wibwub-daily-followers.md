@@ -192,7 +192,7 @@ echo "sw.js: v${CURRENT} → v${NEW}"
 # Git commit (ไม่ push เอง — sandbox push ติด proxy HTTP 403)
 # ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
-python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" commit -m "auto-update: TikTok followers $(date +%Y-%m-%d) — ${latest_count} followers"
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" commit -m "auto-update: TikTok followers <วันที่วันนี้ เช่น 2026-11-04> — ${latest_count} followers"
 echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"
 
 ```
@@ -336,7 +336,7 @@ PY
 ```bash
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add scripts/content/work/clips.json
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "content: เก็บตัวเลขคลิป TikTok $(date +%Y-%m-%d)"
+    commit -m "content: เก็บตัวเลขคลิป TikTok <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
 **สำคัญ:** งานฝั่ง code "ชีตคอนเทนต์ TikTok" จะอ่านไฟล์นี้ตอน 10:50 และมีด่าน `--max-age-min 180`

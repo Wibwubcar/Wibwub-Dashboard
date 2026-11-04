@@ -140,7 +140,7 @@ node --check /tmp/ads.js || exit 1
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/WIBWUB_Ads_Dashboard.html" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js "data Ads/Shopee"
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "auto: Shopee Ads $(date +%Y-%m-%d)"
+    commit -m "auto: Shopee Ads <วันที่วันนี้ เช่น 2026-11-04>"
 ```
 
 **`git add` ต้องระบุ path เฉพาะไฟล์เสมอ** — working tree มีงานค้างของคนอื่นอยู่ประจำ

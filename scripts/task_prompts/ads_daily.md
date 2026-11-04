@@ -88,7 +88,7 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 ```bash
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/kol_monthly.json" WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
-    commit -m "auto-update: การตลาด vs ยอดขาย $(date +%Y-%m-%d)"
+    commit -m "auto-update: การตลาด vs ยอดขาย <วันที่วันนี้ เช่น 2026-11-04>"
 ```
    > ⚠️ ชีต KOL (`1NEkm1bcHvXO0Ehs6cwaNDkBUUM1A9assALMp5V7S7lo`) มีชื่อ-นามสกุล เลขบัตรประชาชน
    > เลขบัญชีธนาคาร ที่อยู่ เบอร์โทร — **`kol_fetch.py` อ่านแค่ 4 คอลัมน์และเขียนออกเป็นผลรวมรายเดือนเท่านั้น**
