@@ -70,10 +70,9 @@ for k in ['sh_real','sh_ads','tk_real','tk_ads','lz_real','lz_ads']:
    (ถ้า Lazada ล้ม ให้ตัด 2 ไฟล์ท้ายออก — สคริปต์รับ Lazada แบบไม่บังคับ แต่ถ้าจะใส่ต้องใส่ทั้งคู่) — exit 10 = ข้อมูลรายวันไม่เปลี่ยน (ทำขั้นต่อไปได้) · ถ้า error ว่าขาดวันที่/ค่าติดลบ: หยุดและรายงาน ห้ามเขียนไฟล์เอง
 6. `python3 ads_daily_update.py camp work/tk_camp.json` — exit 10 = แคมเปญไม่เปลี่ยน · ถ้า error ว่าผลรวมไม่ตรงหรือมีมากกว่า 100 แคมเปญ: รายงาน (ขั้นอื่นทำต่อได้)
 7. `python3 ads_daily_update.py commit` — sync รายเดือน + bump sw.js + commit เฉพาะไฟล์ Ads (exit 10 = ไม่มีอะไรเปลี่ยน) · auto-push จะ push เอง ไม่ต้อง push
-   - ถ้า git ล็อกค้าง ให้ย้ายไป `.git/stale-*` (ห้ามลบไฟล์) ด้วยคำสั่งนี้ — **ห้ามเขียนเป็นลูป shell** เพราะลูปสร้างกฎอนุญาตถาวรไม่ได้แล้วงานจะค้าง:
-```bash
-python3 -c 'import pathlib,time,sys; g=pathlib.Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/.git"); [p.rename(g/("stale-%d-%s"%(time.time(),p.name))) for n in ("HEAD.lock","objects/maintenance.lock","index.lock") for p in [g/n] if p.exists()] and None; print("moved")'
-```
+   - ถ้า git ติด `index.lock`: **ห้ามวน retry เอง ห้ามย้ายหรือลบ lock ของคนอื่น** — `gitw.py`
+     รอ lock ให้แล้วสูงสุด 5 นาที และถ้าสุดท้าย commit ไม่ผ่าน จะ unstage ไฟล์ของตัวเองคืนให้เอง
+     (เนื้อไฟล์ไม่หาย) · **exit 3 = ไม่ได้ commit** ให้รายงานตรง ๆ ว่าข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit
 
 8. **เมนู "การตลาด vs ยอดขาย"** — ทำต่อทุกครั้งหลังขั้น 7 (ไม่ว่าขั้น 7 จะ exit 0 หรือ 10):
 ```bash
