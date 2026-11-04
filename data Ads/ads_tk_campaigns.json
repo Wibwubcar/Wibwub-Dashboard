@@ -447,61 +447,61 @@
   },
   "nov": {
    "from": "2026-11-01",
-   "to": "2026-11-02",
+   "to": "2026-11-03",
    "product": [
     {
      "name": "19.10.26/Banyakart",
-     "spend": 24393.68,
-     "orders": 275,
-     "revenue": 70546.01
+     "spend": 34449.61,
+     "orders": 382,
+     "revenue": 97283.78
     },
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 21300.82,
-     "orders": 674,
-     "revenue": 88207.36
+     "spend": 29818.09,
+     "orders": 960,
+     "revenue": 123844.75
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 16579.93,
-     "orders": 176,
-     "revenue": 66792.98
+     "spend": 19444.35,
+     "orders": 205,
+     "revenue": 76944.46
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 8453.95,
-     "orders": 270,
-     "revenue": 37008.64
+     "spend": 12328.87,
+     "orders": 396,
+     "revenue": 54255.66
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 6165.25,
-     "orders": 62,
-     "revenue": 20093.82
+     "spend": 8905.13,
+     "orders": 87,
+     "revenue": 28594.09
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 5152.46,
-     "orders": 96,
-     "revenue": 34918.71
+     "spend": 6540.13,
+     "orders": 120,
+     "revenue": 43543.93
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 3141.49,
-     "orders": 31,
-     "revenue": 16368.84
+     "spend": 3606.4,
+     "orders": 33,
+     "revenue": 17724.31
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 2171.08,
-     "orders": 18,
-     "revenue": 8014.05
+     "spend": 2602.31,
+     "orders": 20,
+     "revenue": 8951.97
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 1314.13,
-     "orders": 19,
-     "revenue": 6760.85
+     "spend": 2529.93,
+     "orders": 34,
+     "revenue": 13444.79
     }
    ],
    "live": []
