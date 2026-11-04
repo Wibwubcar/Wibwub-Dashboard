@@ -5,20 +5,35 @@ description: ดึงสต๊อกล่าสุดจาก Shipnity ทุ
 
 ## 📂 ขั้น 0 — ยืนยันว่าโฟลเดอร์ All อยู่ที่เดิม (ทำก่อนทุกอย่าง)
 
-งานนี้รันบนเครื่อง Mac มีพาธเดียว · **คำสั่ง shell แรกของรอบต้องเป็น `python3`**
-ห้ามเป็นลูป `for` ของ bash (ลูปสร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา)
+**คำสั่ง shell แรกของรอบต้องเป็น `python3`** ห้ามเป็นลูป `for` ของ bash
+(ลูปสร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา · ลูป `for` **ข้างใน** python ใช้ได้ ไม่เป็นไร)
+
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]`**
+> เกิดจริง 3–4 พ.ย. 69 (รอบ 09:03, 19:07, 09:07 ล้มติดกัน หน้า Forecast ค้างที่ 2 พ.ย. 19:11):
+> ในรอบเดียวกันนั้น `os.path.isdir('<BASE>/scripts')` ตอบ **False** แต่ `Grep`/`cat`/
+> `python3 "<BASE>/scripts/..."` **อ่านและรันไฟล์ในพาธเดียวกันได้ปกติ**
+> แปลว่า stat บนโฟลเดอร์ Google Drive เชื่อไม่ได้ (ไม่ใช่ว่า BASE หาย) — **ให้ลองเปิดไฟล์จริง**
+> และพาธ `/sessions/<ชื่อ>/mnt/All` **ยังไม่ตาย** (รอบ download-orders 4 พ.ย. 08:38 ใช้ตัวนี้สำเร็จ)
+> ชื่อ `<ชื่อ>` เปลี่ยนทุกเซสชัน ห้ามฝังตายตัว ให้ใช้ glob หาเอง
 
 ```bash
 python3 -c "
-import os
-BASE = '/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'
-print('BASE OK' if os.path.isdir(BASE + '/scripts') else '⛔ ไม่พบ BASE')
+import glob
+for B in ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All'] + sorted(glob.glob('/sessions/*/mnt/All')):
+    try:
+        open(B + '/sw.js').read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
 "
 ```
 
-- `BASE OK` → ใช้พาธเต็มนี้ในทุกคำสั่งถัดไป (ห้ามใช้ตัวแปร shell ห้ามใช้พาธ relative)
-- `⛔ ไม่พบ BASE` → **หยุดทันที** รายงาน `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน · พาธ `/sessions/<ชื่อ>/mnt/All` ของแซนด์บ็อกซ์เดิมตายแล้ว
+- `BASE OK <พาธ>` → ใช้**พาธที่พิมพ์ออกมาตัวนั้น**ในทุกคำสั่งถัดไป (ห้ามใช้ตัวแปร shell ห้ามใช้พาธ relative)
+- `⛔ ไม่พบ BASE` (คือเปิดไฟล์ไม่ได้ทั้งสองแบบ) → **หยุดทันที** รายงาน
+  `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน · ห้ามเดาพาธอื่นเอง ห้ามไปใช้ `~/Downloads` แทน
 
 ---
 
@@ -28,7 +43,9 @@ print('BASE OK' if os.path.isdir(BASE + '/scripts') else '⛔ ไม่พบ BA
 > ไฟล์นี้เขียนไว้ตอนรันบน Cowork cloud sandbox ตอนนี้ย้ายมารันบนเครื่อง Mac แล้ว
 > - BASE / ALL_MNT = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All` · Downloads = `/Users/thanasablilutanon/Downloads` · OUTPUTS = `/Users/thanasablilutanon/Library/Caches/wibwub-outputs`
 > - `git push` **ไม่ต้องทำ** และจะ**ไม่**เจอ error 403 แบบ sandbox — launchd `com.wibwub.autopush` push ให้เองทุก 2 นาที ข้ามทุกหัวข้อที่พูดถึง 403 / การสร้างหรือแก้ `push_now.command`
-> - ที่ไหนเขียนว่า `mcp__workspace__bash` ให้ใช้ Bash tool ปกติแทน
+> - ที่ไหนเขียนว่า `mcp__workspace__bash` **ให้ใช้ shell ตัวที่รอบนั้นมี**: ถ้ามี Bash tool ใช้ Bash
+>   ถ้ารอบนั้นมีแค่ `mcp__workspace__bash` **ให้ใช้ตัวนั้นได้เลย ไม่ใช่เหตุให้หยุดงาน**
+>   (งาน local ทุกตัวมีแค่ `mcp__workspace__bash` และใช้ทำงานสำเร็จมาตลอด เช่น download-orders)
 > - อ่านไฟล์ในเครื่องใช้ Read/Bash ได้ตรง ๆ ไม่ต้องผ่าน connector
 > - ถ้าขั้นไหนอ้าง path หรือเครื่องมือที่ไม่มีจริง: **หยุดและรายงาน ห้ามเดาทางเอง**
 
