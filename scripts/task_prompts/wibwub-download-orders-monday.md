@@ -58,7 +58,14 @@ URL: https://seller.shopee.co.th/portal/sale/order
 3. Click tab "ทั้งหมด" (use find tool with query "ทั้งหมด tab")
 4. Click "ส่งออก" dropdown
 5. Select "ส่งออกรายการสั่งซื้อ" → "ทั้งหมด"
-6. Set date range: first day of current month → today
+6. Set date range: **วันที่ 1 ของเดือนปัจจุบัน → วันนี้** — ต้องตั้งค่าเองทุกครั้ง
+   > **ห้ามรับช่วงวันที่ default ที่ Shopee ตั้งมาให้** แม้มันจะ "ครอบเดือนนี้อยู่แล้ว"
+   > เกิดจริง 4 พ.ย. 69 รอบเช้า: รับ default มา (5 ต.ค.–4 พ.ย. = 31 วัน) Shopee จึง
+   > **หั่นไฟล์เป็น `_part_1_of_3` … `_part_3_of_3` แล้วห่อเป็น .zip** ได้
+   > `Order.all.order_creation_date.20261005_20261104.zip` แทนไฟล์ .xlsx เดี่ยว
+   > ตัวย้ายยังพาเข้าโฟลเดอร์ให้ (กฎ `Order.all.*` ครอบทั้ง .zip) แต่คนที่เปิดไฟล์ต่อ
+   > ต้องแตก zip เองและเปิด 3 ไฟล์ ไม่ใช่รูปแบบที่รอบอื่น ๆ ส่งมา
+   > ถ้าได้ไฟล์ .zip มา: **ไม่ต้องโหลดใหม่** (ข้อมูลครบ) แค่รายงานว่าช่วงวันที่หลุดเป็น default
 7. Click Export → wait for download
 8. Click download link when ready
 
