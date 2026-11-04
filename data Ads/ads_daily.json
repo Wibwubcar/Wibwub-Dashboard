@@ -14119,12 +14119,23 @@
      "spend": 0.0,
      "orders": 0
     }
+   },
+   "lz_real": {
+    "gmv": 358.0,
+    "orders": 1
+   },
+   "lz_ads": {
+    "spend": 202.0,
+    "revenue": 358.0,
+    "orders": 1,
+    "imp": 2457,
+    "clicks": 95
    }
   }
  },
  "coverage": {
   "shopee": "2026-11-03",
   "tiktok": "2026-11-03",
-  "lazada": "2026-11-02"
+  "lazada": "2026-11-03"
  }
 }
