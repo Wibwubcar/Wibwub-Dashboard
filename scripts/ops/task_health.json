@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-11-04 19:12",
+ "checked_at": "2026-11-04 20:11",
  "unreadable": [],
  "gaps": [],
  "thresholds": {
@@ -10,7 +10,7 @@
  "counts": {
   "stop": 0,
   "warn": 1,
-  "ok": 15,
+  "ok": 17,
   "sheet_wait": 0,
   "gaps": 0,
   "known_errors_skipped": 2
@@ -23,32 +23,8 @@
    "level": "⚠️",
    "status": "ชีตค้างเกินกำหนด",
    "data_asof": "29 Oct 10:37",
-   "silent_min": 569,
+   "silent_min": 629,
    "note": "รอทีมกรอกชีต — Lazada 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11) · Shopee 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11) · TikTok 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11)",
-   "desc_mismatch": "",
-   "known_error_hits": ""
-  },
-  {
-   "name": "wibwub-daily-stock",
-   "side": "local",
-   "last_round": "04 Nov 19:07",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "04 Nov 12:13",
-   "silent_min": 5,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": "",
-   "known_error_hits": ""
-  },
-  {
-   "name": "wibwub-fastmoss-competitor",
-   "side": "local",
-   "last_round": "04 Nov 18:56",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "04 Nov 10:01",
-   "silent_min": 11,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
    "desc_mismatch": "",
    "known_error_hits": ""
   },
@@ -59,7 +35,7 @@
    "level": "⏳",
    "status": "รอรอบถัดไป 06/11",
    "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
-   "silent_min": 4820,
+   "silent_min": 4880,
    "note": "Claude เก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26) ไม่ได้รอทีมกรอก",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -71,7 +47,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 10:41",
-   "silent_min": 510,
+   "silent_min": 570,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -83,7 +59,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 10:04",
-   "silent_min": 3427,
+   "silent_min": 3486,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -95,7 +71,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 10:40",
-   "silent_min": 510,
+   "silent_min": 570,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -107,7 +83,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 09:38",
-   "silent_min": 574,
+   "silent_min": 634,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -119,7 +95,19 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 09:56",
-   "silent_min": 556,
+   "silent_min": 616,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-daily-stock",
+   "side": "local",
+   "last_round": "04 Nov 19:07",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "04 Nov 12:13",
+   "silent_min": 64,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -127,11 +115,11 @@
   {
    "name": "wibwub-download-orders-monday",
    "side": "local",
-   "last_round": "04 Nov 08:38",
+   "last_round": "04 Nov 19:38",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "04 Nov 10:49",
-   "silent_min": 616,
+   "data_asof": "04 Nov 19:47",
+   "silent_min": 16,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -139,11 +127,11 @@
   {
    "name": "wibwub-download-shopee-ads",
    "side": "local",
-   "last_round": "04 Nov 08:15",
+   "last_round": "04 Nov 19:15",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "04 Nov 08:18",
-   "silent_min": 648,
+   "data_asof": "04 Nov 19:17",
+   "silent_min": 54,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -151,11 +139,23 @@
   {
    "name": "wibwub-download-tiktok-ads",
    "side": "local",
-   "last_round": "04 Nov 08:26",
+   "last_round": "04 Nov 19:26",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "04 Nov 08:30",
-   "silent_min": 642,
+   "data_asof": "04 Nov 19:29",
+   "silent_min": 42,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "",
+   "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-fastmoss-competitor",
+   "side": "local",
+   "last_round": "04 Nov 18:56",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "04 Nov 10:01",
+   "silent_min": 70,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -167,7 +167,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 16:02",
-   "silent_min": 506,
+   "silent_min": 566,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -179,7 +179,7 @@
    "level": "✅",
    "status": "ปลดระวางแล้ว",
    "data_asof": "—",
-   "silent_min": 579,
+   "silent_min": 639,
    "note": "ย้ายไป งานฝั่ง code ชื่อเดียวกัน (09:25/20:25) — รอบนี้ตอบข้ามตามที่ตั้งใจ",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -191,7 +191,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 11:20",
-   "silent_min": 472,
+   "silent_min": 532,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -203,7 +203,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "03 Nov 00:00",
-   "silent_min": 572,
+   "silent_min": 632,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -215,7 +215,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 21:32",
-   "silent_min": 524,
+   "silent_min": 584,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -227,7 +227,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 10:12",
-   "silent_min": 535,
+   "silent_min": 595,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": 2
@@ -239,7 +239,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "04 Nov 10:38",
-   "silent_min": 513,
+   "silent_min": 573,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
