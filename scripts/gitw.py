@@ -154,6 +154,8 @@ def _unstage(paths):   # noqa: C901
 # ── บังคับ commit เฉพาะไฟล์ของตัวเอง (5 พ.ย. 69) ──────────────────────────
 # ที่มา: รีโปนี้มีงานตั้งเวลาหลายตัวรันพร้อมกันบน index เดียวกัน `git commit` เปล่า ๆ
 # จะกวาด "ทุกอย่างที่ staged อยู่" ติดไปด้วย เกิดจริงหลายครั้ง:
+# มี hook PreToolUse ตีกลับ `git add/commit/push/...` ที่เขียนรีโป All โดยไม่ผ่านตัวนี้แล้ว
+# (และตีกลับ `rm .git/*.lock` ทุกกรณี) — ดู ~/.claude/hooks/no_pipe_in_task_cmd.py
 #   5 พ.ย. 09:22 fe49e6c (Shopee Ads) พา Procurement_Dashboard.html +
 #   stock_snapshot.json ของ daily-stock ไป -> daily-stock หา commit ตัวเองไม่เจอ
 #   09:42 0b7cc4c (sales) พา fastmoss_history.json ไปแบบเดียวกัน
