@@ -171,8 +171,9 @@
     "wibwub-tiktok-product-daily": {
       "label": "TikTok สินค้า + SKU",
       "kind": "git_grep",
-      "pattern": "^auto: update TikTok product",
-      "max_age_hours": 14
+      "pattern": "^auto: (update )?TikTok product",
+      "max_age_hours": 14,
+      "note": "ข้อความ commit มีทั้ง \"auto: update TikTok product sales data\" และ \"auto: TikTok product <วันที่>\" (เจอ 5 พ.ย. 69)"
     },
     "wibwub-download-orders-monday": {
       "label": "โหลด order + ads_daily 08:35/19:35",
@@ -190,8 +191,9 @@
     "wibwub-download-tiktok-ads": {
       "label": "โหลด TikTok Ads 09:40/20:40",
       "kind": "git_grep",
-      "pattern": "^auto: TikTok Ads",
-      "max_age_hours": 14
+      "pattern": "^auto(-update)?: TikTok Ads",
+      "max_age_hours": 14,
+      "note": "ข้อความ commit สลับระหว่าง \"auto:\" กับ \"auto-update:\" แล้วแต่รอบ (เจอ 5 พ.ย. 69)"
     },
     "wibwub-samp-request-sync": {
       "label": "คำขอสินค้า",
