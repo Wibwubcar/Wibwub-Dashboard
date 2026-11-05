@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-11-05 21:11",
+ "checked_at": "2026-11-05 22:11",
  "unreadable": [],
  "gaps": [
   {
@@ -22,7 +22,7 @@
  "counts": {
   "stop": 0,
   "warn": 1,
-  "ok": 15,
+  "ok": 16,
   "sheet_wait": 0,
   "gaps": 1,
   "known_errors_skipped": 2
@@ -35,7 +35,7 @@
    "level": "⚠️",
    "status": "ชีตค้างเกินกำหนด",
    "data_asof": "29 Oct 10:37",
-   "silent_min": 30,
+   "silent_min": 90,
    "note": "รอทีมกรอกชีต — Lazada 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11) · Shopee 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11) · TikTok 31/10 ⚠️ข้ามรอบจันทร์ (ควรถึง 01/11)",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -47,7 +47,7 @@
    "level": "⏳",
    "status": "รอรอบเก็บคลิปถัดไป 06/11",
    "data_asof": "02 Nov 09:38",
-   "silent_min": 33,
+   "silent_min": 93,
    "note": "ตัวเลขคลิปในชีต CONTENT เก็บโดยงาน \"ชีตคอนเทนต์ ทุก 5 วัน 10:50\" ไม่ได้รอทีมกรอก งานนี้แค่รออ่านรอบถัดไป (ทีมกรอกเองเฉพาะคอลัมน์ C/E/F/G/J)",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -57,24 +57,12 @@
    "side": "local",
    "last_round": "05 Nov 20:53",
    "level": "⏳",
-   "status": "กำลังรัน",
+   "status": "ยังไม่ถึงรอบ / กำลังเริ่ม",
    "data_asof": "05 Nov 20:45",
-   "silent_min": 3,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
+   "silent_min": 45,
+   "note": "งานฝั่ง local เริ่มช้าได้ถึง ~15 นาทีเป็นปกติ",
    "desc_mismatch": "",
    "known_error_hits": ""
-  },
-  {
-   "name": "wibwub-tiktok-product-daily",
-   "side": "local",
-   "last_round": "05 Nov 21:08",
-   "level": "⏳",
-   "status": "กำลังรัน",
-   "data_asof": "05 Nov 10:02",
-   "silent_min": 1,
-   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
-   "desc_mismatch": "",
-   "known_error_hits": 2
   },
   {
    "name": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
@@ -83,7 +71,7 @@
    "level": "⏳",
    "status": "รอรอบถัดไป 06/11",
    "data_asof": "งานนี้ไม่มีผลงานปลายทางให้ตรวจ",
-   "silent_min": 6380,
+   "silent_min": 6440,
    "note": "Claude เก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26) ไม่ได้รอทีมกรอก",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -95,7 +83,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 20:30",
-   "silent_min": 40,
+   "silent_min": 100,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -107,7 +95,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 10:04",
-   "silent_min": 4986,
+   "silent_min": 5046,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -119,7 +107,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 10:40",
-   "silent_min": 39,
+   "silent_min": 99,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -131,7 +119,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 20:54",
-   "silent_min": 17,
+   "silent_min": 77,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -143,7 +131,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 19:14",
-   "silent_min": 113,
+   "silent_min": 173,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -155,7 +143,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 19:48",
-   "silent_min": 76,
+   "silent_min": 136,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -167,7 +155,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 19:20",
-   "silent_min": 111,
+   "silent_min": 171,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -179,7 +167,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 19:29",
-   "silent_min": 102,
+   "silent_min": 162,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -191,7 +179,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 09:29",
-   "silent_min": 131,
+   "silent_min": 191,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -199,11 +187,11 @@
   {
    "name": "wibwub-monday-update",
    "side": "local",
-   "last_round": "05 Nov 10:35",
+   "last_round": "05 Nov 21:35",
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 16:02",
-   "silent_min": 629,
+   "silent_min": 36,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -215,7 +203,7 @@
    "level": "✅",
    "status": "ปลดระวางแล้ว",
    "data_asof": "—",
-   "silent_min": 39,
+   "silent_min": 99,
    "note": "ย้ายไป งานฝั่ง code ชื่อเดียวกัน (09:25/20:25) — รอบนี้ตอบข้ามตามที่ตั้งใจ",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -227,7 +215,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 00:00",
-   "silent_min": 31,
+   "silent_min": 91,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -235,14 +223,26 @@
   {
    "name": "wibwub-thursday-affiliate",
    "side": "local",
-   "last_round": "05 Nov 10:27",
+   "last_round": "05 Nov 21:27",
    "level": "✅",
    "status": "ปกติ",
-   "data_asof": "02 Nov 21:32",
-   "silent_min": 644,
+   "data_asof": "05 Nov 21:36",
+   "silent_min": 35,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
+  },
+  {
+   "name": "wibwub-tiktok-product-daily",
+   "side": "local",
+   "last_round": "05 Nov 21:08",
+   "level": "✅",
+   "status": "ปกติ",
+   "data_asof": "05 Nov 10:02",
+   "silent_min": 61,
+   "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
+   "desc_mismatch": "",
+   "known_error_hits": 2
   },
   {
    "name": "การตลาด vs ยอดขาย 09:45/20:45",
@@ -251,7 +251,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 20:48",
-   "silent_min": 23,
+   "silent_min": 83,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
