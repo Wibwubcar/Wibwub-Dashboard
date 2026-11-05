@@ -109,22 +109,26 @@ def camp(path):
     print(json.dumps({'tk_camp':rep,'changed':changed},ensure_ascii=False))
     if not changed: sys.exit(10)
     tmp=TKC+'.tmp'; json.dump(d,open(tmp,'w',encoding='utf-8'),ensure_ascii=False,indent=1); os.replace(tmp,TKC)
-def git(*a): return subprocess.run(['git',*a],cwd=ALL,capture_output=True,text=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'})
-def unlock():
-    for f in ('index.lock','HEAD.lock','objects/maintenance.lock'):
-        p=os.path.join(ALL,'.git',f)
-        if os.path.exists(p): os.rename(p, os.path.join(ALL,'.git','stale-%d-%s'%(datetime.datetime.now().timestamp()*1e6, os.path.basename(f))))
+# ทุกคำสั่ง git ต้องผ่าน gitw.py — มันรอ index.lock/HEAD.lock ให้สูงสุด 5 นาที
+# และ unstage ของตัวเองคืนเมื่อล้มเหลว · stdout ส่งต่อตรงทุกไบต์ (ข้อความของ gitw ไป stderr)
+#
+# เดิมมี unlock() ที่ "เปลี่ยนชื่อ .git/*.lock ทิ้ง" แล้วเรียก 4 ครั้งต่อรอบ — ตัดออกแล้ว
+# 5 พ.ย. 69: lock พวกนั้นเป็นของงานอื่นที่กำลัง commit อยู่ การยกเลิกทิ้งกลางคัน
+# ทำให้ commit ของงานนั้นพังและทิ้ง lock ค้างต่อเป็นลูกโซ่ · กฎของผู้ใช้คือ
+# **ห้ามลบ lock ของคนอื่นทุกกรณี** ถ้ารอแล้วยังไม่ได้ ให้รายงานว่ายังไม่ได้ commit
+GITW = os.path.join(ALL, 'scripts', 'gitw.py')
+def git(*a): return subprocess.run([sys.executable, GITW, *a],cwd=ALL,capture_output=True,text=True,env={**os.environ,'GIT_OPTIONAL_LOCKS':'0'})
 def commit():
     r=subprocess.run(['node',os.path.join(HERE,'sync_periods.js')],cwd=ALL,capture_output=True,text=True); print(r.stdout.strip()); 
     if r.returncode: sys.exit('sync_periods ล้มเหลว: '+r.stderr[-500:])
     files=['data Ads/ads_daily.json','data Ads/ads_periods.json','data Ads/ads_tk_campaigns.json']
-    unlock(); st=git('status','--porcelain','--',*files).stdout.strip()
+    st=git('status','--porcelain','--',*files).stdout.strip()
     if not st: print('NO_CHANGE'); sys.exit(10)
     sw=os.path.join(ALL,'sw.js'); s=open(sw,encoding='utf-8').read(); mm=re.search(r'wibwub-v(\d+)',s)
     s=s.replace(mm.group(0),'wibwub-v%d'%(int(mm.group(1))+1),1); open(sw,'w',encoding='utf-8').write(s)
     d=load()
     for _ in range(3):   # โฟลเดอร์ Google Drive บางครั้งเขียน .git/index ไม่ทัน ("unable to write new_index file") ให้ลองใหม่
-        unlock(); r=git('add','--',*files,'sw.js'); unlock()
+        r=git('add','--',*files,'sw.js')
         if r.returncode==0: break
         import time; time.sleep(3)
     else: sys.exit('git add ล้มเหลว: '+r.stderr[-300:])
@@ -138,7 +142,7 @@ def commit():
     else:
         other=sorted(x.split('/')[-1] for x in dirty)
         msg='auto: ads daily — ไม่มีข้อมูลรายวันใหม่ (รายวันยังถึง %s) · อัปเดตเฉพาะ %s'%(max(d['days']),', '.join(other))
-    r=git('-c','user.name=WIBWUB Bot','-c','user.email=marketingwibwub@gmail.com','commit','-m',msg,'--',*files,'sw.js'); unlock()
+    r=git('-c','user.name=WIBWUB Bot','-c','user.email=marketingwibwub@gmail.com','commit','-m',msg,'--',*files,'sw.js')
     print(r.stdout.strip() or r.stderr.strip()); print(git('log','-1','--format=%h %s').stdout.strip())
 if __name__=='__main__':
     a=sys.argv[1:]

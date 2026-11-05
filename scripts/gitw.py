@@ -79,10 +79,68 @@ def _is_lock_err(r):
                     or 'cannot lock ref' in e)
 
 
+# ── เก็บกวาด lock ที่ "ตายแล้ว" ─────────────────────────────────────────────
+# ทำไมต้องมี: งานฝั่ง local รันใน bridge VM ที่ **ลบไฟล์ไม่ได้** git จึงทิ้ง lock ของ
+# ตัวเองค้างไว้ทุกครั้ง โดยเฉพาะ `next-index-<pid>.lock` และ pid ใน VM ซ้ำกันบ่อย
+# (เจอ 9 / 10 / 11 / 16) พอ pid เดิมกลับมาใช้ใหม่ git จะขึ้น "File exists" แล้ว
+# commit ไม่ผ่านทั้งที่ไม่มีใครถืออยู่จริง — เกิดจริง 5 พ.ย. 69 เวลา 19:29
+#
+# เดิมแต่ละสคริปต์ลบ lock เอง (unlock() / clear_locks()) ซึ่งอันตรายเพราะมันลบของ
+# งานที่ "กำลังทำงานอยู่" ด้วย · ย้ายมาไว้ที่นี่จุดเดียว และ**ตัดสินด้วยอายุ**:
+#   · เก่ากว่า STALE_MIN นาที = เจ้าของตายไปแล้วแน่ -> rename เป็น .git/stale-... (ไม่ลบ)
+#   · ใหม่กว่านั้น = อาจมีงานกำลังใช้ -> **ห้ามแตะ** ให้รอตามกลไกเดิม
+STALE_MIN = 10
+LOCK_GLOBS = ('index.lock', 'HEAD.lock', 'next-index-*.lock',
+              'objects/maintenance.lock', 'refs/**/*.lock')
+SWEEP_LOG = '.git/gitw_lock_sweep.log'      # อยู่ใน .git จึงไม่มีวันถูก commit
+
+
+def _sweep_stale_locks():
+    """ย้าย lock ที่เก่ากว่า STALE_MIN นาทีออกไป แล้วจดบันทึกว่าแตะอะไรบ้าง"""
+    gd = BASE / '.git'
+    now, moved = time.time(), []
+    for pat in LOCK_GLOBS:
+        try:
+            found = list(gd.glob(pat))
+        except OSError:
+            continue
+        for lk in found:
+            try:
+                age = (now - lk.stat().st_mtime) / 60
+            except OSError:
+                continue
+            if age < STALE_MIN:
+                continue                     # อาจมีเจ้าของอยู่ ห้ามแตะ
+            dst = gd / ('stale-%s-%s' % (lk.name, time.strftime('%Y%m%d%H%M%S')))
+            try:
+                lk.rename(dst)
+            except OSError as e:
+                moved.append('%s (อายุ %.0f นาที) ย้ายไม่สำเร็จ: %s'
+                             % (lk.name, age, type(e).__name__))
+            else:
+                moved.append('%s (อายุ %.0f นาที) -> %s' % (lk.name, age, dst.name))
+    if moved:
+        stamp = time.strftime('%Y-%m-%d %H:%M:%S')
+        for m in moved:
+            print('gitw: เก็บกวาด lock ที่ตายแล้ว — ' + m, file=sys.stderr)
+        try:
+            with open(BASE / SWEEP_LOG, 'a', encoding='utf-8') as fh:
+                for m in moved:
+                    fh.write('[%s] %s\n' % (stamp, m))
+        except OSError:
+            pass                              # จดไม่ได้ก็ไม่เป็นไร ไม่ให้กระทบงานหลัก
+    return moved
+
+
 def _run_waiting(args, wait=None):
-    """รัน git แล้วถ้าติด index.lock ของคนอื่น ให้รอแล้วลองใหม่จนหมดเวลา — ไม่ลบ lock เด็ดขาด"""
+    """รัน git แล้วถ้าติด lock ให้รอจนหมดเวลา — ลบ lock ของคนอื่นไม่ได้เด็ดขาด
+
+    ก่อนลองทุกครั้งจะเก็บกวาด lock ที่เก่ากว่า STALE_MIN นาทีออกไปก่อน (ดูบล็อกข้างบน)
+    lock ที่ยังใหม่ไม่ถูกแตะ จึงยังรอเจ้าของจริงเหมือนเดิม
+    """
     deadline = time.time() + (LOCK_WAIT if wait is None else wait)
     while True:
+        _sweep_stale_locks()
         r = _run(args)
         if not _is_lock_err(r) or time.time() >= deadline:
             return r

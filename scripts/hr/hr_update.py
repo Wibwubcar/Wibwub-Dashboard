@@ -165,23 +165,19 @@ def cmd_merge(a):
         "ot_month_min": sum(r["otMin"] for r in d["DAY"] if r["date"].startswith(target))}, ensure_ascii=False))
 
 # ---------------------------------------------------------------- commit
+GITW = REPO / "scripts" / "gitw.py"
 def git(*args, check=True):
-    r = subprocess.run(["git", *args], cwd=REPO, capture_output=True, text=True)
+    """ทุกคำสั่ง git ผ่าน gitw.py — รอ lock ให้แทนการแย่ง และ commit เฉพาะไฟล์ของตัวเอง
+
+    stdout ของ gitw เท่ากับของ git ทุกไบต์ (ตรวจแล้ว) ข้อความของมันเองไปที่ stderr
+    จึงยังใช้ผลลัพธ์ของ `log` / `show` มาเทียบเนื้อไฟล์ได้เหมือนเดิม
+    """
+    r = subprocess.run([sys.executable, str(GITW), *args], cwd=REPO,
+                       capture_output=True, text=True)
     if check and r.returncode: die("git " + " ".join(args) + ": " + (r.stderr or r.stdout)[:400])
     return r.stdout.strip()
 
-def clear_locks():
-    """git leaves *.lock files behind when the bridge does not allow deletes; move them aside so the next git command works."""
-    stamp = dt.datetime.now(BKK).strftime("%Y%m%d%H%M%S")
-    for lk in (".git/index.lock", ".git/HEAD.lock", ".git/objects/maintenance.lock") + tuple(
-            str(p.relative_to(REPO)) for p in (REPO / ".git").glob("next-index-*.lock")):
-        f = REPO / lk
-        if not f.exists(): continue
-        try: f.unlink()
-        except PermissionError: f.rename(REPO / ".git" / f"stale-{f.name}-{stamp}")
-
 def cmd_commit(a):
-    clear_locks()
     s = SW.read_text(encoding="utf-8")
     m = re.search(r"const CACHE = 'wibwub-v(\d+)';", s)
     if not m: die("sw.js CACHE line not found — do not commit, check sw.js line 2")
@@ -194,7 +190,6 @@ def cmd_commit(a):
     # commit ONLY our two files (other tasks may have staged their own files)
     git("-c", f"user.name={name}", "-c", f"user.email={mail}", "commit", "-q", "-m", f"auto-update: HR attendance {now} — Discord",
         "--", "WIBWUB_HR_Attendance.html", "sw.js")
-    clear_locks()
     head = git("show", "HEAD:WIBWUB_HR_Attendance.html")
     ok = head.strip() == PAGE.read_text(encoding="utf-8").strip()
     print(json.dumps({"commit": git("log", "-1", "--oneline"), "cache": int(m.group(1))+1, "verified": ok,
