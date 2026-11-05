@@ -39,3 +39,7 @@ Order.completed.*
 # cache ของ ship_cache.py — ย้ายมาไว้ในโฟลเดอร์ All ให้แซนด์บ็อกซ์เห็นด้วย (5 พ.ย. 69)
 # มีข้อมูลยอดขายระดับบรรทัดจาก Shipnity · repo เป็น public ห้าม commit เด็ดขาด
 /.cache/
+
+# ตารางจับคู่ชื่อครีเอเตอร์ TikTok -> เลข (ใช้แทนชื่อคนใน ads_detail_tk.json)
+# รีโปเป็น public ชื่อจริงห้ามขึ้น git เด็ดขาด — ดู scripts/ads/detail_privacy.py
+data Ads/TikTok/creator_map_private.json
