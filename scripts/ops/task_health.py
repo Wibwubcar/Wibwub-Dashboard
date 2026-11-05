@@ -199,6 +199,17 @@ def check_code(now):
         # ตัวตรวจหน้าสถานะ (build_status) คิดแบบนี้อยู่แล้ว — ตรงนี้เคยไม่คิด จึงรายงานสวนกันเอง
         # (2 พ.ย. 69: sales-update ฝั่ง code หน้าสถานะขึ้น 📝 แต่คำสั่งนี้ขึ้น ⛔ แล้วคืน exit 3)
         if lv == '⛔':
+            # งานที่ Claude เก็บข้อมูลเอง ต้องไม่ขึ้นว่า "รอทีมกรอกชีต" ในบรรทัดนี้ด้วย
+            # (build_status แก้ไปแล้วตอน e36ff25 แต่ทางนี้ยังพูดคนละเรื่องกับหน้าสถานะ)
+            sp = (cfg_all.get('self_paced_tasks') or {}).get(tid)
+            if sp:
+                # ฟังก์ชันนี้ไม่รู้จัก cron ของงาน — spec ต้องมีคีย์ `cron` ของรอบที่รออยู่เอง
+                row = self_paced_row(sp, None, now)
+                out.append({'lv': 'ℹ️', 'task': label,
+                            'msg': ('%s · %s · ผลงานล่าสุด %s (%s ชม.)'
+                                    % (row['status'], sp.get('note', '')[:70],
+                                       seen.strftime('%d %b %H:%M'), age))})
+                continue
             sw = sheet_wait_row(tid, cfg_all, now)
             if sw:
                 out.append({'lv': '⚠️' if sw[1] else 'ℹ️', 'task': label,
@@ -676,8 +687,13 @@ def build_status(now):
         elif acfg and not fresh:
             # งานที่กินข้อมูลจากชีตที่ทีมกรอก: "ข้อมูลไม่ขยับ" มักแปลว่าทีมยังไม่กรอก
             # ไม่ใช่ระบบพัง -> แยกเป็น 📝 ไม่นับในตัวเลขปัญหา · ⚠️/⛔ สงวนให้งานล้ม/ค้าง/ไม่เริ่ม
-            sw = sheet_wait_row(task_id, cfg_all, now)
-            if sw and sw[1]:
+            # งานที่รอ "รอบของงานอื่น" (ไม่ใช่รอทีม) ต้องมาก่อนการตัดสินแบบรอชีต
+            # เช่น TikTok คอนเทนต์ รอรอบเก็บคลิปทุก 5 วันของงานชีตคอนเทนต์
+            sp = (cfg_all.get('self_paced_tasks') or {}).get(task_id)
+            sw = None if sp else sheet_wait_row(task_id, cfg_all, now)
+            if sp:
+                r.update(**self_paced_row(sp, cron, now))
+            elif sw and sw[1]:
                 r.update(level='⚠️', status='ชีตค้างเกินกำหนด', note=sw[0])
             elif sw and sw[2]:
                 # ชีตมาครบตามรอบของตัวเองแล้ว (เช่นรายสัปดาห์ถึงวันอาทิตย์ที่ปิดสัปดาห์)
@@ -949,9 +965,14 @@ def self_paced_row(spec, cron, now):
     ทั้งที่ Claude เป็นคนเก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26)
     ผู้ใช้อ่านแล้วเข้าใจผิดว่าต้องไปตามทีมให้กรอก -> ต้องบอกว่ารอรอบถัดไปวันไหนแทน
     """
-    nxt = next_fire(cron, now, now + timedelta(days=12)) if cron else []
+    # บางงาน "รอรอบของงานอื่น" ไม่ใช่รอบของตัวเอง เช่น TikTok คอนเทนต์ (09:25/20:25)
+    # อ่านชีต CONTENT ที่งาน "ชีตคอนเทนต์ ทุก 5 วัน 10:50" เป็นคนเก็บคลิปลงไป
+    # ถ้าใช้ cron ของตัวเองจะบอกว่า "รอรอบถัดไปพรุ่งนี้ 09:25" ซึ่งไม่ใช่สิ่งที่รออยู่จริง
+    use = spec.get('cron') or cron
+    nxt = next_fire(use, now, now + timedelta(days=12)) if use else []
     return {'level': '⏳',
-            'status': 'รอรอบถัดไป %s' % (nxt[0].strftime('%d/%m') if nxt else '—'),
+            'status': '%s %s' % (spec.get('label') or 'รอรอบถัดไป',
+                                 nxt[0].strftime('%d/%m') if nxt else '—'),
             'note': spec.get('note') or 'งานนี้เก็บข้อมูลเอง ไม่ได้รอทีมกรอกชีต'}
 
 
