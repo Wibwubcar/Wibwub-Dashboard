@@ -2,6 +2,13 @@
 name: wibwub-download-tiktok-ads
 description: ดาวน์โหลด TikTok Ads data ทุกวัน 08:10/19:10 — GMV Max Campaign Overview + Business Ads Campaign Report
 ---
+> ⛔ **ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์** (เช่น `allow_cowork_file_delete`)
+> งานตั้งเวลาไม่มีคนกดอนุญาต เครื่องมือนี้จะค้างรอจนหมดรอบ — เกิดจริง 5 พ.ย. 69
+> `wibwub-shopee-live-daily` เรียกเพื่อลบ `.git/HEAD.lock` ของตัวเอง แล้ว**ค้าง 81 นาที**
+> (09:40 → 10:57) กินสล็อตงานพร้อมกัน 1 ใน 3 ไปเปล่า ๆ · ตอนนี้มี hook ตีกลับให้อัตโนมัติแล้ว
+> ถ้าติด `.git/index.lock` หรือ `.git/HEAD.lock`: `gitw.py` รอให้แล้วสูงสุด 5 นาที
+> **ห้ามลบ lock ของคนอื่น** ถ้าสุดท้ายยังไม่ผ่าน → **รายงานตรง ๆ** ว่ารอบนี้ข้อมูลเข้าไฟล์แล้ว
+> แต่ยังไม่ได้ commit แล้วจบรอบ **ห้ามรอต่อ**
 
 > 🔁 **ไฟล์นี้คือสำเนาของพรอมป์ตัวจริง** ที่ `~/Documents/Claude/Scheduled/wibwub-download-tiktok-ads/SKILL.md`
 > (งาน local อ่านไฟล์นั้น · ไม่มีสคริปต์หรืองานไหนอ่านไฟล์นี้) · มีไว้ให้ git เก็บประวัติ

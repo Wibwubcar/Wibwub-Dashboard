@@ -450,6 +450,14 @@ DRIFT_MARKERS = [
     ('mv ".git/', 'สั่งย้าย lock ของคนอื่น'),
     ('stale-%d-%s', 'สั่งย้าย lock ของคนอื่น'),
     ('รอ 20 วินาที', 'สั่งวน retry lock เอง (gitw.py รอและ unstage ให้แล้ว)'),
+    ('[ -d "$d/scripts" ]', 'เช็ค BASE ด้วย [ -d ] ในลูป for ของ bash'),
+    ('ห้ามใช้พาธ `/sessions/', 'สั่งห้ามใช้พาธ /sessions ทั้งที่เป็นพาธเดียวที่ใช้ได้เมื่อได้ Linux sandbox'),
+]
+
+# ข้อความที่ "ต้องมี" ในพรอมป์ตัวจริงทุกตัว — ไม่มี = กฎใหม่ยังไม่ถึงรอบจริง
+REQUIRED = [
+    ('ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์',
+     'ไม่มีกฎห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์ (เคสค้าง 81 นาที 5 พ.ย. 69)'),
 ]
 
 
@@ -484,6 +492,9 @@ def check_skill_sync():
                                % (rel, len(lt.encode()), len(rt.encode())))
         for pat, reason in DRIFT_MARKERS:
             if pat in lt and reason not in why:
+                why.append(reason)
+        for pat, reason in REQUIRED:
+            if pat not in lt and reason not in why:
                 why.append(reason)
         if why:
             out.append({'lv': '⚠️', 'task': '(SKILL.md) ' + folder,
