@@ -150,10 +150,11 @@
   "local_tasks": {
     "wibwub-daily-stock": {
       "label": "สต๊อก / Forecast 08:40/19:40",
-      "kind": "git_grep",
-      "pattern": "^auto: update stock",
+      "kind": "regex_dt",
+      "file": "Data Shipnity/stock/stock_snapshot.json",
+      "pattern": "\"fetched_at\"\\s*:\\s*\"(\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2})",
       "max_age_hours": 14,
-      "note": "update_stock.py commit เองในตัว ข้อความขึ้นต้น 'auto: update stock' (ไม่ใช่ auto-update:)"
+      "note": "ห้ามเช็คจากข้อความ commit — 5 พ.ย. 69 งาน Shopee Ads commit ไฟล์ที่ daily-stock staged ไว้ไปใน fe49e6c ทำให้หา 'auto: update stock' ไม่เจอทั้งที่ข้อมูลเข้าแล้ว จึงยึด fetched_at ในไฟล์ snapshot เป็นหลักฐานแทน"
     },
     "wibwub-daily-followers": {
       "label": "TikTok Followers 10:00/21:00",

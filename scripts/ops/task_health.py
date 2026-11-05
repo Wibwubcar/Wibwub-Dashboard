@@ -399,15 +399,28 @@ def artifact_age(cfg, now):
     kind = cfg.get('kind')
     if kind == 'git_grep':
         seen = _git_last(cfg['pattern'])
-    elif kind in ('mtime', 'regex_date'):
+    elif kind in ('mtime', 'regex_date', 'regex_dt'):
         fp = BASE / cfg['file']
-        if not fp.exists():
-            return None, 'ไม่พบไฟล์ผลงาน', None
-        if kind == 'mtime':
-            seen = datetime.fromtimestamp(fp.stat().st_mtime)
-        else:
-            m = re.search(cfg['pattern'], fp.read_text(encoding='utf-8'))
-            seen = datetime.strptime(m.group(1), '%Y-%m-%d') if m else None
+        # ห้ามใช้ fp.exists() เป็นด่าน — stat บนโฟลเดอร์ Drive ตอบ False หลอกได้
+        # (เคส daily-stock 3-4 พ.ย. 69) ให้เปิดไฟล์จริงแล้วรับ OSError แทน
+        try:
+            if kind == 'mtime':
+                seen = datetime.fromtimestamp(fp.stat().st_mtime)
+                txt = None
+            else:
+                txt = fp.read_text(encoding='utf-8')
+        except OSError:
+            return None, 'อ่านไฟล์ผลงานไม่ได้', None
+        if txt is not None:
+            m = re.search(cfg['pattern'], txt)
+            if not m:
+                seen = None
+            elif kind == 'regex_date':
+                seen = datetime.strptime(m.group(1), '%Y-%m-%d')
+            else:
+                # regex_dt = เอาเวลาด้วย เพื่อให้เกณฑ์ชั่วโมงใช้ได้จริงกับงานวันละ 2 รอบ
+                # (regex_date ปัดเป็น 00:00 รอบเย็นจะกลายเป็น "ค้าง 19 ชม." ทั้งที่เพิ่งรัน)
+                seen = datetime.fromisoformat(m.group(1))
     else:
         return None, 'งานนี้ไม่มีผลงานปลายทางให้ตรวจ', None
     if seen is None:
