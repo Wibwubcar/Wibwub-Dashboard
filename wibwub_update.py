@@ -1006,13 +1006,16 @@ def git_push():
              'Data Shipnity/Sales_Dashboard.html', 'sw.js',
              'Procurement_Dashboard.html']
     try:
-        subprocess.run(['git', 'add'] + files, cwd=str(BASE), check=True,
+        # ผ่าน gitw.py เท่านั้น (ดูเหตุผลใน update_stock.py — เคสกวาดไฟล์ 5 พ.ย. 69)
+        gitw = [sys.executable, str(BASE / 'scripts' / 'gitw.py')]
+        subprocess.run(gitw + ['add'] + files, cwd=str(BASE), check=True,
                        capture_output=True)
         diff = subprocess.run(['git', 'diff', '--cached', '--quiet'], cwd=str(BASE))
         if diff.returncode != 0:
             ts = datetime.datetime.now().strftime('%Y-%m-%d %H:%M')
-            subprocess.run(['git', 'commit', '-m', f'auto: update {ts}',
-                            '--author=WIBWUB Bot <marketingwibwub@gmail.com>'],
+            subprocess.run(gitw + ['-c', 'user.name=WIBWUB Bot',
+                                   '-c', 'user.email=marketingwibwub@gmail.com',
+                                   'commit', '-m', f'auto: update {ts}'],
                            cwd=str(BASE), check=True, capture_output=True)
         else:
             log('  Git: ไม่มีอะไรเปลี่ยนใหม่ให้ commit')

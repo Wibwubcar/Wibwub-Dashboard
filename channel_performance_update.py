@@ -129,7 +129,7 @@ competitor overall" vs. "which of our own channels performs best").
 """
 import json
 import re
-import subprocess
+import subprocess, sys
 import argparse
 import tempfile
 from pathlib import Path
@@ -414,13 +414,15 @@ def regen_html(data):
 
 
 def git_commit():
+    # ผ่าน gitw.py เท่านั้น — git ตรงจะกวาดไฟล์ที่งานอื่น stage ค้างไว้ (5 พ.ย. 69)
+    gitw = [sys.executable, str(Path(BASE) / "scripts" / "gitw.py")]
     subprocess.run(
-        ["git", "add", str(DASHBOARD_PATH), str(DATA_PATH)], cwd=BASE, check=False
+        gitw + ["add", str(DASHBOARD_PATH), str(DATA_PATH)], cwd=BASE, check=False
     )
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     subprocess.run(
-        [
-            "git", "-c", "user.name=WIBWUB Bot",
+        gitw + [
+            "-c", "user.name=WIBWUB Bot",
             "-c", "user.email=marketingwibwub@gmail.com",
             "commit", "-m", f"auto: update channel performance dashboard {ts}",
         ],

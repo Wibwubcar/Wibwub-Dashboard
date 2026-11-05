@@ -167,10 +167,12 @@ def main():
     # Auto-commit (dashboard file only — mirrors update_stock.py convention)
     ts = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     try:
-        subprocess.run(["git", "add", "WIBWUB_Dashboard.html"], cwd=HERE, check=True)
+        # ผ่าน gitw.py เท่านั้น — git ตรงจะกวาดไฟล์ที่งานอื่น stage ค้างไว้ (5 พ.ย. 69)
+        gitw = [sys.executable, os.path.join(str(HERE), "scripts", "gitw.py")]
+        subprocess.run(gitw + ["add", "WIBWUB_Dashboard.html"], cwd=HERE, check=True)
         subprocess.run(
-            ["git", "-c", f"user.name=WIBWUB Bot", "-c", "user.email=marketingwibwub@gmail.com",
-             "commit", "-m", f"auto: update TikTok product sales data {ts}"],
+            gitw + ["-c", "user.name=WIBWUB Bot", "-c", "user.email=marketingwibwub@gmail.com",
+                    "commit", "-m", f"auto: update TikTok product sales data {ts}"],
             cwd=HERE, check=True,
         )
         print("Committed. Run push_now.command on your real machine to push (sandbox push always fails).")

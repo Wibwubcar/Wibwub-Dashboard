@@ -126,7 +126,7 @@ month (idempotent upsert, same pattern as upsert_snapshot).
 import json
 import re
 import argparse
-import subprocess
+import subprocess, sys
 from pathlib import Path
 from datetime import datetime
 
@@ -231,11 +231,12 @@ def regen_html(history):
 
 
 def git_commit():
-    subprocess.run(["git", "add", str(DASHBOARD_PATH), str(HISTORY_PATH)], cwd=BASE, check=False)
+    # ผ่าน gitw.py เท่านั้น — git ตรงจะกวาดไฟล์ที่งานอื่น stage ค้างไว้ (5 พ.ย. 69)
+    gitw = [sys.executable, str(Path(BASE) / "scripts" / "gitw.py")]
+    subprocess.run(gitw + ["add", str(DASHBOARD_PATH), str(HISTORY_PATH)], cwd=BASE, check=False)
     ts = datetime.now().strftime("%Y-%m-%d %H:%M")
     subprocess.run(
-        [
-            "git",
+        gitw + [
             "-c", "user.name=WIBWUB Bot",
             "-c", "user.email=marketingwibwub@gmail.com",
             "commit",

@@ -382,16 +382,22 @@ print(f"📅 วันที่ของข้อมูล (snapshot): {date_str
 # สคริปต์นี้ไม่มี LaunchAgent ของตัวเอง (รันมือ/ผ่าน run_now.command เท่านั้น)
 # และเดิม wibwub_update.py's git_push() ไม่ได้ add ไฟล์นี้เลย ทำให้ Procurement_Dashboard.html
 # ไม่เคยถูก push ขึ้นเว็บจริง แม้จะอัปเดตในเครื่องแล้วก็ตาม — commit เองที่นี่กันพลาด
-import subprocess
+import subprocess, sys
 try:
-    subprocess.run(["git", "add", "Procurement_Dashboard.html"], cwd=str(BASE), check=True, capture_output=True)
+    # ต้องผ่าน gitw.py เท่านั้น — มันเติม `-- <ไฟล์ที่ตัวเอง add>` ให้ commit เอง
+    # เดิมใช้ git ตรงแบบไม่ระบุ path: 5 พ.ย. 69 รอบ 19:14 กวาดไฟล์ที่งานอื่น stage
+    # ค้างไว้ไป 10 ไฟล์ (aabd90c) แล้ว push ขึ้นรีโปสาธารณะ
+    GITW = [sys.executable, str(BASE / "scripts" / "gitw.py")]
+    subprocess.run(GITW + ["add", "Procurement_Dashboard.html"],
+                   cwd=str(BASE), check=True, capture_output=True)
     diff = subprocess.run(["git", "diff", "--cached", "--quiet"], cwd=str(BASE))
     if diff.returncode == 0:
         print("   Git: ไม่มีอะไรเปลี่ยน")
     else:
         ts = datetime.now().strftime("%Y-%m-%d %H:%M")
-        subprocess.run(["git", "commit", "-m", f"auto: update stock {ts}",
-                        "--author=WIBWUB Bot <marketingwibwub@gmail.com>"],
+        subprocess.run(GITW + ["-c", "user.name=WIBWUB Bot",
+                               "-c", "user.email=marketingwibwub@gmail.com",
+                               "commit", "-m", f"auto: update stock {ts}"],
                        cwd=str(BASE), check=True, capture_output=True)
         r = subprocess.run(["git", "push", "origin", "main"], cwd=str(BASE), capture_output=True, text=True)
         if r.returncode == 0:
