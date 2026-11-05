@@ -12,45 +12,85 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
+/* สีทุกตัวเป็นโทเคนบน :root แล้วธีมมืดนิยามทับเฉพาะโทเคน
+   ห้ามใส่สีดิบในกฎของคอมโพเนนต์ ไม่งั้นธีมมืดจะได้ตัวอักษรของธีมหนึ่งบนพื้นของอีกธีม */
 :root{
   --bg:#F4F5F7; --card:#FFFFFF; --bd:#E3E6EB; --ink:#111827; --ink2:#4B5563; --muted:#6B7280;
   --pri:#2457F5; --pri-soft:#C9D6F5; --pos:#0F7B4F; --neg:#B42318; --warn:#B54708; --warn-bg:#FFF6ED;
   --sh:#EE4D2D; --tk:#111827; --lz:#3B2CC4; --fb:#1877F2; --line:#06A755; --orange:#E8590C;
+  --sh-soft:#FDEAE5; --tk-soft:#E5E7EB; --lz-soft:#E6E3FA; --fb-soft:#E3EEFE;
+  --sh-ink:#FFFFFF; --tk-ink:#FFFFFF; --lz-ink:#FFFFFF; --fb-ink:#FFFFFF;
+  --panel2:#FAFBFC; --hover:#F7F9FC; --row:#F1F3F6; --mini:#EDF0F4; --grid:#EEF0F3;
+  --insn:#EEF2FE; --midbg:#F3F4F6;
+  --hero:#111827; --hero-ink:#FFFFFF; --hero-ink2:#C3CAD6; --hero-bar:#243244; --hero-warn:#FDA29B;
+  --b-up-bg:#E7F7EE; --b-up:#0B7A43; --b-stop-bg:#FDECEC; --b-stop:#B42318;
+  --b-cre-bg:#E8F0FE; --b-cre:#1A4FBF; --b-fix-bg:#FEF6E0; --b-fix:#9A6400;
+  --red-bg:#FEF3F2; --green-bg:#ECFDF3; --low-bg:#F2F4F7;
   --r:16px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1218; --card:#161C25; --bd:#273041; --ink:#E8ECF2; --ink2:#B6BFCC; --muted:#9AA4B4;
+  --pri:#4C97FF; --pri-soft:#2E4F86; --pos:#3FCB8E; --neg:#FF7A70; --warn:#F0A938; --warn-bg:#3A2A0E;
+  --sh:#FF6A45; --tk:#E8ECF2; --lz:#8A7BFF; --fb:#4C97FF; --line:#2FD48A; --orange:#F0914A;
+  --sh-soft:#3A1C14; --tk-soft:#273041; --lz-soft:#211B4A; --fb-soft:#16294A;
+  --sh-ink:#FFFFFF; --tk-ink:#0E1218; --lz-ink:#FFFFFF; --fb-ink:#FFFFFF;
+  --panel2:#1C2430; --hover:#1C2430; --row:#222B38; --mini:#222B38; --grid:#273041;
+  --insn:#1A2747; --midbg:#222B38;
+  --hero:#1E2634; --hero-ink:#F3F6FA; --hero-ink2:#A9B3C2; --hero-bar:#0E1218; --hero-warn:#FF9C93;
+  --b-up-bg:#123527; --b-up:#3FCB8E; --b-stop-bg:#3E1A17; --b-stop:#FF7A70;
+  --b-cre-bg:#1A2747; --b-cre:#7EA2FF; --b-fix-bg:#3A2A0E; --b-fix:#F0A938;
+  --red-bg:#3E1A17; --green-bg:#123527; --low-bg:#1C2430;
+  color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0E1218; --card:#161C25; --bd:#273041; --ink:#E8ECF2; --ink2:#B6BFCC; --muted:#9AA4B4;
+  --pri:#4C97FF; --pri-soft:#2E4F86; --pos:#3FCB8E; --neg:#FF7A70; --warn:#F0A938; --warn-bg:#3A2A0E;
+  --sh:#FF6A45; --tk:#E8ECF2; --lz:#8A7BFF; --fb:#4C97FF; --line:#2FD48A; --orange:#F0914A;
+  --sh-soft:#3A1C14; --tk-soft:#273041; --lz-soft:#211B4A; --fb-soft:#16294A;
+  --sh-ink:#FFFFFF; --tk-ink:#0E1218; --lz-ink:#FFFFFF; --fb-ink:#FFFFFF;
+  --panel2:#1C2430; --hover:#1C2430; --row:#222B38; --mini:#222B38; --grid:#273041;
+  --insn:#1A2747; --midbg:#222B38;
+  --hero:#1E2634; --hero-ink:#F3F6FA; --hero-ink2:#A9B3C2; --hero-bar:#0E1218; --hero-warn:#FF9C93;
+  --b-up-bg:#123527; --b-up:#3FCB8E; --b-stop-bg:#3E1A17; --b-stop:#FF7A70;
+  --b-cre-bg:#1A2747; --b-cre:#7EA2FF; --b-fix-bg:#3A2A0E; --b-fix:#F0A938;
+  --red-bg:#3E1A17; --green-bg:#123527; --low-bg:#1C2430;
+  color-scheme:dark;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 body{background:var(--bg);color:var(--ink);font-family:'IBM Plex Sans Thai',system-ui,sans-serif;font-size:14px;line-height:1.55}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 .num{font-variant-numeric:tabular-nums}
 .wrap{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
 .head{display:flex;align-items:flex-start;gap:16px;flex-wrap:wrap;margin-bottom:14px}
 .head h1{font-size:21px;font-weight:700;letter-spacing:-.01em}
 .head .sub{font-size:12.5px;color:var(--muted)}
 .lab{margin-left:auto;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-.seg{display:inline-flex;background:#fff;border:1px solid var(--bd);border-radius:12px;overflow:hidden}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--bd);border-radius:12px;overflow:hidden}
 .seg button{font:inherit;font-size:13px;border:0;background:transparent;color:var(--ink2);padding:8px 13px;cursor:pointer}
 .seg button+button{border-left:1px solid var(--bd)}
 .seg button.on{background:var(--pri);color:#fff;font-weight:600}
 .seg.sm button{font-size:12.5px;padding:6px 11px}
-.dates{display:none;gap:6px;align-items:center;background:#fff;border:1px solid var(--bd);border-radius:12px;padding:5px 9px}
+.dates{display:none;gap:6px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:5px 9px}
 .dates.on{display:flex}
 .dates input{font:inherit;font-size:12.5px;border:0;color:var(--ink)}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
-.tabs button{font:inherit;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;background:#fff;border:1px solid var(--bd);border-radius:999px;padding:7px 15px;color:var(--ink2);cursor:pointer}
+.tabs button{font:inherit;font-size:13.5px;display:inline-flex;align-items:center;gap:7px;background:var(--card);border:1px solid var(--bd);border-radius:999px;padding:7px 15px;color:var(--ink2);cursor:pointer}
 .tabs button i{width:8px;height:8px;border-radius:3px;background:currentColor}
-.tabs button.on{background:var(--ink);border-color:var(--ink);color:#fff;font-weight:600}
+.tabs button.on{background:var(--pri);border-color:var(--pri);color:#fff;font-weight:600}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--bd);border-radius:999px;padding:5px 11px;font-size:12.5px;color:var(--ink2)}
+.chip{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--bd);border-radius:999px;padding:5px 11px;font-size:12.5px;color:var(--ink2)}
 .chip i{width:7px;height:7px;border-radius:50%;background:var(--pos)}
-.chip.warn{background:var(--warn-bg);border-color:#F3C99A;color:var(--warn)} .chip.warn i{background:var(--warn)}
+.chip.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--warn)} .chip.warn i{background:var(--warn)}
 .card{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:18px}
 .card+.card{margin-top:14px}
-.hero{background:#111827;color:#fff;border:0;margin-bottom:14px}
+.hero{background:var(--hero);color:var(--hero-ink);border:0;margin-bottom:14px}
 .hero .big{font-size:19px;font-weight:600;line-height:1.5}
 .hero .big b{font-weight:700}
 .hero.one .big{font-size:17px}
-.hero .bar{margin-top:14px;height:30px;border-radius:9px;background:#243244;overflow:hidden;display:flex}
+.hero .bar{margin-top:14px;height:30px;border-radius:9px;background:var(--hero-bar);overflow:hidden;display:flex}
 .hero .bar span{display:block;background:var(--pri)}
-.hero .leg{display:flex;gap:18px;margin-top:9px;font-size:12.5px;color:#C3CAD6;flex-wrap:wrap}
+.hero .leg{display:flex;gap:18px;margin-top:9px;font-size:12.5px;color:var(--hero-ink2);flex-wrap:wrap}
 .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
 .kpi .k-l{font-size:12.5px;color:var(--ink2);font-weight:500}
 .kpi .k-v{font-size:26px;font-weight:700;margin-top:3px;letter-spacing:-.02em}
@@ -64,28 +104,28 @@ h2{font-size:15px;font-weight:700;margin-bottom:12px}
 .note{font-size:12px;color:var(--muted);margin-top:9px}
 table{width:100%;border-collapse:collapse;font-size:13px}
 th{text-align:right;font-weight:600;color:var(--ink2);font-size:12px;padding:7px 8px;border-bottom:1px solid var(--bd);white-space:nowrap}
-td{text-align:right;padding:10px 8px;border-bottom:1px solid #F1F3F6}
+td{text-align:right;padding:10px 8px;border-bottom:1px solid var(--row)}
 th:first-child,td:first-child{text-align:left}
-tr.tot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0;background:#FAFBFC}
-tr.sub2 td{background:#FAFBFC;font-weight:600}
+tr.tot td{font-weight:700;border-top:1px solid var(--bd);border-bottom:0;background:var(--panel2)}
+tr.sub2 td{background:var(--panel2);font-weight:600}
 td.name{text-align:left;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-tr.go{cursor:pointer} tr.go:hover td{background:#F7F9FC}
+tr.go{cursor:pointer} tr.go:hover td{background:var(--hover)}
 .pf{display:inline-flex;align-items:center;gap:8px;font-weight:600}
 .pf i{width:9px;height:9px;border-radius:3px}
-.mini{height:7px;border-radius:4px;background:#EDF0F4;overflow:hidden;min-width:60px}
+.mini{height:7px;border-radius:4px;background:var(--mini);overflow:hidden;min-width:60px}
 .mini span{display:block;height:100%;background:var(--pri)}
 .mini.hi span{background:var(--orange)}
 .barc{display:flex;align-items:center;gap:9px;justify-content:flex-end}
 .barc b{min-width:48px;display:inline-block}
 .ins{display:flex;flex-direction:column;gap:12px}
 .ins .it{display:flex;gap:10px;align-items:flex-start}
-.ins .n{flex:0 0 22px;height:22px;border-radius:7px;background:#EEF2FE;color:var(--pri);font-size:12px;font-weight:700;display:grid;place-items:center}
+.ins .n{flex:0 0 22px;height:22px;border-radius:7px;background:var(--insn);color:var(--pri);font-size:12px;font-weight:700;display:grid;place-items:center}
 .ins .tx{font-size:13px;color:var(--ink2)} .ins .tx b{color:var(--ink)}
 .cw{position:relative;height:270px}
 .bdg{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;border-radius:999px;padding:3px 9px;white-space:nowrap}
-.bdg.red{background:#FEF3F2;color:var(--neg)} .bdg.green{background:#ECFDF3;color:var(--pos)}
-.bdg.yellow{background:var(--warn-bg);color:var(--warn)} .bdg.low{background:#F2F4F7;color:var(--muted)}
-tr.grp td{background:#F7F9FC;font-weight:700;font-size:12.5px;border-bottom:1px solid var(--bd);padding:9px 8px}
+.bdg.red{background:var(--red-bg);color:var(--neg)} .bdg.green{background:var(--green-bg);color:var(--pos)}
+.bdg.yellow{background:var(--warn-bg);color:var(--warn)} .bdg.low{background:var(--low-bg);color:var(--muted)}
+tr.grp td{background:var(--hover);font-weight:700;font-size:12.5px;border-bottom:1px solid var(--bd);padding:9px 8px}
 tr.grp td .m{font-weight:400;color:var(--muted)}
 .sumline{font-size:13.5px;margin-bottom:12px} .sumline b{font-weight:700}
 .wk{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:12px}
@@ -95,14 +135,14 @@ tr.grp td .m{font-weight:400;color:var(--muted)}
 .fbgrid .f-s{font-size:12px;color:var(--muted)}
 .link{color:var(--pri);font-weight:600;text-decoration:none;font-size:13px}
 button.link{background:none;border:0;cursor:pointer;font-family:inherit}
-.sel{font:inherit;font-size:13px;background:#fff;border:1px solid var(--bd);border-radius:10px;padding:7px 10px;color:var(--ink)}
-details{margin-top:14px;background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px}
+.sel{font:inherit;font-size:13px;background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:7px 10px;color:var(--ink)}
+details{margin-top:14px;background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:14px 18px}
 details summary{cursor:pointer;font-weight:600;font-size:13.5px}
 details .body{margin-top:12px;font-size:13px;color:var(--ink2)}
 details .body p{margin-bottom:9px}
 details .body h3{font-size:13px;font-weight:700;color:var(--ink);margin:14px 0 8px}
 .scroll{overflow-x:auto}
-.err{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
+.err{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wk{grid-template-columns:minmax(0,1fr)}.hero .big{font-size:17px}.hero.one .big{font-size:15.5px}}
 @media(max-width:560px){.kpis{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:minmax(0,1fr)}.wrap{padding:14px 12px 44px}}
 
@@ -112,7 +152,7 @@ details .body h3{font-size:13px;font-weight:700;color:var(--ink);margin:14px 0 8
 .dkpi div{display:flex;flex-direction:column;gap:2px}
 .dkpi span{font-size:11.5px;color:var(--muted)}
 .dkpi b{font-size:17px}
-details.dtl{border:1px solid var(--bd);border-radius:10px;margin-top:8px;background:#fff}
+details.dtl{border:1px solid var(--bd);border-radius:10px;margin-top:8px;background:var(--card)}
 details.dtl>summary{cursor:pointer;padding:10px 12px;font-size:13px;display:flex;
   flex-wrap:wrap;gap:4px 10px;align-items:baseline}
 details.dtl>summary::-webkit-details-marker{display:none}
@@ -121,17 +161,17 @@ details.dtl[open]>summary:before{content:'▾'}
 details.dtl .sm{font-size:12px;color:var(--muted)}
 details.dtl .pad{padding:0 12px 10px}
 details.dtl .pad p{font-size:12.5px;color:var(--ink2);margin:6px 0}
-.mid{display:inline-block;font-size:11px;color:var(--muted);background:#F3F4F6;
+.mid{display:inline-block;font-size:11px;color:var(--muted);background:var(--midbg);
   border-radius:5px;padding:1px 6px;margin-right:4px}
 .bdg{display:inline-block;font-size:12px;white-space:nowrap;border-radius:6px;padding:2px 7px}
-.b-up{background:#E7F7EE;color:#0B7A43}.b-stop{background:#FDECEC;color:#B42318}
-.b-cre{background:#E8F0FE;color:#1A4FBF}.b-fix{background:#FEF6E0;color:#9A6400}
+.b-up{background:var(--b-up-bg);color:var(--b-up)}.b-stop{background:var(--b-stop-bg);color:var(--b-stop)}
+.b-cre{background:var(--b-cre-bg);color:var(--b-cre)}.b-fix{background:var(--b-fix-bg);color:var(--b-fix)}
 .why{font-size:11.5px;color:var(--muted);margin-top:3px;max-width:320px}
 .why2{font-size:12px;color:var(--ink2)}
 tr.fnr td{padding-top:0;border-top:none}
 .fnl{display:flex;flex-direction:column;gap:3px;margin:2px 0 10px}
 .fnl-s{position:relative}
-.fnl-b{height:16px;border-radius:4px;background:var(--soft,#C9D6F5)}
+.fnl-b{height:16px;border-radius:4px;background:var(--pri-soft)}
 .fnl-t{position:absolute;inset:0;display:flex;align-items:center;gap:8px;
   font-size:11.5px;padding-left:7px}
 .fnl-d{color:var(--muted)}
@@ -143,6 +183,82 @@ tr.fnr td{padding-top:0;border-top:none}
   .card .scroll>table{min-width:640px}
   .why2{min-width:220px;display:inline-block}
 }
+
+/* ======== ดีไซน์ใหม่ของแท็บช่องทาง (ตามแบบ WIBWUB_Ads_Facebook_Mock.html) ========
+   สีเน้นของแท็บมาจาก --acc / --acc-soft ที่ตั้งไว้บน .v2 ของแต่ละช่องทาง
+   ลำดับบล็อกในแท็บห้ามสลับ: การ์ด 4 ใบ -> แถว 3 ช่อง -> บอร์ด 4 ป้าย ->
+   กลุ่มผู้ชม+ตำแหน่ง -> ตาราง 5 แคมเปญ -> ตารางเจาะชั้น+รายละเอียดแอด */
+.v2{display:flex;flex-direction:column;gap:14px}
+.v2 .kpi{background:var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:14px;
+  display:flex;flex-direction:column;gap:1px;min-width:0}
+.v2 .k-top{display:flex;align-items:center;gap:8px;margin-bottom:2px}
+.v2 .ico{width:28px;height:28px;border-radius:8px;background:var(--acc-soft);display:grid;place-items:center;flex:none}
+.v2 .ico svg{width:16px;height:16px;display:block}
+.v2 .kpi .k-v{font-size:22px}
+.v2 .spark{margin-top:6px}
+.v2 .spark svg{width:100%;height:34px;display:block}
+.row3{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:14px}
+.row3 .card{margin:0}
+.trendsvg svg,.fnlbig svg{width:100%;height:auto;display:block}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-bottom:8px}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.sumbox{background:linear-gradient(180deg,var(--acc-soft),var(--card) 60%)}
+.sumtext{font-size:13.5px;margin-bottom:10px}
+.next{list-style:none;display:flex;flex-direction:column;gap:8px;counter-reset:n}
+.next li{counter-increment:n;display:grid;grid-template-columns:22px minmax(0,1fr);gap:8px;font-size:13px;
+  background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:8px}
+.next li::before{content:counter(n);width:22px;height:22px;border-radius:50%;background:var(--acc);
+  color:var(--acc-ink);font-size:12px;display:grid;place-items:center;font-weight:600}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.bcol{border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.bcol h3{font-size:14px;display:flex;justify-content:space-between;gap:6px;font-weight:700}
+.bcol .why3{font-size:12px;color:var(--muted)}
+.bcol.up{background:var(--b-up-bg)} .bcol.up h3{color:var(--b-up)}
+.bcol.fix{background:var(--b-fix-bg)} .bcol.fix h3{color:var(--b-fix)}
+.bcol.cre{background:var(--b-cre-bg)} .bcol.cre h3{color:var(--b-cre)}
+.bcol.stop{background:var(--b-stop-bg)} .bcol.stop h3{color:var(--b-stop)}
+.bitem{background:var(--card);border:0;border-radius:8px;padding:8px 10px;font:inherit;font-size:12.5px;
+  text-align:left;color:var(--ink);cursor:pointer;width:100%}
+.bitem b{display:block;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bitem span{color:var(--muted);display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.grid2 .card{margin:0}
+.heat{display:grid;grid-template-columns:72px repeat(3,minmax(0,1fr));gap:4px;font-size:12.5px}
+.heat>div{padding:8px 6px;border-radius:6px;text-align:center}
+.heat .hd{color:var(--muted);background:none;font-size:12px}
+.hb{display:grid;grid-template-columns:minmax(0,180px) minmax(0,1fr) 78px;gap:8px;align-items:center;
+  font-size:12.5px;margin-bottom:6px}
+.hb .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hb .bar2{height:14px;border-radius:4px;background:var(--acc)}
+.ctable td{padding:9px 8px}
+tr.crow{cursor:pointer} tr.crow:hover td{background:var(--hover)}
+.thumb{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:8px;
+  background:var(--acc-soft);color:var(--acc);font-weight:700;font-size:12px;margin-right:10px;vertical-align:middle}
+.cname{display:inline-flex;flex-direction:column;vertical-align:middle;max-width:280px}
+.cname b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.cname span{font-size:12px;color:var(--muted)}
+tr.obj td{background:var(--panel2);font-weight:600;font-size:12.5px}
+tr.lv1{cursor:pointer} tr.lv1:hover td{background:var(--hover)}
+tr.lv1 td:first-child{max-width:330px;overflow:hidden;text-overflow:ellipsis}
+tr.lv2 td:first-child{padding-left:28px;color:var(--muted)}
+tr.lv3 td:first-child{padding-left:48px}
+tr.lv3{cursor:pointer} tr.lv3.sel td{background:var(--acc-soft)}
+.car{display:inline-block;width:14px;color:var(--muted);transition:transform .15s}
+tr.lv1.open .car{transform:rotate(90deg)}
+.addet{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:16px;margin-top:14px;
+  border-top:1px solid var(--bd);padding-top:14px}
+.fstep{display:grid;grid-template-columns:74px minmax(0,1fr) 88px;gap:10px;align-items:center;font-size:13px}
+.fbar{height:24px;border-radius:6px;background:var(--acc);min-width:3px}
+.fdrop{font-size:11.5px;color:var(--muted);padding-left:84px}
+.v2 .funnel{display:flex;flex-direction:column;gap:5px}
+@media(max-width:1050px){.row3{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.row3>:first-child{grid-column:1/-1}}
+@media(max-width:900px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .grid2,.addet{grid-template-columns:minmax(0,1fr)}}
+@media(max-width:640px){.row3{grid-template-columns:minmax(0,1fr)}.row3>:first-child{grid-column:auto}}
+@media(max-width:480px){.board{grid-template-columns:minmax(0,1fr)}
+  .hb{grid-template-columns:minmax(0,110px) minmax(0,1fr) 70px}
+  .heat{grid-template-columns:56px repeat(3,minmax(0,1fr));font-size:11.5px}
+  .cname{max-width:160px}}
 </style>
 </head>
 <body>
@@ -163,17 +279,40 @@ tr.fnr td{padding-top:0;border-top:none}
   </div>
   <nav class="tabs" id="tabs">
     <button data-v="overview">ภาพรวม</button>
-    <button data-v="shopee"><i style="color:#EE4D2D"></i>Shopee</button>
-    <button data-v="tiktok"><i style="color:#111827"></i>TikTok</button>
-    <button data-v="lazada"><i style="color:#3B2CC4"></i>Lazada</button>
-    <button data-v="facebook"><i style="color:#1877F2"></i>Facebook</button>
+    <button data-v="shopee"><i style="color:var(--sh)"></i>Shopee</button>
+    <button data-v="tiktok"><i style="color:var(--tk)"></i>TikTok</button>
+    <button data-v="lazada"><i style="color:var(--lz)"></i>Lazada</button>
+    <button data-v="facebook"><i style="color:var(--fb)"></i>Facebook</button>
   </nav>
   <div id="main"><div class="err">กำลังโหลดข้อมูล…</div></div>
 </div>
 <script>
 (function(){
 'use strict';
-const C={sh:'#EE4D2D',tk:'#111827',lz:'#3B2CC4',fb:'#1877F2',pri:'#2457F5',soft:'#C9D6F5',ink2:'#4B5563'};
+/* อ่านสีจากโทเคนบน :root — ธีมมืดนิยามทับโทเคนไว้แล้ว จึงไม่ต้องมีสีดิบในนี้
+   (Chart.js รับแต่ค่าสีจริง ส่ง var(--x) เข้าไปตรง ๆ ไม่ได้) */
+const CV=k=>(getComputedStyle(document.documentElement).getPropertyValue(k)||'').trim();
+const C=new Proxy({},{get:(_,k)=>CV({sh:'--sh',tk:'--tk',lz:'--lz',fb:'--fb',pri:'--pri',
+  soft:'--pri-soft',ink2:'--ink2',ink:'--ink',bd:'--bd',grid:'--grid',card:'--card',
+  muted:'--muted',pos:'--pos',neg:'--neg',line:'--line'}[k]||'--ink')});
+const TIP=()=>({backgroundColor:C.card,titleColor:C.ink,bodyColor:C.ink2,borderColor:C.bd,borderWidth:1});
+/* ===================== เกณฑ์ป้ายแนะนำ — แก้ที่นี่ที่เดียว =====================
+   ผู้ใช้สั่ง 6 พ.ย. 69 ให้รวมค่าคงที่ของเกณฑ์ไว้บนสุดของไฟล์ ไม่กระจายในฟังก์ชัน
+   ทุกเกณฑ์เทียบกับ "ค่าเฉลี่ยของกลุ่มเป้าหมายเดียวกัน" ไม่ใช่ตัวเลขตายตัว
+   เพราะแคมเปญทักแชทกับแคมเปญ CPAS วัดกันคนละหน่วย (ดู OBJ)                  */
+const RX={
+  MIN_SPEND:500,     // รายการที่ใช้เงินน้อยกว่านี้ในช่วงที่เลือก = ไม่ตัดสิน
+  NORES_SPEND:1000,  // 🔴 หยุด: ใช้เกินนี้แล้วยังไม่มีผลลัพธ์เลย
+  STOP_X:2,          // 🔴 หยุด: ต้นทุนต่อผลลัพธ์แพงกว่าค่าเฉลี่ยกลุ่มกี่เท่า
+  STOP_ROAS:0.5,     // 🔴 หยุด (กลุ่มที่วัดด้วย ROAS): ROAS ต่ำกว่าเฉลี่ยกี่เท่า
+  CRE_DROP:0.30,     // 🔵 เปลี่ยนชิ้นงาน: CTR ช่วงหลังต่ำกว่าช่วงแรกเกินสัดส่วนนี้
+  FIX_X:1.3,         // 🟡 ปรับ: CTR ดีกว่าเฉลี่ยช่องทาง แต่ต้นทุนแพงกว่าเฉลี่ยเท่านี้
+  FIX_ROAS:0.8,      // 🟡 ปรับ (ROAS): CTR ดี แต่ ROAS ต่ำกว่าเฉลี่ยเท่านี้
+  UP_X:0.7,          // 🟢 เพิ่มงบ: ต้นทุนถูกกว่าค่าเฉลี่ยกลุ่มเท่านี้
+  UP_ROAS:1.3,       // 🟢 เพิ่มงบ (ROAS): ROAS สูงกว่าค่าเฉลี่ยกลุ่มเท่านี้
+  TODO_MIN:100       // กล่อง "ต้องจัดการก่อน" ข้ามรายการที่ใช้เงินต่ำกว่านี้
+};
+
 const TH=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
 const THF=['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const MK=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
@@ -326,12 +465,11 @@ function stackChart(key,canvasId,days,ads,real,color,labTop,labBottom){
       {label:labBottom,data:ads,backgroundColor:color,stack:'s',borderRadius:{topLeft:0,topRight:0,bottomLeft:5,bottomRight:5}},
       {label:labTop,data:rest,backgroundColor:C.soft,stack:'s',borderRadius:{topLeft:5,topRight:5,bottomLeft:0,bottomRight:0}}]},
     options:{responsive:true,maintainAspectRatio:false,interaction:{mode:'index',intersect:false},
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',
-        borderColor:'#E3E6EB',borderWidth:1,padding:11,displayColors:false,
+      plugins:{legend:{display:false},tooltip:{...TIP(),padding:11,displayColors:false,
         callbacks:{label:c=>{const i=c.dataIndex,A=ads[i]||0,T=(real[i]||0);
           return [labTop+' '+baht(T),labBottom+' '+baht(A),'คิดเป็น '+pct(div(A,T))];}}}},
-      scales:{x:{stacked:true,grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:14,font:{size:11}}},
-              y:{stacked:true,grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+      scales:{x:{stacked:true,grid:{display:false},ticks:{color:C.muted,maxRotation:0,autoSkipPadding:14,font:{size:11}}},
+              y:{stacked:true,grid:{color:C.grid},border:{display:false},ticks:{color:C.muted,font:{size:11},callback:yTick}}}}});
 }
 function lineChart(key,canvasId,labels,data,color,fmt,type){
   if(charts[key]) charts[key].destroy();
@@ -339,10 +477,9 @@ function lineChart(key,canvasId,labels,data,color,fmt,type){
     data:{labels,datasets:[{label:'',data,borderColor:color,backgroundColor:type==='bar'?color:'transparent',
       borderWidth:2,borderRadius:4,pointRadius:labels.length>20?0:3,tension:.25}]},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{display:false},tooltip:{backgroundColor:'#fff',titleColor:'#111827',bodyColor:'#4B5563',
-        borderColor:'#E3E6EB',borderWidth:1,padding:10,displayColors:false,callbacks:{label:c=>' '+fmt(c.parsed.y)}}},
-      scales:{x:{grid:{display:false},ticks:{maxRotation:0,autoSkipPadding:12,font:{size:11}}},
-              y:{beginAtZero:true,grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+      plugins:{legend:{display:false},tooltip:{...TIP(),padding:10,displayColors:false,callbacks:{label:c=>' '+fmt(c.parsed.y)}}},
+      scales:{x:{grid:{display:false},ticks:{color:C.muted,maxRotation:0,autoSkipPadding:12,font:{size:11}}},
+              y:{beginAtZero:true,grid:{color:C.grid},border:{display:false},ticks:{color:C.muted,font:{size:11},callback:yTick}}}}});
 }
 /* เดือนที่มีไฟล์ export (ใช้กับตารางแคมเปญ) · ค่าเริ่มต้น = เดือนของวันสุดท้ายในช่วงที่เลือก */
 function monthKeys(){ return MK.filter(k=>P&&P.months&&P.months[k]); }
@@ -359,9 +496,12 @@ function render(){
   PR=(PA>=MIN)?sum(PA,PB):null;
   document.querySelectorAll('#tabs button').forEach(t=>t.classList.toggle('on',t.dataset.v===st.view));
   document.getElementById('sub').textContent=`ช่วงที่เลือก ${thR(a,b)} (${NN} วัน)`+(PR?` · เทียบกับ ${thR(PA,PB)}`:'');
-  destroyCharts();
-  ({overview:renderOv,shopee:renderSh,tiktok:renderTk,lazada:renderLz,facebook:renderFb}[st.view])();
-  detailAppend();   // ต่อบล็อก "แอดละเอียด" ท้ายแท็บ — จุดเชื่อมจุดเดียว
+  if(st.view==='overview'){
+    destroyCharts(); renderOv();
+    const h=dTodo();                     // กล่อง "ต้องจัดการก่อน" รวมทุกช่องทาง
+    if(h){ const m=document.getElementById('main'); m.insertAdjacentHTML('beforeend',h);
+      m.querySelectorAll('[data-go]').forEach(el=>el.onclick=()=>setView(el.dataset.go)); }
+  } else renderTabBody(CHOF[st.view]);
 }
 function statusChips(){
   const cov=D.coverage||{};
@@ -383,8 +523,8 @@ function renderOv(){
   const pratio=PR?div(PR.spend3,PR.real):NaN;
   let trend='<span class="d-fl">เทียบช่วงก่อนไม่ได้</span>';
   if(Number.isFinite(pratio)&&pratio){ const dd=ratio-pratio;
-    trend=Math.abs(dd)<0.002?'<span style="color:#C3CAD6">เท่าเดิม</span>'
-      :`<span style="color:${dd>0?'#FDA29B':'#6CE9A6'}">${dd>0?'สูงขึ้น':'ลดลง'} ${(Math.abs(dd)*100).toFixed(1)} จุด</span>`;}
+    trend=Math.abs(dd)<0.002?'<span style="color:var(--hero-ink2)">เท่าเดิม</span>'
+      :`<span style="color:${dd>0?'var(--hero-warn)':'#6CE9A6'}">${dd>0?'สูงขึ้น':'ลดลง'} ${(Math.abs(dd)*100).toFixed(1)} จุด</span>`;}
   const w=Math.max(0,Math.min(100,ratio*100));
   const hero=`<div class="card hero">
     <div class="big">ค่าแอด 100 บาท ได้ยอดขายจริงกลับมา <b>${Number.isFinite(roas)?nf0.format(Math.round(roas*100)):'–'} บาท</b>
@@ -479,17 +619,17 @@ function drawMon(){
   if(lz.some(v=>v)) ds.push({label:'Lazada',data:lz,backgroundColor:C.lz,borderRadius:4});
   charts.mon=new Chart(document.getElementById('cMon'),{type:'bar',data:{labels,datasets:ds},
     options:{responsive:true,maintainAspectRatio:false,
-      plugins:{legend:{position:'bottom',labels:{boxWidth:10,font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
-        tooltip:{callbacks:{label:c=>' '+c.dataset.label+': '+baht(c.parsed.y)}}},
-      scales:{x:{grid:{display:false},ticks:{font:{size:11}}},
-              y:{grid:{color:'#EEF0F3'},border:{display:false},ticks:{font:{size:11},callback:yTick}}}}});
+      plugins:{legend:{position:'bottom',labels:{color:C.ink2,boxWidth:10,font:{size:11},usePointStyle:true,pointStyle:'rectRounded'}},
+        tooltip:{...TIP(),callbacks:{label:c=>' '+c.dataset.label+': '+baht(c.parsed.y)}}},
+      scales:{x:{grid:{display:false},ticks:{color:C.muted,font:{size:11}}},
+              y:{grid:{color:C.grid},border:{display:false},ticks:{color:C.muted,font:{size:11},callback:yTick}}}}});
 }
 
 /* ======================= Shopee ======================= */
 function renderSh(){
   const s=R.sh, p=PR&&PR.sh, ratio=div(s.spend,s.real);
   const missNote=s.adsDays<R.n
-    ? `<span style="color:#FDA29B">ค่าแอดมีข้อมูล ${int(s.adsDays)} จาก ${int(R.n)} วัน</span>` : '';
+    ? `<span style="color:var(--hero-warn)">ค่าแอดมีข้อมูล ${int(s.adsDays)} จาก ${int(R.n)} วัน</span>` : '';
   const head=oneLine(
     `Shopee: ค่าแอด <b>${baht(s.spend)}</b> กับยอดขายจริง <b>${baht(s.real)}</b> — ใช้ค่าแอดไป <b>${pct(ratio)}</b> ของยอดขาย (ROAS <b>${x2(div(s.real,s.spend))}</b>)`,
     [`ยอดที่ Shopee นับให้โฆษณา broad ${baht(s.broad)}`,`direct ${baht(s.direct)}`,
@@ -553,7 +693,7 @@ function renderSh(){
     <p><b>ยอดจาก Ads สูงกว่ายอดขายจริงได้</b> เพราะ Shopee นับออเดอร์ให้โฆษณาถ้าลูกค้าเคยเห็นหรือคลิกภายในช่วงเวลาหนึ่ง (broad นับกว้างที่สุด · direct นับเฉพาะสินค้าที่คลิกโดยตรง) ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ และนับก่อนหักยกเลิก/คืนเงิน</p>
     <p><b>ตารางแคมเปญเป็นยอดรวมทั้งเดือน</b> จากไฟล์ export ไม่ได้ตัดตามช่วงวันที่ด้านบน จึงเทียบกับการ์ดด้านบนตรง ๆ ไม่ได้</p>
     </div></details>`;
-  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  document.getElementById('main').innerHTML=statusChips()+v2Tab('sh')+v2Legacy('Shopee',head+camp+'<div style="margin-top:14px">'+chart+'</div>'+det);
   const sel=document.getElementById('shMonthSel'); sel.onchange=()=>{st.shMonth=sel.value;st.shAll=false;render();};
   const mb=document.getElementById('shMore'); if(mb) mb.onclick=()=>{st.shAll=!st.shAll;render();};
   stackChart('shDay','cShDay',R.days,R.days.map(d=>dayV(d).shS),R.days.map(d=>dayV(d).shR),C.sh,'ยอดขายจริง','ค่าแอด');
@@ -652,7 +792,7 @@ function renderTk(){
     <p><b>รายแคมเปญ GMV Max / LIVE</b> ดึงจาก API (<code>ads_tk_campaigns.json</code>) ครบทุกแคมเปญรวมที่ถูกลบแล้ว · เดือนที่ยังไม่มีไฟล์ API จะถอยไปใช้ไฟล์ export รายเดือนซึ่งบางเดือนมีแต่ยอดรวม</p>
     <p><b>ยอดจาก GMV Max สูงกว่ายอดขายจริงได้</b> เพราะ TikTok นับ attribution เอง และนับก่อนหักยกเลิก/คืนเงิน จึงควรดู “ค่าแอด ÷ ยอดขายจริง” เป็นหลัก</p>
     </div></details>`;
-  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  document.getElementById('main').innerHTML=statusChips()+v2Tab('tk')+v2Legacy('TikTok',head+camp+'<div style="margin-top:14px">'+chart+'</div>'+det);
   document.querySelectorAll('#segTkCamp button').forEach(b=>{b.classList.toggle('on',b.dataset.t===tab);
     b.onclick=()=>{st.tkCamp=b.dataset.t;st.tkAll=false;render();};});
   const sel=document.getElementById('tkMonthSel'); sel.onchange=()=>{st.tkMonth=sel.value;st.tkAll=false;render();};
@@ -712,7 +852,7 @@ function renderLz(){
     <p><b>ข้อมูล Lazada เริ่มเก็บ 1 ก.ย. 2569</b> วันก่อนหน้านั้นไม่มีคีย์ในไฟล์และ<b>ไม่ถูกนับเป็น 0</b></p>
     <p><b>ค่าโฆษณาเป็น Sponsored Product/Affiliate รวมทุกแคมเปญ</b> ยังไม่มีรายละเอียดรายแคมเปญเหมือน Shopee/TikTok · ยอดจาก Ads นับแบบ attribution ของ Lazada จึงควรดู “ค่าแอด ÷ ยอดขายจริง” และ “ROAS จากยอดจริง” เป็นหลักเช่นเดียวกับแพลตฟอร์มอื่น</p>
     </div></details>`;
-  document.getElementById('main').innerHTML=statusChips()+head+kpis+camp+'<div style="margin-top:14px">'+chart+'</div>'+det;
+  document.getElementById('main').innerHTML=statusChips()+v2Tab('lz')+v2Legacy('Lazada',head+camp+'<div style="margin-top:14px">'+chart+'</div>'+det);
   stackChart('lzDay','cLzDay',lzDays,lzDays.map(d=>dayV(d).lzS),lzDays.map(d=>dayV(d).lzR),C.lz,'ยอดขายจริง','ค่าแอด');
 }
 
@@ -738,7 +878,7 @@ function renderFb(){
     (rev?` มูลค่า <b>${baht(rev)}</b> (ROAS ${x2(div(rev,T.spend))})`:''),
     [`${FB.accounts.length} บัญชี · ${dates.length} วันที่มีข้อมูล`,
      `อิมเพรสชัน ${int(T.imp)} · คลิก ${int(T.clicks)}`,
-     missN>0?`<span style="color:#FDA29B">ช่วงที่เลือกกว้างกว่าไฟล์ ${int(missN)} วัน — วันที่ขาดไม่ถูกนับเป็น 0</span>`:''].filter(Boolean));
+     missN>0?`<span style="color:var(--hero-warn)">ช่วงที่เลือกกว้างกว่าไฟล์ ${int(missN)} วัน — วันที่ขาดไม่ถูกนับเป็น 0</span>`:''].filter(Boolean));
   const kpis=`<div class="kpis">
     ${kpi('ค่าโฆษณา',baht2(T.spend),'อิมเพรสชัน '+int(T.imp)+' · คลิก '+int(T.clicks),delta(T.spend,Pv&&Pv.spend,1))}
     ${kpi('แชท',int(T.msg),'การสนทนาที่เริ่มขึ้น · รวมทุกบัญชี',delta(T.msg,Pv&&Pv.msg))}
@@ -807,84 +947,6 @@ function renderFb(){
     : '<b>ROAS</b> ไฟล์ชุดนี้ยังไม่มีคอลัมน์มูลค่าการซื้อ (เพิ่มใน URL ตอน 28 ต.ค. 69) ค่าที่เห็นจึงเป็นค่าเฉลี่ยของ ROAS รายวันซึ่งถ่วงน้ำหนักไม่ได้ · ต้อง export ใหม่จึงจะได้ตัวเลขที่ถูก');
   if(noGoalNote) notes.push('แคมเปญที่ขึ้น “ไม่มีผลลัพธ์ในรายงาน” คือแคมเปญที่คอลัมน์ “ตัวระบุผลลัพธ์” ว่างทุกวัน <b>และ</b>ไม่มีการซื้อสินค้าที่แชร์ในไฟล์ — มีค่าโฆษณาแต่ไม่มีผลลัพธ์ให้นับจริง ๆ (แคมเปญ CPAS ที่ตัวระบุว่างแต่มีการซื้อ ถูกนับเป็น “ยอดขาย CPAS” ให้แล้ว)');
   const cr=FB.camps.map(c=>({c,s:fbCamp(c,st.from,st.to)})).filter(x=>x.s).sort((a,b)=>b.s.spend-a.s.spend);
-  /* ── แคมเปญไหนดี ไม่ดี ─────────────────────────────────────────────────
-     เทียบกับ "ค่ามัธยฐานถ่วงด้วยค่าแอด" ของกลุ่มเป้าหมายเดียวกันในช่วงที่เลือก
-     ไม่ใช่เกณฑ์ตายตัว — แคมเปญ CPAS ที่ ROAS 14x ก็ขึ้นแดงได้ถ้าเพื่อนในกลุ่มทำได้ 30x */
-  const HIGH={purchase:1,omni:1};   // กลุ่มที่ "สูงกว่า = ดีกว่า" (วัดด้วย ROAS)
-  const cmet=(gk,s)=>HIGH[gk]?((s.omni_val||0)+(s.pval||0))/(s.spend||NaN):(s.res?s.spend/s.res:NaN);
-  const cfreq=s=>s.reach_d?s.imp/s.reach_d:NaN;
-  const wmed=arr=>{ const v=arr.filter(x=>Number.isFinite(x[0])).sort((a,b)=>a[0]-b[0]);
-    const tot=v.reduce((a,x)=>a+x[1],0); if(!tot) return NaN;
-    let c=0; for(const x of v){ c+=x[1]; if(c>=tot/2) return x[0]; } return v[v.length-1][0]; };
-  const GORD=['omni','purchase','msg','lead','none'];
-  const JG={}; cr.forEach(x=>{ (JG[x.c.goal]=JG[x.c.goal]||[]).push(x); });
-  const gkeys=Object.keys(JG).sort((a,b)=>{const ia=GORD.indexOf(a),ib=GORD.indexOf(b);
-    return (ia<0?99:ia)-(ib<0?99:ib);});
-  const JR=[];
-  gkeys.forEach(gk=>{
-    const med=wmed(JG[gk].map(x=>[cmet(gk,x.s),x.s.spend]));
-    JG[gk].forEach(x=>{
-      const v=cmet(gk,x.s), f=cfreq(x.s), why=[];
-      if(x.s.spend>1000&&!x.s.res) why.push('ใช้เงิน '+baht(x.s.spend)+' แต่ผลลัพธ์ 0');
-      if(Number.isFinite(f)&&f>3) why.push('ความถี่เฉลี่ย '+f.toFixed(2)+' เกิน 3 (คนเดิมเห็นซ้ำเกินไป)');
-      let lab;
-      if(why.length) lab='red';
-      else if(x.s.spend<500) lab='low';
-      else if(!Number.isFinite(v)||!Number.isFinite(med)) lab='low';
-      else if(HIGH[gk]) lab = v>=med*1.2?'green' : v<=med*0.8?'red' : 'yellow';
-      else               lab = v<=med*0.8?'green' : v>=med*1.2?'red' : 'yellow';
-      if(!why.length&&lab==='red') why.push((HIGH[gk]?'ROAS':'ต้นทุนต่อผลลัพธ์')+'แย่กว่ามัธยฐานกลุ่มเกิน 20%');
-      JR.push({...x,gk,med,v,f,lab,why});
-    });
-  });
-  const BDG={red:'🔴 ควรดู',green:'🟢 ดี',yellow:'🟡 กลาง ๆ',low:'⚪ ข้อมูลน้อย'};
-  /* ป้ายผลลัพธ์บางอันเป็นอังกฤษ ('lead') ต่อท้ายคำไทยตรง ๆ จะติดกันเป็น "ต้นทุนต่อlead" */
-  const metLab=gk=>{ if(HIGH[gk]) return 'ROAS';
-    const r=((FB.goals||{})[gk]||{}).res||'ผลลัพธ์';
-    return 'ต้นทุนต่อ'+(/^[A-Za-z]/.test(r)?' ':'')+r; };
-  const metVal=(gk,v)=>Number.isFinite(v)?(HIGH[gk]?x2(v):baht2(v)):muted('–');
-  const jrows=gkeys.map(gk=>{
-    const g=JG[gk], med=JR.find(r=>r.gk===gk).med;
-    const gl=(((FB.goals||{})[gk]||{}).label)||(g[0].c.goal_label)||gk;
-    const sp=g.reduce((a,x)=>a+x.s.spend,0);
-    const head=`<tr class="grp" data-grp="${gk}"><td colspan="10">${esc(gl)}
-      <span class="m">· ${g.length} แคมเปญ · ค่าแอด ${baht(sp)} · วัดด้วย ${metLab(gk)} · มัธยฐานกลุ่ม ${Number.isFinite(med)?(HIGH[gk]?x2(med):baht2(med)):'–'}</span></td></tr>`;
-    const rs=JR.filter(r=>r.gk===gk).sort((a,b)=>b.s.spend-a.s.spend).map(r=>{
-      const accL=(FB.accounts.find(a=>a.key===r.c.acc)||{}).label||r.c.acc;
-      return `<tr data-lab="${r.lab}" data-acc="${esc(r.c.acc)}" data-grp="${gk}">
-        <td><span class="bdg ${r.lab}">${BDG[r.lab]}</span></td>
-        <td class="name" title="${esc(r.c.name)}${r.why.length?' — '+esc(r.why.join(' · ')):''}">${esc(r.c.name)}</td>
-        <td>${esc(accL)}</td><td style="text-align:left">${esc(r.c.goal_label)}</td>
-        <td class="num">${baht(r.s.spend)}</td>
-        <td class="num">${gk==='none'?muted('–'):int(r.s.res)}</td>
-        <td class="num"><b>${metVal(gk,r.v)}</b></td>
-        <td class="num">${pct2(r.s.imp?r.s.clicks/r.s.imp*100:NaN)}</td>
-        <td class="num">${r.s.imp?baht2(r.s.spend/r.s.imp*1000):'–'}</td>
-        <td class="num">${Number.isFinite(r.f)?r.f.toFixed(2):'–'}</td></tr>`;}).join('');
-    return head+rs;
-  }).join('');
-  const reds=JR.filter(r=>r.lab==='red'), redSp=reds.reduce((a,r)=>a+r.s.spend,0);
-  const accOpt=['<option value="">ทุกบัญชี</option>'].concat(FB.accounts
-    .filter(a=>cr.some(x=>x.c.acc===a.key)).map(a=>`<option value="${esc(a.key)}">${esc(a.label)}</option>`)).join('');
-  const judge=`<div class="card" style="margin-top:14px"><div class="ch"><h2>แคมเปญไหนดี ไม่ดี</h2>
-      <div class="seg sm sp" id="segJ"><button data-f="">ทั้งหมด</button><button data-f="red">🔴 ควรดู</button><button data-f="green">🟢 ดี</button></div>
-      <select class="sel" id="jAcc">${accOpt}</select></div>
-    <div class="sumline">แคมเปญที่ควรดู <b>${int(reds.length)}</b> ตัว ใช้เงินรวม <b>${baht(redSp)}</b>
-      (<b>${pct(div(redSp,T.spend))}</b> ของค่าแอด Facebook ในช่วงนี้)</div>
-    <div class="scroll"><table id="tJudge"><thead><tr><th>ป้าย</th><th>แคมเปญ</th><th>บัญชี</th>
-      <th style="text-align:left">เป้าหมาย</th><th>ค่าแอด</th><th>ผลลัพธ์</th><th>ตัววัดหลัก</th><th>CTR</th><th>CPM</th><th>ความถี่</th></tr></thead>
-      <tbody>${jrows}</tbody></table></div>
-    <div class="note" id="jEmpty" hidden>ไม่มีแคมเปญที่ตรงกับตัวกรอง</div>
-    <details style="margin-top:12px"><summary>เกณฑ์ป้ายคิดยังไง</summary><div class="body">
-      <p><b>แบ่งกลุ่มตามเป้าหมายของแคมเปญ</b> (คอลัมน์ “ตัวระบุผลลัพธ์” ในไฟล์) แล้วเทียบกันเฉพาะในกลุ่มเดียวกัน — แคมเปญ CPAS ที่ตัวระบุผลลัพธ์ว่างแต่มีการซื้อสินค้าที่แชร์ ถูกนับเป็นกลุ่ม “ยอดขาย CPAS” ให้แล้ว</p>
-      <p><b>ตัววัดของแต่ละกลุ่ม:</b> ทักแชท → ต้นทุนต่อแชท · ซื้อบนเพจ และ CPAS → ROAS (มูลค่าการซื้อ ÷ ค่าแอด) · ลูกค้าเป้าหมาย → ต้นทุนต่อ lead · อื่น ๆ → ต้นทุนต่อผลลัพธ์</p>
-      <p><b>เส้นเทียบคือค่ามัธยฐานของกลุ่มในช่วงที่เลือก ถ่วงด้วยค่าแอด</b> (เรียงค่าตัววัดแล้วไล่สะสมค่าแอดจนถึงครึ่งหนึ่ง) — ไม่ใช่ค่าเฉลี่ย เพราะแคมเปญตัวเดียวที่เพี้ยนจะลากค่าเฉลี่ยไปทั้งกลุ่ม</p>
-      <p>🟢 ดีกว่ามัธยฐานกลุ่มตั้งแต่ 20% ขึ้นไป · 🔴 แย่กว่าตั้งแต่ 20% ขึ้นไป · 🟡 อยู่ระหว่างนั้น</p>
-      <p>🔴 <b>ขึ้นเสมอ</b> ถ้าใช้เงินเกิน ฿1,000 แต่ผลลัพธ์เป็น 0 หรือความถี่เฉลี่ยเกิน 3 (คนเดิมเห็นโฆษณาซ้ำเกินไป) · แคมเปญที่ใช้เงินน้อยกว่า ฿500 ในช่วงที่เลือกขึ้น ⚪ “ข้อมูลน้อย” ไม่ตัดสิน</p>
-      <p><b>เป็นการเทียบกันเองในกลุ่ม ไม่ใช่เกณฑ์ตายตัว</b> — ถ้าทั้งกลุ่มทำได้ดีมาก ตัวที่ดีน้อยที่สุดก็ยังขึ้น 🔴 ได้ ให้ดูตัวเลขจริงข้าง ๆ ป้ายประกอบเสมอ</p>
-      <p><b>บัญชีที่ยิงเพื่อทักแชท</b> (WibWub AD 1 / AD 1) ROAS และมูลค่าการซื้อนับเฉพาะยอดที่ Facebook ตามรอยได้เอง <b>ไม่รวมยอดที่ปิดการขายกันในแชทแล้วไปลงที่ Shipnity</b> จึงวัดด้วยต้นทุนต่อแชทแทน — ห้ามเอา ROAS ของกลุ่มนี้ไปตัดสินว่าคุ้มหรือไม่คุ้ม</p>
-      <p><b>ความถี่</b> = Σอิมเพรสชัน ÷ Σreach รายวันของแคมเปญนั้น (reach บวกข้ามวันไม่ได้ คนเดิมถูกนับซ้ำ) จึงเป็นค่าเฉลี่ยรายวัน ไม่ใช่ความถี่สะสมทั้งช่วง</p>
-    </div></details></div>`;
   const campRows=cr.map(({c,s})=>{const accL=(FB.accounts.find(a=>a.key===c.acc)||{}).label||c.acc;
     return `<tr><td class="name" title="${esc(c.name)}">${esc(c.name)}</td><td>${esc(accL)}</td>
       <td style="text-align:left">${esc(c.goal_label)}</td><td class="num">${baht(s.spend)}</td>
@@ -909,28 +971,13 @@ function renderFb(){
     <p><b>ที่มาของตัวเลข:</b> ไฟล์ <code>data Ads/facebook/daily/FBD_*.csv</code> ${FB.accounts.length} บัญชี → <code>scripts/ads/fb_daily.py</code> → <code>facebook/fb_daily.json</code> (สร้างเมื่อ ${esc(String(FB.generated||'').slice(0,16).replace('T',' '))}) ชุดเดียวกับที่หน้า <b>“การตลาด vs ยอดขาย”</b> ใช้เป็นค่าโฆษณา Facebook รายวัน — ตัวเลข 2 หน้าจึงตรงกันโดยโครงสร้าง</p>
     <p><b>คลิก</b> ไม่มีคอลัมน์นับในรายงาน ถอดจาก CTR(ทั้งหมด) ÷ 100 × อิมเพรสชัน (ตรวจแล้วเป็นจำนวนเต็มพอดีทุกแถว)</p>
     </div></details>`;
-  main.innerHTML=statusChips()+head+kpis+accTable+judge+'<div style="margin-top:14px">'+chart+'</div>'+det;
-  /* ตัวกรองทำงานกับแถวที่เรนเดอร์ไว้แล้ว ไม่ต้องคำนวณใหม่ · หัวข้อกลุ่มที่ไม่เหลือแถวให้ซ่อนด้วย */
-  const jFilter=()=>{
-    const btn=document.querySelector('#segJ button.on'), f=btn?(btn.dataset.f||''):'';
-    const ac=document.getElementById('jAcc').value;
-    let shown=0; const live={};
-    document.querySelectorAll('#tJudge tbody tr[data-lab]').forEach(tr=>{
-      const ok=(!f||tr.dataset.lab===f)&&(!ac||tr.dataset.acc===ac);
-      tr.hidden=!ok; if(ok){shown++; live[tr.dataset.grp]=1;}});
-    document.querySelectorAll('#tJudge tbody tr.grp').forEach(tr=>{tr.hidden=!live[tr.dataset.grp];});
-    document.getElementById('jEmpty').hidden=shown>0;
-  };
-  document.querySelectorAll('#segJ button').forEach(b=>{ b.classList.toggle('on',b.dataset.f===''); 
-    b.onclick=()=>{ document.querySelectorAll('#segJ button').forEach(o=>o.classList.remove('on'));
-      b.classList.add('on'); jFilter(); };});
-  document.getElementById('jAcc').onchange=jFilter;
+  main.innerHTML=statusChips()+v2Tab('fb')+v2Legacy('Facebook',head+accTable+'<div style="margin-top:14px">'+chart+'</div>'+det);
   if(rev) stackChart('fbDay','cFbDay',dates,dSpend,dRev,C.fb,'มูลค่าการซื้อ','ค่าแอด');
   else lineChart('fbDay','cFbDay',dates.map(d=>thD(d)),dSpend,C.fb,baht,'bar');
   /* กราฟรายสัปดาห์อยู่ใน <details> — วาดได้เลย Chart.js จัดการขนาดเมื่อเปิดพับ */
   const wk=fbWeeks(dates), labels=wk.map(x=>x.label+(x.days<7?' *':''));
   lineChart('fbSpend','cFbSpend',labels,wk.map(x=>+x.spend.toFixed(2)),C.fb,baht,'bar');
-  lineChart('fbCpm','cFbCpm',labels,wk.map(x=>+x.cpm.toFixed(2)),'#1E8E3E',baht2);
+  lineChart('fbCpm','cFbCpm',labels,wk.map(x=>+x.cpm.toFixed(2)),C.line,baht2);
   lineChart('fbCtr','cFbCtr',labels,wk.map(x=>+x.ctr.toFixed(3)),'#D97706',pct2);
   lineChart('fbCpc','cFbCpc',labels,wk.map(x=>+x.cpc.toFixed(2)),'#C5221F',baht2);
   const all=document.querySelectorAll('details'), dt=all[all.length-1];
@@ -947,26 +994,22 @@ function fbWeeks(dates){
       cpm:s.imp?s.spend/s.imp*1000:0, ctr:s.imp?s.clicks/s.imp*100:0, cpc:s.clicks?s.spend/s.clicks:0};});
 }
 
-/* ======================= แอดละเอียด (ads_detail_*.json) =======================
-   ต่อท้ายแท็บเดิมโดยไม่แตะฟังก์ชัน render เดิม — จุดเชื่อมอยู่ใน render() จุดเดียว
+/* ======================= แอดละเอียด v2 (ads_detail_*.json) =======================
+   โครงของแท็บช่องทางตามแบบที่ผู้ใช้อนุมัติ 6 พ.ย. 69 (WIBWUB_Ads_Facebook_Mock.html)
+   ลำดับห้ามสลับ: การ์ด 4 ใบ -> แถว 3 ช่อง -> บอร์ด 4 ป้าย -> กลุ่มผู้ชม+ตำแหน่ง
+                  -> ตาราง 5 แคมเปญ -> ตารางเจาะชั้น + รายละเอียดแอด
    ข้อมูลมาจาก scripts/ads/detail_build.py · ช่องไหนเป็น null = ช่องทางนั้นวัดไม่ได้
-   **ห้ามแปลง null เป็น 0** ตัวเลข 0 แปลว่าวัดแล้วได้ศูนย์ ซึ่งคนละความหมาย           */
-
-/* เกณฑ์ป้ายแนะนำ — แก้ที่นี่ที่เดียว (ผู้ใช้กำหนด 5 พ.ย. 69) */
-const RX={
-  UP_ROAS:1.5,    // 🟢 เพิ่มงบ: ROAS >= 1.5 เท่าของค่าเฉลี่ยช่องทาง
-  UP_SPEND:500,   //    และใช้เงินเกินเท่านี้
-  STOP_SPEND:1000,// 🔴 หยุด: ใช้เงินเกินเท่านี้แต่ไม่มียอดซื้อ
-  STOP_ROAS:0.5,  //    หรือ ROAS < 0.5 เท่าของค่าเฉลี่ย
-  CRE_FREQ:3,     // 🔵 เปลี่ยนชิ้นงาน: ความถี่เกินนี้
-  CRE_CTR:0.30,   //    และ CTR ลดลงเกินสัดส่วนนี้ (ครึ่งหลังเทียบครึ่งแรกของช่วง)
-  FIX_CTR:1.0,    // 🟡 ปรับ: CTR สูงกว่าค่าเฉลี่ยช่องทาง
-  FIX_CVR:0.5,    //    แต่ ใส่ตะกร้า→ซื้อ ต่ำกว่าครึ่งของค่าเฉลี่ย
-  TODO_MIN:100    // กล่อง "ต้องจัดการก่อน" ข้ามแถวที่ใช้เงินน้อยกว่านี้ (กันแอด ฿1–฿5 มาเบียด)
-};
+   **ห้ามแปลง null เป็น 0** ตัวเลข 0 แปลว่าวัดแล้วได้ศูนย์ ซึ่งคนละความหมาย
+   เกณฑ์ป้ายอยู่ที่ค่าคงที่ RX บนสุดของสคริปต์ (ผู้ใช้สั่งให้รวมไว้ที่เดียว)        */
 const DET={};                       // ch -> JSON (null ถ้าโหลดไม่ได้)
 const MET=['spend','imp','reach','clicks','msg','view','atc','checkout','orders','revenue'];
 const CHOF={shopee:'sh',tiktok:'tk',lazada:'lz',facebook:'fb'};
+const CHNAME={fb:'Facebook',tk:'TikTok',sh:'Shopee',lz:'Lazada'};
+const ACC={fb:'var(--fb)',tk:'var(--tk)',sh:'var(--sh)',lz:'var(--lz)'};
+const ACCS={fb:'var(--fb-soft)',tk:'var(--tk-soft)',sh:'var(--sh-soft)',lz:'var(--lz-soft)'};
+/* สีตัวอักษรที่อ่านออกบนพื้นสีเน้น — TikTok ธีมมืดสีเน้นเกือบขาว จึงต้องใช้ตัวอักษรเข้ม */
+const ACCI={fb:'var(--fb-ink)',tk:'var(--tk-ink)',sh:'var(--sh-ink)',lz:'var(--lz-ink)'};
+const V2={open:new Set(),more:new Set(),sel:null,selCh:'',metric:'spend'};
 
 function dBlank(){const o={};MET.forEach(k=>o[k]=null);return o;}
 function dAdd(dst,src){MET.forEach(k=>{const v=src[k];if(v==null)return;dst[k]=dst[k]==null?v:dst[k]+v;});}
@@ -977,7 +1020,7 @@ function dRows(ch){const D2=DET[ch];if(!D2)return[];
     return s.length===2?(s[0]<=st.to&&s[1]>=st.from):(r.d>=st.from&&r.d<=st.to);});
   return D2.rows.filter(r=>r.d>=st.from&&r.d<=st.to);}
 /* แถว "ชั้นบน" ของช่องทาง — ใช้คิดยอดรวมและหัวแคมเปญ ห้ามบวกข้ามชั้น
-   Shopee มี 3 ชั้นในไฟล์เดียว (camp/kw/prod) ถ้าบวกหมดจะได้ ฿60,362 แทน ฿31,342 */
+   Shopee มี 3 ชั้นในไฟล์เดียว (camp/kw/prod) ถ้าบวกหมดจะได้ ฿264,422 แทน ฿223,317 */
 function dTop(ch,rows){ return ch==='sh'?rows.filter(r=>r.lv==='camp'||r.lv==='kw'):rows; }
 /* ลูกของแคมเปญหนึ่ง — ถ้ามีชั้นสินค้าให้โชว์ชั้นนั้น ไม่งั้นโชว์ตัวมันเอง */
 function dKids(ch,inC){
@@ -985,7 +1028,6 @@ function dKids(ch,inC){
   const prod=inC.filter(r=>r.lv==='prod'); if(prod.length) return prod;
   const kw=inC.filter(r=>r.lv==='kw'); return kw.length?kw:inC;
 }
-/* รวมแถวตามคีย์ที่ให้ (ไม่รวมวัน) */
 function dGroup(rows,keyf){const m=new Map();
   rows.forEach(r=>{const k=keyf(r);let o=m.get(k);
     if(!o){o={k,c:r.c,g:r.g,a:r.a,lv:r.lv,n:0,...dBlank()};m.set(k,o);}
@@ -994,156 +1036,567 @@ function dGroup(rows,keyf){const m=new Map();
 function dRoas(o){return (o.revenue!=null&&o.spend)?o.revenue/o.spend:NaN;}
 function dCtr(o){return o.imp?o.clicks/o.imp*100:NaN;}
 function dFreq(o){return o.reach?o.imp/o.reach:NaN;}
-
-/* CTR ครึ่งหลังเทียบครึ่งแรกของช่วง — ใช้กับเกณฑ์ "เปลี่ยนชิ้นงาน" */
-function dCtrDrop(rows,key){
-  const ds=[...new Set(rows.map(r=>r.d))].sort(); if(ds.length<4) return NaN;
-  const mid=ds[Math.floor(ds.length/2)];
-  const h=[dBlank(),dBlank()];
-  rows.forEach(r=>{if(key(r)!==key.wanted)return;dAdd(h[r.d<mid?0:1],r);});
-  const a=dCtr(h[0]),b=dCtr(h[1]);
-  return (Number.isFinite(a)&&a>0&&Number.isFinite(b))?(a-b)/a:NaN;
-}
-
-/* ป้ายแนะนำ 1 แถว — คืน {t:ชนิด, l:ป้าย, why:เหตุผล 1 บรรทัด} หรือ null */
-function dBadge(o,avg,drop){
-  const roas=dRoas(o), ctr=dCtr(o), freq=dFreq(o), sp=o.spend||0;
-  if(sp>RX.STOP_SPEND&&(o.orders===0||o.orders==null&&o.revenue===0))
-    return {t:'stop',l:'🔴 หยุด',why:`ใช้เงิน ${baht(sp)} แล้วยังไม่มียอดซื้อ`};
-  if(Number.isFinite(roas)&&Number.isFinite(avg.roas)&&avg.roas>0&&roas<avg.roas*RX.STOP_ROAS&&sp>RX.UP_SPEND)
-    return {t:'stop',l:'🔴 หยุด',why:`ROAS ${x2(roas)} ต่ำกว่าครึ่งหนึ่งของค่าเฉลี่ยช่องทาง (${x2(avg.roas)})`};
-  if(Number.isFinite(roas)&&Number.isFinite(avg.roas)&&avg.roas>0&&roas>=avg.roas*RX.UP_ROAS&&sp>RX.UP_SPEND)
-    return {t:'up',l:'🟢 เพิ่มงบ',why:`ROAS ${x2(roas)} สูงกว่าค่าเฉลี่ยช่องทาง ${(roas/avg.roas).toFixed(1)} เท่า`};
-  if(Number.isFinite(freq)&&freq>RX.CRE_FREQ&&Number.isFinite(drop)&&drop>RX.CRE_CTR)
-    return {t:'cre',l:'🔵 เปลี่ยนชิ้นงาน',why:`คนเดิมเห็นซ้ำ ${freq.toFixed(1)} ครั้ง และ CTR ลดลง ${(drop*100).toFixed(0)}%`};
-  if(Number.isFinite(ctr)&&Number.isFinite(avg.ctr)&&ctr>avg.ctr*RX.FIX_CTR&&o.atc&&o.orders!=null){
-    const cvr=o.atc?o.orders/o.atc:NaN;
-    if(Number.isFinite(cvr)&&Number.isFinite(avg.cvr)&&avg.cvr>0&&cvr<avg.cvr*RX.FIX_CVR)
-      return {t:'fix',l:'🟡 ปรับ',why:`คนคลิกเยอะแต่ใส่ตะกร้าแล้วไม่ซื้อ (${pct(cvr)}) — ปัญหาน่าจะอยู่ที่หน้าสินค้าหรือราคา`};
-  }
-  return null;
-}
 function dAvg(rows){const t=dBlank();rows.forEach(r=>dAdd(t,r));
-  return {roas:dRoas(t),ctr:dCtr(t),cvr:(t.atc&&t.orders!=null)?t.orders/t.atc:NaN,tot:t};}
-
-/* Funnel ของแถวเดียว — แสดงเฉพาะขั้นที่ช่องทางนั้นมีข้อมูลจริง */
-function dFunnel(o,caps){
-  const steps=[['imp','เห็น'],['clicks','คลิก'],['msg','ทักแชท'],['view','ดูสินค้า'],
-               ['atc','ใส่ตะกร้า'],['checkout','เริ่มชำระเงิน'],['orders','ซื้อ']]
-    .filter(([k])=>caps.includes(k)&&o[k]!=null);
-  if(steps.length<2) return '';
-  const mx=o[steps[0][0]]||1;
-  return '<div class="fnl">'+steps.map(([k,lab],i)=>{
-    const v=o[k]||0, prev=i?o[steps[i-1][0]]:null;
-    const lost=(i&&prev)?(1-v/prev):NaN;
-    return `<div class="fnl-s"><div class="fnl-b" style="width:${Math.max(2,v/mx*100).toFixed(1)}%"></div>`+
-      `<div class="fnl-t"><span>${lab}</span><b class="num">${int(v)}</b>`+
-      // ขั้นถัดไปมากกว่าขั้นก่อนได้จริง เช่น TikTok นับ "ดูสินค้า" จากคนที่กดในคลิป
-      // ไม่ได้ผ่านการคลิกปลายทาง — ถ้าโชว์เป็น "ตกหล่น -155%" จะอ่านไม่รู้เรื่อง
-      (Number.isFinite(lost)?(lost>=0
-         ?`<span class="fnl-d">ตกหล่น ${(lost*100).toFixed(0)}%</span>`
-         :`<span class="fnl-d">มากกว่าขั้นก่อน (นับคนละทาง)</span>`):'')+'</div></div>';
-  }).join('')+'</div>';
+  return {roas:dRoas(t),ctr:dCtr(t),tot:t};}
+/* ครึ่งแรก/ครึ่งหลังของช่วง — ใช้ดูว่าชิ้นงานเริ่มหมดอายุหรือยัง
+   ต้องมีอย่างน้อย 4 วันจึงแบ่งได้ ไม่งั้นครึ่งหนึ่งจะเหลือวันเดียวแล้วแกว่งมาก */
+function dHalves(rows){
+  const ds=[...new Set(rows.map(r=>r.d))].sort();
+  if(ds.length<4) return null;
+  const mid=ds[Math.ceil(ds.length/2)];
+  const h=[dBlank(),dBlank()];
+  rows.forEach(r=>dAdd(h[r.d<mid?0:1],r));
+  return {e:h[0],l:h[1],eN:ds.filter(d=>d<mid).length,lN:ds.filter(d=>d>=mid).length,
+          eR:[ds[0],ds.filter(d=>d<mid).pop()],lR:[mid,ds[ds.length-1]]};
 }
 
-/* ตารางเจาะชั้น: แคมเปญ -> ชั้นกลาง -> ชั้นล่างสุด (ชั้นล่างสุดมีป้ายแนะนำ) */
-function dTree(ch){
-  const D2=DET[ch], rows=dRows(ch);
-  if(!rows.length) return `<div class="note">ไม่มีข้อมูลแอดละเอียดในช่วงที่เลือก (ไฟล์ครอบคลุม ${thD(D2.range.from,1)} – ${thD(D2.range.to,1)})</div>`;
-  const caps=D2.caps.funnel, avg=dAvg(dTop(ch,rows));
-  const leafName={fb:'แอด',tk:'แอด',sh:'สินค้า / คีย์เวิร์ด',lz:'สินค้า'}[ch];
-  const byC=dGroup(dTop(ch,rows),r=>r.c);
-  return byC.map(C2=>{
-    const inC=dKids(ch,rows.filter(r=>r.c===C2.k));
-    const mids=[...new Set(inC.map(r=>r.g))].filter(x=>x);
-    const leaves=dGroup(inC,r=>r.g+'\u0000'+r.a);
-    const body=leaves.map(L=>{
-      const k2=r=>r.g+'\u0000'+r.a; k2.wanted=L.k;
-      const b=dBadge(L,avg,dCtrDrop(inC,k2));
-      return `<tr><td>${mids.length?`<span class="mid">${esc(L.g||'—')}</span> `:''}${esc(L.a||'(ไม่มีชื่อ)')}</td>`+
-        `<td class="num">${baht(L.spend)}</td><td class="num">${L.imp==null?'–':int(L.imp)}</td>`+
-        `<td class="num">${L.clicks==null?'–':int(L.clicks)}</td><td class="num">${pct2(dCtr(L))}</td>`+
-        `<td class="num">${L.revenue==null?'–':baht(L.revenue)}</td><td class="num">${x2(dRoas(L))}</td>`+
-        `<td>${b?`<span class="bdg b-${b.t}" title="${esc(b.why)}">${b.l}</span><div class="why">${esc(b.why)}</div>`:muted('—')}</td></tr>`+
-        (caps.length>2?`<tr class="fnr"><td colspan="8">${dFunnel(L,caps)}</td></tr>`:'');
-    }).join('');
-    return `<details class="dtl"><summary><b>${esc(C2.k||'(ไม่มีชื่อแคมเปญ)')}</b>`+
-      `<span class="sm">${baht(C2.spend)} · ROAS ${x2(dRoas(C2))} · ${leaves.length} ${leafName}</span></summary>`+
-      `<div class="scroll"><table><thead><tr><th>${leafName}</th><th>ค่าแอด</th><th>เห็น</th><th>คลิก</th>`+
-      `<th>CTR</th><th>ยอดจากแอด</th><th>ROAS</th><th>คำแนะนำ</th></tr></thead><tbody>${body}</tbody></table></div></details>`;
-  }).join('');
+/* ---------- เป้าหมายแคมเปญ -> ตัวชี้วัด (ห้ามรวม ROAS ข้ามเป้าหมาย) ----------
+   ต้นเหตุที่หน้าเดิมโชว์ ROAS 4.53x กับ 0.89x ขัดกัน คือเอาแคมเปญทักแชท
+   (ซึ่ง Facebook ตามรอยยอดขายไม่ได้) ไปรวมกับแคมเปญ CPAS ที่ตามรอยได้ */
+const OBJ={
+  msg :{res:'msg',    lab:'ข้อความ',               met:'ต้นทุนต่อแชท',     unit:'แชท'},
+  buy :{res:'orders', lab:'ยอดซื้อบนเพจ',          met:'ต้นทุนต่อการซื้อ', unit:'ยอดซื้อ'},
+  cpas:{res:'revenue',lab:'ยอดขาย CPAS (Shopee)',  met:'ROAS',             unit:'ยอดซื้อ', roas:true},
+  plat:{res:'revenue',lab:'ยอดขายบนแพลตฟอร์ม',     met:'ROAS',             unit:'ยอดซื้อ', roas:true},
+  lead:{res:'msg',    lab:'ลูกค้าเป้าหมาย',        met:'ต้นทุนต่อ lead',   unit:'lead'},
+  none:{res:null,     lab:'ไม่ระบุเป้าหมายในรายงาน',met:'–',               unit:'ผลลัพธ์'}
+};
+const OBJORD=['msg','buy','cpas','plat','lead','none'];
+let FBGOAL=null;
+function fbGoalMap(){
+  if(FBGOAL) return FBGOAL;
+  FBGOAL={};
+  const M={msg:'msg',purchase:'buy',omni:'cpas',lead:'lead',none:'none'};
+  if(fbOn()&&FB.camps) FB.camps.forEach(c=>{FBGOAL[c.name]=M[c.goal]||'none';});
+  return FBGOAL;
+}
+/* เป้าหมายของแคมเปญหนึ่ง — ของ Facebook อ่านจาก fb_daily.json (คอลัมน์ตัวระบุผลลัพธ์)
+   ถ้าไม่เจอชื่อตรงกันจึงเดาจากคำขึ้นต้นของชื่อแคมเปญ (อนุสัญญาการตั้งชื่อของทีม) */
+function objOf(ch,name){
+  if(ch!=='fb') return 'plat';
+  const g=fbGoalMap()[name]; if(g) return g;
+  if(/^cpas/i.test(name)) return 'cpas';
+  if(/^i\/u/i.test(name)) return 'msg';
+  if(/^ii\//i.test(name)) return 'lead';
+  return 'buy';
+}
+function objRes(o,t){const k=OBJ[o].res;return k?t[k]:null;}
+/* ตัววัดหลักของเป้าหมายนั้น — ROAS (สูงดี) หรือ ต้นทุนต่อผลลัพธ์ (ต่ำดี) */
+function objVal(o,t){ const O=OBJ[o];
+  if(O.roas) return dRoas(t);
+  const r=objRes(o,t); return (r&&t.spend!=null)?t.spend/r:NaN; }
+function objFmt(o,v){ return Number.isFinite(v)?(OBJ[o].roas?x2(v):baht2(v)):'–'; }
+
+/* ---------- ป้ายแนะนำ 4 แบบ (เกณฑ์อยู่ที่ RX บนสุดของไฟล์) ---------- */
+const BRANK={stop:4,cre:3,fix:2,up:1,none:0};
+const BNAME={up:'🟢 เพิ่มงบ',fix:'🟡 ปรับ',cre:'🔵 เปลี่ยนชิ้นงาน',stop:'🔴 หยุด',none:'—'};
+function v2Badge(a,bench,chCtr){
+  const t=a.t,o=a.o,O=OBJ[o],sp=t.spend||0;
+  if(o==='cpas'&&!t.revenue)
+    return {t:'none',l:'—',why:'รอยอดขาย CPAS จาก Shopee — รายงานละเอียดยังไม่มีคอลัมน์มูลค่าการซื้อที่แชร์'};
+  if(o==='none') return {t:'none',l:'—',why:'รายงานชุดนี้ไม่มีผลลัพธ์ให้วัด'};
+  const res=objRes(o,t);
+  if(sp>=RX.NORES_SPEND&&!res) return {t:'stop',l:BNAME.stop,why:`ใช้ ${baht(sp)} ยังไม่มี${O.unit}`};
+  if(sp<RX.MIN_SPEND) return {t:'none',l:'—',why:`ใช้เงินน้อยกว่า ${baht(RX.MIN_SPEND)} ในช่วงนี้ ยังตัดสินไม่ได้`};
+  const v=objVal(o,t), ctr=dCtr(t);
+  const H=a.h, ce=H?dCtr(H.e):NaN, cl=H?dCtr(H.l):NaN;
+  if(Number.isFinite(v)&&Number.isFinite(bench)&&bench>0){
+    if(O.roas ? v<=bench*RX.STOP_ROAS : v>=bench*RX.STOP_X)
+      return {t:'stop',l:BNAME.stop,why:O.roas
+        ?`ROAS ${x2(v)} ต่ำกว่าค่าเฉลี่ยกลุ่ม ${x2(bench)} เกินครึ่ง`
+        :`${O.met} ${baht2(v)} แพงกว่าค่าเฉลี่ยกลุ่ม ${(v/bench).toFixed(1)} เท่า`};
+  }
+  if(Number.isFinite(ce)&&ce>0&&Number.isFinite(cl)&&cl<ce*(1-RX.CRE_DROP))
+    return {t:'cre',l:BNAME.cre,why:`CTR ลดจาก ${pct2(ce)} เหลือ ${pct2(cl)} คนเริ่มเบื่อชิ้นงาน`};
+  if(Number.isFinite(v)&&Number.isFinite(bench)&&bench>0&&Number.isFinite(ctr)&&Number.isFinite(chCtr)&&ctr>=chCtr){
+    if(O.roas ? v<bench*RX.FIX_ROAS : v>=bench*RX.FIX_X)
+      return {t:'fix',l:BNAME.fix,why:O.roas
+        ?`คนคลิกดี (CTR ${pct2(ctr)}) แต่ ROAS ${x2(v)} ต่ำกว่าเฉลี่ยกลุ่ม ${x2(bench)}`
+        :`คนคลิกดี (CTR ${pct2(ctr)}) แต่ ${O.met} ${baht2(v)} แพงกว่าเฉลี่ย ${(v/bench).toFixed(1)} เท่า`};
+  }
+  if(Number.isFinite(v)&&Number.isFinite(bench)&&bench>0){
+    if(O.roas ? v>=bench*RX.UP_ROAS : v<=bench*RX.UP_X)
+      return {t:'up',l:BNAME.up,why:O.roas
+        ?`ROAS ${x2(v)} สูงกว่าค่าเฉลี่ยกลุ่ม ${(v/bench).toFixed(1)} เท่า`
+        :`${O.met} ${baht2(v)} ถูกกว่าค่าเฉลี่ยกลุ่ม ${((1-v/bench)*100).toFixed(0)}%`};
+  }
+  return {t:'none',l:'—',why:'อยู่ในเกณฑ์ปกติของกลุ่มเป้าหมายเดียวกัน'};
 }
 
-/* กลุ่มผู้ชม / ตำแหน่ง — ถ้าช่องทางไม่มีข้อมูล เขียนกำกับตรง ๆ ห้ามใส่ตัวเลขปลอม */
-function dSplit(ch,kind){
-  const D2=DET[ch], arr=(D2[kind]||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
-  const label=kind==='audience'?'กลุ่มผู้ชม (อายุ / เพศ)':'ตำแหน่งที่โฆษณาแสดง';
-  if(!arr.length) return `<h3>${label}</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`;
-  const keyf=kind==='audience'?(r=>(r.age||'–')+' · '+(r.gender||'–')):(r=>r.p||'–');
-  const g=dGroup(arr,keyf), avg=dAvg(arr);
-  const best=g.filter(o=>Number.isFinite(dRoas(o))).sort((a,b)=>dRoas(b)-dRoas(a))[0];
-  return `<h3>${label}</h3>`+
-    (best?`<div class="note">ROAS ดีที่สุดคือ <b>${esc(best.k)}</b> ที่ ${x2(dRoas(best))} (ค่าเฉลี่ยช่องทาง ${x2(avg.roas)})</div>`:'')+
-    `<div class="scroll"><table><thead><tr><th>${kind==='audience'?'อายุ · เพศ':'ตำแหน่ง'}</th><th>ค่าแอด</th>`+
-    `<th>เห็น</th><th>คลิก</th><th>CTR</th><th>ยอดจากแอด</th><th>ROAS</th></tr></thead><tbody>`+
-    g.map(o=>`<tr><td>${esc(o.k)}</td><td class="num">${baht(o.spend)}</td>`+
-      `<td class="num">${o.imp==null?'–':int(o.imp)}</td><td class="num">${o.clicks==null?'–':int(o.clicks)}</td>`+
-      `<td class="num">${pct2(dCtr(o))}</td><td class="num">${o.revenue==null?'–':baht(o.revenue)}</td>`+
-      `<td class="num">${x2(dRoas(o))}</td></tr>`).join('')+'</tbody></table></div>';
+/* ---------- แปลงไฟล์ของช่องทางเป็นโมเดลที่ทุกบล็อกใช้ร่วมกัน ---------- */
+function v2Model(ch){
+  const D2=DET[ch]; if(!D2) return null;
+  const rows=dRows(ch); if(!rows.length) return {D2,empty:true};
+  const top=dTop(ch,rows), tot=dAvg(top).tot, chCtr=dCtr(tot);
+  const camps=dGroup(top,r=>r.c).map(c=>({name:c.k,t:c,o:objOf(ch,c.k)}));
+  const leaves=[];
+  camps.forEach(C=>{
+    const inC=dKids(ch,rows.filter(r=>r.c===C.name));
+    C.mids=[...new Set(inC.map(r=>r.g))].filter(x=>x);
+    C.groups=dGroup(inC,r=>r.g);
+    C.leaves=dGroup(inC,r=>r.g+'\u0000'+r.a).map(L=>{
+      const my=inC.filter(r=>(r.g+'\u0000'+r.a)===L.k);
+      const o={name:L.a||L.c||'(ไม่มีชื่อ)',g:L.g||'',t:L,o:C.o,camp:C,h:dHalves(my),i:leaves.length};
+      leaves.push(o); return o;});
+  });
+  /* ค่าเฉลี่ยเทียบ ต้องคิดแยกตามเป้าหมาย และคิดจากผลรวมก่อนหาร
+     (ค่าเฉลี่ยของอัตราส่วน ≠ อัตราส่วนของผลรวม) */
+  const bench={};
+  OBJORD.forEach(k=>{const L=leaves.filter(a=>a.o===k); if(!L.length) return;
+    const t=dBlank(); L.forEach(a=>dAdd(t,a.t)); bench[k]=objVal(k,t);});
+  leaves.forEach(a=>{a.b=v2Badge(a,bench[a.o],chCtr);});
+  camps.forEach(C=>{C.b=C.leaves.reduce((m,a)=>BRANK[a.b.t]>BRANK[m?m.t:'none']?a.b:m,null)||{t:'none',l:'—',why:''};});
+  return {ch,D2,rows,top,tot,chCtr,camps,leaves,bench,
+          objs:OBJORD.filter(o=>camps.some(c=>c.o===o))};
 }
 
-/* กล่อง "ต้องจัดการก่อน" — รวมทุกช่องทาง เรียงตามเงินที่เสีย */
+/* ---------- ชิ้นส่วนเล็ก ---------- */
+const ICO={money:'<path d="M2 5h12v8H2zM8 7.5a1.5 1.5 0 1 0 0 3a1.5 1.5 0 0 0 0-3"/>',
+  res:'<path d="M3 3h10v7H7l-3 3v-3H3z"/>',
+  cost:'<path d="M3 3l3 3M3 3v3M3 3h3M13 13l-3-3M13 13v-3M13 13h-3M5 11l6-6"/>',
+  roas:'<path d="M2 12l4-4 3 3 5-6M10 5h4v4"/>'};
+function ico(k){return `<span class="ico"><svg viewBox="0 0 16 16" fill="none" stroke="var(--acc)" `+
+  `stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICO[k]||ICO.money}</svg></span>`;}
+/* เส้นจิ๋วในการ์ด — ไม่มีแกน ใช้ดูรูปร่างเท่านั้น จึงไม่ต้องมีตัวเลขกำกับ */
+function spark(vals){
+  const v=vals.filter(x=>Number.isFinite(x)); if(v.length<2) return '';
+  const w=120,h=34,mx=Math.max(...v),mn=Math.min(...v),r=(mx-mn)||1;
+  const pts=v.map((x,i)=>[i*(w/(v.length-1)),h-3-(x-mn)/r*(h-8)]);
+  const p=pts.map(q=>q[0].toFixed(1)+','+q[1].toFixed(1)).join(' '),L=pts[pts.length-1];
+  return `<div class="spark"><svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true">`+
+    `<polyline points="0,${h} ${p} ${w},${h}" fill="var(--acc)" fill-opacity=".12" stroke="none"/>`+
+    `<polyline points="${p}" fill="none" stroke="var(--acc)" stroke-width="1.6" vector-effect="non-scaling-stroke"/>`+
+    `<circle cx="${L[0].toFixed(1)}" cy="${L[1].toFixed(1)}" r="2.6" fill="var(--acc)"/></svg></div>`;
+}
+function v2card(i,l,v,d,ser){
+  return `<div class="kpi"><div class="k-top">${ico(i)}<span class="k-l">${l}</span></div>`+
+    `<div class="k-v num">${v}</div><div class="k-s num">${d||'&nbsp;'}</div>${ser?spark(ser):''}</div>`;
+}
+
+/* ---------- บล็อก 1: การ์ด 4 ใบ + % เทียบช่วงก่อนที่ยาวเท่ากัน ----------
+   % มาจากข้อมูลระดับช่องทาง (ads_daily / fb_daily) ซึ่งมีย้อนหลังพอ
+   ไฟล์แอดละเอียดมีแค่ 7 วัน เทียบช่วงก่อนไม่ได้ ถ้าไม่มีช่วงก่อน = ไม่แสดง % */
+function v2Kpis(ch){
+  const tail=PR?` เทียบ ${NN} วันก่อน`:'';
+  const wrap=h=>`<section class="kpis" style="margin-bottom:0">${h}</section>`;
+  if(ch==='fb'){
+    if(!fbOn()) return '';
+    const T=fbTot(st.from,st.to), ds=fbDays(st.from,st.to);
+    const pds=PR?fbDays(PA,PB):[], Pv=pds.length?fbSum(FB.days,pds,FB.keys):null;
+    const gi=k=>FB.keys.indexOf(k), ser=k=>ds.map(d=>FB.days[d][gi(k)]||0);
+    const rev=(T.omni_val||0)+(T.pval||0), prev=Pv?((Pv.omni_val||0)+(Pv.pval||0)):NaN;
+    return wrap(
+      v2card('money','ค่าแอด',baht(T.spend),delta(T.spend,Pv&&Pv.spend,1)+tail,ser('spend'))+
+      v2card('res','ทักแชท',int(T.msg),delta(T.msg,Pv&&Pv.msg)+tail,ser('msg'))+
+      v2card('cost','ต้นทุนต่อแชท',T.msg?baht2(T.spend/T.msg):'–',
+        delta(div(T.spend,T.msg),Pv&&div(Pv.spend,Pv.msg),1)+tail,
+        ds.map(d=>{const r=FB.days[d];return r[gi('msg')]?r[gi('spend')]/r[gi('msg')]:0;}))+
+      v2card('roas','ROAS (CPAS + บนเพจ)',rev?x2(div(rev,T.spend)):muted('ไม่มีในไฟล์'),
+        rev?(delta(div(rev,T.spend),Pv&&div(prev,Pv.spend))+tail):'ต้อง export ใหม่ให้มีคอลัมน์มูลค่าการซื้อ',null));
+  }
+  const o=R[ch], p=PR&&PR[ch], K={sh:['shS','shR'],tk:['tkS','tkR'],lz:['lzS','lzR']}[ch];
+  const ser=i=>R.days.map(d=>dayV(d)[K[i]]||0);
+  return wrap(
+    v2card('money','ค่าแอด',baht(o.spend),delta(o.spend,p&&p.spend,1)+tail,ser(0))+
+    v2card('res','ยอดขายจริง',baht(o.real),delta(o.real,p&&p.real)+tail,ser(1))+
+    v2card('roas','ROAS จากยอดจริง',x2(div(o.real,o.spend)),
+      delta(div(o.real,o.spend),p&&div(p.real,p.spend))+tail,null)+
+    v2card('cost','ค่าแอด ÷ ยอดขาย',pct(div(o.spend,o.real)),
+      deltaPt(div(o.spend,o.real),p&&div(p.spend,p.real))+tail,null));
+}
+
+/* ---------- บล็อก 2.1: กราฟแนวโน้ม (เส้นผลลัพธ์ + พื้นที่ค่าแอด) ---------- */
+function v2Trend(ch){
+  let days,res,sp,resLab,costOf,costFmt,costLab;
+  if(ch==='fb'){
+    if(!fbOn()) return '';
+    days=fbDays(st.from,st.to); const gi=k=>FB.keys.indexOf(k);
+    res=days.map(d=>FB.days[d][gi('msg')]||0); sp=days.map(d=>FB.days[d][gi('spend')]||0);
+    resLab='ทักแชท'; costLab='ต้นทุนต่อแชท'; costOf=i=>res[i]?sp[i]/res[i]:NaN; costFmt=v=>baht2(v);
+  }else{
+    const K={sh:['shS','shR'],tk:['tkS','tkR'],lz:['lzS','lzR']}[ch];
+    days=R.days; sp=days.map(d=>dayV(d)[K[0]]||0); res=days.map(d=>dayV(d)[K[1]]||0);
+    resLab='ยอดขายจริง'; costLab='ค่าแอด ÷ ยอดขาย'; costOf=i=>res[i]?sp[i]/res[i]:NaN;
+    costFmt=v=>pct(v);
+  }
+  if(days.length<2) return `<div class="card"><h2>แนวโน้มผลลัพธ์</h2><div class="note">ช่วงที่เลือกสั้นเกินกว่าจะวาดแนวโน้ม</div></div>`;
+  const W=600,H=360,pl=46,pr=50,pt=14,pb=30,n=days.length,step=(W-pl-pr)/(n-1);
+  const rmax=Math.max(1,...res), smax=Math.max(1,...sp);
+  const X=i=>pl+i*step, Yr=v=>pt+(1-v/rmax)*(H-pt-pb), Ys=v=>pt+(1-v/smax)*(H-pt-pb);
+  let g='';
+  for(let i=0;i<=4;i++){const y=pt+(H-pt-pb)*i/4;
+    g+=`<line x1="${pl}" x2="${W-pr}" y1="${y}" y2="${y}" stroke="var(--bd)"/>`+
+       `<text x="${pl-6}" y="${y+4}" text-anchor="end" font-size="12" fill="var(--muted)">${yTick(Math.round(rmax*(1-i/4)))}</text>`+
+       `<text x="${W-pr+6}" y="${y+4}" font-size="12" fill="var(--muted)">฿${yTick(Math.round(smax*(1-i/4)))}</text>`;}
+  const area=`<polygon points="${pl},${H-pb} ${sp.map((v,i)=>X(i)+','+Ys(v)).join(' ')} ${X(n-1)},${H-pb}" fill="var(--acc)" fill-opacity=".18"/>`;
+  const line=`<polyline points="${res.map((v,i)=>X(i)+','+Yr(v)).join(' ')}" fill="none" stroke="var(--acc)" stroke-width="2.6" stroke-linejoin="round"/>`;
+  const costs=days.map((d,i)=>costOf(i)).filter(Number.isFinite);
+  const avg=costs.length?sp.reduce((a,b)=>a+b,0)/res.reduce((a,b)=>a+b,0):NaN;
+  let dots='',lab='',bad=[];
+  days.forEach((d,i)=>{const c=costOf(i), isBad=Number.isFinite(c)&&Number.isFinite(avg)&&c>=avg*1.1;
+    if(isBad) bad.push([d,c]);
+    dots+=`<circle cx="${X(i)}" cy="${Yr(res[i])}" r="${isBad?6:3.5}" fill="${isBad?'var(--card)':'var(--acc)'}" `+
+      `stroke="${isBad?'var(--neg)':'var(--acc)'}" stroke-width="2"><title>${thD(d)} ${resLab} ${int(res[i])} · ค่าแอด ${baht(sp[i])} · ${costLab} ${costFmt(c)}</title></circle>`;
+    if(n<=14||i%Math.ceil(n/10)===0)
+      lab+=`<text x="${X(i)}" y="${H-9}" text-anchor="middle" font-size="12" fill="var(--muted)">${thD(d)}</text>`;});
+  const note=bad.length
+    ?`วันที่${costLab}สูงกว่าค่าเฉลี่ยของช่วง: `+bad.slice(0,4).map(b=>`${thD(b[0])} (${costFmt(b[1])})`).join(' · ')+(bad.length>4?` และอีก ${bad.length-4} วัน`:'')
+    :`ไม่มีวันที่${costLab}สูงผิดปกติในช่วงนี้`;
+  return `<div class="card"><div class="ch"><h2>แนวโน้มผลลัพธ์</h2></div>`+
+    `<div class="legend"><span><i style="background:var(--acc)"></i>${resLab}</span>`+
+    `<span><i style="background:var(--acc);opacity:.3"></i>ค่าแอด</span>`+
+    `<span><i style="background:var(--neg);border-radius:50%"></i>${costLab}สูงผิดปกติ</span></div>`+
+    `<div class="trendsvg"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="กราฟ${resLab}และค่าแอดรายวัน">${g}${area}${line}${dots}${lab}</svg></div>`+
+    `<div class="note">${esc(note)} · เส้น = ${resLab} (แกนซ้าย) · พื้นที่ = ค่าแอด (แกนขวา)</div></div>`;
+}
+
+/* ---------- บล็อก 2.2: Funnel ทรงกรวย (เฉพาะขั้นที่ช่องทางนั้นมีข้อมูลจริง) ---------- */
+const FSTEP=[['imp','เห็นแอด'],['clicks','คลิก'],['msg','ทักแชท'],['view','ดูสินค้า'],
+             ['atc','ใส่ตะกร้า'],['checkout','เริ่มชำระเงิน'],['orders','ซื้อ']];
+/* ขั้นของ Funnel ที่ช่องทางนั้น "ใช้จริง" — ผู้ใช้กำหนดของ Facebook ไว้ 4 ขั้น
+   คอลัมน์ "ยอดดูเนื้อหา" ของ FB ว่างเกือบหมด (แคมเปญเป็นแบบข้อความ ไม่มี pixel)
+   ถ้าเอามาใส่ด้วยจะได้ขั้นที่เล็กกว่าขั้นถัดไป แล้วอ่านเป็น "ซื้อ 299.8%" ซึ่งไม่สื่ออะไร */
+const FONLY={fb:['imp','clicks','msg','orders']};
+function fSteps(ch,caps,t){
+  const only=FONLY[ch];
+  return FSTEP.filter(([k])=>(only?only.includes(k):caps.includes(k))&&t[k]!=null);
+}
+/* ไฟล์แอดละเอียดอาจครอบคลุมแคบกว่าช่วงที่เลือก (เช่น Lazada ติด CAPTCHA ได้วันเดียว)
+   ถ้าไม่บอก ผู้ใช้จะเทียบ Funnel กับการ์ดด้านบนแล้วคิดว่าตัวเลขพัง */
+function v2Cover(M){
+  const r=M.D2.range||{};
+  if(!r.from||!r.to) return '';
+  if(r.from<=st.from&&r.to>=st.to) return '';
+  return ` · ไฟล์แอดละเอียดมีข้อมูลแค่ ${thD(r.from,1)} – ${thD(r.to,1)} ซึ่งแคบกว่าช่วงที่เลือก `+
+    `ตัวเลขในบล็อกนี้จึงเป็นของช่วงนั้น ไม่ใช่ทั้ง ${NN} วัน`;
+}
+function v2Funnel(M){
+  const caps=M.D2.caps.funnel||[], t=M.tot;
+  const st2=fSteps(M.ch,caps,t);
+  if(st2.length<2) return `<div class="card"><h2>เส้นทางลูกค้า</h2><div class="note">ช่องทางนี้มีข้อมูลไม่พอวาดเส้นทางลูกค้า</div></div>`;
+  /* wmin ต้องกว้างพอให้ตัวเลขของขั้นสุดท้ายอยู่ในรูปทรง — เคยตั้ง 90 แล้วเลขล้นออกนอกกรวย */
+  const W=300,rowH=50,gap=6,H=st2.length*(rowH+gap)-gap,wmax=W-20,wmin=122;
+  const ws=st2.map((s,i)=>st2.length<2?wmax:wmax-(wmax-wmin)*i/(st2.length-1));
+  let s='';
+  st2.forEach(([k,lab],i)=>{const y=i*(rowH+gap),w1=ws[i],w2=i<st2.length-1?ws[i+1]:ws[i]-22,cx=W/2;
+    const op=(1-i*0.14).toFixed(2), v=t[k]||0, prev=i?(t[st2[i-1][0]]||0):null;
+    s+=`<polygon points="${cx-w1/2},${y} ${cx+w1/2},${y} ${cx+w2/2},${y+rowH} ${cx-w2/2},${y+rowH}" fill="var(--acc)" fill-opacity="${op}"/>`;
+    const fg=op>0.55?'var(--acc-ink)':'var(--ink)';
+    s+=`<text x="${cx}" y="${y+20}" text-anchor="middle" font-size="12" fill="${fg}">${lab}</text>`+
+       `<text x="${cx}" y="${y+39}" text-anchor="middle" font-size="15" font-weight="700" fill="${fg}">${int(v)}`+
+       (prev?`<tspan font-size="11" font-weight="500"> (${pct(v/prev,1)})</tspan>`:'')+`</text>`;});
+  const over=st2.some(([k],i)=>i&&(t[k]||0)>(t[st2[i-1][0]]||0));
+  return `<div class="card"><div class="ch"><h2>เส้นทางลูกค้า (Funnel)</h2></div>`+
+    `<div class="fnlbig"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="เส้นทางลูกค้า">${s}</svg></div>`+
+    `<div class="note">% ในวงเล็บ = เทียบกับขั้นก่อนหน้า`+
+    (over?' · บางขั้นมากกว่าขั้นก่อนได้จริง เพราะแพลตฟอร์มนับคนละทาง (เช่นกดดูสินค้าจากในคลิปโดยไม่ผ่านคลิกปลายทาง)':'')+
+    (M.D2.caps.funnel.length<7?` · ช่องทางนี้วัดได้ถึงขั้น "${st2[st2.length-1][1]}" เท่านั้น`:'')+
+    v2Cover(M)+'</div></div>';
+}
+
+/* ---------- บล็อก 2.3: สรุป + ข้อเสนอแนะ 3 ข้อ ---------- */
+function v2Sum(ch,M){
+  const L=M.leaves, by=t=>L.filter(a=>a.b.t===t).sort((x,y)=>(y.t.spend||0)-(x.t.spend||0));
+  const stop=by('stop'),up=by('up'),fix=by('fix'),cre=by('cre');
+  const tx=[];
+  if(ch==='fb'&&fbOn()){
+    const T=fbTot(st.from,st.to), pds=PR?fbDays(PA,PB):[], Pv=pds.length?fbSum(FB.days,pds,FB.keys):null;
+    const c=div(T.spend,T.msg), pc=Pv?div(Pv.spend,Pv.msg):NaN;
+    tx.push(`${NN} วันนี้ใช้ค่าแอด ${baht(T.spend)} ได้แชท ${int(T.msg)} ครั้ง ต้นทุนต่อแชท ${baht2(c)}`);
+    if(Number.isFinite(pc)&&pc) tx.push(`${c>pc?'แพงขึ้น':'ถูกลง'} ${(Math.abs(c/pc-1)*100).toFixed(1)}% เทียบช่วงก่อนหน้า`);
+  }else{
+    const o=R[ch], p=PR&&PR[ch], rt=div(o.spend,o.real);
+    tx.push(`${NN} วันนี้ใช้ค่าแอด ${baht(o.spend)} กับยอดขายจริง ${baht(o.real)} คิดเป็น ${pct(rt)} ของยอดขาย (ROAS ${x2(div(o.real,o.spend))})`);
+    if(p&&p.real&&p.spend){const prt=div(p.spend,p.real),dd=(rt-prt)*100;
+      tx.push(Math.abs(dd)<0.05?'สัดส่วนค่าแอดเท่าเดิมกับช่วงก่อนหน้า'
+        :`สัดส่วนค่าแอด${dd>0?'สูงขึ้น':'ลดลง'} ${Math.abs(dd).toFixed(1)} จุด เทียบช่วงก่อนหน้า`);}
+  }
+  const n=o=>o.length;
+  if(n(stop)||n(fix)||n(cre))
+    tx.push(`ในช่วงนี้มีรายการที่ควรดู ${n(stop)+n(fix)+n(cre)} รายการ (หยุด ${n(stop)} · ปรับ ${n(fix)} · เปลี่ยนชิ้นงาน ${n(cre)})`);
+  const next=[];
+  if(n(stop)) next.push(`พิจารณาหยุด ${n(stop)} รายการในกลุ่ม "หยุด" ใช้เงินรวม ${baht(stop.reduce((a,x)=>a+(x.t.spend||0),0))} เริ่มจาก ${stop[0].name}`);
+  if(n(up))   next.push(`เพิ่มงบให้ ${up[0].name} — ${up[0].b.why}`);
+  if(n(fix))  next.push(`ปรับ ${fix[0].name} — ${fix[0].b.why}`);
+  if(n(cre))  next.push(`เปลี่ยนชิ้นงานของ ${cre[0].name} — ${cre[0].b.why}`);
+  if(!next.length) next.push('ยังไม่มีรายการที่เข้าเกณฑ์ต้องจัดการในช่วงนี้');
+  return `<div class="card sumbox"><div class="ch"><h2>สรุป ${NN} วันนี้</h2></div>`+
+    `<p class="sumtext">${esc(tx.join(' · '))}</p>`+
+    `<h3 style="font-size:13.5px;margin-bottom:6px">ข้อเสนอแนะถัดไป</h3>`+
+    `<ol class="next">${next.slice(0,3).map(t=>`<li><span>${esc(t)}</span></li>`).join('')}</ol>`+
+    `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div></div>`;
+}
+
+/* ---------- บล็อก 3: บอร์ด 4 ป้าย ---------- */
+const BCOL=[['up','เพิ่มงบ','ผลดีกว่าค่าเฉลี่ยกลุ่มชัดเจน'],['fix','ปรับ','มีจุดต้องแก้ แต่ยังไปต่อได้'],
+            ['cre','เปลี่ยนชิ้นงาน','CTR ตกแรงในช่วงหลัง'],['stop','หยุด','เปลืองเงิน ได้ผลน้อย']];
+function v2Board(M){
+  const body=BCOL.map(([k,n,w])=>{
+    const L=M.leaves.filter(a=>a.b.t===k).sort((x,y)=>(y.t.spend||0)-(x.t.spend||0));
+    const s=L.reduce((a,x)=>a+(x.t.spend||0),0);
+    return `<div class="bcol ${k}"><h3><span>${n} · ${L.length}</span><span class="num">${baht(s)}</span></h3>`+
+      `<div class="why3">${w}</div>`+
+      (L.slice(0,4).map(a=>`<button class="bitem" data-ad="${a.i}"><b>${esc(a.name)}</b>`+
+        `<span>${esc(a.camp.name)} · ${esc(a.b.why)}</span></button>`).join('')||'<div class="why3">ไม่มีในช่วงนี้</div>')+
+      (L.length>4?`<div class="why3">และอีก ${L.length-4} รายการ (ดูในตารางด้านล่าง)</div>`:'')+'</div>';}).join('');
+  return `<div class="card"><div class="ch"><h2>ต้องทำอะไรต่อ</h2>`+
+    `<span class="note sp" style="margin:0">กดชื่อเพื่อเลื่อนไปดูรายละเอียดด้านล่าง</span></div>`+
+    `<div class="board">${body}</div>`+
+    `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div></div>`;
+}
+
+/* ---------- บล็อก 4: กลุ่มผู้ชม (ตารางความร้อน) + ตำแหน่ง (แท่ง) ---------- */
+const GLAB={female:'หญิง',male:'ชาย',unknown:'ไม่ระบุ'};
+function ageKey(a){const m=String(a).match(/\d+/);return /unknown/i.test(a)?9999:(m?+m[0]:9998);}
+function v2Aud(M){
+  const arr=(M.D2.audience||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
+  if(!arr.length) return `<div class="card"><h2>กลุ่มผู้ชม อายุ × เพศ</h2>`+
+    `<div class="note">ช่องทางนี้ไม่มีข้อมูลกลุ่มผู้ชมในรายงาน</div></div>`;
+  const ages=[...new Set(arr.map(r=>r.age||'–'))].sort((a,b)=>ageKey(a)-ageKey(b));
+  const gens=[...new Set(arr.map(r=>r.gender||'–'))]
+    .sort((a,b)=>(/unknown/i.test(a)?1:0)-(/unknown/i.test(b)?1:0));
+  const cell=(a,g)=>{const t=dBlank();arr.forEach(r=>{if((r.age||'–')===a&&(r.gender||'–')===g)dAdd(t,r);});return t;};
+  const grid=ages.map(a=>gens.map(g=>cell(a,g)));
+  const met=V2.metric;
+  /* ช่องที่ข้อมูลน้อยเกินไปไม่คำนวณอัตราส่วน — เลขจาก 30 อิมเพรสชันเชื่อไม่ได้ */
+  const val=t=>met==='spend'?(t.spend||0):met==='ctr'?(t.imp>=300?dCtr(t):null)
+    :(t.revenue!=null&&t.spend?dRoas(t):null);
+  const vs=[];grid.forEach(r=>r.forEach(t=>{const v=val(t);if(v!=null&&Number.isFinite(v))vs.push(v);}));
+  const mx=vs.length?Math.max(...vs):1,mn=vs.length?Math.min(...vs):0;
+  let h='<div class="hd"></div>'+gens.map(g=>`<div class="hd">${esc(GLAB[String(g).toLowerCase()]||g)}</div>`).join('');
+  ages.forEach((a,i)=>{h+=`<div class="hd" style="text-align:left">${esc(a)}</div>`;
+    gens.forEach((g,j)=>{const t=grid[i][j],v=val(t);
+      const k=(v==null||!Number.isFinite(v))?null:(v-mn)/((mx-mn)||1);
+      const bg=k==null?'var(--low-bg)':`color-mix(in srgb, var(--acc) ${Math.round(8+k*72)}%, var(--card))`;
+      const fg=k!=null&&k>0.55?'var(--acc-ink)':(k==null?'var(--muted)':'var(--ink)');
+      const txt=k==null?'–':met==='spend'?baht(v):met==='ctr'?pct2(v):x2(v);
+      h+=`<div style="background:${bg};color:${fg}" title="${esc(a)} ${esc(GLAB[String(g).toLowerCase()]||g)} · ค่าแอด ${baht(t.spend)} · เห็น ${int(t.imp)} · CTR ${pct2(dCtr(t))}">${txt}</div>`;});});
+  const flat=[];ages.forEach((a,i)=>gens.forEach((g,j)=>{const t=grid[i][j];
+    if((t.imp||0)>=1000) flat.push([esc(a)+' '+(GLAB[String(g).toLowerCase()]||g),dCtr(t),t.spend||0]);}));
+  flat.sort((x,y)=>y[1]-x[1]);
+  const hasRoas=arr.some(r=>r.revenue!=null);
+  return `<div class="card"><div class="ch"><h2>กลุ่มผู้ชม อายุ × เพศ</h2>`+
+    `<div class="seg sm sp" id="segAud" role="group" aria-label="ตัวชี้วัด">`+
+    `<button data-m="spend"${met==='spend'?' class="on"':''}>ค่าแอด</button>`+
+    `<button data-m="ctr"${met==='ctr'?' class="on"':''}>CTR</button>`+
+    (hasRoas?`<button data-m="roas"${met==='roas'?' class="on"':''}>ROAS</button>`:'')+`</div></div>`+
+    `<div class="heat">${h}</div>`+
+    `<div class="note">สีเข้ม = ค่ามาก${met==='ctr'?' · ช่องที่เห็นน้อยกว่า 300 ครั้งไม่คำนวณ CTR':''}`+
+    (flat.length?` · CTR สูงสุด (เฉพาะช่องที่เห็นเกิน 1,000 ครั้ง): ${flat[0][0]} ${pct2(flat[0][1])}`:'')+'</div></div>';
+}
+function v2Place(M){
+  const arr=(M.D2.placement||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
+  if(!arr.length) return `<div class="card"><h2>ตำแหน่งที่โฆษณาแสดง</h2>`+
+    `<div class="note">ช่องทางนี้ไม่มีข้อมูลตำแหน่งในรายงาน</div></div>`;
+  const g=dGroup(arr,r=>r.p||'–').slice(0,8), mx=Math.max(1,...g.map(o=>o.spend||0));
+  const best=g.filter(o=>(o.imp||0)>2000).sort((a,b)=>dCtr(b)-dCtr(a))[0];
+  return `<div class="card"><div class="ch"><h2>ตำแหน่งที่โฆษณาแสดง</h2>`+
+    `<span class="note sp" style="margin:0">8 อันดับแรกตามค่าแอด</span></div>`+
+    g.map(o=>`<div class="hb"><span class="nm" title="${esc(o.k)}">${esc(String(o.k).replace(/ \/ ในแอพ$/,''))}</span>`+
+      `<div><div class="bar2" style="width:${Math.max(1,(o.spend||0)/mx*100).toFixed(1)}%"></div></div>`+
+      `<span class="num" style="text-align:right">${baht(o.spend)}</span></div>`).join('')+
+    `<div class="note">${best?`CTR สูงสุดใน 8 อันดับ: ${esc(String(best.k).replace(/ \/ ในแอพ$/,''))} ${pct2(dCtr(best))}`:'ข้อมูลไม่พอเทียบ CTR'}</div></div>`;
+}
+
+/* ---------- บล็อก 5: ตาราง 5 แคมเปญที่ใช้เงินมากที่สุด ---------- */
+function v2Top5(M){
+  const top=M.camps.slice(0,5);
+  if(!top.length) return '';
+  const rows=top.map(C=>{
+    const a=C.leaves[0], o=C.o, O=OBJ[o], v=objVal(o,C.t), res=objRes(o,C.t);
+    /* ตัวย่อในวงกลม: เอาคำที่ยาวที่สุดในชื่อแคมเปญ ไม่ใช่ตัวแรกของชื่อ
+       เพราะชื่อขึ้นต้นด้วยรหัส/วันที่เหมือนกันหมด ("i/u/24.06.25/...") จะได้ตัวซ้ำทุกแถว */
+    const tok=(String(C.name).match(/[A-Za-zก-๙]{2,}/g)||[]).filter(t=>!/^(re|th|de)$/i.test(t))
+      .sort((x,y)=>y.length-x.length);
+    const ini=(tok[0]||String(C.name)||'W').slice(0,2).toUpperCase();
+    return `<tr class="crow"${a?` data-ad="${a.i}"`:''}><td><span class="thumb">${esc(ini)}</span>`+
+      `<span class="cname"><b title="${esc(C.name)}">${esc(C.name)}</b><span>${esc(O.lab)}</span></span></td>`+
+      `<td class="num">${res==null?muted('–'):(O.roas?baht(res):int(res)+' '+O.unit)}</td>`+
+      `<td class="num">${o==='cpas'&&!C.t.revenue?muted('รอยอด CPAS'):objFmt(o,v)}</td>`+
+      `<td class="num">${baht(C.t.spend)}</td>`+
+      `<td><span class="bdg b-${C.b.t}" title="${esc(C.b.why)}">${C.b.l}</span></td></tr>`;}).join('');
+  return `<div class="card"><div class="ch"><h2>5 แคมเปญที่ใช้เงินมากที่สุด</h2>`+
+    `<span class="note sp" style="margin:0">กดแถวเพื่อดูรายละเอียดด้านล่าง</span></div>`+
+    `<div class="scroll"><table class="ctable"><thead><tr><th>แคมเปญ</th><th>ผลลัพธ์</th>`+
+    `<th>ตัววัดตามเป้าหมาย</th><th>ค่าแอด</th><th>คำแนะนำ</th></tr></thead><tbody>${rows}</tbody></table></div>`+
+    `<div class="note">ตัววัดต่างกันตามเป้าหมายของแคมเปญ — ทักแชทวัดด้วยต้นทุนต่อแชท · ซื้อบนเพจวัดด้วยต้นทุนต่อการซื้อ · CPAS และแพลตฟอร์มวัดด้วย ROAS · ห้ามเอาต่างเป้าหมายมาเทียบกันตรง ๆ</div></div>`;
+}
+
+/* ---------- บล็อก 6: ตารางเจาะชั้น + รายละเอียดแอด ---------- */
+const LEAFN={fb:'แอด',tk:'แอด',sh:'สินค้า / คีย์เวิร์ด',lz:'สินค้า'};
+function v2Row(cls,name,o,obj,b,attrs){
+  const v=objVal(obj,o), res=objRes(obj,o);
+  return `<tr class="${cls}" ${attrs||''}><td>${name}</td>`+
+    `<td class="num">${baht(o.spend)}</td><td class="num">${o.imp==null?'–':int(o.imp)}</td>`+
+    `<td class="num">${pct2(dCtr(o))}</td>`+
+    `<td class="num">${res==null?'–':(OBJ[obj].roas?baht(res):int(res))}</td>`+
+    `<td class="num">${objFmt(obj,v)}</td>`+
+    `<td class="num">${Number.isFinite(dFreq(o))?dFreq(o).toFixed(2):'–'}</td>`+
+    `<td>${b?`<span class="bdg b-${b.t}" title="${esc(b.why)}">${b.l}</span>`:''}</td></tr>`;
+}
+const V2LIM=8;
+function v2Tree(M){
+  const ch=M.ch;let h='';
+  M.objs.forEach(o=>{
+    const C=M.camps.filter(c=>c.o===o); if(!C.length) return;
+    const s=C.reduce((a,c)=>a+(c.t.spend||0),0), O=OBJ[o];
+    h+=`<tr class="obj"><td colspan="8">${esc(O.lab)} · ${C.length} แคมเปญ · ${baht(s)} · วัดด้วย ${esc(O.met)}`+
+       (Number.isFinite(M.bench[o])?` · ค่าเฉลี่ยกลุ่ม ${objFmt(o,M.bench[o])}`:'')+`</td></tr>`;
+    const all=V2.more.has(o);
+    C.forEach((c,idx)=>{
+      const key=o+'\u0000'+c.name, op=V2.open.has(key);
+      const selIn=V2.sel!=null&&M.leaves[V2.sel]&&M.leaves[V2.sel].camp===c;
+      if(!all&&idx>=V2LIM&&!op&&!selIn) return;
+      h+=v2Row('lv1'+(op?' open':''),`<span class="car">▸</span>${esc(c.name)}`,c.t,o,c.b,`data-c="${esc(key)}"`);
+      if(op){
+        const multi=c.mids.length>1||(c.mids.length===1&&c.leaves.length>1);
+        if(multi) c.groups.forEach(G=>{
+          h+=v2Row('lv2','ชุดโฆษณา: '+esc(G.k||'—'),G,o,null,'');
+          c.leaves.filter(a=>a.g===G.k).forEach(a=>{
+            h+=v2Row('lv3'+(V2.sel===a.i?' sel':''),LEAFN[ch]+': '+esc(a.name),a.t,o,a.b,`data-ad="${a.i}"`);});});
+        else c.leaves.forEach(a=>{
+          h+=v2Row('lv3'+(V2.sel===a.i?' sel':''),LEAFN[ch]+': '+esc(a.name),a.t,o,a.b,`data-ad="${a.i}"`);});
+      }
+    });
+    if(C.length>V2LIM) h+=`<tr><td colspan="8"><button class="link" data-more="${esc(o)}">`+
+      `${all?'ย่อกลับ':'ดูอีก '+(C.length-V2LIM)+' แคมเปญ'}</button></td></tr>`;
+  });
+  return `<div class="scroll"><table id="v2tbl"><thead><tr><th>แคมเปญ / ชุดโฆษณา / ${LEAFN[ch]}</th>`+
+    `<th>ค่าแอด</th><th>เห็น</th><th>CTR</th><th>ผลลัพธ์</th><th>ตัววัด</th><th>ความถี่</th><th>คำแนะนำ</th>`+
+    `</tr></thead><tbody>${h}</tbody></table></div>`;
+}
+function v2AdDetail(M){
+  const a=V2.sel!=null?M.leaves[V2.sel]:null;
+  if(!a) return `<div class="addet"><div class="note">กดแถว${LEAFN[M.ch]}ในตารางด้านบนเพื่อดูรายละเอียด</div></div>`;
+  const caps=M.D2.caps.funnel||[], t=a.t;
+  const steps=fSteps(M.ch,caps,t);
+  const mx=steps.length?(t[steps[0][0]]||1):1;
+  let f='';
+  steps.forEach(([k,lab],i)=>{const v=t[k]||0,prev=i?(t[steps[i-1][0]]||0):null;
+    if(i&&prev) f+=`<div class="fdrop num">${v<=prev?'ตกหล่น '+((1-v/prev)*100).toFixed(1)+'%':'มากกว่าขั้นก่อน (นับคนละทาง)'}</div>`;
+    /* ความกว้างใช้รากที่สอง ไม่งั้นขั้นท้ายที่เลขเล็กจะกลายเป็นเส้นบาง ๆ มองไม่เห็น */
+    f+=`<div class="fstep"><span>${lab}</span><div class="fbar" style="width:${Math.max(Math.sqrt(v/mx)*100,1.5).toFixed(1)}%;opacity:${(1-i*0.12).toFixed(2)}"></div><span class="num">${int(v)}</span></div>`;});
+  const H=a.h, O=OBJ[a.o];
+  const half=H?`<div class="sub note" style="margin:0">ช่วงแรก ${thD(H.eR[0])}–${thD(H.eR[1])} (${H.eN} วัน) เทียบช่วงหลัง ${thD(H.lR[0])}–${thD(H.lR[1])} (${H.lN} วัน)</div>`+
+    `<div class="scroll"><table style="margin-top:6px"><thead><tr><th>ตัวชี้วัด</th><th>ช่วงแรก</th><th>ช่วงหลัง</th></tr></thead><tbody>`+
+    `<tr><td>ค่าแอดต่อวัน</td><td class="num">${baht((H.e.spend||0)/H.eN)}</td><td class="num">${baht((H.l.spend||0)/H.lN)}</td></tr>`+
+    `<tr><td>CTR</td><td class="num">${pct2(dCtr(H.e))}</td><td class="num">${pct2(dCtr(H.l))}</td></tr>`+
+    `<tr><td>${esc(O.met)}</td><td class="num">${objFmt(a.o,objVal(a.o,H.e))}</td><td class="num">${objFmt(a.o,objVal(a.o,H.l))}</td></tr>`+
+    `<tr><td>${esc(O.unit)}ต่อวัน</td><td class="num">${objRes(a.o,H.e)==null?'–':nf2.format((objRes(a.o,H.e)||0)/H.eN)}</td>`+
+    `<td class="num">${objRes(a.o,H.l)==null?'–':nf2.format((objRes(a.o,H.l)||0)/H.lN)}</td></tr>`+
+    `</tbody></table></div>`
+    :`<div class="note">ช่วงที่เลือกมีข้อมูลน้อยกว่า 4 วัน จึงเทียบช่วงแรกกับช่วงหลังไม่ได้</div>`;
+  return `<div class="addet"><div><div style="font-size:14px;font-weight:700">${esc(a.camp.name)}</div>`+
+    `<div class="note" style="margin-top:2px">${LEAFN[M.ch]}: ${esc(a.name)}${a.g?' · ชุดโฆษณา '+esc(a.g):''} · `+
+    `<span class="bdg b-${a.b.t}">${a.b.l}</span> ${esc(a.b.why)}</div>`+
+    `<div class="funnel" style="margin-top:10px">${f||'<div class="note">ช่องทางนี้ไม่มีข้อมูลเส้นทางลูกค้าระดับนี้</div>'}</div>`+
+    (f?`<div class="note">ความกว้างแท่งใช้สเกลรากที่สอง เพื่อให้ขั้นท้ายที่ตัวเลขเล็กยังมองเห็น</div>`:'')+
+    `</div><div>${half}</div></div>`;
+}
+function v2Drill(M){
+  const cov=v2Cover(M);
+  return `<div class="card" id="v2drill"><div class="ch"><h2>เจาะลึกรายแคมเปญ `+
+    `<span class="asof">ข้อมูลถึงวันที่ ${thD(M.D2.data_asof,1)}</span></h2></div>`+
+    (cov?`<div class="note" style="margin-top:0">${esc(cov.replace(/^ · /,''))}</div>`:'')+
+    v2Tree(M)+v2AdDetail(M)+
+    `<details class="dtl" style="margin-top:12px"><summary>เกณฑ์ป้ายคิดยังไง</summary><div class="pad">`+
+    `<p>แบ่งกลุ่มตาม<b>เป้าหมายของแคมเปญ</b> แล้วเทียบกันเฉพาะในกลุ่มเดียวกัน · ทุกข้อนับเฉพาะรายการที่ใช้เงินเกิน ${baht(RX.MIN_SPEND)} ในช่วงที่เลือก</p>`+
+    `<p>🔴 <b>หยุด</b> = ใช้เกิน ${baht(RX.NORES_SPEND)} แล้วยังไม่มีผลลัพธ์ หรือต้นทุนต่อผลลัพธ์แพงกว่าค่าเฉลี่ยกลุ่มตั้งแต่ ${RX.STOP_X} เท่า (กลุ่มที่วัดด้วย ROAS ใช้ ROAS ต่ำกว่าค่าเฉลี่ยเกินครึ่ง)</p>`+
+    `<p>🔵 <b>เปลี่ยนชิ้นงาน</b> = CTR ช่วงหลังต่ำกว่าช่วงแรกเกิน ${(RX.CRE_DROP*100).toFixed(0)}%</p>`+
+    `<p>🟡 <b>ปรับ</b> = CTR ดีกว่าค่าเฉลี่ยช่องทาง แต่ปลายทางไม่ดี (ต้นทุนแพงกว่าเฉลี่ย ${RX.FIX_X} เท่า หรือ ROAS ต่ำกว่า ${(RX.FIX_ROAS*100).toFixed(0)}% ของเฉลี่ย)</p>`+
+    `<p>🟢 <b>เพิ่มงบ</b> = ต้นทุนถูกกว่าค่าเฉลี่ยกลุ่มตั้งแต่ ${((1-RX.UP_X)*100).toFixed(0)}% หรือ ROAS สูงกว่าค่าเฉลี่ยตั้งแต่ ${((RX.UP_ROAS-1)*100).toFixed(0)}%</p>`+
+    `<p><b>แคมเปญ CPAS</b> ขึ้น "รอยอด CPAS" เพราะรายงานละเอียดยังไม่มีคอลัมน์มูลค่าการซื้อที่แชร์ — ต้องเพิ่มคอลัมน์นี้ตอน export จึงจะติดป้ายได้</p>`+
+    `</div></details></div>`;
+}
+
+/* ---------- ประกอบแท็บช่องทาง (ลำดับตามแบบ ห้ามสลับ) ---------- */
+function v2Tab(ch){
+  const M=v2Model(ch);
+  const sty=`--acc:${ACC[ch]};--acc-soft:${ACCS[ch]};--acc-ink:${ACCI[ch]}`;
+  if(!M) return `<div class="v2" style="${sty}"><div class="card"><h2>แอดละเอียด</h2>`+
+    `<div class="note">ยังไม่มีไฟล์ <code>data Ads/ads_detail_${ch}.json</code> — สร้างด้วย <code>python3 scripts/ads/detail_build.py</code></div></div></div>`;
+  if(M.empty) return `<div class="v2" style="${sty}">${v2Kpis(ch)}`+
+    `<div class="card"><h2>แอดละเอียด</h2><div class="note">ไม่มีข้อมูลแอดละเอียดในช่วงที่เลือก `+
+    `(ไฟล์ครอบคลุม ${thD(M.D2.range.from,1)} – ${thD(M.D2.range.to,1)})</div></div></div>`;
+  if(V2.selCh!==ch){V2.selCh=ch;V2.sel=null;V2.open.clear();V2.more.clear();}
+  if(V2.sel==null){
+    const first=M.leaves.filter(a=>a.b.t==='stop').sort((x,y)=>(y.t.spend||0)-(x.t.spend||0))[0]||M.leaves[0];
+    if(first){V2.sel=first.i;V2.open.add(first.o+'\u0000'+first.camp.name);}
+  }
+  return `<div class="v2" style="${sty}">`+
+    v2Kpis(ch)+
+    `<section class="row3">${v2Trend(ch)}${v2Funnel(M)}${v2Sum(ch,M)}</section>`+
+    v2Board(M)+
+    `<section class="grid2">${v2Aud(M)}${v2Place(M)}</section>`+
+    v2Top5(M)+
+    v2Drill(M)+
+    `<details class="dtl"><summary>ข้อจำกัดของข้อมูลช่องทางนี้</summary><div class="pad">`+
+    (M.D2.notes||[]).map(n=>'<p>'+esc(n)+'</p>').join('')+'</div></details></div>';
+}
+/* ผูกปุ่มทั้งหมดของแท็บ — เรียกหลังใส่ HTML แล้วเท่านั้น */
+function v2Wire(ch){
+  const M=v2Model(ch); if(!M||M.empty) return;
+  const go=()=>{ const h=document.getElementById('main');
+    const keep=window.scrollY; renderTabBody(ch); window.scrollTo(0,keep); };
+  const tbl=document.getElementById('v2tbl');
+  if(tbl) tbl.addEventListener('click',e=>{
+    const mb=e.target.closest('[data-more]');
+    if(mb){const o=mb.dataset.more; V2.more.has(o)?V2.more.delete(o):V2.more.add(o); go(); return;}
+    const tr=e.target.closest('tr'); if(!tr) return;
+    if(tr.dataset.c!=null){const k=tr.dataset.c; V2.open.has(k)?V2.open.delete(k):V2.open.add(k); go(); return;}
+    if(tr.dataset.ad!=null){V2.sel=+tr.dataset.ad; go();}
+  });
+  document.querySelectorAll('#main .bitem[data-ad],#main tr.crow[data-ad]').forEach(el=>{
+    el.addEventListener('click',()=>{const a=M.leaves[+el.dataset.ad]; if(!a) return;
+      V2.sel=a.i; V2.open.add(a.o+'\u0000'+a.camp.name); renderTabBody(ch);
+      const d=document.getElementById('v2drill');
+      if(d) d.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});});});
+  const sg=document.getElementById('segAud');
+  if(sg) sg.addEventListener('click',e=>{const b=e.target.closest('[data-m]'); if(!b) return;
+    V2.metric=b.dataset.m; go();});
+}
+
+/* ---------- กล่อง "ต้องจัดการก่อน" ของหน้ารวม (ทุกช่องทาง) ---------- */
 function dTodo(){
   const out=[];
-  Object.keys(CHOF).forEach(v=>{const ch=CHOF[v]; if(!DET[ch])return;
-    const rows=dRows(ch); if(!rows.length)return;
-    const avg=dAvg(dTop(ch,rows));
-    dGroup(ch==='sh'?rows.filter(r=>r.lv!=='camp'||!rows.some(x=>x.c===r.c&&x.lv==='prod')):rows,
-           r=>r.c+'\u0000'+r.g+'\u0000'+r.a).forEach(o=>{
-      const k2=r=>r.c+'\u0000'+r.g+'\u0000'+r.a; k2.wanted=o.k;
-      const b=dBadge(o,avg,dCtrDrop(rows,k2));
-      // เรียงตาม "เงินที่ลงไปกับของที่ต้องจัดการ" = ค่าแอดของแถวนั้น
-      // ห้ามใช้ spend-revenue: แถวที่ติด 🔴 เพราะ ROAS ต่ำกว่าค่าเฉลี่ยมักยังมีกำไร
-      // ค่าจะติดลบแล้วถูกดันไปท้ายตาราง ทั้งที่เป็นก้อนเงินใหญ่ที่สุด
-      if(b&&(b.t==='stop'||b.t==='fix'||b.t==='cre')&&(o.spend||0)>=RX.TODO_MIN)
-        out.push({ch,view:v,name:o.a||o.c,b,spend:o.spend||0,waste:o.spend||0});});});
+  Object.keys(CHOF).forEach(v=>{const ch=CHOF[v], M=v2Model(ch);
+    if(!M||M.empty) return;
+    M.leaves.forEach(a=>{
+      if(['stop','fix','cre'].includes(a.b.t)&&(a.t.spend||0)>=RX.TODO_MIN)
+        out.push({ch,view:v,name:a.name,camp:a.camp.name,b:a.b,spend:a.t.spend||0});});});
   if(!out.length) return '';
-  out.sort((a,b)=>b.waste-a.waste);
-  const NM={fb:'Facebook',tk:'TikTok',sh:'Shopee',lz:'Lazada'};
+  /* เรียงตาม "เงินที่ลงไปกับของที่ต้องจัดการ" = ค่าแอดของแถวนั้น
+     ห้ามใช้ spend-revenue: แถวที่ติด 🔴 เพราะ ROAS ต่ำกว่าเฉลี่ยมักยังมีกำไร
+     ค่าจะติดลบแล้วถูกดันไปท้ายตาราง ทั้งที่เป็นก้อนเงินใหญ่ที่สุด */
+  out.sort((a,b)=>b.spend-a.spend);
   return `<div class="card"><h2>ต้องจัดการก่อน</h2>`+
     `<div class="note">รวมแอด สินค้า และคีย์เวิร์ดที่ติดป้าย หยุด / ปรับ / เปลี่ยนชิ้นงาน จากทุกช่องทาง `+
     `เรียงตามเงินที่ลงไป · ข้ามรายการที่ใช้เงินต่ำกว่า ${baht(RX.TODO_MIN)} ในช่วงที่เลือก</div>`+
-    `<div class="scroll"><table><thead><tr><th>ช่องทาง</th><th>ชื่อ</th><th>ค่าแอด</th><th>คำแนะนำ</th><th>เหตุผล</th></tr></thead><tbody>`+
-    out.slice(0,15).map(o=>`<tr><td><a href="#${o.view}">${NM[o.ch]}</a></td><td>${esc(o.name)}</td>`+
+    `<div class="scroll"><table><thead><tr><th>ช่องทาง</th><th>แคมเปญ</th><th>ชื่อ</th><th>ค่าแอด</th>`+
+    `<th>คำแนะนำ</th><th>เหตุผล</th></tr></thead><tbody>`+
+    out.slice(0,15).map(o=>`<tr class="go" data-go="${o.view}"><td>${CHNAME[o.ch]}</td>`+
+      `<td class="name" title="${esc(o.camp)}">${esc(o.camp)}</td><td class="name">${esc(o.name)}</td>`+
       `<td class="num">${baht(o.spend)}</td><td><span class="bdg b-${o.b.t}">${o.b.l}</span></td>`+
       `<td class="why2">${esc(o.b.why)}</td></tr>`).join('')+'</tbody></table></div>'+
     `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div></div>`;
 }
 
-/* บล็อกรวมของแต่ละแท็บ */
-function detailBlock(ch){
-  const D2=DET[ch];
-  if(!D2) return `<div class="card"><h2>แอดละเอียด</h2><div class="note">ยังไม่มีไฟล์ <code>data Ads/ads_detail_${ch}.json</code> — สร้างด้วย <code>python3 scripts/ads/detail_build.py</code></div></div>`;
-  const rows=dRows(ch), t=dAvg(dTop(ch,rows)).tot;
-  return `<div class="card"><h2>แอดละเอียด <span class="asof">ข้อมูลถึงวันที่ ${thD(D2.data_asof,1)}</span></h2>`+
-    `<div class="dkpi">`+
-      `<div><span>ค่าแอด</span><b class="num">${baht(t.spend)}</b></div>`+
-      `<div><span>ยอดจากแอด</span><b class="num">${t.revenue==null?'–':baht(t.revenue)}</b></div>`+
-      `<div><span>ROAS</span><b class="num">${x2(dRoas(t))}</b></div>`+
-      `<div><span>CTR</span><b class="num">${pct2(dCtr(t))}</b></div>`+
-      `<div><span>ความถี่</span><b class="num">${Number.isFinite(dFreq(t))?dFreq(t).toFixed(2)+' ครั้ง':'–'}</b></div>`+
-    `</div>`+
-    dTree(ch)+
-    (D2.caps.audience?dSplit(ch,'audience'):`<h3>กลุ่มผู้ชม (อายุ / เพศ)</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`)+
-    (D2.caps.placement?dSplit(ch,'placement'):`<h3>ตำแหน่งที่โฆษณาแสดง</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`)+
-    `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div>`+
-    `<details class="dtl"><summary>ข้อจำกัดของข้อมูลช่องทางนี้</summary><div class="pad">`+
-      D2.notes.map(n=>'<p>'+esc(n)+'</p>').join('')+'</div></details></div>';
+/* ของเดิมของแต่ละแท็บ — ต่อท้าย 6 บล็อกใหม่ (ผู้ใช้เลือก 6 พ.ย. 69)
+   ในนี้มีข้อมูลที่แบบใหม่ไม่มีช่องให้: ยอดขายจริงเทียบค่าแอดรายวัน ·
+   ตารางแคมเปญรายเดือนจากไฟล์ export · ตารางรายวัน · หมายเหตุข้อจำกัด
+   ห้ามใส่ใน <details> ที่ปิดอยู่ — Chart.js วัดขนาด canvas ที่ซ่อนได้ 0×0 */
+function v2Legacy(name,html){
+  return `<div style="margin-top:22px;border-top:1px solid var(--bd);padding-top:16px">`+
+    `<h2 style="font-size:16px">ข้อมูลเต็มของ${name}</h2>`+
+    `<div class="note" style="margin:0 0 12px">ส่วนนี้คือหน้าเดิม: ยอดขายจริงเทียบค่าแอดรายวัน · `+
+    `แคมเปญรายเดือนจากไฟล์ export · ตารางรายวัน · หมายเหตุข้อจำกัดของข้อมูล</div>${html}</div>`;
 }
-function detailAppend(){
-  const m=document.getElementById('main');
-  if(st.view==='overview'){ const h=dTodo(); if(h) m.insertAdjacentHTML('beforeend',h); return; }
-  const ch=CHOF[st.view]; if(ch) m.insertAdjacentHTML('beforeend',detailBlock(ch));
+/* เรนเดอร์เนื้อแท็บช่องทางใหม่ทั้งก้อน — ใช้ตอนกดปุ่มในบล็อกใหม่ด้วย
+   ต้อง destroyCharts() ก่อน ไม่งั้น Chart.js เก่าจะค้างกับ canvas ที่หายไปแล้ว */
+function renderTabBody(ch){
+  destroyCharts();
+  ({sh:renderSh,tk:renderTk,lz:renderLz,fb:renderFb}[ch])();
+  v2Wire(ch);
 }
 
 /* ---------- boot ---------- */
