@@ -26,6 +26,11 @@
   ตัวนี้จึง: รอ lock เองสูงสุด GITW_LOCK_WAIT วินาที (ค่าปริยาย 300) แล้วลองใหม่ทุก 5 วินาที
   ถ้าสุดท้าย commit ยังไม่ผ่าน จะ unstage เฉพาะไฟล์ที่ gitw ตัวเอง add ไว้ แล้วคืน exit 3
 
+commit เฉพาะไฟล์ของตัวเอง (5 พ.ย. 69):
+  รีโปนี้มีงานตั้งเวลาหลายตัวใช้ index เดียวกัน `git commit` เปล่า ๆ จะกวาดของที่
+  staged อยู่ของงานอื่นติดไป (fe49e6c, 0b7cc4c) ตัวนี้จึงเติม `-- <ไฟล์>` ให้เอง
+  จากบันทึกว่า gitw add อะไรไว้ · ปิดด้วย GITW_NO_PATHSPEC=1
+
 exit: ตามที่ git คืนมา · 2 = ถูกปฏิเสธเพราะคำสั่งไม่อยู่ในรายการอนุญาต
      3 = ติด lock (index.lock / HEAD.lock) จนหมดเวลา
          (ถ้าเป็น commit: unstage ของตัวเองคืนแล้ว)
@@ -111,17 +116,19 @@ def _record_add(paths):
     _save_pending(d)
 
 
-def _take_record():
-    """คืนรายการไฟล์ที่ตัวเอง add ไว้ แล้วลบบันทึกทิ้ง"""
+def _take_record(pop=True):
+    """คืนรายการไฟล์ที่ตัวเอง add ไว้ (pop=False = ดูอย่างเดียว ไม่ลบบันทึก)"""
     d = _load_pending()
     key = str(os.getppid())
-    rec = d.pop(key, None)
+    rec = d.get(key)
     if rec is None:                      # add/commit ถูกเรียกคนละเชลล์ — ใช้บันทึกล่าสุดที่ยังสด
         fresh = [(v.get('ts', 0), k) for k, v in d.items() if time.time() - v.get('ts', 0) < 600]
         if fresh:
             key = max(fresh)[1]
-            rec = d.pop(key)
-    _save_pending(d)
+            rec = d.get(key)
+    if pop and rec is not None:
+        d.pop(key, None)
+        _save_pending(d)
     return (rec or {}).get('paths', [])
 
 
@@ -142,6 +149,44 @@ def _unstage(paths):   # noqa: C901
                 ' · งานอื่นอาจ commit กวาดติดไป ให้รายงานเรื่องนี้ไว้ด้วย (' +
                 (r.stderr or '').strip().split('\n')[0][:80] + ')')
     return 'unstage คืนแล้ว (เนื้อไฟล์ยังอยู่ครบ): ' + ', '.join(mine)
+
+
+# ── บังคับ commit เฉพาะไฟล์ของตัวเอง (5 พ.ย. 69) ──────────────────────────
+# ที่มา: รีโปนี้มีงานตั้งเวลาหลายตัวรันพร้อมกันบน index เดียวกัน `git commit` เปล่า ๆ
+# จะกวาด "ทุกอย่างที่ staged อยู่" ติดไปด้วย เกิดจริงหลายครั้ง:
+#   5 พ.ย. 09:22 fe49e6c (Shopee Ads) พา Procurement_Dashboard.html +
+#   stock_snapshot.json ของ daily-stock ไป -> daily-stock หา commit ตัวเองไม่เจอ
+#   09:42 0b7cc4c (sales) พา fastmoss_history.json ไปแบบเดียวกัน
+# แก้: ถ้า gitw รู้ว่าตัวเอง add อะไรไว้ ให้เติม `-- <ไฟล์...>` ให้อัตโนมัติ
+# ปิดชั่วคราวได้ด้วย GITW_NO_PATHSPEC=1 (ไม่ต้องแก้ไฟล์)
+NO_PATHSPEC = os.environ.get('GITW_NO_PATHSPEC') == '1'
+# ธงที่เปลี่ยนความหมายของ commit จนเติม pathspec ไม่ได้
+PATHSPEC_SKIP_FLAGS = {'-a', '--all', '--amend', '--allow-empty', '-i', '--include',
+                       '-o', '--only', '--patch', '-p'}
+
+
+def _commit_pathspec(args):
+    """คืนรายการไฟล์ที่ควรต่อท้ายเป็น pathspec ของ commit (ว่าง = ไม่ต้องเติม)"""
+    if NO_PATHSPEC or '--' in args:
+        return []
+    if any(a in PATHSPEC_SKIP_FLAGS for a in args):
+        return []
+    mine = _take_record(pop=False)
+    if not mine:
+        staged = _run(['diff', '--cached', '--name-only'])
+        others = [x for x in staged.stdout.split('\n') if x]
+        if others:
+            print('gitw: ⚠️ ไม่มีบันทึกว่า gitw add อะไรไว้ จึง commit ตามของที่ staged อยู่ '
+                  '(%d ไฟล์: %s) — ถ้ามีไฟล์ของงานอื่นปนอยู่ให้รายงานไว้ด้วย'
+                  % (len(others), ', '.join(others[:8])), file=sys.stderr)
+        return []
+    # เตือนถ้าไฟล์ของเราถูกแก้เพิ่มหลัง add — commit แบบมี pathspec จะเอาเนื้อ working tree
+    moved = _run(['diff', '--name-only', '--', *mine])
+    changed = [x for x in moved.stdout.split('\n') if x]
+    if changed:
+        print('gitw: ⚠️ ไฟล์ต่อไปนี้ถูกแก้เพิ่มหลัง add — commit จะเอาเนื้อล่าสุดใน working tree: '
+              + ', '.join(changed), file=sys.stderr)
+    return mine
 
 
 def die(msg):
@@ -171,6 +216,11 @@ def main():
             die(f'พบคำสั่งต้องห้าม "{a}" ในอาร์กิวเมนต์')
     # ผู้ใช้ตั้งใจให้ auto-push (launchd com.wibwub.autopush) เป็นคนเดียวที่ push
     full = [*pre, *args]
+    if sub == 'commit':
+        only = _commit_pathspec(args)
+        if only:
+            full = [*full, '--', *only]
+            print('gitw: commit เฉพาะไฟล์ของตัวเอง — ' + ', '.join(only), file=sys.stderr)
     r = _run_waiting(full) if sub in INDEX_CMDS else _run(full)
     if r.stdout: print(r.stdout, end='')
     if r.stderr: print(r.stderr, end='', file=sys.stderr)
