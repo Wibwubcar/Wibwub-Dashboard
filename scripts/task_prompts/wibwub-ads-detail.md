@@ -16,6 +16,11 @@ description: ส่วน B ของงาน local wibwub-samp-request-sync (1
 > - **ห้ามกรอกรหัสผ่าน** ถ้าหลุดหน้า login ให้หยุดช่องทางนั้นแล้วรายงาน ทำช่องทางถัดไปต่อ
 > - รายงาน TikTok 3 ชุดที่สร้างไว้แล้ว **ห้ามสร้างใหม่ ห้ามแก้ ห้ามเปิด Scheduled running**
 >   ถ้าหาไม่เจอให้หยุดแล้วแจ้ง **ห้ามสร้างซ้ำ**
+> - **ห้ามคลิกสำรวจในตาราง Ads Manager เพื่อหาปุ่ม** (5 พ.ย. 69 รอบ 21:00 ไปโดนหัวคอลัมน์
+>   ซึ่งเปลี่ยนการเรียงของรายงาน) ให้ใช้ URL ที่ `fb_plan_detail.py` ให้มา
+>   หรือ selector ที่ระบุไว้ในขั้นนั้น ๆ เท่านั้น ถ้าหา selector ไม่เจอ **ให้หยุดช่องทางนั้น**
+> - ปิดแท็บแล้วขึ้นกล่อง **"Leave site?" / "ออกจากไซต์?"** (เจอที่ TikTok) ให้เลือก
+>   **Leave / ออกจากไซต์** = ไม่บันทึก **ห้ามกด Cancel แล้วกดบันทึก**
 
 > ⛔ **ส่วน B ล้ม ห้ามทำให้ส่วน A ขึ้นว่าล้มเหลว** — รายงานแยกหัวข้อเสมอ
 > ส่วน A (คำขอสินค้า) จบแล้วถือว่าสำเร็จของมันเอง
@@ -44,6 +49,10 @@ python3 "<BASE>/scripts/ads/fb_plan_detail.py" --levels ad,age_gender,placement
 ส่วนนี้ให้ **ตั้งชื่อตอนโหลดเอง** เป็น `WIBWUB-auto-fb-<บัญชี>-<ระดับ>-<from>_<to>.csv`
 ตัวย้ายจะพาไป `data Ads/facebook/detail_raw/` ให้เอง
 
+`<ระดับ>` ต้องเป็นคำใดคำหนึ่งนี้เท่านั้น: **`ad` · `age_gender` · `placement`**
+(`detail_build.py` จับระดับจากคำนี้ โดยถือว่า `-` กับ `_` เท่ากัน ตัวพิมพ์เล็กใหญ่ไม่เกี่ยง
+จึงเขียน `age-gender` หรือ `age_gender` ก็ได้ แต่ **ห้ามใช้คำอื่น** เช่น `demo`/`aud`)
+
 ## B2 — TikTok (เปิดรายงานที่มีอยู่ + export เท่านั้น)
 
 | รายงาน | reportId |
@@ -53,7 +62,12 @@ python3 "<BASE>/scripts/ads/fb_plan_detail.py" --levels ad,age_gender,placement
 | `WIBWUB auto – placement daily` | 7704624169216327700 |
 
 เปิด `https://ads.tiktok.com/i18n/reporting/pivot/table/edit?reportId=<id>&aadvid=7229166192752148482`
-→ ปุ่ม **Export** → ตั้งชื่อ `WIBWUB-auto-ad-daily` / `-audience-daily` / `-placement-daily` → **CSV**
+→ ปุ่ม **Export** → ตั้งชื่อ `WIBWUB-auto-ad-daily` / `WIBWUB-auto-audience-daily` /
+`WIBWUB-auto-placement-daily` → **CSV**
+
+TikTok เติมคำของมันเองหน้าชื่อ (`Tiktok Ads_...`) และตัวย้ายเติม stamp กันชื่อซ้ำท้ายชื่อ
+ไม่เป็นไร — `detail_build.py` จับจากคำว่า `ad_daily` / `audience` / `placement` ในชื่อ
+และ**เลือกใบใหม่สุดของแต่ละระดับใบเดียว** ไฟล์ของรอบก่อนที่ค้างอยู่จึงไม่ถูกนับซ้ำ
 
 ช่วงของรายงานตั้งเป็น **Last 7 days** ไว้แล้ว ไม่ต้องแตะตัวเลือกวันที่
 
@@ -74,19 +88,39 @@ POST /api/pas/v1/report/export_job/trigger/?SPC_CDS_VER=2
 `product_gms__homepage` (GMV Max รายสินค้า)
 
 > ⚠️ **ชื่อไฟล์ห้ามขึ้นต้นด้วย `ข้อมูล-Shopee-Ads-`** ไม่งั้นตัวย้ายจะส่งไปปนกับงานรายวัน
-> ⚠️ ต้องลงท้ายด้วย `_YYYYMMDD` ของวันเดียว — `detail_build.py` อ่านวันที่จากชื่อไฟล์
+> ⚠️ ต้องลงท้ายด้วยวันเดียว `-YYYYMMDD` หรือ `_YYYYMMDD` — `detail_build.py` อ่านวันที่
+> จากท้ายชื่อไฟล์ · **ห้ามลงท้ายเป็นช่วง** (`-20261101-20261105` / `-20261101-05`)
+> ไฟล์แบบช่วงจะถูก **ข้าม** ทั้งใบ เพราะเคยถูกอ่านเป็นข้อมูลของวันเดียวทั้งก้อน
 
-## B4 — Lazada (API ล้วน)
+## B4 — Lazada (API ล้วน — ยิงให้น้อยที่สุด)
 
-ที่ `https://sellercenter.lazada.co.th/sponsor/solutions/ads/smax/#!/home` ยิงทีละวัน
+> 🚫 **Lazada ขึ้น CAPTCHA เมื่อยิงถี่** (5 พ.ย. 69: วนทีละวัน 7 วัน × 5 scene × 2 endpoint
+> = 70 คำขอ แล้วติด CAPTCHA ตั้งแต่วันที่ 2) · **ห้ามพยายามผ่าน CAPTCHA ทุกกรณี**
+> เจอ CAPTCHA = **หยุด Lazada ทันที** รายงาน `⚠️ Lazada ติด CAPTCHA รอบนี้ใช้ข้อมูลเดิม`
+> แล้วไปทำช่องทางถัดไป (ข้อมูลเดิมใน `ads_detail_lz.json` ไม่หาย ดู B5)
+
+ที่ `https://sellercenter.lazada.co.th/sponsor/solutions/ads/smax/#!/home`
+ยิง **ช่วงเดียวจบทั้ง 7 วัน** (endpoint รับช่วงได้ถึง 90 วัน) **ครั้งเดียวต่อ sceneId**
+→ 10 คำขอต่อรอบ ไม่ใช่ 70 · เว้นจังหวะ **อย่างน้อย 1.5 วินาที** ระหว่างคำขอ
 
 ```
-GET /sponsor/solutions/performance/newCampaignList.json?page=1&pageSize=100&campaignStatus=2&startDate=<d>&endDate=<d>&sceneId=<12020..12024>&attributionType=2
-GET /sponsor/solutions/performance/adgroupList.json?adName=&startDate=<d>&endDate=<d>&adStatus=-1&page=1&pageSize=200&sortable=storeRevenue,desc&attributionType=2&sceneId=<id>
+GET /sponsor/solutions/performance/newCampaignList.json?page=1&pageSize=100&campaignStatus=2&startDate=<from>&endDate=<to>&sceneId=<12020..12024>&attributionType=2
+GET /sponsor/solutions/performance/adgroupList.json?adName=&startDate=<from>&endDate=<to>&adStatus=-1&page=1&pageSize=200&sortable=storeRevenue,desc&attributionType=2&sceneId=<id>
 ```
 
-รวมผลเป็น `{<sceneId>:{camp:[...],ads:[...]}}` แล้วโหลดเป็น `WIBWUB-auto-lazada-<YYYYMMDD>.json`
+รวมผลเป็น `{<sceneId>:{camp:[...],ads:[...]}}` แล้วโหลดเป็น
+`WIBWUB-auto-lazada-<from>__<to>.json` (สองขีดล่าง)
 (ชื่อสินค้าอยู่ที่ `adgroupName` **ไม่ใช่** `itemName` ซึ่งเป็น null เสมอ)
+
+> ⚠️ ค่าที่ได้จาก 2 endpoint นี้เป็น **ยอดรวมของทั้งช่วง ไม่ใช่รายวัน** — ไม่มีคอลัมน์วันที่
+> `detail_build.py` จึงลงให้เป็นแถวของช่วงนั้น **ห้ามหารเฉลี่ยเป็นรายวันเอง**
+
+**รายวันเอาจากไฟล์ export ไม่ใช่จาก API** (1 ไฟล์ครอบได้ถึง 90 วัน ไม่ต้องยิงถี่):
+ในแท็บโฆษณาเดียวกัน กด **Export / ส่งออก** ของตารางรายวัน แล้วตั้งชื่อ
+`WIBWUB-auto-lazada-daily-<from>__<to>.xlsx` (ตัวย้ายพาไป `detail_raw/` ให้)
+ไฟล์นี้มีคอลัมน์ `วันที่ · ค่าใช้จ่าย · รายได้ · คำสั่งซื้อ · การแสดงผล · คลิก`
+ตรวจแล้ว 5 พ.ย. 69 ว่าค่าใช้จ่ายตรงกับ `lz_ads` ใน `ads_daily.json` ทุกวัน
+**ถ้าโหลดไฟล์นี้ไม่ได้ ให้ข้ามไป ห้ามเดารายวันจากยอดรวมของช่วง**
 
 ## B5 — สร้าง JSON + ด่านชื่อคน
 
@@ -98,6 +132,9 @@ python3 "<BASE>/scripts/ads/detail_build.py"
   ไฟล์ถูกลบทิ้งแล้ว ห้าม commit** ให้รายงานว่าเจอที่ไหน
 - สคริปต์แทนชื่อแอด TikTok ด้วยเลขคงที่ให้เองทุกรอบ ตารางจับคู่อยู่นอก git
   **ห้ามพิมพ์ชื่อจริงของครีเอเตอร์ลงรายงานท้ายรอบ**
+- Shopee/Lazada ที่สั่งรายงานทีละวัน: วันที่รอบนี้ไม่ได้ **สคริปต์เก็บของรอบก่อนไว้ให้เอง**
+  (เก็บย้อนหลัง 30 วัน) และจะพิมพ์บรรทัด `ใช้ข้อมูลเดิมของวัน ...` ออกมา
+  ให้ยกบรรทัดนั้นไปใส่ในสรุปท้ายรอบ **ห้ามรันซ้ำเพื่อให้ครบ**
 
 ## B6 — commit
 
@@ -115,3 +152,4 @@ python3 "<BASE>/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="market
 ด่านชื่อคนผ่านหรือไม่ · commit id · ถ้าช่องทางไหนล้มให้บอกว่าข้อมูลเดิมอยู่ถึงวันไหน
 
 **ห้ามเขียน ✅ ถ้ามีช่องทางใดล้ม** ให้ขึ้น `⚠️ ได้ N/4 ช่องทาง` แทน
+ถ้า Lazada ติด CAPTCHA ให้เขียนตรง ๆ ว่า `⚠️ Lazada ติด CAPTCHA รอบนี้ใช้ข้อมูลเดิม`

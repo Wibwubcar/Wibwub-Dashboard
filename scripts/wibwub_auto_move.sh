@@ -65,6 +65,8 @@ for f in "$DL"/ExportAds_V2_*.xlsx;                       do safe_mv "$f" "$ALL/
 for f in "$DL"/Tiktok\ Ads_WIBWUB-auto-*.csv;            do safe_mv "$f" "$ALL/data Ads/TikTok/detail_raw/"; done
 for f in "$DL"/WIBWUB-auto-shopee-*.csv;                  do safe_mv "$f" "$ALL/data Ads/Shopee/detail_raw/"; done
 for f in "$DL"/WIBWUB-auto-lazada-*.json;                 do safe_mv "$f" "$ALL/data Ads/Lazada/detail_raw/"; done
+# ไฟล์รายวันของ Lazada เป็น .xlsx (export จากแท็บโฆษณา) — รายสินค้าเป็น .json
+for f in "$DL"/WIBWUB-auto-lazada-*.xlsx;                 do safe_mv "$f" "$ALL/data Ads/Lazada/detail_raw/"; done
 for f in "$DL"/WIBWUB-auto-fb-*.csv;                      do safe_mv "$f" "$ALL/data Ads/facebook/detail_raw/"; done
 
 for f in "$DL"/Followers_wibwubcar*.zip;                  do safe_mv "$f" "$ALL/data content/"; done

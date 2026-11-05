@@ -25,12 +25,12 @@
 ชื่อครีเอเตอร์ TikTok ถูกแทนด้วยเลขคงที่ผ่าน detail_privacy.Masker ทุกรอบ
 และก่อนเขียนไฟล์มีด่าน scan() ซ้ำอีกชั้น — เจอชื่อคน = ไม่เขียนไฟล์ ไม่ให้ commit
 
-ใช้:  python3 scripts/ads/detail_build.py [--only fb,tk,sh,lz] [--probe] [--dry-run]
+ใช้:  python3 scripts/ads/detail_build.py [--only fb,tk,sh,lz] [--probe] [--dry-run] [--fresh]
 exit: 0 = เขียนแล้ว · 10 = ไม่มีไฟล์ดิบให้ทำ · 2 = ไม่ผ่านด่าน (ไม่เขียนอะไร)
 """
 import sys, csv, json, glob, re, argparse
 from pathlib import Path
-from datetime import datetime
+from datetime import datetime, timedelta
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from detail_privacy import BASE, Masker, scan          # noqa: E402
@@ -45,6 +45,30 @@ METRICS = ['spend', 'imp', 'reach', 'clicks', 'msg', 'view', 'atc', 'checkout',
            'orders', 'revenue']
 
 
+# ช่องทางที่สั่งรายงาน **ทีละวัน** — รอบที่ได้ไม่ครบต้องไม่ลบวันเก่าทิ้ง
+MERGE_BY_DAY = ('sh',)
+KEEP_DAYS = 30          # เก็บย้อนหลังกี่วันในไฟล์ JSON
+
+
+def merge_by_day(fp, rows):
+    """รวมแถวของรอบนี้กับของเดิม: วันที่รอบนี้ได้ = ใช้ของใหม่ทับทั้งวัน
+
+    5 พ.ย. 69 รอบ 21:00: Lazada ติด CAPTCHA ได้แค่ 29 ต.ค. ใบเดียว ถ้าเขียนทับตรง ๆ
+    ข้อมูล 1–4 พ.ย. ที่มีอยู่จะหายทั้งก้อน — ผู้ใช้สั่งว่าให้ "ใช้ข้อมูลเดิม" แทน
+    คืน (แถวที่รวมแล้ว, วันที่ยืมของเดิมมา)
+    """
+    new_days = {r['d'] for r in rows}
+    try:
+        old = json.loads(fp.read_text(encoding='utf-8')).get('rows', [])
+    except (OSError, ValueError):
+        return rows, []
+    out = rows + [r for r in old if r.get('d') and r['d'] not in new_days]
+    cut = (datetime.strptime(max(r['d'] for r in out), '%Y-%m-%d')
+           - timedelta(days=KEEP_DAYS - 1)).strftime('%Y-%m-%d')
+    out = [r for r in out if r['d'] >= cut]
+    return out, sorted({r['d'] for r in out} - new_days)
+
+
 def num(v, default=None):
     """'1,234.5' / 'THB 578.25' / '3.36%' / '-' -> float (หรือ default)"""
     if v is None:
@@ -56,6 +80,67 @@ def num(v, default=None):
         return float(s)
     except ValueError:
         return default
+
+
+# ──────────────── เลือกไฟล์ดิบ (ชื่อไฟล์ทนทั้ง `-` และ `_`) ────────────────
+# 5 พ.ย. 69 รอบ 21:00: พรอมป์ตั้งชื่อ `WIBWUB-auto-fb-AD-1-ad-2026-10-29_2026-11-05.csv`
+# แต่ glob เดิมหา `*_ad_*.csv` จึงไม่เจอไฟล์เลยทั้งรอบ (โหลดครบแต่ build ว่าง)
+# แก้ที่ฝั่งอ่าน ไม่ใช่ฝั่งตั้งชื่อ — ชื่อไฟล์เปลี่ยนรูปได้อีกในอนาคต
+STAMP = re.compile(r'(?:__\d{8}_\d{6}|\s*\(\d+\))$')
+
+
+def _norm(s):
+    """ชื่อไฟล์ -> ตัวพิมพ์เล็ก คั่นด้วย `_` ตัวเดียว (`-`/ช่องว่าง/`_` ถือว่าเท่ากัน)"""
+    return re.sub(r'[-_\s]+', '_', str(s).strip().lower())
+
+
+def _base(p):
+    """ชื่อฐานสำหรับจับไฟล์ซ้ำ — ตัดรอยกันชื่อซ้ำของตัวย้ายและวันที่ท้ายชื่อออก
+
+    `WIBWUB-auto-fb-AD-1-ad-2026-10-29_2026-11-05`      -> wibwub_auto_fb_ad_1_ad
+    `Tiktok Ads_..._20261029-20261104__20261105_211305`  -> tiktok_ads_..._wibwubcar
+    """
+    s = _norm(STAMP.sub('', p.stem))
+    while re.search(r'_\d+$', s):
+        s = re.sub(r'_\d+$', '', s)
+    return s
+
+
+def by_level(paths, levels, per_account=False):
+    """จัดไฟล์เข้าระดับตามคำในชื่อ แล้วเหลือ **ใบใหม่สุดของแต่ละกลุ่ม** ใบเดียว
+
+    `levels` ต้องเรียงจากเฉพาะเจาะจงไปกว้าง: ไฟล์ `..._AD-1_age_gender_...` มีคำว่า
+    `_ad_` ติดมาจากชื่อบัญชีด้วย ถ้าเช็ค 'ad' ก่อนจะถูกจัดเป็นระดับแอดผิด ๆ
+
+    ด่านไฟล์ซ้ำ (ผู้ใช้สั่ง 5 พ.ย. 69): วัน/ระดับ/บัญชีเดียวกันมีได้หลายใบ —
+    ไฟล์ของรอบก่อน ไฟล์ `(1)` ของเบราว์เซอร์ และไฟล์ที่ตัวย้ายเติม stamp กันชื่อซ้ำ
+    ถ้าอ่านทุกใบ ยอดจะถูกนับซ้ำเงียบ ๆ (TikTok เคยได้ 10,450.44 แทน 5,225.22)
+    """
+    best = {}
+    for p in sorted(paths):
+        s = _norm(p.stem)
+        lv = next((name for name, rx in levels if re.search(rx, s)), None)
+        if not lv:
+            continue
+        k = (lv, _base(p)) if per_account else (lv,)
+        if k not in best or p.stat().st_mtime > best[k].stat().st_mtime:
+            best[k] = p
+    out = {}
+    for k in sorted(best):
+        out.setdefault(k[0], []).append(best[k])
+    return out
+
+
+def newest_per_day(paths, day_of):
+    """วันเดียวกันเอาใบใหม่สุด — สำหรับช่องทางที่สั่งรายงานทีละวัน (Shopee/Lazada)"""
+    best = {}
+    for p in sorted(paths):
+        d = day_of(p)
+        if not d:
+            continue
+        if d not in best or p.stat().st_mtime > best[d].stat().st_mtime:
+            best[d] = p
+    return [(d, best[d]) for d in sorted(best)]
 
 
 def blank():
@@ -93,9 +178,15 @@ def fb_metrics(r):
     return m
 
 
+# ระดับของไฟล์ FB — เรียง placement -> age_gender -> ad (ดูเหตุผลใน by_level)
+FB_LV = [('placement', r'placement'), ('agegender', r'age_?gender'),
+         ('ad', r'_ad_\d|_ad$')]
+
+
 def build_fb(src):
     rows, aud, pla = [], [], []
-    for p in sorted(src.glob('*_ad_*.csv')):
+    f = by_level(src.glob('*.csv'), FB_LV, per_account=True)   # FB มี 5 บัญชี
+    for p in f.get('ad', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('เริ่มการรายงาน') or '').strip()
             if not d:
@@ -103,13 +194,13 @@ def build_fb(src):
             rows.append(dict(lv='ad', c=r.get('ชื่อแคมเปญ') or '(ไม่มีชื่อแคมเปญ)',
                              g=r.get('ชื่อชุดโฆษณา') or '', a=r.get('ชื่อโฆษณา') or '',
                              d=d, **fb_metrics(r)))
-    for p in sorted(src.glob('*_agegender_*.csv')) + sorted(src.glob('*_camp_agegender_*.csv')):
+    for p in f.get('agegender', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('เริ่มการรายงาน') or '').strip()
             if d:
                 aud.append(dict(d=d, c=r.get('ชื่อแคมเปญ') or '', age=r.get('อายุ') or '',
                                 gender=r.get('เพศ') or '', **fb_metrics(r)))
-    for p in sorted(src.glob('*placement*.csv')):
+    for p in f.get('placement', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('เริ่มการรายงาน') or '').strip()
             if d:
@@ -137,20 +228,15 @@ def tk_metrics(r):
     return m
 
 
-def _newest(paths):
-    """ไฟล์ใหม่สุดเพียงใบเดียว — รายงาน TikTok 1 ใบครอบทั้งช่วงอยู่แล้ว
-
-    ถ้าอ่านทุกใบที่แมตช์ ข้อมูลจะถูกนับซ้ำทันทีที่มีไฟล์ของรอบก่อนค้างอยู่
-    (5 พ.ย. 69: ตัวย้ายหยิบไฟล์ทดลองเข้ามา ยอด TikTok กลายเป็น 10,450.44 แทน 5,225.22)
-    """
-    ps = sorted(paths, key=lambda x: x.stat().st_mtime)
-    return ps[-1:] if ps else []
+# TikTok มีบัญชีเดียว (WIBWUBCAR) และรายงาน 1 ใบครอบทั้งช่วง -> ระดับละใบใหม่สุดใบเดียว
+TK_LV = [('placement', r'placement'), ('audience', r'audience'), ('ad', r'ad_daily')]
 
 
 def build_tk(src):
     mask = Masker()
     rows, aud, pla = [], [], []
-    for p in _newest(src.glob('*ad_daily*.csv')):
+    f = by_level(src.glob('*.csv'), TK_LV)
+    for p in f.get('ad', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if not d or d == '-':
@@ -159,14 +245,14 @@ def build_tk(src):
                              g=mask.mask(r.get('Ad group name') or ''),
                              a=mask.mask_ad(r.get('Ad name') or ''),
                              d=d, **tk_metrics(r)))
-    for p in _newest(src.glob('*audience*.csv')):
+    for p in f.get('audience', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if d and d != '-':
                 aud.append(dict(d=d, c=mask.mask(r.get('Campaign name') or ''),
                                 age=r.get('Age') or '', gender=r.get('Gender') or '',
                                 **tk_metrics(r)))
-    for p in _newest(src.glob('*placement*.csv')):
+    for p in f.get('placement', []):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if d and d != '-':
@@ -202,21 +288,40 @@ def _sh_day(p):
     ต้องผูกกับท้ายชื่อแบบเคร่งครัด ไม่งั้นไฟล์ช่วง `..._20261101-05.csv` จะถูกอ่าน
     เป็นข้อมูลของวันที่ 1 พ.ย. ทั้งก้อน (ยอด 5 วันไปกองที่วันเดียว) แบบไม่มี error
     """
-    m = re.search(r'_(\d{4})(\d{2})(\d{2})$', p.stem)
+    s = p.stem
+    if re.search(r'\d{8}[-_]\d{8}$', s) or re.search(r'\d{8}[-_]\d{1,2}$', s):
+        return None          # ไฟล์ช่วงหลายวัน (`..._20261101-20261105` / `..._20261101-05`)
+    m = re.search(r'[-_](\d{4})(\d{2})(\d{2})$', s)
     return '-'.join(m.groups()) if m else None
+
+
+# ชนิดรายงาน Shopee: คีย์เวิร์ด/แคมเปญ = new_cpc_homepage__detail · GMV Max = product_gms__homepage
+SH_LV = [('kw', r'keyword|new_cpc'), ('gms', r'gms')]
+
+
+def _sh_pick(src):
+    """คืน [((วัน, ชนิด), ไฟล์)] — วัน+ชนิดเดียวกันเอาใบใหม่สุดใบเดียว"""
+    best = {}
+    for p in sorted(src.glob('*.csv')):
+        n = _norm(p.stem)
+        kind = next((k for k, rx in SH_LV if re.search(rx, n)), None)
+        d = _sh_day(p)
+        if not kind or not d:
+            continue
+        k = (d, kind)
+        if k not in best or p.stat().st_mtime > best[k].stat().st_mtime:
+            best[k] = p
+    return [(k, best[k]) for k in sorted(best)]
 
 
 def build_sh(src):
     rows = []
-    for p in sorted(src.glob('*keywords*.csv')) + sorted(src.glob('*gms*.csv')):
-        d = _sh_day(p)
-        if not d:
-            continue
+    for (d, kind), p in _sh_pick(src):
         head, body = _sh_read(p)
         if not head:
             continue
         idx = {k: head.index(c) for k, c in SH_COL.items() if c in head}
-        gms = 'gms' in p.stem
+        gms = kind == 'gms'
         for r in body:
             if len(r) < 3:
                 continue
@@ -245,21 +350,45 @@ def build_sh(src):
 
 
 # ───────────────────────── Lazada ─────────────────────────
+def _lz_span(p):
+    """ช่วงวันของไฟล์ Lazada จากชื่อไฟล์ -> (from, to) หรือ None
+
+    `WIBWUB-auto-lazada-2026-10-30__2026-11-05.json` -> ('2026-10-30', '2026-11-05')
+    `WIBWUB-auto-lazada-20261029.json` (แบบเก่า วันเดียว) -> ('2026-10-29', '2026-10-29')
+    """
+    s = re.sub(r'[^0-9_]', '', p.stem)
+    m = re.search(r'(\d{8})__(\d{8})$', s)
+    if m:
+        a, b = m.group(1), m.group(2)
+        return ('%s-%s-%s' % (a[:4], a[4:6], a[6:]), '%s-%s-%s' % (b[:4], b[4:6], b[6:]))
+    d = _sh_day(p)
+    return (d, d) if d else None
+
+
 def build_lz(src):
+    """Lazada ยิง 1 ครั้งต่อช่วง -> ได้ **ยอดรวมของทั้งช่วง ไม่ใช่รายวัน**
+
+    5 พ.ย. 69: เดิมวนยิงทีละวัน (70 คำขอ/รอบ) แล้วติด CAPTCHA ตั้งแต่วันที่ 2
+    ผู้ใช้สั่งให้ยิงช่วงเดียว · endpoint ไม่คืนคอลัมน์วันที่ จึงเก็บเป็นแถวของช่วง
+    และ **ไม่สร้าง daily[]** (ห้ามหารเฉลี่ยรายวันเอง — ดู main())
+
+    ไฟล์ใหม่สุดใบเดียวเท่านั้น: รอบที่ติด CAPTCHA จะไม่มีไฟล์ใหม่ สคริปต์จึงใช้
+    ไฟล์ของรอบก่อนต่อเอง = "ใช้ข้อมูลเดิม" ตามที่ผู้ใช้สั่ง (ดู data_asof ในรายงาน)
+    """
     rows = []
-    for p in sorted(src.glob('*.json')):
+    cand = [(p, _lz_span(p)) for p in sorted(src.glob('*.json'))]
+    for p, sp in cand:
+        if not sp:
+            print('ข้าม %s — อ่านช่วงวันจากชื่อไฟล์ไม่ได้ '
+                  '(ต้องลงท้าย -YYYYMMDD__YYYYMMDD)' % p.name, file=sys.stderr)
+    ok = [(p, sp) for p, sp in cand if sp]
+    ok.sort(key=lambda x: x[0].stat().st_mtime)
+    for p, sp in ok[-1:]:
         try:
             data = json.loads(p.read_text(encoding='utf-8'))
         except (OSError, ValueError):
             continue
-        d = _sh_day(p)
-        if not d:
-            # ไฟล์ที่อ่านวันที่จากชื่อไม่ได้ (เช่นไฟล์ช่วงหลายวัน หรือไฟล์ทดลองที่ตัวย้าย
-            # หยิบเข้ามา) **ต้องข้าม** ถ้าปล่อยผ่านด้วยวันว่าง ข้อมูลจะถูกนับซ้ำเงียบ ๆ
-            # (5 พ.ย. 69: ไฟล์ทดลองถูกย้ายเข้ามา ยอด Lazada กลายเป็น 1,156.50 แทน 578.25)
-            print('ข้าม %s — อ่านวันที่จากชื่อไฟล์ไม่ได้ (ต้องลงท้าย _YYYYMMDD)' % p.name,
-                  file=sys.stderr)
-            continue
+        d = sp[1]
         for scene, v in data.items():
             camp = {}
             for c in v.get('camp', []):
@@ -275,15 +404,75 @@ def build_lz(src):
                 rows.append(dict(lv='prod',
                                  c=a.get('campaignName') or camp.get(a.get('campaignId')) or '',
                                  g='', a=a.get('adgroupName') or str(a.get('itemId') or ''),
-                                 d=d, **m))
+                                 d=d, span='%s..%s' % sp, **m))
     notes = ['Lazada ไม่มีข้อมูลกลุ่มผู้ชม ตำแหน่งโฆษณา และคีย์เวิร์ด',
+             'ตัวเลขของ Lazada เป็น **ยอดรวมของทั้งช่วง ไม่ใช่รายวัน** — รายงานของ Lazada '
+             'ไม่คืนคอลัมน์วันที่ และการยิงทีละวันทำให้ติด CAPTCHA · '
+             'ยอดรายวันของ Lazada มาจากไฟล์ export ของแท็บโฆษณาคนละใบ '
+             '(จึงมีกราฟรายวัน แต่ตารางรายสินค้าเป็นยอดของทั้งช่วง)',
              'ยอดขายที่ใช้เป็นยอดระดับแคมเปญ — หน้า "รายงานข้อมูล" ของ Lazada '
              'นับยอดขายแบบกว้างกว่า ตัวเลขจึงสูงกว่า',
              'ไม่มี Reach และ Frequency จึงใช้เกณฑ์ "เปลี่ยนชิ้นงาน" ไม่ได้']
     return rows, [], [], notes
 
 
+# คอลัมน์ของไฟล์ export แท็บ GMV Max / Storewide Overview ของ Lazada
+LZ_DAILY_COL = {'spend': 'ค่าใช้จ่าย', 'revenue': ('รายได้', 'ยอดรายได้'),
+                'orders': 'คำสั่งซื้อ', 'imp': 'การแสดงผล', 'clicks': 'คลิก'}
+
+
+def lz_daily(src):
+    """รายวันของ Lazada — จากไฟล์ export ของแท็บโฆษณา (ครอบได้ 90 วันต่อไฟล์)
+
+    ทำไมต้องมีไฟล์นี้: endpoint `adgroupList`/`newCampaignList` **ไม่คืนคอลัมน์วันที่**
+    คืนแต่ยอดรวมของช่วง · เดิมแก้ด้วยการยิงทีละวันแล้วติด CAPTCHA (5 พ.ย. 69)
+    ไฟล์ export ใบเดียวให้รายวันครบ ไม่ต้องยิงถี่
+    ตรวจแล้ว 5 พ.ย. 69: ตรงกับ `lz_ads` ใน ads_daily.json ทุกวัน (169.95 / 202.0 / 206.3)
+
+    คืน [] ถ้าไม่มีไฟล์ — หน้าเว็บจะขึ้นว่า Lazada ไม่มีรายวัน ดีกว่าเดาตัวเลข
+    """
+    xs = sorted(src.glob('*.xlsx'), key=lambda p: p.stat().st_mtime)
+    if not xs:
+        return []
+    try:
+        import openpyxl
+    except ImportError:
+        print('ข้ามรายวันของ Lazada — ไม่มี openpyxl ในเครื่องนี้', file=sys.stderr)
+        return []
+    import warnings
+    out = []
+    for p in xs[-1:]:                      # ใบใหม่สุดใบเดียว (กันไฟล์รอบก่อนนับซ้ำ)
+        with warnings.catch_warnings():
+            warnings.simplefilter('ignore')
+            ws = openpyxl.load_workbook(p, read_only=False).worksheets[0]
+        grid = [[c for c in r] for r in ws.iter_rows(values_only=True)]
+        hi = next((i for i, r in enumerate(grid)
+                   if r and any(str(c).strip() == 'วันที่' for c in r if c is not None)), None)
+        if hi is None:
+            print('ข้าม %s — ไม่เจอหัวตาราง "วันที่"' % p.name, file=sys.stderr)
+            continue
+        head = [str(c).strip() if c is not None else '' for c in grid[hi]]
+        idx = {}
+        for k, names in LZ_DAILY_COL.items():
+            for nm in ((names,) if isinstance(names, str) else names):
+                if nm in head:
+                    idx[k] = head.index(nm); break
+        for r in grid[hi + 1:]:
+            if not r or r[0] is None:
+                continue
+            ds = re.sub(r'[^0-9]', '', str(r[0]))
+            if len(ds) != 8:
+                continue
+            m = blank()
+            for k, i in idx.items():
+                m[k] = num(r[i]) if i < len(r) else None
+            out.append(dict(d='%s-%s-%s' % (ds[:4], ds[4:6], ds[6:]), **m))
+    return rows_to_daily(out) if out else []
+
+
 BUILD = {'fb': build_fb, 'tk': build_tk, 'sh': build_sh, 'lz': build_lz}
+# ช่องทางที่สร้าง daily[] จากไฟล์ของตัวเอง ไม่ใช่จากผลรวมของ rows[]
+DAILY_FROM = {'lz': lz_daily}
 
 
 def main():
@@ -292,6 +481,8 @@ def main():
     ap.add_argument('--probe', action='store_true',
                     help='อ่านจาก detail_probe/ แทน detail_raw/ (ใช้ตอนทดสอบ)')
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--fresh', action='store_true',
+                    help='ไม่ยืมวันเก่าจากไฟล์เดิม (ใช้ตอนข้อมูลเดิมผิดและต้องล้าง)')
     a = ap.parse_args()
 
     sub = 'detail_probe' if a.probe else 'detail_raw'
@@ -302,7 +493,15 @@ def main():
         if not rows:
             empty.append(ch)
             continue
+        fp = OUT / f'ads_detail_{ch}.json'
+        borrowed = []
+        if ch in MERGE_BY_DAY and not a.fresh:
+            rows, borrowed = merge_by_day(fp, rows)
         days = sorted({r['d'] for r in rows})
+        # Lazada: แถวเป็นยอดของทั้งช่วง ช่วงจริงอยู่ที่ฟิลด์ span ไม่ใช่ที่ d
+        span = next((r['span'] for r in rows if r.get('span')), None)
+        rng = ({'from': span.split('..')[0], 'to': span.split('..')[1]} if span
+               else {'from': days[0], 'to': days[-1]})
         # แหล่งของยอดรวมรายวัน ต้องเป็น "ชั้นบนสุดของช่องทางนั้น" ชั้นเดียว
         # ไม่งั้นแคมเปญกับลูกของมันจะถูกบวกซ้ำ (Shopee เคยได้ 89,381 แทน 31,342)
         if ch == 'tk':
@@ -312,19 +511,26 @@ def main():
             # (ตรวจแล้ว 5 พ.ย. 69: ชื่อแคมเปญของแถว kw ไม่ซ้ำกับแถว camp เลย)
             # ดังนั้น camp + kw = ยอดจริงพอดี ส่วน prod เป็นลูกของแคมเปญ GMV Max จึงไม่บวก
             top = [r for r in rows if r.get('lv') in ('camp', 'kw')]
+        elif ch == 'lz':
+            top = []                          # rows[] เป็นยอดของทั้งช่วง ห้ามเอามาทำรายวัน
         else:
-            top = rows                        # fb = ระดับแอด · lz = ระดับสินค้า (ตรงกับแคมเปญ)
-        daily = rows_to_daily(top)
+            top = rows                        # fb = ระดับแอด
+        daily = DAILY_FROM[ch](src) if ch in DAILY_FROM else rows_to_daily(top)
         doc = {'channel': ch, 'label': LABEL[ch],
                'fetched_at': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
-               'data_asof': days[-1], 'range': {'from': days[0], 'to': days[-1]},
+               'data_asof': days[-1], 'range': rng,
                'caps': {'audience': bool(aud), 'placement': bool(pla),
                         'funnel': [k for k in ('imp', 'clicks', 'msg', 'view', 'atc',
                                                'checkout', 'orders')
                                    if any(r.get(k) is not None for r in rows)]},
                'notes': notes, 'daily': daily, 'rows': rows,
                'audience': aud, 'placement': pla}
-        fp = OUT / f'ads_detail_{ch}.json'
+        if borrowed:
+            notes = notes + ['รอบนี้ไม่ได้ข้อมูลของวัน %s จึงใช้ของรอบก่อน'
+                             % ', '.join(borrowed)]
+            doc['notes'] = notes
+            print('   %s: ใช้ข้อมูลเดิมของวัน %s (รอบนี้ไม่ได้)'
+                  % (ch, ', '.join(borrowed)), file=sys.stderr)
         if a.dry_run:
             print(f'{ch}: rows {len(rows)} · audience {len(aud)} · placement {len(pla)} '
                   f'· {days[0]}..{days[-1]} (dry-run ไม่เขียน)')

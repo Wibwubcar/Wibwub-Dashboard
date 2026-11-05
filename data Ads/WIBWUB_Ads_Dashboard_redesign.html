@@ -971,6 +971,10 @@ const CHOF={shopee:'sh',tiktok:'tk',lazada:'lz',facebook:'fb'};
 function dBlank(){const o={};MET.forEach(k=>o[k]=null);return o;}
 function dAdd(dst,src){MET.forEach(k=>{const v=src[k];if(v==null)return;dst[k]=dst[k]==null?v:dst[k]+v;});}
 function dRows(ch){const D2=DET[ch];if(!D2)return[];
+  /* Lazada: รายงานไม่คืนคอลัมน์วันที่ แถวหนึ่งคือ "ยอดรวมของทั้งช่วง" (ฟิลด์ span)
+     จึงนับเข้าช่วงที่เลือกเมื่อ "ช่วงของไฟล์ทับกับช่วงที่เลือก" ไม่ใช่เทียบวันเดียว */
+  if(ch==='lz') return D2.rows.filter(r=>{const s=(r.span||'').split('..');
+    return s.length===2?(s[0]<=st.to&&s[1]>=st.from):(r.d>=st.from&&r.d<=st.to);});
   return D2.rows.filter(r=>r.d>=st.from&&r.d<=st.to);}
 /* แถว "ชั้นบน" ของช่องทาง — ใช้คิดยอดรวมและหัวแคมเปญ ห้ามบวกข้ามชั้น
    Shopee มี 3 ชั้นในไฟล์เดียว (camp/kw/prod) ถ้าบวกหมดจะได้ ฿60,362 แทน ฿31,342 */

@@ -121,8 +121,13 @@ def check_local(now, grace_min, delay_min):
         out.append({'lv': 'ℹ️', 'task': '(ทะเบียนอื่น)',
                     'msg': f'ข้ามทะเบียนของ workspace อื่น {len(skipped)} ไฟล์ — ไม่ใช่งาน WIBWUB'})
     if reg is None:
-        return [{'lv': '⛔', 'task': '(ทะเบียนงาน local)',
-                 'msg': 'อ่าน scheduled-tasks.json ไม่ได้ — ตรวจฝั่ง local ไม่ได้ทั้งหมด'}]
+        # อ่านทะเบียนไม่ได้ = **เรื่องปกติเมื่อรันในแซนด์บ็อกซ์/bridge VM** ซึ่งมองไม่เห็น
+        # ~/Library/Application Support ของผู้ใช้ · ไม่ใช่สัญญาณว่างานไม่ได้รัน
+        # จึงเป็น ℹ️ ไม่ใช่ ⛔ (ถ้าเป็น ⛔ จะคืน exit 3 แล้วไปขึ้นบรรทัดแรกของทุกรอบ
+        # ทั้งที่ผลงานปลายทางถูกตรวจด้วย local_tasks อยู่แล้ว — ผู้ใช้สั่งแก้ 5 พ.ย. 69)
+        return [{'lv': 'ℹ️', 'task': '(ทะเบียนงาน local)',
+                 'msg': 'อ่าน scheduled-tasks.json ไม่ได้ (รันในแซนด์บ็อกซ์) — '
+                        'ข้ามการตรวจเวลารันของงาน local ใช้ผลงานปลายทางตัดสินแทน'}]
     for t in reg:
         if not t.get('enabled'):
             continue
