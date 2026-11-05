@@ -581,6 +581,7 @@ def build_status(now):
             reg = mine
     if reg is None:
         unreadable.append('ทะเบียนงาน local: อ่านไม่ได้')
+    reg_ids = {(x.get('filePath') or '').split('/')[-2] for x in (reg or [])}
 
     def mk(name, side, cron, last_run, sched, sess_list, acfg, prompt_file, task_id=''):
         r = {'name': name, 'side': side, 'cron': cron}
@@ -765,6 +766,27 @@ def build_status(now):
 
     order = {'⛔': 0, '⚠️': 1, '📝': 2, '⏳': 3, '✅': 4}
     rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
+    # ── การ์ดที่ไม่ผูกกับงานในทะเบียน (งานที่เป็น "ส่วน B" ของงานอื่น) ──────────
+    # ส่วน B ไม่มี taskId ของตัวเอง ถ้าไม่ทำตรงนี้จะไม่มีการ์ดเลย และถ้าไปผูกกับ
+    # การ์ดของส่วน A ความล้มของ B จะกลายเป็นความล้มของ A (ผู้ใช้สั่งห้ามไว้ 5 พ.ย. 69)
+    # ตัดสินจากอายุผลงานอย่างเดียว เพราะไม่มีเซสชันของตัวเองให้ดู
+    have = {r['name'] for r in rows}
+    for tid, acfg in (cfg_all.get('local_tasks') or {}).items():
+        if tid in reg_ids or (acfg.get('label') or tid) in have:
+            continue
+        age, when, _at = artifact_age(acfg, now)
+        r = {'name': acfg.get('label') or tid, 'side': 'local', 'cron': None,
+             'last_round': '—', 'data_asof': when if age is not None else '—'}
+        mx = acfg.get('max_age_hours')
+        if age is None:
+            r.update(level='⚠️', status='ตรวจผลงานไม่ได้', note=(when or '')[:90])
+        elif mx and age > mx:
+            r.update(level='⚠️', status='ข้อมูลค้าง',
+                     note='ผลงานล่าสุด %s (%.0f ชม. เกินเกณฑ์ %s)' % (when, age, mx))
+        else:
+            r.update(level='✅', status='ปกติ', note='ผลงานล่าสุด ' + when)
+        rows.append(r)
+
     crons = [(r['name'], r.get('cron')) for r in rows]
     starts = []
     for by in ((code_sess or {}), (local_sess or {})):

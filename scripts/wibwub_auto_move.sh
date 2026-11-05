@@ -59,6 +59,14 @@ for f in "$DL"/creative\ data\ for\ product\ campaigns\ *.xlsx; do safe_mv "$f" 
 for f in "$DL"/ExportAds_V2_*.xlsx;                       do safe_mv "$f" "$ALL/data Ads/Tiktok/"; done
 
 # Content / Followers
+# แอดละเอียด (งาน 11:05) — ต้องแยกโฟลเดอร์จากงานรายวัน
+# ไฟล์ระดับแอดของ TikTok ใช้ชื่อขึ้นต้นเหมือนรายงานระดับแคมเปญทุกประการ
+# ถ้าปล่อยลง Business Ads/ งานรายวันที่หยิบ "ไฟล์ใหม่สุด" จะได้ข้อมูลวันเดียวไปคิดทั้งเดือน
+for f in "$DL"/Tiktok\ Ads_WIBWUB-auto-*.csv;            do safe_mv "$f" "$ALL/data Ads/TikTok/detail_raw/"; done
+for f in "$DL"/WIBWUB-auto-shopee-*.csv;                  do safe_mv "$f" "$ALL/data Ads/Shopee/detail_raw/"; done
+for f in "$DL"/WIBWUB-auto-lazada-*.json;                 do safe_mv "$f" "$ALL/data Ads/Lazada/detail_raw/"; done
+for f in "$DL"/WIBWUB-auto-fb-*.csv;                      do safe_mv "$f" "$ALL/data Ads/facebook/detail_raw/"; done
+
 for f in "$DL"/Followers_wibwubcar*.zip;                  do safe_mv "$f" "$ALL/data content/"; done
 
 # Affiliate › คำขอสินค้า (CSV จากชีต Top 30 Affiliate แท็บ ขอสินค้า — scripts/affiliate/samp_update.py)

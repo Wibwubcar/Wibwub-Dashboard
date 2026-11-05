@@ -105,6 +105,44 @@ details .body h3{font-size:13px;font-weight:700;color:var(--ink);margin:14px 0 8
 .err{background:#fff;border:1px solid var(--bd);border-radius:var(--r);padding:26px;text-align:center;color:var(--muted)}
 @media(max-width:900px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.two{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:repeat(2,minmax(0,1fr))}.wk{grid-template-columns:minmax(0,1fr)}.hero .big{font-size:17px}.hero.one .big{font-size:15.5px}}
 @media(max-width:560px){.kpis{grid-template-columns:minmax(0,1fr)}.fbgrid{grid-template-columns:minmax(0,1fr)}.wrap{padding:14px 12px 44px}}
+
+/* ---- แอดละเอียด (ads_detail_*.json) ---- */
+.asof{font-size:12px;font-weight:400;color:var(--muted);margin-left:8px}
+.dkpi{display:flex;flex-wrap:wrap;gap:10px 22px;margin:10px 0 14px}
+.dkpi div{display:flex;flex-direction:column;gap:2px}
+.dkpi span{font-size:11.5px;color:var(--muted)}
+.dkpi b{font-size:17px}
+details.dtl{border:1px solid var(--bd);border-radius:10px;margin-top:8px;background:#fff}
+details.dtl>summary{cursor:pointer;padding:10px 12px;font-size:13px;display:flex;
+  flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+details.dtl>summary::-webkit-details-marker{display:none}
+details.dtl>summary:before{content:'▸';color:var(--muted);margin-right:6px}
+details.dtl[open]>summary:before{content:'▾'}
+details.dtl .sm{font-size:12px;color:var(--muted)}
+details.dtl .pad{padding:0 12px 10px}
+details.dtl .pad p{font-size:12.5px;color:var(--ink2);margin:6px 0}
+.mid{display:inline-block;font-size:11px;color:var(--muted);background:#F3F4F6;
+  border-radius:5px;padding:1px 6px;margin-right:4px}
+.bdg{display:inline-block;font-size:12px;white-space:nowrap;border-radius:6px;padding:2px 7px}
+.b-up{background:#E7F7EE;color:#0B7A43}.b-stop{background:#FDECEC;color:#B42318}
+.b-cre{background:#E8F0FE;color:#1A4FBF}.b-fix{background:#FEF6E0;color:#9A6400}
+.why{font-size:11.5px;color:var(--muted);margin-top:3px;max-width:320px}
+.why2{font-size:12px;color:var(--ink2)}
+tr.fnr td{padding-top:0;border-top:none}
+.fnl{display:flex;flex-direction:column;gap:3px;margin:2px 0 10px}
+.fnl-s{position:relative}
+.fnl-b{height:16px;border-radius:4px;background:var(--soft,#C9D6F5)}
+.fnl-t{position:absolute;inset:0;display:flex;align-items:center;gap:8px;
+  font-size:11.5px;padding-left:7px}
+.fnl-d{color:var(--muted)}
+.adv{font-style:italic}
+@media(max-width:720px){
+  .dkpi{gap:8px 16px}.dkpi b{font-size:15px}.why{max-width:none}
+  /* บนมือถือ ถ้าปล่อยให้ตารางหดตามจอ คอลัมน์เหตุผลจะถูกบีบจนขึ้นบรรทัดละตัวอักษร
+     ให้ตารางกว้างขั้นต่ำแล้วเลื่อนแนวนอนใน .scroll แทน (หน้าเพจยังไม่เลื่อนข้าง) */
+  .card .scroll>table{min-width:640px}
+  .why2{min-width:220px;display:inline-block}
+}
 </style>
 </head>
 <body>
@@ -323,6 +361,7 @@ function render(){
   document.getElementById('sub').textContent=`ช่วงที่เลือก ${thR(a,b)} (${NN} วัน)`+(PR?` · เทียบกับ ${thR(PA,PB)}`:'');
   destroyCharts();
   ({overview:renderOv,shopee:renderSh,tiktok:renderTk,lazada:renderLz,facebook:renderFb}[st.view])();
+  detailAppend();   // ต่อบล็อก "แอดละเอียด" ท้ายแท็บ — จุดเชื่อมจุดเดียว
 }
 function statusChips(){
   const cov=D.coverage||{};
@@ -908,13 +947,213 @@ function fbWeeks(dates){
       cpm:s.imp?s.spend/s.imp*1000:0, ctr:s.imp?s.clicks/s.imp*100:0, cpc:s.clicks?s.spend/s.clicks:0};});
 }
 
+/* ======================= แอดละเอียด (ads_detail_*.json) =======================
+   ต่อท้ายแท็บเดิมโดยไม่แตะฟังก์ชัน render เดิม — จุดเชื่อมอยู่ใน render() จุดเดียว
+   ข้อมูลมาจาก scripts/ads/detail_build.py · ช่องไหนเป็น null = ช่องทางนั้นวัดไม่ได้
+   **ห้ามแปลง null เป็น 0** ตัวเลข 0 แปลว่าวัดแล้วได้ศูนย์ ซึ่งคนละความหมาย           */
+
+/* เกณฑ์ป้ายแนะนำ — แก้ที่นี่ที่เดียว (ผู้ใช้กำหนด 5 พ.ย. 69) */
+const RX={
+  UP_ROAS:1.5,    // 🟢 เพิ่มงบ: ROAS >= 1.5 เท่าของค่าเฉลี่ยช่องทาง
+  UP_SPEND:500,   //    และใช้เงินเกินเท่านี้
+  STOP_SPEND:1000,// 🔴 หยุด: ใช้เงินเกินเท่านี้แต่ไม่มียอดซื้อ
+  STOP_ROAS:0.5,  //    หรือ ROAS < 0.5 เท่าของค่าเฉลี่ย
+  CRE_FREQ:3,     // 🔵 เปลี่ยนชิ้นงาน: ความถี่เกินนี้
+  CRE_CTR:0.30,   //    และ CTR ลดลงเกินสัดส่วนนี้ (ครึ่งหลังเทียบครึ่งแรกของช่วง)
+  FIX_CTR:1.0,    // 🟡 ปรับ: CTR สูงกว่าค่าเฉลี่ยช่องทาง
+  FIX_CVR:0.5,    //    แต่ ใส่ตะกร้า→ซื้อ ต่ำกว่าครึ่งของค่าเฉลี่ย
+  TODO_MIN:100    // กล่อง "ต้องจัดการก่อน" ข้ามแถวที่ใช้เงินน้อยกว่านี้ (กันแอด ฿1–฿5 มาเบียด)
+};
+const DET={};                       // ch -> JSON (null ถ้าโหลดไม่ได้)
+const MET=['spend','imp','reach','clicks','msg','view','atc','checkout','orders','revenue'];
+const CHOF={shopee:'sh',tiktok:'tk',lazada:'lz',facebook:'fb'};
+
+function dBlank(){const o={};MET.forEach(k=>o[k]=null);return o;}
+function dAdd(dst,src){MET.forEach(k=>{const v=src[k];if(v==null)return;dst[k]=dst[k]==null?v:dst[k]+v;});}
+function dRows(ch){const D2=DET[ch];if(!D2)return[];
+  return D2.rows.filter(r=>r.d>=st.from&&r.d<=st.to);}
+/* แถว "ชั้นบน" ของช่องทาง — ใช้คิดยอดรวมและหัวแคมเปญ ห้ามบวกข้ามชั้น
+   Shopee มี 3 ชั้นในไฟล์เดียว (camp/kw/prod) ถ้าบวกหมดจะได้ ฿60,362 แทน ฿31,342 */
+function dTop(ch,rows){ return ch==='sh'?rows.filter(r=>r.lv==='camp'||r.lv==='kw'):rows; }
+/* ลูกของแคมเปญหนึ่ง — ถ้ามีชั้นสินค้าให้โชว์ชั้นนั้น ไม่งั้นโชว์ตัวมันเอง */
+function dKids(ch,inC){
+  if(ch!=='sh') return inC;
+  const prod=inC.filter(r=>r.lv==='prod'); if(prod.length) return prod;
+  const kw=inC.filter(r=>r.lv==='kw'); return kw.length?kw:inC;
+}
+/* รวมแถวตามคีย์ที่ให้ (ไม่รวมวัน) */
+function dGroup(rows,keyf){const m=new Map();
+  rows.forEach(r=>{const k=keyf(r);let o=m.get(k);
+    if(!o){o={k,c:r.c,g:r.g,a:r.a,lv:r.lv,n:0,...dBlank()};m.set(k,o);}
+    o.n++;dAdd(o,r);});
+  return [...m.values()].sort((x,y)=>(y.spend||0)-(x.spend||0));}
+function dRoas(o){return (o.revenue!=null&&o.spend)?o.revenue/o.spend:NaN;}
+function dCtr(o){return o.imp?o.clicks/o.imp*100:NaN;}
+function dFreq(o){return o.reach?o.imp/o.reach:NaN;}
+
+/* CTR ครึ่งหลังเทียบครึ่งแรกของช่วง — ใช้กับเกณฑ์ "เปลี่ยนชิ้นงาน" */
+function dCtrDrop(rows,key){
+  const ds=[...new Set(rows.map(r=>r.d))].sort(); if(ds.length<4) return NaN;
+  const mid=ds[Math.floor(ds.length/2)];
+  const h=[dBlank(),dBlank()];
+  rows.forEach(r=>{if(key(r)!==key.wanted)return;dAdd(h[r.d<mid?0:1],r);});
+  const a=dCtr(h[0]),b=dCtr(h[1]);
+  return (Number.isFinite(a)&&a>0&&Number.isFinite(b))?(a-b)/a:NaN;
+}
+
+/* ป้ายแนะนำ 1 แถว — คืน {t:ชนิด, l:ป้าย, why:เหตุผล 1 บรรทัด} หรือ null */
+function dBadge(o,avg,drop){
+  const roas=dRoas(o), ctr=dCtr(o), freq=dFreq(o), sp=o.spend||0;
+  if(sp>RX.STOP_SPEND&&(o.orders===0||o.orders==null&&o.revenue===0))
+    return {t:'stop',l:'🔴 หยุด',why:`ใช้เงิน ${baht(sp)} แล้วยังไม่มียอดซื้อ`};
+  if(Number.isFinite(roas)&&Number.isFinite(avg.roas)&&avg.roas>0&&roas<avg.roas*RX.STOP_ROAS&&sp>RX.UP_SPEND)
+    return {t:'stop',l:'🔴 หยุด',why:`ROAS ${x2(roas)} ต่ำกว่าครึ่งหนึ่งของค่าเฉลี่ยช่องทาง (${x2(avg.roas)})`};
+  if(Number.isFinite(roas)&&Number.isFinite(avg.roas)&&avg.roas>0&&roas>=avg.roas*RX.UP_ROAS&&sp>RX.UP_SPEND)
+    return {t:'up',l:'🟢 เพิ่มงบ',why:`ROAS ${x2(roas)} สูงกว่าค่าเฉลี่ยช่องทาง ${(roas/avg.roas).toFixed(1)} เท่า`};
+  if(Number.isFinite(freq)&&freq>RX.CRE_FREQ&&Number.isFinite(drop)&&drop>RX.CRE_CTR)
+    return {t:'cre',l:'🔵 เปลี่ยนชิ้นงาน',why:`คนเดิมเห็นซ้ำ ${freq.toFixed(1)} ครั้ง และ CTR ลดลง ${(drop*100).toFixed(0)}%`};
+  if(Number.isFinite(ctr)&&Number.isFinite(avg.ctr)&&ctr>avg.ctr*RX.FIX_CTR&&o.atc&&o.orders!=null){
+    const cvr=o.atc?o.orders/o.atc:NaN;
+    if(Number.isFinite(cvr)&&Number.isFinite(avg.cvr)&&avg.cvr>0&&cvr<avg.cvr*RX.FIX_CVR)
+      return {t:'fix',l:'🟡 ปรับ',why:`คนคลิกเยอะแต่ใส่ตะกร้าแล้วไม่ซื้อ (${pct(cvr)}) — ปัญหาน่าจะอยู่ที่หน้าสินค้าหรือราคา`};
+  }
+  return null;
+}
+function dAvg(rows){const t=dBlank();rows.forEach(r=>dAdd(t,r));
+  return {roas:dRoas(t),ctr:dCtr(t),cvr:(t.atc&&t.orders!=null)?t.orders/t.atc:NaN,tot:t};}
+
+/* Funnel ของแถวเดียว — แสดงเฉพาะขั้นที่ช่องทางนั้นมีข้อมูลจริง */
+function dFunnel(o,caps){
+  const steps=[['imp','เห็น'],['clicks','คลิก'],['msg','ทักแชท'],['view','ดูสินค้า'],
+               ['atc','ใส่ตะกร้า'],['checkout','เริ่มชำระเงิน'],['orders','ซื้อ']]
+    .filter(([k])=>caps.includes(k)&&o[k]!=null);
+  if(steps.length<2) return '';
+  const mx=o[steps[0][0]]||1;
+  return '<div class="fnl">'+steps.map(([k,lab],i)=>{
+    const v=o[k]||0, prev=i?o[steps[i-1][0]]:null;
+    const lost=(i&&prev)?(1-v/prev):NaN;
+    return `<div class="fnl-s"><div class="fnl-b" style="width:${Math.max(2,v/mx*100).toFixed(1)}%"></div>`+
+      `<div class="fnl-t"><span>${lab}</span><b class="num">${int(v)}</b>`+
+      // ขั้นถัดไปมากกว่าขั้นก่อนได้จริง เช่น TikTok นับ "ดูสินค้า" จากคนที่กดในคลิป
+      // ไม่ได้ผ่านการคลิกปลายทาง — ถ้าโชว์เป็น "ตกหล่น -155%" จะอ่านไม่รู้เรื่อง
+      (Number.isFinite(lost)?(lost>=0
+         ?`<span class="fnl-d">ตกหล่น ${(lost*100).toFixed(0)}%</span>`
+         :`<span class="fnl-d">มากกว่าขั้นก่อน (นับคนละทาง)</span>`):'')+'</div></div>';
+  }).join('')+'</div>';
+}
+
+/* ตารางเจาะชั้น: แคมเปญ -> ชั้นกลาง -> ชั้นล่างสุด (ชั้นล่างสุดมีป้ายแนะนำ) */
+function dTree(ch){
+  const D2=DET[ch], rows=dRows(ch);
+  if(!rows.length) return `<div class="note">ไม่มีข้อมูลแอดละเอียดในช่วงที่เลือก (ไฟล์ครอบคลุม ${thD(D2.range.from,1)} – ${thD(D2.range.to,1)})</div>`;
+  const caps=D2.caps.funnel, avg=dAvg(dTop(ch,rows));
+  const leafName={fb:'แอด',tk:'แอด',sh:'สินค้า / คีย์เวิร์ด',lz:'สินค้า'}[ch];
+  const byC=dGroup(dTop(ch,rows),r=>r.c);
+  return byC.map(C2=>{
+    const inC=dKids(ch,rows.filter(r=>r.c===C2.k));
+    const mids=[...new Set(inC.map(r=>r.g))].filter(x=>x);
+    const leaves=dGroup(inC,r=>r.g+'\u0000'+r.a);
+    const body=leaves.map(L=>{
+      const k2=r=>r.g+'\u0000'+r.a; k2.wanted=L.k;
+      const b=dBadge(L,avg,dCtrDrop(inC,k2));
+      return `<tr><td>${mids.length?`<span class="mid">${esc(L.g||'—')}</span> `:''}${esc(L.a||'(ไม่มีชื่อ)')}</td>`+
+        `<td class="num">${baht(L.spend)}</td><td class="num">${L.imp==null?'–':int(L.imp)}</td>`+
+        `<td class="num">${L.clicks==null?'–':int(L.clicks)}</td><td class="num">${pct2(dCtr(L))}</td>`+
+        `<td class="num">${L.revenue==null?'–':baht(L.revenue)}</td><td class="num">${x2(dRoas(L))}</td>`+
+        `<td>${b?`<span class="bdg b-${b.t}" title="${esc(b.why)}">${b.l}</span><div class="why">${esc(b.why)}</div>`:muted('—')}</td></tr>`+
+        (caps.length>2?`<tr class="fnr"><td colspan="8">${dFunnel(L,caps)}</td></tr>`:'');
+    }).join('');
+    return `<details class="dtl"><summary><b>${esc(C2.k||'(ไม่มีชื่อแคมเปญ)')}</b>`+
+      `<span class="sm">${baht(C2.spend)} · ROAS ${x2(dRoas(C2))} · ${leaves.length} ${leafName}</span></summary>`+
+      `<div class="scroll"><table><thead><tr><th>${leafName}</th><th>ค่าแอด</th><th>เห็น</th><th>คลิก</th>`+
+      `<th>CTR</th><th>ยอดจากแอด</th><th>ROAS</th><th>คำแนะนำ</th></tr></thead><tbody>${body}</tbody></table></div></details>`;
+  }).join('');
+}
+
+/* กลุ่มผู้ชม / ตำแหน่ง — ถ้าช่องทางไม่มีข้อมูล เขียนกำกับตรง ๆ ห้ามใส่ตัวเลขปลอม */
+function dSplit(ch,kind){
+  const D2=DET[ch], arr=(D2[kind]||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
+  const label=kind==='audience'?'กลุ่มผู้ชม (อายุ / เพศ)':'ตำแหน่งที่โฆษณาแสดง';
+  if(!arr.length) return `<h3>${label}</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`;
+  const keyf=kind==='audience'?(r=>(r.age||'–')+' · '+(r.gender||'–')):(r=>r.p||'–');
+  const g=dGroup(arr,keyf), avg=dAvg(arr);
+  const best=g.filter(o=>Number.isFinite(dRoas(o))).sort((a,b)=>dRoas(b)-dRoas(a))[0];
+  return `<h3>${label}</h3>`+
+    (best?`<div class="note">ROAS ดีที่สุดคือ <b>${esc(best.k)}</b> ที่ ${x2(dRoas(best))} (ค่าเฉลี่ยช่องทาง ${x2(avg.roas)})</div>`:'')+
+    `<div class="scroll"><table><thead><tr><th>${kind==='audience'?'อายุ · เพศ':'ตำแหน่ง'}</th><th>ค่าแอด</th>`+
+    `<th>เห็น</th><th>คลิก</th><th>CTR</th><th>ยอดจากแอด</th><th>ROAS</th></tr></thead><tbody>`+
+    g.map(o=>`<tr><td>${esc(o.k)}</td><td class="num">${baht(o.spend)}</td>`+
+      `<td class="num">${o.imp==null?'–':int(o.imp)}</td><td class="num">${o.clicks==null?'–':int(o.clicks)}</td>`+
+      `<td class="num">${pct2(dCtr(o))}</td><td class="num">${o.revenue==null?'–':baht(o.revenue)}</td>`+
+      `<td class="num">${x2(dRoas(o))}</td></tr>`).join('')+'</tbody></table></div>';
+}
+
+/* กล่อง "ต้องจัดการก่อน" — รวมทุกช่องทาง เรียงตามเงินที่เสีย */
+function dTodo(){
+  const out=[];
+  Object.keys(CHOF).forEach(v=>{const ch=CHOF[v]; if(!DET[ch])return;
+    const rows=dRows(ch); if(!rows.length)return;
+    const avg=dAvg(dTop(ch,rows));
+    dGroup(ch==='sh'?rows.filter(r=>r.lv!=='camp'||!rows.some(x=>x.c===r.c&&x.lv==='prod')):rows,
+           r=>r.c+'\u0000'+r.g+'\u0000'+r.a).forEach(o=>{
+      const k2=r=>r.c+'\u0000'+r.g+'\u0000'+r.a; k2.wanted=o.k;
+      const b=dBadge(o,avg,dCtrDrop(rows,k2));
+      // เรียงตาม "เงินที่ลงไปกับของที่ต้องจัดการ" = ค่าแอดของแถวนั้น
+      // ห้ามใช้ spend-revenue: แถวที่ติด 🔴 เพราะ ROAS ต่ำกว่าค่าเฉลี่ยมักยังมีกำไร
+      // ค่าจะติดลบแล้วถูกดันไปท้ายตาราง ทั้งที่เป็นก้อนเงินใหญ่ที่สุด
+      if(b&&(b.t==='stop'||b.t==='fix'||b.t==='cre')&&(o.spend||0)>=RX.TODO_MIN)
+        out.push({ch,view:v,name:o.a||o.c,b,spend:o.spend||0,waste:o.spend||0});});});
+  if(!out.length) return '';
+  out.sort((a,b)=>b.waste-a.waste);
+  const NM={fb:'Facebook',tk:'TikTok',sh:'Shopee',lz:'Lazada'};
+  return `<div class="card"><h2>ต้องจัดการก่อน</h2>`+
+    `<div class="note">รวมแอด สินค้า และคีย์เวิร์ดที่ติดป้าย หยุด / ปรับ / เปลี่ยนชิ้นงาน จากทุกช่องทาง `+
+    `เรียงตามเงินที่ลงไป · ข้ามรายการที่ใช้เงินต่ำกว่า ${baht(RX.TODO_MIN)} ในช่วงที่เลือก</div>`+
+    `<div class="scroll"><table><thead><tr><th>ช่องทาง</th><th>ชื่อ</th><th>ค่าแอด</th><th>คำแนะนำ</th><th>เหตุผล</th></tr></thead><tbody>`+
+    out.slice(0,15).map(o=>`<tr><td><a href="#${o.view}">${NM[o.ch]}</a></td><td>${esc(o.name)}</td>`+
+      `<td class="num">${baht(o.spend)}</td><td><span class="bdg b-${o.b.t}">${o.b.l}</span></td>`+
+      `<td class="why2">${esc(o.b.why)}</td></tr>`).join('')+'</tbody></table></div>'+
+    `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div></div>`;
+}
+
+/* บล็อกรวมของแต่ละแท็บ */
+function detailBlock(ch){
+  const D2=DET[ch];
+  if(!D2) return `<div class="card"><h2>แอดละเอียด</h2><div class="note">ยังไม่มีไฟล์ <code>data Ads/ads_detail_${ch}.json</code> — สร้างด้วย <code>python3 scripts/ads/detail_build.py</code></div></div>`;
+  const rows=dRows(ch), t=dAvg(dTop(ch,rows)).tot;
+  return `<div class="card"><h2>แอดละเอียด <span class="asof">ข้อมูลถึงวันที่ ${thD(D2.data_asof,1)}</span></h2>`+
+    `<div class="dkpi">`+
+      `<div><span>ค่าแอด</span><b class="num">${baht(t.spend)}</b></div>`+
+      `<div><span>ยอดจากแอด</span><b class="num">${t.revenue==null?'–':baht(t.revenue)}</b></div>`+
+      `<div><span>ROAS</span><b class="num">${x2(dRoas(t))}</b></div>`+
+      `<div><span>CTR</span><b class="num">${pct2(dCtr(t))}</b></div>`+
+      `<div><span>ความถี่</span><b class="num">${Number.isFinite(dFreq(t))?dFreq(t).toFixed(2)+' ครั้ง':'–'}</b></div>`+
+    `</div>`+
+    dTree(ch)+
+    (D2.caps.audience?dSplit(ch,'audience'):`<h3>กลุ่มผู้ชม (อายุ / เพศ)</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`)+
+    (D2.caps.placement?dSplit(ch,'placement'):`<h3>ตำแหน่งที่โฆษณาแสดง</h3><div class="note">ช่องทางนี้ไม่มีข้อมูลส่วนนี้</div>`)+
+    `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div>`+
+    `<details class="dtl"><summary>ข้อจำกัดของข้อมูลช่องทางนี้</summary><div class="pad">`+
+      D2.notes.map(n=>'<p>'+esc(n)+'</p>').join('')+'</div></details></div>';
+}
+function detailAppend(){
+  const m=document.getElementById('main');
+  if(st.view==='overview'){ const h=dTodo(); if(h) m.insertAdjacentHTML('beforeend',h); return; }
+  const ch=CHOF[st.view]; if(ch) m.insertAdjacentHTML('beforeend',detailBlock(ch));
+}
+
 /* ---------- boot ---------- */
 const load=f=>fetch(f+'?t='+Date.now(),{cache:'no-store'}).then(r=>{if(!r.ok)throw new Error(f+' '+r.status);return r.json();});
 Promise.all([load('ads_daily.json'),load('ads_periods.json'),
              load('ads_tk_campaigns.json').catch(()=>null),
-             load('facebook/fb_daily.json').catch(()=>null)])
-.then(([d,p,tc,fb])=>{
-  D=d;P=p;TKC=tc;FB=fb;DAYS=Object.keys(d.days).sort();MIN=DAYS[0];MAX=DAYS[DAYS.length-1];
+             load('facebook/fb_daily.json').catch(()=>null),
+             load('ads_detail_fb.json').catch(()=>null),
+             load('ads_detail_tk.json').catch(()=>null),
+             load('ads_detail_sh.json').catch(()=>null),
+             load('ads_detail_lz.json').catch(()=>null)])
+.then(([d,p,tc,fb,xfb,xtk,xsh,xlz])=>{
+  D=d;P=p;TKC=tc;FB=fb;
+  DET.fb=xfb;DET.tk=xtk;DET.sh=xsh;DET.lz=xlz;DAYS=Object.keys(d.days).sort();MIN=DAYS[0];MAX=DAYS[DAYS.length-1];
   ['dFrom','dTo'].forEach(id=>{const e=document.getElementById(id);e.min=MIN;e.max=MAX;});
   document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>setPreset(b.dataset.p));
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>setView(b.dataset.v));
