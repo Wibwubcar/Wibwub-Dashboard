@@ -18,7 +18,7 @@
   python3 <BASE>/scripts/gitw.py diff --stat
 
 รันที่ไหนก็ได้ — หา BASE เองจากตำแหน่งไฟล์นี้ ไม่ต้อง cd
-รอ .git/index.lock เองได้ (4 พ.ย. 69):
+รอ .git/index.lock และ .git/HEAD.lock เองได้ (4-5 พ.ย. 69):
   3-4 พ.ย. งาน shopee-live เขียนข้อมูลสำเร็จแต่ commit ไม่ผ่าน เพราะงานตั้งเวลาอีกตัว
   ถือ .git/index.lock อยู่ (sandbox คนละ user จึงลบไม่ได้ และห้ามลบอยู่แล้ว)
   แต่ `add` ติดไปก่อนแล้ว ไฟล์จึงค้างใน index แล้วถูก commit ของงานอื่นกวาดติดไป
@@ -27,7 +27,8 @@
   ถ้าสุดท้าย commit ยังไม่ผ่าน จะ unstage เฉพาะไฟล์ที่ gitw ตัวเอง add ไว้ แล้วคืน exit 3
 
 exit: ตามที่ git คืนมา · 2 = ถูกปฏิเสธเพราะคำสั่งไม่อยู่ในรายการอนุญาต
-     3 = ติด index.lock จนหมดเวลา (ถ้าเป็น commit: unstage ของตัวเองคืนแล้ว)
+     3 = ติด lock (index.lock / HEAD.lock) จนหมดเวลา
+         (ถ้าเป็น commit: unstage ของตัวเองคืนแล้ว)
 """
 import json, os, subprocess, sys, time
 from pathlib import Path
@@ -56,10 +57,21 @@ def _run(args):
     return subprocess.run(['git', '-C', str(BASE), *args], text=True, capture_output=True)
 
 
+# ชื่อ lock ที่ git สร้างแล้วทำให้คำสั่งล้มชั่วคราว — ต้องรอทั้งคู่
+# index.lock  = ตอนเขียน index (add / commit / reset)
+# HEAD.lock   = ตอนขยับ ref (commit ขั้นสุดท้าย) เจอจริง 5 พ.ย. 69:
+#   fastmoss + tiktok-product + gitw เอง โดน 'cannot lock ref HEAD' แล้ว
+#   คืน exit 128 ทันทีโดยไม่รอ ข้อมูลเข้าไฟล์แล้วแต่ commit หาย
+LOCK_NAMES = ('index.lock', 'HEAD.lock')
+
+
 def _is_lock_err(r):
     e = (r.stderr or '')
-    return r.returncode != 0 and 'index.lock' in e and (
-        'File exists' in e or 'Unable to create' in e)
+    if r.returncode == 0:
+        return False
+    hit = any(n in e for n in LOCK_NAMES) or 'cannot lock ref' in e
+    return hit and ('File exists' in e or 'Unable to create' in e
+                    or 'cannot lock ref' in e)
 
 
 def _run_waiting(args, wait=None):
@@ -168,12 +180,12 @@ def main():
     elif sub == 'commit' and r.returncode == 0:
         _take_record()                       # commit ผ่านแล้ว ไม่มีอะไรค้าง
     elif sub == 'commit' and _is_lock_err(r):
-        print(f'gitw: รอ .git/index.lock ครบ {LOCK_WAIT} วินาทีแล้วยังไม่ว่าง — '
+        print(f'gitw: รอ .git/*.lock (index/HEAD) ครบ {LOCK_WAIT} วินาทีแล้วยังไม่ว่าง — '
               'ไม่ลบ lock ของคนอื่น', file=sys.stderr)
         print('gitw: ' + _unstage(_take_record()), file=sys.stderr)
         sys.exit(3)
     elif sub == 'add' and _is_lock_err(r):
-        print(f'gitw: รอ .git/index.lock ครบ {LOCK_WAIT} วินาทีแล้วยังไม่ว่าง — add ไม่สำเร็จ',
+        print(f'gitw: รอ .git/*.lock (index/HEAD) ครบ {LOCK_WAIT} วินาทีแล้วยังไม่ว่าง — add ไม่สำเร็จ',
               file=sys.stderr)
         sys.exit(3)
     sys.exit(r.returncode)
