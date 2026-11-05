@@ -35,3 +35,7 @@ Order.completed.*
 *order*.xlsx
 *order*.csv
 [0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f].xlsx
+
+# cache ของ ship_cache.py — ย้ายมาไว้ในโฟลเดอร์ All ให้แซนด์บ็อกซ์เห็นด้วย (5 พ.ย. 69)
+# มีข้อมูลยอดขายระดับบรรทัดจาก Shipnity · repo เป็น public ห้าม commit เด็ดขาด
+/.cache/

@@ -10,6 +10,9 @@ cache key = ชื่อไฟล์ + mtime + size ของ **ทุกไฟ�
 
 ใช้ในโค้ด:  from ship_cache import load_shipnity;  raw = load_shipnity()
 CLI:        python3 scripts/ship_cache.py [--refresh]   (อุ่น cache ไว้ล่วงหน้า)
+
+cache เก็บที่ <BASE>/.cache/shipnity_cache.json — **ในโฟลเดอร์ All** ไม่ใช่ ~/Library/Caches
+เพื่อให้งานที่รันในแซนด์บ็อกซ์ใช้ร่วมกันได้ (.cache/ อยู่ใน .gitignore แล้ว)
 """
 import sys, json, hashlib, glob, os
 from pathlib import Path
@@ -29,7 +32,14 @@ def _find_base():
 
 
 BASE = _find_base()
-CACHE = Path.home() / 'Library' / 'Caches' / 'wibwub-outputs' / 'shipnity_cache.json'
+# cache ต้องอยู่ "ในโฟลเดอร์ All" เพื่อให้งานตั้งเวลาฝั่งแซนด์บ็อกซ์เห็นด้วย (5 พ.ย. 69)
+#   เดิมอยู่ที่ ~/Library/Caches/wibwub-outputs/ ซึ่งเป็นพาธบนเครื่อง Mac เท่านั้น
+#   -> wibwub-monday-update ที่รันในแซนด์บ็อกซ์มองไม่เห็น ต้องอ่าน Excel 161 ไฟล์ใหม่ทุกรอบ
+#      ใช้เวลา ~6 นาที แต่ shell ตัดที่ ~3 นาที = ล้มทุกรอบ (Top สินค้าค้างที่ 31 ต.ค.)
+#   .cache/ ถูกใส่ใน .gitignore แล้ว — repo เป็น public ห้ามให้ไฟล์นี้ถูก commit
+CACHE = BASE / '.cache' / 'shipnity_cache.json'
+# ที่เก่า — อ่านเป็นทางสำรองเพื่อไม่ต้องคำนวณใหม่รอบแรกหลังย้าย (ไม่เขียนลงที่นี่อีก)
+LEGACY_CACHE = Path.home() / 'Library' / 'Caches' / 'wibwub-outputs' / 'shipnity_cache.json'
 
 
 def sales_asof():
@@ -61,25 +71,40 @@ def fingerprint():
     return h.hexdigest(), len(files)
 
 
+def _write_cache(fp, n, raw):
+    """เขียน cache แบบ atomic — ล้มเหลวก็ไม่เป็นไร แค่เสียความเร็ว"""
+    try:
+        CACHE.parent.mkdir(parents=True, exist_ok=True)
+        tmp = CACHE.with_suffix('.tmp')
+        tmp.write_text(json.dumps({'fingerprint': fp, 'files': n, 'raw': raw},
+                                  ensure_ascii=False), encoding='utf-8')
+        tmp.replace(CACHE)
+    except OSError as e:
+        print(f'เขียน cache ไม่ได้ ({e}) — ข้ามไป ไม่กระทบผลลัพธ์', file=sys.stderr)
+
+
 def load_shipnity(refresh=False, verbose=False):
     fp, n = fingerprint()
-    if not refresh and CACHE.exists():
-        try:
-            c = json.loads(CACHE.read_text(encoding='utf-8'))
+    if not refresh:
+        # ห้ามใช้ .exists() เป็นด่าน — stat บนโฟลเดอร์ Drive ตอบ False หลอกได้
+        # (เคส daily-stock 3-4 พ.ย. 69) ให้เปิดไฟล์จริงแล้วรับ OSError
+        for src in (CACHE, LEGACY_CACHE):
+            try:
+                c = json.loads(src.read_text(encoding='utf-8'))
+            except (OSError, ValueError):
+                continue              # ไม่มีหรือ cache เสีย -> ลองที่ถัดไป
             if c.get('fingerprint') == fp:
-                if verbose: print(f'cache hit ({n} ไฟล์)', file=sys.stderr)
+                if verbose:
+                    print(f'cache hit ({n} ไฟล์) จาก {src}', file=sys.stderr)
+                if src is LEGACY_CACHE:
+                    # ย้ายมาที่ใหม่เลย ไม่งั้นงานฝั่งแซนด์บ็อกซ์ยังไม่เห็น cache
+                    _write_cache(fp, n, c['raw'])
                 return c['raw']
-        except Exception:
-            pass                      # cache เสีย -> คำนวณใหม่
     sys.path.insert(0, str(BASE))
     import wibwub_update as W
     raw = W.process_shipnity()
     if not raw: return None
-    CACHE.parent.mkdir(parents=True, exist_ok=True)
-    tmp = CACHE.with_suffix('.tmp')
-    tmp.write_text(json.dumps({'fingerprint': fp, 'files': n, 'raw': raw},
-                              ensure_ascii=False), encoding='utf-8')
-    tmp.replace(CACHE)
+    _write_cache(fp, n, raw)
     if verbose: print(f'cache miss -> คำนวณใหม่ ({n} ไฟล์)', file=sys.stderr)
     return raw
 
