@@ -9,13 +9,35 @@ description: ทุกวัน 10:35/21:35 — อัปเดต Top สิน
 จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
 
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+python3 -c "
+import glob, os
+CAND = ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All',
+        os.path.expanduser('~/mnt/All')] + sorted(glob.glob('/sessions/*/mnt/All'))
+P = '/scripts/task_prompts/wibwub-monday-update.md'
+for B in CAND:
+    try:
+        open(B + P).read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
+"
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
-- **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
-  → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
-  ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]` / `[ -f ... ]`**
+> เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`: stat บนโฟลเดอร์ Drive ตอบ **False** 5 รอบติด
+> ทั้งที่ `open()` ไฟล์เดียวกันได้ปกติ → ต้องเปิดไฟล์จริงใน try/except OSError เท่านั้น
+> และ**คำสั่ง shell แรกของรอบต้องเป็น `python3`** ห้ามเป็นลูป `for` ของ bash
+> (สร้างกฎอนุญาตถาวรไม่ได้ → รอบค้างจนหมดเวลา)
+
+- ได้ `BASE OK <พาธ>` → ใช้พาธ**ที่ด่านนี้คืนมา**เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ)
+- `⛔ ไม่พบ BASE` หรือ shell ตอบว่า `No folders are connected`
+  → **หยุดทันที** รายงาน `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน ห้ามเดาพาธเอง
+- พาธ `/sessions/<ชื่อ>/mnt/All` **ใช้ได้จริงและเป็นพาธเดียวที่เข้าถึงได้เมื่อรอบนั้นได้ Linux sandbox**
+  (5 พ.ย. 69 `wibwub-thursday-affiliate` ล้มที่ขั้น 0 เพราะพรอมป์ห้ามใช้พาธนี้)
+  **ห้ามฝังชื่อเซสชันตายตัว** — ชื่อเปลี่ยนทุกรอบ ให้ใช้ค่าที่ด่านข้างบนคืนมาเท่านั้น
 
 ---
 
