@@ -137,10 +137,20 @@ def tk_metrics(r):
     return m
 
 
+def _newest(paths):
+    """ไฟล์ใหม่สุดเพียงใบเดียว — รายงาน TikTok 1 ใบครอบทั้งช่วงอยู่แล้ว
+
+    ถ้าอ่านทุกใบที่แมตช์ ข้อมูลจะถูกนับซ้ำทันทีที่มีไฟล์ของรอบก่อนค้างอยู่
+    (5 พ.ย. 69: ตัวย้ายหยิบไฟล์ทดลองเข้ามา ยอด TikTok กลายเป็น 10,450.44 แทน 5,225.22)
+    """
+    ps = sorted(paths, key=lambda x: x.stat().st_mtime)
+    return ps[-1:] if ps else []
+
+
 def build_tk(src):
     mask = Masker()
     rows, aud, pla = [], [], []
-    for p in sorted(src.glob('*ad_daily*.csv')):
+    for p in _newest(src.glob('*ad_daily*.csv')):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if not d or d == '-':
@@ -149,14 +159,14 @@ def build_tk(src):
                              g=mask.mask(r.get('Ad group name') or ''),
                              a=mask.mask_ad(r.get('Ad name') or ''),
                              d=d, **tk_metrics(r)))
-    for p in sorted(src.glob('*audience*.csv')):
+    for p in _newest(src.glob('*audience*.csv')):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if d and d != '-':
                 aud.append(dict(d=d, c=mask.mask(r.get('Campaign name') or ''),
                                 age=r.get('Age') or '', gender=r.get('Gender') or '',
                                 **tk_metrics(r)))
-    for p in sorted(src.glob('*placement*.csv')):
+    for p in _newest(src.glob('*placement*.csv')):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             d = (r.get('By Day') or '').strip()
             if d and d != '-':
@@ -242,7 +252,14 @@ def build_lz(src):
             data = json.loads(p.read_text(encoding='utf-8'))
         except (OSError, ValueError):
             continue
-        d = _sh_day(p) or ''
+        d = _sh_day(p)
+        if not d:
+            # ไฟล์ที่อ่านวันที่จากชื่อไม่ได้ (เช่นไฟล์ช่วงหลายวัน หรือไฟล์ทดลองที่ตัวย้าย
+            # หยิบเข้ามา) **ต้องข้าม** ถ้าปล่อยผ่านด้วยวันว่าง ข้อมูลจะถูกนับซ้ำเงียบ ๆ
+            # (5 พ.ย. 69: ไฟล์ทดลองถูกย้ายเข้ามา ยอด Lazada กลายเป็น 1,156.50 แทน 578.25)
+            print('ข้าม %s — อ่านวันที่จากชื่อไฟล์ไม่ได้ (ต้องลงท้าย _YYYYMMDD)' % p.name,
+                  file=sys.stderr)
+            continue
         for scene, v in data.items():
             camp = {}
             for c in v.get('camp', []):

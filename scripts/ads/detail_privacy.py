@@ -2,7 +2,7 @@
 """ด่านความเป็นส่วนตัวของข้อมูลโฆษณาเชิงลึก — แทนชื่อครีเอเตอร์ + สแกนชื่อคนก่อน commit
 
 **รีโปนี้เป็น public + GitHub Pages ทุกไฟล์ที่ commit คือเผยแพร่** (ดู wibwub-repo-is-public-pages)
-ชื่อแอดของ TikTok ตั้งตามชื่อเล่นครีเอเตอร์จริง เช่น `02.11.26/คุณหนุ่ม01` `พ่อน้องวกุล`
+ชื่อแอดของ TikTok ตั้งตามชื่อเล่นครีเอเตอร์จริง รูปแบบ `<วันที่>/<ชื่อเล่น>`
 ถ้าปล่อยขึ้น `ads_detail_tk.json` = เปิดเผยว่าใครรับงานให้ร้าน วันไหน ได้ยอดเท่าไร
 
 สองหน้าที่:
@@ -48,16 +48,27 @@ MASKED = re.compile(r'ครีเอเตอร์\s*#\d+')
 
 
 def _load_map():
+    """คืน (ตารางชื่อ->เลข, รายชื่อที่เคลียร์แล้วว่าไม่ใช่คน)
+
+    คีย์ `_allow` เก็บชื่อที่ผู้ใช้ตรวจแล้วว่าเป็นชื่อแบรนด์/สินค้า ไม่ใช่ชื่อบุคคล
+    เก็บไว้ในไฟล์นอก git เหมือนกัน **ห้ามย้ายชื่อพวกนี้มาเขียนไว้ในซอร์สโค้ด**
+    ไม่งั้นก็เท่ากับเอาชื่อขึ้นรีโปสาธารณะอยู่ดี
+    """
     try:
-        return json.loads(MAP_FILE.read_text(encoding='utf-8'))
+        d = json.loads(MAP_FILE.read_text(encoding='utf-8'))
     except (OSError, ValueError):
-        return {}
+        return {}, []
+    allow = d.pop('_allow', [])
+    return d, list(allow)
 
 
-def _save_map(m):
+def _save_map(m, allow):
     MAP_FILE.parent.mkdir(parents=True, exist_ok=True)
+    out = dict(m)
+    if allow:
+        out['_allow'] = allow
     tmp = MAP_FILE.with_suffix('.tmp')
-    tmp.write_text(json.dumps(m, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    tmp.write_text(json.dumps(out, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
     tmp.replace(MAP_FILE)
 
 
@@ -75,21 +86,27 @@ class Masker:
     """แทนชื่อครีเอเตอร์ด้วยเลขคงที่ · เขียนตารางกลับไฟล์ครั้งเดียวตอน save()"""
 
     def __init__(self):
-        self.map = _load_map()
+        self.map, self.allow = _load_map()
         self.new = 0
 
     def mask_ad(self, name):
         """แทน **ทุกชื่อแอดของ TikTok** ไม่ว่าจะเดาได้ว่าเป็นชื่อคนหรือไม่
 
         ทำไมต้องแทนหมด (พบ 5 พ.ย. 69): ร้านตั้งชื่อแอดเป็น `<วันที่>/<ชื่อครีเอเตอร์>`
-        และชื่อครีเอเตอร์จำนวนมาก **ไม่มีคำนำหน้าให้จับ** เช่น `papajate` `nicky`
-        `ขับไปเรื่อย03` `แด๊ดดี้มัมมี๊` — ถ้าใช้ `mask()` ที่เดาจากคำนำหน้า ชื่อพวกนี้จะหลุด
+        และชื่อครีเอเตอร์จำนวนมาก **ไม่มีคำนำหน้าให้จับ** (เป็นชื่อภาษาอังกฤษล้วน
+        ชื่อช่อง หรือฉายาที่ไม่ขึ้นต้นด้วยคำบ่งชี้บุคคล) — ถ้าใช้ `mask()` ที่เดาจากคำนำหน้า
+        ชื่อพวกนี้จะหลุด
         ขึ้นรีโปสาธารณะทั้งที่ระบุตัวบุคคลได้ชัดเจน · การแทนหมดเสียแค่ความหมายของชื่อ
         แต่ยังแยกแอดออกจากกันได้ด้วยเลขที่คงที่
         """
         if not name:
             return name
-        return self._assign(str(name).strip())
+        s = str(name).strip()
+        # ชื่อที่ตรวจแล้วว่าเป็นแบรนด์/สินค้า ปล่อยไว้ให้อ่านรู้เรื่อง ไม่ต้องแปลงเป็นเลข
+        tail = s.split('/')[-1].strip()
+        if s in self.allow or tail in self.allow:
+            return s
+        return self._assign(s)
 
     def mask(self, name):
         """แทนเฉพาะที่มีคำบ่งชี้ตัวบุคคล — ใช้กับชื่อแคมเปญ/ชุดโฆษณาที่เป็นชื่อกลาง ๆ"""
@@ -98,7 +115,7 @@ class Masker:
         return self._assign(str(name).strip())
 
     def _assign(self, s):
-        # เก็บส่วนวันที่ข้างหน้าไว้ (`02.11.26/คุณหนุ่ม01` -> `02.11.26/ครีเอเตอร์ #7`)
+        # เก็บส่วนวันที่ข้างหน้าไว้ (`02.11.26/<ชื่อเล่น>` -> `02.11.26/ครีเอเตอร์ #7`)
         m = re.match(r'^\s*([\d./\-]{4,12})\s*/\s*(.+)$', s)
         head, who = (m.group(1), m.group(2).strip()) if m else ('', s)
         if who not in self.map:
@@ -109,7 +126,7 @@ class Masker:
 
     def save(self):
         if self.new:
-            _save_map(self.map)
+            _save_map(self.map, self.allow)
         return self.new
 
 
@@ -153,12 +170,36 @@ def scan(paths):
     return hits
 
 
+def names(paths):
+    """ด่านที่สองของทุกไฟล์ที่จะขึ้นรีโป — เทียบกับ "ชื่อจริง" ทุกชื่อในตารางจับคู่
+
+    ต่างจาก `scan()` ที่เดาจากคำนำหน้า: อันนี้รู้ชื่อจริงทั้งหมดอยู่แล้ว จึงจับได้ 100%
+    และต้องใช้กับ **โค้ด คอมเมนต์ docstring และพรอมป์ .md ด้วย** ไม่ใช่แค่ JSON
+    (5 พ.ย. 69: docstring ของไฟล์นี้เองเคยยกตัวอย่างชื่อเล่นจริงไว้ 6 ชื่อ
+     ถ้า commit ไป ชื่อก็ขึ้นเว็บสาธารณะผ่านทางซอร์สโค้ดแทน — ผู้ใช้จับได้ก่อน)
+    """
+    m, allow = _load_map()
+    real = sorted([n for n in m if n not in allow], key=len, reverse=True)
+    hits = []
+    for p in paths:
+        fp = Path(p) if Path(p).is_absolute() else BASE / p
+        try:
+            txt = fp.read_text(encoding='utf-8')
+        except (OSError, UnicodeDecodeError):
+            continue                      # ไฟล์ไบนารีหรืออ่านไม่ได้ ข้ามไป
+        for n in real:
+            if len(n) >= 3 and n in txt:
+                ln = txt[:txt.index(n)].count('\n') + 1
+                hits.append((fp.name, 'บรรทัด %d' % ln, '(ชื่อจริง)', 'ตรงกับตารางจับคู่'))
+    return hits
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('cmd', choices=['scan'])
+    ap.add_argument('cmd', choices=['scan', 'names'])
     ap.add_argument('files', nargs='+')
     a = ap.parse_args()
-    hits = scan(a.files)
+    hits = names(a.files) if a.cmd == 'names' else scan(a.files)
     if not hits:
         print('✅ สะอาด — ไม่พบชื่อคนใน %d ไฟล์' % len(a.files))
         return 0
