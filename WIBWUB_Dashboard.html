@@ -344,7 +344,7 @@
     </div>
     <div class="tb-right">
       <div class="notif-btn">🔔<span class="ndot"></span></div>
-      <span id="dash-updated" style="font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px">อัปเดต 5 พ.ย. 2569</span>
+      <span id="dash-updated" style="font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);padding:3px 10px;border-radius:20px">อัปเดต 6 พ.ย. 2569</span>
       <button class="btn btn-ghost" onclick="doExport()">⬇ Export</button>
       <button class="btn btn-primary" onclick="doAddData()">+ เพิ่มข้อมูล</button>
     </div>
@@ -1213,9 +1213,9 @@
 
       <!-- KPI row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">ยอดขายรวม ม.ค.–ต.ค.</div><div class="kpi-val">฿82.93M</div><div class="kpi-sub neutral">ม.ค. – 5 พ.ย. 2569</div><div class="kpi-ico">💰</div></div>
+        <div class="kpi or"><div class="kpi-label">ยอดขายรวม ม.ค.–ต.ค.</div><div class="kpi-val">฿82.93M</div><div class="kpi-sub neutral">ม.ค. – 6 พ.ย. 2569</div><div class="kpi-ico">💰</div></div>
         <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val">Sugar 500ml</div><div class="kpi-sub up">฿7.92M · 25,025 ชิ้น</div><div class="kpi-ico">🏆</div></div>
-        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val">316K ชิ้น</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity ม.ค.–5 พ.ย.</div><div class="kpi-ico">📦</div></div>
+        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val">316K ชิ้น</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity ม.ค.–6 พ.ย.</div><div class="kpi-ico">📦</div></div>
         <div class="kpi yw"><div class="kpi-label">ช่องทางหลัก</div><div class="kpi-val">Shopee 59%</div><div class="kpi-sub neutral">Facebook 13% · TikTok 19%</div><div class="kpi-ico">🛒</div></div>
       </div>
 
@@ -1813,11 +1813,11 @@ const M5 = ["ม.ค.", "ก.พ.", "มี.ค.", "เม.ย.", "พ.ค.", "�
 // Source of truth: วันสุดท้ายที่มีข้อมูลจริงของเดือนล่าสุด แยกตามแพลตฟอร์ม (row สุดท้ายใน Google Sheet
 // ของแต่ละ platform). อัปเดตพร้อมกับ SH_/TK_/LZ_ arrays ทุกครั้งที่ sync — ห้ามเขียน "MTD ถึง XX ส.ค."
 // เป็น text ตายตัวที่อื่นอีก ให้เรียก mtdCoverageLabel() แทน (ดู skill wibwub-avoid-stale-hardcoded-labels)
-const MTD_COVERAGE = { Shopee:'2026-11-04', TikTok:'2026-11-04', Lazada:'2026-11-04', Shipnity:'2026-10-31' };
+const MTD_COVERAGE = { Shopee:'2026-11-05', TikTok:'2026-11-05', Lazada:'2026-11-05', Shipnity:'2026-11-05' };
 // ช่วงวันที่ของเดือนปัจจุบันที่ "เติมจากข้อมูลหลังบ้าน" (ads_daily.json)
 // เพราะทีมกรอกชีต Shopee/Lazada ทุกวันจันทร์ ยอดจึงค้างทั้งสัปดาห์ถ้าใช้ชีตอย่างเดียว
 // sales_update.py เขียนค่านี้ทุกรอบ · พอทีมกรอกชีต ค่าชีตจะแทนที่เองแล้วบรรทัดนี้จะหายไป
-const MTD_BACKFILL = { Lazada:'1-4 พ.ย.', Shopee:'1-4 พ.ย.', TikTok:'1-4 พ.ย.' };
+const MTD_BACKFILL = {};
 const MTD_MAX_DATE = Object.values(MTD_COVERAGE).sort().slice(-1)[0];
 function mtdCoverageLabel(){
   const TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
@@ -1902,26 +1902,26 @@ function renderSrcBadge(id){
   try{ renderSrcBadge(typeof currentPage!=='undefined' && currentPage ? currentPage : 'overview'); }
   catch(e){ console.error('srcBadge init',e); }
 })();
-const SH_REV = [4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604,6770819,7179695,788135.0];
-const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21,3245460.29,4085790.45,551618.45];
-const LZ_REV = [179084.08,120948.89,183370.11,110531.65,129523.54,118094.7,95770.98,119349.79,114813.46,56670.62,2681.0];
-const FB_REV = [2152231.25,1327334,1061901,802046.9,980883,1030940.45,631892.8,569816.44,564666.28,559685.3,0];
-const LINE_REV = [350828.5,459157.7,418472,397898.06,374817.2,373396.65,295311.6,336236.66,262784.96,278243.3,0];
-const WEB_REV  = [4568,1760,11754,3060,4468,10430,2760,3513,16605,6013,0];
-const CARE_REV = [84069.25,90134,70705.7,92509.75,100266.4,113001.65,100996.25,57257.55,127877.6,91650.25,0];
+const SH_REV = [4231653,4383214,4560321,5204395,5581064,5632009,5923704,6604604,6770819,7179695,960356];
+const TK_REV = [1152566.73,1171209.0,1280967.0,1350396.99,1563644.02,1167356.96,2089005.47,2522656.21,3245460.29,4085790.45,675165.78];
+const LZ_REV = [179084.08,120948.89,183370.11,110531.65,129523.54,118094.7,95770.98,119349.79,114813.46,56670.62,5552];
+const FB_REV = [2152231.25,1327334,1061901,802046.9,980883,1030940.45,631892.8,569816.44,564666.28,559685.3,91313];
+const LINE_REV = [350828.5,459157.7,418472,397898.06,374817.2,373396.65,295311.6,336236.66,262784.96,278243.3,25729];
+const WEB_REV  = [4568,1760,11754,3060,4468,10430,2760,3513,16605,6013,780];
+const CARE_REV = [84069.25,90134,70705.7,92509.75,100266.4,113001.65,100996.25,57257.55,127877.6,91650.25,9870];
 const MKT_REV = [580,0,0,490,0,0,0,0,0,0,0];
 const BEUK_REV= [0,0,0,0,0,0,0,0,35756,0,0];
-const POS_REV = [435,547.5,2278,267.5,1550,4591.5,967,2633,2693.5,25808.5,0]; const OTH_REV = [0,0,0,0,375,0,3457,2194,5735,6870,0];
-const SH_ORD = [7532,6580,6873,8128,9093,8895,10511,11689,12037,12439,1341];
-const TK_ORD = [3204,3652,3934,5032,7543,4260,10094,11498,16562,21216,0];
+const POS_REV = [435,547.5,2278,267.5,1550,4591.5,967,2633,2693.5,25808.5,343]; const OTH_REV = [0,0,0,0,375,0,3457,2194,5735,6870,640];
+const SH_ORD = [7532,6580,6873,8128,9093,8895,10511,11689,12037,12439,1631];
+const TK_ORD = [3204,3652,3934,5032,7543,4260,10094,11498,16562,21216,3320];
 const LZ_ORD = [236,176,255,161,157,158,146,155,148,91,7];
-const FB_ORD = [2970,1964,1569,1167,1475,1601,905,846,816,834,0];
-const LINE_ORD = [312,445,319,356,327,380,280,403,266,253,0];
-const WEB_ORD = [1,2,13,4,7,6,5,6,6,11,0];
-const CARE_ORD = [25,29,23,36,39,43,37,24,58,43,0];
+const FB_ORD = [2970,1964,1569,1167,1475,1601,905,846,816,834,145];
+const LINE_ORD = [312,445,319,356,327,380,280,403,266,253,27];
+const WEB_ORD = [1,2,13,4,7,6,5,6,6,11,1];
+const CARE_ORD = [25,29,23,36,39,43,37,24,58,43,4];
 const MKT_ORD = [2,0,0,1,0,0,0,0,0,0,0];
 const BEUK_ORD = [0,0,0,0,0,0,0,0,1,0,0];
-const POS_ORD = [1,3,9,2,4,9,5,5,5,4,0]; const OTH_ORD = [0,0,0,0,1,0,2,6,7,6,0];
+const POS_ORD = [1,3,9,2,4,9,5,5,5,4,1]; const OTH_ORD = [0,0,0,0,1,0,2,6,7,6,1];
 // ── ด่าน parity ของจำนวนเดือน ───────────────────────────────────────────
 // สคริปต์ที่ดึงจากชีต (sales_update) ต่อเดือนใหม่ให้ M5/SH_/TK_/LZ_ ได้เอง แต่
 // ช่องทางจาก Shipnity (FB/LINE/WEB/CARE/MKT/BEUK/POS/OTH) มาจากรอบ Shipnity
@@ -1941,7 +1941,7 @@ const POS_ORD = [1,3,9,2,4,9,5,5,5,4,0]; const OTH_ORD = [0,0,0,0,1,0,2,6,7,6,0]
 // (เช่น TK_ORD: ชีตนับออเดอร์ไม่เหมือน Compass ต่างกัน ~8% มาตลอด)
 // ค่าในอาเรย์เป็น 0 ก็จริง แต่อ่านว่า "ขายไม่ได้เลย" ซึ่งผิด -> ต้องขึ้น "รอชีต"
 // ว่าง {} = ไม่มีช่องไหนรอ ป้ายหายเอง เมื่อชีตมีแถวของเดือนนั้นแล้ว
-const SALES_PENDING = {"TK_ORD":[10]};
+const SALES_PENDING = {};
 const pend   = (name, i) => (SALES_PENDING[name] || []).indexOf(i) >= 0;
 // กราฟ: ใส่ null ให้เว้นช่อง ไม่ลากเส้นดิ่งลงศูนย์
 const nzArr  = (name, arr) => arr.map((v, i) => pend(name, i) ? null : v);
@@ -1949,7 +1949,7 @@ const PEND_T = 'รอชีต';
 // เดือนที่มีช่องทางใดรอชีตอยู่ -> ยอดรวมของเดือนนั้นยังไม่ครบ ห้ามโชว์เป็นเลขเต็ม
 const pendMonths = sfx => new Set(Object.keys(SALES_PENDING)
   .filter(n => n.endsWith(sfx)).reduce((a, n) => a.concat(SALES_PENDING[n]), []));
-const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.89,5.68,6.21,0];
+const SH_CANCEL_PCT = [4.62,4.45,4.26,5.94,5.38,5.16,5.34,5.89,5.68,6.21,6.13];
 const TK_CANCEL_PCT = [9.64,8.32,8.39,9.7,7.69,8.45,7.55,6.69,6.03,7.19];
 const LZ_CANCEL_PCT = [16.1,18.2,20.8,20.5,20.38,13.92,21.92,21.92,21.92,21.92];
 // SH_ADS = ค่าโฆษณา/การตลาด Shopee ทั้งหมดจาก Google Sheet (sales sync) — กว้างกว่ารายงาน Shopee Ads portal
@@ -1966,8 +1966,8 @@ const TK_LIVE = [132807,177180,131689,144970,153299,165217,247200,268200,329900.
 const TK_AFIPCT = [40.0,47.0,51.2,53.6,60.7,55.0,69.6,61.7,64.3,68.15];
 const TK_NEW  = [2046,2669,2984,3915,6144,3096,8294,9189,11764,7648];
 const TK_OLD  = [468,548,541,632,771,616,1019,1137,1554,1290];
-const TK_ADSSPEND = [164956,202579.25,249294.78,256168.69,357295.12,249628.58,508456.37,682199.56,892269.59,1107098.43,0];
-const TK_FEECOMM = [271216.53,267255.77,270719.28,294223.69,402802.73,291455.53,613482.79,742364.85,993830.73,1226960.36,0];
+const TK_ADSSPEND = [164956,202579.25,249294.78,256168.69,357295.12,249628.58,508456.37,682199.56,892269.59,1107098.43,184264.92];
+const TK_FEECOMM = [271216.53,267255.77,270719.28,294223.69,402802.73,291455.53,613482.79,742364.85,993830.73,1226960.36,195535.56];
 const LZ_ADS = [5760,5680,7220,5710,6590,8420,9710,11333,11180,6620];
 const LZ_FEE = [31627,21361,32384,19521,22875,20856,16914.09,21078.10,20276.99,8443.75];
 const LZ_COUPON = [3210,2725,5070,2250,2910,1830,3060,3000,2910,1290];
