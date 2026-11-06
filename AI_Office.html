@@ -373,7 +373,7 @@ function sprite(a,t){
 }
 
 // ---------- loop ----------
-let last=performance.now(), filter='all', current=AGENTS.findIndex(a=>a.st==='warn');
+let last=performance.now(), filter='all', current=Math.max(0,AGENTS.findIndex(a=>a.st==='warn')); // ไม่มีน้องต้องดูเลย = -1 -> หน้าพัง (6 พ.ย. 69) จึงตกไปคนแรก
 function frame(now){
   const dt=Math.min(.05,(now-last)/1000); last=now; const t=now/1000;
   if (skyColors(new Date().getHours()).k!==skyKey) drawBG();
