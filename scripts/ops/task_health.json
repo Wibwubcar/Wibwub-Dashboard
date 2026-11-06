@@ -1,5 +1,5 @@
 {
- "checked_at": "2026-11-06 10:07",
+ "checked_at": "2026-11-06 10:12",
  "unreadable": [],
  "gaps": [],
  "thresholds": {
@@ -14,7 +14,7 @@
   "sheet_wait": 0,
   "info": 1,
   "gaps": 0,
-  "known_errors_skipped": 2
+  "known_errors_skipped": 0
  },
  "tasks": [
   {
@@ -24,7 +24,7 @@
    "level": "ℹ️",
    "status": "มีขั้นสะดุด แต่ลองใหม่จนผ่าน",
    "data_asof": "06 Nov 08:18",
-   "silent_min": 102,
+   "silent_min": 107,
    "note": "รอบล่าสุดมีขั้นที่คืน status ERROR แต่ผลงานของรอบนี้ออกแล้ว (06 Nov 08:18) — ไม่นับเป็นปัญหา",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -36,7 +36,7 @@
    "level": "⏳",
    "status": "รอรอบเก็บคลิปถัดไป 06/11",
    "data_asof": "ชีตถึง 31/10",
-   "silent_min": 27,
+   "silent_min": 32,
    "note": "ตัวเลขคลิปในชีต CONTENT เก็บโดยงาน \"ชีตคอนเทนต์ ทุก 5 วัน 10:50\" ไม่ได้รอทีมกรอก งานนี้แค่รออ่านรอบถัดไป (ทีมกรอกเองเฉพาะคอลัมน์ C/E/F/G/J)",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -48,7 +48,7 @@
    "level": "⏳",
    "status": "กำลังรัน",
    "data_asof": "06 Nov 09:56",
-   "silent_min": 6,
+   "silent_min": 11,
    "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -60,7 +60,7 @@
    "level": "⏳",
    "status": "กำลังรัน",
    "data_asof": "05 Nov 09:29",
-   "silent_min": 7,
+   "silent_min": 11,
    "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -68,14 +68,14 @@
   {
    "name": "wibwub-tiktok-product-daily",
    "side": "local",
-   "last_round": "05 Nov 21:08",
+   "last_round": "06 Nov 10:09",
    "level": "⏳",
-   "status": "ยังไม่ถึงรอบ / กำลังเริ่ม",
+   "status": "กำลังรัน",
    "data_asof": "05 Nov 10:02",
-   "silent_min": 777,
-   "note": "งานฝั่ง local เริ่มช้าได้ถึง ~15 นาทีเป็นปกติ",
+   "silent_min": 3,
+   "note": "เริ่มแล้ว เพิ่งมีความเคลื่อนไหว",
    "desc_mismatch": "",
-   "known_error_hits": 2
+   "known_error_hits": ""
   },
   {
    "name": "ชีตคอนเทนต์ ทุก 5 วัน 10:50",
@@ -84,7 +84,7 @@
    "level": "⏳",
    "status": "รอรอบถัดไป 06/11",
    "data_asof": "—",
-   "silent_min": 7156,
+   "silent_min": 7161,
    "note": "Claude เก็บตัวเลขคลิปเองทุก 5 วัน (วันที่ 1/6/11/16/21/26) ไม่ได้รอทีมกรอก",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -96,7 +96,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "06 Nov 00:30",
-   "silent_min": 577,
+   "silent_min": 581,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -108,7 +108,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 10:04",
-   "silent_min": 5762,
+   "silent_min": 5767,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -120,7 +120,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 10:40",
-   "silent_min": 815,
+   "silent_min": 820,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -132,7 +132,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "06 Nov 09:19",
-   "silent_min": 46,
+   "silent_min": 50,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -144,7 +144,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "06 Nov 08:50",
-   "silent_min": 59,
+   "silent_min": 64,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -156,7 +156,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "06 Nov 08:32",
-   "silent_min": 95,
+   "silent_min": 100,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -168,7 +168,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "02 Nov 16:02",
-   "silent_min": 752,
+   "silent_min": 757,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -180,7 +180,7 @@
    "level": "✅",
    "status": "ปลดระวางแล้ว",
    "data_asof": "ชีตถึง 05/11",
-   "silent_min": 35,
+   "silent_min": 39,
    "note": "ย้ายไป งานฝั่ง code ชื่อเดียวกัน (09:25/20:25) — รอบนี้ตอบข้ามตามที่ตั้งใจ",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -192,7 +192,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "ชีตถึง 05/11",
-   "silent_min": 708,
+   "silent_min": 713,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -204,7 +204,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 00:00",
-   "silent_min": 29,
+   "silent_min": 33,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -216,7 +216,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "05 Nov 21:36",
-   "silent_min": 751,
+   "silent_min": 756,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -228,7 +228,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "06 Nov 09:48",
-   "silent_min": 19,
+   "silent_min": 23,
    "note": "รอบล่าสุดเริ่มตามเวลา และผลงานออกแล้ว",
    "desc_mismatch": "",
    "known_error_hits": ""
@@ -240,7 +240,7 @@
    "level": "✅",
    "status": "ปกติ",
    "data_asof": "ชีตถึง 05/11",
-   "silent_min": 33,
+   "silent_min": 38,
    "note": "ชีตมาตามรอบแล้ว — Lazada 05/11 ครบถึง 01/11 · Shopee 05/11 ครบถึง 01/11 · TikTok 05/11 ครบถึง 01/11",
    "desc_mismatch": "",
    "known_error_hits": ""
