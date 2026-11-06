@@ -33,7 +33,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from detail_privacy import BASE, Masker, scan          # noqa: E402
+from detail_privacy import BASE, Masker, scan, names   # noqa: E402
 
 RAW = {'fb': BASE / 'data Ads' / 'facebook',
        'tk': BASE / 'data Ads' / 'TikTok',
@@ -46,27 +46,106 @@ METRICS = ['spend', 'imp', 'reach', 'clicks', 'msg', 'view', 'atc', 'checkout',
 
 
 # ช่องทางที่สั่งรายงาน **ทีละวัน** — รอบที่ได้ไม่ครบต้องไม่ลบวันเก่าทิ้ง
-MERGE_BY_DAY = ('sh',)
-KEEP_DAYS = 30          # เก็บย้อนหลังกี่วันในไฟล์ JSON
+# ช่องทางที่ "หนึ่งแถว = หนึ่งวัน" จึงสะสมย้อนหลังได้ (ผู้ใช้สั่งให้ครบทุกช่องทาง 6 พ.ย. 69)
+#
+# `lz` ไม่อยู่ในนี้โดยเจตนา: รายงาน Lazada ไม่คืนคอลัมน์วันที่ หนึ่งแถวคือ **ยอดรวมของทั้งช่วง**
+# (ฟิลด์ `span`) ถ้าเอามา merge ตามวัน ช่วงที่คาบกันจะถูกบวกซ้ำ · วิธีย้อนหลังของ Lazada
+# คือ export ช่วงยาว (รองรับ 90 วันต่อไฟล์) แล้วใช้ไฟล์ช่วงใหม่สุดใบเดียวตามเดิม
+MERGE_BY_DAY = ('sh', 'tk', 'fb')
+MERGE_PARTS = ('rows', 'audience', 'placement')
+KEEP_DAYS = 70          # ต้องครอบ "เดือนก่อน" ทั้งเดือน + เดือนนี้ (31+31 = 62 วัน) เผื่อ 8 วัน
 
 
-def merge_by_day(fp, rows):
-    """รวมแถวของรอบนี้กับของเดิม: วันที่รอบนี้ได้ = ใช้ของใหม่ทับทั้งวัน
+def merge_by_day(fp, parts):
+    """รวมของรอบนี้กับของเดิมทีละส่วน: วันที่รอบนี้ได้ = ใช้ของใหม่ทับทั้งวัน
 
     5 พ.ย. 69 รอบ 21:00: Lazada ติด CAPTCHA ได้แค่ 29 ต.ค. ใบเดียว ถ้าเขียนทับตรง ๆ
     ข้อมูล 1–4 พ.ย. ที่มีอยู่จะหายทั้งก้อน — ผู้ใช้สั่งว่าให้ "ใช้ข้อมูลเดิม" แทน
-    คืน (แถวที่รวมแล้ว, วันที่ยืมของเดิมมา)
+    6 พ.ย. 69 ขยายให้ครอบ `audience`/`placement` ด้วย ไม่ใช่แค่ `rows` — ไม่งั้นส่วนเจาะ
+    กลุ่มผู้ชมจะเหลือแค่ช่วงที่รอบล่าสุดดึงมา (7 วัน) ทั้งที่ rows ย้อนไปถึง 70 วัน
+
+    `parts` = {ชื่อส่วน: แถวของรอบนี้} · คืน ({ชื่อส่วน: แถวที่รวมแล้ว}, วันที่ยืมของเดิมมา)
+    วันตัดคิดจาก "วันใหม่สุดของทุกส่วนรวมกัน" ครั้งเดียว เพื่อให้ทุกส่วนตัดที่วันเดียวกัน
     """
-    new_days = {r['d'] for r in rows}
     try:
-        old = json.loads(fp.read_text(encoding='utf-8')).get('rows', [])
+        old = json.loads(fp.read_text(encoding='utf-8'))
     except (OSError, ValueError):
-        return rows, []
-    out = rows + [r for r in old if r.get('d') and r['d'] not in new_days]
-    cut = (datetime.strptime(max(r['d'] for r in out), '%Y-%m-%d')
+        return parts, []
+    new_days = {r['d'] for v in parts.values() for r in v if r.get('d')}
+    merged = {}
+    for name, rows in parts.items():
+        prev = old.get(name) or []
+        merged[name] = rows + [r for r in prev if r.get('d') and r['d'] not in new_days]
+    alld = {r['d'] for v in merged.values() for r in v if r.get('d')}
+    if not alld:
+        return parts, []
+    cut = (datetime.strptime(max(alld), '%Y-%m-%d')
            - timedelta(days=KEEP_DAYS - 1)).strftime('%Y-%m-%d')
-    out = [r for r in out if r['d'] >= cut]
-    return out, sorted({r['d'] for r in out} - new_days)
+    for name in merged:
+        merged[name] = [r for r in merged[name] if r.get('d') and r['d'] >= cut]
+    kept = {r['d'] for v in merged.values() for r in v if r.get('d')}
+    return merged, sorted(kept - new_days)
+
+
+def drop_nulls(rows):
+    """ตัดคีย์ที่เป็น null ออก — ลดขนาดไฟล์ ~30% โดยไม่เสียความละเอียด
+
+    39% ของคีย์ในชั้นกลุ่มผู้ชมของ Facebook เป็น null (วัดจริง 6 พ.ย. 69) เพราะทุกแถว
+    พาคีย์ตัววัดมาครบ 11 ตัวทั้งที่ช่องทางนั้นวัดได้ไม่กี่ตัว
+    **ความหมายไม่เปลี่ยน**: หน้าเว็บเช็ค `v==null` ซึ่งเป็น true ทั้ง null และ undefined
+    (ตรวจ dAdd() แล้ว) · คีย์ที่ "หายไป" จึงอ่านได้ว่า "วัดไม่ได้" เหมือนเดิม
+    ห้ามเอาไปใช้แทนการเขียน 0 — 0 แปลว่าวัดแล้วได้ศูนย์ ซึ่งคนละความหมาย
+    """
+    return [{k: v for k, v in r.items() if v is not None} for r in rows]
+
+
+# ───────── กลุ่มผู้ชม/ตำแหน่ง: รายสัปดาห์ (ผู้ใช้เลือก 6 พ.ย. 69) ─────────
+# ที่มา: ถ้าเก็บรายวัน 62 วัน ไฟล์ Facebook จะโต ~18 MB (กลุ่มผู้ชม 10.4 + ตำแหน่ง 7.0)
+# และหน้าเว็บโหลดไฟล์ทั้ง 4 ช่องทางพร้อมกันตอนเปิดหน้า แบบ no-store ทุกครั้ง
+# รวมรายสัปดาห์แล้วเหลือ ~0.8 + 0.6 MB (-84%/-81%) · ชั้น rows ยังรายวันตามเดิม
+WEEK_KEY = {'audience': ('c', 'age', 'gender'), 'placement': ('c', 'p')}
+
+
+def week_start(d):
+    """วันจันทร์ของสัปดาห์นั้น **แต่ไม่ให้คาบเดือน** — จันทร์อยู่เดือนก่อน ใช้วันที่ 1
+
+    พรีเซ็ตหลักของหน้านี้คือ "เดือนนี้" / "เดือนก่อน" ถ้าถังสัปดาห์คาบสองเดือน
+    การเลือกเดือนจะได้ยอดของเดือนอื่นปนมาทุกครั้ง แก้ไม่ได้ที่ฝั่งหน้าเว็บ
+    """
+    t = datetime.strptime(d, '%Y-%m-%d')
+    w = t - timedelta(days=t.weekday())
+    return max(w, t.replace(day=1)).strftime('%Y-%m-%d')
+
+
+def to_weekly(rows, keyf):
+    """รวมแถวรายวันเป็นรายสัปดาห์ · null ยังเป็น null (ไม่มีใครวัด ไม่ใช่ศูนย์)
+
+    แต่ละถังพา `to` (วันสุดท้ายที่มีข้อมูลจริงในถัง) และ `n` (จำนวนวัน) มาด้วย
+    หน้าเว็บใช้ `d`..`to` ตัดสินว่าถังนี้ทับช่วงที่เลือกไหม แบบเดียวกับ span ของ Lazada
+    """
+    agg = {}
+    for r in rows:
+        if not r.get('d'):
+            continue
+        k = (week_start(r['d']),) + tuple(r.get(f) for f in keyf)
+        o = agg.get(k)
+        if o is None:
+            o = agg[k] = dict(zip(('d',) + keyf, k), _days=set(), **blank())
+        o['_days'].add(r['d'])
+        for m in METRICS:
+            v = r.get(m)
+            if v is None:
+                continue
+            o[m] = v if o[m] is None else o[m] + v
+    out = []
+    for o in agg.values():
+        ds = o.pop('_days')
+        o['to'], o['n'] = max(ds), len(ds)
+        for m in METRICS:
+            if o[m] is not None:
+                o[m] = round(o[m], 6)
+        out.append(o)
+    return sorted(out, key=lambda x: (x['d'], -(x.get('spend') or 0)))
 
 
 def num(v, default=None):
@@ -129,6 +208,54 @@ def by_level(paths, levels, per_account=False):
     for k in sorted(best):
         out.setdefault(k[0], []).append(best[k])
     return out
+
+
+def all_by_level(paths, levels, per_account=False):
+    """จัดไฟล์เข้าระดับ แล้วคืน **ทุกใบ** เรียงเก่า -> ใหม่ตาม mtime
+
+    ต่างจาก by_level() ที่เหลือใบใหม่สุดใบเดียว — การเติมย้อนหลังต้องอ่านหลายใบ
+    (ไฟล์ ต.ค. + ไฟล์ พ.ย. ของบัญชีเดียวกัน) ซึ่ง by_level() จะทิ้งใบเก่าทั้งใบ
+    เพราะ _base() ตัดวันที่ท้ายชื่อออก ทำให้สองใบได้คีย์เดียวกัน
+    การกันนับซ้ำย้ายไปอยู่ชั้นแถวแทน (ดู upsert()) ซึ่งกันได้ทั้ง
+    ไฟล์ซ้ำเป๊ะ · ไฟล์ `(1)` ของเบราว์เซอร์ · และไฟล์ช่วงที่คาบกัน
+    คืน {ระดับ: [พาธเรียงเก่า->ใหม่]} และกลุ่มบัญชีของแต่ละไฟล์ (per_account)
+    """
+    out = {}
+    for p in sorted(paths, key=lambda x: (x.stat().st_mtime, x.name)):
+        lv = next((name for name, rx in levels if re.search(rx, _norm(p.stem))), None)
+        if lv:
+            out.setdefault(lv, []).append(p)
+    return out
+
+
+def read_many(files, parse, key):
+    """อ่านหลายไฟล์ — **ในไฟล์เดียวบวกรวม · ข้ามไฟล์ทับด้วยใบใหม่**
+
+    ต้องแยกสองชั้น (เจอจริง 6 พ.ย. 69 ตอนทำด่านกระทบยอด):
+      · **ในไฟล์เดียวกัน** รายงาน Facebook แตกแถวตาม `การแสดงโฆษณา`/`วัตถุประสงค์`
+        ด้วย ad-day เดียวจึงมีได้หลายแถว (96 คีย์จาก 321) -> ต้อง **บวก**
+        ถ้าทับจะหายวันละ ~2,700 บาทแบบไม่มี error (ยอดต่ำกว่า fb_daily ทุกวัน)
+      · **ข้ามไฟล์** ช่วงที่คาบกันคือข้อมูลเดิมที่ดึงซ้ำ -> ต้อง **ทับด้วยใบใหม่**
+        เพราะรอบรายวันดึงทับย้อนหลัง 7 วันทุกรอบ และ Facebook แก้ตัวเลขย้อนหลัง
+        (ของเดิมกันนับซ้ำด้วยการเลือกไฟล์ใบใหม่สุดใบเดียว ซึ่งทำให้เติมย้อนหลังไม่ได้)
+
+    `files` ต้องเรียงเก่า -> ใหม่ · `parse(p)` yield แถว · `key(p, row)` คืนตัวระบุ
+    """
+    out = {}
+    for p in files:
+        cur = {}
+        for row in parse(p):
+            k = key(p, row)
+            o = cur.get(k)
+            if o is None:
+                cur[k] = row
+                continue
+            for m in METRICS:                     # แถวซ้ำในไฟล์เดียว = คนละส่วนของ ad-day
+                v = row.get(m)
+                if v is not None:
+                    o[m] = v if o[m] is None else o[m] + v
+        out.update(cur)                           # ใบใหม่ทับใบเก่าทั้งคีย์
+    return list(out.values())
 
 
 def newest_per_day(paths, day_of):
@@ -194,30 +321,41 @@ FB_LV = [('placement', r'placement'), ('agegender', r'age_?gender'),
          ('ad', r'_ad_\d|_ad$')]
 
 
+def _fb_day(r):
+    return (r.get('เริ่มการรายงาน') or '').strip()
+
+
 def build_fb(src):
-    rows, aud, pla = [], [], []
-    f = by_level(src.glob('*.csv'), FB_LV, per_account=True)   # FB มี 5 บัญชี
-    for p in f.get('ad', []):
+    f = all_by_level(src.glob('*.csv'), FB_LV, per_account=True)   # FB มี 5 บัญชี
+
+    def ad_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('เริ่มการรายงาน') or '').strip()
-            if not d:
-                continue
-            rows.append(dict(lv='ad', c=r.get('ชื่อแคมเปญ') or '(ไม่มีชื่อแคมเปญ)',
-                             g=r.get('ชื่อชุดโฆษณา') or '', a=r.get('ชื่อโฆษณา') or '',
-                             d=d, **fb_metrics(r)))
-    for p in f.get('agegender', []):
+            if _fb_day(r):
+                yield dict(lv='ad', c=r.get('ชื่อแคมเปญ') or '(ไม่มีชื่อแคมเปญ)',
+                           g=r.get('ชื่อชุดโฆษณา') or '', a=r.get('ชื่อโฆษณา') or '',
+                           d=_fb_day(r), **fb_metrics(r))
+
+    def ag_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('เริ่มการรายงาน') or '').strip()
-            if d:
-                aud.append(dict(d=d, c=r.get('ชื่อแคมเปญ') or '', age=r.get('อายุ') or '',
-                                gender=r.get('เพศ') or '', **fb_metrics(r)))
-    for p in f.get('placement', []):
+            if _fb_day(r):
+                yield dict(d=_fb_day(r), c=r.get('ชื่อแคมเปญ') or '',
+                           age=r.get('อายุ') or '', gender=r.get('เพศ') or '',
+                           **fb_metrics(r))
+
+    def pl_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('เริ่มการรายงาน') or '').strip()
-            if d:
+            if _fb_day(r):
                 where = ' / '.join(x for x in (r.get('แพลตฟอร์ม'), r.get('ตำแหน่งโฆษณา'),
                                                r.get('แพลตฟอร์มอุปกรณ์')) if x)
-                pla.append(dict(d=d, c=r.get('ชื่อแคมเปญ') or '', p=where, **fb_metrics(r)))
+                yield dict(d=_fb_day(r), c=r.get('ชื่อแคมเปญ') or '', p=where,
+                           **fb_metrics(r))
+
+    rows = read_many(f.get('ad', []), ad_rows,
+                     lambda p, r: (_base(p), r['d'], r['c'], r['g'], r['a']))
+    aud = read_many(f.get('agegender', []), ag_rows,
+                    lambda p, r: (_base(p), r['d'], r['c'], r['age'], r['gender']))
+    pla = read_many(f.get('placement', []), pl_rows,
+                    lambda p, r: (_base(p), r['d'], r['c'], r['p']))
     notes = ['ใส่ตะกร้าและเริ่มชำระเงินไม่มีข้อมูล เพราะแคมเปญเป็นแบบข้อความ/มีส่วนร่วม '
              'ไม่มี pixel บนเว็บของร้าน — Funnel จึงเป็น เห็น → คลิก → ทักแชท → ซื้อ',
              'Facebook แก้ตัวเลขย้อนหลังได้ จึงดึงทับย้อนหลัง 7 วันทุกรอบ '
@@ -245,30 +383,37 @@ TK_LV = [('placement', r'placement'), ('audience', r'audience'), ('ad', r'ad_dai
 
 def build_tk(src):
     mask = Masker()
-    rows, aud, pla = [], [], []
-    f = by_level(src.glob('*.csv'), TK_LV)
-    for p in f.get('ad', []):
+    f = all_by_level(src.glob('*.csv'), TK_LV)
+
+    def day(r):
+        d = (r.get('By Day') or '').strip()
+        return None if (not d or d == '-') else d
+
+    def ad_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('By Day') or '').strip()
-            if not d or d == '-':
-                continue
-            rows.append(dict(lv='ad', c=mask.mask(r.get('Campaign name') or ''),
-                             g=mask.mask(r.get('Ad group name') or ''),
-                             a=mask.mask_ad(r.get('Ad name') or ''),
-                             d=d, **tk_metrics(r)))
-    for p in f.get('audience', []):
+            if day(r):
+                yield dict(lv='ad', c=mask.mask(r.get('Campaign name') or ''),
+                           g=mask.mask(r.get('Ad group name') or ''),
+                           a=mask.mask_ad(r.get('Ad name') or ''),
+                           d=day(r), **tk_metrics(r))
+
+    def au_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('By Day') or '').strip()
-            if d and d != '-':
-                aud.append(dict(d=d, c=mask.mask(r.get('Campaign name') or ''),
-                                age=r.get('Age') or '', gender=r.get('Gender') or '',
-                                **tk_metrics(r)))
-    for p in f.get('placement', []):
+            if day(r):
+                yield dict(d=day(r), c=mask.mask(r.get('Campaign name') or ''),
+                           age=r.get('Age') or '', gender=r.get('Gender') or '',
+                           **tk_metrics(r))
+
+    def pl_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
-            d = (r.get('By Day') or '').strip()
-            if d and d != '-':
-                pla.append(dict(d=d, c=mask.mask(r.get('Campaign name') or ''),
-                                p=r.get('Placement') or '', **tk_metrics(r)))
+            if day(r):
+                yield dict(d=day(r), c=mask.mask(r.get('Campaign name') or ''),
+                           p=r.get('Placement') or '', **tk_metrics(r))
+
+    rows = read_many(f.get('ad', []), ad_rows, lambda p, r: (r['d'], r['c'], r['g'], r['a']))
+    aud = read_many(f.get('audience', []), au_rows,
+                    lambda p, r: (r['d'], r['c'], r['age'], r['gender']))
+    pla = read_many(f.get('placement', []), pl_rows, lambda p, r: (r['d'], r['c'], r['p']))
     n = mask.save()
     notes = ['ยอดรวมรายวันของ TikTok มาจากรายงานระดับแคมเปญ — ยอดรวมรายแอดจะต่ำกว่า '
              'เพราะแอดที่ถูกลบไม่ปรากฏย้อนหลัง (29 ต.ค.–4 พ.ย. ต่างกัน 442.62 บาท)',
@@ -507,7 +652,9 @@ def main():
         fp = OUT / f'ads_detail_{ch}.json'
         borrowed = []
         if ch in MERGE_BY_DAY and not a.fresh:
-            rows, borrowed = merge_by_day(fp, rows)
+            got, borrowed = merge_by_day(fp, {'rows': rows, 'audience': aud,
+                                              'placement': pla})
+            rows, aud, pla = got['rows'], got['audience'], got['placement']
         days = sorted({r['d'] for r in rows})
         # Lazada: แถวเป็นยอดของทั้งช่วง ช่วงจริงอยู่ที่ฟิลด์ span ไม่ใช่ที่ d
         span = next((r['span'] for r in rows if r.get('span')), None)
@@ -527,36 +674,67 @@ def main():
         else:
             top = rows                        # fb = ระดับแอด
         daily = DAILY_FROM[ch](src) if ch in DAILY_FROM else rows_to_daily(top)
+        # หมายเหตุความครอบคลุมของ TikTok (ผู้ใช้สั่ง 6 พ.ย. 69) — เขียนจากข้อมูลจริง
+        # ไม่ใช่วันที่ตายตัว เพราะสองชั้นนี้จะสะสมเองทุกวันจากนี้ไป
+        if ch == 'tk':
+            a_days = sorted({r['d'] for r in aud if r.get('d')})
+            r_days = sorted({r['d'] for r in rows if r.get('d')})
+            if a_days and r_days and a_days[0] > r_days[0]:
+                d0 = '%s/%s/%s' % (a_days[0][8:10], a_days[0][5:7], a_days[0][:4])
+                notes = notes + [
+                    'กลุ่มผู้ชมและตำแหน่งของ TikTok มีข้อมูลตั้งแต่ %s เป็นต้นไปเท่านั้น '
+                    '(รายงานชุดนี้ตั้งช่วงไว้ 7 วันล่าสุด ดึงย้อนหลังไม่ได้) '
+                    'จะสะสมเพิ่มเองวันละวันจากนี้ไป — เลือกช่วงที่เก่ากว่านี้ '
+                    'สองบล็อกนั้นจะว่างหรือไม่ครบช่วง' % d0,
+                    'ชั้นรายแอดของเดือนก่อน ๆ ไม่ครบ 100% ของค่าโฆษณา — '
+                    'แอดที่ถูกลบไปแล้วไม่ปรากฏในรายงานย้อนหลัง ยิ่งเดือนเก่ายิ่งหายมาก '
+                    '(ต.ค. 69 ชั้นรายแอดครอบ ~63% ของค่าโฆษณาทั้งเดือน) '
+                    'ใช้จัดอันดับและดูแนวโน้มได้ แต่ยอดรวมของช่องทางให้ยึดการ์ดด้านบน '
+                    'ซึ่งมาจากรายงานระดับแคมเปญคนละชุด']
+        # รวมรายสัปดาห์ **หลัง** merge — merge ต้องเทียบรายวันก่อน ไม่งั้นสัปดาห์ที่ยัง
+        # ไม่ครบจะถูกถังใหม่ที่มีวันเดียวทับทั้งถัง (ข้อมูลหายแบบไม่มี error)
+        aud_w, pla_w = to_weekly(aud, WEEK_KEY['audience']), to_weekly(pla, WEEK_KEY['placement'])
         doc = {'channel': ch, 'label': LABEL[ch],
                'fetched_at': datetime.now().strftime('%Y-%m-%dT%H:%M:%S'),
                'data_asof': days[-1], 'range': rng,
                'caps': {'audience': bool(aud), 'placement': bool(pla),
+                        # บอกหน้าเว็บว่าสองชั้นนี้เป็นรายสัปดาห์ ไม่ใช่รายวัน
+                        'grain': {'rows': 'day', 'audience': 'week', 'placement': 'week'},
                         'funnel': [k for k in ('imp', 'clicks', 'msg', 'view', 'atc',
                                                'checkout', 'orders')
                                    if any(r.get(k) is not None for r in rows)]},
-               'notes': notes, 'daily': daily, 'rows': rows,
-               'audience': aud, 'placement': pla}
+               'notes': notes, 'daily': daily, 'rows': drop_nulls(rows),
+               'audience': drop_nulls(aud_w), 'placement': drop_nulls(pla_w)}
         if borrowed:
-            notes = notes + ['รอบนี้ไม่ได้ข้อมูลของวัน %s จึงใช้ของรอบก่อน'
-                             % ', '.join(borrowed)]
+            # ย้อนหลังได้หลายสิบวัน ถ้าไล่ชื่อวันทั้งหมดจะยาวเกินอ่าน -> บอกเป็นช่วง + จำนวน
+            span_txt = ('%s–%s (%d วัน)' % (borrowed[0], borrowed[-1], len(borrowed))
+                        if len(borrowed) > 3 else ', '.join(borrowed))
+            notes = notes + ['วันที่รอบนี้ไม่ได้ดึงใหม่ ใช้ของรอบก่อน: ' + span_txt]
             doc['notes'] = notes
-            print('   %s: ใช้ข้อมูลเดิมของวัน %s (รอบนี้ไม่ได้)'
-                  % (ch, ', '.join(borrowed)), file=sys.stderr)
+            print('   %s: ใช้ข้อมูลเดิมของวัน %s (รอบนี้ไม่ได้ดึง)'
+                  % (ch, span_txt), file=sys.stderr)
         if a.dry_run:
-            print(f'{ch}: rows {len(rows)} · audience {len(aud)} · placement {len(pla)} '
+            print(f'{ch}: rows {len(rows)} · audience {len(aud)}→{len(aud_w)} สัปดาห์ '
+                  f'· placement {len(pla)}→{len(pla_w)} สัปดาห์ '
                   f'· {days[0]}..{days[-1]} (dry-run ไม่เขียน)')
             continue
         fp.write_text(json.dumps(doc, ensure_ascii=False) + '\n', encoding='utf-8')
         wrote.append(fp)
-        print(f'{ch}: เขียน {fp.name} · rows {len(rows)} · audience {len(aud)} '
-              f'· placement {len(pla)} · ถึง {days[-1]}')
+        print(f'{ch}: เขียน {fp.name} · {fp.stat().st_size/1e6:.2f} MB · rows {len(rows)} '
+              f'· audience {len(aud_w)} สัปดาห์ · placement {len(pla_w)} สัปดาห์ '
+              f"· {rng['from']}..{rng['to']}")
 
     if empty:
         print('ไม่มีไฟล์ดิบให้ทำ: ' + ', '.join(empty))
     if not wrote:
         return 10 if not a.dry_run else 0
 
-    hits = scan([str(f) for f in wrote])
+    # ด่านชื่อคน **2 ชั้น** (ผู้ใช้สั่ง 6 พ.ย. 69 หลังชื่อจริง 2 ชื่อหลุดเข้าไฟล์ TikTok)
+    #   scan()  เดาจากคำนำหน้า — จับชื่อที่ยังไม่เคยเห็น
+    #   names() เทียบกับตารางจับคู่ตัวจริง — จับ 100% สำหรับชื่อที่เคยออกเลขแล้ว
+    # ชั้นที่ 2 คือชั้นที่จับของหลุดรอบนั้นได้ ส่วนชั้นแรกมองไม่เห็นเพราะเดาแบบเดียวกัน
+    hits = scan([str(f) for f in wrote]) + \
+        [(a, b, c) for a, b, c, _d in names([str(f) for f in wrote])]
     if hits:
         for f in wrote:
             f.unlink(missing_ok=True)

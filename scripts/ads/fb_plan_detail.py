@@ -109,6 +109,12 @@ def main():
     ap.add_argument('--levels', default='ad,age_gender,placement',
                     help='คั่นด้วยจุลภาค: ' + ','.join(LEVELS))
     ap.add_argument('--today', default='', help='ทดสอบ: บังคับวันที่เป็น YYYY-MM-DD')
+    # ช่วงเติมย้อนหลัง (6 พ.ย. 69) — **งานรายวันห้ามใส่สองธงนี้** ปล่อยให้ date_range()
+    # คิดเองตามเดิม ไม่งั้นจะหลุดกติกา "ดึงทับย้อนหลังอย่างน้อย 7 วัน" ที่กันเลขค้าง
+    ap.add_argument('--from', dest='frm', default='',
+                    help='เติมย้อนหลัง: วันเริ่ม YYYY-MM-DD (ต้องใส่คู่กับ --to)')
+    ap.add_argument('--to', dest='to', default='',
+                    help='เติมย้อนหลัง: วันจบ YYYY-MM-DD (ต้องใส่คู่กับ --from)')
     a = ap.parse_args()
 
     levels = [x.strip() for x in a.levels.split(',') if x.strip()]
@@ -119,8 +125,21 @@ def main():
         return 2
 
     today = date.fromisoformat(a.today) if a.today else date.today()
-    d_from, d_to = date_range(today)
+    if bool(a.frm) != bool(a.to):
+        print(json.dumps({'status': 'ERROR', 'error': 'ต้องใส่ --from และ --to คู่กัน',
+                          'detail': 'ใส่มาข้างเดียวจะได้ช่วงที่ไม่ได้ตั้งใจ'},
+                         ensure_ascii=False))
+        return 2
+    if a.frm:
+        d_from, d_to = a.frm, a.to
+        if d_from > d_to:
+            print(json.dumps({'status': 'ERROR', 'error': '--from ต้องไม่เกิน --to'},
+                             ensure_ascii=False))
+            return 2
+    else:
+        d_from, d_to = date_range(today)
     out = {'from': d_from, 'to': d_to, 'lookback_days': MIN_LOOKBACK_DAYS,
+           'manual_range': bool(a.frm),
            'levels': levels,
            'note': 'FB ให้ข้อมูลถึงเมื่อวานเท่านั้น และแก้ตัวเลขย้อนหลัง — ดึงทับทุกรอบ',
            'accounts': [{'acc': k, 'id': i,

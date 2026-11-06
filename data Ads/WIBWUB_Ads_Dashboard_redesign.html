@@ -1345,11 +1345,29 @@ function v2Board(M){
     `<div class="note adv">เป็นคำแนะนำจากตัวเลข ทีมการตลาดเป็นผู้ตัดสินใจ</div></div>`;
 }
 
-/* ---------- บล็อก 4: กลุ่มผู้ชม (ตารางความร้อน) + ตำแหน่ง (แท่ง) ---------- */
+/* ---------- บล็อก 4: กลุ่มผู้ชม (ตารางความร้อน) + ตำแหน่ง (แท่ง) ----------
+   ชั้นกลุ่มผู้ชม/ตำแหน่งเก็บเป็น **ถังรายสัปดาห์** (6 พ.ย. 69) เพราะถ้าเก็บรายวัน
+   62 วัน ไฟล์ Facebook จะโต ~18 MB และหน้านี้โหลดไฟล์ทั้ง 4 ช่องทางพร้อมกัน
+   ถังหนึ่งมี d = วันจันทร์ (ตัดที่ขอบเดือน) · to = วันสุดท้ายที่มีข้อมูลในถัง
+   ชั้น rows ยังรายวัน จึงไม่กระทบส่วนเจาะรายแอด / Funnel / ครึ่งแรก-ครึ่งหลัง / บอร์ดป้าย */
+/* นับถังเข้าช่วงที่เลือกเมื่อ "ช่วงของถังทับช่วงที่เลือก" — แบบเดียวกับ span ของ Lazada
+   ถ้าใช้ r.d>=from เหมือนแถวรายวัน ถังที่เริ่มก่อนช่วงจะหายทั้งถัง */
+function dBuckets(arr){return (arr||[]).filter(r=>(r.to||r.d)>=st.from&&r.d<=st.to);}
+/* ช่วงที่เลือกคาบถังสัปดาห์ไหม — ถ้าคาบต้องบอกผู้ใช้ ห้ามปล่อยให้เข้าใจว่าตรงช่วงเป๊ะ */
+function dGrainNote(arr){
+  if(!arr.length) return '';
+  const a=arr.reduce((m,r)=>r.d<m?r.d:m,arr[0].d), b=arr.reduce((m,r)=>(r.to||r.d)>m?(r.to||r.d):m,arr[0].to||arr[0].d);
+  /* บอกช่วงจริงทุกครั้งที่ไม่ตรงกับช่วงที่เลือก — ทั้งกรณีถังล้นออกนอกช่วง
+     และกรณี **ถังครอบไม่ถึงช่วงที่เลือก** (เช่น TikTok มีกลุ่มผู้ชมตั้งแต่ 29 ต.ค.
+     พอเลือก "เดือนก่อน" ตารางความร้อนจึงเป็นของ 3 วันท้ายเดือน ไม่ใช่ทั้งเดือน) */
+  return (a!==st.from||b!==st.to)
+    ? ` · รวมเป็นรายสัปดาห์ · ช่วงที่นับจริงคือ ${thD(a,1)}–${thD(b,1)} ไม่ใช่ทั้งช่วงที่เลือก`
+    : ' · รวมเป็นรายสัปดาห์';
+}
 const GLAB={female:'หญิง',male:'ชาย',unknown:'ไม่ระบุ'};
 function ageKey(a){const m=String(a).match(/\d+/);return /unknown/i.test(a)?9999:(m?+m[0]:9998);}
 function v2Aud(M){
-  const arr=(M.D2.audience||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
+  const arr=dBuckets(M.D2.audience);
   if(!arr.length) return `<div class="card"><h2>กลุ่มผู้ชม อายุ × เพศ</h2>`+
     `<div class="note">ช่องทางนี้ไม่มีข้อมูลกลุ่มผู้ชมในรายงาน</div></div>`;
   const ages=[...new Set(arr.map(r=>r.age||'–'))].sort((a,b)=>ageKey(a)-ageKey(b));
@@ -1381,11 +1399,11 @@ function v2Aud(M){
     `<button data-m="ctr"${met==='ctr'?' class="on"':''}>CTR</button>`+
     (hasRoas?`<button data-m="roas"${met==='roas'?' class="on"':''}>ROAS</button>`:'')+`</div></div>`+
     `<div class="heat">${h}</div>`+
-    `<div class="note">สีเข้ม = ค่ามาก${met==='ctr'?' · ช่องที่เห็นน้อยกว่า 300 ครั้งไม่คำนวณ CTR':''}`+
+    `<div class="note">สีเข้ม = ค่ามาก${met==='ctr'?' · ช่องที่เห็นน้อยกว่า 300 ครั้งไม่คำนวณ CTR':''}${dGrainNote(arr)}`+
     (flat.length?` · CTR สูงสุด (เฉพาะช่องที่เห็นเกิน 1,000 ครั้ง): ${flat[0][0]} ${pct2(flat[0][1])}`:'')+'</div></div>';
 }
 function v2Place(M){
-  const arr=(M.D2.placement||[]).filter(r=>r.d>=st.from&&r.d<=st.to);
+  const arr=dBuckets(M.D2.placement);
   if(!arr.length) return `<div class="card"><h2>ตำแหน่งที่โฆษณาแสดง</h2>`+
     `<div class="note">ช่องทางนี้ไม่มีข้อมูลตำแหน่งในรายงาน</div></div>`;
   const g=dGroup(arr,r=>r.p||'–').slice(0,8), mx=Math.max(1,...g.map(o=>o.spend||0));
@@ -1395,7 +1413,7 @@ function v2Place(M){
     g.map(o=>`<div class="hb"><span class="nm" title="${esc(o.k)}">${esc(String(o.k).replace(/ \/ ในแอพ$/,''))}</span>`+
       `<div><div class="bar2" style="width:${Math.max(1,(o.spend||0)/mx*100).toFixed(1)}%"></div></div>`+
       `<span class="num" style="text-align:right">${baht(o.spend)}</span></div>`).join('')+
-    `<div class="note">${best?`CTR สูงสุดใน 8 อันดับ: ${esc(String(best.k).replace(/ \/ ในแอพ$/,''))} ${pct2(dCtr(best))}`:'ข้อมูลไม่พอเทียบ CTR'}</div></div>`;
+    `<div class="note">${best?`CTR สูงสุดใน 8 อันดับ: ${esc(String(best.k).replace(/ \/ ในแอพ$/,''))} ${pct2(dCtr(best))}`:'ข้อมูลไม่พอเทียบ CTR'}${dGrainNote(arr)}</div></div>`;
 }
 
 /* ---------- บล็อก 5: ตาราง 5 แคมเปญที่ใช้เงินมากที่สุด ---------- */
