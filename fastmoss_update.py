@@ -22,10 +22,10 @@ WORKFLOW (used by the scheduled task, and by any manual re-run):
   4. Run: python3 fastmoss_update.py --snapshot /path/to/snapshot.json
   5. Run: node --check on the extracted <script> block (see validation
      note at bottom of this file) before trusting the output.
-  6. git add + commit (this script does that part automatically).
-  7. Remind the user to double-click push_now.command on their real Mac
-     (git push from this sandbox always fails with a 403 proxy error —
-     that is expected, not a bug).
+  6. git add + commit (this script does that part automatically, via gitw.py).
+  7. Nothing else — the launchd agent com.wibwub.autopush pushes within
+     2 minutes. Do NOT push by hand and do NOT tell the user to run any
+     push helper.
 
 IMPORTANT GOTCHA — cumulative vs. 28-day trend
 ------------------------------------------------
@@ -296,9 +296,9 @@ def git_commit():
         cwd=BASE,
         check=False,
     )
-    # Sandbox git push always fails (proxy 403) — that's expected. The real
-    # push happens via push_now.command on the user's own machine.
-    subprocess.run(["git", "push", "origin", "main"], cwd=BASE, check=False)
+    # ไม่ push เอง — launchd `com.wibwub.autopush` push ให้ภายใน 2 นาที
+    # (ตัดคำสั่ง push ตรงออก 6 พ.ย. 69: มันล้มทุกครั้งในแซนด์บ็อกซ์อยู่แล้ว
+    #  และการเรียก git ตรงเป็นแพทเทิร์นที่เลิกใช้ทั้งบ้าน — ทุกคำสั่งต้องผ่าน gitw.py)
 
 
 def main():
@@ -361,7 +361,7 @@ def main():
 
     if not args.no_commit:
         git_commit()
-        print("Committed. Remember: double-click push_now.command on your Mac to actually push.")
+        print("Committed. autopush จะ push ให้เองภายใน 2 นาที — ไม่ต้อง push เอง")
 
 
 if __name__ == "__main__":
