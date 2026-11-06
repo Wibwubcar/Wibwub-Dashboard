@@ -303,7 +303,9 @@
       "mode": "markers"
     },
     "wibwub-shopee-live-daily": {
-      "mode": "markers"
+      "mode": "copy",
+      "repo": "wibwub-shopee-live-daily.md",
+      "note": "เปลี่ยนจาก markers เป็น copy เมื่อ 6 พ.ย. 69 — ตัวจริงเดิมเป็นพรอมป์คนละชุด (9.3 KB) ที่สั่ง commit ด้วยคำสั่ง git ตรง (hook ตีกลับตั้งแต่ 4 พ.ย. 69) และให้ผู้ใช้กดสคริปต์ push เอง ซึ่งอธิบายอาการรอบ 3-4 พ.ย. ที่เขียนข้อมูลสำเร็จแต่ commit ไม่ผ่าน ไฟล์ไปติดใน commit ของงานอื่น"
     },
     "wibwub-thursday-affiliate": {
       "mode": "markers"

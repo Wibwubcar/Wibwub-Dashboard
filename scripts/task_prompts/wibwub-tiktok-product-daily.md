@@ -277,21 +277,42 @@ sys.exit(0 if abs(g-tr)<1 else 1)
 
 ## ขั้น 0 — หาโฟลเดอร์ All
 
+**คำสั่ง shell แรกของรอบต้องขึ้นต้นด้วย `python3` เสมอ**
+
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do
-  [ -f "$d/scripts/marketing/fee_update.py" ] && BASE="$d" && break
-done
-echo "BASE=$BASE"
+python3 -c "
+import glob, os
+CAND = ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All',
+        os.path.expanduser('~/mnt/All')] + sorted(glob.glob('/sessions/*/mnt/All'))
+P = '/scripts/marketing/fee_update.py'
+for B in CAND:
+    try:
+        open(B + P).read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
+"
 ```
+
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]` / `[ -f ... ]`**
+> stat บนโฟลเดอร์ Drive ตอบ **False** หลอกได้ (เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`
+> ล้ม 4 รอบติด) ให้ **เปิดไฟล์จริง** แล้วรับ `OSError` แทน
+> **ห้ามใช้ลูป `for` ของ bash และห้ามตั้งตัวแปร `BASE=`** — ตัวแยกคำสั่งอ่านไม่ออก
+> แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด (รอบนั้นค้างทั้งรอบ) · ได้พาธมาแล้วให้**เขียนพาธเต็ม
+> ตรง ๆ ทุกคำสั่งถัดไป ห้ามใช้ `$BASE`**
+
 ไม่เจอ → หยุดส่วน B แล้วรายงาน ห้ามเดาพาธ
 
 ---
 
 # ส่วน B — อัตราค่าธรรมเนียมแพลตฟอร์ม
 
-อ่านไฟล์นี้ด้วย Read tool แล้วทำตามทุกขั้นตอน:
+อ่านไฟล์นี้ด้วย Read tool แล้วทำตามทุกขั้นตอน (พาธเต็ม ห้ามใช้ `$BASE`):
 
-`$BASE/scripts/task_prompts/wibwub-platform-fee-daily.md`
+`/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/task_prompts/wibwub-platform-fee-daily.md`
 
 ### กติกาสำคัญ
 - **เดือนปัจจุบันต้องใส่ `--provisional` เสมอ** (ยอด settlement ยังไหลเข้าไม่ครบ)

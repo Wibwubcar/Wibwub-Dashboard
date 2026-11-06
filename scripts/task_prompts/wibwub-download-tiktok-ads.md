@@ -1,6 +1,6 @@
 ---
 name: wibwub-download-tiktok-ads
-description: ดาวน์โหลด TikTok Ads data ทุกวัน 08:10/19:10 — GMV Max Campaign Overview + Business Ads Campaign Report
+description: ดาวน์โหลด TikTok Ads data ทุกวัน 08:25/19:25 — GMV Max Campaign Overview + Business Ads Campaign Report
 ---
 > ⛔ **ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์** (เช่น `allow_cowork_file_delete`)
 > งานตั้งเวลาไม่มีคนกดอนุญาต เครื่องมือนี้จะค้างรอจนหมดรอบ — เกิดจริง 5 พ.ย. 69
@@ -177,7 +177,41 @@ TikTok Ads Download — {TODAY}
 5. แก้ `DATA_PERIODS.<เดือนปัจจุบัน>.tiktok` และ `TK_BREAKDOWN.<เดือนปัจจุบัน>.{gmvMax,gmvLive,bizAds}` ใน `data Ads/WIBWUB_Ads_Dashboard.html`
    (ไฟล์นี้ minified บรรทัดเดียวยาวมาก — ใช้ Python อ่าน/แทนที่ substring แบบ exact-match, ห้ามใช้ Edit tool บรรทัดปกติ)
 6. อัปเดต badge `#ads-updated` และ `.pb-sub` labels ให้ตรงกับวันที่ข้อมูลล่าสุดจริงของทั้ง Shopee และ TikTok
-7. Validate JS (`node --check` หลัง extract `<script>` blocks), bump `sw.js` cache version, `git add`+`git commit` (push ต้องให้ user double-click `push_now.command`)
+7. Validate JS → bump `sw.js` → commit **ผ่าน `gitw.py` เท่านั้น**
+
+   ```bash
+   python3 -c "
+   import re,io
+   h=io.open('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/data Ads/WIBWUB_Ads_Dashboard.html',encoding='utf-8').read()
+   io.open('/tmp/tkads.js','w').write('\n'.join(re.findall(r'<script[^>]*>([\s\S]*?)</script>',h)))"
+   ```
+
+   ```bash
+   node --check /tmp/tkads.js
+   ```
+
+   ```bash
+   python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"
+   ```
+
+   ```bash
+   python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add "data Ads/WIBWUB_Ads_Dashboard.html" sw.js
+   ```
+
+   ```bash
+   python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" commit -m "auto: TikTok Ads <ช่วงวันที่> (<รอบเช้า/เย็น>)"
+   ```
+
+   - ⛔ **ห้ามใช้ `git` ตรง ๆ ทุกรูปแบบ** — รีโปนี้มีงานอื่นรันพร้อมกัน `git` ตรงจะกวาดไฟล์ที่
+     งานอื่น stage ค้างไว้เข้า commit และตั้งแต่ 4 พ.ย. 69 มี hook `PreToolUse` ตีกลับให้
+     รอบนั้นจะล้มทั้งรอบ · `gitw.py` รอ `index.lock`/`HEAD.lock` ให้สูงสุด 5 นาที
+     และ unstage ไฟล์ของตัวเองคืนเมื่อล้มเหลว (เนื้อไฟล์ไม่หาย) · **exit 3 = ไม่ได้ commit**
+     ให้รายงานตรง ๆ ว่ารอบนี้ข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit · **ห้ามลบ lock ของคนอื่น**
+   - **`add` ต้องระบุชื่อไฟล์เสมอ ห้าม `-A` / `.`** · ถ้ารอบนี้เขียนไฟล์รายงาน
+     `data Ads/TikTok_Ads_Run_Report_*.md` ไว้ ให้ใส่ชื่อไฟล์นั้นต่อท้าย `add` ด้วย
+   - **ไม่ต้อง push และห้ามบอกผู้ใช้ให้กดสคริปต์ push เอง** — launchd `com.wibwub.autopush`
+     push ให้เองภายใน 2 นาที (ข้อความเดิมของขั้นนี้สั่งแบบเก่าไว้ · แก้ 6 พ.ย. 69)
+   - ห้ามใช้ `sed -i` แก้ `sw.js` — BSD sed บน macOS พังเงียบ ๆ ให้เรียก `bump_sw.py`
 
 
 ## ⚠️ กฎการย้ายไฟล์จาก Downloads (สำคัญมาก)

@@ -1,6 +1,6 @@
 ---
 name: wibwub-shopee-live-daily
-description: ทุกวัน 08:37/19:37 — ดึง Shopee Live รายวัน → merge SH_LIVE_DAILY ใน WIBWUB_Dashboard.html
+description: ทุกวัน 09:35/20:35 — ดึง Shopee Live รายวัน → merge SH_LIVE_DAILY ใน WIBWUB_Dashboard.html
 ---
 > ⛔ **ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์** (เช่น `allow_cowork_file_delete`)
 > งานตั้งเวลาไม่มีคนกดอนุญาต เครื่องมือนี้จะค้างรอจนหมดรอบ — เกิดจริง 5 พ.ย. 69
@@ -9,17 +9,45 @@ description: ทุกวัน 08:37/19:37 — ดึง Shopee Live ราย�
 > ถ้าติด `.git/index.lock` หรือ `.git/HEAD.lock`: `gitw.py` รอให้แล้วสูงสุด 5 นาที
 > **ห้ามลบ lock ของคนอื่น** ถ้าสุดท้ายยังไม่ผ่าน → **รายงานตรง ๆ** ว่ารอบนี้ข้อมูลเข้าไฟล์แล้ว
 > แต่ยังไม่ได้ commit แล้วจบรอบ **ห้ามรอต่อ**
+> ✅ **ไฟล์นี้คือตัวจริง** — ตั้งแต่ 6 พ.ย. 69 `~/Documents/Claude/Scheduled/wibwub-shopee-live-daily/SKILL.md`
+> เป็น**สำเนาตรงทุกไบต์**ของไฟล์นี้ (`skill_sync` โหมด `copy` เฝ้าให้) แก้ที่นี่แล้ว**ต้องคัดลอกทับตัวจริงด้วย**
+> ก่อนหน้านี้ตัวจริงเป็นพรอมป์คนละชุด (9.3 KB) ที่สั่ง commit ด้วยคำสั่ง git ตรง (hook ตีกลับตั้งแต่
+> 4 พ.ย. 69) และให้ผู้ใช้ดับเบิลคลิกสคริปต์ช่วย push เอง ทั้งที่ launchd `com.wibwub.autopush`
+> ทำให้อยู่แล้ว — การแก้ในรีโปจึงไม่มีผลกับรอบจริงเลย
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
 
 พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
 จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
 
+**คำสั่ง shell แรกของรอบต้องขึ้นต้นด้วย `python3` เสมอ**
+
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+python3 -c "
+import glob, os
+CAND = ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All',
+        os.path.expanduser('~/mnt/All')] + sorted(glob.glob('/sessions/*/mnt/All'))
+P = '/scripts/shopee_live_daily.py'
+for B in CAND:
+    try:
+        open(B + P).read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
+"
 ```
 
-- ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]` / `[ -f ... ]`**
+> stat บนโฟลเดอร์ Drive ตอบ **False** หลอกได้ (เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`
+> ล้ม 4 รอบติด) ให้ **เปิดไฟล์จริง** แล้วรับ `OSError` แทน
+> **ห้ามใช้ลูป `for` ของ bash และห้ามตั้งตัวแปร `BASE=`** — ตัวแยกคำสั่งอ่านไม่ออก
+> แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด (รอบนั้นค้างทั้งรอบ) · ได้พาธมาแล้วให้**เขียนพาธเต็ม
+> ตรง ๆ ทุกคำสั่งถัดไป ห้ามใช้ `$BASE`**
+
+- ได้พาธมา → เขียนพาธเต็มนั้นในทุกคำสั่งถัดไป
 - **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
   → **หยุดทันที** รายงานว่า `❌ ล้มเหลว — เข้าโฟลเดอร์ All ไม่ได้` แล้วจบงาน
   ห้ามเดาพาธเอง ห้ามไปใช้ `~/Downloads` แทน
