@@ -165,7 +165,8 @@
       "label": "TikTok Followers 10:00/21:00",
       "kind": "git_grep",
       "pattern": "^auto-update: TikTok followers",
-      "max_age_hours": 14
+      "max_age_hours": 26,
+      "note": "เกณฑ์ 26 ชม. เพราะข้อมูลใหม่มาวันละครั้งตอนเช้า — รอบเย็นไม่มีวันใหม่ให้เก็บ จึงไม่ commit เป็นเรื่องปกติ · เกณฑ์ 14 ชม. เดิมเตือนหมาป่าทุกคืน (ผู้ใช้สั่งแก้ 6 พ.ย. 69) · วัดจริง 2-5 พ.ย. 69: มีแต่รอบเช้าที่ commit ห่างกัน 24 ชม."
     },
     "wibwub-fastmoss-competitor": {
       "label": "FastMoss คู่แข่ง",
@@ -178,34 +179,36 @@
       "label": "TikTok สินค้า + SKU",
       "kind": "git_grep",
       "pattern": "^auto: (update )?TikTok product",
-      "max_age_hours": 14,
-      "note": "ข้อความ commit มีทั้ง \"auto: update TikTok product sales data\" และ \"auto: TikTok product <วันที่>\" (เจอ 5 พ.ย. 69)"
+      "max_age_hours": 26,
+      "note": "ข้อความ commit มีทั้ง \"auto: update TikTok product sales data\" และ \"auto: TikTok product <วันที่>\" (เจอ 5 พ.ย. 69) · เกณฑ์ 26 ชม. เพราะข้อมูลใหม่มาวันละครั้งตอนเช้า — รอบเย็นไม่มีวันใหม่ให้เก็บ จึงไม่ commit เป็นเรื่องปกติ · เกณฑ์ 14 ชม. เดิมเตือนหมาป่าทุกคืน (ผู้ใช้สั่งแก้ 6 พ.ย. 69)"
     },
     "wibwub-download-orders-monday": {
       "label": "โหลด order + ads_daily 08:35/19:35",
       "kind": "git_grep",
       "pattern": "^auto: ads daily",
-      "max_age_hours": 14,
-      "note": "ผลงานที่วัดได้คือ ads_daily.json (ส่วน C) ส่วนไฟล์ order ที่โหลดมาไม่ได้ commit"
+      "max_age_hours": 16,
+      "note": "ผลงานที่วัดได้คือ ads_daily.json (ส่วน C) ส่วนไฟล์ order ที่โหลดมาไม่ได้ commit · เกณฑ์ 16 ชม. ไม่ใช่ 14 — คาบจริงที่วัดได้คือ ~13 ชม. (รอบเช้า→รอบเย็น) เกณฑ์ 14 เหลือระยะเผื่อแค่ 1 ชม. รอบที่เริ่มช้าหน่อยก็เตือนผิดทันที (6 พ.ย. 69)"
     },
     "wibwub-download-shopee-ads": {
       "label": "โหลด Shopee Ads 08:20/19:20",
       "kind": "git_grep",
       "pattern": "^auto: Shopee Ads",
-      "max_age_hours": 14
+      "max_age_hours": 16,
+      "note": "เกณฑ์ 16 ชม. ไม่ใช่ 14 — คาบจริงที่วัดได้คือ ~13 ชม. (รอบเช้า→รอบเย็น) เกณฑ์ 14 เหลือระยะเผื่อแค่ 1 ชม. รอบที่เริ่มช้าหน่อยก็เตือนผิดทันที (6 พ.ย. 69)"
     },
     "wibwub-download-tiktok-ads": {
       "label": "โหลด TikTok Ads 09:40/20:40",
       "kind": "git_grep",
       "pattern": "^auto(-update)?: TikTok Ads",
-      "max_age_hours": 14,
-      "note": "ข้อความ commit สลับระหว่าง \"auto:\" กับ \"auto-update:\" แล้วแต่รอบ (เจอ 5 พ.ย. 69)"
+      "max_age_hours": 16,
+      "note": "ข้อความ commit สลับระหว่าง \"auto:\" กับ \"auto-update:\" แล้วแต่รอบ (เจอ 5 พ.ย. 69) · เกณฑ์ 16 ชม. ไม่ใช่ 14 — คาบจริงที่วัดได้คือ ~13 ชม. (รอบเช้า→รอบเย็น) เกณฑ์ 14 เหลือระยะเผื่อแค่ 1 ชม. รอบที่เริ่มช้าหน่อยก็เตือนผิดทันที (6 พ.ย. 69)"
     },
     "wibwub-samp-request-sync": {
       "label": "คำขอสินค้า",
       "kind": "git_grep",
       "pattern": "^auto-update: คำขอสินค้า",
-      "max_age_hours": 14
+      "max_age_hours": 16,
+      "note": "เกณฑ์ 16 ชม. ไม่ใช่ 14 — คาบจริงที่วัดได้คือ ~13 ชม. (รอบเช้า→รอบเย็น) เกณฑ์ 14 เหลือระยะเผื่อแค่ 1 ชม. รอบที่เริ่มช้าหน่อยก็เตือนผิดทันที (6 พ.ย. 69)"
     },
     "wibwub-thursday-affiliate": {
       "label": "Affiliate ครีเอเตอร์ (พฤหัส)",
@@ -314,5 +317,6 @@
     "wibwub-tiktok-product-daily": {
       "mode": "markers"
     }
-  }
+  },
+  "_note_thresholds": "max_age_hours ต้องยาวกว่า \"คาบจริงที่ผลงานออก\" ไม่ใช่คาบที่ตั้งเวลาไว้ — งานวันละ 2 รอบที่รอบเย็นมักไม่มีข้อมูลใหม่ให้ commit มีคาบจริง 24 ชม. ไม่ใช่ 12 · วิธีตรวจก่อนตั้งค่า: git log --since=21.days --grep=<pattern> แล้วดูช่องว่างที่ยาวที่สุด"
 }

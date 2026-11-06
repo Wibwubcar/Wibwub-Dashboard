@@ -181,7 +181,9 @@ const WASH = ['ล้างรถก่อน เดี๋ยวกลับไ�
 const LABEL = {ok:'ทำงานปกติ', warn:'ต้องดู', wait:'รอรอบถัดไป'};
 const MARK = {ok:'✓', warn:'!', wait:'z'};
 const HEALTH_URL = 'scripts/ops/task_health.json';
-const levelOf = l => /✅/.test(l||'') ? 'ok' : /⏳/.test(l||'') ? 'wait' : 'warn';
+// ℹ️ = รู้สาเหตุแล้วและไม่ใช่ปัญหา (เช่น "มีขั้นสะดุด แต่ลองใหม่จนผ่าน")
+// ต้องอยู่กลุ่มเดียวกับ ✅ ไม่ใช่ "ต้องดู" — ไม่งั้นน้องจะวิ่งไปหาหัวหน้าทุกวัน (6 พ.ย. 69)
+const levelOf = l => /[✅ℹ]/.test(l||'') ? 'ok' : /⏳/.test(l||'') ? 'wait' : 'warn';
 const fmtChecked = c => { const m = /(\d{4})-(\d{2})-(\d{2})[ T](\d{2}):(\d{2})/.exec(c||''); if (!m) return c||'—'; const th=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']; return (+m[3])+' '+th[+m[2]-1]+' '+m[4]+':'+m[5]+' น.'; };
 function applyHealth(h, allowNew){
   if (!h || !Array.isArray(h.tasks)) return false;

@@ -97,7 +97,8 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 
 ## สรุปท้ายรอบ (สั้น ๆ ภาษาไทย)
 
-`checked_at` · counts (stop/warn/ok/sheet_wait/gaps) · รายชื่อแถวที่เป็น ⛔ หรือ ⚠️
+`checked_at` · counts (stop/warn/ok/sheet_wait/info/gaps) · รายชื่อแถวที่เป็น ⛔ หรือ ⚠️
+(`info` = แถว ℹ️ "รู้สาเหตุแล้วและไม่ใช่ปัญหา" ให้บอกจำนวนเฉย ๆ **ห้ามยกขึ้นเป็นปัญหา**)
 พร้อมเหตุผลสั้น ๆ · ช่วงที่ไม่มีงานไหนเริ่มเลย (gaps) ถ้ามี · commit id หรือ "ไม่มีอะไรเปลี่ยน"
 
 **ถ้ามีแถว ⛔ ให้ขึ้นบรรทัดแรกของรายงานด้วย `⛔ <ชื่องาน> — <เหตุผล>`** เพื่อให้เห็นทันที

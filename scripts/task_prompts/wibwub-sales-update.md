@@ -86,6 +86,25 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 
 ---
 
+### 4. รีเฟรชการ์ดสถานะ (ทำทุกครั้ง แม้ไม่ได้ commit)
+
+```bash
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ops/task_health.py" --refresh
+```
+
+- ทำให้การ์ดสถานะเห็นผลงานของรอบนี้**ทันที** ไม่ต้องรอตัวตรวจรอบถัดไป (ทุกชั่วโมงที่ :12)
+  - เกิดจริง 6 พ.ย. 69: `sales-update` อ่านชีตใหม่ได้ถึง 5/11 ตอน 09:34 แต่การ์ดยังขึ้น
+    "รอทีมกรอกชีต ค้าง 31/10" จนถึงรอบ 10:12 ผู้ใช้อ่านแล้วเข้าใจผิดว่างานยังไม่ได้รัน
+- **ทำทุกครั้ง แม้รอบนี้ไม่มีอะไร commit** (ความสดของผลงานก็เป็นข้อมูลที่การ์ดใช้)
+- **คำสั่งนี้คืน exit 0 เสมอ** ถ้าผลพิมพ์ว่า `"status": "SKIP"` หรือ `"NO_CHANGE"`
+  ก็ไม่ใช่ความผิดพลาดของรอบนี้ ให้ไปต่อได้เลย
+- ไม่ต้อง `git add` / commit ไฟล์สถานะ — งาน `wibwub-task-health` commit ให้เองทุกชั่วโมง
+- ⛔ **ห้ามใช้ `--write-json` แทน** — ธงนั้นเขียนทับไฟล์ทั้งก้อน ถ้ารันจากแซนด์บ็อกซ์
+  (งานฝั่ง local อ่านไฟล์เซสชันไม่ได้) จะทับสแนปช็อตที่ดีด้วยผลที่อ่านไม่ครบ ทุกแถวจะกลาย
+  เป็น "ตรวจไม่ได้" · `--refresh` รู้จักแยกสองกรณีนี้ให้แล้ว
+
+---
+
 ## RULES
 
 - ทำทุกอย่างใน bash/python ห้าม spawn subagents · ห้ามใช้เบราว์เซอร์

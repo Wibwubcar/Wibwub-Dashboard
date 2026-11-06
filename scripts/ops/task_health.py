@@ -165,6 +165,34 @@ def _git_last(pattern):
     return datetime.fromtimestamp(int(s)) if s.isdigit() else None
 
 
+def _git_times(pattern, days=7):
+    """เวลาของ commit **ทุกตัว** ที่ข้อความตรง pattern ในช่วงหลัง
+
+    ใช้ตอบว่า "รอบไหนมีผลงานออก" ย้อนหลังได้ ต่างจาก _git_last ที่ตอบได้แค่รอบล่าสุด
+    """
+    r = subprocess.run(['git', '-C', str(BASE), 'log', '--since=%d.days' % days,
+                        '--extended-regexp', '--format=%ct', '--grep=' + pattern],
+                       capture_output=True, text=True)
+    return sorted(datetime.fromtimestamp(int(x)) for x in r.stdout.split() if x.isdigit())
+
+
+def round_had_artifact(start, end, art_at, art_times):
+    """รอบที่เริ่ม `start` (จบที่ `end`) มีผลงานออกไหม · **None = บอกไม่ได้**
+
+    ผู้ใช้สั่ง 6 พ.ย. 69: "ล้มติดกัน N รอบ" ให้นับเฉพาะรอบที่ **ผลงานไม่ออก**
+    รอบที่มีขั้นสะดุดแล้วลองใหม่จนมีผลงาน ไม่ใช่รอบที่ล้ม
+    None ถือเป็น "ไม่นับว่าล้ม" เสมอ — เตือนน้อยไว้ดีกว่าเตือนผิด
+    """
+    if start is None:
+        return None
+    pad = timedelta(minutes=2)
+    if art_at is not None and art_at >= start - pad:
+        return True            # ผลงานล่าสุดเป็นของรอบนี้เอง
+    if art_times is None:
+        return None            # ไม่มีประวัติผลงานให้ไล่ (kind ที่วัดได้แค่ค่าล่าสุด)
+    return any(start - pad <= t <= end for t in art_times)
+
+
 def check_code(now):
     out = []
     try:
@@ -611,7 +639,15 @@ def build_status(now):
         age, when, art_at = (None, None, None)
         if acfg:
             age, when, art_at = artifact_age(acfg, now)
-        r['data_asof'] = when if when else '—'
+        # age is None = ตรวจไม่ได้ ตอนนั้น `when` เป็น **เหตุผล** ไม่ใช่เวลา
+        # ห้ามเอาไปใส่ช่อง "ข้อมูลถึง" ของการ์ด (เคยขึ้นว่า "งานนี้ไม่มีผลงานปลายทางให้ตรวจ")
+        r['data_asof'] = when if (when and age is not None) else '—'
+        # ช่อง "ข้อมูลถึง" ของงานที่กินข้อมูลจากชีต ต้องเป็น **วันที่ที่ชีตมีข้อมูลถึง**
+        # ไม่ใช่เวลา commit ของรอบที่มีข้อมูลใหม่ล่าสุด (6 พ.ย. 69: การ์ดน้องยอดชีตขึ้น
+        # "29 Oct 10:37" ซึ่งไม่ตรงกับทั้งวันที่ของชีตและเวลารันรอบล่าสุด — อ่านแล้วสับสน)
+        sal = sheet_asof_label(task_id, cfg_all)
+        if sal:
+            r['data_asof'] = sal
         maxh = (acfg or {}).get('max_age_hours')
         # รอบล่าสุดเริ่มหรือยัง
         started = bool(last_run and exp and last_run >= exp)
@@ -713,8 +749,23 @@ def build_status(now):
             r.update(level='⚠️', status='ตรวจไม่ได้',
                      note='อ่านบันทึกของรอบล่าสุดไม่ได้ — ไม่ยืนยันว่าปกติ')
         elif fct.get('has_error'):
-            r.update(level='⚠️', status='มีขั้นที่ล้ม',
-                     note='รอบล่าสุดมีขั้นที่คืน status ERROR — รอบอาจทำต่อจนจบได้ ให้เปิดดูรายงานรอบนั้น')
+            # "มีขั้นที่คืน ERROR" ไม่เท่ากับ "งานล้ม" — เอเจนต์ลองใหม่แล้วผ่านเป็นเรื่องปกติ
+            # ถ้าผลงานของรอบนี้ออกแล้วและยังสด ให้เป็น ℹ️ **ไม่นับเป็นปัญหา**
+            # (ผู้ใช้สั่ง 6 พ.ย. 69: Shopee Ads รอบ 08:16 ข้อมูลเข้าครบถึง 5/11 และ commit แล้ว
+            #  แต่การ์ดขึ้น ⚠️ "มีขั้นที่ล้ม" ทุกวัน — เตือนจนคนเลิกอ่าน)
+            # ⚠️ สงวนไว้ให้กรณีที่ **ผลงานไม่ขยับด้วย** เท่านั้น
+            if fresh and done_this_round:
+                r.update(level='ℹ️', status='มีขั้นสะดุด แต่ลองใหม่จนผ่าน',
+                         note='รอบล่าสุดมีขั้นที่คืน status ERROR แต่ผลงานของรอบนี้ออกแล้ว (%s) '
+                              '— ไม่นับเป็นปัญหา' % (when or '—'))
+            elif not acfg:
+                r.update(level='⚠️', status='มีขั้นที่ล้ม',
+                         note='รอบล่าสุดมีขั้นที่คืน status ERROR และงานนี้ไม่มีผลงานปลายทาง'
+                              'ให้ตรวจ จึงยืนยันไม่ได้ว่าทำต่อจนจบ — ให้เปิดดูรายงานรอบนั้น')
+            else:
+                r.update(level='⚠️', status='มีขั้นที่ล้ม',
+                         note='รอบล่าสุดมีขั้นที่คืน status ERROR และยังไม่เห็นผลงานของรอบนี้ '
+                              '— ให้เปิดดูรายงานรอบนั้น')
         else:
             r.update(level='✅', status='ปกติ',
                      note='รอบล่าสุดเริ่มตามเวลา' + (' และผลงานออกแล้ว' if acfg else ''))
@@ -723,12 +774,20 @@ def build_status(now):
         recent = [x for x in sess_list[-6:]
                   if (_ms(x.get('createdAt')) or now) > now - timedelta(days=3)]
         if len(recent) >= 2:
+            # นับเฉพาะรอบที่ "ผลงานไม่ออก" — รอบที่สะดุดแล้วลองใหม่จนมีผลงานไม่ใช่รอบที่ล้ม
+            # (ก่อน 6 พ.ย. 69 นับทุกรอบที่มีขั้น ERROR จึงขึ้น "ล้มติดกัน" ทั้งที่ข้อมูลครบทุกวัน)
+            art_times = (_git_times(acfg['pattern'])
+                         if acfg and acfg.get('kind') == 'git_grep' else None)
             bad = 0
-            for s2 in reversed(recent):
-                if session_facts(s2, now, allow).get('has_error'):
-                    bad += 1
-                else:
+            for i, s2 in enumerate(reversed(recent)):
+                if not session_facts(s2, now, allow).get('has_error'):
                     break
+                st2 = _ms(s2.get('createdAt'))
+                # ขอบท้ายของรอบนั้น = เวลาที่รอบถัดไปเริ่ม (รอบล่าสุดใช้ now)
+                end2 = _ms(recent[len(recent) - i].get('createdAt')) if i else now
+                if round_had_artifact(st2, end2 or now, art_at, art_times) is not False:
+                    break
+                bad += 1
             if bad >= 2:
                 if r['level'] not in ('⛔',):
                     r['level'] = '⚠️'
@@ -785,7 +844,7 @@ def build_status(now):
         rows.append(mk(c.get('label', tid), 'code', c.get('cron', ''), last, None, sl, c,
                        tid + '.md', tid))
 
-    order = {'⛔': 0, '⚠️': 1, '📝': 2, '⏳': 3, '✅': 4}
+    order = {'⛔': 0, '⚠️': 1, '📝': 2, 'ℹ️': 3, '⏳': 4, '✅': 5}
     rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
     # ── การ์ดที่ไม่ผูกกับงานในทะเบียน (งานที่เป็น "ส่วน B" ของงานอื่น) ──────────
     # ส่วน B ไม่มี taskId ของตัวเอง ถ้าไม่ทำตรงนี้จะไม่มีการ์ดเลย และถ้าไปผูกกับ
@@ -793,6 +852,8 @@ def build_status(now):
     # ตัดสินจากอายุผลงานอย่างเดียว เพราะไม่มีเซสชันของตัวเองให้ดู
     have = {r['name'] for r in rows}
     for tid, acfg in (cfg_all.get('local_tasks') or {}).items():
+        if tid.startswith('_') or not isinstance(acfg, dict):
+            continue          # คีย์หมายเหตุ ไม่ใช่งาน
         if tid in reg_ids or (acfg.get('label') or tid) in have:
             continue
         age, when, _at = artifact_age(acfg, now)
@@ -905,6 +966,22 @@ def sheet_dates(spec):
     return {}, None
 
 
+def sheet_asof_label(task_id, cfg_all):
+    """วันที่ที่ชีตมีข้อมูลถึง (เอาวันน้อยสุดของกลุ่ม) สำหรับช่อง "ข้อมูลถึง" ของการ์ด
+
+    คืน None ถ้างานนี้ไม่ได้กินข้อมูลจากชีต หรืออ่านวันที่ไม่ได้ — ให้ใช้เวลาผลงานตามเดิม
+    """
+    spec = (cfg_all.get('sheet_source') or {}).get(task_id)
+    if not spec:
+        return None
+    dates, _src = sheet_dates(spec.get('from'))
+    if not dates:
+        dates, _src = sheet_dates(spec.get('fallback'))
+    if not dates:
+        return None
+    return 'ชีตถึง ' + min(dates.values()).strftime('%d/%m')
+
+
 def last_sunday(now):
     """วันอาทิตย์ล่าสุดที่ปิดสัปดาห์แล้ว — ถ้าวันนี้เป็นอาทิตย์ยังไม่นับ (สัปดาห์ยังไม่จบ)"""
     d = now.date()
@@ -1013,6 +1090,82 @@ def check_sleep_gaps(now, crons, starts, hours_back=26):
     return out
 
 
+# ═════════════════════════════════════════════════════════════════════════════
+# โหมด --refresh — ให้ "งานที่เพิ่งเขียนผลงานเสร็จ" เรียกต่อท้ายได้ (6 พ.ย. 69)
+#
+# ปัญหา: ตัวตรวจรันชั่วโมงละครั้ง (:12) การ์ดจึงค้างภาพเก่าได้นานถึง 1 ชม. หลังงานจบ
+#   เกิดจริง 6 พ.ย. 69: sales-update อ่านชีตใหม่ได้ถึง 5/11 ตอน 09:34 แต่การ์ดยังขึ้น
+#   "รอทีมกรอกชีต ค้าง 31/10" จนถึงรอบ 10:12
+#
+# ⚠️ ห้ามเขียนทับทั้งไฟล์จากในแซนด์บ็อกซ์ (งานฝั่ง local) — ฝั่งนั้นอ่านทะเบียนงานและ
+#    ไฟล์เซสชันไม่ได้ ผลที่ได้จะเป็น "ตรวจไม่ได้" ทุกแถว แล้วทับสแนปช็อตที่ดีอยู่
+#    จึงแยกเป็น 2 ชั้น:
+#      · อ่านเซสชันได้ (เครื่อง Mac / ฝั่ง code) -> ตรวจใหม่ทั้งไฟล์ตามปกติ
+#      · อ่านไม่ได้ (แซนด์บ็อกซ์) -> แก้เฉพาะ "ความสดของผลงาน" ซึ่งอ่านจากไฟล์ในรีโปได้
+#        ห้ามเพิ่ม/ลบแถว ห้ามแตะแถว ⛔ และคง checked_at เดิมไว้ เพื่อให้ด่าน
+#        "ตัวตรวจไม่ได้รัน" ของหน้าเว็บยังทำงาน
+PATCHABLE = ('ข้อมูลค้าง', 'ตรวจผลงานไม่ได้')
+
+
+def can_read_sessions():
+    """รันอยู่ในที่ที่อ่านทะเบียนงาน + ไฟล์เซสชันได้ไหม (เครื่อง Mac จริง)"""
+    if not glob.glob(REG_GLOB):
+        return False
+    by, _err = load_sessions(SESS_CODE)
+    return bool(by)
+
+
+def patch_artifacts(now, path=None):
+    """แก้เฉพาะความสดของผลงานในไฟล์สถานะเดิม — ใช้เมื่ออ่านเซสชันไม่ได้"""
+    p = Path(path) if path else (BASE / 'scripts' / 'ops' / 'task_health.json')
+    try:
+        data = json.loads(p.read_text(encoding='utf-8'))
+        cfg_all = json.loads(EXPECT.read_text(encoding='utf-8'))
+    except (OSError, ValueError) as e:
+        return {'status': 'SKIP', 'why': 'อ่านไฟล์สถานะหรือกติกาไม่ได้ (%s)' % type(e).__name__}
+    spec = {}
+    for grp in ('local_tasks', 'code_tasks'):
+        for tid, c in (cfg_all.get(grp) or {}).items():
+            if tid.startswith('_') or not isinstance(c, dict):
+                continue
+            spec[tid] = (tid, c)
+            spec[c.get('label') or tid] = (tid, c)
+    changed = []
+    for row in data.get('tasks') or []:
+        tid, acfg = spec.get(row.get('name'), (None, None))
+        if not acfg or row.get('level') == '⛔':
+            continue
+        age, when, _at = artifact_age(acfg, now)
+        asof = sheet_asof_label(tid, cfg_all) or (when if age is not None else None)
+        if asof and asof != row.get('data_asof'):
+            row['data_asof'] = asof
+            changed.append(row['name'])
+        mx = acfg.get('max_age_hours')
+        fresh = (mx is not None and age is not None and age <= mx)
+        if fresh and row.get('status') in PATCHABLE:
+            row.update(level='✅', status='ปกติ',
+                       note='ผลงานออกแล้ว %s — รีเฟรชตอนงานเขียนผลเสร็จ %s '
+                            '(เวลาตรวจเต็มยังเป็น %s)'
+                            % (when, now.strftime('%H:%M'), data.get('checked_at', '—')))
+            if row['name'] not in changed:
+                changed.append(row['name'])
+        elif row.get('level') in ('📝', '⚠️') and (cfg_all.get('sheet_source') or {}).get(tid):
+            sw = sheet_wait_row(tid, cfg_all, now)
+            if sw:
+                lv, st = ('⚠️', 'ชีตค้างเกินกำหนด') if sw[1] else \
+                         ('✅', 'ปกติ') if sw[2] else ('📝', 'รอทีมกรอกชีต')
+                if (lv, st, sw[0]) != (row.get('level'), row.get('status'), row.get('note')):
+                    row.update(level=lv, status=st, note=sw[0])
+                    if row['name'] not in changed:
+                        changed.append(row['name'])
+    if changed:
+        data['refreshed_at'] = now.strftime('%Y-%m-%d %H:%M')
+        data['refreshed_rows'] = changed
+        p.write_text(json.dumps(data, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
+    return {'status': 'PATCHED' if changed else 'NO_CHANGE', 'rows': changed,
+            'why': 'อ่านไฟล์เซสชันไม่ได้ (แซนด์บ็อกซ์) — แก้เฉพาะความสดของผลงาน'}
+
+
 def write_status_json(now, path=None):
     rows, unreadable, gaps = build_status(now)
     data = {
@@ -1025,6 +1178,8 @@ def write_status_json(now, path=None):
                    'warn': sum(1 for r in rows if r['level'] == '⚠️'),
                    'ok': sum(1 for r in rows if r['level'] == '✅'),
                    'sheet_wait': sum(1 for r in rows if r['level'] == '📝'),
+                   # ℹ️ = รู้สาเหตุแล้วและไม่ใช่ปัญหา — นับแยกไว้ดู ไม่รวมใน warn/stop
+                   'info': sum(1 for r in rows if r['level'] == 'ℹ️'),
                    'gaps': len(gaps),
                    'known_errors_skipped': sum(int(r.get('known_error_hits') or 0) for r in rows)},
         'tasks': [{k: r.get(k, '') for k in
@@ -1048,10 +1203,27 @@ def main():
     ap.add_argument('--write-json', action='store_true',
                     help='เขียน scripts/ops/task_health.json ให้หน้า Dashboard อ่าน '
                          '(ต้องรันจากงานฝั่ง code เท่านั้น ฝั่ง local อ่านไฟล์เซสชันไม่ได้)')
+    ap.add_argument('--refresh', action='store_true',
+                    help='เรียกต่อท้ายหลังงานเขียนผลงานเสร็จ เพื่อให้การ์ดไม่ค้างภาพเก่า '
+                         '· อยู่บนเครื่อง Mac = ตรวจใหม่ทั้งไฟล์ · ในแซนด์บ็อกซ์ = '
+                         'แก้เฉพาะความสดของผลงาน · **คืน exit 0 เสมอ ไม่ทำให้รอบของงานล้ม**')
     ap.add_argument('--at', help='ทดสอบย้อนหลัง: สมมุติว่าตอนนี้คือเวลานี้ YYYY-MM-DDTHH:MM '
                                 '(ใช้ตรวจเหตุการณ์ที่ผ่านมาแล้ว ไม่ใช้ในงานจริง)')
     a = ap.parse_args()
     now = datetime.fromisoformat(a.at) if a.at else datetime.now()
+    if a.refresh:
+        # ห้ามคืนรหัสจบที่ไม่ใช่ 0 — งานที่เรียกต่อท้ายต้องไม่กลายเป็น "ล้ม" เพราะตัวตรวจ
+        try:
+            if can_read_sessions():
+                data, _p = write_status_json(now)
+                out = {'status': 'FULL', 'checked_at': data['checked_at'],
+                       'counts': data['counts']}
+            else:
+                out = patch_artifacts(now)
+        except Exception as e:                        # noqa: BLE001 — กันทุกกรณี
+            out = {'status': 'SKIP', 'why': '%s: %s' % (type(e).__name__, str(e)[:120])}
+        print(json.dumps(out, ensure_ascii=False))
+        return 0
     if a.write_json:
         data, p = write_status_json(now)
         c = data['counts']
