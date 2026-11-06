@@ -1,6 +1,6 @@
 ---
 name: wibwub-tiktok-product-daily
-description: ทุกวัน 08:45/19:45 — ยอดขายระดับสินค้า + SKU จาก TikTok Compass → TK_PROD_DATA / TK_PROD_SKU
+description: ทุกวัน 09:55/20:55 — ยอดขายระดับสินค้า + SKU จาก TikTok Compass → TK_PROD_DATA / TK_PROD_SKU
 ---
 > ⛔ **ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์** (เช่น `allow_cowork_file_delete`)
 > งานตั้งเวลาไม่มีคนกดอนุญาต เครื่องมือนี้จะค้างรอจนหมดรอบ — เกิดจริง 5 พ.ย. 69
@@ -9,7 +9,11 @@ description: ทุกวัน 08:45/19:45 — ยอดขายระดั�
 > ถ้าติด `.git/index.lock` หรือ `.git/HEAD.lock`: `gitw.py` รอให้แล้วสูงสุด 5 นาที
 > **ห้ามลบ lock ของคนอื่น** ถ้าสุดท้ายยังไม่ผ่าน → **รายงานตรง ๆ** ว่ารอบนี้ข้อมูลเข้าไฟล์แล้ว
 > แต่ยังไม่ได้ commit แล้วจบรอบ **ห้ามรอต่อ**
-> ⚠️ ไฟล์นี้ไม่มีงานไหนใช้อยู่ (ณ 29 ต.ค. 69) — ตัวจริงอยู่ที่ `~/Documents/Claude/Scheduled/wibwub-tiktok-product-daily/SKILL.md` · ห้ามแก้ที่นี่โดยคิดว่ามีผล
+> ✅ **ไฟล์นี้คือตัวจริง** — ตั้งแต่ 6 พ.ย. 69 `~/Documents/Claude/Scheduled/wibwub-tiktok-product-daily/SKILL.md`
+> เป็น**สำเนาตรงทุกไบต์**ของไฟล์นี้ (`skill_sync` โหมด `copy` เฝ้าให้) แก้ที่นี่แล้ว**ต้องคัดลอกทับตัวจริงด้วย**
+> ก่อนหน้านี้ตัวจริงเป็นพรอมป์คนละชุด (20 KB ภาษาอังกฤษ) ที่ยังสั่ง push ด้วยมือและให้ผู้ใช้
+> ดับเบิลคลิกสคริปต์ช่วย push เอง ทั้งที่ launchd `com.wibwub.autopush` ทำให้อยู่แล้ว
+> — การแก้ในรีโปจึงไม่มีผลกับรอบจริงเลย (ตัวตรวจ `skill_sync` มีมาร์กเกอร์จับแพทเทิร์นนี้แล้ว)
 
 
 ## 📂 ขั้น 0 — หาโฟลเดอร์ All ก่อนเสมอ (ทำก่อนทุกอย่าง)
@@ -17,9 +21,31 @@ description: ทุกวัน 08:45/19:45 — ยอดขายระดั�
 พรอมป์นี้ถูกเรียกได้จาก **2 ฝั่ง** และโฟลเดอร์ All อยู่คนละที่กัน
 จึง**ห้ามฝังพาธตายตัว** ให้หาด้วยคำสั่งนี้ทุกครั้ง แล้วใช้ผลลัพธ์เป็น `BASE`
 
+**คำสั่ง shell แรกของรอบต้องขึ้นต้นด้วย `python3` เสมอ**
+
 ```bash
-for d in "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All" "$HOME/mnt/All" /sessions/*/mnt/All; do [ -d "$d/scripts" ] && echo "$d" && break; done
+python3 -c "
+import glob, os
+CAND = ['/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All',
+        os.path.expanduser('~/mnt/All')] + sorted(glob.glob('/sessions/*/mnt/All'))
+P = '/scripts/task_prompts/wibwub-tiktok-product-daily.md'
+for B in CAND:
+    try:
+        open(B + P).read(1)
+        print('BASE OK', B)
+        break
+    except OSError as e:
+        print('ไม่ได้', B, type(e).__name__)
+else:
+    print('⛔ ไม่พบ BASE')
+"
 ```
+
+> ⛔ **ห้ามเช็ค BASE ด้วย `os.path.isdir` / `os.path.isfile` / `[ -d ... ]` / `[ -f ... ]`**
+> stat บนโฟลเดอร์ Drive ตอบ **False** หลอกได้ (เกิดจริง 3–4 พ.ย. 69 กับ `wibwub-daily-stock`
+> ล้ม 4 รอบติด) ให้ **เปิดไฟล์จริง** แล้วรับ `OSError` แทน
+> **ห้ามใช้ลูป `for` ของ bash หรือตั้งตัวแปร `BASE=`** — ตัวแยกคำสั่งอ่านไม่ออก
+> แล้วเด้งกล่องขออนุญาตที่ไม่มีคนกด (รอบนั้นค้างทั้งรอบ)
 
 - ได้พาธมา → ใช้เป็น `BASE` ในทุกคำสั่งถัดไป (เขียนพาธเต็มเสมอ ห้ามใช้ตัวแปร shell)
 - **ไม่เจอ** หรือ shell ตอบว่า `No folders are connected`
@@ -102,7 +128,7 @@ a.download='tk_prod_YYYYMMDD.json'; document.body.appendChild(a); a.click();
 ## ขั้นที่ 4 — merge ระดับสินค้า
 
 ```bash
-cd "$BASE" && python3 tiktok_product_merge.py tiktok_product_daily_new.json
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/tiktok_product_merge.py" "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/tiktok_product_daily_new.json"
 ```
 
 ## ขั้นที่ 5 — ดึงระดับ SKU
@@ -115,13 +141,13 @@ Endpoint: `/api/v2/.../sku/list` — **ไม่ต้องใช้ signature 
 ห่อผลเป็น chunk key เดียว `"STARTDATE_ENDDATE"` แล้ว:
 
 ```bash
-cd "$BASE" && python3 tiktok_sku_merge.py tiktok_sku_daily_new.json
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/tiktok_sku_merge.py" "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/tiktok_sku_daily_new.json"
 ```
 
 ## ขั้นที่ 6 — ตรวจ + bump + commit
 
 ```bash
-python3 scripts/bump_sw.py          # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"   # ห้ามใช้ sed -i — BSD sed บน macOS พังเงียบ ๆ
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add WIBWUB_Dashboard.html sw.js tiktok_product_daily_new.json tiktok_sku_daily_new.json
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" -c user.name="WIBWUB Bot" -c user.email="marketingwibwub@gmail.com" \
     commit -m "auto: TikTok product/SKU <วันที่วันนี้ เช่น 2026-11-04>"
@@ -133,7 +159,9 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 
 ## RULES
 
-- **ห้ามลบ `.git/*.lock` เอง** — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
+- **ห้ามลบ `.git/*.lock` ของคนอื่นทุกกรณี** และ **ห้ามวน retry เอง** — `gitw.py` รอ lock
+  ให้สูงสุด 5 นาที และถ้าสุดท้าย commit ไม่ผ่านจะ unstage ไฟล์ของตัวเองคืนให้ (เนื้อไฟล์ไม่หาย)
+  **exit 3 = ไม่ได้ commit** ให้รายงานตรง ๆ ว่ารอบนี้ข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit
 - ตัวเลขทุกตัวให้สคริปต์ merge คำนวณ ห้ามคิดเอง ห้ามกรอกค่าสมมุติ
 - **ห้ามเขียนทับวันเดิมด้วยข้อมูลที่ได้น้อยกว่าเดิม** — backend ตัดข้อมูลสุ่ม
   ถ้ารอบนี้ได้สินค้าน้อยกว่าที่มีอยู่ ให้ข้ามและรายงาน

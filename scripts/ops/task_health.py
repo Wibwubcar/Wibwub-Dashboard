@@ -498,6 +498,28 @@ DRIFT_MARKERS = [
     ('ห้ามใช้พาธ `/sessions/', 'สั่งห้ามใช้พาธ /sessions ทั้งที่เป็นพาธเดียวที่ใช้ได้เมื่อได้ Linux sandbox'),
 ]
 
+# แพทเทิร์นที่ต้องใช้ regex เพราะต้องดู **บริบทของบรรทัด** ไม่ใช่แค่มีคำนั้นอยู่ (6 พ.ย. 69)
+#
+# ที่มา: พรอมป์เกือบทุกตัวพูดถึง `git push` / สคริปต์ช่วย push อยู่แล้ว — แต่พูดในฐานะ
+# **ข้อห้าม** ("ไม่ต้อง …", "ห้ามบอกผู้ใช้ให้กด …") การจับด้วยคำเปล่า ๆ จะขึ้นเตือนทั้งบ้าน
+# จึงจับเฉพาะบรรทัดที่ "สั่งให้ทำ" คือบรรทัดที่ **ไม่มีคำปฏิเสธ/คำเล่าย้อนหลัง** อยู่ด้วย
+#
+# เจอจริง 6 พ.ย. 69 จากการไล่ดูตัวจริงทั้ง 23 งาน: ที่ยังสั่งแบบเก่ามี 3 ตัว
+#   · wibwub-tiktok-product-daily (แก้แล้วรอบนี้ — เปลี่ยนเป็นโหมด copy)
+#   · wibwub-shopee-live-daily    (สั่ง commit ด้วย git ตรง + ให้ผู้ใช้กดสคริปต์ push เอง)
+#   · wibwub-download-tiktok-ads  (ขั้นที่ 7 ยังบอกให้ผู้ใช้ double-click สคริปต์ push)
+NEG = ('ห้าม|ไม่ต้อง|ไม่ใช่|ไม่มีผล|เลิกใช้|ตายแล้ว|ทั้งที่|เคย|ก่อนหน้านี้|มาร์กเกอร์'
+       '|Do NOT|do not')
+DRIFT_RX = [
+    (r'(?m)^(?!.*(?:' + NEG + r')).*push_now',
+     'สั่ง/เตือนให้กดสคริปต์ push เอง (launchd com.wibwub.autopush push ให้เองใน 2 นาที)'),
+    (r'(?m)^\s*git\s+(?:add|commit|push|reset)\b',
+     'สั่ง git ตรงในคำสั่ง — ต้องผ่าน gitw.py (git ตรงกวาดไฟล์ที่งานอื่น stage ค้างไว้ '
+     'และตั้งแต่ 4 พ.ย. 69 มี hook ตีกลับ รอบนั้นจะล้มทั้งรอบ)'),
+    ('git push origin',
+     'สั่ง push ขึ้น remote เอง (launchd com.wibwub.autopush ทำให้อยู่แล้ว)'),
+]
+
 # ข้อความที่ "ต้องมี" ในพรอมป์ตัวจริงทุกตัว — ไม่มี = กฎใหม่ยังไม่ถึงรอบจริง
 REQUIRED = [
     ('ห้ามเรียกเครื่องมือขอสิทธิ์ลบไฟล์',
@@ -536,6 +558,9 @@ def check_skill_sync():
                                % (rel, len(lt.encode()), len(rt.encode())))
         for pat, reason in DRIFT_MARKERS:
             if pat in lt and reason not in why:
+                why.append(reason)
+        for rx, reason in DRIFT_RX:
+            if re.search(rx, lt) and reason not in why:
                 why.append(reason)
         for pat, reason in REQUIRED:
             if pat not in lt and reason not in why:
@@ -628,7 +653,7 @@ def build_status(now):
     reg_ids = {(x.get('filePath') or '').split('/')[-2] for x in (reg or [])}
 
     def mk(name, side, cron, last_run, sched, sess_list, acfg, prompt_file, task_id=''):
-        r = {'name': name, 'side': side, 'cron': cron}
+        r = {'name': name, 'side': side, 'cron': cron, '_tid': task_id}
         # ตัดเซสชันที่เกิดหลังเวลาที่กำลังตรวจทิ้ง เพื่อให้ --at ย้อนหลังได้จริง
         sess_list = [x for x in sess_list if (_ms(x.get('createdAt')) or now) <= now]
         if last_run and last_run > now:
@@ -879,9 +904,30 @@ def build_status(now):
                     starts.append(t)
     gaps = check_sleep_gaps(now, crons, starts)
     # SKILL.md ตัวจริงไม่ตรงกับรีโป = การแก้ไม่มีผลกับรอบจริง ต้องขึ้นหน้าเว็บด้วย
+    #
+    # ⚠️ ห้ามเอาไปใส่ `unreadable` (6 พ.ย. 69) — ช่องนั้นหมายถึง "ตัวตรวจอ่านของไม่ได้"
+    #    และทำให้ --write-json คืน exit 3 → งานรายชั่วโมงขึ้น ⛔ บรรทัดแรกทุกรอบ
+    #    ทั้งที่เป็นปัญหาของพรอมป์งานเดียวที่รู้ตัวแล้ว ไม่ใช่ตัวตรวจพัง
+    # -> แปะเป็น ⚠️ ที่ **แถวของงานนั้น** แทน · ถ้าหาแถวไม่เจอจึงค่อยไปลง unreadable
+    by_tid = {r.get('_tid'): r for r in rows if r.get('_tid')}
+    by_name = {r['name']: r for r in rows}
     for d in check_skill_sync():
-        if d['lv'] == '⚠️':
+        if d['lv'] != '⚠️':
+            continue
+        folder = d['task'].replace('(SKILL.md)', '').strip()
+        row = by_tid.get(folder) or by_name.get(folder)
+        if row is None:
             unreadable.append('%s: %s' % (d['task'], d['msg']))
+            continue
+        row['skill_drift'] = d['msg'][:200]
+        row['note'] = ('สถานะรอบ: %s · SKILL.md ตัวจริง: %s'
+                       % (row.get('status', '—'), d['msg']))[:300]
+        if row['level'] != '⛔':
+            row['level'] = '⚠️'
+            row['status'] = 'พรอมป์ตัวจริงยังสั่งแบบเก่า'
+    # เรียงอีกครั้ง — บล็อกข้างบนเปลี่ยนระดับของแถวหลังเรียงไปแล้ว ถ้าไม่เรียงใหม่
+    # แถว ⚠️ จะไปจมอยู่กลางตารางตามชื่อเดิม
+    rows.sort(key=lambda r: (order.get(r['level'], 9), r['name']))
     return rows, unreadable, gaps
 
 
@@ -1184,7 +1230,8 @@ def write_status_json(now, path=None):
                    'known_errors_skipped': sum(int(r.get('known_error_hits') or 0) for r in rows)},
         'tasks': [{k: r.get(k, '') for k in
                    ('name', 'side', 'last_round', 'level', 'status', 'data_asof',
-                    'silent_min', 'note', 'desc_mismatch', 'known_error_hits')} for r in rows],
+                    'silent_min', 'note', 'desc_mismatch', 'known_error_hits',
+                    'skill_drift')} for r in rows],
     }
     p = Path(path) if path else (BASE / 'scripts' / 'ops' / 'task_health.json')
     p.write_text(json.dumps(data, ensure_ascii=False, indent=1) + '\n', encoding='utf-8')
