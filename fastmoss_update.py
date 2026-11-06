@@ -134,6 +134,19 @@ BASE = Path(__file__).resolve().parent
 HISTORY_PATH = BASE / "fastmoss_history.json"
 DASHBOARD_PATH = BASE / "WIBWUB_FastMoss_Competitor_Dashboard.html"
 
+# โฟลเดอร์พักไฟล์ระหว่างทาง — **ห้ามใช้ /tmp**
+#
+# ที่มา (6 พ.ย. 69): พรอมป์สั่งให้เขียนสแนปช็อตลง `/tmp/fastmoss_snapshot.json`
+# แต่ /tmp ของรอบตั้งเวลาเป็นคนละที่กับของเครื่อง และบางรอบเขียนไม่ได้ ผลคือรอบนั้น
+# ไปหยิบ **ไฟล์เก่าของ 31 ต.ค. ที่ค้างอยู่ใน /tmp** มา merge แล้ว commit (5152589)
+# แบบเงียบ ๆ ตัวเลข "ของวันนี้" จึงกลายเป็นตัวเลขของ 6 วันก่อน
+# โฟลเดอร์นี้อยู่ในรีโปเพื่อให้แซนด์บ็อกซ์เห็นแน่ ๆ และ `.gitignore` ครอบ `/.cache/` ไว้แล้ว
+WORK_DIR = BASE / ".cache" / "fastmoss"
+SNAPSHOT_PATH = WORK_DIR / "snapshot.json"
+
+# สแนปช็อตที่เก่ากว่านี้ถือว่าเป็นไฟล์ค้าง ไม่ใช่ของรอบนี้
+MAX_SNAPSHOT_AGE_HOURS = 12
+
 DATA_MARKER_START = "const FASTMOSS_DATA = "
 DATA_MARKER_END = ";\n/*FASTMOSS_DATA_END*/"
 
@@ -147,6 +160,44 @@ def save_history(data):
     with open(HISTORY_PATH, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
         f.write("\n")
+
+
+def check_snapshot_fresh(path, snapshot, allow_old, now=None):
+    """ด่าน: สแนปช็อตต้องเป็น "ของวันนี้" ไม่ใช่ไฟล์เก่าที่ค้างอยู่
+
+    ตรวจ 2 ชั้นเพราะพลาดได้คนละแบบ:
+      1. ฟิลด์ `date` ต้องเป็นวันนี้ — จับกรณีหยิบไฟล์ของวันก่อนมาทั้งใบ
+      2. เวลาแก้ไขไฟล์ต้องไม่เกิน MAX_SNAPSHOT_AGE_HOURS ชั่วโมง — จับกรณีไฟล์เก่า
+         ที่บังเอิญมีฟิลด์ date ถูก (เช่นแก้ไฟล์เดิมแค่บางส่วน)
+
+    ไม่ผ่าน = **หยุดทันที ไม่แตะ history ไม่ commit** แล้วรายงาน ห้ามใช้ไฟล์เก่า
+    (ผู้ใช้สั่ง 6 พ.ย. 69 หลังเคส 5152589)
+    """
+    if allow_old:
+        return                      # ผู้เรียกยืนยันว่าตั้งใจเติมย้อนหลัง
+    now = now or datetime.now()
+    today = now.strftime("%Y-%m-%d")
+    date = (snapshot or {}).get("date")
+    if date != today:
+        raise SystemExit(
+            "⛔ สแนปช็อตไม่ใช่ของวันนี้ — date ในไฟล์คือ %r แต่วันนี้คือ %s\n"
+            "   ไฟล์: %s\n"
+            "   รอบนี้ยังไม่ได้แตะข้อมูลและไม่ได้ commit · ให้ดึงตัวเลขจาก FastMoss ใหม่\n"
+            "   **ห้ามใช้ไฟล์เก่า** ถ้าตั้งใจเติมย้อนหลังจริง ๆ ให้ใส่ --allow-old-date"
+            % (date, today, path)
+        )
+    try:
+        age = (now.timestamp() - Path(path).stat().st_mtime) / 3600
+    except OSError:
+        return
+    if age > MAX_SNAPSHOT_AGE_HOURS:
+        raise SystemExit(
+            "⛔ ไฟล์สแนปช็อตเก่าเกินไป (แก้ไขล่าสุดเมื่อ %.1f ชม. ที่แล้ว เกิน %d)\n"
+            "   ไฟล์: %s\n"
+            "   แปลว่ารอบนี้เขียนไฟล์ใหม่ไม่สำเร็จแล้วไปหยิบของเก่ามา — หยุดไว้ก่อน\n"
+            "   ถ้าตั้งใจจริงให้ใส่ --allow-old-date"
+            % (age, MAX_SNAPSHOT_AGE_HOURS, path)
+        )
 
 
 def upsert_snapshot(history, snapshot):
@@ -252,7 +303,18 @@ def git_commit():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--snapshot", help="Path to a snapshot JSON to merge in")
+    ap.add_argument(
+        "--snapshot",
+        nargs="?",
+        const=str(SNAPSHOT_PATH),
+        help="Path to a snapshot JSON to merge in. ใส่ธงเปล่า ๆ จะใช้ %s"
+        % SNAPSHOT_PATH,
+    )
+    ap.add_argument(
+        "--allow-old-date",
+        action="store_true",
+        help="ข้ามด่าน 'สแนปช็อตต้องเป็นของวันนี้' — ใช้ตอนเติมย้อนหลังโดยตั้งใจเท่านั้น",
+    )
     ap.add_argument(
         "--monthly-snapshot",
         help="Path to a MONTHLY_SNAPSHOT JSON (see module docstring) to merge "
@@ -283,6 +345,10 @@ def main():
         if args.snapshot:
             with open(args.snapshot, encoding="utf-8") as f:
                 snapshot = json.load(f)
+            check_snapshot_fresh(args.snapshot, snapshot, args.allow_old_date)
+            if args.allow_old_date:
+                print("⚠️ ข้ามด่านวันที่ตามที่สั่ง — สแนปช็อตลงวันที่ %s"
+                      % snapshot.get("date"))
             history = upsert_snapshot(history, snapshot)
         if args.monthly_snapshot:
             with open(args.monthly_snapshot, encoding="utf-8") as f:

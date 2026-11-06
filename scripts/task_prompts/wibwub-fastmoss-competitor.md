@@ -87,7 +87,13 @@ URL: `https://www.fastmoss.com/th/shop-marketing/detail/7494636213512539066`
 
 ### Step 4 — Write the snapshot JSON and run the updater
 
-Write a JSON file (e.g. `/tmp/fastmoss_snapshot.json`) shaped exactly like this (use today's actual date and the real numbers you just read):
+> ⛔ **Do not use `/tmp`.** On 6 Nov 2026 the round could not write to `/tmp`, so it
+> silently picked up a leftover snapshot from 31 Oct and committed it (5152589).
+> `.cache/` lives inside the repo (so the sandbox can always see it) and is gitignored.
+> The updater now refuses any snapshot whose `date` is not today, or whose file is
+> older than 12 hours — it stops without touching the data. **Never reuse an old file.**
+
+Write the snapshot to `<BASE>/.cache/fastmoss/snapshot.json` (create the folder if missing), shaped exactly like this (use today's actual date and the real numbers you just read):
 
 ```json
 {
@@ -106,7 +112,7 @@ Write a JSON file (e.g. `/tmp/fastmoss_snapshot.json`) shaped exactly like this 
 Then run:
 ```bash
 cd "$BASE"
-python3 fastmoss_update.py --snapshot /tmp/fastmoss_snapshot.json
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/fastmoss_update.py" --snapshot
 ```
 This script merges the snapshot into `fastmoss_history.json` (overwriting today's entry if you re-run it — safe to retry), regenerates the dashboard's embedded data, and commits both files plus the dashboard HTML with author "WIBWUB Bot <marketingwibwub@gmail.com>". It will also attempt `git push`, which is expected to fail from the sandbox (HTTP 403 proxy) — that's normal, not an error.
 
@@ -120,9 +126,9 @@ python3 -c "
 import re
 html = open('WIBWUB_FastMoss_Competitor_Dashboard.html', encoding='utf-8').read()
 m = re.search(r'<script>(.*?)</script>', html, re.DOTALL)
-open('/tmp/fm_check.js','w',encoding='utf-8').write(m.group(1))
+open('/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/.cache/fastmoss/fm_check.js','w',encoding='utf-8').write(m.group(1))
 "
-node --check /tmp/fm_check.js && echo "JS_OK"
+node --check "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/.cache/fastmoss/fm_check.js" && echo "JS_OK"
 ```
 If this fails, the merge broke something — do not leave the commit in place silently; report the failure clearly.
 
