@@ -85,9 +85,23 @@ else:
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/collect_download.py" "overview-v2_1d_*.csv" "data ยอดขาย plaform/Shopee Live"
 ```
 
-สคริปต์มองทั้ง `~/Downloads`, `downloads_archive/` (mover ย้ายไฟล์ออกจาก Downloads
-ภายในไม่กี่วินาที) และโฟลเดอร์ปลายทาง แล้วหยิบไฟล์ใหม่สุด
+สคริปต์มองให้ครบทุกที่เอง: `~/Downloads` · `/Users/<user>/Downloads` ·
+**`/sessions/*/mnt/Downloads`** (Downloads ของ Mac ที่ถูก mount เข้าแซนด์บ็อกซ์) ·
+`downloads_archive/` · และโฟลเดอร์ปลายทาง แล้วหยิบไฟล์ใหม่สุด
 `status` ที่ควรได้คือ `COPIED` หรือ `ALREADY_THERE`
+
+> ⛔ **ห้ามไล่หาไฟล์เองด้วย `find` / `ls -t` / `ls -la` เด็ดขาด**
+> `find -newermt` บน macOS เป็น bfs ซึ่ง **error แต่คืน exit 0 พร้อมผลว่าง** —
+> อ่านแล้วเหมือน "ไม่มีไฟล์" ทั้งที่ไฟล์อยู่ตรงนั้น (เกิดจริง 7 พ.ย. 69 รอบ 11:53:
+> Chrome โหลดไฟล์ลงเครื่องสำเร็จแล้ว แต่รอบนั้นสรุปว่าโหลดไม่สำเร็จ)
+> ถ้าอยากดูว่ามีไฟล์อะไรและเก่าแค่ไหน **ให้ใช้คำสั่งนี้คำสั่งเดียว** (ไม่ต้องแก้อะไร):
+>
+> ```bash
+> python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/collect_download.py" "overview-v2_1d_*.csv" "data ยอดขาย plaform/Shopee Live" --check-only
+> ```
+>
+> มันพิมพ์ไฟล์ที่เจอ · อายุเป็นนาที · และหยิบมาจากที่ไหน โดยไม่คัดลอกอะไร
+
 ถ้าได้ `NOT_FOUND` หรือ `TOO_OLD` = รอบนี้โหลดไม่สำเร็จ **ให้หยุดและรายงาน
 ห้ามเอาไฟล์ของเมื่อวานไปใช้แทน** (สคริปต์กันไว้ด้วยเกณฑ์อายุ 30 นาที)
 

@@ -42,6 +42,15 @@ ALL = _find_base()
 # จึงใส่พาธจริงของเครื่องไว้ด้วย แล้วให้ลูปด้านล่างมองทุกที่ตามเดิม
 DL = os.path.expanduser('~/Downloads')
 DL_REAL = '/Users/thanasablilutanon/Downloads'
+# **ที่สำคัญที่สุดเมื่อรันในแซนด์บ็อกซ์** (เพิ่ม 7 พ.ย. 69):
+# แซนด์บ็อกซ์ Linux มองไม่เห็น `/Users/...` เลย — Downloads ของ Mac ถูก mount ไว้ที่
+# `/sessions/<ชื่อ>/mnt/Downloads` และชื่อเซสชันเปลี่ยนทุกรอบ จึงต้องใช้ glob
+#
+# เกิดจริง 7 พ.ย. 69 รอบ 11:53 ของ wibwub-shopee-live-daily: Chrome โหลดไฟล์
+# `overview-v2_1d_2026-11-06_*.csv` ลง Downloads ของ Mac สำเร็จตั้งแต่ 11:53:58
+# แต่สคริปต์นี้คืน TOO_OLD เพราะมองไม่เห็นทั้ง DL และ DL_REAL เหลือแต่ไฟล์เก่า
+# ในโฟลเดอร์ปลายทาง -> รอบนั้นหยุดและไม่ได้ข้อมูลของ 6 พ.ย. ทั้งที่ไฟล์อยู่บนเครื่องแล้ว
+DL_SANDBOX = '/sessions/*/mnt/Downloads'
 
 
 def main():
@@ -55,7 +64,8 @@ def main():
     dest = os.path.join(ALL, a.dest)
     # มองทั้ง Downloads · downloads_archive (mover ย้ายไปพักไว้) · ปลายทางเอง (เผื่อ mover ส่งตรง)
     cand = []
-    for d in (DL, DL_REAL, os.path.join(ALL, 'downloads_archive'), dest):
+    # `DL_SANDBOX` มี * อยู่แล้ว glob จึงขยายให้เองทั้งชั้นชื่อเซสชันและชั้นไฟล์
+    for d in (DL, DL_REAL, DL_SANDBOX, os.path.join(ALL, 'downloads_archive'), dest):
         cand += glob.glob(os.path.join(d, a.pattern))
         cand += glob.glob(os.path.join(d, '*', a.pattern))   # archive แยกโฟลเดอร์ย่อยตามแพตเทิร์น
     cand = [f for f in cand if os.path.isfile(f)]

@@ -29,7 +29,9 @@
     (ของเดิม เม.ย.-ก.ค. มาจาก Compass Live Analysis export เก็บไว้แล้ว ไม่ต้องแตะ)
 
 ใช้:  python3 scripts/tiktok_live_daily.py [--dry-run] [--since YYYY-MM-DD]
-exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน · 2 = ไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
+exit: 0 = อัปเดตแล้ว · 10 = ไม่มีอะไรเปลี่ยน (ข้อมูลครบแล้วจริง ๆ) ·
+      **11 = รอข้อมูลต้นทาง** (TK_PROD_DATA ยังไม่มีเมื่อวาน — ไม่ใช่ความผิดของรอบนี้
+      ให้รันซ้ำหลังงาน wibwub-tiktok-product-daily จบ) · 2 = ไม่ผ่านด่านตรวจ (ไม่เขียนไฟล์)
 """
 import sys, re, json, argparse, subprocess, tempfile
 import datetime as dt
@@ -141,6 +143,22 @@ def main():
     if a.dry_run:
         print(json.dumps({'status': 'DRY_RUN', **summary}, ensure_ascii=False)); return 0
     if not added and not changed:
+        # แยก "ไม่มีอะไรเปลี่ยนเพราะข้อมูลครบแล้ว" ออกจาก "ต้นทางยังไม่มา" (7 พ.ย. 69)
+        #
+        # งานนี้ไม่ได้ดึงข้อมูลเอง — ยอดไลฟ์มาจาก TK_PROD_DATA ที่งาน
+        # `wibwub-tiktok-product-daily` เติมให้ · ถ้ารอบนี้ยิงก่อนงานนั้น TK_PROD_DATA
+        # จะยังไม่มีของเมื่อวาน แล้วรอบนี้คืน NO_CHANGE ซึ่ง **อ่านแล้วเหมือนงานปกติ**
+        # เกิดจริง 7 พ.ย. 69 ตอน catch-up: live 11:34 ยิงก่อน product 11:56
+        # ผลคือ TK_LIVE_DAILY ค้างที่ 5 พ.ย. โดยไม่มีใครเห็นว่าผิดปกติ
+        if y not in pdaily:
+            print(json.dumps({'status': 'WAITING_UPSTREAM',
+                              'รอ': 'TK_PROD_DATA ยังไม่มีวันที่ %s' % y,
+                              'ต้นทาง': 'งาน wibwub-tiktok-product-daily (09:55/20:55) '
+                                        'ต้องรันก่อนงานนี้',
+                              'ทำอย่างไรต่อ': 'ไม่ใช่ความผิดพลาดของรอบนี้ — ให้รายงานว่า '
+                                              '"รอข้อมูลต้นทาง" แล้วรันซ้ำหลังงานนั้นจบ',
+                              **summary}, ensure_ascii=False))
+            return 11
         print(json.dumps({'status': 'NO_CHANGE', **summary}, ensure_ascii=False)); return 10
 
     new_html = (html[:m_live.start(1)]
