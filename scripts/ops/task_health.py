@@ -24,7 +24,7 @@ exit: 0 = ปกติ · 3 = มี ⛔ (ให้ขึ้นบรรทั�
 """
 import sys, io, json, re, glob, argparse, subprocess, hashlib
 from pathlib import Path
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 
 def _find_base():
@@ -39,6 +39,29 @@ BASE = _find_base()
 EXPECT = BASE / 'scripts' / 'ops' / 'task_expect.json'
 REG_GLOB = str(Path.home() / 'Library' / 'Application Support' / 'Claude' /
                'local-agent-mode-sessions' / '*' / '*' / 'scheduled-tasks.json')
+
+
+# ───────────────────────── เวลา: บังคับเป็นเวลาไทยเสมอ ─────────────────────────
+# แซนด์บ็อกซ์ของงานตั้งเวลาตั้งนาฬิกาเครื่องเป็น **UTC** ถ้าใช้ datetime.now() /
+# datetime.fromtimestamp() ตรง ๆ ทุกเวลาที่เขียนลงไฟล์จะเพี้ยนไป 7 ชั่วโมง
+#
+# เกิดจริง 7 พ.ย. 69: สั่ง `--refresh` ตอน 13:35 แล้ว data_asof ของ TikTok Live
+# กลายเป็น "06 Nov 03:41" (ที่ถูกคือ 10:41) และ refreshed_at เป็น 06:35
+# แพตช์ไป 13 แถวก่อนจะจับได้ · ไฟล์สถานะนี้คนอ่านเทียบกับนาฬิกาตัวเอง
+# เวลาที่ผิด 7 ชม. ทำให้ "สด" กลายเป็น "ค้าง" และกลับกัน
+#
+# **ห้ามเรียก datetime.now() / datetime.fromtimestamp() ตรง ๆ ในไฟล์นี้อีก**
+BKK = timezone(timedelta(hours=7))
+
+
+def _now():
+    """เวลาปัจจุบันตามเวลาไทย (naive) — ใช้แทน datetime.now() ทุกที่"""
+    return datetime.now(BKK).replace(tzinfo=None)
+
+
+def _ts(epoch):
+    """epoch -> เวลาไทย (naive) — ใช้กับ mtime ของไฟล์และเวลา commit ของ git"""
+    return datetime.fromtimestamp(epoch, BKK).replace(tzinfo=None)
 
 
 def die(msg, detail=None):
@@ -91,7 +114,7 @@ def prev_fire(cron, now, back_days=70):   # 70 วัน เพื่อให�
 def iso(s):
     if not s: return None
     try:
-        return datetime.fromisoformat(str(s).replace('Z', '+00:00')).astimezone().replace(tzinfo=None)
+        return datetime.fromisoformat(str(s).replace('Z', '+00:00')).astimezone(BKK).replace(tzinfo=None)
     except ValueError:
         return None
 
@@ -162,7 +185,7 @@ def _git_last(pattern):
                         '--extended-regexp', f'--grep={pattern}'],
                        capture_output=True, text=True)
     s = r.stdout.strip()
-    return datetime.fromtimestamp(int(s)) if s.isdigit() else None
+    return _ts(int(s)) if s.isdigit() else None
 
 
 def _git_times(pattern, days=7):
@@ -173,7 +196,7 @@ def _git_times(pattern, days=7):
     r = subprocess.run(['git', '-C', str(BASE), 'log', '--since=%d.days' % days,
                         '--extended-regexp', '--format=%ct', '--grep=' + pattern],
                        capture_output=True, text=True)
-    return sorted(datetime.fromtimestamp(int(x)) for x in r.stdout.split() if x.isdigit())
+    return sorted(_ts(int(x)) for x in r.stdout.split() if x.isdigit())
 
 
 def round_had_artifact(start, end, art_at, art_times):
@@ -212,7 +235,7 @@ def check_code(now):
                 lv = '⚠️' if c.get('optional_file') else '⛔'
                 out.append({'lv': lv, 'task': label, 'msg': f'ไม่พบไฟล์ {c["file"]}'}); continue
             if kind == 'mtime':
-                seen = datetime.fromtimestamp(fp.stat().st_mtime)
+                seen = _ts(fp.stat().st_mtime)
             else:
                 m = re.search(c['pattern'], fp.read_text(encoding='utf-8'))
                 if not m:
@@ -272,7 +295,7 @@ def check_locks(now, lock_min):
     old = []
     for p in locks:
         try:
-            age = (now - datetime.fromtimestamp(p.stat().st_mtime)).total_seconds() / 60
+            age = (now - _ts(p.stat().st_mtime)).total_seconds() / 60
         except OSError:
             continue
         if age > lock_min:
@@ -316,7 +339,7 @@ STALE_HOURS = 14          # task_health.json เก่ากว่านี้ =
 
 def _ms(v):
     try:
-        return datetime.fromtimestamp(float(v) / 1000)
+        return _ts(float(v) / 1000)
     except (TypeError, ValueError):
         return None
 
@@ -449,7 +472,7 @@ def artifact_age(cfg, now):
         # (เคส daily-stock 3-4 พ.ย. 69) ให้เปิดไฟล์จริงแล้วรับ OSError แทน
         try:
             if kind == 'mtime':
-                seen = datetime.fromtimestamp(fp.stat().st_mtime)
+                seen = _ts(fp.stat().st_mtime)
                 txt = None
             else:
                 txt = fp.read_text(encoding='utf-8')
@@ -981,7 +1004,7 @@ def sheet_dates(spec):
                 if t: out[label] = t
             return out, rel
         if kind == 'mtime':
-            return {'ไฟล์': datetime.fromtimestamp(fp.stat().st_mtime)}, rel
+            return {'ไฟล์': _ts(fp.stat().st_mtime)}, rel
         txt = fp.read_text(encoding='utf-8', errors='replace')
         if kind == 'regex_kv':
             m = re.search(spec['pattern'], txt)
@@ -1002,10 +1025,10 @@ def sheet_dates(spec):
             # ALL_POSTS เก็บวันแบบ {lbl:'4/3/26',day:4,month:3,...} -> ประกอบเป็นวันที่เอง
             best = None
             for d_, mo in re.findall(r"day:(\d+),month:(\d+)", txt):
-                for yr in (datetime.now().year,):
+                for yr in (_now().year,):
                     try: t = datetime(yr, int(mo), int(d_))
                     except ValueError: continue
-                    if t <= datetime.now() and (best is None or t > best): best = t
+                    if t <= _now() and (best is None or t > best): best = t
             return ({'ชีต': best} if best else {}), rel
     except (OSError, ValueError, KeyError, json.JSONDecodeError):
         return {}, None
@@ -1257,7 +1280,7 @@ def main():
     ap.add_argument('--at', help='ทดสอบย้อนหลัง: สมมุติว่าตอนนี้คือเวลานี้ YYYY-MM-DDTHH:MM '
                                 '(ใช้ตรวจเหตุการณ์ที่ผ่านมาแล้ว ไม่ใช้ในงานจริง)')
     a = ap.parse_args()
-    now = datetime.fromisoformat(a.at) if a.at else datetime.now()
+    now = datetime.fromisoformat(a.at) if a.at else _now()
     if a.refresh:
         # ห้ามคืนรหัสจบที่ไม่ใช่ 0 — งานที่เรียกต่อท้ายต้องไม่กลายเป็น "ล้ม" เพราะตัวตรวจ
         try:
