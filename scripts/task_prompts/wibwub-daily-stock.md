@@ -320,7 +320,9 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/bump_sw.py"
 
 # commit ส่วนที่ update_stock.py ไม่ได้ add ให้ (ไม่ต้อง push — launchd autopush ทำให้เอง)
-# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
+# ห้ามลบ .git/*.lock ของคนอื่น และ **ห้ามวน retry เอง** — gitw.py รอ lock ให้แล้วสูงสุด 5 นาที
+# ถ้าสุดท้าย commit ไม่ผ่าน มันจะ unstage ไฟล์ของตัวเองคืนให้ (เนื้อไฟล์ไม่หาย)
+# exit 3 = ไม่ได้ commit -> รายงานตรง ๆ ว่าข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add Procurement_Dashboard.html sw.js "Data Shipnity/stock/stock_snapshot.json"
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" commit -m "auto-update: Stock forecast <วันที่วันนี้ เช่น 2026-11-04> — Shipnity live"
 echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"

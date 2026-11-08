@@ -212,7 +212,9 @@ python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@g
 echo "sw.js: v${CURRENT} → v${NEW}"
 
 # Git commit (ไม่ push เอง — sandbox push ติด proxy HTTP 403)
-# ห้ามลบ .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติดให้รอ 20 วิแล้วลองใหม่ สูงสุด 3 ครั้ง
+# ห้ามลบ .git/*.lock ของคนอื่น และ **ห้ามวน retry เอง** — gitw.py รอ lock ให้แล้วสูงสุด 5 นาที
+# ถ้าสุดท้าย commit ไม่ผ่าน มันจะ unstage ไฟล์ของตัวเองคืนให้ (เนื้อไฟล์ไม่หาย)
+# exit 3 = ไม่ได้ commit -> รายงานตรง ๆ ว่าข้อมูลเข้าไฟล์แล้วแต่ยังไม่ได้ commit
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" add WIBWUB_Dashboard.html WIBWUB_Mobile.html sw.js
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/gitw.py" commit -m "auto-update: TikTok followers <วันที่วันนี้ เช่น 2026-11-04> — ${latest_count} followers"
 echo "✅ Committed — autopush จะ push ให้เองใน 2 นาที"
