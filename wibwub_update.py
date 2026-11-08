@@ -626,15 +626,51 @@ def process_tiktok_content(rows):
             if kw in up: return mapped
         return 'Other'
 
+    today = datetime.date.today()
+
+    def vid_date(url):
+        """เวลาโพสต์จริงจาก video id ในลิงก์ (32 บิตสูงของ id = unix ts) หรือ None"""
+        m = re.search(r'/video/(\d+)', str(url or ''))
+        if not m:
+            return None
+        try:
+            ts = int(m.group(1)) >> 32
+            return (datetime.datetime.utcfromtimestamp(ts) + datetime.timedelta(hours=7)).date()
+        except Exception:
+            return None
+
     posts = []
+    bad_dates, off_dates = [], []
     for row in rows[data_start:]:
         if len(row) < 3: continue
         try:
             v = int(parse_num(gv(row, c_v)))
             lbl = gv(row, c_lbl).strip()
             if not v and not lbl: continue
-            dm = re.match(r'^(\d{1,2})/(\d{1,2})', lbl)
+            dm = re.match(r'^(\d{1,2})/(\d{1,2})(?:/(\d{2,4}))?', lbl)
             day, month = (int(dm.group(1)), int(dm.group(2))) if dm else (0, 0)
+            # ── ด่านวันที่ผิดรูปแบบ (เพิ่ม 8 พ.ย. 69) ───────────────────────
+            # 6 พ.ย. 69 คอลัมน์ A ของ 3 แถว พ.ย. ถูกเขียนเป็น M/D/Y (ชีต locale
+            # en_US + USER_ENTERED) จึงอ่านได้เป็น 11 ม.ค./ก.พ./เม.ย. แล้วคลิป
+            # เดือน พ.ย. ไปโผล่ในเดือนอื่น **เงียบ ๆ** ไม่มีใครรู้ 2 วัน
+            # จากนี้: อ่านได้เป็นวันที่ที่เลยวันนี้ = ผิดรูปแบบแน่ -> เตือนดัง ๆ
+            # แล้วไม่เอาแถวนั้นเข้าเดือนที่ผิด (ดีกว่าปล่อยเข้าไปแบบเงียบ)
+            if dm and dm.group(3):
+                yr = int(dm.group(3))
+                yr += 2000 if yr < 100 else 0
+                try:
+                    d_lbl = datetime.date(yr, month, day)
+                except ValueError:
+                    d_lbl = None
+                if d_lbl is None or d_lbl > today:
+                    bad_dates.append(lbl)
+                    continue
+                # ด่านที่สอง: เทียบกับเวลาจริงของคลิป — จับการสลับวัน/เดือนได้
+                # แม้วันที่จะยังอยู่ในอดีต (ซึ่งด่านแรกจับไม่ได้)
+                # ยอมให้คลาดกัน 1 วันเพราะทีมกรอกมือคร่อมเที่ยงคืนอยู่หลายแถว
+                d_real = vid_date(gv(row, c_url))
+                if d_real and abs((d_lbl - d_real).days) >= 2:
+                    off_dates.append('%s (คลิปจริง %s)' % (lbl, d_real.strftime('%d/%m/%y')))
             pillar = map_pillar(gv(row, c_pil).strip())
             raw_content = gv(row, c_con).strip()
             love    = int(parse_num(gv(row,c_love)))
@@ -660,6 +696,14 @@ def process_tiktok_content(rows):
             })
         except: pass
     log(f'  TikTok Content: {len(posts)} posts')
+    if bad_dates:
+        log('  WARNING: วันที่ในคอลัมน์ A ผิดรูปแบบ %d แถว — ไม่นับเข้าเดือนใด: %s'
+            % (len(bad_dates), ', '.join(bad_dates[:8])))
+        log('           ต้นเหตุที่เจอมาก่อน: เขียนลงชีตเป็น M/D/Y (ชีต locale en_US)')
+        log('           แก้ที่คอลัมน์ A ของแถวนั้นให้เป็นวันที่จริง แล้วรันใหม่')
+    if off_dates:
+        log('  WARNING: วันที่ไม่ตรงกับเวลาโพสต์จริงของคลิป %d แถว: %s'
+            % (len(off_dates), ', '.join(off_dates[:8])))
     return posts
 
 # ═════════════════════════════════════════════════════════════════════════════

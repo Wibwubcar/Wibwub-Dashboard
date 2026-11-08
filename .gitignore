@@ -43,3 +43,9 @@ Order.completed.*
 # ตารางจับคู่ชื่อครีเอเตอร์ TikTok -> เลข (ใช้แทนชื่อคนใน ads_detail_tk.json)
 # รีโปเป็น public ชื่อจริงห้ามขึ้น git เด็ดขาด — ดู scripts/ads/detail_privacy.py
 data Ads/TikTok/creator_map_private.json
+
+# ที่วางสคริปต์ทดลอง/ตรวจสอบชั่วคราวของงานตั้งเวลา (8 พ.ย. 69)
+# ต้องอยู่ในรีโปเพื่อให้เรียกด้วย python3 "<พาธเต็ม>" ได้ (แมตช์กฎ Bash(python3 *))
+# ห้ามใช้โฟลเดอร์สแครชแพด /private/tmp/claude-501/... เพราะพาธมี id เซสชัน
+# เปลี่ยนทุกรอบ จึงสร้างกฎอนุญาตถาวรไม่ได้ แล้วรอบนั้นค้างรอกล่อง
+scripts/ops/work/
