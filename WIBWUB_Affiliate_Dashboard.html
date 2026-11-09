@@ -299,31 +299,18 @@ tr:hover td{background:rgba(59,130,246,.04)}
         ซึ่งค้างอยู่ 2 เดือนทั้งที่ CREATOR_MONTHS มีถึง พ.ย. แล้ว) -->
   <div class="note" id="creator-asof-note"></div>
 
-  <div class="kstrip">
-    <div class="kk"><div class="kkl">Affiliate GMV (ก.ย. 1-30)</div><div class="kkv teal">฿2235.3K</div><div class="kks">ส.ค. เต็มเดือน ฿1,731K · ก.ค. ฿1,453K</div></div>
-    <div class="kk"><div class="kkl">Net GMV (หลังคืนเงิน)</div><div class="kkv green">฿2196.3K</div><div class="kks">ก.ย. 1-30 · ส.ค. ฿1,702K · ก.ค. ฿1,428K</div></div>
-    <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">1,103</div><div class="kks">ก.ย. 1-30 (ส.ค. 853 · ก.ค. 720)</div></div>
-    <div class="kk"><div class="kkl">สินค้าที่ขายผ่าน Affiliate</div><div class="kkv amber">7+</div><div class="kks">หมวด ยานยนต์</div></div>
-    <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (ก.ย. 1-30)</div><div class="kkv" style="color:var(--pink)">฿247.6K</div><div class="kks">ส.ค. เต็มเดือน ฿198.8K · ก.ค. ฿169K</div></div>
-    <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">฿159.6K</div><div class="kks">ก.ย. 1-30 · 759 sessions (ส.ค. ฿96.9K)</div></div>
-  </div>
+  <!-- KPI 6 ใบนี้เติมด้วย renderOverviewKPI() จาก CREATOR_MONTHS/CREATORS
+       ห้ามพิมพ์ตัวเลขหรือชื่อเดือนไว้ที่นี่ — ของเดิมค้างที่ ก.ย. 2569 สองเดือน -->
+  <div class="kstrip" id="ov-kstrip"></div>
 
   <div class="sec" style="margin-top:4px">📊 เปรียบเทียบยอดขายตามช่วงเดือน</div>
   <div class="note">เลือกช่วงเดือน A เทียบกับช่วงเดือน B ได้อิสระ (เช่น เดือนนี้ vs เดือนที่แล้ว, 3 เดือนนี้ vs 3 เดือนก่อนหน้า) — GMV เป็นตัวเลขจริงสรุปจากทุกครีเอเตอร์ (ที่มา CREATOR_MONTHS เดียวกับแท็บ Tier) ส่วน Net GMV และค่าคอมมิชชั่นเป็น<strong>ตัวเลขประมาณการ</strong> จากอัตราเฉลี่ยคืนเงิน/ค่าคอมของครีเอเตอร์ที่มีข้อมูลละเอียด ไม่ใช่ตัวเลขจริงรายเดือน</div>
   <div class="qpicker" id="comp-qpicker"></div>
   <div class="kstrip" id="comp-kstrip"></div>
 
-  <div class="sec" style="margin-top:4px">📌 เดือนนี้ KOL Insights</div>
-  <div class="kstrip">
-    <div class="kk"><div class="kkl">Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+29.2%</div><div class="kks">฿1,731K (ส.ค. 1-31) → ฿2,235K (ก.ย. 1-30)</div></div>
-    <div class="kk"><div class="kkl">Net Affiliate GMV โตจากเดือนก่อน</div><div class="kkv teal">+29.1%</div><div class="kks">฿1,702K (ส.ค. 1-31) → ฿2,196K (ก.ย. 1-30)</div></div>
-    <div class="kk"><div class="kkl">Active Creator โตจากเดือนก่อน</div><div class="kkv blue">+29.3%</div><div class="kks">853 คน (ส.ค.) → 1,103 คน (ก.ย.) · +250 คน</div></div>
-    <div class="kk"><div class="kkl">Creator ใหม่ (ก.ย.)</div><div class="kkv blue">846</div><div class="kks">ไม่เคยขายใน ส.ค. แต่มียอด ก.ย.</div></div>
-    <div class="kk"><div class="kkl">Net Margin</div><div class="kkv green">98.3%</div><div class="kks">Net GMV ฿2,196K ÷ GMV ฿2,235K (ก.ย.)</div></div>
-    <div class="kk"><div class="kkl">สินค้าขายดีสุดครองสัดส่วน</div><div class="kkv amber">28.7%</div><div class="kks">Leather Wipes จาก GMV สินค้ารวมทุกตัว</div></div>
-    <div class="kk"><div class="kkl">Order ทั้งหมด</div><div class="kkv purple">21,891</div><div class="kks">ของ 279 ครีเอเตอร์ที่มีข้อมูลละเอียด</div></div>
-    <div class="kk"><div class="kkl">Top 30 ครีเอเตอร์ครองสัดส่วน</div><div class="kkv purple">76.8%</div><div class="kks">ของ GMV กลุ่มครีเอเตอร์ที่มีข้อมูลละเอียด (279 คน)</div></div>
-  </div>
+  <div class="sec" style="margin-top:4px" id="ov-insights-sec">📌 KOL Insights</div>
+  <!-- เติมด้วย renderKolInsights() — ที่มาและขอบเขตของแต่ละใบเขียนไว้ในฟังก์ชัน -->
+  <div class="kstrip" id="ov-insights"></div>
 
   <div class="g2">
     <div class="cc">
@@ -461,7 +448,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="sec">⏳ อนุมัติแล้ว รอโพสต์ — <span id="samp-wait-label"></span></div>
   <div class="tw">
     <table id="tbl-samp-wait">
-      <thead><tr><th>ครีเอเตอร์</th><th>วันที่ขอ</th><th>สินค้าที่ให้</th><th>วันส่งสินค้า</th><th>รอมาแล้ว</th><th>สถานะในชีต</th></tr></thead>
+      <thead><tr><th>สินค้าที่ให้</th><th>วันที่ขอ</th><th>วันส่งสินค้า</th><th>รอมาแล้ว</th><th>สถานะในชีต</th><th>จำนวน</th></tr></thead>
       <tbody id="samp-wait-body"></tbody>
     </table>
   </div>
@@ -20597,6 +20584,108 @@ function renderCompare(){
 }
 
 // ══════════════════════════════════════════
+//  OVERVIEW KPI + KOL INSIGHTS
+//  ใช้ตัวคำนวณชุดเดียวกับ renderCompare() ทุกตัว (MONTH_TOTALS_GMV / AFF_AVG_RATES /
+//  CREATOR_MONTHS / CREATORS) จึงไม่มีทางค้างคนละเดือนกับส่วนอื่นของหน้า
+//  ⛔ ห้ามพิมพ์ตัวเลขหรือชื่อเดือนกลับเข้าไปใน HTML อีก — ของเดิมพิมพ์มือไว้ 14 ใบ
+//     แล้วค้างที่ ก.ย. 2569 อยู่สองเดือนโดยไม่มีใครรู้
+//
+//  ขอบเขตของตัวเลข (ต่างกันจริง ห้ามเอามาบวกกัน):
+//   · GMV / Net / ค่าคอม / Active / Creator ใหม่ = ทุกครีเอเตอร์ใน CREATOR_MONTHS
+//     GMV เป็นตัวเลขจริง ส่วน Net กับค่าคอมเป็น**ประมาณการ** จากอัตราเฉลี่ยของ
+//     กลุ่มที่มีข้อมูลละเอียด (เหมือน renderCompare ทุกประการ)
+//   · Order / Top 30 / สัดส่วนสินค้า = เฉพาะกลุ่ม CREATORS ที่มีข้อมูลละเอียด
+//     และเป็นยอด**สะสมทั้งช่วง** ไม่ใช่รายเดือน — ป้ายใต้การ์ดต้องบอกไว้เสมอ
+// ══════════════════════════════════════════
+// ⚠️ ไม่มีสคริปต์ไหนอัปเดตก้อนนี้ — Live GMV ไม่มีอยู่ใน CREATOR_MONTHS หรือ CREATORS
+// ถ้าจะใช้ต่อ ต้องกรอกมือแล้วแก้ `asof` ด้วย การ์ดจะโชว์เดือนที่กรอกไว้ให้เห็นชัด ๆ
+const AF_LIVE_MANUAL = {asof:'ก.ย. 2569', gmv:159600, sessions:759,
+                        prev_asof:'ส.ค. 2569', prev_gmv:96900};
+
+// เดือนล่าสุดอาจยังนับไม่จบ (CREATOR_MONTHS เติมระหว่างเดือน) — ดูจากช่วงวันใน AF_MO
+// ถ้าเทียบเดือนที่ยังไม่จบกับเดือนเต็ม จะได้ "-75%" ที่ไม่ได้แปลว่ายอดตก
+// อ่านไม่ได้ = ถือว่ายังไม่จบ (ปลอดภัยกว่า เพราะอย่างมากคือเทียบช้าไปหนึ่งเดือน)
+const AF_MONTH_NUM = {jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
+function afMonthPartial(i){
+  if(i !== TIER_MONTH_COUNT-1) return false;
+  if(typeof AF_MO === 'undefined' || AF_MO.length-2 !== TIER_MONTH_COUNT) return true;
+  const m = String(AF_MO[AF_MO.length-1]).match(/\(\s*\d+\s*-\s*(\d+)\s*\)/);
+  if(!m) return false;                       // ไม่มีช่วงวัน = เดือนเต็ม
+  const mm = monthMeta(i);
+  const days = new Date(mm.year-543, AF_MONTH_NUM[mm.key], 0).getDate();
+  return (+m[1]) < days;
+}
+
+function afMonthStats(i){
+  if(i<0 || i>=TIER_MONTH_COUNT) return null;
+  const gmv = MONTH_TOTALS_GMV[i]||0;
+  let active = 0, fresh = 0;
+  Object.values(CREATOR_MONTHS).forEach(a=>{
+    if((a[i]||0)>0){ active++; if(i>0 && (a[i-1]||0)===0) fresh++; }
+  });
+  return {i, gmv, active, fresh, label: rangeLabel(i,i),
+          net: gmv*(1-AFF_AVG_RATES.returnRate), comm: gmv*AFF_AVG_RATES.commRate};
+}
+
+function renderOverviewKPI(){
+  const el = document.getElementById('ov-kstrip');
+  if(!el || !TIER_MONTH_COUNT) return;
+  const L = afMonthStats(TIER_MONTH_COUNT-1);
+  const A = afMonthStats(TIER_MONTH_COUNT-2);
+  const Bm = afMonthStats(TIER_MONTH_COUNT-3);
+  const asof = creatorAsofLabel();              // เช่น "พ.ย. 1-7 2569"
+  const cur  = `${asof} (กำลังนับ)`;
+  const back = (f) => [A,Bm].filter(Boolean).map(x=>`${x.label} ${f(x)}`).join(' · ');
+  const nFmt = v => Math.round(v).toLocaleString();
+  el.innerHTML = `
+    <div class="kk"><div class="kkl">Affiliate GMV (${asof})</div><div class="kkv teal">${fmtK(L.gmv)}</div><div class="kks">${back(x=>fmtK(x.gmv))}</div></div>
+    <div class="kk"><div class="kkl">Net GMV (ประมาณการ หลังคืนเงิน)</div><div class="kkv green">${fmtK(L.net)}</div><div class="kks">${cur} · ${back(x=>fmtK(x.net))}</div></div>
+    <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">${nFmt(L.active)}</div><div class="kks">${back(x=>nFmt(x.active)+' คน')}</div></div>
+    <div class="kk"><div class="kkl">สินค้าที่ขายผ่าน Affiliate</div><div class="kkv amber">${PRODUCTS.length}</div><div class="kks">หมวด ยานยนต์ · สะสมทั้งช่วง</div></div>
+    <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (ประมาณการ)</div><div class="kkv" style="color:var(--pink)">${fmtK(L.comm)}</div><div class="kks">${cur} · ${back(x=>fmtK(x.comm))}</div></div>
+    <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">${fmtK(AF_LIVE_MANUAL.gmv)}</div><div class="kks">⚠️ กรอกมือ ${AF_LIVE_MANUAL.asof} · ${AF_LIVE_MANUAL.sessions} sessions (${AF_LIVE_MANUAL.prev_asof} ${fmtK(AF_LIVE_MANUAL.prev_gmv)}) — ไม่มีตัวอัปเดตอัตโนมัติ</div></div>`;
+}
+
+function renderKolInsights(){
+  const el = document.getElementById('ov-insights');
+  if(!el || TIER_MONTH_COUNT < 2) return;
+  // เทียบเฉพาะ "เดือนที่จบแล้ว" เสมอ ไม่งั้นเดือนที่เพิ่งผ่านไป 7 วันจะโชว์ -75%
+  let li = TIER_MONTH_COUNT-1;
+  const skipped = afMonthPartial(li) && li >= 1 ? li-- : null;
+  if(li < 1) return;
+  const L = afMonthStats(li), A = afMonthStats(li-1);
+  const sec = document.getElementById('ov-insights-sec');
+  if(sec) sec.innerHTML = `📌 KOL Insights — ${L.label} เทียบ ${A.label}`
+    + (skipped!==null ? ` <span style="font-size:12px;font-weight:400;color:var(--t3)">`
+        + `(${creatorAsofLabel()} ยังนับไม่จบเดือน จึงยังไม่เอามาเทียบ — ตัวเลขสดของเดือนนี้`
+        + `อยู่ที่แถว KPI ด้านบนและหัวข้อ "เปรียบเทียบยอดขายตามช่วงเดือน")</span>` : '');
+  const pc = (a,b)=> b>0 ? Math.round((a-b)/b*1000)/10 : (a>0?100:0);
+  const sign = v => (v>0?'+':'') + v + '%';
+  const cls  = v => v>=0 ? 'teal' : 'red';
+  const nFmt = v => Math.round(v).toLocaleString();
+  // กลุ่ม "ข้อมูลละเอียด" (CREATORS) = ยอดสะสมทั้งช่วง ไม่ใช่รายเดือน
+  const det = CREATORS.length;
+  const orders = CREATORS.reduce((s,c)=>s+c.orders,0);
+  const top30 = CREATORS.slice().sort((a,b)=>b.gmv-a.gmv).slice(0,30)
+                        .reduce((s,c)=>s+c.gmv,0);
+  const top30pct = TOTAL_GMV>0 ? Math.round(top30/TOTAL_GMV*1000)/10 : 0;
+  const pSorted = PRODUCTS.slice().sort((a,b)=>b.gmv-a.gmv);
+  const pTotal  = PRODUCTS.reduce((s,p)=>s+p.gmv,0);
+  const pShare  = pTotal>0 ? Math.round(pSorted[0].gmv/pTotal*1000)/10 : 0;
+  const netMargin = Math.round((1-AFF_AVG_RATES.returnRate)*1000)/10;
+  const partial = '';   // สองเดือนที่เทียบกันจบแล้วทั้งคู่
+  el.innerHTML = `
+    <div class="kk"><div class="kkl">Affiliate GMV เทียบเดือนก่อน</div><div class="kkv ${cls(pc(L.gmv,A.gmv))}">${sign(pc(L.gmv,A.gmv))}</div><div class="kks">${fmtK(A.gmv)} (${A.label}) → ${fmtK(L.gmv)} (${L.label})${partial}</div></div>
+    <div class="kk"><div class="kkl">Net GMV เทียบเดือนก่อน (ประมาณการ)</div><div class="kkv ${cls(pc(L.net,A.net))}">${sign(pc(L.net,A.net))}</div><div class="kks">${fmtK(A.net)} → ${fmtK(L.net)}</div></div>
+    <div class="kk"><div class="kkl">Active Creator เทียบเดือนก่อน</div><div class="kkv blue">${sign(pc(L.active,A.active))}</div><div class="kks">${nFmt(A.active)} คน (${A.label}) → ${nFmt(L.active)} คน (${L.label})</div></div>
+    <div class="kk"><div class="kkl">Creator ใหม่ (${L.label})</div><div class="kkv blue">${nFmt(L.fresh)}</div><div class="kks">ไม่มียอดใน ${A.label} แต่มียอดใน ${L.label}</div></div>
+    <div class="kk"><div class="kkl">Net Margin (ประมาณการ)</div><div class="kkv green">${netMargin}%</div><div class="kks">อัตราเฉลี่ยคืนเงินของกลุ่มที่มีข้อมูลละเอียด ${det} คน — ไม่ใช่ค่ารายเดือน</div></div>
+    <div class="kk"><div class="kkl">สินค้าขายดีสุดครองสัดส่วน</div><div class="kkv amber">${pShare}%</div><div class="kks">${pSorted[0].short} จาก GMV สินค้ารวมทุกตัว · สะสมทั้งช่วง</div></div>
+    <div class="kk"><div class="kkl">Order ทั้งหมด</div><div class="kkv purple">${nFmt(orders)}</div><div class="kks">ของ ${det} ครีเอเตอร์ที่มีข้อมูลละเอียด · สะสมทั้งช่วง</div></div>
+    <div class="kk"><div class="kkl">Top 30 ครีเอเตอร์ครองสัดส่วน</div><div class="kkv purple">${top30pct}%</div><div class="kks">ของ GMV กลุ่มที่มีข้อมูลละเอียด (${det} คน) · สะสมทั้งช่วง</div></div>`;
+}
+
+// ══════════════════════════════════════════
 //  SAMPLE REQUESTS (คำขอสินค้า)
 //  funnel.{req,appr,shipped} — sourced from the internal Google Sheet
 //  "Top 30 Affiliate" > tab "ขอสินค้า" (row-per-request log kept by the
@@ -20652,300 +20741,141 @@ const SAMPLE_LAST7D = {
 // always shown separately, never folded into a product's count.
 // ══════════════════════════════════════════
 // SAMPLE_POSTWAIT — อนุมัติแล้วแต่ยังไม่โพสต์ (คอลัมน์ "การลงโพสต์" = ยังไม่โพสต์ / ว่าง) ตั้งแต่ มิ.ย. 69 · เขียนโดย scripts/affiliate/samp_update.py
+// ⛔ เป็น "จำนวนต่อ (วัน, สินค้า, วันส่ง, สถานะ)" เท่านั้น — ห้ามมีชื่อ/handle/ลิงก์โปรไฟล์ครีเอเตอร์
+//    (รีโปนี้ public + GitHub Pages · ก่อน 9 พ.ย. 69 เคยตีพิมพ์ชื่อและ URL โปรไฟล์ ~290 แถว)
+//    คีย์: d=วันที่ขอ · p=สินค้า · s=วันส่ง · h=สถานะในชีต · w=จำนวนคำขอที่ตรงกันทั้งสี่อย่าง
 // {d:วันที่ขอ, c:ครีเอเตอร์, u:ลิงก์, p:สินค้าที่ให้, s:วันส่งสินค้า (Last Contact), h:ข้อความในชีต}
 const SAMPLE_POSTWAIT = [
-{d:"2026-07-09",c:"pu.ford0813882626",u:"https://www.tiktok.com/@pu.ford0813882626?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-07-10",h:"เลยกำหนด"},
-{d:"2026-08-07",c:"ig.eeeye_9",u:"https://www.tiktok.com/@ig.eeeyee_9",p:"Refresh Wipes",s:"2026-08-07",h:"เลยกำหนด"},
-{d:"2026-08-10",c:"patmaide",u:"https://www.tiktok.com/@patmaide?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-10",h:"เลยกำหนด"},
-{d:"2026-08-10",c:"kayashop789",u:"https://www.tiktok.com/@kayashop789?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"",h:"ยังไม่กรอก"},
-{d:"2026-08-11",c:"skincare.bebeem",u:"https://www.tiktok.com/@skincare.bebeem?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-12",h:"เลยกำหนด"},
-{d:"2026-08-13",c:"nuch_010340",u:"https://www.tiktok.com/@nuch_010340?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-13",h:"เลยกำหนด"},
-{d:"2026-08-17",c:"ninewfanclubshop",u:"https://www.tiktok.com/@ninewfanclubshop?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-17",h:"เลยกำหนด"},
-{d:"2026-08-17",c:"e.paeeap",u:"https://www.tiktok.com/@e.paeeap?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-08-17",h:"เลยกำหนด"},
-{d:"2026-08-20",c:"memelove999",u:"https://www.tiktok.com/@memelove999?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-20",h:"เลยกำหนด"},
-{d:"2026-08-26",c:"penpond.jao",u:"https://www.tiktok.com/@penpond.jao?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-27",h:"เลยกำหนด"},
-{d:"2026-08-26",c:"giftauragift",u:"https://www.tiktok.com/@giftauragift?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-08-27",h:"เลยกำหนด"},
-{d:"2026-09-04",c:"teeraza007",u:"https://www.tiktok.com/@teeraza007?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-09-04",h:"เลยกำหนด"},
-{d:"2026-09-08",c:"_m9m99",u:"https://www.tiktok.com/@_m9m99?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"",h:"ยังไม่กรอก"},
-{d:"2026-09-08",c:"jinpao.store",u:"https://www.tiktok.com/@jinpao.store?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-09",h:"เลยกำหนด"},
-{d:"2026-09-08",c:"aya_shop9842",u:"https://www.tiktok.com/@aya_shop9842?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-09",h:"เลยกำหนด"},
-{d:"2026-09-10",c:"natchai0",u:"https://www.tiktok.com/@natchai0?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-10",h:"เลยกำหนด"},
-{d:"2026-09-11",c:"opalstories",u:"https://www.tiktok.com/@opalstories?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-12",h:"เลยกำหนด"},
-{d:"2026-09-11",c:"nannies_shop3",u:"https://www.tiktok.com/@nannies_shop3?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-12",h:"เลยกำหนด"},
-{d:"2026-09-11",c:"wiparat268",u:"https://www.tiktok.com/@wiparat268?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-12",h:"เลยกำหนด"},
-{d:"2026-09-14",c:"memehunni",u:"https://www.tiktok.com/@memehunni?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-14",h:"เลยกำหนด"},
-{d:"2026-09-14",c:"benzr9",u:"https://www.tiktok.com/@benzr9?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-09-14",h:"เลยกำหนด"},
-{d:"2026-09-14",c:"orkgm2",u:"https://www.tiktok.com/@orkgm2?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-14",h:"เลยกำหนด"},
-{d:"2026-09-16",c:"k.thongnarin",u:"https://www.tiktok.com/@k.thongnarin?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"",h:"ยังไม่กรอก"},
-{d:"2026-09-16",c:"aey_niramol",u:"https://www.tiktok.com/@aey_niramol?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"",h:"ยังไม่กรอก"},
-{d:"2026-09-16",c:"our_twin_story",u:"https://www.tiktok.com/@our_twin_story?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-17",h:"เลยกำหนด"},
-{d:"2026-09-18",c:"honey_____2002",u:"https://www.tiktok.com/@honey_____2002?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-19",h:"เลยกำหนด"},
-{d:"2026-09-18",c:"aobcay",u:"https://www.tiktok.com/@aobcay?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-19",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"pimmada2468",u:"https://www.tiktok.com/@pimmada2468?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-21",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"zeesp1993",u:"https://www.tiktok.com/@zeesp1993?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes, Refresh Wipes",s:"2026-09-21",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"james_stalth",u:"https://www.tiktok.com/@james_stalth?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-21",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"sugar_os",u:"https://www.tiktok.com/@sugar_os?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-21",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"jom_pongsatorn",u:"https://www.tiktok.com/@jom_pongsatorn?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-21",h:"เลยกำหนด"},
-{d:"2026-09-21",c:"luckyandrich59",u:"https://www.tiktok.com/@luckyandrich59?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-22",h:"เลยกำหนด"},
-{d:"2026-09-22",c:"guitar_jeatsada",u:"https://www.tiktok.com/@guitar_jeatsada?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-09-23",h:"เลยกำหนด"},
-{d:"2026-09-22",c:"eye.laphatrada",u:"https://www.tiktok.com/@eye.laphatrada?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-09-23",h:"เลยกำหนด"},
-{d:"2026-09-22",c:"madaminlove89",u:"https://www.tiktok.com/@madaminlove89?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-23",h:"เลยกำหนด"},
-{d:"2026-09-25",c:"simto_269",u:"https://www.tiktok.com/@simto_269?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-25",h:"เลยกำหนด"},
-{d:"2026-09-25",c:"kuskie_1599",u:"https://www.tiktok.com/@kuskie_1599?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-25",h:"เลยกำหนด"},
-{d:"2026-09-28",c:"arm_agg",u:"https://www.tiktok.com/@arm_agg?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-09-28",h:"เลยกำหนด"},
-{d:"2026-09-28",c:"user8196928386836",u:"https://www.tiktok.com/@user8196928386836?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-28",h:"เลยกำหนด"},
-{d:"2026-09-29",c:"beamspxce",u:"https://www.tiktok.com/@beamspxce?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-30",h:"เลยกำหนด"},
-{d:"2026-09-29",c:"nuengsaipaiya2",u:"https://www.tiktok.com/@nuengsaipaiya2?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-30",h:"เลยกำหนด"},
-{d:"2026-09-30",c:"viosjipata",u:"https://www.tiktok.com/@viosjipata?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-09-30",h:"เลยกำหนด"},
-{d:"2026-09-30",c:"styleshark.ch",u:"https://www.tiktok.com/@styleshark.ch?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-30",h:"เลยกำหนด"},
-{d:"2026-09-30",c:"aumaumaumka99",u:"https://www.tiktok.com/@aumaumaumka99?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-09-30",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"name.nut6",u:"https://www.tiktok.com/@name.nut6?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"thailandland8",u:"https://www.tiktok.com/@thailandland8?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"kittapornprueksa",u:"https://www.tiktok.com/@kittapornprueksa?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"sai_shop11",u:"https://www.tiktok.com/@sai_shop11?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"bigkaizen1",u:"https://www.tiktok.com/@bigkaizen1?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"armorkub",u:"https://www.tiktok.com/@armorkub?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"papaarm11",u:"https://www.tiktok.com/@papaarm11?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"brothermovie14",u:"https://www.tiktok.com/@brothermovie14?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"chadafxlmm",u:"https://www.tiktok.com/@chadafxlmm?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"benjapornchanasuk",u:"https://www.tiktok.com/@benjapornchanasuk?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"migelssecret",u:"https://www.tiktok.com/@migelssecret?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-06",c:"nuttapp89",u:"https://www.tiktok.com/@nuttapp89?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด"},
-{d:"2026-10-09",c:"my_palmyshop",u:"https://www.tiktok.com/@my_palmyshop?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-10",h:"เลยกำหนด"},
-{d:"2026-10-09",c:"wisawealth512",u:"https://www.tiktok.com/@wisawealth512?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-10-10",h:"เลยกำหนด"},
-{d:"2026-10-12",c:"rusmina_sm",u:"https://www.tiktok.com/@rusmina_sm?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-12",h:"เลยกำหนด"},
-{d:"2026-10-12",c:"piwmakeup",u:"https://www.tiktok.com/@piwmakeup?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-12",h:"เลยกำหนด"},
-{d:"2026-10-12",c:"pikka_ungung",u:"https://www.tiktok.com/@pikka_ungung?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-10-12",h:"เลยกำหนด"},
-{d:"2026-10-12",c:"tomangtangmo6789",u:"https://www.tiktok.com/@tomangtangmo6789?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-12",h:"เลยกำหนด"},
-{d:"2026-10-15",c:"minisellerchin",u:"https://www.tiktok.com/@minisellerchin?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-10-16",h:"เลยกำหนด"},
-{d:"2026-10-15",c:"jennie_likesthis",u:"https://www.tiktok.com/@jennie_likesthis?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-16",h:"เลยกำหนด"},
-{d:"2026-10-15",c:"orcaballbl",u:"https://www.tiktok.com/@orcaballbl?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-16",h:"เลยกำหนด"},
-{d:"2026-10-19",c:"_maz.ly",u:"https://www.tiktok.com/@_maz.ly?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-19",h:"เลยกำหนด"},
-{d:"2026-10-19",c:"euneun_needtosleep",u:"https://www.tiktok.com/@euneun_needtosleep?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-19",h:"เลยกำหนด"},
-{d:"2026-10-20",c:"babellllsiri",u:"https://www.tiktok.com/@babellllsiri?shop_region=TH&shop_id=7494549095358892612",p:"Spot Clean",s:"2026-10-21",h:"เลยกำหนด"},
-{d:"2026-10-20",c:"maewnammmm__",u:"https://www.tiktok.com/@maewnammmm__?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-21",h:"ยังไม่โพสต์"},
-{d:"2026-10-20",c:"filmmmm014",u:"https://www.tiktok.com/@filmmmm014?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-21",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"toung_ss",u:"https://www.tiktok.com/@toung_ss?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"rrak_kk",u:"https://www.tiktok.com/@rrak_kk?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-23",h:"เลยกำหนด"},
-{d:"2026-10-22",c:"witoon495",u:"https://www.tiktok.com/@witoon495?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"luvjubjub.33",u:"https://www.tiktok.com/@luvjubjub.33?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"fewreview1",u:"https://www.tiktok.com/@fewreview1?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"kunabilaa",u:"https://www.tiktok.com/@kunabilaa?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"nj.autopicks",u:"https://www.tiktok.com/@nj.autopicks?shop_region=TH&shop_id=7494549095358892612",p:"Tire Clean",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"bermmonplaygame",u:"https://www.tiktok.com/@bermmonplaygame?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-22",c:"reviewkhongfaen",u:"https://www.tiktok.com/@reviewkhongfaen?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-23",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"aungaung_41",u:"https://www.tiktok.com/@aungaung_41?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"wagif2",u:"https://www.tiktok.com/@wagif2?shop_region=TH&shop_id=7494549095358892612",p:"Beach",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"nureenabil1",u:"https://www.tiktok.com/@nureenabil1?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"mosstory97",u:"https://www.tiktok.com/@mosstory97?shop_region=TH&shop_id=7494549095358892612",p:"Spot Clean",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"punpundiaryy",u:"https://www.tiktok.com/@punpundiaryy?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"boss.shop2541",u:"https://www.tiktok.com/@boss.shop2541?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"first_nrt",u:"https://www.tiktok.com/@first_nrt?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"jasnita4999",u:"https://www.tiktok.com/@jasnita4999?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"sitti.taweesuk",u:"https://www.tiktok.com/@sitti.taweesuk?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-26",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"porbaanreview_",u:"https://www.tiktok.com/@porbaanreview_?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"mahmeawmeow",u:"https://www.tiktok.com/@mahmeawmeow?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"nongnat25",u:"https://www.tiktok.com/@nongnat25?shop_region=TH&shop_id=7494549095358892612",p:"Waterless",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"wipada_aun",u:"https://www.tiktok.com/@wipada_aun?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"pungpungshop01",u:"https://www.tiktok.com/@pungpungshop01?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"eve_nich11",u:"https://www.tiktok.com/@eve_nich11?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-26",c:"awayreviewwwww",u:"https://www.tiktok.com/@awayreviewwwww?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"clouddd.shop",u:"https://www.tiktok.com/@clouddd.shop?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"followcomefollowback",u:"https://www.tiktok.com/@followcomefollowback?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-27",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"bombay99",u:"https://www.tiktok.com/@bombay99?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"sit_2022",u:"https://www.tiktok.com/@sit_2022?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"kkchomchom",u:"https://www.tiktok.com/@kkchomchom?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"ttoey_166",u:"https://www.tiktok.com/@ttoey_166?shop_region=TH&shop_id=7494549095358892612",p:"Waterless",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"toeiii.chi",u:"https://www.tiktok.com/@toeiii.chi?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"bam.onred",u:"https://www.tiktok.com/@bam.onred?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-27",c:"monzstyle",u:"https://www.tiktok.com/@monzstyle?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-28",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"aumaimsuwanna",u:"https://www.tiktok.com/@aumaimsuwanna?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"pcwur",u:"https://www.tiktok.com/@pcwur?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"kawinshop22",u:"https://www.tiktok.com/@kawinshop22?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"dunkthewin",u:"https://www.tiktok.com/@dunkthewin?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"apirata_por",u:"https://www.tiktok.com/@apirata_por?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"fungdaw",u:"https://www.tiktok.com/@pnhyrsvxaskjtf36528?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"dajaaa.0",u:"https://www.tiktok.com/@dajaaa.0?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-10-29",c:"got.watsaphon",u:"https://www.tiktok.com/@got.watsaphon?shop_region=TH&shop_id=7494549095358892612",p:"Spot Clean",s:"2026-10-30",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"tananyaa1",u:"https://www.tiktok.com/@tananyaa1?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"nuree865",u:"https://www.tiktok.com/@nuree865?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"mahdee4067",u:"https://www.tiktok.com/@totech_shop?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"patcharin_bumbat",u:"https://www.tiktok.com/@patcharin_bumbat?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"tsc799",u:"https://www.tiktok.com/@tsc799?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"ytb7824",u:"https://www.tiktok.com/@ytb7824?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"mm_1739",u:"https://www.tiktok.com/@mm_1739?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"leklekline15",u:"https://www.tiktok.com/@leklekline15?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"cuteme778",u:"https://www.tiktok.com/@cuteme778?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"jiratchayajts",u:"https://www.tiktok.com/@jiratchayajts?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"pim_la0",u:"https://www.tiktok.com/@pim_la0?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"crewsideth",u:"https://www.tiktok.com/@crewsideth?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"np.warin",u:"https://www.tiktok.com/@np.warin?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"ne.flipz",u:"https://www.tiktok.com/@ne.flipz?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"witoon495",u:"https://www.tiktok.com/@witoon495?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"kbkambuom",u:"https://www.tiktok.com/@kbkambuom?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"khawpai_",u:"https://www.tiktok.com/@khawpai_?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"kker.g60",u:"https://www.tiktok.com/@kker.g60?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"bankkte0",u:"https://www.tiktok.com/@bankkte0?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"artct2",u:"https://www.tiktok.com/@artct2?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"tasnimyanya761",u:"https://www.tiktok.com/@tasnimyanya761?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"riderdekdoi2",u:"https://www.tiktok.com/@riderdekdoi2?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"maamioww",u:"https://www.tiktok.com/@maamioww?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"woonb_29",u:"https://www.tiktok.com/@woonb_29?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"dmbikeshop",u:"https://www.tiktok.com/@dmbikeshop?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"_rugnapa1998",u:"https://www.tiktok.com/@_rugnapa1998?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"ni.nat26",u:"https://www.tiktok.com/@ni.nat26?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"daxth.92",u:"https://www.tiktok.com/@daxth.92?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"mormorjishop3",u:"https://www.tiktok.com/@mormorjishop3?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"tun_review2",u:"https://www.tiktok.com/@tun_review2?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"bxxrd.c",u:"https://www.tiktok.com/@bxxrd.c?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"chalomponwipoka",u:"https://www.tiktok.com/@chalomponwipoka?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"esperroxx",u:"https://www.tiktok.com/@esperroxx?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"pite_wasitpon",u:"https://www.tiktok.com/@pite_wasitpon?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"k.creamy",u:"https://www.tiktok.com/@k.creamy?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"aey_niramol",u:"https://www.tiktok.com/@aey_niramol?shop_region=TH&shop_id=7494549095358892612",p:"X glass",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"thanapcu",u:"https://www.tiktok.com/@thanapcu?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"duan4088",u:"https://www.tiktok.com/@duan4088?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"khing_2540",u:"https://www.tiktok.com/@khing_2540?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"ap_review999",u:"https://www.tiktok.com/@ap_review999?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes, Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"dadaa_online48",u:"https://www.tiktok.com/@dadaa_online48?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"si.ng80",u:"https://www.tiktok.com/@si.ng80?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"flukki25",u:"https://www.tiktok.com/@flukki25?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"beesureerat26",u:"https://www.tiktok.com/@beesureerat26?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"wendysfontstore",u:"https://www.tiktok.com/@wendysfontstore?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"omo.25",u:"https://www.tiktok.com/@omo.25?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"dewrungsawang",u:"https://www.tiktok.com/@dewrungsawang?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"semsara4986",u:"https://www.tiktok.com/@semsara4986?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"wimoldee",u:"https://www.tiktok.com/@wimoldee?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"mo_may293509",u:"https://www.tiktok.com/@mo_may293509?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"nhong_puy",u:"https://www.tiktok.com/@nhong_puy?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"peoplelove_cars",u:"https://www.tiktok.com/@peoplelove_cars?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"oversize.longdo",u:"https://www.tiktok.com/@oversize.longdo?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"jaoaun77",u:"https://www.tiktok.com/@jaoaun77?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"dewjanjiraaa",u:"https://www.tiktok.com/@dewjanjiraaa?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"mosstory97",u:"https://www.tiktok.com/@mosstory97?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"rrunwayy3",u:"https://www.tiktok.com/@rrunwayy3?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-02",c:"wanwipa1209",u:"https://www.tiktok.com/@wanwipa1209?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-02",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"phitchaphadanaza",u:"https://www.tiktok.com/@phitchaphadanaza?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"moouanshopp",u:"https://www.tiktok.com/@moouanshopp?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"grapeboktor",u:"https://www.tiktok.com/@grapeboktor?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"kidsadakorn9823",u:"https://www.tiktok.com/@kidsadakorn9823?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"tommy_worawut",u:"https://www.tiktok.com/@tommy_worawut?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"prympeem",u:"https://www.tiktok.com/@prympeem?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"thanaphat.nuancha",u:"https://www.tiktok.com/@thanaphat.nuancha?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"bowzaa999",u:"https://www.tiktok.com/@bowzaa999?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"kasamaaas",u:"https://www.tiktok.com/@kasamaaas?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"user1663004962095",u:"https://www.tiktok.com/@user1663004962095?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"annonii11",u:"https://www.tiktok.com/@annonii11?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"nisachonvilun",u:"https://www.tiktok.com/@nisachonvilun?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"rknight169",u:"https://www.tiktok.com/@rknight169?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"earth.suphakitps",u:"https://www.tiktok.com/@earth.suphakitps?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"npshop168",u:"https://www.tiktok.com/@npshop168?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"pk639shop",u:"https://www.tiktok.com/@pk639shop?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"sxnflower098",u:"https://www.tiktok.com/@sxnflower098?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"kukkikyahkbok",u:"https://www.tiktok.com/@kukkikyahkbok?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"niinfo",u:"https://www.tiktok.com/@niinfo?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"papearry",u:"https://www.tiktok.com/@papearry?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"hanthongsumatra",u:"https://www.tiktok.com/@hanthongsumatra?shop_region=TH&shop_id=7494549095358892612",p:"Spot Clean",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"kwan_np",u:"https://www.tiktok.com/@kwan_np?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"luckyshop8",u:"https://www.tiktok.com/@luckyshop8?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"jjnongki",u:"https://www.tiktok.com/@jjnongki?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"toraekkachai6",u:"https://www.tiktok.com/@toraekkachai6?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"mali_lifestyl",u:"https://www.tiktok.com/@mali_lifestyl?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"bebe.napapach",u:"https://www.tiktok.com/@bebe.napapach?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"nnnworld24",u:"https://www.tiktok.com/@nnnworld24?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"pan_richie",u:"https://www.tiktok.com/@pan_richie?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"sapduo99",u:"https://www.tiktok.com/@sapduo99?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"mr.bung2024",u:"https://www.tiktok.com/@mr.bung2024?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"jjuboon",u:"https://www.tiktok.com/@jjuboon?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"saorlstore",u:"https://www.tiktok.com/@saorlstore?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"amp_kissanee",u:"https://www.tiktok.com/@amp_kissanee?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"c.rungrueang91",u:"https://www.tiktok.com/@c.rungrueang91?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-03",c:"like85645",u:"https://www.tiktok.com/@like85645?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"joy_thanita13569",u:"https://www.tiktok.com/@joy_thanita13569?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"",h:"ยังไม่กรอก"},
-{d:"2026-11-03",c:"spshop455",u:"https://www.tiktok.com/@spshop455?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"pond_npr3",u:"https://www.tiktok.com/@pond_npr3?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"1993sad44",u:"https://www.tiktok.com/@1993sad44?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"sapduo.review",u:"https://www.tiktok.com/@sapduo.review?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"kreammo_41",u:"https://www.tiktok.com/@kreammo_41?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"nuudaa14",u:"https://www.tiktok.com/@nuudaa14?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"tum_yn_01",u:"https://www.tiktok.com/@tum_yn_01?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"bebe.napapach",u:"https://www.tiktok.com/@bebe.napapach?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"user81856071719340",u:"https://www.tiktok.com/@user81856071719340?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"user8416508154155",u:"https://www.tiktok.com/@user8416508154155?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"tongkung_official",u:"https://www.tiktok.com/@tongkung_official?shop_region=TH&shop_id=7494549095358892612",p:"Beach",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"brothermovie19",u:"https://www.tiktok.com/@brothermovie19?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"panwasa000",u:"https://www.tiktok.com/@panwasa000?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"alina.daily6",u:"https://www.tiktok.com/@alina.daily6?shop_region=TH&shop_id=7494549095358892612",p:"Superdry",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"ct_sport8",u:"https://www.tiktok.com/@ct_sport8?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"thswn_baifern",u:"https://www.tiktok.com/@thswn_baifern?shop_region=TH&shop_id=7494549095358892612",p:"Beach",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"kadsan_official",u:"https://www.tiktok.com/@kadsan_official?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"berry_berrybee",u:"https://www.tiktok.com/@berry_berrybee?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"teezakub2539",u:"https://www.tiktok.com/@teezakub2539?shop_region=TH&shop_id=7494549095358892612",p:"Quart Shampoo",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"yourbaeseri",u:"https://www.tiktok.com/@yourbaeseri?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"muaylookmee",u:"https://www.tiktok.com/@muaylookmee?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"iggyys0",u:"https://www.tiktok.com/@iggyys0?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"asmr.365days",u:"https://www.tiktok.com/@asmr.365days?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"amena.5488",u:"https://www.tiktok.com/@amena.5488?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"thebest_q2",u:"https://www.tiktok.com/@thebest_q2?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"suppercreen_korat",u:"https://www.tiktok.com/@suppercreen_korat?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"bangreviews",u:"https://www.tiktok.com/@bangreviews?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"anuwat.review1",u:"https://www.tiktok.com/@anuwat.review1?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"ketika_1111",u:"https://www.tiktok.com/@ketika_1111?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"carissa.58",u:"https://www.tiktok.com/@carissa.58?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"fayat254100",u:"https://www.tiktok.com/@fayat254100?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"superpee431",u:"https://www.tiktok.com/@superpee431?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"nun5358",u:"https://www.tiktok.com/@nun5358?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"saisema_eve",u:"https://www.tiktok.com/@saisema_eve?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"momomojanj",u:"https://www.tiktok.com/@momomojanj?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"unboxanduse8",u:"https://www.tiktok.com/@unboxanduse8?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"mahmeawmeow",u:"https://www.tiktok.com/@mahmeawmeow?shop_region=TH&shop_id=7494549095358892612",p:"X glass",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"patcharin_bumbat",u:"https://www.tiktok.com/@patcharin_bumbat?shop_region=TH&shop_id=7494549095358892612",p:"Tire Clean",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"fo_fluk7",u:"https://www.tiktok.com/@fo_fluk7?shop_region=TH&shop_id=7494549095358892612",p:"Sugar",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"b_baifernpremmikar",u:"https://www.tiktok.com/@b_baifernpremmikar?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"boyanuwan",u:"https://www.tiktok.com/@boyanuwan?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"maebandaily",u:"https://www.tiktok.com/@maebandaily?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"reviewladystyle",u:"https://www.tiktok.com/@reviewladystyle?shop_region=TH&shop_id=7494549095358892612",p:"X glass",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"iisdada03",u:"https://www.tiktok.com/@iisdada03?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-04",c:"jammreview1503",u:"https://www.tiktok.com/@jammreview1503?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"ou.reviewvy",u:"https://www.tiktok.com/@ou.reviewvy?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"iisdada03",u:"https://www.tiktok.com/@iisdada03?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"pan_richie",u:"https://www.tiktok.com/@pan_richie?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"nat5519",u:"https://www.tiktok.com/@nat5519?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"mintcarr",u:"https://www.tiktok.com/@mintcarr?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"narongsak.3",u:"https://www.tiktok.com/@narongsak.3?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"zee_tanawat",u:"https://www.tiktok.com/@zee_tanawat?shop_region=TH&shop_id=7494549095358892612",p:"Waterless",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"janejira.promtong",u:"https://www.tiktok.com/@janejira.promtong?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"biwty.paitamngan",u:"https://www.tiktok.com/@biwty.paitamngan?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"isayaagain",u:"https://www.tiktok.com/@isayaagain?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"fahsai950",u:"https://www.tiktok.com/@fahsai950?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"bolly_peper",u:"https://www.tiktok.com/@bolly_peper?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"justwashsky",u:"https://www.tiktok.com/@justwashsky?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"swtbynew",u:"https://www.tiktok.com/@swtbynew?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"wwreqqqss",u:"https://www.tiktok.com/@wwreqqqss?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"wan_260440",u:"https://www.tiktok.com/@wan_260440?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"folk_ronachai",u:"https://www.tiktok.com/@folk_ronachai?shop_region=TH&shop_id=7494549095358892612",p:"Waterless",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"master_shop168",u:"https://www.tiktok.com/@master_shop168?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"oilmashare",u:"https://www.tiktok.com/@oilmashare?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"fonphotographer",u:"https://www.tiktok.com/@fonphotographer?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"shopall290",u:"https://www.tiktok.com/@shopall290?shop_region=TH&shop_id=7494549095358892612",p:"Reflex",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-05",c:"kamon_sss",u:"https://www.tiktok.com/@kamon_sss?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"nqdiq0611",u:"https://www.tiktok.com/@nqdiq0611?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"jack.dx9",u:"https://www.tiktok.com/@jack.dx9?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"turtlebenedict",u:"https://www.tiktok.com/@turtlebenedict?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"manachaiwongsang",u:"https://www.tiktok.com/@manachaiwongsang?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"faaa.aa07",u:"https://www.tiktok.com/@faaa.aa07?shop_region=TH&shop_id=7494549095358892612",p:"ไม้ปัดขนแกะ",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"judyyyy1705",u:"https://www.tiktok.com/@judyyyy1705?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"topshopbb5",u:"https://www.tiktok.com/@topshopbb5?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"geniustrips_carplay",u:"https://www.tiktok.com/@geniustrips_carplay?shop_region=TH&shop_id=7494549095358892612",p:"Interior, Sugar",s:"2026-11-06",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"iaemwb",u:"https://www.tiktok.com/@iaemwb?shop_region=TH&shop_id=7494549095358892612",p:"Spot Clean",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"im_nhyl8",u:"https://www.tiktok.com/@im_nhyl8?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"fah2001.3",u:"https://www.tiktok.com/@fah2001.3?is_from_webapp=1&sender_device=pc",p:"Interior",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"one989shop",u:"https://www.tiktok.com/@one989shop?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"modriveth",u:"https://www.tiktok.com/@modriveth?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"i_earthh",u:"https://www.tiktok.com/@i_earthh?shop_region=TH&shop_id=7494549095358892612",p:"Refresh Wipes",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"iceicce0",u:"https://www.tiktok.com/@iceicce0?shop_region=TH&shop_id=7494549095358892612",p:"Interior",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"pattycho4012",u:"https://www.tiktok.com/@pattycho4012?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-07",h:"ยังไม่โพสต์"},
-{d:"2026-11-06",c:"kimaungkanaal",u:"https://www.tiktok.com/@kimaungkanaal?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-07",h:"ยังไม่โพสต์"}
+{d:"2026-07-09",p:"Interior",s:"2026-07-10",h:"เลยกำหนด",w:1},
+{d:"2026-08-07",p:"Refresh Wipes",s:"2026-08-07",h:"เลยกำหนด",w:1},
+{d:"2026-08-10",p:"Interior",s:"",h:"ยังไม่กรอก",w:1},
+{d:"2026-08-10",p:"Refresh Wipes",s:"2026-08-10",h:"เลยกำหนด",w:1},
+{d:"2026-08-11",p:"Refresh Wipes",s:"2026-08-12",h:"เลยกำหนด",w:1},
+{d:"2026-08-13",p:"Refresh Wipes",s:"2026-08-13",h:"เลยกำหนด",w:1},
+{d:"2026-08-17",p:"Interior wipes",s:"2026-08-17",h:"เลยกำหนด",w:1},
+{d:"2026-08-17",p:"Refresh Wipes",s:"2026-08-17",h:"เลยกำหนด",w:1},
+{d:"2026-08-20",p:"Refresh Wipes",s:"2026-08-20",h:"เลยกำหนด",w:1},
+{d:"2026-08-26",p:"Refresh Wipes",s:"2026-08-27",h:"เลยกำหนด",w:2},
+{d:"2026-09-04",p:"Sugar",s:"2026-09-04",h:"เลยกำหนด",w:1},
+{d:"2026-09-08",p:"Refresh Wipes",s:"",h:"ยังไม่กรอก",w:1},
+{d:"2026-09-08",p:"Refresh Wipes",s:"2026-09-09",h:"เลยกำหนด",w:2},
+{d:"2026-09-10",p:"Refresh Wipes",s:"2026-09-10",h:"เลยกำหนด",w:1},
+{d:"2026-09-11",p:"Interior wipes",s:"2026-09-12",h:"เลยกำหนด",w:2},
+{d:"2026-09-11",p:"Refresh Wipes",s:"2026-09-12",h:"เลยกำหนด",w:1},
+{d:"2026-09-14",p:"Interior wipes",s:"2026-09-14",h:"เลยกำหนด",w:1},
+{d:"2026-09-14",p:"Refresh Wipes",s:"2026-09-14",h:"เลยกำหนด",w:1},
+{d:"2026-09-14",p:"Sugar",s:"2026-09-14",h:"เลยกำหนด",w:1},
+{d:"2026-09-16",p:"Refresh Wipes",s:"",h:"ยังไม่กรอก",w:1},
+{d:"2026-09-16",p:"Sugar",s:"",h:"ยังไม่กรอก",w:1},
+{d:"2026-09-16",p:"Refresh Wipes",s:"2026-09-17",h:"เลยกำหนด",w:1},
+{d:"2026-09-18",p:"Interior wipes",s:"2026-09-19",h:"เลยกำหนด",w:1},
+{d:"2026-09-18",p:"Refresh Wipes",s:"2026-09-19",h:"เลยกำหนด",w:1},
+{d:"2026-09-21",p:"Interior wipes",s:"2026-09-21",h:"เลยกำหนด",w:2},
+{d:"2026-09-21",p:"Interior wipes, Refresh Wipes",s:"2026-09-21",h:"เลยกำหนด",w:1},
+{d:"2026-09-21",p:"Refresh Wipes",s:"2026-09-21",h:"เลยกำหนด",w:2},
+{d:"2026-09-21",p:"Refresh Wipes",s:"2026-09-22",h:"เลยกำหนด",w:1},
+{d:"2026-09-22",p:"Banyakart",s:"2026-09-23",h:"เลยกำหนด",w:1},
+{d:"2026-09-22",p:"Refresh Wipes",s:"2026-09-23",h:"เลยกำหนด",w:1},
+{d:"2026-09-22",p:"Sugar",s:"2026-09-23",h:"เลยกำหนด",w:1},
+{d:"2026-09-25",p:"Interior wipes",s:"2026-09-25",h:"เลยกำหนด",w:1},
+{d:"2026-09-25",p:"Refresh Wipes",s:"2026-09-25",h:"เลยกำหนด",w:1},
+{d:"2026-09-28",p:"Banyakart",s:"2026-09-28",h:"เลยกำหนด",w:1},
+{d:"2026-09-28",p:"Refresh Wipes",s:"2026-09-28",h:"เลยกำหนด",w:1},
+{d:"2026-09-29",p:"Interior wipes",s:"2026-09-30",h:"เลยกำหนด",w:1},
+{d:"2026-09-30",p:"Interior wipes",s:"2026-09-30",h:"เลยกำหนด",w:2},
+{d:"2026-09-29",p:"Refresh Wipes",s:"2026-09-30",h:"เลยกำหนด",w:1},
+{d:"2026-09-30",p:"Refresh Wipes",s:"2026-09-30",h:"เลยกำหนด",w:1},
+{d:"2026-10-06",p:"Banyakart",s:"2026-10-06",h:"เลยกำหนด",w:3},
+{d:"2026-10-06",p:"Interior wipes",s:"2026-10-06",h:"เลยกำหนด",w:3},
+{d:"2026-10-06",p:"Refresh Wipes",s:"2026-10-06",h:"เลยกำหนด",w:6},
+{d:"2026-10-09",p:"Interior",s:"2026-10-10",h:"เลยกำหนด",w:1},
+{d:"2026-10-09",p:"Refresh Wipes",s:"2026-10-10",h:"เลยกำหนด",w:1},
+{d:"2026-10-12",p:"Banyakart",s:"2026-10-12",h:"เลยกำหนด",w:1},
+{d:"2026-10-12",p:"Interior",s:"2026-10-12",h:"เลยกำหนด",w:1},
+{d:"2026-10-12",p:"Interior wipes",s:"2026-10-12",h:"เลยกำหนด",w:2},
+{d:"2026-10-15",p:"Interior wipes",s:"2026-10-16",h:"เลยกำหนด",w:2},
+{d:"2026-10-15",p:"Quart Shampoo",s:"2026-10-16",h:"เลยกำหนด",w:1},
+{d:"2026-10-19",p:"Interior wipes",s:"2026-10-19",h:"เลยกำหนด",w:1},
+{d:"2026-10-19",p:"Refresh Wipes",s:"2026-10-19",h:"เลยกำหนด",w:1},
+{d:"2026-10-20",p:"Refresh Wipes",s:"2026-10-21",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-20",p:"Spot Clean",s:"2026-10-21",h:"เลยกำหนด",w:1},
+{d:"2026-10-22",p:"Banyakart",s:"2026-10-23",h:"เลยกำหนด",w:1},
+{d:"2026-10-22",p:"Banyakart",s:"2026-10-23",h:"ยังไม่โพสต์",w:3},
+{d:"2026-10-22",p:"Interior wipes",s:"2026-10-23",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-22",p:"Refresh Wipes",s:"2026-10-23",h:"ยังไม่โพสต์",w:3},
+{d:"2026-10-22",p:"Tire Clean",s:"2026-10-23",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-26",p:"Banyakart",s:"2026-10-26",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Beach",s:"2026-10-26",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-26",p:"Interior",s:"2026-10-26",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-26",p:"Interior wipes",s:"2026-10-26",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Refresh Wipes",s:"2026-10-26",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Spot Clean",s:"2026-10-26",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-26",p:"Interior",s:"2026-10-27",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Interior wipes",s:"2026-10-27",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-27",p:"Interior wipes",s:"2026-10-27",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Refresh Wipes",s:"2026-10-27",h:"ยังไม่โพสต์",w:2},
+{d:"2026-10-26",p:"Sugar",s:"2026-10-27",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-26",p:"Waterless",s:"2026-10-27",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-27",p:"Banyakart",s:"2026-10-28",h:"ยังไม่โพสต์",w:4},
+{d:"2026-10-27",p:"Refresh Wipes",s:"2026-10-28",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-27",p:"Sugar",s:"2026-10-28",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-27",p:"Waterless",s:"2026-10-28",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-29",p:"Banyakart",s:"2026-10-30",h:"ยังไม่โพสต์",w:1},
+{d:"2026-10-29",p:"Interior wipes",s:"2026-10-30",h:"ยังไม่โพสต์",w:3},
+{d:"2026-10-29",p:"Refresh Wipes",s:"2026-10-30",h:"ยังไม่โพสต์",w:3},
+{d:"2026-10-29",p:"Spot Clean",s:"2026-10-30",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-02",p:"Banyakart",s:"2026-11-02",h:"ยังไม่โพสต์",w:15},
+{d:"2026-11-02",p:"Interior",s:"2026-11-02",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-02",p:"Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์",w:10},
+{d:"2026-11-02",p:"Quart Shampoo",s:"2026-11-02",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-02",p:"Reflex",s:"2026-11-02",h:"ยังไม่โพสต์",w:6},
+{d:"2026-11-02",p:"Refresh Wipes",s:"2026-11-02",h:"ยังไม่โพสต์",w:14},
+{d:"2026-11-02",p:"Refresh Wipes, Interior wipes",s:"2026-11-02",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-02",p:"Sugar",s:"2026-11-02",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-02",p:"X glass",s:"2026-11-02",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-02",p:"ไม้ปัดขนแกะ",s:"2026-11-02",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-03",p:"Banyakart",s:"2026-11-03",h:"ยังไม่โพสต์",w:5},
+{d:"2026-11-03",p:"Interior wipes",s:"2026-11-03",h:"ยังไม่โพสต์",w:3},
+{d:"2026-11-03",p:"Refresh Wipes",s:"2026-11-03",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-03",p:"Banyakart",s:"2026-11-04",h:"ยังไม่โพสต์",w:8},
+{d:"2026-11-03",p:"Interior",s:"2026-11-04",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-03",p:"Interior wipes",s:"2026-11-04",h:"ยังไม่โพสต์",w:6},
+{d:"2026-11-04",p:"Interior wipes",s:"",h:"ยังไม่กรอก",w:1},
+{d:"2026-11-03",p:"Quart Shampoo",s:"2026-11-04",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-03",p:"Refresh Wipes",s:"2026-11-04",h:"ยังไม่โพสต์",w:5},
+{d:"2026-11-03",p:"Spot Clean",s:"2026-11-04",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-03",p:"Sugar",s:"2026-11-04",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-03",p:"ไม้ปัดขนแกะ",s:"2026-11-04",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-04",p:"Banyakart",s:"2026-11-05",h:"ยังไม่โพสต์",w:11},
+{d:"2026-11-04",p:"Beach",s:"2026-11-05",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-04",p:"Interior",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-03",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-04",p:"Interior wipes",s:"2026-11-05",h:"ยังไม่โพสต์",w:9},
+{d:"2026-11-04",p:"Quart Shampoo",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-04",p:"Reflex",s:"2026-11-05",h:"ยังไม่โพสต์",w:3},
+{d:"2026-11-04",p:"Refresh Wipes",s:"2026-11-05",h:"ยังไม่โพสต์",w:8},
+{d:"2026-11-04",p:"Sugar",s:"2026-11-05",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-04",p:"Superdry",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-04",p:"Tire Clean",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-04",p:"X glass",s:"2026-11-05",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-04",p:"ไม้ปัดขนแกะ",s:"2026-11-05",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-05",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์",w:6},
+{d:"2026-11-06",p:"Banyakart",s:"2026-11-06",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-05",p:"Interior",s:"2026-11-06",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-05",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์",w:3},
+{d:"2026-11-06",p:"Interior wipes",s:"2026-11-06",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-06",p:"Interior, Sugar",s:"2026-11-06",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-05",p:"Reflex",s:"2026-11-06",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-05",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์",w:4},
+{d:"2026-11-06",p:"Refresh Wipes",s:"2026-11-06",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-05",p:"Waterless",s:"2026-11-06",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-05",p:"ไม้ปัดขนแกะ",s:"2026-11-06",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-06",p:"ไม้ปัดขนแกะ",s:"2026-11-06",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-06",p:"Banyakart",s:"2026-11-07",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-06",p:"Interior",s:"2026-11-07",h:"ยังไม่โพสต์",w:3},
+{d:"2026-11-06",p:"Interior wipes",s:"2026-11-07",h:"ยังไม่โพสต์",w:1},
+{d:"2026-11-06",p:"Refresh Wipes",s:"2026-11-07",h:"ยังไม่โพสต์",w:2},
+{d:"2026-11-06",p:"Spot Clean",s:"2026-11-07",h:"ยังไม่โพสต์",w:1}
 ];
 // วันที่ของ "คำขอล่าสุดในชีต" — samp_update.py เขียนค่านี้ทุกรอบจากข้อมูลจริง
 // (max ของคอลัมน์วันที่ในชีต "ขอสินค้า") ไม่ใช่ป้ายที่พิมพ์มือ
@@ -21203,14 +21133,16 @@ function renderSamples(){
     const asof = toISO(SAMPLE_DATA_ASOF) || new Date().toISOString().slice(0,10);
     const days = w => Math.max(0, Math.round((Date.parse(asof)-Date.parse(w.s||w.d))/864e5));
     W = [...W].sort((a,b)=>days(b)-days(a));
-    const nWait = W.filter(w=>/ยังไม่|ไม่โพสต์/.test(w.h)).length, nBlank = W.length-nWait;
-    const wl = document.getElementById('samp-wait-label'); if(wl) wl.textContent = `${W.length.toLocaleString()} รายการ · ${d.label}`;
+    const cnt = a => a.reduce((t,w)=>t+(w.w||1),0);   // w = จำนวนคำขอในแถวที่รวมแล้ว
+    const nTotal = cnt(W);
+    const nWait = cnt(W.filter(w=>/ยังไม่|ไม่โพสต์/.test(w.h))), nBlank = nTotal-nWait;
+    const wl = document.getElementById('samp-wait-label'); if(wl) wl.textContent = `${nTotal.toLocaleString()} รายการ · ${d.label}`;
     const shown = W.slice(0,150);
     wBody.innerHTML = W.length ? shown.map(w=>{const n=days(w);const col=n>14?'var(--rd)':n>7?'var(--amber,#f59e0b)':'var(--t2)';
-      return `<tr><td>${w.u?`<a href="${he(w.u)}" target="_blank" rel="noopener" style="color:inherit">${he(w.c)}</a>`:he(w.c)}</td><td>${iso2th(w.d)}</td><td>${he(w.p)||'–'}</td><td>${w.s?iso2th(w.s):'<span style="color:var(--t3)">ไม่ได้กรอก</span>'}</td><td style="color:${col};font-weight:600">${n} วัน</td><td style="color:${/ยังไม่กรอก/.test(w.h)?'var(--t3)':'inherit'}">${he(w.h)}</td></tr>`}).join('')
+      return `<tr><td>${he(w.p)||'–'}</td><td>${iso2th(w.d)}</td><td>${w.s?iso2th(w.s):'<span style="color:var(--t3)">ไม่ได้กรอก</span>'}</td><td style="color:${col};font-weight:600">${n} วัน</td><td style="color:${/ยังไม่กรอก/.test(w.h)?'var(--t3)':'inherit'}">${he(w.h)}</td><td style="text-align:right;font-weight:600">${(w.w||1).toLocaleString()}</td></tr>`}).join('')
       : `<tr><td colspan="6" style="text-align:center;color:var(--t3)">${activeSampleKey<'2026-06'&&activeSampleKey.match(/^\d/)?'ชีตเริ่มกรอกการลงโพสต์ตั้งแต่ มิ.ย. 69':'ไม่มีคำขอที่รอโพสต์ในช่วงนี้ 🎉'}</td></tr>`;
     const wn = document.getElementById('samp-wait-note');
-    if(wn) wn.innerHTML = `ℹ️ จากชีต "ขอสินค้า" คอลัมน์ <strong>"การลงโพสต์"</strong> — แสดงคำขอที่สถานะ Approve แต่ยังไม่ได้ "โพสต์แล้ว" (ยังไม่โพสต์ ${nWait} · ช่องว่างยังไม่กรอก ${nBlank}) · "รอมาแล้ว" นับจากวันส่งสินค้า (คอลัมน์ Last Contact) ถึงคำขอล่าสุดในชีต ${SAMPLE_DATA_ASOF||''} ถ้าไม่ได้กรอกวันส่งจะนับจากวันที่ขอ · สีแดง = เกิน 14 วัน${W.length>shown.length?` · แสดง ${shown.length} จาก ${W.length} รายการ`:''}`;
+    if(wn) wn.innerHTML = `ℹ️ จากชีต "ขอสินค้า" คอลัมน์ <strong>"การลงโพสต์"</strong> — แสดงคำขอที่สถานะ Approve แต่ยังไม่ได้ "โพสต์แล้ว" (ยังไม่โพสต์ ${nWait} · ช่องว่างยังไม่กรอก ${nBlank}) · "รอมาแล้ว" นับจากวันส่งสินค้า (คอลัมน์ Last Contact) ถึงคำขอล่าสุดในชีต ${SAMPLE_DATA_ASOF||''} ถ้าไม่ได้กรอกวันส่งจะนับจากวันที่ขอ · สีแดง = เกิน 14 วัน${W.length>shown.length?` · แสดง ${shown.length} จาก ${W.length} แถว`:''} · <strong>ตารางนี้ไม่แสดงชื่อครีเอเตอร์แล้ว</strong> — คำขอที่ตรงกันทั้งวันที่ขอ/สินค้า/วันส่ง/สถานะ ถูกรวมเป็นแถวเดียวแล้วนับจำนวน รายชื่อดูได้ที่ชีตต้นทางเท่านั้น`;
   }
 
   const anomEl = document.getElementById('samp-anomaly-note');
@@ -21951,6 +21883,8 @@ const _clInit = document.getElementById('creator-list');
 if(_clInit) _clInit.dataset.init = '1';
 buildCharts();
 renderCompare(); // Overview tab is active by default — not lazy-loaded via switchTab
+renderOverviewKPI();
+renderKolInsights();
 
 // Make creator chips in the Creator tab jump to Profile tab
 document.querySelectorAll('#creators-body .creator-chip').forEach(chip=>{
@@ -21973,12 +21907,9 @@ document.querySelectorAll('#creators-body .creator-chip').forEach(chip=>{
   const el = document.getElementById('creator-asof-note');
   if(!el) return;
   const asof = creatorAsofLabel();
-  const kk = document.querySelector('#tab-overview .kstrip .kkl');
-  const fm = kk ? kk.textContent.match(/\(([^)]+)\)/) : null;
-  let warn = '';
-  if(fm && asof.indexOf(fm[1].split(' ')[0]) !== 0){
-    warn = ` · <strong>⚠️ KPI แถวด้านล่างและ "เดือนนี้ KOL Insights" ยังเป็นตัวเลขที่พิมพ์ไว้ของ ${fm[1]}</strong> ไม่ใช่ข้อมูลล่าสุด — ตัวเลขสดดูที่ "เปรียบเทียบยอดขายตามช่วงเดือน" ด้านล่าง`;
-  }
+  // คำเตือน "KPI ยังเป็นตัวเลขที่พิมพ์ไว้ของเดือน X" ถูกถอดออก 9 พ.ย. 69
+  // เพราะ KPI กับ KOL Insights คำนวณสดจาก CREATOR_MONTHS แล้ว
+  const warn = '';
   el.innerHTML = `📊 ข้อมูลจริงจาก Creator_List (TikTok Affiliate Center) — ข้อมูลครีเอเตอร์รายเดือนล่าสุดถึง <strong>${asof}</strong>${warn} · ยังไม่รวมข้อมูล Livestream ใน GMV รวม (ดู Live GMV แยกด้านล่าง) · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center`;
 })();
 </script>

@@ -42,6 +42,11 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 > มันจัดการครบทั้ง `SAMPLE_MONTHS` (req/appr/shipped/posted/clips/waiting), `SAMPLE_LAST7D`,
 > `SAMPLE_PRODUCTS`, `SAMPLE_PRODUCTS_LAST7D`, `SAMPLE_POSTWAIT`, `SAMPLE_DATA_ASOF`
 > และ `node --check` ก่อนเขียนไฟล์
+>
+> ⛔ **`SAMPLE_POSTWAIT` ต้องไม่มีชื่อ / handle / ลิงก์โปรไฟล์ครีเอเตอร์** (ผู้ใช้สั่ง 9 พ.ย. 69)
+> รีโปนี้ public + GitHub Pages — ทุกอย่างที่ commit คือเผยแพร่ · ก่อนหน้านี้บล็อกนี้
+> ตีพิมพ์ชื่อและ URL โปรไฟล์ ~290 แถว · ตอนนี้เก็บแค่จำนวนต่อ (วัน, สินค้า, วันส่ง, สถานะ)
+> ถ้ารอบไหนเห็นคีย์ `c:` หรือ `u:` โผล่กลับมาใน `SAMPLE_POSTWAIT` = **หยุดและรายงาน**
 > เวอร์ชันเก่าของพรอมป์นี้เคยบรรยายคอลัมน์เองแล้ว**ผิด** (ใส่คอลัมน์ `NO.` ที่ไม่มีจริง
 > ทำให้ index เลื่อนทั้งแถว → อ่านวันที่ไม่ได้ → ล้างข้อมูลทั้งเดือนเป็น 0) จึงถอดออกทั้งหมด
 

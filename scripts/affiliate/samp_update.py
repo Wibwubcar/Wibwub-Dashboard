@@ -5,6 +5,7 @@ Reads the Google Sheet "Top 30 Affiliate" > tab "ขอสินค้า" expor
   SAMPLE_LAST7D            (rolling 7 days ending today, Bangkok)
   SAMPLE_PRODUCTS / SAMPLE_PRODUCTS_LAST7D  (per product from col "สินค้าที่ Creator ขอ" — never "สินค้าที่ให้")
   SAMPLE_POSTWAIT          (approved requests still waiting for a post, from col "การลงโพสต์")
+                           รวมเป็นจำนวนต่อ (วัน, สินค้า, วันส่ง, สถานะ) — **ไม่มีชื่อครีเอเตอร์**
 usage: python3 samp_update.py <csv> [--dry] [--no-commit]     exit 10 = no change
 """
 import csv, json, re, sys, subprocess, datetime as dt
@@ -210,10 +211,22 @@ def main():
     t, n = re.subn(r"const SAMPLE_PRODUCTS_LAST7D = \{.*?\};\n", lambda _: "const SAMPLE_PRODUCTS_LAST7D = " + jsobj(p7) + ";\n", t, count=1, flags=re.S)
     if not n: die("SAMPLE_PRODUCTS_LAST7D not found")
     # ---- approved requests waiting for a post (since posting was tracked)
-    W = [dict(d=r["d"].isoformat(), c=r["c"], u=r["u"], p=r["give"] or r["ask"], s=r["ship"].isoformat() if r["ship"] else "",
-              h=r["post"] or "ยังไม่กรอก") for r in R
-         if r["st"] == "Approve" and r["d"].strftime("%Y-%m") >= POST_FROM and post_kind(r["post"]) != "posted"]
-    W.sort(key=lambda w: (w["s"] or w["d"]))
+    # ⛔ ห้ามใส่ชื่อ / handle / ลิงก์โปรไฟล์ครีเอเตอร์กลับเข้ามาเด็ดขาด
+    # รีโปนี้เป็น public + GitHub Pages ทุกอย่างที่ commit = เผยแพร่
+    # ก่อน 9 พ.ย. 69 บล็อกนี้ตีพิมพ์ชื่อ (c) และ URL โปรไฟล์ (u) ของครีเอเตอร์ ~290 แถว
+    # ผู้ใช้สั่งให้เหลือแค่ "จำนวนที่รอโพสต์" — รวมแถวที่ (วันขอ, สินค้า, วันส่ง, สถานะ)
+    # เหมือนกันเป็นแถวเดียวแล้วนับจำนวนไว้ที่คีย์ w
+    # ยังเก็บ d/s ไว้ระดับวัน เพราะหน้าเว็บใช้กรองเดือน/7 วันล่าสุด และนับ "รอมาแล้วกี่วัน"
+    agg = {}
+    for r in R:
+        if (r["st"] != "Approve" or r["d"].strftime("%Y-%m") < POST_FROM
+                or post_kind(r["post"]) == "posted"):
+            continue
+        k = (r["d"].isoformat(), r["give"] or r["ask"],
+             r["ship"].isoformat() if r["ship"] else "", r["post"] or "ยังไม่กรอก")
+        agg[k] = agg.get(k, 0) + 1
+    W = [dict(d=k[0], p=k[1], s=k[2], h=k[3], w=v) for k, v in agg.items()]
+    W.sort(key=lambda w: (w["s"] or w["d"], w["p"]))
     pw = "const SAMPLE_POSTWAIT = [\n" + ",\n".join(jsobj(w) for w in W) + "\n];"
     if "const SAMPLE_POSTWAIT = [" in t: t = re.sub(r"const SAMPLE_POSTWAIT = \[\n.*?\n?\];", lambda _: pw, t, count=1, flags=re.S)
     else: die("SAMPLE_POSTWAIT not found (run the UI patch first)")
@@ -236,7 +249,7 @@ def main():
         print(json.dumps(out, ensure_ascii=False)); sys.exit(10)
     cur = funnel(months.get(today.strftime("%Y-%m"), []), today.strftime("%Y-%m"))
     summary = {"status": "UPDATED", "source": Path(src).name, "rows": len(R), "latest_row": max(r["d"] for r in R).isoformat(), "this_month": cur,
-               "last7d": funnel(r7, "9999"), "waiting_post": len(W), "past_month_req_changed": changed_past,
+               "last7d": funnel(r7, "9999"), "waiting_post": sum(w["w"] for w in W), "waiting_post_rows": len(W), "past_month_req_changed": changed_past,
                "clips_source": (CLIP_COL + " (คอลัมน์ในชีต)") if CLIP_FROM_SHEET else CLIP_SRC.name,
                "clips_asof": CLIP_LAST.isoformat() if CLIP_LAST else None,
                # แถวที่ขึ้นว่าโพสต์แล้วแต่ไม่รู้จำนวนคลิป — ไม่ถูกนับ ต้องรายงานทุกครั้ง
