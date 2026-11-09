@@ -294,7 +294,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
   </div>
 </div>
 <div id="tab-overview" class="panel active">
-  <div class="note">📊 ข้อมูลจริงจาก Creator_List (TikTok Affiliate Center) — อัปเดตล่าสุดถึง 30 ก.ย. 2026 (ก.ย. ครบเดือน 1-30 · ต.ค. ยังไม่มีข้อมูลในระบบ TikTok) · KPI ด้านล่างอ้างอิง ก.ย. เต็มเดือนซึ่งเป็นเดือนล่าสุดที่ครบ · ยังไม่รวมข้อมูล Livestream ใน GMV รวม (ดู Live GMV แยกด้านล่าง) · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center</div>
+  <!-- ข้อความเติมด้วย fillCreatorAsofNote() ท้ายสคริปต์ — ห้ามพิมพ์วันที่ไว้ที่นี่
+       (เดิมเป็นข้อความคงที่ "อัปเดตล่าสุดถึง 30 ก.ย. 2026 · ต.ค. ยังไม่มีข้อมูล"
+        ซึ่งค้างอยู่ 2 เดือนทั้งที่ CREATOR_MONTHS มีถึง พ.ย. แล้ว) -->
+  <div class="note" id="creator-asof-note"></div>
 
   <div class="kstrip">
     <div class="kk"><div class="kkl">Affiliate GMV (ก.ย. 1-30)</div><div class="kkv teal">฿2235.3K</div><div class="kks">ส.ค. เต็มเดือน ฿1,731K · ก.ค. ฿1,453K</div></div>
@@ -20241,6 +20244,23 @@ function tierAsofLabel(){
 function monthCount(){
   return Object.values(CREATOR_MONTHS).reduce((max,v)=>Math.max(max,v.length),0);
 }
+
+// ขอบข้อมูลของ Creator_List — คำนวณจากความยาวของ CREATOR_MONTHS เสมอ
+// (ช่อง 0 = มี.ค. 2569 ตาม MONTH_ORDER/TIER_BASE_YEAR_BE)
+// ช่วงวันของเดือนล่าสุดยืมจาก AF_MO ซึ่ง affiliate_update.py เขียนพร้อมกันในรอบเดียว
+// AF_MO เริ่มที่ ม.ค. ส่วน CREATOR_MONTHS เริ่มที่ มี.ค. จึงต้องต่างกัน 2 ช่องพอดี
+// ถ้าไม่ตรงตามนั้น = สองอาเรย์ซิงก์ไม่พร้อมกัน -> บอกแค่ชื่อเดือน ห้ามเดาช่วงวัน
+function creatorAsofLabel(){
+  const n = monthCount();
+  if(!n) return 'ไม่มีข้อมูล';
+  const mm = monthMeta(n-1);
+  let rng = '';
+  if(typeof AF_MO !== 'undefined' && AF_MO.length - 2 === n){
+    const m = String(AF_MO[AF_MO.length-1]).match(/\(([\d\-]+)\)/);
+    if(m) rng = ' ' + m[1];
+  }
+  return `${mm.label}${rng} ${mm.year}`;
+}
 const TIER_MONTH_COUNT = monthCount();
 
 function monthMeta(idx){
@@ -20958,6 +20978,14 @@ const SAMPLE_POSTWAIT = [
 {d:"2026-11-06",c:"pattycho4012",u:"https://www.tiktok.com/@pattycho4012?shop_region=TH&shop_id=7494549095358892612",p:"Banyakart",s:"2026-11-07",h:"ยังไม่โพสต์"},
 {d:"2026-11-06",c:"kimaungkanaal",u:"https://www.tiktok.com/@kimaungkanaal?shop_region=TH&shop_id=7494549095358892612",p:"Interior wipes",s:"2026-11-07",h:"ยังไม่โพสต์"}
 ];
+// วันที่ของ "คำขอล่าสุดในชีต" — samp_update.py เขียนค่านี้ทุกรอบจากข้อมูลจริง
+// (max ของคอลัมน์วันที่ในชีต "ขอสินค้า") ไม่ใช่ป้ายที่พิมพ์มือ
+// ⛔ ห้ามเปลี่ยนเป็นฟังก์ชัน และห้ามเปลี่ยนรูปแบบ DD/MM/YYYY
+//    การ์ด "คำขอสินค้า (รอทีมกรอกชีต)" ใน scripts/ops/task_expect.json อ่าน
+//    บรรทัดนี้จากไฟล์ตรง ๆ ด้วย regex SAMPLE_DATA_ASOF = '(\d{2})/(\d{2})/(\d{4})'
+//    ถ้าทำเป็นฟังก์ชันหรือย้ายไปคำนวณตอนรัน การ์ดจะอ่านไม่เจอ แล้วขึ้นเตือนทุกวัน
+//    โดยที่ข้อมูลไม่ได้ผิดอะไรเลย (จึงเป็นข้อยกเว้นของสกิล
+//    wibwub-avoid-stale-hardcoded-labels — ค่านี้ "สด" อยู่แล้วเพราะสคริปต์เขียนให้)
 const SAMPLE_DATA_ASOF = '06/11/2026';
 // ขอบของ "จำนวนคลิป" แยกจาก SAMPLE_DATA_ASOF — 19-27 ต.ค. 69 ทีมเปลี่ยนคอลัมน์
 // "การลงโพสต์" เป็น dropdown ค่าเดิม "โพสต์แล้ว N คลิป" ถูกเขียนทับหมด จำนวนคลิป
@@ -21213,7 +21241,7 @@ function renderSamples(){
       return `<tr><td>${w.u?`<a href="${he(w.u)}" target="_blank" rel="noopener" style="color:inherit">${he(w.c)}</a>`:he(w.c)}</td><td>${iso2th(w.d)}</td><td>${he(w.p)||'–'}</td><td>${w.s?iso2th(w.s):'<span style="color:var(--t3)">ไม่ได้กรอก</span>'}</td><td style="color:${col};font-weight:600">${n} วัน</td><td style="color:${/ยังไม่กรอก/.test(w.h)?'var(--t3)':'inherit'}">${he(w.h)}</td></tr>`}).join('')
       : `<tr><td colspan="6" style="text-align:center;color:var(--t3)">${activeSampleKey<'2026-06'&&activeSampleKey.match(/^\d/)?'ชีตเริ่มกรอกการลงโพสต์ตั้งแต่ มิ.ย. 69':'ไม่มีคำขอที่รอโพสต์ในช่วงนี้ 🎉'}</td></tr>`;
     const wn = document.getElementById('samp-wait-note');
-    if(wn) wn.innerHTML = `ℹ️ จากชีต "ขอสินค้า" คอลัมน์ <strong>"การลงโพสต์"</strong> — แสดงคำขอที่สถานะ Approve แต่ยังไม่ได้ "โพสต์แล้ว" (ยังไม่โพสต์ ${nWait} · ช่องว่างยังไม่กรอก ${nBlank}) · "รอมาแล้ว" นับจากวันส่งสินค้า (คอลัมน์ Last Contact) ถึงข้อมูลล่าสุด ${SAMPLE_DATA_ASOF||''} ถ้าไม่ได้กรอกวันส่งจะนับจากวันที่ขอ · สีแดง = เกิน 14 วัน${W.length>shown.length?` · แสดง ${shown.length} จาก ${W.length} รายการ`:''}`;
+    if(wn) wn.innerHTML = `ℹ️ จากชีต "ขอสินค้า" คอลัมน์ <strong>"การลงโพสต์"</strong> — แสดงคำขอที่สถานะ Approve แต่ยังไม่ได้ "โพสต์แล้ว" (ยังไม่โพสต์ ${nWait} · ช่องว่างยังไม่กรอก ${nBlank}) · "รอมาแล้ว" นับจากวันส่งสินค้า (คอลัมน์ Last Contact) ถึงคำขอล่าสุดในชีต ${SAMPLE_DATA_ASOF||''} ถ้าไม่ได้กรอกวันส่งจะนับจากวันที่ขอ · สีแดง = เกิน 14 วัน${W.length>shown.length?` · แสดง ${shown.length} จาก ${W.length} รายการ`:''}`;
   }
 
   const anomEl = document.getElementById('samp-anomaly-note');
@@ -21967,6 +21995,23 @@ document.querySelectorAll('#creators-body .creator-chip').forEach(chip=>{
     showProfile(name);
   };
 });
+
+// ป้ายขอบข้อมูลของแท็บภาพรวม — ดึงจากข้อมูลจริงทั้งสองส่วน ไม่มีวันที่พิมพ์มือ
+//   · ขอบข้อมูลครีเอเตอร์ = creatorAsofLabel() (อ่าน CREATOR_MONTHS)
+//   · เดือนของ KPI ที่ยัง hardcode = อ่านจากป้ายของการ์ดใบแรกเอง จึงไม่มีทางเพี้ยน
+//     จากที่แสดงอยู่จริง และคำเตือนจะหายไปเองเมื่อ KPI ถูกอัปเดตให้ตรงกัน
+(function fillCreatorAsofNote(){
+  const el = document.getElementById('creator-asof-note');
+  if(!el) return;
+  const asof = creatorAsofLabel();
+  const kk = document.querySelector('#tab-overview .kstrip .kkl');
+  const fm = kk ? kk.textContent.match(/\(([^)]+)\)/) : null;
+  let warn = '';
+  if(fm && asof.indexOf(fm[1].split(' ')[0]) !== 0){
+    warn = ` · <strong>⚠️ KPI แถวด้านล่างและ "เดือนนี้ KOL Insights" ยังเป็นตัวเลขที่พิมพ์ไว้ของ ${fm[1]}</strong> ไม่ใช่ข้อมูลล่าสุด — ตัวเลขสดดูที่ "เปรียบเทียบยอดขายตามช่วงเดือน" ด้านล่าง`;
+  }
+  el.innerHTML = `📊 ข้อมูลจริงจาก Creator_List (TikTok Affiliate Center) — ข้อมูลครีเอเตอร์รายเดือนล่าสุดถึง <strong>${asof}</strong>${warn} · ยังไม่รวมข้อมูล Livestream ใน GMV รวม (ดู Live GMV แยกด้านล่าง) · Product/Video section ใช้ข้อมูลจากหน้า TikTok Affiliate Center`;
+})();
 </script>
 </body>
 </html>

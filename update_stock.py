@@ -358,12 +358,18 @@ html_new = re.sub(
     rf'\g<1>{date_str}',
     html_new
 )
-# ถ้าไม่มี badge ให้เพิ่ม
-if snapshot_date.strftime("%d/%m/%Y") not in html_new and "table-note" in html_new:
-    html_new = html_new.replace(
-        '<div class="note" id="table-note"></div>',
-        f'<div class="note" id="table-note">อัปเดตล่าสุด: {date_str} (Shipnity live)</div>'
-    )
+# จำนวน SKU ในป้าย #stock-asof — เขียนจากฝั่ง Python ด้วย ไม่พึ่ง JS อย่างเดียว
+# (ค่าในไฟล์ที่ commit จึงเป็นเลขจริง ไม่ใช่ "—" และถูกต้องแม้เปิดแบบไม่รัน JS)
+html_new = re.sub(
+    r'(<span id="note-sku-count">)[^<]*(</span>)',
+    rf'\g<1>{len(products)}\g<2>',
+    html_new
+)
+
+# เดิมมี fallback "ถ้าไม่มี badge ให้เพิ่ม" ที่เขียนวันที่ลง <div id="table-note"></div>
+# ตัดออก 9 พ.ย. 69: ป้ายวันที่ย้ายไปอยู่ #stock-asof แล้ว ส่วน #table-note ตอนนี้
+# ว่างเป็นปกติ (render() ในหน้าเว็บเขียนคำอธิบายคอลัมน์ลงไปเอง) ถ้าเก็บ fallback ไว้
+# มันจะยัดวันที่ลงช่องที่ render() เขียนทับทันที = ป้ายหายอีกแบบเดิม
 
 # อัปเดต header badge หลัก "อัปเดต D MMM YYYY" (พ.ศ., ตัวย่อไทย) — เคยเป็น static string ไม่เคยถูกแตะมาก่อน
 thai_months = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.']

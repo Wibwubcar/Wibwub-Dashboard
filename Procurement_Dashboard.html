@@ -188,7 +188,12 @@ tbody td.num{text-align:right}
 </thead>
 <tbody id="tbody"></tbody>
 </table>
-<div class="note" id="table-note">อัปเดตล่าสุด: 08/11/2026 — Shipnity live (<span id="note-sku-count">—</span> SKUs)</div>
+<!-- #stock-asof = ป้ายขอบข้อมูล (วันที่ snapshot + จำนวน SKU) update_stock.py
+     เป็นคนเขียนทั้งสองค่าทุกรอบ · แยกออกจาก #table-note เพราะ render() เขียนทับ
+     #table-note ทั้งก้อนทุกครั้งที่จัดเรียง/กรอง ทำให้ทั้งวันที่และ span
+     จำนวน SKU หลุดหายไปเงียบ ๆ (เจอ 9 พ.ย. 69 — span เคยขึ้น "—" ตลอด) -->
+<div class="note" id="stock-asof">อัปเดตล่าสุด: 08/11/2026 — Shipnity live (<span id="note-sku-count">161</span> SKUs)</div>
+<div class="note" id="table-note"></div>
 </div>
 </div><!-- /view-stock -->
 
@@ -1015,28 +1020,28 @@ function hRender() {
 
 /* ---- Derived "as-of" labels ------------------------------------------
    DO NOT hardcode a date or a SKU count anywhere in this file.
-   #table-note is the single source of truth for the snapshot date and is
-   maintained by update_stock.py on every run; everything else derives
-   from it or from PRODUCTS. See skill: wibwub-avoid-stale-hardcoded-labels.
+   #stock-asof is the single source of truth for the snapshot date and the
+   SKU count, and is maintained by update_stock.py on every run; everything
+   else derives from it or from PRODUCTS.
+   NOTE: this used to read #table-note, which render() overwrites wholesale on
+   every sort/filter — so the date vanished and stockAsOfLabel() silently fell
+   back to 'วันนี้' (a lie) after the first render. Keep these two elements
+   separate. See skill: wibwub-avoid-stale-hardcoded-labels.
 ---------------------------------------------------------------------- */
 function stockAsOfLabel() {
-  var el = document.getElementById('table-note');
+  var el = document.getElementById('stock-asof') || document.getElementById('table-note');
   var m = el && el.textContent ? el.textContent.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/) : null;
   if (!m) return 'วันนี้';
   var TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
   return parseInt(m[1], 10) + ' ' + TH[parseInt(m[2], 10) - 1] + ' ' + (parseInt(m[3], 10) + 543);
 }
 
+// update_stock.py เขียนจำนวน SKU ลง #note-sku-count ให้แล้วทุกรอบ (ค่าในไฟล์
+// จึงถูกต้องแม้ JS ไม่รัน) ตัวนี้เป็นแค่ตัวกันพลาดฝั่งเบราว์เซอร์ ให้ตรงกับ
+// PRODUCTS ที่กำลังแสดงอยู่จริงเสมอ — ทั้งสองทางมาจากชุดข้อมูลเดียวกัน
 (function syncNoteSkuCount() {
-  var n = PRODUCTS.length;
   var span = document.getElementById('note-sku-count');
-  if (span) { span.textContent = n; return; }
-  // Fallback: an automated rewrite of #table-note dropped the span.
-  var el = document.getElementById('table-note');
-  if (!el) return;
-  el.innerHTML = /\(\s*[\d—-]+\s*SKUs?\s*\)/.test(el.innerHTML)
-    ? el.innerHTML.replace(/\(\s*[\d—-]+\s*SKUs?\s*\)/, '(' + n + ' SKUs)')
-    : el.innerHTML + ' (' + n + ' SKUs)';
+  if (span) span.textContent = PRODUCTS.length;
 })();
 
 </script>

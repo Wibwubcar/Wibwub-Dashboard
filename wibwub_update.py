@@ -628,6 +628,14 @@ def process_tiktok_content(rows):
 
     today = datetime.date.today()
 
+    # ── ยกเว้นด่าน off_dates เป็นรายคลิป ───────────────────────────────────
+    # บางแถวลิงก์คลิปในชีตชี้ไปคลิปเก่าคนละตัว (ก๊อปลิงก์ผิด) แต่ป้ายวันที่ถูกแล้ว
+    # เจ้าของชีตตรวจแล้วและสั่งให้ข้ามไป (9 พ.ย. 69) ไม่ต้องเตือนซ้ำทุกรอบ
+    # คีย์เป็น video id เพื่อให้แคบที่สุด — ถ้าทีมแก้ลิงก์ให้ถูก คำเตือนกลับมาเอง
+    # และด่านแรก (วันที่เลยวันนี้ = ผิดรูปแบบ) **ไม่ถูกยกเว้น** ยังเตือนทุกกรณี
+    #   7129377558268890394 = แถว 89 ป้าย 27/6/26 ลิงก์ชี้คลิป 8 ส.ค. 2022
+    DATE_CHECK_SKIP_VIDS = {'7129377558268890394'}
+
     def vid_date(url):
         """เวลาโพสต์จริงจาก video id ในลิงก์ (32 บิตสูงของ id = unix ts) หรือ None"""
         m = re.search(r'/video/(\d+)', str(url or ''))
@@ -668,8 +676,11 @@ def process_tiktok_content(rows):
                 # ด่านที่สอง: เทียบกับเวลาจริงของคลิป — จับการสลับวัน/เดือนได้
                 # แม้วันที่จะยังอยู่ในอดีต (ซึ่งด่านแรกจับไม่ได้)
                 # ยอมให้คลาดกัน 1 วันเพราะทีมกรอกมือคร่อมเที่ยงคืนอยู่หลายแถว
-                d_real = vid_date(gv(row, c_url))
-                if d_real and abs((d_lbl - d_real).days) >= 2:
+                _u = str(gv(row, c_url) or '')
+                _m = re.search(r'/video/(\d+)', _u)
+                _skip = bool(_m) and _m.group(1) in DATE_CHECK_SKIP_VIDS
+                d_real = vid_date(_u)
+                if d_real and not _skip and abs((d_lbl - d_real).days) >= 2:
                     off_dates.append('%s (คลิปจริง %s)' % (lbl, d_real.strftime('%d/%m/%y')))
             pillar = map_pillar(gv(row, c_pil).strip())
             raw_content = gv(row, c_con).strip()
