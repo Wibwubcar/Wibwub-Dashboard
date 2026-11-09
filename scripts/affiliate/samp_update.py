@@ -24,6 +24,27 @@ CLIP_SRC = ROOT / "Data Affiliate" / "ขอสินค้า" / "wibwub_samp_r
 # ถ้าชีตเพิ่มคอลัมน์นับคลิปกลับมาในอนาคต ให้ใช้คอลัมน์นั้นก่อนไฟล์ย้อนหลังเสมอ
 CLIP_COL = "จำนวนคลิป"
 
+# ── เขตในหน้า Affiliate ที่ "สคริปต์นี้" เป็นเจ้าของ ──────────────────────────
+# ใช้ตอน commit เฉพาะ hunk ของตัวเอง เมื่อไฟล์มีงานของคนอื่นค้างอยู่ด้วย
+# (ดูเหตุผลทั้งหมดใน scripts/ops/commit_own_hunks.py — ทางตัน samp ↔ affiliate)
+# ⛔ ถ้าเพิ่ม/ลบ const ที่สคริปต์นี้เขียน ต้องแก้รายการนี้ให้ตรงด้วย ไม่งั้นการแก้นั้น
+#    จะถูกจัดเป็น "ของคนอื่น" แล้วค้างไม่ได้ commit เงียบ ๆ แบบเดิมอีก
+# SAMPLE_MONTHS พิเศษ: บรรทัดเดียวมี funnel (ของเรา) กับ perf (ของ affiliate_update)
+#    จึงบอกไว้ด้วย 'only' ว่าของเราคือส่วนไหน ตัวตรวจจะพิสูจน์ว่า perf ไม่ได้เปลี่ยน
+SAMP_REGIONS = [
+    {'re': r"const SAMPLE_MONTHS = \[\n.*?\n\];", 'need': r"funnel:",
+     'only': r"funnel:\{[^}]*\}"},
+    {'re': r"const SAMPLE_LAST7D = \{.*?\n\};"},
+    {'re': r"const SAMPLE_PRODUCTS = \{\n.*?\n\};"},
+    {'re': r"const SAMPLE_PRODUCTS_LAST7D = \{.*?\};"},
+    {'re': r"const SAMPLE_POSTWAIT = \[\n.*?\n?\];"},
+    {'re': r"const SAMPLE_DATA_ASOF = '[^']*';"},
+    {'re': r"const SAMPLE_CLIPS_ASOF = '[^']*';"},
+]
+sys.path.insert(0, str(ROOT / "scripts" / "ops"))
+from commit_own_hunks import commit_own_hunks        # noqa: E402
+GITW = [sys.executable, str(ROOT / "scripts" / "gitw.py")]
+
 def die(m, code=1): print(json.dumps({"status": "ERROR", "error": m}, ensure_ascii=False)); sys.exit(code)
 def pdate(v):
     m = re.match(r"\s*(\d{1,2})/(\d{1,2})/(\d{4})", v or "")
@@ -201,7 +222,18 @@ def main():
     # หน้าเว็บต้องบอกผู้ใช้ให้รู้ ไม่งั้นจะอ่านว่าคลิปหลัง 19 ต.ค. เป็น 0
     _ca = f"{CLIP_LAST:%d/%m/%Y}" if (CLIP_LAST and not CLIP_FROM_SHEET) else ""
     t = re.sub(r"const SAMPLE_CLIPS_ASOF = '[^']*';", f"const SAMPLE_CLIPS_ASOF = '{_ca}';", t)
-    if t == t0: print(json.dumps({"status": "NO_CHANGE"})); sys.exit(10)
+    if t == t0:
+        # เทียบชีตกับหน้าเว็บแล้วเหมือนกัน — **ไม่ได้แปลว่าไม่มีอะไรต้อง commit**
+        # รอบก่อนอาจเขียนไฟล์แล้วข้าม commit ไป (เพราะมีงานอื่นค้างในไฟล์เดียวกัน)
+        # ถ้าไม่ตามเก็บที่นี่ จะไม่มีรอบไหนกลับมา commit การแก้นั้นอีกเลย (ทางตัน 9 พ.ย. 69)
+        out = {"status": "NO_CHANGE"}
+        if "--dry" not in sys.argv and "--no-commit" not in sys.argv:
+            out["catchup"] = commit_own_hunks(
+                PAGE.name, SAMP_REGIONS,
+                f"auto-update: คำขอสินค้า {today} — ตามเก็บบรรทัด SAMPLE_* ที่ค้างจากรอบก่อน")
+        # คง exit 10 ไว้ตามเดิมแม้ตามเก็บสำเร็จ เพราะพรอมป์งานตั้งเวลาและ task_expect
+        # อ่านรหัสนี้ว่า "ชีตไม่มีข้อมูลใหม่" ซึ่งยังจริง · ผลการตามเก็บอยู่ใน out["catchup"]
+        print(json.dumps(out, ensure_ascii=False)); sys.exit(10)
     cur = funnel(months.get(today.strftime("%Y-%m"), []), today.strftime("%Y-%m"))
     summary = {"status": "UPDATED", "source": Path(src).name, "rows": len(R), "latest_row": max(r["d"] for r in R).isoformat(), "this_month": cur,
                "last7d": funnel(r7, "9999"), "waiting_post": len(W), "past_month_req_changed": changed_past,
@@ -222,17 +254,27 @@ def main():
     if r.returncode: die("node --check failed: " + r.stderr[:400])
     PAGE.with_suffix(".tmp.html").write_text(t, encoding="utf-8"); PAGE.with_suffix(".tmp.html").replace(PAGE)
     if "--no-commit" not in sys.argv and _pre:
-        summary["commit"] = "SKIPPED: WIBWUB_Affiliate_Dashboard.html มีงานค้างที่ยังไม่ commit อยู่ก่อนแล้ว — เขียนข้อมูลใหม่ให้แล้วแต่ไม่ commit เพื่อไม่ให้กวาดงานของคนอื่นเข้าไปด้วย ให้ commit เองแบบแยก hunk"
+        # มีงานของคนอื่นค้างในไฟล์นี้ -> commit เฉพาะ hunk ที่เป็นบรรทัดของเราจริง ๆ
+        # เดิมบรรทัดนี้ "ข้าม commit แล้วบอกให้คนมาทำมือ" ซึ่งไม่มีใครมาทำ และรอบถัดไป
+        # จะคืน NO_CHANGE ตั้งแต่ก่อนถึงจุดนี้ = การแก้ค้างถาวร (9 พ.ย. 69)
+        r_own = commit_own_hunks(
+            PAGE.name, SAMP_REGIONS,
+            f"auto-update: คำขอสินค้า {today} — {cur['req']} คำขอ / {cur['appr']} อนุมัติ "
+            f"/ {cur['posted']} โพสต์แล้ว (เฉพาะบรรทัด SAMPLE_*)")
+        summary["own_hunks"] = r_own
+        summary["commit"] = (r_own["commit"] if r_own["status"] == "COMMITTED" else
+                             "SKIPPED (%s): เขียนข้อมูลใหม่ให้แล้ว แต่ยัง commit ไม่ได้ — %s"
+                             % (r_own["status"], r_own.get("error") or r_own.get("note") or
+                                "ไม่มี hunk ที่เป็นของงานนี้"))
     elif "--no-commit" not in sys.argv:
         sw = ROOT / "sw.js"; s = sw.read_text(); v = int(re.search(r"wibwub-v(\d+)", s).group(1))
         sw.write_text(s.replace(f"wibwub-v{v}", f"wibwub-v{v+1}", 1))
-        # ห้ามลบ/ย้าย .git/*.lock — มีงานตั้งเวลาอื่นรันพร้อมกันได้ ถ้าติด lock ให้ลองใหม่แล้วรายงาน
+        # ผ่าน gitw.py เท่านั้น — มันรอ index.lock/HEAD.lock ให้ (เดิมลองเองแค่ 3 ครั้ง
+        # และดู index.lock ตัวเดียว) และเติม `-- <ไฟล์ที่ตัวเอง add>` ให้ commit เอง
+        # เดิมบรรทัด commit ไม่มี pathspec -> กวาดไฟล์ที่งานอื่น git add ค้างไว้ติดไปได้
+        # (เคสเดียวกับ aabd90c 5 พ.ย. 69 ที่ชื่อครีเอเตอร์หลุดขึ้นรีโปสาธารณะ)
         def g(*x):
-            for i in range(3):
-                r = subprocess.run(["git", "-C", str(ROOT), *x], capture_output=True, text=True)
-                if r.returncode == 0 or "index.lock" not in (r.stderr or ""): return r
-                import time; time.sleep(20)
-            return r
+            return subprocess.run([*GITW, *x], capture_output=True, text=True)
         g("add", "WIBWUB_Affiliate_Dashboard.html", "sw.js")
         c = g("-c", "user.name=WIBWUB Bot", "-c", "user.email=marketingwibwub@gmail.com", "commit", "-m",
               f"auto-update: คำขอสินค้า {today} — {cur['req']} คำขอ / {cur['appr']} อนุมัติ / {cur['posted']} โพสต์แล้ว")
