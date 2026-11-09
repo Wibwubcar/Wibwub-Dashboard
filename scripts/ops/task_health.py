@@ -744,9 +744,18 @@ def build_status(now):
         # ไม่ใช่แค่ "ยังไม่เกิน max_age_hours" — เกณฑ์ชั่วโมงมักยาวกว่าระยะห่างระหว่างรอบ
         # จึงมองไม่เห็นรอบที่ค้าง (28 ต.ค. 69: HR 20:30 ค้าง แต่ hr_state.json ของรอบ 10:30
         # ยังอายุแค่ 11 ชม. < เกณฑ์ 16 ชม. ตัวตรวจเลยขึ้นว่าปกติทั้งที่งานค้างอยู่)
+        fresh = (maxh is not None and age is not None and age <= maxh)
+        # kind ที่อ่านได้แค่ "วันที่" ของข้อมูล (regex_date / regex_th_md) เทียบกับเวลา
+        # เริ่มรอบไม่ได้เลย — art_at เป็น 00:00 ของวันข้อมูล จึงเก่ากว่าเวลาเริ่มรอบเสมอ
+        # และข้อมูลที่สดที่สุดที่ export ให้ได้มักเป็นของ "วันนี้ -1/-2" ด้วย
+        # ถ้าปล่อยให้ done_this_round เป็น False ตลอด รอบที่ไม่ได้เขียนบรรทัดปิดท้าย
+        # จะขึ้น ⛔ "ค้าง" ทุกครั้ง และรอบที่มีขั้นสะดุดจะขึ้น ⚠️ แม้ข้อมูลครบ
+        # → kind แบบนี้ใช้ "ยังอยู่ในเกณฑ์อายุ" เป็นหลักฐานว่ารอบนี้ทำงานออกผลแทน
+        date_only = bool(acfg) and acfg.get('kind') in ('regex_date', 'regex_th_md')
         done_this_round = (art_at is not None and last_run is not None
                            and art_at >= last_run - timedelta(minutes=2))
-        fresh = (maxh is not None and age is not None and age <= maxh)
+        if date_only and fresh:
+            done_this_round = True
         # งาน local ที่ปลดระวางแล้ว: พรอมป์เหลือแค่ตอบ "ข้าม" จึงไม่มีผลงานปลายทาง
         # และไม่ควรถูกนับว่าล้ม — ผู้ใช้หาสวิตช์ปิดในแอปไม่เจอ จึงทำให้ว่างแทน
         # คีย์ต้องเป็น '<ฝั่ง>:<id>' เท่านั้น ห้ามรับ id เปล่า: id ซ้ำกันข้ามฝั่งได้

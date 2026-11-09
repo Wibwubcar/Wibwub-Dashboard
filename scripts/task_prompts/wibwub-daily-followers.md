@@ -117,7 +117,21 @@ browser_batch([
 python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/update_followers.py"
 ```
 
-ถ้า script ไม่มี ให้รัน inline:
+**รหัสจบของ `update_followers.py` — ต้องเช็คทุกรอบ:**
+
+| รหัส | ความหมาย | ต้องทำอะไร |
+|---|---|---|
+| `0` | สำเร็จ — soc_follow + TK_FOL + FOL_DATA อัปเดตครบ | ไป Step ต่อไป |
+| `2` | ⛔ อ่านวันที่ใน `FollowerHistory.csv` ไม่ได้เลย (ภาษา/รูปแบบ export เปลี่ยน) · **ยังไม่เขียนไฟล์ใด ๆ** | หยุด ห้าม commit · รายงานป้ายวันที่ที่สคริปต์พิมพ์มา (ต้องแก้ `parse_thai_date()` ก่อน) |
+| `3` | ⛔ เขียน `FOL_DATA` (กราฟ Follower รายวัน) ของเดือนปัจจุบันไม่ได้ · **ไฟล์อื่นเขียนไปแล้ว** | หยุด ห้ามรายงานว่าสำเร็จ · รายงานว่าตัวเลขรวมเข้าแล้วแต่กราฟรายวันค้าง |
+
+ที่มา (9 พ.ย. 69): หน้า TikTok Studio เป็นภาษาอังกฤษ ไฟล์จึงเขียนวันที่เป็น
+`"November 7"` ตัวอ่านเดิมรับแค่ไทย → คืน `None` ทุกแถว, `FOL_DATA` ถูกข้ามด้วย
+`⚠️ ... — ข้าม` แล้วจบด้วยรหัส 0 · กราฟรายวันค้างที่ 4 พ.ย. 5 วัน โดยทุกรอบ
+รายงานว่าสำเร็จ ตอนนี้สองเคสนั้นจบด้วยรหัสไม่ใช่ 0 แล้ว
+
+ถ้า script ไม่มี ให้รัน inline (⚠️ ตัวอ่านวันที่สองภาษาและด่านทั้งสองข้างบน
+อยู่ในสคริปต์เท่านั้น — ถ้าสคริปต์ยังอยู่ **ห้ามใช้ inline สำรอง**):
 ```python
 import os, re, csv, zipfile, glob
 from datetime import datetime

@@ -3,9 +3,22 @@
 update_followers.py — อัปเดต TikTok Followers ใน Dashboard + Mobile
 อ่านจาก FollowerHistory.csv ล่าสุดใน Downloads หรือ data content/
 """
-import os, re, csv, zipfile, glob
+import os, re, csv, sys, zipfile, glob
 from datetime import datetime
 from pathlib import Path
+
+
+# ── รหัสจบ (ต้องตรงกับที่เขียนไว้ในพรอมป์ wibwub-daily-followers) ──────────
+#   0  สำเร็จ — soc_follow / TK_FOL / FOL_DATA อัปเดตครบ
+#   2  ⛔ อ่านวันที่ใน FollowerHistory.csv ไม่ได้เลย (ภาษา/รูปแบบ export เปลี่ยน)
+#      → ยังไม่เขียนไฟล์ใด ๆ ต้องแก้ตัวอ่านก่อน
+#   3  ⛔ เขียน FOL_DATA (กราฟ Follower รายวัน) ของเดือนปัจจุบันไม่ได้
+#      → ไฟล์อื่นเขียนไปแล้ว ห้ามรายงานว่าสำเร็จ
+# เดิมสองเคสนี้แค่ print ⚠️ แล้ว exit 0 — 6-9 พ.ย. 69 FOL_DATA ค้าง 5 วัน
+# โดยทุกรอบรายงานว่าสำเร็จและการ์ด task_health ขึ้น ✅
+def die(code, msg):
+    print('⛔ ' + msg)
+    sys.exit(code)
 
 MAC_BASE = Path("/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All")
 MAC_DL   = Path("/Users/thanasablilutanon/Downloads")
@@ -60,12 +73,48 @@ MONTH_MAP = {
     'พฤษภาคม':5,'มิถุนายน':6,'กรกฎาคม':7,'สิงหาคม':8,
     'กันยายน':9,'ตุลาคม':10,'พฤศจิกายน':11,'ธันวาคม':12
 }
-def parse_thai_date(s):
+EN_MONTH_MAP = {
+    'january':1,'february':2,'march':3,'april':4,'may':5,'june':6,
+    'july':7,'august':8,'september':9,'october':10,'november':11,'december':12
+}
+
+
+def _month_from_text(s):
+    """เลขเดือนจากป้ายวันที่ รับทั้งชื่อไทยเต็ม ชื่ออังกฤษเต็ม และตัวย่ออังกฤษ"""
     for th, n in MONTH_MAP.items():
         if th in s:
-            day = int(s.split()[0])
-            return datetime(datetime.now().year, n, day)
+            return n
+    for w in re.findall(r'[A-Za-z]+', s):
+        w = w.lower()
+        if len(w) < 3:
+            continue
+        for en, n in EN_MONTH_MAP.items():
+            if en.startswith(w):          # 'nov' -> november, 'may' -> may
+                return n
     return None
+
+
+def parse_thai_date(s):
+    """ป้ายวันที่ใน FollowerHistory.csv -> datetime (คืน None ถ้าอ่านไม่ออก)
+
+    ภาษาของไฟล์ตามภาษาหน้า TikTok Studio ตอนกด export และสลับได้เอง:
+        ไทย     "7 พฤศจิกายน"              วันมาก่อนเดือน
+        อังกฤษ  "November 7" / "Nov 7"      เดือนมาก่อนวัน
+    9 พ.ย. 69: หน้าเว็บเป็นอังกฤษ ตัวอ่านเดิมรับแค่ไทยจึงคืน None ทุกแถว
+    FOL_DATA ของเดือนนั้นถูกข้ามเงียบ ๆ ค้างที่ 4 พ.ย. (แบบเดียวกับหัวคอลัมน์
+    export ของ TikTok Ads ที่กลายเป็นไทยเอง 7 พ.ย. 69)
+    ⚠️ ห้ามกลับไปใช้ s.split()[0] เป็นวันที่ — รูปอังกฤษโทเคนแรกเป็นชื่อเดือน
+    """
+    mon = _month_from_text(s)
+    if mon is None:
+        return None
+    m = re.search(r'\d{1,2}', s)          # เลขตัวแรกคือวัน ทั้งสองรูปแบบ
+    if not m:
+        return None
+    try:
+        return datetime(datetime.now().year, mon, int(m.group()))
+    except ValueError:
+        return None
 
 # ── main ──────────────────────────────────────────────────────────────────
 zip_path = find_latest_zip()
@@ -84,6 +133,14 @@ for date_str, count in rows:
         if d.month == 1 and jan_count is None:
             jan_count = count
         by_month[d.month] = count  # เก็บค่าล่าสุดของเดือนนั้น
+
+# ด่าน: มีแถวแต่อ่านวันที่ไม่ออกแม้แถวเดียว = รูปแบบ/ภาษาของ export เปลี่ยน
+# ต้องล้มทั้งรอบ ห้ามเดินต่อไปเขียนไฟล์ด้วยข้อมูลที่ไม่รู้วันที่
+if not by_month:
+    die(2, 'อ่านวันที่ใน FollowerHistory.csv ไม่ได้เลย (%d แถว) '
+           'ป้ายวันที่แถวแรก: %r — รูปแบบหรือภาษาของ export เปลี่ยน '
+           'ต้องแก้ parse_thai_date() ก่อน · ยังไม่เขียนไฟล์ใด ๆ'
+           % (len(rows), rows[0][0]))
 
 latest_date, latest_count = rows[-1]
 latest_k = round(latest_count / 1000, 3)
@@ -253,6 +310,7 @@ def update_fol_data(html, cur_month, rows, repair=False):
     new_entry = build_fol_month_entry(cur_month, rows, require_complete=repair)
     if not new_entry:
         if not repair:
+            # ไม่ใช่แค่คำเตือน — ผู้เรียกจะจบด้วยรหัส 3 (ดูหัวไฟล์)
             print(f"⚠️  FOL_DATA: ไม่พบข้อมูล {full_name} {year_be} ใน FollowerHistory.csv — ข้าม")
         return html, False
     pattern = re.compile(
@@ -302,3 +360,10 @@ with zipfile.ZipFile(zip_path) as z:
     z.extractall(dest_dir)
 print(f"📁 Extract ไปยัง: data content/Followers_wibwubcar ({today})/")
 print(f"\n✅ Done — {latest_count:,} followers ({latest_date})")
+
+# ด่าน: ถึงตรงนี้ไฟล์อื่นเขียนไปแล้ว แต่ถ้ากราฟรายวันของเดือนปัจจุบันไม่ถูกเขียน
+# ต้องจบด้วยรหัส 3 ไม่ใช่ 0 — ไม่งั้นรอบรายงานว่าสำเร็จขณะที่หน้าเว็บค้าง
+if not fol_updated:
+    die(3, 'FOL_DATA เดือน %s ไม่ถูกอัปเดต (กราฟ Follower รายวันจะค้าง) '
+           'ทั้งที่อ่าน CSV ได้ %d แถว · ไฟล์อื่นเขียนไปแล้ว ห้ามรายงานว่าสำเร็จ'
+           % (TH_MONTHS_FULL_REV[cur_month], len(rows)))
