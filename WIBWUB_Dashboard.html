@@ -1213,22 +1213,25 @@
 
       <!-- KPI row -->
       <div class="kpi-grid-4" style="margin-bottom:22px">
-        <div class="kpi or"><div class="kpi-label">ยอดขายรวม ม.ค.–ต.ค.</div><div class="kpi-val">฿82.93M</div><div class="kpi-sub neutral">ม.ค. – 9 พ.ย. 2569</div><div class="kpi-ico">💰</div></div>
-        <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val">Sugar 500ml</div><div class="kpi-sub up">฿7.92M · 25,025 ชิ้น</div><div class="kpi-ico">🏆</div></div>
-        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val">316K ชิ้น</div><div class="kpi-sub neutral">ข้อมูลจาก Shipnity ม.ค.–9 พ.ย.</div><div class="kpi-ico">📦</div></div>
-        <div class="kpi yw"><div class="kpi-label">ช่องทางหลัก</div><div class="kpi-val">Shopee 59%</div><div class="kpi-sub neutral">Facebook 13% · TikTok 19%</div><div class="kpi-ico">🛒</div></div>
+        <!-- ทั้ง 4 ใบเติมด้วย renderProdChannel() จาก PROD_CHANNEL — ห้ามพิมพ์ตัวเลขไว้ที่นี่
+             (เดิมพิมพ์มือและไม่มีสคริปต์ไหนแตะ: "฿82.93M ม.ค.–ต.ค." ไม่ตรงกับยอดจริงของ
+              ช่วงไหนเลย และ "Sugar 500ml ฿7.92M" ต่างจากแถวแรกของตารางใต้มันเอง) -->
+        <div class="kpi or"><div class="kpi-label" id="pc-k1l">ยอดขายรวม</div><div class="kpi-val" id="pc-k1v">–</div><div class="kpi-sub neutral" id="pc-k1s">–</div><div class="kpi-ico">💰</div></div>
+        <div class="kpi gr"><div class="kpi-label">สินค้าขายดีสุด</div><div class="kpi-val" id="pc-k2v">–</div><div class="kpi-sub up" id="pc-k2s">–</div><div class="kpi-ico">🏆</div></div>
+        <div class="kpi bl"><div class="kpi-label">จำนวนชิ้นทั้งหมด</div><div class="kpi-val" id="pc-k3v">–</div><div class="kpi-sub neutral" id="pc-k3s">–</div><div class="kpi-ico">📦</div></div>
+        <div class="kpi yw"><div class="kpi-label">ช่องทางหลัก</div><div class="kpi-val" id="pc-k4v">–</div><div class="kpi-sub neutral" id="pc-k4s">–</div><div class="kpi-ico">🛒</div></div>
       </div>
 
       <!-- Charts row -->
       <div class="cg-22" style="margin-bottom:22px">
         <div class="chart-card">
           <div class="cc-title">Top 10 สินค้า — ยอดขายแยกช่องทาง</div>
-          <div class="cc-sub">ม.ค. – 14 ก.ย. 2569 · สะสม 8 เดือน + ก.ย. (1-14) (฿)</div>
+          <div class="cc-sub" id="pc-sub1">–</div>
           <canvas id="pr_top10" height="260"></canvas>
         </div>
         <div class="chart-card">
           <div class="cc-title">ยอดขายแยกช่องทาง</div>
-          <div class="cc-sub">ม.ค. – 14 ก.ย. 2569 (฿) · เฉพาะ Top 15</div>
+          <div class="cc-sub" id="pc-sub2">–</div>
           <canvas id="pr_channel" height="260"></canvas>
         </div>
       </div>
@@ -1236,8 +1239,10 @@
       <!-- Top products table — channel breakdown -->
       <div class="tbl-wrap">
         <div class="tbl-head">
-          <h3>🏆 ตารางสินค้าขายดี — แยกช่องทาง ม.ค.–ต.ค. 2569</h3>
-          <span style="font-size:12px;color:var(--muted)">ข้อมูลจาก Shipnity · สะสม ม.ค.–23 ต.ค. 2569 (อัปเดตล่าสุด 23 ต.ค. 2569 — เฉพาะ 15 สินค้าขายดีที่สุด; คอลัมน์แยกช่องทางยังคำนวณจากไฟล์ Shipnity ม.ค.–11 ก.ย. 2569 เท่านั้น (ยังไม่ recompute ใหม่รอบนี้) ยอดรวม/จำนวนอัปเดตถึง 8 ต.ค. 2569 09:13 — ก.ย. recompute จากไฟล์ Shipnity ก.ย. ทั้งหมด)</span>
+          <h3 id="pc-head">🏆 ตารางสินค้าขายดี — แยกช่องทาง</h3>
+          <!-- หัวตารางและป้ายนี้เติมด้วย renderProdChannel() จากข้อมูลจริง
+               ห้ามพิมพ์ช่วงวันที่ไว้ที่นี่ (เดิมค้าง "ม.ค.–23 ต.ค." กับ "ม.ค.–11 ก.ย.") -->
+          <span style="font-size:12px;color:var(--muted)" id="pc-note">–</span>
         </div>
         <div style="overflow-x:auto;-webkit-overflow-scrolling:touch">
         <table style="min-width:1100px">
@@ -1258,26 +1263,10 @@
               <th style="text-align:right">จำนวน</th>
             </tr>
           </thead>
-          <tbody>
-            <tr><td><span class="badge bg-orange">1</span></td><td style="white-space:nowrap">Sugar 500ml</td><td style="text-align:right;color:#ee4d2d">฿2.74M</td><td style="text-align:right">฿2.28M</td><td style="text-align:right;color:#1b04a1">฿80K</td><td style="text-align:right;color:#1877f2">฿849K</td><td style="text-align:right;color:#06b77a">฿98K</td><td style="text-align:right;color:#06b77a">฿8K</td><td style="text-align:right">฿3K</td><td style="text-align:right">฿2K</td><td style="text-align:right;color:#7c3aed">฿53K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿8.13M</td><td style="text-align:right">25,627</td></tr>
-            <tr><td><span class="badge bg-blue">2</span></td><td style="white-space:nowrap">Wool Duster</td><td style="text-align:right;color:#ee4d2d">฿3.93M</td><td style="text-align:right">฿591K</td><td style="text-align:right;color:#1b04a1">฿46K</td><td style="text-align:right;color:#1877f2">฿1.39M</td><td style="text-align:right;color:#06b77a">฿114K</td><td style="text-align:right;color:#06b77a">฿20K</td><td style="text-align:right">฿3K</td><td style="text-align:right">฿4K</td><td style="text-align:right;color:#7c3aed">฿13K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿6.49M</td><td style="text-align:right">10,207</td></tr>
-            <tr><td><span class="badge bg-blue">3</span></td><td style="white-space:nowrap">Interior 500ml</td><td style="text-align:right;color:#ee4d2d">฿2.69M</td><td style="text-align:right">฿755K</td><td style="text-align:right;color:#1b04a1">฿73K</td><td style="text-align:right;color:#1877f2">฿787K</td><td style="text-align:right;color:#06b77a">฿108K</td><td style="text-align:right;color:#06b77a">฿9K</td><td style="text-align:right">฿3K</td><td style="text-align:right">฿1K</td><td style="text-align:right;color:#7c3aed">฿70K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿5.36M</td><td style="text-align:right">15,117</td></tr>
-            <tr><td><span class="badge bg-gray">4</span></td><td style="white-space:nowrap">Refresh Wipes</td><td style="text-align:right;color:#ee4d2d">฿1.13M</td><td style="text-align:right">฿2.27M</td><td style="text-align:right;color:#1b04a1">฿20K</td><td style="text-align:right;color:#1877f2">฿21K</td><td style="text-align:right;color:#06b77a">฿15K</td><td style="text-align:right;color:#06b77a">฿8K</td><td style="text-align:right">–</td><td style="text-align:right">–</td><td style="text-align:right;color:#7c3aed">฿18K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿5.29M</td><td style="text-align:right">65,938</td></tr>
-            <tr><td><span class="badge bg-gray">5</span></td><td style="white-space:nowrap">Interior Wipes</td><td style="text-align:right;color:#ee4d2d">฿1.60M</td><td style="text-align:right">฿1.37M</td><td style="text-align:right;color:#1b04a1">฿23K</td><td style="text-align:right;color:#1877f2">฿13K</td><td style="text-align:right;color:#06b77a">฿16K</td><td style="text-align:right;color:#06b77a">฿8K</td><td style="text-align:right">฿79</td><td style="text-align:right">–</td><td style="text-align:right;color:#7c3aed">฿13K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿4.10M</td><td style="text-align:right">55,008</td></tr>
-            <tr><td><span class="badge bg-gray">6</span></td><td style="white-space:nowrap">Spot 500ml</td><td style="text-align:right;color:#ee4d2d">฿1.47M</td><td style="text-align:right">฿433K</td><td style="text-align:right;color:#1b04a1">฿41K</td><td style="text-align:right;color:#1877f2">฿553K</td><td style="text-align:right;color:#06b77a">฿47K</td><td style="text-align:right;color:#06b77a">฿6K</td><td style="text-align:right">฿2K</td><td style="text-align:right">฿9K</td><td style="text-align:right;color:#7c3aed">฿6K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿3.18M</td><td style="text-align:right">8,330</td></tr>
-            <tr><td><span class="badge bg-gray">7</span></td><td style="white-space:nowrap">Refresh 500ml</td><td style="text-align:right;color:#ee4d2d">฿1.79M</td><td style="text-align:right">฿552K</td><td style="text-align:right;color:#1b04a1">฿34K</td><td style="text-align:right;color:#1877f2">฿172K</td><td style="text-align:right;color:#06b77a">฿70K</td><td style="text-align:right;color:#06b77a">฿5K</td><td style="text-align:right">฿2K</td><td style="text-align:right">฿2K</td><td style="text-align:right;color:#7c3aed">฿20K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿3.08M</td><td style="text-align:right">8,562</td></tr>
-            <tr><td><span class="badge bg-gray">8</span></td><td style="white-space:nowrap">Perfect</td><td style="text-align:right;color:#ee4d2d">฿1.23M</td><td style="text-align:right">฿244K</td><td style="text-align:right;color:#1b04a1">฿24K</td><td style="text-align:right;color:#1877f2">฿486K</td><td style="text-align:right;color:#06b77a">฿78K</td><td style="text-align:right;color:#06b77a">฿5K</td><td style="text-align:right">฿3K</td><td style="text-align:right">฿560</td><td style="text-align:right;color:#7c3aed">฿26K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿2.29M</td><td style="text-align:right">14,827</td></tr>
-            <tr><td><span class="badge bg-gray">9</span></td><td style="white-space:nowrap">X-Glass 100ml</td><td style="text-align:right;color:#ee4d2d">฿1.02M</td><td style="text-align:right">฿132K</td><td style="text-align:right;color:#1b04a1">฿21K</td><td style="text-align:right;color:#1877f2">฿422K</td><td style="text-align:right;color:#06b77a">฿50K</td><td style="text-align:right;color:#06b77a">฿2K</td><td style="text-align:right">฿2K</td><td style="text-align:right">฿9K</td><td style="text-align:right;color:#7c3aed">฿11K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿2.11M</td><td style="text-align:right">5,647</td></tr>
-            <tr><td><span class="badge bg-gray">10</span></td><td style="white-space:nowrap">Reflex 250ml</td><td style="text-align:right;color:#ee4d2d">฿775K</td><td style="text-align:right">฿373K</td><td style="text-align:right;color:#1b04a1">฿64K</td><td style="text-align:right;color:#1877f2">฿529K</td><td style="text-align:right;color:#06b77a">฿72K</td><td style="text-align:right;color:#06b77a">฿16K</td><td style="text-align:right">฿2K</td><td style="text-align:right">฿3K</td><td style="text-align:right;color:#7c3aed">฿13K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿2.12M</td><td style="text-align:right">5,392</td></tr>
-            <tr><td><span class="badge bg-gray">11</span></td><td style="white-space:nowrap">Tire&Trim 500ml</td><td style="text-align:right;color:#ee4d2d">฿1.22M</td><td style="text-align:right">฿128K</td><td style="text-align:right;color:#1b04a1">฿8K</td><td style="text-align:right;color:#1877f2">฿186K</td><td style="text-align:right;color:#06b77a">฿80K</td><td style="text-align:right;color:#06b77a">฿24K</td><td style="text-align:right">฿1K</td><td style="text-align:right">฿2K</td><td style="text-align:right;color:#7c3aed">฿11K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿1.98M</td><td style="text-align:right">4,279</td></tr>
-            <tr><td><span class="badge bg-gray">12</span></td><td style="white-space:nowrap">Martini</td><td style="text-align:right;color:#ee4d2d">฿774K</td><td style="text-align:right">฿469K</td><td style="text-align:right;color:#1b04a1">฿17K</td><td style="text-align:right;color:#1877f2">฿307K</td><td style="text-align:right;color:#06b77a">฿60K</td><td style="text-align:right;color:#06b77a">฿5K</td><td style="text-align:right">฿815</td><td style="text-align:right">฿6K</td><td style="text-align:right;color:#7c3aed">฿18K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿1.85M</td><td style="text-align:right">14,460</td></tr>
-            <tr><td><span class="badge bg-gray">13</span></td><td style="white-space:nowrap">Sugar 3L</td><td style="text-align:right;color:#ee4d2d">฿775K</td><td style="text-align:right">฿153K</td><td style="text-align:right;color:#1b04a1">–</td><td style="text-align:right;color:#1877f2">฿465K</td><td style="text-align:right;color:#06b77a">฿154K</td><td style="text-align:right;color:#06b77a">฿9K</td><td style="text-align:right">–</td><td style="text-align:right">฿3K</td><td style="text-align:right;color:#7c3aed">฿2K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿1.81M</td><td style="text-align:right">1,502</td></tr>
-            <tr><td><span class="badge bg-gray">14</span></td><td style="white-space:nowrap">Quartz Shampoo 1L</td><td style="text-align:right;color:#ee4d2d">฿1.12M</td><td style="text-align:right">฿137K</td><td style="text-align:right;color:#1b04a1">฿48K</td><td style="text-align:right;color:#1877f2">฿121K</td><td style="text-align:right;color:#06b77a">฿71K</td><td style="text-align:right;color:#06b77a">฿3K</td><td style="text-align:right">฿2K</td><td style="text-align:right">฿195</td><td style="text-align:right;color:#7c3aed">฿8K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿1.75M</td><td style="text-align:right">7,120</td></tr>
-            <tr><td><span class="badge bg-gray">15</span></td><td style="white-space:nowrap">Reflex 500ml</td><td style="text-align:right;color:#ee4d2d">฿910K</td><td style="text-align:right">฿185K</td><td style="text-align:right;color:#1b04a1">–</td><td style="text-align:right;color:#1877f2">฿195K</td><td style="text-align:right;color:#06b77a">฿45K</td><td style="text-align:right;color:#06b77a">฿8K</td><td style="text-align:right">–</td><td style="text-align:right">฿620</td><td style="text-align:right;color:#7c3aed">฿1K</td><td style="text-align:right;font-weight:700;color:#1A5CDB">฿1.71M</td><td style="text-align:right">2,629</td></tr>
-          </tbody>
+          <tbody id="pc-tb"></tbody>
         </table>
         </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--muted)">* คอลัมน์แยกช่องทางในแถวรวมทั้งหมดคำนวณจาก 15 สินค้าขายดีที่สุดเท่านั้น (ยังไม่รวมสินค้าอื่นๆ ทั้งหมด) — คอลัมน์ รวม (฿) และ จำนวน เป็นยอดรวมจริงทั้งหมด</div>
+        <div style="margin-top:8px;font-size:11px;color:var(--muted)" id="pc-foot"></div>
         <!-- Cancel rate note -->
         <div style="margin-top:12px;padding:10px 14px;background:var(--surface2);border-radius:8px;font-size:12px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap">
           <span style="font-weight:600;color:var(--text)">⚠️ อัตราการยกเลิกออเดอร์ (มิ.ย. 2569)</span>
@@ -2056,38 +2045,117 @@ charts['tk_cust'] = new Chart('tk_cust',{type:'bar',data:{labels:M5,datasets:[
 charts['lz_line'] = new Chart('lz_line',{type:'line',data:{labels:M5,datasets:[{label:'ยอดขาย',data:LZ_REV,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6],borderWidth:2}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>'฿'+(v/1000).toFixed(0)+'K'}}}}});
 charts['lz_cost'] = new Chart('lz_cost',{type:'line',data:{labels:M5,datasets:[{label:'% ค่าใช้จ่าย',data:LZ_COST_PCT,borderColor:LAZADA,backgroundColor:'rgba(27,4,161,.08)',tension:.4,fill:true,pointRadius:[3,3,3,3,3,6]}]},options:{...BASE,plugins:{legend:{display:false}},scales:{y:{min:18,max:28,ticks:{callback:v=>v+'%'}}}}});
 
-// ── Top 10 Products — 9 Channel Stacked (ม.ค.–11 ก.ย., channel split not recomputed after 11 ก.ย.) ──
-new Chart('pr_top10',{
-  type:'bar',
-  data:{
-    labels:["Wool Duster", "Sugar 500ml", "Interior 500ml", "Refresh Wipes", "Interior Wipes", "Refresh 500ml", "Spot 500ml", "Perfect", "Reflex 250ml", "X-Glass 100ml"],
-    datasets:[
-      {label:'Shopee', data:[3933723, 2743657, 2686803, 1134249, 1603775, 1788079, 1465784, 1229607, 775350, 1022440],  backgroundColor:'rgba(238,77,45,.85)',  borderRadius:3, stack:'s'},
-      {label:'TikTok', data:[590988, 2277509, 755212, 2267063, 1371954, 552078, 433149, 243854, 373005, 132220],  backgroundColor:'rgba(30,30,30,.80)',  borderRadius:3, stack:'s'},
-      {label:'Facebook', data:[1390692, 848686, 786702, 20998, 12723, 172500, 552966, 485944, 528839, 422485],  backgroundColor:'rgba(24,119,242,.80)',  borderRadius:3, stack:'s'},
-      {label:'Line Shopping', data:[114485, 97655, 108435, 14610, 15921, 70321, 46517, 78090, 72264, 50177],  backgroundColor:'rgba(6,183,122,.80)',  borderRadius:3, stack:'s'},
-      {label:'Lazada', data:[45891, 80341, 73491, 20209, 22885, 33941, 41414, 24392, 64039, 21079],  backgroundColor:'rgba(27,4,161,.75)',  borderRadius:3, stack:'s'},
-      {label:'LINE OA', data:[19914, 8472, 8743, 8189, 8137, 4640, 5592, 4906, 16093, 2473],  backgroundColor:'rgba(6,150,80,.75)',  borderRadius:3, stack:'s'},
-      {label:'Carcare', data:[4410, 2320, 1170, 0, 0, 1560, 9411, 560, 2765, 8625],  backgroundColor:'rgba(245,158,11,.80)',  borderRadius:3, stack:'s'},
-      {label:'Website', data:[3450, 2840, 3342, 0, 79, 2172, 1890, 2574, 1747, 1649],  backgroundColor:'rgba(99,102,241,.75)',  borderRadius:3, stack:'s'},
-      {label:'อื่นๆ', data:[13188, 53448, 69555, 17966, 12923, 19955, 5982, 26083, 12916, 11341],  backgroundColor:'rgba(167,139,250,.75)',  borderRadius:3, stack:'s'},
-    ]
-  },
-  options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},scales:{x:{stacked:true,ticks:{callback:v=>'฿'+(v>=1000000?(v/1000000).toFixed(1)+'M':Math.round(v/1000)+'K')}},y:{stacked:true}}}
-});
-// ── Channel Revenue doughnut (ม.ค.–11 ก.ย., เฉพาะ Top 15, channel split not recomputed after 11 ก.ย.) ──
-new Chart('pr_channel',{
-  type:'doughnut',
-  data:{
-    labels:["Shopee", "TikTok", "Facebook", "Line Shopping", "Lazada", "อื่นๆ", "LINE OA", "Carcare", "Website"],
-    datasets:[{
-      data:[23186692, 10066736, 6497283, 1077848, 500761, 283378, 137350, 42176, 23702],
-      backgroundColor:["#ee4d2d", "#111111", "#1877f2", "#06b77a", "#1b04a1", "#a78bfa", "#06965080", "#f59e0b", "#6366f1"],
-      borderWidth:3,borderColor:'#fff'
-    }]
-  },
-  options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1000000).toFixed(2)}M`}}}}
-});
+// ══════════════════════════════════════════════════════════════════════════
+//  ตารางสินค้าขายดีแยกช่องทาง + กราฟ pr_top10 + กราฟ pr_channel + KPI 4 ใบ
+//  ทั้งสี่ก้อนเป็นข้อเท็จจริงเดียวกัน จึงอ่านจาก PROD_CHANNEL ตัวเดียว
+//  ⛔ ห้ามแก้ค่าใน PROD_CHANNEL ด้วยมือ — scripts/prod_channel_update.py เขียนทับทุกรอบ
+//  ที่มา: const RAW ใน "Data Shipnity/Sales_Dashboard.html" (process_shipnity ของ
+//  wibwub_update.py) = แหล่งเดียวกับหน้า Shipnity · ยอดรายการสินค้า **ไม่ใช่**
+//  ยอด Seller Center ของ SH_REV/TK_REV/LZ_REV (คนละขอบเขตโดยตั้งใจ)
+//  เดิมทั้งสี่ก้อนเป็นตัวเลขพิมพ์มือ: ตารางค้างตั้งแต่ 23 ต.ค. 69 กราฟสองใบค้าง
+//  ตั้งแต่ 11 ก.ย. 69 และ KPI ไม่ตรงกับแถวแรกของตารางใต้มันเอง
+// ══════════════════════════════════════════════════════════════════════════
+const PROD_CHANNEL = {"date_min":"2026-01-01","date_max":"2026-11-09","generated":"2026-11-09 13:52","src":"Sales_Dashboard.html","cols":["Shopee","TikTok","Lazada","Facebook","Line Shop","LINE OA","Website","Carcare","อื่นๆ"],"rows":[{"n":"Sugar 500ml","raw":"Sugar (Sugar-500ml+Spray)","v":[3876787.0,3918306.0,4616.0,923214.0,111781.0,9908.0,3710.0,2320.0,4658.0],"t":8855300.0,"q":27721,"x":43196.0},{"n":"Wool Duster","raw":"Wool duster-ไม้ปัดขนแกะ","v":[4429129.0,670332.0,6642.0,1455224.0,122324.0,22674.0,3450.0,5100.0,0.0],"t":6714875.0,"q":10557,"x":17328.0},{"n":"Refresh Wipes","raw":"Refresh wipes","v":[1618743.0,4202250.0,15820.0,26624.0,17711.0,11574.0,0.0,0.0,16472.0],"t":5909194.0,"q":73389,"x":27051.0},{"n":"Interior 500ml","raw":"Interior (Interior-500ml+Spray)","v":[3467540.0,1208917.0,11650.0,926606.0,125967.0,10816.0,5013.0,1950.0,2954.0],"t":5761413.0,"q":16210,"x":74143.0},{"n":"Interior Wipes","raw":"Interior wipes","v":[2195937.0,2225844.0,19026.0,14800.0,19207.0,8137.0,79.0,0.0,16999.0],"t":4500029.0,"q":60184,"x":16269.0},{"n":"Spot 500ml","raw":"Spot (Spot-500ml)","v":[1973341.0,646674.0,4325.0,672318.0,54026.2,6726.0,2268.0,10545.0,2580.0],"t":3372803.2,"q":8817,"x":4536.0},{"n":"Refresh 500ml","raw":"Refresh (Refresh-500ml+หัวโฟม สีขาว)","v":[2246634.0,651492.0,16032.0,189612.0,77321.0,6014.0,3453.0,3510.0,3842.0],"t":3197910.0,"q":8905,"x":19082.0},{"n":"Perfect","raw":"Perfect","v":[1446774.0,296994.0,13044.0,516703.0,74560.0,5858.0,2980.0,730.0,2781.46],"t":2360424.46,"q":15243,"x":22996.0},{"n":"Reflex 250ml","raw":"Reflex (Reflex-250ml+Spray)","v":[987355.0,573561.0,6361.0,590733.0,77997.0,16801.0,1747.0,3555.0,1774.0],"t":2259884.0,"q":5715,"x":13512.0},{"n":"X-Glass 100ml","raw":"Xglass (Xglass-100ml)","v":[1394174.0,218841.0,1122.0,513238.0,54482.0,4348.0,1649.0,11250.0,2341.0],"t":2201445.0,"q":5893,"x":9000.0},{"n":"Tire&Trim 500ml","raw":"Tire&trim gel (Tire&trim gel-500ml)","v":[1589800.0,174527.0,9279.0,199876.0,89707.0,26832.0,2266.0,2520.0,1256.04],"t":2096063.04,"q":4515,"x":11506.0},{"n":"Martini","raw":"Martini","v":[954920.0,592997.0,6836.0,325000.0,57107.0,5447.0,1209.0,1710.0,2493.0],"t":1947719.0,"q":15224,"x":15007.0},{"n":"Sugar 3L","raw":"Sugar (Sugar-3L แถมขวดสเปรย์)","v":[959336.0,251190.0,0.0,514500.0,169260.0,13650.0,0.0,7350.0,0.0],"t":1915286.0,"q":1576,"x":2100.0},{"n":"Reflex 500ml","raw":"Reflex (Reflex-500ml+Spray)","v":[1210236.0,330510.0,0.0,226300.0,58032.0,9300.0,0.0,1860.0,0.0],"t":1836238.0,"q":2818,"x":1860.0},{"n":"Quartz Shampoo 1L","raw":"Quartz shampoo (Quartz shampoo-1L)","v":[1425369.0,190765.0,2037.0,127836.0,78191.0,5559.0,2069.0,195.0,923.0],"t":1832944.0,"q":7452,"x":6018.0}],"all_total":91179476.99,"all_qty":375246,"top_total":54761527.7,"products_total":218,"nonsale_total":629923.0,"nonsale_labels":["เบิกของ","สินค้าสำหรับทำการตลาด","Marketing"],"ch_all":{"Shopee":52920982.0,"TikTok":21795878.0,"Lazada":1004534.14,"Facebook":9937048.0,"Line Shop":3433771.2,"LINE OA":584332.0,"Website":64783.0,"Carcare":1345801.0,"อื่นๆ":92347.65},"ch_top":{"Shopee":29776075.0,"TikTok":16153200.0,"Lazada":116790.0,"Facebook":7222584.0,"Line Shop":1187673.2,"LINE OA":163644.0,"Website":29893.0,"Carcare":52595.0,"อื่นๆ":59073.5}};
+
+(function renderProdChannel(){
+  const P = PROD_CHANNEL;
+  if(!P || !P.rows || !P.rows.length) return;   // ยังไม่มีข้อมูล -> ปล่อยว่าง ไม่เดาตัวเลข
+  const TH = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+  const be = y => y + 543;                      // ค.ศ. -> พ.ศ.
+  const mLbl = iso => TH[+iso.slice(5,7)-1];
+  const dLbl = iso => (+iso.slice(8,10)) + ' ' + mLbl(iso) + ' ' + be(+iso.slice(0,4));
+  const yA = +P.date_min.slice(0,4), yB = +P.date_max.slice(0,4);
+  const head = yA===yB ? `${mLbl(P.date_min)}–${mLbl(P.date_max)} ${be(yB)}`
+                       : `${mLbl(P.date_min)} ${be(yA)}–${mLbl(P.date_max)} ${be(yB)}`;
+  const period = `${mLbl(P.date_min)} ${be(yA)} – ${dLbl(P.date_max)}`;
+  const B_ = v => v>=1e6 ? '฿'+(v/1e6).toFixed(2)+'M'
+            : v>=1000   ? '฿'+Math.round(v/1000)+'K'
+            : v>0       ? '฿'+Math.round(v) : '–';
+  const N_ = v => Math.round(v).toLocaleString();
+  // สีคอลัมน์ให้ตรงกับ <th> ด้านบน (ช่องที่ไม่มีสี = ใช้สีตัวอักษรปกติ)
+  const CCOL = {'Shopee':'#ee4d2d','Lazada':'#1b04a1','Facebook':'#1877f2',
+                'Line Shop':'#06b77a','LINE OA':'#06b77a','อื่นๆ':'#7c3aed'};
+  const CFILL = {'Shopee':'rgba(238,77,45,.85)','TikTok':'rgba(30,30,30,.80)',
+                 'Facebook':'rgba(24,119,242,.80)','Line Shop':'rgba(6,183,122,.80)',
+                 'Lazada':'rgba(27,4,161,.75)','LINE OA':'rgba(6,150,80,.75)',
+                 'Carcare':'rgba(245,158,11,.80)','Website':'rgba(99,102,241,.75)',
+                 'อื่นๆ':'rgba(167,139,250,.75)'};
+  const DOUGH = {'Shopee':'#ee4d2d','TikTok':'#111111','Facebook':'#1877f2',
+                 'Line Shop':'#06b77a','Lazada':'#1b04a1','อื่นๆ':'#a78bfa',
+                 'LINE OA':'#069650','Carcare':'#f59e0b','Website':'#6366f1'};
+  const share = P.all_total>0 ? (P.top_total/P.all_total*100).toFixed(1) : '0';
+
+  // ── หัวตาราง + ป้าย ──
+  const setT = (id,txt)=>{ const e=document.getElementById(id); if(e) e.textContent=txt; };
+  setT('pc-head', `🏆 ตารางสินค้าขายดี — แยกช่องทาง ${head}`);
+  setT('pc-note', `ข้อมูลจาก Shipnity · ${period} · ${P.rows.length} สินค้าขายดีที่สุด`
+    + ` จากทั้งหมด ${P.products_total} รายการ (คิดเป็น ${share}% ของยอดรายการสินค้ารวม `
+    + `${B_(P.all_total)}) · อัปเดตล่าสุด ${P.generated}`);
+  setT('pc-foot', `* ทุกคอลัมน์มาจากแหล่งเดียวกันและช่วงเดียวกัน จึงบวกกันได้`
+    + ` (รวม (฿) = ผลบวกของ 9 ช่องทางในแถวนั้นพอดี) · ไม่นับ`
+    + `${P.nonsale_labels.join(' / ')} เป็นยอดขาย — ช่วงนี้มีรวม ${B_(P.nonsale_total)}`
+    + ` · "อื่นๆ" คือช่องทางที่ไม่มีคอลัมน์ของตัวเอง (POS, Instagram, Makro pro, Other)`
+    + ` · ยอดในหน้านี้เป็นยอดรายการสินค้าใน Shipnity ไม่ใช่ยอด Seller Center ของแต่ละ`
+    + `แพลตฟอร์ม (ต่างกันโดยตั้งใจ)`);
+
+  // ── KPI 4 ใบ ──
+  const r1 = P.rows[0];
+  const chSorted = Object.keys(P.ch_all).sort((a,b)=>P.ch_all[b]-P.ch_all[a]);
+  const pct = c => P.all_total>0 ? Math.round(P.ch_all[c]/P.all_total*100) : 0;
+  setT('pc-k1l', `ยอดขายรวม ${head}`);
+  setT('pc-k1v', B_(P.all_total));
+  setT('pc-k1s', period);
+  setT('pc-k2v', r1.n);
+  setT('pc-k2s', `${B_(r1.t)} · ${N_(r1.q)} ชิ้น`);
+  setT('pc-k3v', `${N_(P.all_qty/1000)}K ชิ้น`);
+  setT('pc-k3s', `ข้อมูลจาก Shipnity ${period}`);
+  setT('pc-k4v', `${chSorted[0]} ${pct(chSorted[0])}%`);
+  setT('pc-k4s', chSorted.slice(1,3).map(c=>`${c} ${pct(c)}%`).join(' · '));
+
+  // ── ตาราง ──
+  const tb = document.getElementById('pc-tb');
+  if(tb){
+    tb.innerHTML = P.rows.map((r,i)=>{
+      const bg = i===0 ? 'bg-orange' : i<3 ? 'bg-blue' : 'bg-gray';
+      const cells = r.v.map((v,ci)=>{
+        const c = P.cols[ci], col = CCOL[c] ? `;color:${CCOL[c]}` : '';
+        return `<td style="text-align:right${col}">${B_(v)}</td>`;
+      }).join('');
+      return `<tr><td><span class="badge ${bg}">${i+1}</span></td>`
+        + `<td style="white-space:nowrap" title="${r.raw.replace(/"/g,'&quot;')}">${r.n}</td>`
+        + cells
+        + `<td style="text-align:right;font-weight:700;color:#1A5CDB">${B_(r.t)}</td>`
+        + `<td style="text-align:right">${N_(r.q)}</td></tr>`;
+    }).join('');
+  }
+
+  // ── กราฟแท่ง Top 10 แยกช่องทาง ──
+  const top10 = P.rows.slice(0,10);
+  setT('pc-sub1', `${period} (฿) · Top ${top10.length} จาก ${P.products_total} รายการ`);
+  new Chart('pr_top10',{
+    type:'bar',
+    data:{ labels: top10.map(r=>r.n),
+      datasets: P.cols.map((c,ci)=>({label:c, data:top10.map(r=>r.v[ci]),
+        backgroundColor:CFILL[c]||'rgba(148,163,184,.7)', borderRadius:3, stack:'s'}))
+        .filter(d=>d.data.some(v=>v>0)) },
+    options:{...BASE,indexAxis:'y',plugins:{legend:{display:true,position:'top'},
+      tooltip:{callbacks:{label:c=>' ฿'+c.parsed.x.toLocaleString()}}},
+      scales:{x:{stacked:true,ticks:{callback:v=>'฿'+(v>=1e6?(v/1e6).toFixed(1)+'M':Math.round(v/1000)+'K')}},y:{stacked:true}}}
+  });
+
+  // ── กราฟโดนัทยอดรายช่องทาง ──
+  // ของเดิมนับเฉพาะ Top 15 แต่ไม่ได้บอกว่าเศษที่เหลือหายไปไหน -> ใช้ทุกสินค้า
+  const dLabels = chSorted.filter(c=>P.ch_all[c]>0);
+  setT('pc-sub2', `${period} (฿) · ทุกสินค้า ${P.products_total} รายการ (ไม่ใช่แค่ Top ${P.rows.length})`);
+  new Chart('pr_channel',{
+    type:'doughnut',
+    data:{ labels:dLabels, datasets:[{ data:dLabels.map(c=>P.ch_all[c]),
+      backgroundColor:dLabels.map(c=>DOUGH[c]||'#94a3b8'), borderWidth:3, borderColor:'#fff' }]},
+    options:{...BASE,cutout:'58%',plugins:{legend:{display:true,position:'right'},
+      tooltip:{callbacks:{label:c=>` ${c.label}: ฿${(c.parsed/1e6).toFixed(2)}M`}}}}
+  });
+})();
+
 new Chart('soc_follow',{type:'line',data:{labels:M5,datasets:[
   {label:'TikTok',data:[23.404,24.192,24.967,25.59,26.339,27.083,27.834,28.684,30.488,31.781,31.943],borderColor:TIKTOK,tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,3,6]},
   {label:'Facebook',data:[58,59,61,63,64,65,65],borderColor:'#1877f2',tension:.4,fill:false,pointRadius:[3,3,3,3,3,3,3,6]},

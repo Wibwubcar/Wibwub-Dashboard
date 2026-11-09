@@ -461,12 +461,39 @@ def session_facts(sess, now, allow=()):
     return f
 
 
+TH_MONTHS = {'ม.ค.': 1, 'ก.พ.': 2, 'มี.ค.': 3, 'เม.ย.': 4, 'พ.ค.': 5, 'มิ.ย.': 6,
+             'ก.ค.': 7, 'ส.ค.': 8, 'ก.ย.': 9, 'ต.ค.': 10, 'พ.ย.': 11, 'ธ.ค.': 12}
+
+
+def _th_md(m, cfg, now):
+    """แปลง (เดือนไทย, วัน) ที่จับได้ -> datetime โดยเดาปีเป็นปีล่าสุดที่ยังไม่เลยวันนี้
+
+    ใช้กับป้ายบนหน้าเว็บที่เขียนแค่ "พ.ย. (1-7)" ซึ่งไม่มีปีอยู่ในตัวเอง
+    คืน None ถ้าแปลงไม่ได้ ผู้เรียกจะรายงานว่า 'ไม่พบหลักฐานผลงาน' ตามปกติ
+    """
+    try:
+        mo = TH_MONTHS.get(m.group(cfg.get('group_month', 1)).strip())
+        day = int(m.group(cfg.get('group_day', 2)))
+    except (IndexError, ValueError, AttributeError):
+        return None
+    if not mo:
+        return None
+    for y in (now.year, now.year - 1):
+        try:
+            d = datetime(y, mo, day)
+        except ValueError:
+            continue
+        if d <= now:
+            return d
+    return None
+
+
 def artifact_age(cfg, now):
     """(อายุเป็นชั่วโมง, ข้อความเวลา, datetime ของผลงาน) · (None, เหตุผล, None) ถ้าตรวจไม่ได้"""
     kind = cfg.get('kind')
     if kind == 'git_grep':
         seen = _git_last(cfg['pattern'])
-    elif kind in ('mtime', 'regex_date', 'regex_dt'):
+    elif kind in ('mtime', 'regex_date', 'regex_dt', 'regex_th_md'):
         fp = BASE / cfg['file']
         # ห้ามใช้ fp.exists() เป็นด่าน — stat บนโฟลเดอร์ Drive ตอบ False หลอกได้
         # (เคส daily-stock 3-4 พ.ย. 69) ให้เปิดไฟล์จริงแล้วรับ OSError แทน
@@ -484,6 +511,10 @@ def artifact_age(cfg, now):
                 seen = None
             elif kind == 'regex_date':
                 seen = datetime.strptime(m.group(1), '%Y-%m-%d')
+            elif kind == 'regex_th_md':
+                # ป้ายวันที่ภาษาไทยที่ไม่มีปีในตัวมันเอง (เช่น AF_MO = [... "พ.ย. (1-7)"])
+                # เลือกปีที่ทำให้เป็น "วันที่ล่าสุดที่ยังไม่เลยวันนี้" — ไม่ต้องพึ่ง const ปี
+                seen = _th_md(m, cfg, now)
             else:
                 # regex_dt = เอาเวลาด้วย เพื่อให้เกณฑ์ชั่วโมงใช้ได้จริงกับงานวันละ 2 รอบ
                 # (regex_date ปัดเป็น 00:00 รอบเย็นจะกลายเป็น "ค้าง 19 ชม." ทั้งที่เพิ่งรัน)
@@ -898,14 +929,21 @@ def build_status(now):
     # ส่วน B ไม่มี taskId ของตัวเอง ถ้าไม่ทำตรงนี้จะไม่มีการ์ดเลย และถ้าไปผูกกับ
     # การ์ดของส่วน A ความล้มของ B จะกลายเป็นความล้มของ A (ผู้ใช้สั่งห้ามไว้ 5 พ.ย. 69)
     # ตัดสินจากอายุผลงานอย่างเดียว เพราะไม่มีเซสชันของตัวเองให้ดู
+    # extra_artifacts = ผลงานที่ไม่มี taskId ของตัวเองและไม่ได้อยู่ฝั่ง local
+    # (เช่น ตาราง/KPI ที่สคริปต์ของงานอื่นเขียนให้) — ใส่ไว้แยกกลุ่มเพื่อไม่ให้ไป
+    # ชนกติกา "งานฝั่ง code ที่ enabled ทุกตัวต้องมีใน code_tasks"
     have = {r['name'] for r in rows}
-    for tid, acfg in (cfg_all.get('local_tasks') or {}).items():
+    extra = [('local', k, v) for k, v in (cfg_all.get('local_tasks') or {}).items()]
+    extra += [((v or {}).get('side', 'code'), k, v)
+              for k, v in (cfg_all.get('extra_artifacts') or {}).items()]
+    for side_, tid, acfg in extra:
         if tid.startswith('_') or not isinstance(acfg, dict):
             continue          # คีย์หมายเหตุ ไม่ใช่งาน
         if tid in reg_ids or (acfg.get('label') or tid) in have:
             continue
+        have.add(acfg.get('label') or tid)
         age, when, _at = artifact_age(acfg, now)
-        r = {'name': acfg.get('label') or tid, 'side': 'local', 'cron': None,
+        r = {'name': acfg.get('label') or tid, 'side': side_, 'cron': None,
              'last_round': '—', 'data_asof': when if age is not None else '—'}
         mx = acfg.get('max_age_hours')
         if age is None:
@@ -1193,7 +1231,7 @@ def patch_artifacts(now, path=None):
     except (OSError, ValueError) as e:
         return {'status': 'SKIP', 'why': 'อ่านไฟล์สถานะหรือกติกาไม่ได้ (%s)' % type(e).__name__}
     spec = {}
-    for grp in ('local_tasks', 'code_tasks'):
+    for grp in ('local_tasks', 'code_tasks', 'extra_artifacts'):
         for tid, c in (cfg_all.get(grp) or {}).items():
             if tid.startswith('_') or not isinstance(c, dict):
                 continue
