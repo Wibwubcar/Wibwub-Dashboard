@@ -228,6 +228,38 @@ def all_by_level(paths, levels, per_account=False):
     return out
 
 
+# ด่าน "ไฟล์ดิบอ่านไม่ออก" (ผู้ใช้สั่ง 9 พ.ย. 69) — ทุกช่องทาง
+# เหตุ: 7 พ.ย. 69 TikTok เปลี่ยนหัวคอลัมน์ export เป็นภาษาไทย `By Day` -> `ตามวัน`
+# ตัวอ่านจึงได้ 0 แถวจากไฟล์ใหม่ทั้งใบ แต่ไฟล์เก่ายัง parse ได้ rows จึงไม่ว่าง
+# สคริปต์เลยเขียนไฟล์ตามปกติและพิมพ์ว่าสำเร็จ · ข้อมูลค้างที่ 5 พ.ย. เงียบ ๆ 2 วัน
+# ⛔ ด่านนี้สำคัญกว่าตัวแก้ภาษา เพราะจับได้ทุกกรณีที่หัวคอลัมน์เปลี่ยนในอนาคต
+PARSE_LOG = []
+
+
+def tally(p, data_lines, got):
+    """บันทึกว่าไฟล์ใบนี้มีบรรทัดข้อมูลกี่บรรทัด และ parse ออกมาได้กี่แถว"""
+    PARSE_LOG.append((p, data_lines, got))
+
+
+def csv_data_lines(p):
+    """จำนวนบรรทัดข้อมูลใน CSV (ไม่นับหัวและบรรทัดว่าง) · -1 = อ่านไม่ได้"""
+    try:
+        with p.open(encoding='utf-8-sig') as f:
+            n = sum(1 for ln in f if ln.strip())
+        return max(0, n - 1)
+    except OSError:
+        return -1
+
+
+def parse_failures():
+    """ไฟล์ที่ "มีบรรทัดข้อมูลมากกว่า 1 แต่ parse ได้ 0 แถว"
+
+    เกณฑ์ > 1 ไม่ใช่ > 0 เพราะไฟล์ TikTok ทุกใบมีแถวสรุป `ทั้งหมดจาก N ผลลัพธ์`
+    ที่ถูกตัดทิ้งโดยตั้งใจ (วันเป็น `-`) ไฟล์ที่เหลือแต่แถวนั้นจึงไม่ใช่ความผิดพลาด
+    """
+    return [(p, n) for p, n, got in PARSE_LOG if n > 1 and got == 0]
+
+
 def read_many(files, parse, key):
     """อ่านหลายไฟล์ — **ในไฟล์เดียวบวกรวม · ข้ามไฟล์ทับด้วยใบใหม่**
 
@@ -244,7 +276,9 @@ def read_many(files, parse, key):
     out = {}
     for p in files:
         cur = {}
+        n_in = 0
         for row in parse(p):
+            n_in += 1
             k = key(p, row)
             o = cur.get(k)
             if o is None:
@@ -254,6 +288,7 @@ def read_many(files, parse, key):
                 v = row.get(m)
                 if v is not None:
                     o[m] = v if o[m] is None else o[m] + v
+        tally(p, csv_data_lines(p), n_in)
         out.update(cur)                           # ใบใหม่ทับใบเก่าทั้งคีย์
     return list(out.values())
 
@@ -370,10 +405,47 @@ TK_COL = {'spend': 'Spend', 'imp': 'Impressions', 'reach': 'Reach',
           'orders': 'Purchases (Shop)', 'revenue': 'Gross revenue (Shop)'}
 
 
+# 7 พ.ย. 69: TikTok Ads Manager เปลี่ยนภาษาของไฟล์ export เป็นไทยทั้ง 3 ระดับพร้อมกัน
+# จำนวนคอลัมน์ ลำดับ และรูปแบบตัวเลขเหมือนเดิมเป๊ะ — แปลแค่ชื่อหัว
+# ⛔ ห้ามแมปตามตำแหน่งคอลัมน์ (ผู้ใช้สั่ง) เพราะจะพังเงียบถ้า TikTok สลับลำดับหรือเพิ่มคอลัมน์
+# ถ้าภาษาเปลี่ยนอีก ให้เติมคู่ใหม่ในตารางนี้ — ด่าน parse_failures() จะชี้ชื่อไฟล์ให้เอง
+TK_ALIAS = {
+    'By Day': 'ตามวัน',
+    'Campaign name': 'ชื่อแคมเปญ',
+    'Ad group name': 'ชื่อกลุ่มโฆษณา',
+    'Ad name': 'ชื่อโฆษณา',
+    'Age': 'อายุ',
+    'Gender': 'เพศ',
+    'Placement': 'ตำแหน่ง',
+    'Spend': 'ค่าใช้จ่าย',
+    'Impressions': 'การแสดงโฆษณา',
+    'Reach': 'การเข้าถึง',
+    'Clicks (destination)': 'การคลิก (จุดหมายปลายทาง)',
+    'Product page views (Shop)': 'การเข้าชมหน้าสินค้า (ร้านค้า)',
+    'Adds to cart (Shop)': 'การเพิ่มลงในรถเข็น (ร้านค้า)',
+    'Checkouts initiated (Shop)': 'การเริ่มต้นชำระเงิน (ร้านค้า)',
+    'Purchases (Shop)': 'การซื้อ (ร้านค้า)',
+    'Gross revenue (Shop)': 'รายได้รวม (ร้านค้า)',
+}
+
+
+def tkget(r, en):
+    """อ่านคอลัมน์ของ TikTok ด้วยชื่ออังกฤษ ไม่เจอค่อยลองชื่อไทยที่คู่กัน
+
+    ลองอังกฤษก่อนเสมอ เพื่อให้ไฟล์เก่าที่ยัง commit อยู่ได้ผลเหมือนเดิมทุกไบต์
+    """
+    v = r.get(en)
+    if v is None or v == '':
+        th = TK_ALIAS.get(en)
+        if th:
+            v = r.get(th)
+    return v
+
+
 def tk_metrics(r):
     m = blank()
     for k, col in TK_COL.items():
-        m[k] = num(r.get(col))
+        m[k] = num(tkget(r, col))
     return m
 
 
@@ -386,29 +458,29 @@ def build_tk(src):
     f = all_by_level(src.glob('*.csv'), TK_LV)
 
     def day(r):
-        d = (r.get('By Day') or '').strip()
+        d = (tkget(r, 'By Day') or '').strip()
         return None if (not d or d == '-') else d
 
     def ad_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             if day(r):
-                yield dict(lv='ad', c=mask.mask(r.get('Campaign name') or ''),
-                           g=mask.mask(r.get('Ad group name') or ''),
-                           a=mask.mask_ad(r.get('Ad name') or ''),
+                yield dict(lv='ad', c=mask.mask(tkget(r, 'Campaign name') or ''),
+                           g=mask.mask(tkget(r, 'Ad group name') or ''),
+                           a=mask.mask_ad(tkget(r, 'Ad name') or ''),
                            d=day(r), **tk_metrics(r))
 
     def au_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             if day(r):
-                yield dict(d=day(r), c=mask.mask(r.get('Campaign name') or ''),
-                           age=r.get('Age') or '', gender=r.get('Gender') or '',
+                yield dict(d=day(r), c=mask.mask(tkget(r, 'Campaign name') or ''),
+                           age=tkget(r, 'Age') or '', gender=tkget(r, 'Gender') or '',
                            **tk_metrics(r))
 
     def pl_rows(p):
         for r in csv.DictReader(p.open(encoding='utf-8-sig')):
             if day(r):
-                yield dict(d=day(r), c=mask.mask(r.get('Campaign name') or ''),
-                           p=r.get('Placement') or '', **tk_metrics(r))
+                yield dict(d=day(r), c=mask.mask(tkget(r, 'Campaign name') or ''),
+                           p=tkget(r, 'Placement') or '', **tk_metrics(r))
 
     rows = read_many(f.get('ad', []), ad_rows, lambda p, r: (r['d'], r['c'], r['g'], r['a']))
     aud = read_many(f.get('audience', []), au_rows,
@@ -475,7 +547,9 @@ def build_sh(src):
     for (d, kind), p in _sh_pick(src):
         head, body = _sh_read(p)
         if not head:
+            tally(p, csv_data_lines(p), 0)   # ไม่เจอหัวตาราง = อ่านไม่ออกทั้งใบ
             continue
+        n0 = len(rows)
         idx = {k: head.index(c) for k, c in SH_COL.items() if c in head}
         gms = kind == 'gms'
         for r in body:
@@ -498,6 +572,8 @@ def build_sh(src):
                 rows.append(dict(lv='kw' if is_kw else 'camp',
                                  c=name, g='คีย์เวิร์ด' if is_kw else '',
                                  a=kw if is_kw else name, d=d, **m))
+        # ไฟล์ GMV Max ตัดแถว "ยอดรวมทั้งร้าน" ออก 1 แถวโดยตั้งใจ จึงนับ body - 1
+        tally(p, len(body) - (1 if gms else 0), len(rows) - n0)
     notes = ['Shopee ไม่มีข้อมูลกลุ่มผู้ชมและตำแหน่งโฆษณา',
              'รายงานของ Shopee ไม่มีคอลัมน์วันที่ จึงต้องสั่งทีละวัน — วันที่มาจากชื่อไฟล์',
              'ตัวเลขของวันปัจจุบันยังไม่ปิด ดึงเวลาต่างกันจะได้คนละค่า (เช้า 09:21 vs เย็น '
@@ -545,6 +621,8 @@ def build_lz(src):
         except (OSError, ValueError):
             continue
         d = sp[1]
+        n0, n_in = len(rows), sum(len(v.get('ads', []) or [])
+                                  for v in data.values() if isinstance(v, dict))
         for scene, v in data.items():
             camp = {}
             for c in v.get('camp', []):
@@ -561,6 +639,7 @@ def build_lz(src):
                                  c=a.get('campaignName') or camp.get(a.get('campaignId')) or '',
                                  g='', a=a.get('adgroupName') or str(a.get('itemId') or ''),
                                  d=d, span='%s..%s' % sp, **m))
+        tally(p, n_in, len(rows) - n0)
     notes = ['Lazada ไม่มีข้อมูลกลุ่มผู้ชม ตำแหน่งโฆษณา และคีย์เวิร์ด',
              'ตัวเลขของ Lazada เป็น **ยอดรวมของทั้งช่วง ไม่ใช่รายวัน** — รายงานของ Lazada '
              'ไม่คืนคอลัมน์วันที่ และการยิงทีละวันทำให้ติด CAPTCHA · '
@@ -606,7 +685,9 @@ def lz_daily(src):
                    if r and any(str(c).strip() == 'วันที่' for c in r if c is not None)), None)
         if hi is None:
             print('ข้าม %s — ไม่เจอหัวตาราง "วันที่"' % p.name, file=sys.stderr)
+            tally(p, max(0, len(grid) - 1), 0)
             continue
+        n0 = len(out)
         head = [str(c).strip() if c is not None else '' for c in grid[hi]]
         idx = {}
         for k, names in LZ_DAILY_COL.items():
@@ -623,6 +704,7 @@ def lz_daily(src):
             for k, i in idx.items():
                 m[k] = num(r[i]) if i < len(r) else None
             out.append(dict(d='%s-%s-%s' % (ds[:4], ds[4:6], ds[6:]), **m))
+        tally(p, len(grid) - hi - 1, len(out) - n0)
     return rows_to_daily(out) if out else []
 
 
@@ -642,10 +724,14 @@ def main():
     a = ap.parse_args()
 
     sub = 'detail_probe' if a.probe else 'detail_raw'
-    wrote, empty = [], []
+    wrote, empty, unreadable = [], [], []
     for ch in [x.strip() for x in a.only.split(',') if x.strip()]:
         src = RAW[ch] / sub
+        del PARSE_LOG[:]                       # ด่านไฟล์ดิบ: นับเฉพาะของช่องทางนี้
         rows, aud, pla, notes = BUILD[ch](src) if src.is_dir() else ([], [], [], [])
+        # เก็บผลด่านตรงนี้ด้วย เพราะถ้าทุกไฟล์อ่านไม่ออก rows จะว่างแล้ว continue ไปก่อน
+        # (ซึ่งจะรายงานว่า "ไม่มีไฟล์ดิบให้ทำ" ทั้งที่มีไฟล์ครบ แค่อ่านไม่ออก)
+        unreadable += [(ch, p, n) for p, n in parse_failures()]
         if not rows:
             empty.append(ch)
             continue
@@ -673,7 +759,11 @@ def main():
             top = []                          # rows[] เป็นยอดของทั้งช่วง ห้ามเอามาทำรายวัน
         else:
             top = rows                        # fb = ระดับแอด
+        seen_before = len(PARSE_LOG)
         daily = DAILY_FROM[ch](src) if ch in DAILY_FROM else rows_to_daily(top)
+        # ชั้นรายวันของ Lazada อ่านไฟล์คนละใบ (xlsx) — เก็บผลด่านของใบนั้นเพิ่ม
+        unreadable += [(ch, p, n) for p, n, got in PARSE_LOG[seen_before:]
+                       if n > 1 and got == 0]
         # หมายเหตุความครอบคลุมของ TikTok (ผู้ใช้สั่ง 6 พ.ย. 69) — เขียนจากข้อมูลจริง
         # ไม่ใช่วันที่ตายตัว เพราะสองชั้นนี้จะสะสมเองทุกวันจากนี้ไป
         if ch == 'tk':
@@ -726,8 +816,16 @@ def main():
 
     if empty:
         print('ไม่มีไฟล์ดิบให้ทำ: ' + ', '.join(empty))
+    if unreadable:
+        # ไม่ลบไฟล์ที่เพิ่งเขียน — ช่องทางอื่นยังถูกต้อง และของเดิมของช่องทางนี้ยังดีกว่าว่าง
+        # แต่ต้องจบด้วยรหัสที่ไม่ใช่ 0 เพื่อให้รอบตั้งเวลารายงานว่าไม่ปกติ
+        print('⛔ อ่านไฟล์ดิบไม่ออก %d ใบ (มีบรรทัดข้อมูลแต่ parse ได้ 0 แถว) — '
+              'หัวคอลัมน์อาจเปลี่ยน ข้อมูลของช่องทางนั้นจะค้างอยู่ที่ของเดิม:'
+              % len(unreadable), file=sys.stderr)
+        for ch, p, n in unreadable[:10]:
+            print('   %s | %d บรรทัด | %s' % (ch, n, p.name), file=sys.stderr)
     if not wrote:
-        return 10 if not a.dry_run else 0
+        return 12 if unreadable else (10 if not a.dry_run else 0)
 
     # ด่านชื่อคน **2 ชั้น** (ผู้ใช้สั่ง 6 พ.ย. 69 หลังชื่อจริง 2 ชื่อหลุดเข้าไฟล์ TikTok)
     #   scan()  เดาจากคำนำหน้า — จับชื่อที่ยังไม่เคยเห็น
@@ -743,7 +841,7 @@ def main():
             print('   ', h[0], '|', h[1], '|', h[2])
         return 2
     print('✅ ด่านชื่อคนผ่าน — commit ได้')
-    return 0
+    return 12 if unreadable else 0
 
 
 if __name__ == '__main__':
