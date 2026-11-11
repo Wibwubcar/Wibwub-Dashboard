@@ -17,6 +17,9 @@
   · Shopee ปิดยอดของวันปัจจุบันช้า ดึงวันนี้มาจะได้เลขที่เปลี่ยนอีกตอนเย็น
   → เอาแค่ถึงเมื่อวานทุกช่องทาง ให้ทุกช่องทางมีขอบเดียวกัน
 
+`only` บอกช่องทางที่รอบนี้ต้องทำ — รอบเช้า/กดเองได้ครบ 4 ช่อง
+รอบเย็นตามเก็บได้เฉพาะช่องที่ `data_asof` ค้าง (11 พ.ย. 69)
+
 ใช้:  python3 scripts/ads/detail_plan.py [--now HH:MM] [--today YYYY-MM-DD]
 exit: 0 = ทำส่วน B ต่อ · 3 = ข้ามรอบนี้
 """
@@ -30,6 +33,15 @@ LOOKBACK = 7          # ดึงทับย้อนหลังกี่ว�
 # และต้องมากกว่าระยะ 11:05 -> 22:05 ของวันเดียวกัน (11 ชม.) เพื่อไม่ให้รอบเย็น
 # ทำซ้ำในวันที่รอบเช้าสำเร็จปกติ · 20 ชม. อยู่กลางช่วง 11-24 พอดี
 STALE_HOURS = 20
+# 11 พ.ย. 69: รอบเย็นเดิมวัดจาก `ads_detail_sh.json` ไฟล์เดียว ช่องทางอื่นพังเดี่ยว ๆ
+# จึงไม่มีรอบไหนตามเก็บเลย (10 พ.ย. Lazada โหลดไฟล์ไม่ลง ค้างที่ data_asof 8 พ.ย.
+# แต่ Shopee สำเร็จ รอบ 22:05 จึงข้ามตามกติกา ข้อมูลค้างข้ามวัน)
+# → ดู `data_asof` ของทุกช่องทาง แล้วตามเก็บ **เฉพาะช่องที่ค้าง**
+CHANNELS = ('fb', 'tk', 'sh', 'lz')
+# ผลงานควรถึง "เมื่อวาน" ทุกช่องทาง -> ค้าง >= 2 วัน = รอบเช้าของวันนี้ไม่สำเร็จ
+# ใช้หน่วย**วัน**เพราะ `data_asof` เป็นวันที่ ไม่ใช่เวลา · ห้ามใช้ `fetched_at` วัด:
+# รอบที่รันแล้วเขียนข้อมูลใหม่ไม่สำเร็จก็ยังอัปเดต fetched_at (บทเรียน 10 พ.ย. 69)
+STALE_DAYS = 2
 # งานแม่ (wibwub-samp-request-sync) ยิง 11:05 กับ 22:05 — บวกหน่วงของฝั่ง local 1–8 นาที
 # รอบเช้า = ทำ · รอบเย็น = ข้าม (วันละรอบเดียว) · **นอกสองช่วงนี้ = คนกดเอง -> ทำเสมอ**
 #
@@ -61,6 +73,35 @@ def detail_age_hours():
         return None
 
 
+def channel_asof(ch):
+    """วันของข้อมูลล่าสุดของช่องทาง (`data_asof`) หรือ `None` เมื่ออ่านไม่ได้"""
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        from detail_privacy import BASE      # ตัวหาโฟลเดอร์ All ตัวเดียวกับสคริปต์พี่น้อง
+        fp = BASE / 'data Ads' / ('ads_detail_%s.json' % ch)
+        got = json.loads(fp.read_text(encoding='utf-8')).get('data_asof')
+        return date.fromisoformat(str(got))
+    except Exception:
+        return None
+
+
+def stale_channels(today):
+    """ช่องทางที่ `data_asof` ค้าง >= STALE_DAYS วัน -> [(ช่องทาง, อายุเป็นวัน)]
+
+    อ่านไม่ได้ = **ไม่ถือว่าเก่า** (กติกาเดียวกับ detail_age_hours) ห้ามเดา
+    ไม่งั้นรอบเย็นจะเปิดเบราว์เซอร์ทำงานซ้ำทุกคืน
+    """
+    out = []
+    for ch in CHANNELS:
+        d = channel_asof(ch)
+        if d is None:
+            continue
+        age = (today - d).days
+        if age >= STALE_DAYS:
+            out.append((ch, age))
+    return out
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--now', default='')
@@ -76,19 +117,31 @@ def main():
         h, m = (int(x) for x in a.now.split(':'))
         now = now.replace(hour=h, minute=m)
 
+    only = list(CHANNELS)
     if MORNING_H[0] <= now.hour < MORNING_H[1]:
         rnd, skip, why = 'morning', False, ''
     elif EVENING_H[0] <= now.hour < EVENING_H[1]:
         age = a.age_hours if a.age_hours is not None else detail_age_hours()
-        if age is not None and age >= STALE_HOURS:
+        if a.age_hours is not None:      # โหมดทดสอบ: บังคับอายุ -> ตามเก็บทุกช่องทาง
+            stale = [(c, None) for c in CHANNELS] if a.age_hours >= STALE_HOURS else []
+        else:
+            stale = stale_channels(today)
+        if stale:
             rnd, skip, why = 'evening-catchup', False, ''
+            only = [c for c, _ in stale]
+            why = 'ตามเก็บ: ' + ' '.join(
+                ('%s ค้าง %s วัน' % (c, n)) if n is not None
+                else ('%s (บังคับอายุ %s ชม.)' % (c, a.age_hours)) for c, n in stale)
         else:
             rnd, skip, why = 'evening', True, 'รอบเย็น — ส่วน B ทำวันละรอบเดียวตอนเช้า'
     else:
         rnd, skip, why = 'manual', False, ''
     to = today - timedelta(days=1)
     frm = to - timedelta(days=LOOKBACK - 1)
-    out = {'skip': skip, 'reason': why, 'round': rnd,
+    asof = {c: (lambda d: d.isoformat() if d else None)(channel_asof(c))
+            for c in CHANNELS}
+    out = {'skip': skip, 'reason': why, 'round': rnd, 'only': ','.join(only),
+           'asof': asof,
            'detail_age_hours': None if age is None else round(age, 1),
            'from': frm.isoformat(), 'to': to.isoformat(),
            'days': [(frm + timedelta(days=i)).isoformat() for i in range(LOOKBACK)],
