@@ -447,64 +447,71 @@
   },
   "nov": {
    "from": "2026-11-01",
-   "to": "2026-11-10",
+   "to": "2026-11-11",
    "product": [
     {
      "name": "19.10.26/Banyakart",
-     "spend": 125162.13,
-     "orders": 1470,
-     "revenue": 368085.45
+     "spend": 138800.45,
+     "orders": 1614,
+     "revenue": 405278.57
     },
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 79228.1,
-     "orders": 2566,
-     "revenue": 325411.28
+     "spend": 88439.1,
+     "orders": 2827,
+     "revenue": 361751.94
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 61715.29,
-     "orders": 627,
-     "revenue": 246999.39
+     "spend": 70244.24,
+     "orders": 722,
+     "revenue": 281972.4
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 33160.44,
-     "orders": 319,
-     "revenue": 105161.38
+     "spend": 39983.91,
+     "orders": 388,
+     "revenue": 127290.49
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 31321.61,
-     "orders": 990,
-     "revenue": 136687.66
+     "spend": 35196.98,
+     "orders": 1094,
+     "revenue": 152956.67
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 27799.77,
-     "orders": 427,
-     "revenue": 174948.83
+     "spend": 32171.8,
+     "orders": 501,
+     "revenue": 203458.88
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 13840.23,
-     "orders": 114,
-     "revenue": 63216.55
+     "spend": 16360.8,
+     "orders": 137,
+     "revenue": 75657.72
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 9509.49,
-     "orders": 70,
-     "revenue": 32773.23
+     "spend": 11869.2,
+     "orders": 88,
+     "revenue": 41301.97
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 9460.65,
-     "orders": 118,
-     "revenue": 51237.02
+     "spend": 11015.26,
+     "orders": 139,
+     "revenue": 60376.39
     }
    ],
-   "live": []
+   "live": [
+    {
+     "name": "11.11 Live all admin",
+     "spend": 1664.3,
+     "orders": 259,
+     "revenue": 94251.71
+    }
+   ]
   }
  }
 }
