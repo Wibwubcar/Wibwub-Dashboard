@@ -20994,13 +20994,13 @@ const SAMPLE_MONTHS = [
   {key:'2026-08', label:'ส.ค. 2569',   short:'ส.ค.',       partial:false,  range:'01/08/2026 - 31/08/2026', funnel:{req:336,appr:146,shipped:146,posted:136,clips:171,waiting:9,sale:0}, perf:{shipped:136, gmv:158718.92, cogs:7870.50,  content:86,  roi:0.51}},
   {key:'2026-09', label:'ก.ย. 2569',   short:'ก.ย.',       partial:false,  range:'01/09/2026 - 30/09/2026', funnel:{req:599,appr:283,shipped:283,posted:249,clips:215,waiting:31,sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
   {key:'2026-10', label:'ต.ค. 2569',   short:'ต.ค.',       partial:false,  range:'01/10/2026 - 31/10/2026', funnel:{req:870,appr:410,shipped:410,posted:346,clips:38,waiting:64,sale:0}, perf:{shipped:0,   gmv:0,         cogs:0,        content:0,   roi:0},      noPerfData:true},
-  {key:'2026-11', label:'พ.ย. 2569 (1-12)', short:'พ.ย.', partial:true, range:'01/11/2026 - 12/11/2026', funnel:{req:537,appr:278,shipped:278,posted:16,clips:null,waiting:261,sale:0}, perf:{shipped:0,gmv:0,cogs:0,content:0,roi:0}, noPerfData:true},
+  {key:'2026-11', label:'พ.ย. 2569 (1-13)', short:'พ.ย.', partial:true, range:'01/11/2026 - 13/11/2026', funnel:{req:537,appr:278,shipped:278,posted:16,clips:null,waiting:261,sale:0}, perf:{shipped:0,gmv:0,cogs:0,content:0,roi:0}, noPerfData:true},
 ];
 
 const SAMPLE_LAST7D = {
   key:'last7d', label:'7 วันล่าสุด', short:'7 วันล่าสุด', partial:true, rolling:true,
-  range:'06/11/2026 - 12/11/2026',
-  funnel:{req:207,appr:113,shipped:113,posted:3,clips:null,waiting:110,sale:0},
+  range:'07/11/2026 - 13/11/2026',
+  funnel:{req:166,appr:96,shipped:96,posted:1,clips:null,waiting:95,sale:0},
   perf:{shipped:0, gmv:0, cogs:0, content:0, roi:0}, noPerfData:true
 };
 
@@ -21236,7 +21236,7 @@ const SAMPLE_PRODUCTS = {
 // lumpy.
 // SAMPLE_LAST7D.funnel below is recomputed from this same sheet in the same
 // run, so its req/appr and this total always agree.
-const SAMPLE_PRODUCTS_LAST7D = {total:207,unspecified:{c:0,appr:0,rej:0,other:0},items:[{n:"Banyakart",c:49,appr:17,rej:30,other:2},{n:"Refresh Wipes",c:43,appr:21,rej:22,other:0},{n:"Interior wipes",c:37,appr:21,rej:16,other:0},{n:"Interior",c:24,appr:16,rej:8,other:0},{n:"Reflex",c:20,appr:10,rej:10,other:0},{n:"ไม้ปัดขนแกะ",c:11,appr:8,rej:3,other:0},{n:"Sugar",c:11,appr:8,rej:3,other:0},{n:"Spot Clean",c:9,appr:4,rej:5,other:0},{n:"Quart Shampoo",c:8,appr:5,rej:3,other:0},{n:"Tire Clean",c:7,appr:7,rej:0,other:0},{n:"Waterless",c:6,appr:4,rej:2,other:0},{n:"X glass",c:4,appr:4,rej:0,other:0},{n:"Beach",c:3,appr:3,rej:0,other:0},{n:"Microfiber Wash",c:1,appr:0,rej:1,other:0},{n:"Wheel Sling",c:1,appr:0,rej:1,other:0},{n:"Superdry",c:1,appr:1,rej:0,other:0}],window:"06/11/2026 - 12/11/2026"};
+const SAMPLE_PRODUCTS_LAST7D = {total:166,unspecified:{c:0,appr:0,rej:0,other:0},items:[{n:"Refresh Wipes",c:34,appr:18,rej:16,other:0},{n:"Banyakart",c:33,appr:11,rej:20,other:2},{n:"Interior wipes",c:32,appr:19,rej:13,other:0},{n:"Reflex",c:19,appr:10,rej:9,other:0},{n:"Interior",c:18,appr:12,rej:6,other:0},{n:"Sugar",c:9,appr:7,rej:2,other:0},{n:"ไม้ปัดขนแกะ",c:9,appr:7,rej:2,other:0},{n:"Quart Shampoo",c:8,appr:5,rej:3,other:0},{n:"Spot Clean",c:6,appr:2,rej:4,other:0},{n:"Waterless",c:6,appr:4,rej:2,other:0},{n:"Tire Clean",c:6,appr:6,rej:0,other:0},{n:"X glass",c:4,appr:4,rej:0,other:0},{n:"Beach",c:2,appr:2,rej:0,other:0},{n:"Superdry",c:1,appr:1,rej:0,other:0}],window:"07/11/2026 - 13/11/2026"};
 
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
