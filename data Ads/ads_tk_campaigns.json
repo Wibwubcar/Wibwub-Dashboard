@@ -447,87 +447,93 @@
   },
   "nov": {
    "from": "2026-11-01",
-   "to": "2026-11-12",
+   "to": "2026-11-13",
    "product": [
     {
-     "name": "19.10.26/Banyakart",
-     "spend": 146220.18,
-     "orders": 1705,
-     "revenue": 428329.12
+     "name": "01.10.26/Refresh wipe",
+     "spend": 155782.96,
+     "orders": 4011,
+     "revenue": 503816.93
     },
     {
-     "name": "01.10.26/Refresh wipe",
-     "spend": 102128.61,
-     "orders": 3106,
-     "revenue": 396828.95
+     "name": "19.10.26/Banyakart",
+     "spend": 154989.04,
+     "orders": 1793,
+     "revenue": 453001.34
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 78946.4,
-     "orders": 809,
-     "revenue": 317252.29
+     "spend": 82795.59,
+     "orders": 850,
+     "revenue": 331578.46
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 42176.45,
-     "orders": 408,
-     "revenue": 134265.37
+     "spend": 47505.34,
+     "orders": 447,
+     "revenue": 148987.56
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 38280.75,
-     "orders": 1183,
-     "revenue": 166417.25
+     "spend": 41480.35,
+     "orders": 1298,
+     "revenue": 180964.18
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 33374.63,
-     "orders": 518,
-     "revenue": 209663.63
+     "spend": 34445.31,
+     "orders": 537,
+     "revenue": 216179.76
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 17200.05,
-     "orders": 142,
-     "revenue": 78508.06
+     "spend": 17586.82,
+     "orders": 143,
+     "revenue": 79187.26
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 13894.18,
-     "orders": 106,
-     "revenue": 48211.81
+     "spend": 14647.6,
+     "orders": 112,
+     "revenue": 50712.45
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 12298.06,
-     "orders": 157,
-     "revenue": 67555.81
+     "spend": 12563.61,
+     "orders": 161,
+     "revenue": 69179.66
     },
     {
      "name": "12.11.26/Cleaner",
-     "spend": 421.05,
-     "orders": 6,
-     "revenue": 1346.38
+     "spend": 714.63,
+     "orders": 12,
+     "revenue": 2537.99
     },
     {
      "name": "12.11.26/mind-waterless",
-     "spend": 248.11,
-     "orders": 1,
-     "revenue": 449.99
+     "spend": 663.02,
+     "orders": 3,
+     "revenue": 1737.85
     },
     {
      "name": "12.11.26/Shampoo",
-     "spend": 210.36,
-     "orders": 3,
-     "revenue": 856.79
+     "spend": 478.13,
+     "orders": 9,
+     "revenue": 2855.51
     }
    ],
    "live": [
     {
      "name": "11.11 Live all admin",
      "spend": 1706.16,
-     "orders": 266,
-     "revenue": 99241.64
+     "orders": 267,
+     "revenue": 99302.8
+    },
+    {
+     "name": "25.10.26/Live ปาย",
+     "spend": 0,
+     "orders": 1,
+     "revenue": 290
     }
    ]
   }
