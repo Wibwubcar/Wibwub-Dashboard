@@ -6927,22 +6927,22 @@
     ]
    },
    "tiktok": {
-    "spend": 589823.28,
-    "revenue": 2179126.5,
-    "orders": 9897,
-    "roas": 3.69,
-    "cpa": 59.6,
+    "spend": 662636.31,
+    "revenue": 2355428.92,
+    "orders": 11100,
+    "roas": 3.55,
+    "cpa": 59.7,
     "gmvMax": {
      "total": {
-      "spend": 581095.25,
-      "orders": 9897,
-      "revenue": 2179126.5,
+      "spend": 653488.04,
+      "orders": 11100,
+      "revenue": 2355428.92,
       "imp": 0,
       "clicks": 0,
-      "roi": 3.75,
+      "roi": 3.6,
       "ctr": 0,
       "cvr": 0,
-      "cpa": 58.71
+      "cpa": 58.87
      },
      "campaigns": []
     },
@@ -6959,20 +6959,20 @@
     },
     "bizAds": {
      "total": {
-      "spend": 8728.03,
-      "imp": 207671,
-      "clicks": 5186,
-      "cpm": 42.03,
+      "spend": 9148.27,
+      "imp": 218957,
+      "clicks": 5471,
+      "cpm": 41.78,
       "ctr": 2.5
      },
      "campaigns": [
       {
        "name": "C-Ads TOP  CREATOR",
-       "spend": 7252.29,
-       "imp": 144844,
-       "clicks": 4641,
-       "cpm": 50.07,
-       "ctr": 3.2
+       "spend": 7672.53,
+       "imp": 156130,
+       "clicks": 4926,
+       "cpm": 49.14,
+       "ctr": 3.16
       },
       {
        "name": "06.10.26/แบรนด์ไทย",
