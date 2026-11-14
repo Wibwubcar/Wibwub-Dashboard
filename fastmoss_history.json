@@ -8036,6 +8036,220 @@
           ]
         }
       }
+    },
+    {
+      "date": "2026-11-13",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 130400,
+            "sales_total": 37400000,
+            "products_active": 88,
+            "products_total": 99,
+            "country_rank": 2000,
+            "category_rank": 73,
+            "rating": 4.9,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-10-16 → 2026-11-12",
+            "orders": 17600,
+            "sales": 3100000,
+            "creators": 675,
+            "lives": 497,
+            "videos": 1700,
+            "products_sold": 44
+          },
+          "top_products": [
+            {
+              "name": "WIBWUB Refresh Leather Wipes",
+              "orders": 6800,
+              "sales": 593600
+            },
+            {
+              "name": "WIBWUB Interior Wipes",
+              "orders": 3100,
+              "sales": 294800
+            },
+            {
+              "name": "WIBWUB BANYAKART - ODOR ELIMINATOR",
+              "orders": 2800,
+              "sales": 588300
+            },
+            {
+              "name": "WIBWUB Sugar V.3",
+              "orders": 1800,
+              "sales": 586500
+            },
+            {
+              "name": "WIBWUB Interior",
+              "orders": 753,
+              "sales": 222000
+            }
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 405300,
+            "sales_total": 84700000,
+            "products_active": 60,
+            "products_total": 61,
+            "country_rank": 1300,
+            "category_rank": 38,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-10-16 → 2026-11-12",
+            "orders": 29000,
+            "sales": 4800000,
+            "creators": 499,
+            "lives": 995,
+            "videos": 1200,
+            "products_sold": 46
+          },
+          "top_products": [
+            {
+              "name": "Munwow Nano fiber towel",
+              "orders": 14200,
+              "sales": 12500
+            },
+            {
+              "name": "Munwow All interior",
+              "orders": 4000,
+              "sales": 1400000
+            },
+            {
+              "name": "Munwow Soft Pad",
+              "orders": 3400,
+              "sales": 380900
+            },
+            {
+              "name": "Munwow sexy",
+              "orders": 1300,
+              "sales": 470200
+            },
+            {
+              "name": "Good view",
+              "orders": 597,
+              "sales": 212300
+            }
+          ]
+        }
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "shops": {
+        "wibwub": {
+          "cumulative": {
+            "orders_total": 131900,
+            "sales_total": 42300000,
+            "products_active": 88,
+            "products_total": 99,
+            "country_rank": 2000,
+            "category_rank": 73,
+            "rating": 4.9,
+            "overall_good_pct": 100,
+            "quality_score": 98,
+            "response_rate_24h": 95,
+            "shipping_rate_48h": 94
+          },
+          "trend28d": {
+            "range": "2026-10-17 → 2026-11-13",
+            "orders": 18200,
+            "sales": 3200000,
+            "creators": 665,
+            "lives": 499,
+            "videos": 1800,
+            "products_sold": 44
+          },
+          "top_products": [
+            {
+              "name": "WIBWUB Refresh Leather Wipes",
+              "orders": 6800,
+              "sales": 586200
+            },
+            {
+              "name": "WIBWUB BANYAKART - ODOR ELIMINATOR",
+              "orders": 3100,
+              "sales": 644900
+            },
+            {
+              "name": "WIBWUB Interior Wipes",
+              "orders": 3100,
+              "sales": 296500
+            },
+            {
+              "name": "WIBWUB Sugar V.3",
+              "orders": 1900,
+              "sales": 607600
+            },
+            {
+              "name": "WIBWUB Interior",
+              "orders": 884,
+              "sales": 255400
+            }
+          ]
+        },
+        "munwow": {
+          "cumulative": {
+            "orders_total": 407400,
+            "sales_total": 87000000,
+            "products_active": 60,
+            "products_total": 61,
+            "country_rank": 1300,
+            "category_rank": 38,
+            "rating": 4.9,
+            "overall_good_pct": 91,
+            "quality_score": 94,
+            "response_rate_24h": 97,
+            "shipping_rate_48h": 93
+          },
+          "trend28d": {
+            "range": "2026-10-17 → 2026-11-13",
+            "orders": 28900,
+            "sales": 4900000,
+            "creators": 487,
+            "lives": 983,
+            "videos": 1200,
+            "products_sold": 46
+          },
+          "top_products": [
+            {
+              "name": "Munwow Nano fiber towel",
+              "orders": 13400,
+              "sales": 11800
+            },
+            {
+              "name": "Munwow All interior",
+              "orders": 4000,
+              "sales": 1400000
+            },
+            {
+              "name": "Munwow Soft Pad",
+              "orders": 3600,
+              "sales": 401300
+            },
+            {
+              "name": "Munwow sexy",
+              "orders": 1400,
+              "sales": 503500
+            },
+            {
+              "name": "Munwow Ceramic Shampoo",
+              "orders": 657,
+              "sales": 134200
+            }
+          ]
+        }
+      }
     }
   ],
   "monthly_history": [
