@@ -416,7 +416,7 @@ tr:hover td{background:rgba(59,130,246,.04)}
   <div class="tw">
     <table id="tbl-samp-products">
       <thead>
-        <tr><th>สินค้า</th><th>คำขอทั้งหมด</th><th>อนุมัติ</th><th>ปฏิเสธ</th><th>สัดส่วน</th></tr>
+        <tr><th>สินค้า</th><th>คำขอทั้งหมด</th><th>อนุมัติ</th><th>ปฏิเสธ</th><th>สัดส่วน</th><th>มูลค่าที่อนุมัติ (ราคาขาย)</th></tr>
       </thead>
       <tbody id="samp-products-body"></tbody>
     </table>
@@ -21307,6 +21307,10 @@ const SAMPLE_PRODUCTS = {
 // run, so its req/appr and this total always agree.
 const SAMPLE_PRODUCTS_LAST7D = {total:209,unspecified:{c:0,appr:0,rej:0,other:0},items:[{n:"Banyakart",c:48,appr:19,rej:20,other:9},{n:"Refresh Wipes",c:44,appr:25,rej:16,other:3},{n:"Interior wipes",c:40,appr:22,rej:13,other:5},{n:"Interior",c:27,appr:18,rej:6,other:3},{n:"Reflex",c:23,appr:11,rej:9,other:3},{n:"Quart Shampoo",c:12,appr:6,rej:3,other:3},{n:"ไม้ปัดขนแกะ",c:11,appr:8,rej:2,other:1},{n:"Sugar",c:9,appr:7,rej:2,other:0},{n:"Waterless",c:7,appr:4,rej:2,other:1},{n:"Tire Clean",c:7,appr:7,rej:0,other:0},{n:"Spot Clean",c:6,appr:2,rej:4,other:0},{n:"X glass",c:5,appr:5,rej:0,other:0},{n:"Beach",c:3,appr:3,rej:0,other:0},{n:"Superdry",c:1,appr:1,rej:0,other:0}],window:"08/11/2026 - 14/11/2026"};
 
+// ราคาขายปลีก TikTok ต่อ 1 ชิ้น (SKU เล็กสุด) ใช้คิด "มูลค่าที่อนุมัติ" = อนุมัติ × ราคา · ดึงจากหลังร้าน TikTok 14 พ.ย. 2569 · แยกจาก SAMPLE_PRODUCTS เพื่อไม่ให้งานอัปเดตคำขอรายวันเขียนทับ · ชื่อใหม่ที่ยังไม่มีราคาจะขึ้น "–"
+const SAMPLE_PRICES = {"Banyakart":199,"Beach":400,"Cleaner":199,"Interior wipes":99,"Interior":390,"Microfiber Wash":280,"Quart Shampoo":270,"Reflex":490,"Refresh Wipes":99,"Refresh":390,"Spot Clean":420,"Sugar":370,"Superdry":550,"Tire Clean":370,"Waterless":390,"Wheel Sling":450,"X glass":450,"ไม้ปัดขนแกะ":390};
+const SAMPLE_PRICES_ASOF = '14 พ.ย. 2569';
+function sampPrice(n){ if(n==null) return null; if(SAMPLE_PRICES[n]!=null) return SAMPLE_PRICES[n]; const k=Object.keys(SAMPLE_PRICES).find(x=>x.toLowerCase()===String(n).trim().toLowerCase()); return k?SAMPLE_PRICES[k]:null; }
 function productsByKey(key){
   if(key==='last7d') return SAMPLE_PRODUCTS_LAST7D;
   if(key==='all'){
@@ -21404,16 +21408,23 @@ function renderSamples(){
   const prodBody = document.getElementById('samp-products-body');
   if(prodBody){
     if(!pd || pd.total===0){
-      prodBody.innerHTML = `<tr><td colspan="5" style="text-align:center;color:var(--t3)">ไม่มีข้อมูลคำขอในช่วงนี้</td></tr>`;
+      prodBody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:var(--t3)">ไม่มีข้อมูลคำขอในช่วงนี้</td></tr>`;
     } else {
+      let valSum = 0, apprPriced = 0, noPrice = [];
       const rows = pd.items.map(it=>{
         const pct = pd.total>0 ? ((it.c/pd.total)*100).toFixed(1) : 0;
-        return `<tr><td>${it.n}</td><td>${it.c.toLocaleString()}</td><td style="color:var(--gn)">${it.appr.toLocaleString()}</td><td style="color:var(--rd)">${it.rej.toLocaleString()}</td><td>${pct}%</td></tr>`;
+        const pr = sampPrice(it.n);
+        let valCell = '<span style="color:var(--t3)">–</span>';
+        if(pr!=null){ const v = it.appr*pr; valSum += v; apprPriced += it.appr; valCell = `฿${v.toLocaleString()} <span style="color:var(--t3);font-size:.85em">(${it.appr}×${pr})</span>`; }
+        else if(it.appr>0) noPrice.push(it.n);
+        return `<tr><td>${it.n}</td><td>${it.c.toLocaleString()}</td><td style="color:var(--gn)">${it.appr.toLocaleString()}</td><td style="color:var(--rd)">${it.rej.toLocaleString()}</td><td>${pct}%</td><td>${valCell}</td></tr>`;
       }).join('');
       const u = pd.unspecified;
       const unspecPct = pd.total>0 ? ((u.c/pd.total)*100).toFixed(1) : 0;
-      const unspecRow = u.c>0 ? `<tr style="opacity:.6"><td>ไม่ระบุสินค้าที่ขอ</td><td>${u.c.toLocaleString()}</td><td style="color:var(--gn)">${u.appr.toLocaleString()}</td><td style="color:var(--rd)">${u.rej.toLocaleString()}</td><td>${unspecPct}%</td></tr>` : '';
-      prodBody.innerHTML = rows + unspecRow;
+      const unspecRow = u.c>0 ? `<tr style="opacity:.6"><td>ไม่ระบุสินค้าที่ขอ</td><td>${u.c.toLocaleString()}</td><td style="color:var(--gn)">${u.appr.toLocaleString()}</td><td style="color:var(--rd)">${u.rej.toLocaleString()}</td><td>${unspecPct}%</td><td><span style="color:var(--t3)">–</span></td></tr>` : '';
+      const totalRow = `<tr style="font-weight:700;border-top:2px solid var(--bd,rgba(255,255,255,.15))"><td>รวมมูลค่าที่อนุมัติ</td><td></td><td style="color:var(--gn)">${apprPriced.toLocaleString()}</td><td></td><td></td><td>฿${valSum.toLocaleString()}</td></tr>`;
+      const noPriceRow = noPrice.length ? `<tr style="opacity:.6"><td colspan="6">⚠️ ยังไม่มีราคาของ: ${noPrice.join(', ')} (ไม่นับในยอดรวม)</td></tr>` : '';
+      prodBody.innerHTML = rows + unspecRow + totalRow + noPriceRow;
     }
   }
   const prodNote = document.getElementById('samp-products-note');
@@ -21423,6 +21434,7 @@ function renderSamples(){
     if(activeSampleKey==='last7d'){
       noteParts.push(`⚠️ ตัวเลขคำขอรวมในตารางนี้ (${pd.total}) นับสดจากคอลัมน์วันที่ในชีตโดยตรง และ<strong>ไม่ตรงกับ "คำขอทั้งหมด" ในการ์ดด้านบน (${d.funnel.req})</strong> — การ์ดด้านบนยังเป็นตัวเลขเก่าจากก่อนเปลี่ยนมาใช้ชีตนี้ ยังไม่ได้อัปเดต`);
     }
+    noteParts.push(`💰 <strong>"มูลค่าที่อนุมัติ"</strong> = จำนวนที่อนุมัติ × ราคาขายปลีก TikTok ต่อ 1 ชิ้น (SKU เล็กสุด เช่น Banyakart ขวด 100ml ฿199 · ทิชชู่ 1 ซอง ฿99) ราคา ณ ${SAMPLE_PRICES_ASOF} — เป็นมูลค่าตามราคาขาย ไม่ใช่ต้นทุนผลิต · ถ้าส่งให้มากกว่า 1 ชิ้นหรือเป็นเซต ยอดจริงจะสูงกว่านี้ · แถว "ไม่ระบุสินค้าที่ขอ" คิดมูลค่าไม่ได้ จึงไม่นับในยอดรวม`);
     prodNote.innerHTML = noteParts.join('<br><br>');
   }
 
