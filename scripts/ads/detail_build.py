@@ -728,6 +728,7 @@ def main():
 
     sub = 'detail_probe' if a.probe else 'detail_raw'
     wrote, empty, unreadable = [], [], []
+    asof = {}                              # ช่องทาง -> data_asof ของรอบนี้ (ด่านความสด)
     for ch in [x.strip() for x in a.only.split(',') if x.strip()]:
         src = RAW[ch] / sub
         del PARSE_LOG[:]                       # ด่านไฟล์ดิบ: นับเฉพาะของช่องทางนี้
@@ -745,6 +746,7 @@ def main():
                                               'placement': pla})
             rows, aud, pla = got['rows'], got['audience'], got['placement']
         days = sorted({r['d'] for r in rows})
+        asof[ch] = days[-1]
         # Lazada: แถวเป็นยอดของทั้งช่วง ช่วงจริงอยู่ที่ฟิลด์ span ไม่ใช่ที่ d
         span = next((r['span'] for r in rows if r.get('span')), None)
         rng = ({'from': span.split('..')[0], 'to': span.split('..')[1]} if span
@@ -817,6 +819,37 @@ def main():
               f'· audience {len(aud_w)} สัปดาห์ · placement {len(pla_w)} สัปดาห์ '
               f"· {rng['from']}..{rng['to']}")
 
+    # ---- ด่านความสด (16 พ.ย. 69) --------------------------------------------
+    # 16 พ.ย. 69: Chrome หยุดเซฟไฟล์กลางรอบ TikTok/Shopee ไม่ได้ไฟล์ใหม่เลย
+    # แต่สคริปต์ยังเขียนไฟล์จากข้อมูลเดิมและจบ exit 0 ตามปกติ ไม่มีบรรทัดไหน
+    # บอกว่า "ช่องนี้ไม่มีของใหม่" คนอ่านรายงานจึงต้องไปเปิด data_asof เทียบเอง
+    # ตรงนี้เทียบกับ "เมื่อวาน" ซึ่งเป็นวันที่ใหม่สุดที่ทุกช่องทางควรได้
+    # (ทุกช่องดึงถึงเมื่อวาน: FB ตามลิงก์ · TikTok รายงาน 7 วันล่าสุด ·
+    #  Shopee ไล่ทีละวัน · Lazada ช่วงจบที่เมื่อวาน)
+    # **ไม่เปลี่ยน exit code** — ด่านนี้แจ้งเตือนอย่างเดียว เพื่อไม่ให้กระทบ
+    # รอบตั้งเวลาและการ์ด task_health ที่ผูกกับรหัส 0/2/10/12 อยู่แล้ว
+    for ch in [x.strip() for x in a.only.split(',') if x.strip()]:
+        if ch in asof:
+            continue
+        try:                                   # ช่องที่รอบนี้ไม่ได้ของใหม่เลย -> อ่านของเดิม
+            asof[ch] = json.loads((OUT / f'ads_detail_{ch}.json')
+                                  .read_text(encoding='utf-8')).get('data_asof')
+        except (OSError, ValueError):
+            pass
+    sys.stdout.flush()                     # ให้บรรทัดของแต่ละช่องทางออกก่อนคำเตือน
+    exp = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%d')
+    stale = sorted((ch, v) for ch, v in asof.items() if v and v < exp)
+    if stale:
+        print('⚠️ ไม่มีไฟล์ใหม่ %d ช่องทาง — ควรได้ถึง %s (เมื่อวาน) แต่ข้อมูลค้างอยู่ที่:'
+              % (len(stale), exp), file=sys.stderr)
+        for ch, v in stale:
+            lag = (datetime.strptime(exp, '%Y-%m-%d')
+                   - datetime.strptime(v, '%Y-%m-%d')).days
+            print('   %s (%s) ค้างที่ %s — เก่ากว่าที่ควรได้ %d วัน'
+                  % (ch, LABEL[ch], v, lag), file=sys.stderr)
+        print('   ยกบรรทัดเหล่านี้ไปใส่สรุปท้ายรอบ และขึ้นต้นด้วย ⚠️ '
+              'ห้ามรายงานว่าสำเร็จเฉย ๆ', file=sys.stderr)
+    # -------------------------------------------------------------------------
     if empty:
         print('ไม่มีไฟล์ดิบให้ทำ: ' + ', '.join(empty))
     if unreadable:
