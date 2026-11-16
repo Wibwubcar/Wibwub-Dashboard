@@ -1399,7 +1399,7 @@ function gridRow(e,dates,today,byKey){
     let a,b;
     const lv=leaveOf(e.real,d);
     if(!r&&!off&&lv&&lv.status==="อนุมัติแล้ว"&&!lv.span){a=b=lv.kind}
-    else if(!r){a=b=off?"หยุด":""}
+    else if(!r){a=b=(off&&d<today)?"หยุด":""}   // 16 พ.ย. 69: วันนี้ยังไม่ใส่ "หยุด" (รอบ 00:30 วันเสาร์เคยใส่ล่วงหน้าแล้วล็อกช่อง)
     else{
       a=r.inTime?T(r.inTime):"ลืมสแกน";
       b=r.outTime?T(r.outTime):(d===today?"":"ลืมสแกน");
