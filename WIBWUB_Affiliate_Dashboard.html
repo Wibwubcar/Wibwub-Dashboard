@@ -380,9 +380,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
           <th>#</th>
           <th>ครีเอเตอร์</th>
           <th>Tier</th>
-          <th onclick="sortTbl('tbl-tier',3,this)">GMV 3 เดือน (รายเดือน) <span class="sort-icon">↕</span></th>
-          <th>เทียบ 3 เดือนก่อนหน้า</th>
+          <th onclick="sortTbl('tbl-tier',3,this)"><span id="tier-gmv-th">GMV 3 เดือน (รายเดือน)</span> <span class="sort-icon">↕</span></th>
+          <th id="tier-cmp-th">เทียบ 3 เดือนก่อนหน้า</th>
           <th onclick="sortTbl('tbl-tier',5,this)">Orders (รวม) <span class="sort-icon">↕</span></th>
+          <th>ขายดี <span style="font-weight:400;font-size:10px;color:var(--t3)">(จากคลิป ไม่รวมไลฟ์)</span></th>
         </tr>
       </thead>
       <tbody id="tier-body"></tbody>
@@ -20806,12 +20807,35 @@ const TIER_META = {
   special: {label:'✨ Special Partner', cls:'tier-special'}
 };
 
+// 16 พ.ย. 69: มุมมองรายเดือน + คอลัมน์ "ขายดี" (จาก VIDEOS — ยอดรายคลิป ไม่รวมไลฟ์)
+let tierView = 'round';
+let tierMonthIdx = TIER_MONTH_COUNT - 1;
+function setTierView(v){ tierView = v; renderTier(); }
+function setTierMonth(v){ tierMonthIdx = parseInt(v,10); renderTier(); }
+const VID_BY_CREATOR = (()=>{ const m={}; VIDEOS.forEach(v=>{ (m[v.creator]=m[v.creator]||[]).push(v); }); return m; })();
+function topProdCell(name, s, e, total){
+  const keys=[]; for(let i=s;i<=e;i++) keys.push(MONTH_ORDER[i%12]);
+  const P={};
+  (VID_BY_CREATOR[name]||[]).forEach(v=>{ const g=keys.reduce((a,k)=>a+((v.monthly||{})[k]||0),0); if(g>0) P[v.product]=(P[v.product]||0)+g; });
+  const L=Object.entries(P).sort((a,b)=>b[1]-a[1]);
+  if(!L.length) return '<td style="color:var(--t3);font-size:11px">– ไม่มียอดจากคลิป (อาจขายผ่านไลฟ์)</td>';
+  const vsum=L.reduce((a,x)=>a+x[1],0);
+  const cov=total>0?Math.min(100,Math.round(vsum/total*100)):0;
+  const nm=p=>String(p).replace(/^WIBWUB\s+/i,'');
+  return `<td style="font-size:11px;line-height:1.5">${L.slice(0,3).map(([p,g])=>`<div>${nm(p)} <span style="color:var(--t3)">${fmtK(g)}</span></div>`).join('')}<div style="font-size:10px;color:var(--t3)">คลิปครอบคลุม ${cov}% ของยอด</div></td>`;
+}
 function renderQPicker(){
   const el = document.getElementById('tier-qpicker');
   if(!el) return;
+  const tog = `<span class="qpicker-label">มุมมอง</span><button class="qbtn${tierView==='round'?' active':''}" onclick="setTierView('round')">รอบ 3 เดือน (Tier)</button><button class="qbtn${tierView==='month'?' active':''}" onclick="setTierView('month')">รายเดือน</button><span class="qpicker-divider"></span>`;
+  if(tierView==='month'){
+    const mopts = Array.from({length:TIER_MONTH_COUNT},(_,i)=>i).reverse().map(i=>`<option value="${i}"${i===tierMonthIdx?' selected':''}>${rangeLabel(i,i)}</option>`).join('');
+    el.innerHTML = tog + `<span class="qpicker-label">📅 เดือน</span><select class="qsel" id="tier-month-sel" onchange="setTierMonth(this.value)">${mopts}</select>`;
+    return;
+  }
   const opts = Array.from({length:TIER_MONTH_COUNT}, (_,i)=>i).filter(i=>i>=2).map(i=>
     `<option value="${i}"${i===activeToIdx?' selected':''}>${rangeLabel(i-2,i)}</option>`).join('');
-  el.innerHTML = `
+  el.innerHTML = tog + `
     <span class="qpicker-label">📅 รอบ 3 เดือน</span>
     <select class="qsel" id="tier-to-sel" onchange="onRangeSelChange()">${opts}</select>
     <span class="qpicker-divider"></span>
@@ -20889,8 +20913,12 @@ function tierCreatorUrl(name){
 }
 function renderTier(){
   if(!TIER_MONTH_COUNT) return;
-  const s = activeFromIdx, e = activeToIdx;
+  const mView = tierView==='month';   // รายเดือน = ยอดเดือนเดียว · ป้าย Tier ยังคิดจากรอบ 3 เดือนที่จบที่เดือนนั้น
+  const s = mView ? tierMonthIdx : activeFromIdx, e = mView ? tierMonthIdx : activeToIdx;
+  const rs = mView ? Math.max(0, e-2) : s;
   const label = rangeLabel(s,e);
+  const thG=document.getElementById('tier-gmv-th'); if(thG) thG.textContent = mView?'GMV เดือนนี้':'GMV 3 เดือน (รายเดือน)';
+  const thC=document.getElementById('tier-cmp-th'); if(thC) thC.textContent = mView?'เทียบเดือนก่อนหน้า':'เทียบ 3 เดือนก่อนหน้า';
   const isCurrent = e === TIER_MONTH_COUNT - 1 && String(AF_MO[AF_MO.length-1]).split(/\s/)[0]===monthMeta(e).label; // end month still in progress (AF_MO's latest month = this month)
   const rangeLen = e - s + 1;
   const prevS = s - rangeLen, prevE = s - 1;
@@ -20911,18 +20939,20 @@ function renderTier(){
   }
 
   const rankedAll = Object.keys(CREATOR_MONTHS)
-    .map(name=>({name, gmv: rangeGMV(name, s, e), months: Array.from({length:e-s+1},(_,k)=>(CREATOR_MONTHS[name]||[])[s+k]||0)}))
+    .map(name=>({name, gmv: rangeGMV(name, s, e), months: Array.from({length:e-s+1},(_,k)=>(CREATOR_MONTHS[name]||[])[s+k]||0),
+                   gmv3: rangeGMV(name, rs, e), months3: Array.from({length:e-rs+1},(_,k)=>(CREATOR_MONTHS[name]||[])[rs+k]||0)}))
     .filter(r=>r.gmv>0)
     .sort((a,b)=>b.gmv-a.gmv);
-  const top30 = rankedAll.filter(r=>r.gmv>=30000);   // TIER_V2: แสดงทุกคนที่ติด Tier (≥ ฿30K)
+  const top30 = rankedAll.filter(r=>r.gmv>=(mView?10000:30000));   // TIER_V2: แสดงทุกคนที่ติด Tier (≥ ฿30K)
 
   // Special Partner benchmark = 2x the #1 creator's total from the
   // immediately preceding period of EQUAL length (an exceptional breakout
   // star, not just "highest in this range").
   let prevTop1 = 0;
-  if(hasPrev){
+  const tLen = e - rs + 1, tps = rs - tLen, tpe = rs - 1;   // รอบ 3 เดือนก่อนหน้า (ใช้ตัดสิน Special)
+  if(tps >= 0){
     const prevRanked = Object.keys(CREATOR_MONTHS)
-      .map(name=>({name, gmv: rangeGMV(name, prevS, prevE)}))
+      .map(name=>({name, gmv: rangeGMV(name, tps, tpe)}))
       .sort((a,b)=>b.gmv-a.gmv);
     prevTop1 = prevRanked[0]?.gmv || 0;
   }
@@ -20937,7 +20967,7 @@ function renderTier(){
   const counts = {core:0, growth:0, rising:0, special:0, none:0};
   if(tbody){
     tbody.innerHTML = top30.map((r,i)=>{
-      const t = tierOf(r.gmv, specialThr, r.months);
+      const t = tierOf(r.gmv3, specialThr, r.months3);
       counts[t]++;
       const meta = TIER_META[t];
       const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
@@ -20957,9 +20987,10 @@ function renderTier(){
         <td>${rnk}</td>
         <td><a href="${tierCreatorUrl(r.name)}" target="_blank" rel="noopener" class="creator-chip" style="text-decoration:none;color:inherit;cursor:pointer" title="เปิดหน้าหลังบ้าน Affiliate ของ ${r.name}"><div class="creator-av">${getAv(r.name)}</div>${r.name}</a></td>
         <td><span class="tier-badge ${meta.cls}">${meta.label}</span></td>
-        <td data-val="${r.gmv}">${fmtK(r.gmv)}<div style="font-size:10px;color:var(--t3);font-weight:400">${r.months.map(x=>`<span style="${x>=70000?'color:var(--green);font-weight:700':''}">${fmtK(x)}</span>`).join(' / ')}</div></td>
+        <td data-val="${r.gmv}">${fmtK(r.gmv)}<div style="font-size:10px;color:var(--t3);font-weight:400">${mView?'รอบ 3 เดือน '+fmtK(r.gmv3):r.months.map(x=>`<span style="${x>=70000?'color:var(--green);font-weight:700':''}">${fmtK(x)}</span>`).join(' / ')}</div></td>
         ${growthCell}
         <td data-val="${ordersByName[r.name]||0}">${ordersByName[r.name]||'–'}</td>
+        ${topProdCell(r.name, s, e, r.gmv)}
       </tr>`;
     }).join('');
   }
@@ -20975,8 +21006,8 @@ function renderTier(){
   const kstrip = document.getElementById('tier-kstrip');
   if(kstrip){
     kstrip.innerHTML = `
-      <div class="kk"><div class="kkl">GMV รวมคนที่ติด Tier</div><div class="kkv teal">${fmtK(totalTop30GMV)}</div><div class="kks">${label}</div></div>
-      <div class="kk"><div class="kkl">สัดส่วนจากคนที่ติด Tier (${top30.length} คน)</div><div class="kkv purple">${Math.round(totalTop30GMV/totalAllGMV*100)}%</div><div class="kks">ของ GMV ครีเอเตอร์ทั้งหมด ${rankedAll.length} คนที่มียอดในช่วงนี้</div></div>
+      <div class="kk"><div class="kkl">${mView?'GMV รวม (ยอดเดือนนี้ ≥ ฿10K)':'GMV รวมคนที่ติด Tier'}</div><div class="kkv teal">${fmtK(totalTop30GMV)}</div><div class="kks">${label}</div></div>
+      <div class="kk"><div class="kkl">${mView?'สัดส่วนจากคนในตาราง':'สัดส่วนจากคนที่ติด Tier'} (${top30.length} คน)</div><div class="kkv purple">${Math.round(totalTop30GMV/totalAllGMV*100)}%</div><div class="kks">ของ GMV ครีเอเตอร์ทั้งหมด ${rankedAll.length} คนที่มียอดในช่วงนี้</div></div>
       <div class="kk"><div class="kkl">Top Creator ช่วงนี้</div><div class="kkv blue">${top30[0]?top30[0].name:'–'}</div><div class="kks">${top30[0]?fmtK(top30[0].gmv):''}</div></div>
       <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอดทั้งหมด</div><div class="kkv amber">${rankedAll.length}</div><div class="kks">ในช่วง ${label}</div></div>
     `;
