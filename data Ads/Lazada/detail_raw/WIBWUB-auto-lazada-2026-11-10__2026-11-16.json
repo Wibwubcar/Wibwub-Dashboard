@@ -1,0 +1,792 @@
+{
+ "12022": {
+  "camp": [
+   {
+    "campaignId": 101100055088149,
+    "campaignName": "Sponsored_Max-product_campaign_2026_08_27_08:26"
+   }
+  ],
+  "ads": [
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบสีแบบสเปรย์แวกซ์ (WIBWUB Sugar)",
+    "itemId": 4667524363,
+    "spend": 411.94,
+    "impressions": 2029.0,
+    "clicks": 79.0,
+    "storeA2c": 20.0,
+    "storeOrders": 6.0,
+    "storeRevenue": 3444.03
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "สเปรย์เช็ดเก็บฝุ่นภายนอก ดูแลผิวรถระหว่างวัน (WIBWUB Mind Quick Detailer)",
+    "itemId": 4667480343,
+    "spend": 202.12,
+    "impressions": 1327.0,
+    "clicks": 28.0,
+    "storeA2c": 7.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซรามิคแชมพูล้างรถ (Quartz Shampoo)",
+    "itemId": 4667499522,
+    "spend": 72.33,
+    "impressions": 915.0,
+    "clicks": 15.0,
+    "storeA2c": 4.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat)",
+    "itemId": 5120654205,
+    "spend": 275.75,
+    "impressions": 887.0,
+    "clicks": 31.0,
+    "storeA2c": 7.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 408.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "สเปรย์เคลือบสีรถชนิด Ceramic Coating Spray (WIBWUB Reflex V.2 )",
+    "itemId": 4667547105,
+    "spend": 168.23,
+    "impressions": 867.0,
+    "clicks": 30.0,
+    "storeA2c": 4.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 667.97
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทผลิตภัณฑ์ดูแลรักษาภายในรถยนต์ (Interior Set)",
+    "itemId": 4667340814,
+    "spend": 118.13,
+    "impressions": 859.0,
+    "clicks": 24.0,
+    "storeA2c": 2.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 370.8
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "สเปรย์ทำความสะอาดภายในแบบไม่เงา ( WIBWUB Interior )",
+    "itemId": 4667426893,
+    "spend": 270.91,
+    "impressions": 554.0,
+    "clicks": 32.0,
+    "storeA2c": 19.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 850.59
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เจลเคลือบและฟื้นฟูพลาสติกและยาง สูตรกันน้ำ (WIBWUB Tire & Trim Gel)",
+    "itemId": 4667555167,
+    "spend": 103.77,
+    "impressions": 522.0,
+    "clicks": 16.0,
+    "storeA2c": 0.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 101.39
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบเซรามิค (WIBWUB JULIA)",
+    "itemId": 4667440449,
+    "spend": 16.19,
+    "impressions": 456.0,
+    "clicks": 14.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบสีกราฟีน (WIBWUB Graphene Sealant)",
+    "itemId": 4667385660,
+    "spend": 84.69,
+    "impressions": 425.0,
+    "clicks": 13.0,
+    "storeA2c": 2.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 687.84
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ทิชชู่เปียกทำความสะอาดภายในรถยนต์ : ผลิตในไทย (WIBWUB Interior wipes)",
+    "itemId": 5178670050,
+    "spend": 125.36,
+    "impressions": 370.0,
+    "clicks": 24.0,
+    "storeA2c": 6.0,
+    "storeOrders": 2.0,
+    "storeRevenue": 886.4
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาล้างรถสำหรับ Pre-Wash (WIBWUB Terrain)",
+    "itemId": 4810865408,
+    "spend": 50.51,
+    "impressions": 355.0,
+    "clicks": 9.0,
+    "storeA2c": 2.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาทำความสะอาดยางโดยเฉพาะ (WIBWUB Tire Clean)",
+    "itemId": 4735680940,
+    "spend": 23.8,
+    "impressions": 336.0,
+    "clicks": 5.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาทำความสะอาดกระจก (WIBWUB Visible)",
+    "itemId": 4735867084,
+    "spend": 115.99,
+    "impressions": 304.0,
+    "clicks": 12.0,
+    "storeA2c": 3.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "โฟมขจัดคราบฝังลึก (WIBWUB Deep Clean)",
+    "itemId": 4667505500,
+    "spend": 35.78,
+    "impressions": 300.0,
+    "clicks": 5.0,
+    "storeA2c": 3.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 371.8
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ทิชชู่เปียกทำความสะอาดเบาะหนังโดยเฉพาะ : ผลิตในไทย (WIBWUB Refresh Leather Wipes)",
+    "itemId": 5779148514,
+    "spend": 72.68,
+    "impressions": 268.0,
+    "clicks": 12.0,
+    "storeA2c": 2.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาขจัดคราบน้ำ (WIBWUB Spot Clean)",
+    "itemId": 4667303981,
+    "spend": 35.99,
+    "impressions": 266.0,
+    "clicks": 7.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาล้างรถแบบไม่ใช้น้ำ (WIBWUB  Waterless)",
+    "itemId": 4667519406,
+    "spend": 66.0,
+    "impressions": 260.0,
+    "clicks": 8.0,
+    "storeA2c": 2.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผลิตภัณฑ์ทำความสะอาดเบาะหนังโดยเฉพาะ ( WIBWUB Refresh )",
+    "itemId": 4667348840,
+    "spend": 141.39,
+    "impressions": 258.0,
+    "clicks": 14.0,
+    "storeA2c": 4.0,
+    "storeOrders": 2.0,
+    "storeRevenue": 771.4
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep)",
+    "itemId": 4667537296,
+    "spend": 23.42,
+    "impressions": 213.0,
+    "clicks": 5.0,
+    "storeA2c": 2.0,
+    "storeOrders": 2.0,
+    "storeRevenue": 601.48
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบกระจก ( WIBWUB X-Glass Shield )",
+    "itemId": 4667545160,
+    "spend": 48.18,
+    "impressions": 210.0,
+    "clicks": 5.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทเคลือบสีรถกราฟีน (Graphene coating set)",
+    "itemId": 4735793768,
+    "spend": 12.05,
+    "impressions": 186.0,
+    "clicks": 7.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซททำความสะอาดเบาะหนัง (Leather Cleaner Set)",
+    "itemId": 4667518438,
+    "spend": 57.35,
+    "impressions": 181.0,
+    "clicks": 10.0,
+    "storeA2c": 3.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าสำหรับเช็ดคุ่กับน้ำยาเก็บฝุ่นโดยเฉพาะ (WIBWUB Margarita)",
+    "itemId": 4667525393,
+    "spend": 1.86,
+    "impressions": 177.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาขจัดคราบยางมะตอย สูตรขจัดคราบหนัก (WIBWUB Brown V.2 )",
+    "itemId": 5907815764,
+    "spend": 32.09,
+    "impressions": 169.0,
+    "clicks": 3.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "สเปรย์ปรับสภาพกลิ่นพรมภายในรถ (WIBWUB BANYAKART - ODOR ELIMINATOR)",
+    "itemId": 5580044417,
+    "spend": 50.05,
+    "impressions": 161.0,
+    "clicks": 6.0,
+    "storeA2c": 3.0,
+    "storeOrders": 2.0,
+    "storeRevenue": 973.4
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ไม้ปัดฝุ่นขน Wool duster",
+    "itemId": 4667438489,
+    "spend": 31.62,
+    "impressions": 132.0,
+    "clicks": 6.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทดูแลกระจกรถยนต์โดยเฉพาะ (Glass Cleaner Set)",
+    "itemId": 5561323208,
+    "spend": 18.81,
+    "impressions": 121.0,
+    "clicks": 3.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้า Polisher สำหรับเช็ดเคลือบเซรามิค",
+    "itemId": 4667577038,
+    "spend": 44.25,
+    "impressions": 120.0,
+    "clicks": 4.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าไมโครไฟเบอร์ BOA ไร้ขอบ 500 gsm (WIBWUB Perfect)",
+    "itemId": 4667291909,
+    "spend": 6.32,
+    "impressions": 107.0,
+    "clicks": 1.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาทำความสะอาดเอนกประสงค์ (WIBWUB APC Car Cleaner)",
+    "itemId": 4667397560,
+    "spend": 49.45,
+    "impressions": 105.0,
+    "clicks": 6.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "WIBWUB Wheel brush (แปรงขัดล้อ)",
+    "itemId": 4667422511,
+    "spend": 27.33,
+    "impressions": 92.0,
+    "clicks": 6.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาขจัดคราบแมลงโดยเฉพาะรถยนต์ (WIBWUB Bug bug)",
+    "itemId": 5093996597,
+    "spend": 29.58,
+    "impressions": 90.0,
+    "clicks": 3.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาเคลือบสีสูตรซิลิกา 30% (WIBWUB Phoenix)",
+    "itemId": 4667494539,
+    "spend": 17.79,
+    "impressions": 87.0,
+    "clicks": 5.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซรั่มบำรุงและฟื้นฟูเบาะหนังโดยเฉพาะ (WIBWUB Recove Leather Serum)",
+    "itemId": 5625497273,
+    "spend": 17.16,
+    "impressions": 86.0,
+    "clicks": 2.0,
+    "storeA2c": 1.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 691.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทเคลือบสีรถ Reflex (WIBWUB Reflex Coating Set)",
+    "itemId": 4667351823,
+    "spend": 10.69,
+    "impressions": 84.0,
+    "clicks": 3.0,
+    "storeA2c": 6.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 1163.4
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทล้างทำความสะอาดรถยนต์ (Wash Set)",
+    "itemId": 4667477671,
+    "spend": 0.37,
+    "impressions": 83.0,
+    "clicks": 1.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาซักผ้าไมโครไฟเบอร์ (WIBWUB Microfiber Wash)",
+    "itemId": 4667461817,
+    "spend": 31.83,
+    "impressions": 74.0,
+    "clicks": 4.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ถุงมือล้างรถขนแกะแท้ (WIBWUB Wool wash mitt)",
+    "itemId": 4667301962,
+    "spend": 13.28,
+    "impressions": 69.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ฟองน้ำทายาง (WIBWUB Tire applicator)",
+    "itemId": 4667523212,
+    "spend": 0.9,
+    "impressions": 63.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "สเปรย์เคลือบป้องกันรังสี UV สำหรับภายใน (WIBWUB UV Protect)",
+    "itemId": 4667308937,
+    "spend": 1.21,
+    "impressions": 60.0,
+    "clicks": 1.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "แปรงขัดล้อแบบปรับองศาได้ (WIBWUB Flex wheel brush)",
+    "itemId": 5367965304,
+    "spend": 51.71,
+    "impressions": 49.0,
+    "clicks": 4.0,
+    "storeA2c": 3.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าสำหรับเช็ดน้ำยาเคลือบสีโดยเฉพาะ (WIBWUB Martini)",
+    "itemId": 4667517437,
+    "spend": 1.82,
+    "impressions": 49.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 70*90 (WIBWUB Monster)",
+    "itemId": 4667581030,
+    "spend": 0.0,
+    "impressions": 47.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ถุงมือดินน้ำมันขจัดคราบไคล (WIBWUB Clay Mitt)",
+    "itemId": 4667505499,
+    "spend": 14.03,
+    "impressions": 47.0,
+    "clicks": 2.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซ็ทรวมน้ำยาเคลือบสีแบบสเปรย์ (Ceramic & Wax Spray Set)",
+    "itemId": 5759886327,
+    "spend": 0.0,
+    "impressions": 38.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทผลิตภัณฑ์สำหรับภายนอกรถยนต์ (Exterior Set)",
+    "itemId": 4667431942,
+    "spend": 5.64,
+    "impressions": 38.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผลิตภัณฑ์ภัณฑ์ขจัดคราบผงเบรก (WIBWUB Steel)",
+    "itemId": 4667564086,
+    "spend": 10.02,
+    "impressions": 35.0,
+    "clicks": 2.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซททำความสะอาดคราบน้ำ (Spot Clean Set)",
+    "itemId": 4667316961,
+    "spend": 3.63,
+    "impressions": 23.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ฟองน้ำสครับเบาะหนัง (WIBWUB Scrubber pad)",
+    "itemId": 5367902926,
+    "spend": 0.0,
+    "impressions": 22.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ฟองน้ำสำหรับลงน้ำยาเคลือบเซรามิก (Coating block)",
+    "itemId": 4811120167,
+    "spend": 0.0,
+    "impressions": 22.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทเคลือบสีรถ Phoenix (WIBWUB Phoenix Coating Set)",
+    "itemId": 4667555168,
+    "spend": 3.55,
+    "impressions": 22.0,
+    "clicks": 2.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "แปรง Detailing สำหรับเก็บรายละเอียด  (WIBWUB Detailing brush)",
+    "itemId": 4667529198,
+    "spend": 0.0,
+    "impressions": 22.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทของขวัญสำหรับคนรักรถ (WIBWUB Gift box)",
+    "itemId": 4667535265,
+    "spend": 0.0,
+    "impressions": 21.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าไมโครไฟเบอร์สำหรับซับน้ำไร้ขอบ 60*40 cm ( Superdry Doubleside )",
+    "itemId": 4667314966,
+    "spend": 12.0,
+    "impressions": 21.0,
+    "clicks": 1.0,
+    "storeA2c": 1.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ฟองน้ำ Premium Microfiber Applicator (แพค 2 ชิ้น)",
+    "itemId": 4667453825,
+    "spend": 0.43,
+    "impressions": 19.0,
+    "clicks": 2.0,
+    "storeA2c": 0.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 444.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซททำความสะอาดห้องเครื่อง (Engine Bay Cleaner Set)",
+    "itemId": 5563703177,
+    "spend": 0.0,
+    "impressions": 17.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทแปรง Detailing 3 ชิ้น (Detailing Brush Set)",
+    "itemId": 4667475736,
+    "spend": 0.0,
+    "impressions": 17.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทล้างรถ 3 ชิ้น Quartz shampoo + ผ้า doubleside + ถุงมือขนแกะ (Wash at home)",
+    "itemId": 4667567060,
+    "spend": 0.0,
+    "impressions": 15.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "แปรงทำความสะอาดยางรถยนต์ (WIBWUB Tire Brush)",
+    "itemId": 4667478374,
+    "spend": 0.0,
+    "impressions": 14.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทเตรียมพื้นผิวรถยนต์ก่อนการเคลือบสี (Clean & Prep Set)",
+    "itemId": 5561812768,
+    "spend": 0.0,
+    "impressions": 12.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "แปรงขนม้าแท้ (Horse Brush)",
+    "itemId": 4667471712,
+    "spend": 14.88,
+    "impressions": 12.0,
+    "clicks": 2.0,
+    "storeA2c": 0.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 277.57
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ผ้าสำหรับขัดล้อรถยนต์ ( WIBWUB Wheel Sling  )",
+    "itemId": 16255607382,
+    "spend": 0.0,
+    "impressions": 11.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "น้ำยาฟื้นฟูสภาพผิวรถโดยเฉพาะ แถม ผ้าไมโครไฟเบอร์ ( WIBWUB CLEANER )",
+    "itemId": 16196372241,
+    "spend": 0.0,
+    "impressions": 10.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ตัวแขวนสำหรับใส่อุปกรณ์ล้างรถ (WIBWUB Side bucket)",
+    "itemId": 5907970984,
+    "spend": 0.0,
+    "impressions": 9.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "เซทผ้าไมโครไฟเบอร์ แถม❗️น้ำยาซักผ้าไมโครไฟเบอร์ (Microfiber Set)",
+    "itemId": 4667300910,
+    "spend": 0.0,
+    "impressions": 7.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "ฟองน้ำ Suede Applicator",
+    "itemId": 4667576033,
+    "spend": 0.38,
+    "impressions": 6.0,
+    "clicks": 1.0,
+    "storeA2c": 0.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 94.0
+   },
+   {
+    "campaignId": 101100055088149,
+    "adgroupName": "แปรงขัดหน้าล้อ (WIBWUB Front Wheel Brush)",
+    "itemId": 4667546115,
+    "spend": 0.0,
+    "impressions": 6.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 1.0,
+    "storeRevenue": 331.55
+   }
+  ]
+ },
+ "12021": {
+  "camp": [
+   {
+    "campaignId": null,
+    "campaignName": ""
+   }
+  ],
+  "ads": [
+   {
+    "campaignId": 101100045410332,
+    "adgroupName": "น้ำยาเคลือบสีแบบไม่ต้องเช็ด (WIBWUB Beach wet coat)",
+    "itemId": 5120654205,
+    "spend": 0.0,
+    "impressions": 1.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   },
+   {
+    "campaignId": 101100045410332,
+    "adgroupName": "น้ำยาเตรียมพื้นผิวรถก่อนการเคลือบสี (WIBWUB Paint Prep)",
+    "itemId": 4667537296,
+    "spend": 0.0,
+    "impressions": 1.0,
+    "clicks": 0.0,
+    "storeA2c": 0.0,
+    "storeOrders": 0.0,
+    "storeRevenue": 0.0
+   }
+  ]
+ }
+}
