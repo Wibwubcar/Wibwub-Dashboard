@@ -116,17 +116,35 @@ POST /api/pas/v1/report/export_job/trigger/?SPC_CDS_VER=2
 > เจอ CAPTCHA = **หยุด Lazada ทันที** รายงาน `⚠️ Lazada ติด CAPTCHA รอบนี้ใช้ข้อมูลเดิม`
 > แล้วไปทำช่องทางถัดไป (ข้อมูลเดิมใน `ads_detail_lz.json` ไม่หาย ดู B5)
 
-ที่ `https://sellercenter.lazada.co.th/sponsor/solutions/ads/smax/#!/home`
-ยิง **ช่วงเดียวจบทั้ง 7 วัน** (endpoint รับช่วงได้ถึง 90 วัน) **ครั้งเดียวต่อ sceneId**
-→ 10 คำขอต่อรอบ ไม่ใช่ 70 · เว้นจังหวะ **อย่างน้อย 1.5 วินาที** ระหว่างคำขอ
+ที่ `https://sellercenter.lazada.co.th/sponsor/solutions/ads/report/#!/`
+ยิง **ช่วงเดียวจบทั้ง 7 วัน** (endpoint รับช่วงได้ถึง 90 วัน) และ
+**ส่ง `sceneIds` ทั้ง 5 ในคำขอเดียว** → **2 คำขอต่อรอบ** (เพดาน 4 ถ้าต้องยิงหน้า 2)
+· เว้นจังหวะ **อย่างน้อย 1.5 วินาที** ระหว่างคำขอ
 
 ```
-GET /sponsor/solutions/performance/newCampaignList.json?page=1&pageSize=100&campaignStatus=2&startDate=<from>&endDate=<to>&sceneId=<12020..12024>&attributionType=2
-GET /sponsor/solutions/performance/adgroupList.json?adName=&startDate=<from>&endDate=<to>&adStatus=-1&page=1&pageSize=200&sortable=storeRevenue,desc&attributionType=2&sceneId=<id>
+GET /sponsor/solutions/performance/report/campaign.json?startDate=<from>&endDate=<to>&useRtTable=0&adStatus=1&pageNo=1&pageSize=100&attributionType=2&sceneIds=12020,12021,12022,12023,12024
+GET /sponsor/solutions/performance/report/product.json?startDate=<from>&endDate=<to>&pageNo=1&pageSize=200&useRtTable=0&attributionType=2&sceneIds=12020,12021,12022,12023,12024
 ```
 
-เก็บผลไว้ในหน้าเว็บก่อน (เช่น `window.__lz = {<sceneId>:{camp:[...],ads:[...]}}`)
-(ชื่อสินค้าอยู่ที่ `adgroupName` **ไม่ใช่** `itemName` ซึ่งเป็น null เสมอ)
+- แถวข้อมูลอยู่ที่ **`result.reportItem`** (ไม่ใช่ `data`) · จำนวนทั้งหมดที่ `result.total`
+  → ถ้า `reportItem.length < total` ให้ยิงหน้า 2 ด้วย `pageNo=2` แล้วรวมกัน (รวมไม่เกิน 4 คำขอ)
+- `useRtTable=0` = ตารางย้อนหลัง (**ใช้ตัวนี้**) · `useRtTable=1` = เรียลไทม์ ใช้ได้เฉพาะวันนี้
+- **`product.json` มี `sceneId` + `campaignId` + `campaignName` มาในแถวเดียวกันแล้ว**
+  ไม่ต้อง map จากแถว `C` (ยังเก็บแถว `C` ไว้ เพื่อให้รูปทรงไฟล์เหมือนเดิม)
+- ชื่อฟิลด์เมตริกเป็นชื่อสั้น (`spend` `impressions` `clicks` `storeA2c` `storeOrders`
+  `storeRevenue`) ไม่มีท้าย `Value` แล้ว — `build_lz()` อ่านได้ทั้งสองแบบ
+- เก็บผลไว้ในหน้าเว็บก่อน (เช่น `window.__lz = {<sceneId>:{camp:[...],ads:[...]}}`)
+- ชื่อสินค้าอยู่ที่ `adgroupName` **ไม่ใช่** `itemName` ซึ่งเป็น null เสมอ
+
+> ⛔ **ด่าน endpoint เปลี่ยน (เพิ่ม 17 พ.ย. 69)** — ถ้า `result.total === 0` ทุก scene
+> ทั้งที่ `data Ads/ads_daily.json` มี `lz_ads.spend` ในช่วงนั้น **ห้ามสรุปว่าไม่มีข้อมูล
+> และห้ามเขียนไฟล์เปล่า** ให้ถือว่า Lazada เปลี่ยน endpoint อีกแล้ว แล้วทำตามนี้:
+> เปิด `/sponsor/solutions/ads/report/#!/` → แท็บ **Sponsored Max** → กด **ย้อนหลัง 7 วัน**
+> → เลื่อนลงจนตาราง "รายละเอียด" โหลด → `read_network_requests` กรอง `performance/report`
+> ดูว่าหน้าเว็บยิงอะไรจริง แล้ว **รายงานผู้ใช้ว่าพารามิเตอร์ต่างจากข้างบนตรงไหน**
+> (รอบ 16 พ.ย. เสียไปทั้งวันเพราะ endpoint เก่า `newCampaignList.json` / `adgroupList.json`
+> ยังตอบ `success:true` แต่คืน `reportItem: []` `total: 0` — ไม่มี error ให้จับ
+> แก้เป็น endpoint ชุดนี้แล้วได้ข้อมูลทันทีในวันเดียวกัน)
 
 ### ⛔ ห้ามใช้กลไกดาวน์โหลดของ Chrome กับ **ไฟล์ JSON ของ API นี้** (เปลี่ยนวิธี 16 พ.ย. 69)
 
@@ -147,12 +165,13 @@ GET /sponsor/solutions/performance/adgroupList.json?adName=&startDate=<from>&end
 
 - บรรทัดแคมเปญ: `C` + tab + `<sceneId>` + tab + `campaignId` + tab + `campaignName`
 - บรรทัดโฆษณา: `A` + tab + `<sceneId>` + tab + `campaignId` + tab + `campaignName` +
-  tab + `adgroupName` + tab + `itemId` + tab + `spendValue` + tab + `impressionsValue` +
-  tab + `clicksValue` + tab + `storeA2cValue` + tab + `storeOrdersValue` + tab +
-  `storeRevenueValue`
+  tab + `adgroupName` + tab + `itemId` + tab + `spend` + tab + `impressions` +
+  tab + `clicks` + tab + `storeA2c` + tab + `storeOrders` + tab + `storeRevenue`
+  (ทั้ง 6 ค่าอ่านตรงจากแถว `product.json` ได้เลย)
 - ค่าว่างให้เป็นสตริงว่าง · **ล้าง tab และขึ้นบรรทัดใหม่ออกจากชื่อก่อนต่อ** (แทนด้วยช่องว่าง)
 - **ตัดเฉพาะฟิลด์ ห้ามตัดแถว** — เอา `ads[]` ให้ครบทุกแถวของทุก scene
   (ไฟล์ 9 พ.ย. ได้ 73 แถว แต่ของจริง 150 แถว เพราะรอบนั้นกรองแถวทิ้งไปด้วย)
+  จำนวนแถวที่ต่อได้ต้องเท่ากับ `result.total` ของ `product.json`
 
 **ขั้น 2 — ⛔ ด่านขนาด ต้องพิมพ์เลขออกมาก่อนส่ง** (เพิ่ม 16 พ.ย. 69):
 
@@ -161,10 +180,11 @@ window.__lzt.length                                              // ความ
 [...window.__lzt].reduce((a,c)=>(a+c.charCodeAt(0))%1000000007,0) // checksum
 ```
 
-- ขนาดที่ควรได้ **~8–15 KB** (150 แถว) · **เกิน 150,000 = ตัดฟิลด์ไม่สำเร็จ**
+- ขนาดที่ควรได้ **~5–15 KB** (70–150 แถว · 17 พ.ย. 69 ได้ 7,253 ตัวอักษร / 70 แถว)
+  · **เกิน 150,000 = ตัดฟิลด์ไม่สำเร็จ**
   → **หยุดทันที ห้ามส่งท่อน ห้ามเขียนไฟล์** รายงาน `⚠️ Lazada ก้อนข้อมูลใหญ่ผิดปกติ
   (N ตัวอักษร) รอบนี้ใช้ข้อมูลเดิม` แล้วไปขั้นถัดไป
-- จำนวนแถวที่ได้ก็ต้องพิมพ์ด้วย (`นับบรรทัดที่ขึ้นต้นด้วย A`) เทียบกับรอบก่อน (~150)
+- จำนวนแถวที่ได้ก็ต้องพิมพ์ด้วย (`นับบรรทัดที่ขึ้นต้นด้วย A`) เทียบกับ `result.total`
 
 **ขั้น 3 — ส่งกลับทีละท่อน 900 ตัวอักษร** (`javascript_tool` ตัดผลที่ ~1000 ตัว)
 `window.__lzt.slice(i*900,(i+1)*900)` ที่ `i = 0..ceil(len/900)-1`
@@ -176,13 +196,15 @@ window.__lzt.length                                              // ความ
 - ไม่ตรงข้อใดข้อหนึ่ง = **ห้ามเขียนไฟล์** รายงาน `⚠️ Lazada ต่อข้อความไม่ครบ
   รอบนี้ใช้ข้อมูลเดิม` (ส่งซ้ำได้ไม่เกิน 1 ครั้ง แล้วเลิก — ห้ามวนส่งซ้ำ)
 - ผ่านแล้วแปลง TSV กลับเป็น `{<sceneId>:{camp:[{campaignId,campaignName}],
-  ads:[{campaignId,campaignName,adgroupName,itemId,spendValue,impressionsValue,
-  clicksValue,storeA2cValue,storeOrdersValue,storeRevenueValue}]}}`
-  **ชื่อฟิลด์ต้องตรงตัวนี้** (`detail_build.py` → `build_lz()` อ่านชื่อนี้)
+  ads:[{campaignId,campaignName,adgroupName,itemId,spend,impressions,
+  clicks,storeA2c,storeOrders,storeRevenue}]}}`
+  **ชื่อฟิลด์ต้องตรงตัวนี้** (`detail_build.py` → `build_lz()` อ่านชื่อนี้ หรือชื่อเดิม
+  ที่ลงท้าย `Value` ก็ได้ — ไม่ต้องแก้ `detail_build.py`)
 - เขียนตรงที่ `<BASE>/data Ads/Lazada/detail_raw/WIBWUB-auto-lazada-<from>__<to>.json`
   (สองขีดล่าง · ไม่ผ่าน `~/Downloads` จึงไม่ต้องรอตัวย้าย และไม่ติดกฎชื่อซ้ำ)
 - เขียนเสร็จให้ `json.loads` ไฟล์ที่เขียนอีกครั้งแล้วพิมพ์ **ขนาดไฟล์ + จำนวนแถว `ads`
-  รวมทุก scene** ออกมา · ไฟล์ที่สมบูรณ์ควรได้ ~50–80 KB / ~150 แถว
+  รวมทุก scene** ออกมา · ไฟล์ที่สมบูรณ์ควรได้ ~20–80 KB / 70–150 แถว
+  (17 พ.ย. 69: 23 KB / 70 แถว · ค่าโฆษณารวมต้องตรงกับแถวแคมเปญบนหน้าเว็บ)
 
 > ⚠️ ค่าที่ได้จาก 2 endpoint นี้เป็น **ยอดรวมของทั้งช่วง ไม่ใช่รายวัน** — ไม่มีคอลัมน์วันที่
 > `detail_build.py` จึงลงให้เป็นแถวของช่วงนั้น **ห้ามหารเฉลี่ยเป็นรายวันเอง**
