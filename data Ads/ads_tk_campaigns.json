@@ -451,73 +451,73 @@
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 375300.88,
+     "spend": 375277.15,
      "orders": 7772,
-     "revenue": 950539.94
+     "revenue": 950576.87
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 200719.39,
+     "spend": 200716.62,
      "orders": 2306,
-     "revenue": 579695.91
+     "revenue": 579702.62
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 108416.62,
+     "spend": 108415.18,
      "orders": 1090,
-     "revenue": 421796.84
+     "revenue": 421803.43
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 76258.14,
+     "spend": 76255.9,
      "orders": 679,
-     "revenue": 228356.87
+     "revenue": 228361.55
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 61992.82,
+     "spend": 61990.3,
      "orders": 1959,
-     "revenue": 268994.04
+     "revenue": 269003.65
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 40206.88,
+     "spend": 40206.11,
      "orders": 621,
-     "revenue": 247400.61
+     "revenue": 247401.3
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 22071.42,
+     "spend": 22070.86,
      "orders": 174,
-     "revenue": 97743.97
+     "revenue": 97745.89
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 19206.81,
+     "spend": 19204.57,
      "orders": 140,
-     "revenue": 65310.45
+     "revenue": 65312.59
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
      "spend": 17620.91,
      "orders": 224,
-     "revenue": 98043.39
+     "revenue": 98045.6
     },
     {
      "name": "12.11.26/Cleaner",
-     "spend": 5111.71,
-     "orders": 97,
+     "spend": 5111.03,
+     "orders": 96,
      "revenue": 19475.08
     },
     {
      "name": "12.11.26/mind-waterless",
-     "spend": 2950.06,
+     "spend": 2950.05,
      "orders": 20,
      "revenue": 10358.64
     },
     {
      "name": "12.11.26/Shampoo",
-     "spend": 1840.35,
+     "spend": 1840.15,
      "orders": 25,
      "revenue": 7553
     }
