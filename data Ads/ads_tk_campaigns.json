@@ -451,75 +451,75 @@
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 402732.62,
+     "spend": 402900.63,
      "orders": 8230,
-     "revenue": 1004928.77
+     "revenue": 1005958.92
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 212780.46,
+     "spend": 212844.25,
      "orders": 2434,
-     "revenue": 610708.54
+     "revenue": 612495.31
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 112139.13,
+     "spend": 112164.4,
      "orders": 1144,
-     "revenue": 438365.63
+     "revenue": 439940.05
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 79068.26,
+     "spend": 79071.07,
      "orders": 698,
-     "revenue": 234887.68
+     "revenue": 234885.04
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 64671.38,
+     "spend": 64681.69,
      "orders": 2041,
-     "revenue": 280809.05
+     "revenue": 280889.15
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 41499.01,
+     "spend": 41502.45,
      "orders": 643,
-     "revenue": 254034.27
+     "revenue": 254032.35
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 22732.52,
+     "spend": 22732.89,
      "orders": 178,
-     "revenue": 100105.88
+     "revenue": 100103.65
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 20150.52,
+     "spend": 20154.22,
      "orders": 147,
-     "revenue": 68844.3
+     "revenue": 68841.79
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 18289.99,
+     "spend": 18293.01,
      "orders": 234,
-     "revenue": 101916.18
+     "revenue": 101906.46
     },
     {
      "name": "12.11.26/Cleaner",
-     "spend": 6128.77,
+     "spend": 6133.91,
      "orders": 118,
-     "revenue": 23662.47
+     "revenue": 23859.66
     },
     {
      "name": "12.11.26/mind-waterless",
-     "spend": 3284.07,
+     "spend": 3285.42,
      "orders": 23,
      "revenue": 12038.62
     },
     {
      "name": "12.11.26/Shampoo",
-     "spend": 2027.48,
+     "spend": 2028.93,
      "orders": 28,
-     "revenue": 8473
+     "revenue": 8471.27
     }
    ],
    "live": [
