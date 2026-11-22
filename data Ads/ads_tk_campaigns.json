@@ -451,73 +451,73 @@
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 459958.48,
+     "spend": 460274.86,
      "orders": 9200,
-     "revenue": 1121381.34
+     "revenue": 1125085.45
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 238852.93,
+     "spend": 238956.64,
      "orders": 2731,
-     "revenue": 687272.8
+     "revenue": 688160.8
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 123190.48,
+     "spend": 123235.15,
      "orders": 1280,
-     "revenue": 487384.43
+     "revenue": 489780.42
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 88975.87,
+     "spend": 89006.23,
      "orders": 786,
-     "revenue": 263730.39
+     "revenue": 264509.39
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 70216.91,
+     "spend": 70232.55,
      "orders": 2235,
-     "revenue": 305073.55
+     "revenue": 305412.55
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 43632.1,
+     "spend": 43638.26,
      "orders": 690,
-     "revenue": 269375.4
+     "revenue": 269665.4
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 24478.22,
+     "spend": 24494.49,
      "orders": 192,
      "revenue": 108605.02
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 21937.68,
+     "spend": 21942.89,
      "orders": 166,
      "revenue": 78258.84
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 21007.28,
+     "spend": 21012.41,
      "orders": 265,
      "revenue": 115981.32
     },
     {
      "name": "12.11.26/Cleaner",
-     "spend": 6911.48,
+     "spend": 6911.95,
      "orders": 133,
      "revenue": 26842.49
     },
     {
      "name": "12.11.26/mind-waterless",
-     "spend": 3853.12,
+     "spend": 3855.62,
      "orders": 28,
      "revenue": 14048.61
     },
     {
      "name": "12.11.26/Shampoo",
-     "spend": 2373.98,
+     "spend": 2374.74,
      "orders": 36,
      "revenue": 10631.27
     }
