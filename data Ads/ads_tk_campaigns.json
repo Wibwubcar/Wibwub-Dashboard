@@ -447,79 +447,79 @@
   },
   "nov": {
    "from": "2026-11-01",
-   "to": "2026-11-20",
+   "to": "2026-11-21",
    "product": [
     {
      "name": "01.10.26/Refresh wipe",
-     "spend": 425274.86,
-     "orders": 8609,
-     "revenue": 1051096.23
+     "spend": 459958.48,
+     "orders": 9200,
+     "revenue": 1121381.34
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 223619.58,
-     "orders": 2558,
-     "revenue": 643925.26
+     "spend": 238852.93,
+     "orders": 2731,
+     "revenue": 687272.8
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 117162.64,
-     "orders": 1206,
-     "revenue": 464472.61
+     "spend": 123190.48,
+     "orders": 1280,
+     "revenue": 487384.43
     },
     {
      "name": "05.10.26/Interior",
-     "spend": 83958.48,
-     "orders": 742,
-     "revenue": 249514.77
+     "spend": 88975.87,
+     "orders": 786,
+     "revenue": 263730.39
     },
     {
      "name": "17.08.26/Interior wipe",
-     "spend": 66352.12,
-     "orders": 2104,
-     "revenue": 288283.75
+     "spend": 70216.91,
+     "orders": 2235,
+     "revenue": 305073.55
     },
     {
      "name": "18.08.26/AllProduct",
-     "spend": 42467.04,
-     "orders": 666,
-     "revenue": 263640.59
+     "spend": 43632.1,
+     "orders": 690,
+     "revenue": 269375.4
     },
     {
      "name": "21.09.26/Reflex",
-     "spend": 23176.4,
-     "orders": 182,
-     "revenue": 102288.81
+     "spend": 24478.22,
+     "orders": 192,
+     "revenue": 108605.02
     },
     {
      "name": "26.10.26/wool dust",
-     "spend": 20820.91,
-     "orders": 152,
-     "revenue": 71426.63
+     "spend": 21937.68,
+     "orders": 166,
+     "revenue": 78258.84
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
-     "spend": 19390.98,
-     "orders": 248,
-     "revenue": 107893.22
+     "spend": 21007.28,
+     "orders": 265,
+     "revenue": 115981.32
     },
     {
      "name": "12.11.26/Cleaner",
-     "spend": 6643.52,
-     "orders": 129,
-     "revenue": 26046.6
+     "spend": 6911.48,
+     "orders": 133,
+     "revenue": 26842.49
     },
     {
      "name": "12.11.26/mind-waterless",
-     "spend": 3578.56,
-     "orders": 27,
-     "revenue": 13658.61
+     "spend": 3853.12,
+     "orders": 28,
+     "revenue": 14048.61
     },
     {
      "name": "12.11.26/Shampoo",
-     "spend": 2203.98,
-     "orders": 29,
-     "revenue": 8741.27
+     "spend": 2373.98,
+     "orders": 36,
+     "revenue": 10631.27
     }
    ],
    "live": [
