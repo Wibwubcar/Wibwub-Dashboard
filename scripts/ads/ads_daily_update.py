@@ -5,6 +5,7 @@
   python3 ads_daily_update.py state                       → บอกช่วงวันที่ที่ควรดึง (from/to)
   python3 ads_daily_update.py merge work/sh_real.json work/sh_ads.json work/tk_real.json work/tk_ads.json [--dry]
   python3 ads_daily_update.py camp work/tk_camp.json            → แคมเปญย่อย GMV Max รายเดือน → ads_tk_campaigns.json
+  python3 ads_daily_update.py fbreal [path.xlsx] [--dry]  → ยอดขายจริง Facebook รายวันจากไฟล์ออเดอร์ Shipnity → คีย์ fb_real
   python3 ads_daily_update.py commit                      → sync ads_periods.json + bump sw.js + commit (เฉพาะไฟล์ที่เกี่ยวข้อง)
 exit 10 = ไม่มีอะไรเปลี่ยน
 """
@@ -79,9 +80,7 @@ def merge(paths, dry=False):
         row['prev']=None if not b else {'sh_real':b[0],'sh_spend':b[1],'tk_real':b[2],'tk_spend':round(b[3],2),'lz_real':b[4],'lz_spend':b[5]}
         rows.append(row)
     d['days']=dict(sorted(d['days'].items())); last=max(d['days'])
-    cov={'shopee':last,'tiktok':last}
-    lzd=[k for k,v in d['days'].items() if 'lz_real' in v]
-    if lzd: cov['lazada']=max(lzd)
+    cov=cov_of(d)              # รวม facebook_real ไว้ด้วย ไม่งั้น merge จะลบ coverage ของ FB ทิ้งทุกรอบ
     d['coverage']=cov
     m=last[:7]; ds=[v for k,v in d['days'].items() if k.startswith(m)]
     month={'month':m,'days':len(ds),'sh_real':sum(x['sh_real']['gmv'] for x in ds),'sh_spend':sum(sum(t['spend'] for t in x['sh_ads'].values()) for x in ds),
@@ -89,6 +88,83 @@ def merge(paths, dry=False):
     lzm=[x for x in ds if 'lz_real' in x]
     if lzm: month['lz_days']=len(lzm); month['lz_real']=round(sum(x['lz_real']['gmv'] for x in lzm),2); month['lz_spend']=round(sum(x['lz_ads']['spend'] for x in lzm),2)
     print(json.dumps({'changed':rows,'warnings':warn,'coverage':cov,'month_to_date':month},ensure_ascii=False,indent=1))
+    if not changed: sys.exit(10)
+    if not dry:
+        shutil.copy2(DAILY, DAILY+'.bak')
+        tmp=DAILY+'.tmp'; json.dump(d,open(tmp,'w',encoding='utf-8'),ensure_ascii=False,indent=1); os.replace(tmp,DAILY)
+# ---------------------------------------------------------------- Facebook ยอดขายจริง
+# ยอดขายของ Facebook ไม่ได้เกิดบนแพลตฟอร์มโฆษณา (ปิดการขายในแชท) จึงไม่มีใน Ads Manager
+# แหล่งเดียวที่มีคือไฟล์ออเดอร์ Shipnity: นับแถวที่ "ช่องทางติดต่อ" = facebook (ไม่สนตัวพิมพ์)
+# ไฟล์เป็นรายบรรทัดสินค้า "ยอดขายออเดอร์" ซ้ำทุกบรรทัดของออเดอร์เดียวกัน -> ต้อง dedupe ด้วยเลขที่ออเดอร์
+# เก็บแค่ยอดรวมรายวัน (gmv/orders) ห้ามเขียนชื่อ/เบอร์/ที่อยู่ลูกค้าลงไฟล์ใด ๆ
+SHIP=os.path.join(ALL,'Data Shipnity')
+def _ship_newest():
+    import glob
+    fs=glob.glob(os.path.join(SHIP,'Data_[0-9][0-9]-[0-9][0-9]-[0-9][0-9][0-9][0-9]*.xlsx'))
+    if not fs: sys.exit('ไม่พบไฟล์ออเดอร์ Shipnity ใน %s'%SHIP)
+    return max(fs,key=os.path.getmtime)
+def _d2iso(v):
+    if hasattr(v,'strftime'): return v.strftime('%Y-%m-%d')
+    p=str(v).split(' ')[0].split('/')
+    if len(p)!=3: return None
+    return '%s-%s-%s'%(p[2],p[1].zfill(2),p[0].zfill(2))
+def _fb_from_xlsx(path):
+    """คืน (ยอดรายวันของ facebook, เซ็ตเดือนที่ไฟล์นี้ครอบคลุม, จำนวนออเดอร์ fb)"""
+    try: import openpyxl
+    except ImportError: sys.exit('ไม่มี openpyxl — ติดตั้งก่อน (ขั้นนี้ข้ามได้ ขั้นอื่นทำต่อ)')
+    wb=openpyxl.load_workbook(path,read_only=True,data_only=True); ws=wb.active
+    it=ws.iter_rows(values_only=True); h=list(next(it))
+    try:
+        iOrd=h.index('เลขที่ออเดอร์'); iAmt=h.index('ยอดขายออเดอร์')
+        iCh=h.index('ช่องทางติดต่อ'); iDt=h.index('วันที่สร้าง')
+    except ValueError:
+        sys.exit('หัวคอลัมน์ไฟล์ออเดอร์เปลี่ยน ไม่พบคอลัมน์ที่ต้องใช้: %s'%h)
+    seen={}; months=set()
+    for r in it:
+        ds=_d2iso(r[iDt]) if r[iDt] is not None else None
+        if ds: months.add(ds[:7])
+        if r[iOrd] is None or not ds: continue
+        if (r[iCh] or '').strip().lower()!='facebook': continue
+        try: amt=float(r[iAmt] or 0)
+        except (TypeError,ValueError): amt=0.0
+        seen[str(r[iOrd])]=(ds,amt)          # ออเดอร์เดียวนับครั้งเดียว
+    wb.close()
+    day={}
+    for ds,amt in seen.values():
+        a=day.setdefault(ds,[0.0,0]); a[0]+=amt; a[1]+=1
+    return day, months, len(seen)
+def cov_of(d):
+    """coverage เดิม + facebook_real — ใช้ร่วมกันทั้ง merge() และ fbreal() ไม่ให้ทับกันหาย"""
+    last=max(d['days']); cov={'shopee':last,'tiktok':last}
+    lzd=[k for k,v in d['days'].items() if 'lz_real' in v]
+    if lzd: cov['lazada']=max(lzd)
+    fbd=[k for k,v in d['days'].items() if 'fb_real' in v]
+    if fbd: cov['facebook_real']=max(fbd)
+    return cov
+def fbreal(path=None, dry=False):
+    path=path or _ship_newest()
+    day,months,nord=_fb_from_xlsx(path)
+    if not nord:
+        sys.exit('ไฟล์ %s ไม่มีออเดอร์ช่องทาง facebook เลย — ผิดปกติ ห้ามเขียนทับของเดิม'%os.path.basename(path))
+    y=iso(bkk_today()-datetime.timedelta(days=1))
+    d=load(); changed=[]; skipped=[]
+    # เขียนทุกวันของเดือนที่ไฟล์ครอบคลุม (ถึงเมื่อวาน) วันที่ไม่มีออเดอร์ fb = 0 จริง ไม่ใช่ข้อมูลขาด
+    for dt in sorted(d['days']):
+        if dt[:7] not in months or dt>y: continue
+        g,o=day.get(dt,[0.0,0]); new={'gmv':round(g,2),'orders':o}
+        if d['days'][dt].get('fb_real')!=new:
+            changed.append({'date':dt,'gmv':new['gmv'],'orders':o,'prev':d['days'][dt].get('fb_real')})
+            d['days'][dt]['fb_real']=new
+    for dt in sorted(day):
+        if dt>y or dt in d['days']: continue
+        skipped.append(dt)                  # ยังไม่มีวันนี้ใน ads_daily -> ห้ามสร้างวันใหม่เอง
+    cov=cov_of(d); d['coverage']=cov
+    mo=sorted(months)
+    tot={'file':os.path.basename(path),'months':mo,'fb_orders_in_file':nord,
+         'sum_gmv':round(sum(v[0] for k,v in day.items() if k<=y),2),
+         'sum_orders':sum(v[1] for k,v in day.items() if k<=y)}
+    print(json.dumps({'fb_real':tot,'changed_days':len(changed),'changed':changed[-5:],
+                      'skipped_no_day_key':skipped,'coverage':cov},ensure_ascii=False,indent=1))
     if not changed: sys.exit(10)
     if not dry:
         shutil.copy2(DAILY, DAILY+'.bak')
@@ -150,5 +226,8 @@ if __name__=='__main__':
     if a[0]=='state': state()
     elif a[0]=='merge': merge([x for x in a[1:] if not x.startswith('--')], dry='--dry' in a)
     elif a[0]=='camp': camp(a[1])
+    elif a[0]=='fbreal':
+        rest=[x for x in a[1:] if not x.startswith('--')]
+        fbreal(rest[0] if rest else None, dry='--dry' in a)
     elif a[0]=='commit': commit()
     else: sys.exit(__doc__)

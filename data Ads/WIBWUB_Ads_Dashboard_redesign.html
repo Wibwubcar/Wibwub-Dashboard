@@ -346,7 +346,8 @@ function sum(a,b){
     sh:{real:0,ord:0,spend:0,broad:0,direct:0,adsOrd:0,adsDays:0,t:{product:{b:0,d:0,s:0,o:0},search:{b:0,d:0,s:0,o:0},live:{b:0,d:0,s:0,o:0}}},
     tk:{real:0,ord:0,spend:0,gmv:0,adsOrd:0,t:{product:{g:0,s:0,o:0},live:{g:0,s:0,o:0}}},
     lz:{real:0,ord:0,spend:0,gmv:0,adsOrd:0,imp:0,clicks:0,days:0},
-    fb:{spend:0,msg:0,purch:0,omni:0,lead:0,oval:0,pval:0,imp:0,clicks:0,ad3Spend:0}};
+    fb:{spend:0,msg:0,purch:0,omni:0,lead:0,oval:0,pval:0,imp:0,clicks:0,ad3Spend:0,
+        real:0,ord:0,realDays:0,spendM:0,rd:[]}};
   for(const d of DAYS){ if(d<a||d>b) continue; const v=D.days[d]; r.n++; r.days.push(d);
     r.sh.real+=v.sh_real.gmv; r.sh.ord+=v.sh_real.orders;
     /* ค่าโฆษณา Shopee ย้อนได้แค่ ~185 วัน วันเก่ากว่านั้นไม่มีคีย์ sh_ads
@@ -364,6 +365,10 @@ function sum(a,b){
       r.lz.real+=v.lz_real.gmv||0; r.lz.ord+=v.lz_real.orders||0;
       r.lz.gmv+=L.revenue||0; r.lz.spend+=L.spend||0; r.lz.adsOrd+=L.orders||0;
       r.lz.imp+=L.imp||0; r.lz.clicks+=L.clicks||0; }
+    /* ยอดขายจริง Facebook — มาจากออเดอร์ Shipnity ที่ติดป้ายช่องทาง Facebook (คีย์ fb_real)
+       มี.ค. 2569 ไม่มีไฟล์ออเดอร์ให้ย้อน จึงไม่มีคีย์นี้ — ต้องข้าม ห้ามนับเป็น 0 */
+    if(v.fb_real){ r.fb.real+=v.fb_real.gmv||0; r.fb.ord+=v.fb_real.orders||0;
+      r.fb.realDays++; r.fb.rd.push(d); }
   }
   if(fbOn()){ const K=FB.keys, g=k=>K.indexOf(k);
     const ad3=(FB.acc_days||{})['AD3']||{};
@@ -372,11 +377,19 @@ function sum(a,b){
       r.fb.spend+=row[g('spend')]||0; r.fb.msg+=row[g('msg')]||0; r.fb.purch+=row[g('purch')]||0;
       r.fb.omni+=row[g('omni')]||0; r.fb.lead+=row[g('lead')]||0;
       r.fb.oval+=row[g('omni_val')]||0; r.fb.pval+=row[g('pval')]||0;
-      r.fb.imp+=row[g('imp')]||0; r.fb.clicks+=row[g('clicks')]||0; } }
-  /* ยอดขายนับ 3 ช่องทางที่ขายบนแพลตฟอร์ม · ค่าแอด "สาม" ใช้เป็นตัวตั้งของ % และ ROAS
-     ส่วน "รวม" บวก Facebook เข้ามาด้วย (ยอดขายของ FB ไปลงช่องทางอื่น จึงไม่เอามาหาร) */
-  r.real=r.sh.real+r.tk.real+r.lz.real; r.ord=r.sh.ord+r.tk.ord+r.lz.ord;
-  r.spend3=r.sh.spend+r.tk.spend+r.lz.spend; r.spendAll=r.spend3+r.fb.spend;
+      r.fb.imp+=row[g('imp')]||0; r.fb.clicks+=row[g('clicks')]||0; }
+    /* ค่าแอด FB เฉพาะวันที่มียอดขายจริงคู่กัน ใช้เป็นตัวตั้งของ % และ ROAS
+       (ถ้าช่วงนั้นมีวันที่ไม่มี fb_real การเอาค่าแอดทั้งก้อนมาหารจะทำให้สัดส่วนเพี้ยน) */
+    r.fb.rd.forEach(d=>{const row=FB.days[d]; if(row) r.fb.spendM+=row[g('spend')]||0;}); }
+  /* ยอดขาย/ออเดอร์ "รวม" = 3 แพลตฟอร์ม + Facebook (23 พ.ย. 69 เพิ่ม Facebook เข้ามา
+     หลังมีคีย์ fb_real จากไฟล์ออเดอร์ Shipnity) · real3/ord3/spend3 คือตัวเลข 3 ช่องทางเดิม
+     เก็บไว้ให้หมายเหตุและแท็บอื่นใช้ ห้ามลบ
+     spendR = ตัวตั้งของ "ค่าแอด ÷ ยอดขาย" และ ROAS = ค่าแอด 3 แพลตฟอร์ม + ค่าแอด FB
+     เฉพาะวันที่มี fb_real คู่กัน · spendAll = ค่าแอดทั้งหมดรวม FB ทุกวัน (ใช้ที่การ์ด "ค่าโฆษณา") */
+  r.real3=r.sh.real+r.tk.real+r.lz.real; r.ord3=r.sh.ord+r.tk.ord+r.lz.ord;
+  r.spend3=r.sh.spend+r.tk.spend+r.lz.spend;
+  r.real=r.real3+r.fb.real; r.ord=r.ord3+r.fb.ord;
+  r.spendAll=r.spend3+r.fb.spend; r.spendR=r.spend3+r.fb.spendM;
   return r;
 }
 function dayV(d){ const v=D.days[d],S=v.sh_ads||{},T=v.tk_ads||{},L=v.lz_ads,LR=v.lz_real;
@@ -390,10 +403,11 @@ function dayV(d){ const v=D.days[d],S=v.sh_ads||{},T=v.tk_ads||{},L=v.lz_ads,LR=
     tkGp:g(T,'product','gmv'), tkGl:g(T,'live','gmv'), tkSp:g(T,'product','spend'), tkSl:g(T,'live','spend'),
     lzR:LR?LR.gmv||0:null, lzO:LR?LR.orders||0:null,
     lzS:L?L.spend||0:null, lzG:L?L.revenue||0:null, lzAO:L?L.orders||0:null,
-    lzI:L?L.imp||0:null, lzC:L?L.clicks||0:null};
+    lzI:L?L.imp||0:null, lzC:L?L.clicks||0:null,
+    fbR:v.fb_real?v.fb_real.gmv||0:null, fbO:v.fb_real?v.fb_real.orders||0:null};
   o.shS=o.shSp+o.shSs+o.shSl; o.tkS=o.tkSp+o.tkSl; o.tkG=o.tkGp+o.tkGl;
   o.fbS=fbOn()&&FB.days[d]?FB.days[d][FB.keys.indexOf('spend')]:null;
-  o.real=o.shR+o.tkR+(o.lzR||0);
+  o.real=o.shR+o.tkR+(o.lzR||0)+(o.fbR||0);   /* 23 พ.ย. 69: รวมยอดขายจริง Facebook ด้วย */
   o.ads=o.shS+o.tkS+(o.lzS||0)+(o.fbS||0);
   return o;
 }
@@ -519,8 +533,12 @@ function dayTableHtml(id){ return `<div class="scroll" id="${id}"></div>`; }
 
 /* ======================= ภาพรวม ======================= */
 function renderOv(){
-  const roas=div(R.real,R.spend3), ratio=div(R.spend3,R.real);
-  const pratio=PR?div(PR.spend3,PR.real):NaN;
+  const roas=div(R.real,R.spendR), ratio=div(R.spendR,R.real);
+  const pratio=PR?div(PR.spendR,PR.real):NaN;
+  /* เตือนเมื่อช่วงนี้มีวันที่ยังไม่มียอดขายจริง Facebook (เช่น มี.ค. 2569 ที่ไม่มีไฟล์ออเดอร์) */
+  const fbGap=R.n-R.fb.realDays;
+  const fbNote='ยอด Facebook มาจากออเดอร์ใน Shipnity ที่ติดป้ายช่องทาง Facebook (รวมออเดอร์จากเพจที่ไม่ได้มาจากแอดด้วย)'
+    +(fbGap>0?` · <b>${int(fbGap)} วัน</b>ในช่วงนี้ยังไม่มียอดขาย Facebook ค่าแอด FB ของวันนั้นจึงไม่ถูกนับในสัดส่วนและ ROAS`:'');
   let trend='<span class="d-fl">เทียบช่วงก่อนไม่ได้</span>';
   if(Number.isFinite(pratio)&&pratio){ const dd=ratio-pratio;
     trend=Math.abs(dd)<0.002?'<span style="color:var(--hero-ink2)">เท่าเดิม</span>'
@@ -530,29 +548,28 @@ function renderOv(){
     <div class="big">ค่าแอด 100 บาท ได้ยอดขายจริงกลับมา <b>${Number.isFinite(roas)?nf0.format(Math.round(roas*100)):'–'} บาท</b>
       — ใช้ค่าแอดไป <b>${pct(ratio)}</b> ของยอดขาย ${trend}</div>
     <div class="bar"><span style="width:${w.toFixed(2)}%"></span></div>
-    <div class="leg"><span>■ ค่าแอด ${baht(R.spend3)}</span><span>ยอดขายจริง ${baht(R.real)}</span>
-      <span>นับ Shopee + TikTok + Lazada ไม่รวม Facebook</span></div></div>`;
+    <div class="leg"><span>■ ค่าแอด ${baht(R.spendR)}</span><span>ยอดขายจริง ${baht(R.real)}</span>
+      <span>นับ Shopee + TikTok + Lazada + Facebook</span></div></div>`;
   const kpis=`<div class="kpis">
-    ${kpi('ยอดขายจริง',baht(R.real),'3 ช่องทางที่ขายบนแพลตฟอร์ม',delta(R.real,PR&&PR.real))}
-    ${kpi('ค่าโฆษณา',baht(R.spendAll),'ไม่รวม FB '+baht(R.spend3),delta(R.spendAll,PR&&PR.spendAll,1))}
-    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'ไม่รวมค่าแอด Facebook',deltaPt(ratio,pratio))}
+    ${kpi('ยอดขายจริง',baht(R.real),'4 ช่องทาง · Facebook '+baht(R.fb.real),delta(R.real,PR&&PR.real))}
+    ${kpi('ค่าโฆษณา',baht(R.spendAll),'รวม Facebook '+baht(R.fb.spend),delta(R.spendAll,PR&&PR.spendAll,1))}
+    ${kpi('ค่าแอด ÷ ยอดขาย',pct(ratio),'รวมค่าแอด Facebook',deltaPt(ratio,pratio))}
     ${kpi('ออเดอร์จริง',int(R.ord),'',delta(R.ord,PR&&PR.ord))}</div>`;
-  const rows=[{k:'sh',v:'shopee',n:'Shopee',c:C.sh,o:R.sh},{k:'tk',v:'tiktok',n:'TikTok',c:C.tk,o:R.tk},{k:'lz',v:'lazada',n:'Lazada',c:C.lz,o:R.lz}]
+  /* Facebook ใช้ค่าแอดเฉพาะวันที่มียอดขายจริงคู่กัน (spendM) เพื่อให้ % และ ROAS ของแถวนี้เทียบกันได้ */
+  const rows=[{k:'sh',v:'shopee',n:'Shopee',c:C.sh,o:R.sh},{k:'tk',v:'tiktok',n:'TikTok',c:C.tk,o:R.tk},{k:'lz',v:'lazada',n:'Lazada',c:C.lz,o:R.lz},
+    {k:'fb',v:'facebook',n:'Facebook',c:C.fb,o:{real:R.fb.real,ord:R.fb.ord,spend:R.fb.spendM}}]
     .filter(r=>r.o.real||r.o.spend).sort((x,y)=>y.o.spend-x.o.spend);
   const mx=Math.max(0.0001,...rows.map(r=>div(r.o.spend,r.o.real)||0));
   const trs=rows.map(r=>{const rt=div(r.o.spend,r.o.real);
     return `<tr class="go" data-go="${r.v}"><td><span class="pf"><i style="background:${r.c}"></i>${r.n}</span></td>
       <td class="num">${baht(r.o.real)}</td><td class="num">${baht(r.o.spend)}</td>
       <td>${barc(rt,mx,rt>0.25)}</td>
-      <td class="num">${x2(div(r.o.real,r.o.spend))}</td></tr>`;}).join('')
-    + (R.fb.spend?`<tr class="go" data-go="facebook"><td><span class="pf"><i style="background:${C.fb}"></i>Facebook</span></td>
-        <td class="num">${muted('—')}</td><td class="num">${baht(R.fb.spend)}</td>
-        <td class="num">${muted('—')}</td><td class="num">${muted('—')}</td></tr>`:'');
+      <td class="num">${x2(div(r.o.real,r.o.spend))}</td></tr>`;}).join('');
   const table=`<div class="card"><h2>แต่ละแพลตฟอร์มคุ้มแค่ไหน</h2><div class="scroll"><table id="tPf">
     <thead><tr><th>แพลตฟอร์ม</th><th>ยอดขายจริง</th><th>ค่าแอด</th><th>ค่าแอด ÷ ยอดขาย</th><th>ROAS</th></tr></thead>
     <tbody>${trs}</tbody></table></div>
     <div class="note">แถบเป็นสีส้มเมื่อค่าแอดเกิน 25% ของยอดขาย · กดแถวเพื่อไปแท็บของแพลตฟอร์มนั้น
-    · Facebook ไม่มียอดขายในหน้านี้เพราะยอดไปลงช่องทาง Facebook/LINE</div></div>`;
+    · ${fbNote}</div></div>`;
   const ins=[];
   if(rows.length){ const w1=rows.slice().sort((x,y)=>div(y.o.spend,y.o.real)-div(x.o.spend,x.o.real))[0];
     ins.push(`<b>${w1.n}</b> ใช้ค่าแอดหนักสุดเทียบยอดขาย <b>${pct(div(w1.o.spend,w1.o.real))}</b> (ROAS ${x2(div(w1.o.real,w1.o.spend))})`);}
@@ -580,7 +597,7 @@ function renderOv(){
   const chart=`<div class="card"><div class="ch"><h2>ยอดขายและค่าแอดรายวัน</h2>
       <button id="btnTbl" class="link sp">ดูตาราง</button></div>
     <div class="cw"><canvas id="cDay"></canvas></div>
-    <div class="note">ความสูงของแท่ง = ยอดขายจริง · ส่วนสีเข้มด้านล่าง = ค่าแอด (รวม Facebook)</div>
+    <div class="note">ความสูงของแท่ง = ยอดขายจริง (รวม Facebook) · ส่วนสีเข้มด้านล่าง = ค่าแอด (รวม Facebook)</div>
     <div id="tblWrap" style="display:none;margin-top:14px" class="scroll"></div></div>`;
   const mon=`<div class="card"><h2>แนวโน้มรายเดือน</h2>
     <div class="cw" style="height:220px"><canvas id="cMon"></canvas></div>
@@ -588,8 +605,8 @@ function renderOv(){
   document.getElementById('main').innerHTML=statusChips()+hero+kpis+`<div class="two">${table}${insHtml}</div>${chart}
      <div style="margin-top:14px">${fbCard}</div><div style="margin-top:14px">${mon}</div>
      <details><summary>ตัวเลขในหน้านี้มาจากไหน</summary><div class="body">
-       <p><b>ยอดขายจริง</b> นับเฉพาะ Shopee + TikTok + Lazada ซึ่งเป็นช่องทางที่ขายบนแพลตฟอร์มโดยตรง ไม่รวม Facebook · LINE · Carcare · POS · เว็บไซต์ · เบิกของ จึงน้อยกว่าหน้า “การตลาด vs ยอดขาย” ที่นับครบ 11 ช่องทาง — ตั้งใจให้ต่าง เพราะถ้าเอายอดที่ไม่ได้มาจากโฆษณามารวมด้วย ROAS จะดูดีเกินจริง</p>
-       <p><b>ค่าแอด ÷ ยอดขาย และ ROAS</b> คิดจากค่าแอด 3 แพลตฟอร์มเท่านั้น ไม่รวม Facebook เพราะยอดที่ Facebook ทำได้ไปลงช่องทาง Facebook/LINE (ยกเว้น AD3 ที่เป็น CPAS ยอดไปลง Shopee ซึ่งนับอยู่แล้ว) ส่วนการ์ด “ค่าโฆษณา” รวม Facebook ไว้ด้วย</p>
+       <p><b>ยอดขายจริง</b> นับ Shopee + TikTok + Lazada + Facebook — 3 ช่องแรกเป็นยอดที่ขายบนแพลตฟอร์มโดยตรง ส่วน <b>Facebook</b> มาจากออเดอร์ใน Shipnity ที่ติดป้ายช่องทาง Facebook (<code>ช่องทางติดต่อ = facebook</code> นับยอดออเดอร์ครั้งเดียวต่อเลขที่ออเดอร์) <b>รวมออเดอร์จากเพจที่ไม่ได้มาจากแอดด้วย</b> จึงอ่านว่า “ยอดที่ช่องทาง Facebook ทำได้” ไม่ใช่ “ยอดที่แอดทำได้” · ยังไม่รวม LINE · Carcare · POS · เว็บไซต์ · เบิกของ จึงน้อยกว่าหน้า “การตลาด vs ยอดขาย” ที่นับครบ 11 ช่องทาง</p>
+       <p><b>ค่าแอด ÷ ยอดขาย และ ROAS</b> คิดจากค่าแอด 4 ช่องทางรวม Facebook แล้ว (ตั้งแต่ 23 พ.ย. 69) · ค่าแอด Facebook ของวันที่ยังไม่มียอดขายจริงคู่กัน <b>ไม่ถูกนับ</b> เพื่อไม่ให้สัดส่วนเพี้ยน — เดือน มี.ค. 2569 ไม่มีไฟล์ออเดอร์ให้ย้อน จึงเป็นช่วงเดียวที่ยังไม่มียอด Facebook · AD3 เป็น CPAS ยอดไปลง Shopee ซึ่งนับอยู่ใน Shopee แล้ว ไม่ได้นับซ้ำในฝั่ง Facebook</p>
        <p><b>ยอดจาก Ads ของแพลตฟอร์ม</b> มักสูงกว่ายอดขายจริง เพราะแพลตฟอร์มนับออเดอร์ให้โฆษณาถ้าลูกค้าเคยเห็นหรือคลิกภายในช่วงเวลาหนึ่ง ออเดอร์เดียวอาจถูกนับให้หลายแคมเปญ และนับก่อนหักยกเลิก/คืนเงิน จึงควรดู “ค่าแอด ÷ ยอดขายจริง” เป็นหลัก</p>
        <p><b>ค่าแอด Shopee</b> ย้อนดูได้ประมาณ 185 วัน วันที่เก่ากว่านั้นไม่มีข้อมูลและ<b>ไม่ถูกนับเป็น 0</b></p>
        <p><b>Facebook</b> มาจาก <code>data Ads/facebook/daily/FBD_*.csv</code> → <code>scripts/ads/fb_daily.py</code> → <code>facebook/fb_daily.json</code> ชุดเดียวกับที่หน้า “การตลาด vs ยอดขาย” ใช้ · ROAS คิดจาก Σมูลค่าการซื้อ ÷ Σค่าโฆษณา · ROAS ของบัญชีที่ยิงเพื่อทักแชทนับเฉพาะยอดที่ Facebook ตามรอยได้เอง ไม่รวมยอดที่ปิดการขายในแชทแล้วไปลงที่ Shipnity</p>
