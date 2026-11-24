@@ -62,7 +62,8 @@ else:
 
 BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All`
 
-เป้าหมาย: เติมข้อมูล **ของเมื่อวาน** ลง `TK_PROD_DATA` และ `TK_PROD_SKU` ใน `WIBWUB_Dashboard.html`
+เป้าหมาย: เติมข้อมูล **ของเมื่อวาน และวันที่ขาดย้อนหลังไม่เกิน 3 วัน** ลง `TK_PROD_DATA` และ `TK_PROD_SKU` ใน `WIBWUB_Dashboard.html`
+(วันที่ต้องดึงมาจากขั้นที่ 1.5 ห้ามคิดเอง)
 
 > **สคริปต์ merge เขียนไว้แล้ว ห้ามเขียนใหม่** — `tiktok_product_merge.py` / `tiktok_sku_merge.py`
 > หน้าที่ของรอบนี้คือ "ดึงข้อมูลให้ได้" แล้วส่งไฟล์ JSON ให้สคริปต์ merge
@@ -89,6 +90,37 @@ BASE = `/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gm
 2. navigate ไป **`https://seller-th.tiktok.com/compass/product-analysis`**
    (**ไม่ใช่** `/compass/product-detail` — path นั้น redirect ไป data-overview)
    ถ้าขึ้นหน้า login: **หยุดและรายงาน ห้ามกรอกรหัสผ่าน**
+
+## ขั้นที่ 1.5 — ถามว่าต้องดึงวันไหน (เพิ่ม 24 พ.ย. 69)
+
+**ห้ามเดาวันที่เอง ห้ามสมมติว่าเป็นเมื่อวานวันเดียว** — ให้สคริปต์บอก:
+
+```bash
+python3 "/Users/thanasablilutanon/Library/CloudStorage/GoogleDrive-thanasab.li@gmail.com/.shortcut-targets-by-id/1-TeohYqk3oWyyTHTbnLIjXW8mAqYowRe/Digital Marketing/claude/All/scripts/ops/tk_prod_gaps.py"
+```
+
+อ่านผลจากบรรทัดที่ขึ้นต้นด้วย:
+
+- `GAPS 2026-11-23,2026-11-24` → **ดึงทุกวันในรายการนี้ เรียงจากเก่าไปใหม่**
+- `NO_GAPS` → ไม่มีวันที่ขาด **จบส่วน A ทันที** รายงานว่าไม่มีข้อมูลใหม่ แล้วไปทำส่วน B
+
+กฎของขั้นนี้ (ผู้ใช้อนุมัติ 24 พ.ย. 69):
+
+- **เพดาน 3 วันต่อรอบ** สคริปต์คุมให้แล้ว **ห้ามใส่ `--max` เพื่อเพิ่มเพดานเอง**
+  เหตุผล: รอบปกติใช้ ~8 นาที ถ้าดึง 3 วันจะเป็น ~25 นาที ซึ่งกินสล็อต 1 ใน 3
+  ของเพดานงานพร้อมกันฝั่ง local นานขึ้น (รอบ 09:55 ทับกับ Followers 09:45
+  และ Affiliate 10:20 อยู่แล้ว) ถ้าเพิ่มเป็น 7 วันรอบจะบานไปชนงานอื่น
+- สคริปต์**ข้ามวันที่ยังไม่มี `tk_real`** ใน `data Ads/ads_daily.json` ให้เอง
+  (ไม่มีตัวเทียบ = ตรวจด่าน GMV ไม่ได้) วันพวกนี้จะขึ้นในบรรทัด "ข้าม" ไม่ใช่ `GAPS`
+  **ไม่ใช่ความผิดพลาดของรอบนี้** รอบถัดไปที่ ads-daily เติม `tk_real` แล้วจะดึงให้เอง
+- **ด่าน GMV ตรวจแยกทีละวัน** (หัวข้อ "🚦 ด่านบังคับก่อน merge" ท้ายไฟล์)
+  วันไหนไม่ผ่าน → **ตัดวันนั้นออกจากไฟล์ JSON แล้วทำวันที่เหลือต่อ ห้ามล้มทั้งรอบ
+  และห้ามผ่อนด่าน** แล้วรายงานว่าวันไหนถูกตัดออกเพราะเหตุใด
+- ยิงหลายวัน = request เยอะขึ้น **คงกฎเว้น ≥ 2 วินาทีต่อ request ทุกครั้ง**
+  ถ้าเจอ `code:429 rate limit exceeded` ให้หยุดวันนั้น เก็บเท่าที่ได้ แล้วรายงาน
+- ใส่ทุกวันที่ผ่านด่านลง **ไฟล์ JSON ก้อนเดียวหลายคีย์วันที่** แล้วเรียก
+  `tiktok_product_merge.py` **ครั้งเดียว** (สคริปต์รับหลายวันอยู่แล้ว เป็นแบบ additive
+  ไม่ลบวันเดิม) — **ห้ามแก้ `tiktok_product_merge.py`**
 
 ## ขั้นที่ 2 — ดึงระดับสินค้า (parent)
 
@@ -384,3 +416,16 @@ python3 "<BASE>/scripts/ops/task_health.py" --refresh
 ```
 
 **ห้ามเขียน ✅ หรือคำว่าสำเร็จ ถ้าส่วนใดส่วนหนึ่งไม่ผ่าน** ให้ขึ้นต้นส่วนนั้นด้วย `❌ ล้มเหลว — <สาเหตุ>`
+
+---
+
+# 📒 บันทึกค้าง — `TK_PROD_SKU` หยุดที่ 2026-11-10
+
+`sku/list` ตอบ `98001021 call downstream server error` ทุกครั้ง (รอบ 24 พ.ย. 21:19
+ลอง body 5 แบบ ใส่ `oec_seller_id` เป็น `seller_id` ด้วย ไม่มีแบบไหนผ่าน)
+พรอมป์ไม่ได้ระบุรูปแบบ body ของ endpoint นี้ไว้ ข้อมูลระดับ SKU จึงค้างที่ **2026-11-10**
+**ยังไม่ต้องแก้** ผู้ใช้สั่งให้จดไว้ก่อน 24 พ.ย. 69 · ส่วน parent ทำต่อได้ตามปกติ
+
+⚠️ เวลาเช็กว่า const ไหนถึงวันไหน **ให้นับวงเล็บปีกกา ห้ามใช้ regex `\{.*?\};`**
+24 พ.ย. 69 regex แบบนั้นหยุดที่ `};` ของ const ข้างเคียง แล้วอ่าน TK_PROD_SKU
+ได้เป็น 2026-09-09 ทั้งที่ค่าจริงคือ 2026-11-10 (`tk_prod_gaps.py` อ่านแบบนับปีกกาแล้ว)
