@@ -16292,16 +16292,16 @@
      "orders": 0
     }
    },
+   "lz_real": {
+    "gmv": 4193.0,
+    "orders": 6
+   },
    "lz_ads": {
     "spend": 314.72,
     "revenue": 3376.0,
     "orders": 5,
     "imp": 2111,
     "clicks": 77
-   },
-   "lz_real": {
-    "gmv": 4193.0,
-    "orders": 6
    },
    "fb_real": {
     "gmv": 17365.0,
@@ -16385,7 +16385,7 @@
    },
    "tk_ads": {
     "product": {
-     "gmv": 162059.58,
+     "gmv": 162040.14,
      "spend": 45960.1,
      "orders": 743
     },
@@ -16396,8 +16396,8 @@
     }
    },
    "fb_real": {
-    "gmv": 20342.0,
-    "orders": 28
+    "gmv": 25202.0,
+    "orders": 36
    }
   }
  },
