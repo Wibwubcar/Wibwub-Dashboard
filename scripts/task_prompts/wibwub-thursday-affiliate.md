@@ -357,13 +357,21 @@ else:
 | interior wipe (case-insensitive) | WIBWUB Interior wipes |
 | Sugar | WIBWUB Sugar |
 | CLEANER | WIBWUB CLEANER |
-| Interior (ไม่มี "wipe") | WIBWUB Interior |
+| interior + "100ml" (เช็คก่อนแถวล่าง) | WIBWUB Interior 100ml |
+| Interior (ไม่มี "wipe" และไม่มี "100ml") | WIBWUB Interior |
 | Refresh (ไม่มี "Leather") | WIBWUB Refresh |
 | Visible | WIBWUB Visible |
 
 **อัปเดต `WIBWUB_Affiliate_Dashboard.html`:**
 - `PRODUCTS` array: แก้เฉพาะ `cr` และ `vid` fields (ห้ามแก้ gmv, units, monthly, ret)
 - KPI strip สินค้า tab: `ผ่าน X,XXX creators` = รวม cr ทุกสินค้า
+- ⛔ **แมปได้ชื่อที่ไม่มีแถวใน `PRODUCTS` → รายงาน ห้ามรวมกับสินค้าอื่น ห้ามทิ้งเงียบ**
+  ขึ้นบรรทัดในสรุปท้ายรอบว่า `⚠️ TikTok รายงานสินค้า "<ชื่อใน TikTok>" → แมปเป็น
+  "<PRODUCTS[].name>" แต่ยังไม่มีแถวนี้ใน PRODUCTS — cr/vid ของมันยังไม่ได้ลง`
+  **ห้ามเพิ่มแถวใหม่เอง** เพราะแถวใหม่ต้องมี `gmv/units/monthly/ret` ซึ่งรอบนี้ห้ามแก้
+  (เพิ่ม 25 พ.ย. 69 ตอนมีสินค้าใหม่ `Interior (Interior-100ml (X'mas limited))`
+  รหัส `SINT020001` ขายวันแรก 24 พ.ย. — กฎเดิม "Interior ที่ไม่มี wipe" จะดูดมันไป
+  รวมกับ `WIBWUB Interior` (500ml) เงียบ ๆ ทำให้ cr/vid ของ 500ml เพี้ยนขึ้น)
 
 ---
 

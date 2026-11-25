@@ -72,6 +72,8 @@ NAME_MAP = {
     'Wool duster-ไม้ปัดขนแกะ': 'Wool Duster',
     'Refresh wipes': 'Refresh Wipes',
     'Interior (Interior-500ml+Spray)': 'Interior 500ml',
+    "Interior (Interior-100ml (X'mas limited))": 'Interior 100ml',   # ใหม่ 24 พ.ย. 69
+    'Banyakart (Banyakart-500ml)': 'Banyakart 500ml',
     'Interior wipes': 'Interior Wipes',
     'Spot (Spot-500ml)': 'Spot 500ml',
     'Refresh (Refresh-500ml+หัวโฟม สีขาว)': 'Refresh 500ml',
