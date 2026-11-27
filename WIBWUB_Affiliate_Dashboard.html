@@ -22111,10 +22111,14 @@ function renderCompare(){
 //   · Order / Top 30 / สัดส่วนสินค้า = เฉพาะกลุ่ม CREATORS ที่มีข้อมูลละเอียด
 //     และเป็นยอด**สะสมทั้งช่วง** ไม่ใช่รายเดือน — ป้ายใต้การ์ดต้องบอกไว้เสมอ
 // ══════════════════════════════════════════
-// ⚠️ ไม่มีสคริปต์ไหนอัปเดตก้อนนี้ — Live GMV ไม่มีอยู่ใน CREATOR_MONTHS หรือ CREATORS
-// ถ้าจะใช้ต่อ ต้องกรอกมือแล้วแก้ `asof` ด้วย การ์ดจะโชว์เดือนที่กรอกไว้ให้เห็นชัด ๆ
-const AF_LIVE_MANUAL = {asof:'ก.ย. 2569', gmv:159600, sessions:759,
-                        prev_asof:'ส.ค. 2569', prev_gmv:96900};
+// ⚠️ ก้อนนี้สคริปต์เขียน — ห้ามแก้มือ (27 พ.ย. 69 เลิกกรอกมือ ของเดิมค้าง ก.ย. อยู่ 2 เดือน)
+// ที่มา: scripts/affiliate_update.py --live-only
+//   gmv      = TK_PROD_DATA.daily[วัน][สินค้า][8] (affiliate_live) รวมรายเดือน
+//              ห้ามใช้ดัชนี 7 (affiliate รวมทุกช่องทาง) และ 5 คือไลฟ์ของร้านเอง
+//   sessions = จำนวน "ID ของ LIVE" ไม่ซ้ำ ในไฟล์ Data Affiliate/ไลฟ์สตรีม/<ช่วงเดือนนั้น>
+//   ด่าน: GMV จากไฟล์ไลฟ์สตรีม ต้องเท่ากับผลรวมดัชนี 8 ช่วงเดียวกัน ต่างได้ไม่เกิน 1 บาท
+const AF_LIVE = {asof:'พ.ย. 1-25', gmv:59349, sessions:748,
+                 prev_asof:'ต.ค. 1-31', prev_gmv:93749};
 
 // เดือนล่าสุดอาจยังนับไม่จบ (CREATOR_MONTHS เติมระหว่างเดือน) — ดูจากช่วงวันใน AF_MO
 // ถ้าเทียบเดือนที่ยังไม่จบกับเดือนเต็ม จะได้ "-75%" ที่ไม่ได้แปลว่ายอดตก
@@ -22157,7 +22161,7 @@ function renderOverviewKPI(){
     <div class="kk"><div class="kkl">ครีเอเตอร์ที่มียอด</div><div class="kkv blue">${nFmt(L.active)}</div><div class="kks">${back(x=>nFmt(x.active)+' คน')}</div></div>
     <div class="kk"><div class="kkl">สินค้าที่ขายผ่าน Affiliate</div><div class="kkv amber">${PRODUCTS.length}</div><div class="kks">หมวด ยานยนต์ · สะสมทั้งช่วง</div></div>
     <div class="kk"><div class="kkl">ค่าคอมมิชชั่น (ประมาณการ)</div><div class="kkv" style="color:var(--pink)">${fmtK(L.comm)}</div><div class="kks">${cur} · ${back(x=>fmtK(x.comm))}</div></div>
-    <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">${fmtK(AF_LIVE_MANUAL.gmv)}</div><div class="kks">⚠️ กรอกมือ ${AF_LIVE_MANUAL.asof} · ${AF_LIVE_MANUAL.sessions} sessions (${AF_LIVE_MANUAL.prev_asof} ${fmtK(AF_LIVE_MANUAL.prev_gmv)}) — ไม่มีตัวอัปเดตอัตโนมัติ</div></div>`;
+    <div class="kk"><div class="kkl">Live GMV (ยังไม่รวมด้านบน)</div><div class="kkv" style="color:#f97316">${fmtK(AF_LIVE.gmv)}</div><div class="kks">${AF_LIVE.asof} 2569 · ${AF_LIVE.sessions.toLocaleString()} sessions (${AF_LIVE.prev_asof} ${fmtK(AF_LIVE.prev_gmv)}) — จาก TK_PROD_DATA affiliate_live</div></div>`;
 }
 
 function renderKolInsights(){

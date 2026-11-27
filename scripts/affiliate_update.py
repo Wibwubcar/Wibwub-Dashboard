@@ -41,6 +41,12 @@ MOB = BASE / 'WIBWUB_Mobile.html'
 PAIRS = [('AF_GMV', 'AFI_GMV'), ('AF_NET', 'AFI_NET'), ('AF_COM', 'AFI_COMM')]
 
 
+def W_bump():
+    """bump sw.js — ใช้ scripts/bump_sw.py ตรง ๆ ไม่ต้อง import wibwub_update ทั้งก้อน"""
+    import subprocess
+    subprocess.run([sys.executable, str(BASE / 'scripts' / 'bump_sw.py')], check=False)
+
+
 def die(msg, detail=None):
     print(json.dumps({'status': 'ERROR', 'error': msg, 'detail': detail}, ensure_ascii=False))
     sys.exit(2)
@@ -175,13 +181,167 @@ def write_vid(dry):
     return info
 
 
+# ── AF_LIVE — Live GMV จากครีเอเตอร์ รายเดือน ────────────────────────────────
+# เดิมเป็น AF_LIVE_MANUAL กรอกมือ แล้วค้างที่ ก.ย. 2569 สองเดือน (เจอ 27 พ.ย. 69)
+# ที่มา: TK_PROD_DATA ใน WIBWUB_Dashboard.html — daily[วัน] = list ของอาเรย์ต่อสินค้า
+#        ดัชนี 8 = affiliate_live · ห้ามใช้ 7 (affiliate รวม) · 5 = ไลฟ์ของร้านเอง
+# sessions: นับ "ID ของ LIVE" ไม่ซ้ำ จากไฟล์ Transaction_Analysis_Live_List_<ช่วง>.xlsx
+# ด่าน: GMV ในไฟล์ไลฟ์สตรีม ต้องตรงกับผลรวมดัชนี 8 ช่วงวันเดียวกัน ต่างไม่เกิน 1 บาท
+DASH = BASE / 'WIBWUB_Dashboard.html'
+LIVE_DIR = BASE / 'Data Affiliate' / 'ไลฟ์สตรีม'
+LL_RE = re.compile(r'^Transaction_Analysis_Live_List_(\d{8})-(\d{8})')
+TH_MO = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.',
+         'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.']
+AFF_LIVE_IDX = 8
+LIVE_ID_HDR = 'ID ของ LIVE'
+
+
+def read_const_obj(path, name):
+    """อ่าน `const <name> = {...};` ด้วยการนับปีกกา
+
+    ห้ามใช้ regex `const X = (\{.*?\});` — แบบ non-greedy หยุดที่ `};` ของ const
+    ข้างเคียง (24 พ.ย. 69 อ่าน TK_PROD_SKU ผิดไป 2 เดือน แล้วรายงานผิดให้ผู้ใช้)
+    """
+    t = Path(path).read_text(encoding='utf-8')
+    i = t.find('const %s = ' % name)
+    if i < 0:
+        return None
+    j = t.find('{', i)
+    if j < 0:
+        return None
+    depth = 0
+    for k in range(j, len(t)):
+        if t[k] == '{':
+            depth += 1
+        elif t[k] == '}':
+            depth -= 1
+            if depth == 0:
+                return json.loads(t[j:k + 1])
+    return None
+
+
+def tk_live_by_month():
+    """{'2026-11': {'gmv': float, 'd0': 'YYYY-MM-DD', 'd1': ...}} จาก TK_PROD_DATA ดัชนี 8"""
+    tk = read_const_obj(DASH, 'TK_PROD_DATA')
+    if not tk or not tk.get('daily'):
+        die('อ่าน TK_PROD_DATA ใน WIBWUB_Dashboard.html ไม่ได้')
+    out = {}
+    for d, rows in tk['daily'].items():
+        if not isinstance(rows, list):
+            continue
+        g = 0.0
+        for r in rows:
+            if isinstance(r, list) and len(r) > AFF_LIVE_IDX:
+                try:
+                    g += float(r[AFF_LIVE_IDX] or 0)
+                except (TypeError, ValueError):
+                    pass
+        e = out.setdefault(d[:7], {'gmv': 0.0, 'd0': d, 'd1': d})
+        e['gmv'] += g
+        e['d0'] = min(e['d0'], d)
+        e['d1'] = max(e['d1'], d)
+    return out
+
+
+def read_live_file(fp):
+    """(จำนวน LIVE ไม่ซ้ำ, ผลรวม GMV) — แกะ sheet1.xml เองแบบเดียวกับ read_vid_map()"""
+    import zipfile
+    with zipfile.ZipFile(fp) as zf:
+        xml = zf.open('xl/worksheets/sheet1.xml').read().decode('utf-8', 'replace')
+    row_re = re.compile(r'<row r="(\d+)"[^>]*>(.*?)</row>', re.DOTALL)
+    cell_re = re.compile(r'<c r="([A-Z]+)(\d+)"[^>]*>(?:<is><t[^>]*>(.*?)</t></is>|<v>(.*?)</v>)?</c>')
+    rows = {}
+    for rn, body in row_re.findall(xml):
+        rows[int(rn)] = {c: ((s if s else v) or '') for c, _, s, v in cell_re.findall(body)}
+    hdr = rows.get(1) or {}
+    id_col = next((c for c, v in hdr.items() if v.strip() == LIVE_ID_HDR), None)
+    gmv_col = next((c for c, v in hdr.items() if v.strip().startswith('GMV')), None)
+    if not id_col or not gmv_col:
+        die('ไฟล์ไลฟ์สตรีมไม่มีคอลัมน์ที่ต้องใช้ — รูปแบบไฟล์เปลี่ยน',
+            {'ไฟล์': fp.name, 'header': sorted(hdr.values())[:30]})
+    ids, tot = set(), 0.0
+    for rn in sorted(rows):
+        if rn <= 2:                      # 1 = header · 2 = คำอธิบาย
+            continue
+        c = rows[rn]
+        lid = (c.get(id_col) or '').strip()
+        if not lid:
+            continue
+        ids.add(lid)
+        raw = re.sub(r'[฿,\s]', '', (c.get(gmv_col) or ''))
+        try:
+            tot += float(raw)
+        except ValueError:
+            pass
+    return len(ids), tot
+
+
+def write_af_live(dry):
+    """เขียน const AF_LIVE ในหน้า Affiliate — ไม่ผ่านด่าน = หยุด ไม่เขียน"""
+    by = tk_live_by_month()
+    if len(by) < 2:
+        die('TK_PROD_DATA มีไม่ถึง 2 เดือน — คำนวณ AF_LIVE ไม่ได้', sorted(by))
+    keys = sorted(by)
+    cur, prev = by[keys[-1]], by[keys[-2]]
+
+    def lbl(k, e):
+        return '%s %d-%d' % (TH_MO[int(k[5:7]) - 1], int(e['d0'][8:]), int(e['d1'][8:]))
+
+    # ── ด่าน: เทียบกับไฟล์ไลฟ์สตรีมของช่วงเดียวกัน (ต่างไม่เกิน 1 บาท) ──────
+    want = cur['d0'].replace('-', '') + '-' + cur['d1'].replace('-', '')
+    fp = None
+    for f in LIVE_DIR.glob('Transaction_Analysis_Live_List_*.xlsx'):
+        if f.name.startswith(('~', '.')):
+            continue
+        m = LL_RE.match(f.name)
+        if m and '%s-%s' % (m.group(1), m.group(2)) == want:
+            if fp is None or f.stat().st_mtime > fp.stat().st_mtime:
+                fp = f
+    if fp is None:
+        die('ไม่พบไฟล์ไลฟ์สตรีมของช่วงเดียวกับ TK_PROD_DATA — ยังไม่เขียน AF_LIVE '
+            '(ต้องโหลดไฟล์ช่วงนี้ก่อน หรือรอ TK_PROD_DATA ตามให้ทัน)',
+            {'ต้องการช่วง': want, 'โฟลเดอร์': str(LIVE_DIR)})
+    sessions, file_gmv = read_live_file(fp)
+    if abs(file_gmv - cur['gmv']) > 1:
+        die('GMV ไลฟ์จากไฟล์ไม่ตรงกับ TK_PROD_DATA ดัชนี 8 — ไม่เขียน AF_LIVE',
+            {'ไฟล์': fp.name, 'จากไฟล์': round(file_gmv, 2),
+             'จาก TK_PROD_DATA': round(cur['gmv'], 2),
+             'ต่าง': round(file_gmv - cur['gmv'], 2)})
+
+    blk = ("const AF_LIVE = {asof:'%s', gmv:%d, sessions:%d,\n"
+           "                 prev_asof:'%s', prev_gmv:%d};"
+           % (lbl(keys[-1], cur), round(cur['gmv']), sessions,
+              lbl(keys[-2], prev), round(prev['gmv'])))
+    t = AFF.read_text(encoding='utf-8')
+    m = re.search(r"const AF_LIVE = \{[^}]*\};", t, re.DOTALL)
+    if not m:
+        die('หา const AF_LIVE ในหน้า Affiliate ไม่เจอ')
+    changed = m.group(0) != blk
+    if changed and not dry:
+        AFF.write_text(t[:m.start()] + blk + t[m.end():], encoding='utf-8')
+    return {'asof': lbl(keys[-1], cur), 'gmv': round(cur['gmv']), 'sessions': sessions,
+            'prev_asof': lbl(keys[-2], prev), 'prev_gmv': round(prev['gmv']),
+            'live_file': fp.name, 'gate_diff': round(file_gmv - cur['gmv'], 2),
+            'changed': changed}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
+    ap.add_argument('--live-only', action='store_true',
+                    help='เขียนเฉพาะ const AF_LIVE แล้วจบ (ไม่ซิงก์ AF_* ทั้งก้อน)')
     a = ap.parse_args()
 
     for p in (AFF, MOB):
         if not p.exists(): die('ไม่พบไฟล์', p.name)
+
+    if a.live_only:
+        info = write_af_live(a.dry_run)
+        print(json.dumps({'status': 'DRY_RUN' if a.dry_run else
+                          ('UPDATED' if info['changed'] else 'NO_CHANGE'),
+                          'af_live': info}, ensure_ascii=False))
+        if info['changed'] and not a.dry_run: W_bump()
+        return 0 if (info['changed'] or a.dry_run) else 10
     sys.path.insert(0, str(BASE))
     try:
         import wibwub_update as W
@@ -230,6 +390,7 @@ def main():
                'creator_months': len(aff.get('CREATOR_MONTHS') or [])}
 
     summary['vid'] = write_vid(a.dry_run)
+    summary['af_live'] = write_af_live(a.dry_run)
 
     if a.dry_run:
         summary['current_page'] = {k: (before[k][-1] if before.get(k) else None) for k in ('AF_GMV', 'AF_CR')}
@@ -247,7 +408,8 @@ def main():
             mism.append(f'{A}[-{n}:] != {B}[-{n}:] (ล่าสุด {x[-1]} vs {y[-1]})')
     summary['mobile_mismatch'] = mism
     after = {k: arr(AFF, k) for k in before}
-    changed = after != before or bool(summary['vid']['changes'])
+    changed = (after != before or bool(summary['vid']['changes'])
+               or summary['af_live']['changed'])
     if changed: W.bump_sw()
     print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary}, ensure_ascii=False))
     return 0 if changed else 10
