@@ -224,6 +224,9 @@ tr:hover td{background:rgba(59,130,246,.04)}
 .mfbtn.jun.active{background:#f59e0b;border-color:#f59e0b;color:#fff;font-weight:600}
 .mfbtn.aug.active{background:#0d9488;border-color:#0d9488;color:#fff;font-weight:600} .mfbtn.jul.active{background:#2563eb;border-color:#2563eb;color:#fff;font-weight:600}
 .mfbtn.sep.active{background:#dc2626;border-color:#dc2626;color:#fff;font-weight:600}
+.mfbtn.oct.active{background:#7c3aed;border-color:#7c3aed;color:#fff;font-weight:600}
+.mfbtn.nov.active{background:#0891b2;border-color:#0891b2;color:#fff;font-weight:600}
+.mfbtn.dec.active{background:#be123c;border-color:#be123c;color:#fff;font-weight:600}
 
 /* ── Tier Ranking tab ── */
 .qpicker{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:16px}
@@ -283,14 +286,9 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <div id="month-filter-bar" style="display:none">
   <div class="mfbar">
     <span class="mfbar-label">📅 แสดงข้อมูลเดือน</span>
-    <button class="mfbtn all active" onclick="setMonth('all',this)">รวม มี.ค.–ก.ย.</button>
-    <button class="mfbtn mar" onclick="setMonth('mar',this)">มี.ค. 2569</button>
-    <button class="mfbtn apr" onclick="setMonth('apr',this)">เม.ย. 2569</button>
-    <button class="mfbtn may" onclick="setMonth('may',this)">พ.ค. 2569</button>
-    <button class="mfbtn jun" onclick="setMonth('jun',this)">มิ.ย. 2569</button>
-    <button class="mfbtn jul" onclick="setMonth('jul',this)">ก.ค. 2569</button>
-    <button class="mfbtn aug" onclick="setMonth('aug',this)">ส.ค. 2569</button>
-    <button class="mfbtn sep" onclick="setMonth('sep',this)">ก.ย. 2569</button>
+    <!-- ปุ่มเดือนสร้างด้วย buildMonthButtons() จากเดือนที่มีข้อมูลจริง
+         ห้ามพิมพ์รายชื่อเดือนไว้ที่นี่ (ของเดิมหยุดที่ ก.ย. ต.ค./พ.ย. จึงกดดูไม่ได้) -->
+    <button class="mfbtn all active" id="mfbtn-all" onclick="setMonth('all',this)">รวม</button>
   </div>
 </div>
 <div id="tab-overview" class="panel active">
@@ -21664,8 +21662,38 @@ function pRET(p){
 // ── จำนวนชิ้น / ราคาเฉลี่ยต่อชิ้น ของ "ขอบเขตเดียวกัน" กับ GMV ──────────────
 // monthly_u มีเฉพาะเดือนที่สคริปต์เขียนได้ (ดู PROD_MO_SRC) — เดือนอื่นต้องขึ้น "—"
 // ห้ามคืน 0 เพราะ 0 แปลว่า "ขายไม่ได้เลย" ซึ่งไม่จริง
-const MO_TH = {jan:'ม.ค.',feb:'ก.พ.',mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',
-               jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.',oct:'ต.ค.',nov:'พ.ย.',dec:'ธ.ค.'};
+// ช่วงเดือนที่มีข้อมูลจริง — ใช้ทำป้าย "รวม" ทุกที่ ห้ามพิมพ์ "มี.ค.–ส.ค." ทับ
+// (ดู skill: wibwub-avoid-stale-hardcoded-labels — ป้ายเดิมค้างที่ ส.ค./ก.ย. ทุกจุด)
+function moRange(keys){
+  const ks = MONTH_ORDER.filter(k => keys.indexOf(k) >= 0);
+  return ks.length ? MONTH_LABEL_TH[ks[0]] + '–' + MONTH_LABEL_TH[ks[ks.length-1]] : 'ทุกเดือน';
+}
+function moKeysOf(list){            // PRODUCTS / VIDEOS — ดูจาก .monthly
+  return MONTH_ORDER.filter(k => list.some(x => x.monthly && x.monthly[k] > 0));
+}
+function moKeysCreators(){          // CREATOR_MONTHS — อาเรย์เรียงตาม MONTH_ORDER
+  return MONTH_ORDER.filter((k, i) =>
+    Object.values(CREATOR_MONTHS).some(a => (a[i] || 0) > 0));
+}
+function moKeysAll(){
+  const s = new Set([].concat(moKeysOf(PRODUCTS), moKeysOf(VIDEOS), moKeysCreators()));
+  return MONTH_ORDER.filter(k => s.has(k));
+}
+function buildMonthButtons(){
+  const bar = document.getElementById('mfbtn-all');
+  if(!bar || !bar.parentNode) return;
+  const yr = new Date().getFullYear() + 543;
+  bar.textContent = 'รวม ' + moRange(moKeysAll());
+  bar.parentNode.querySelectorAll('.mfbtn:not(.all)').forEach(b => b.remove());
+  moKeysAll().forEach(k => {
+    const b = document.createElement('button');
+    b.className = 'mfbtn ' + k;
+    b.textContent = MONTH_LABEL_TH[k] + ' ' + yr;
+    b.onclick = function(){ setMonth(k, b); };
+    bar.parentNode.appendChild(b);
+  });
+}
+
 function pUNITS(p){
   if(activeMonth === 'all') return p.units || null;
   if(!p.monthly_u || !(activeMonth in p.monthly_u)) return null;
@@ -21682,7 +21710,7 @@ function pPPU(p){
 }
 function unitScope(){
   const ks = MONTH_ORDER.filter(k => PRODUCTS.some(p=>p.monthly_u && k in p.monthly_u));
-  return ks.length ? MO_TH[ks[0]] + '–' + MO_TH[ks[ks.length-1]] : '—';
+  return ks.length ? MONTH_LABEL_TH[ks[0]] + '–' + MONTH_LABEL_TH[ks[ks.length-1]] : '—';
 }
 
 function setMonth(m, btn){
@@ -22769,7 +22797,7 @@ function renderCreators(){
   }
   list.sort((a,b)=>b.dGMV-a.dGMV);
   const maxGMV = list[0]?.dGMV || 1;
-  const mLabel = {mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.'};
+  const mLabel = Object.assign({all: moRange(moKeysCreators())}, MONTH_LABEL_TH);
   tbody.innerHTML = list.map((c,i)=>{
     const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
     const dGMV = c.dGMV;
@@ -22843,7 +22871,7 @@ function renderProducts(){
   const noteEl = document.getElementById('products-month-note');
   const allP = PRODUCTS.map(p=>({...p,dGMV:pGMV(p)})).filter(p=>p.dGMV>0);
 
-  // Product-level monthly breakdown now covers มี.ค.–ส.ค. (ส.ค. = ข้อมูลบางส่วน 1-5 ส.ค. เท่านั้น)
+  // monthly ของสินค้าครอบคลุมเดือนไหน ดูที่ PROD_MO_SRC (สคริปต์เขียน) ห้ามเขียนช่วงเดือนไว้ตรงนี้
   const hasMonthData = activeMonth==='all' || PRODUCTS.some(p=>p.monthly && activeMonth in p.monthly);
   if(noteEl){
     const src = (typeof PROD_MO_SRC !== 'undefined' && activeMonth !== 'all')
@@ -22903,8 +22931,8 @@ function renderProducts(){
 
   // KPI strip — month-aware where the data supports it
   const setTxtP = (id,v)=>{ const el=document.getElementById(id); if(el) el.textContent=v; };
-  // ป้ายเดือน — ใช้ MO_TH ครบ 12 เดือน (ของเดิมมีถึง ก.ย. พอเลือก ต.ค./พ.ย. จะขึ้น undefined)
-  const mLabelP = Object.assign({all:'รวมทุกเดือน'}, MO_TH);
+  // ป้ายเดือน — ใช้ MONTH_LABEL_TH ครบ 12 เดือน · ป้าย "รวม" derive จากเดือนที่มีข้อมูลจริง
+  const mLabelP = Object.assign({all: moRange(moKeysOf(PRODUCTS))}, MONTH_LABEL_TH);
 
   // Active products + Top Product (GMV): fully month-aware using dGMV (pGMV)
   setTxtP('kk-prod-active', allP.length);
@@ -22944,7 +22972,7 @@ function renderVideos(){
   const allV = VIDEOS.map(v=>({...v,dGMV:vGMV(v)})).filter(v=>v.dGMV>0);
   const sorted = [...allV].sort((a,b)=>b.dGMV-a.dGMV);
   const maxGMV = sorted[0]?.dGMV||1;
-  const mLabel = {all:'มี.ค.–ส.ค.',mar:'มี.ค.',apr:'เม.ย.',may:'พ.ค.',jun:'มิ.ย.',jul:'ก.ค.',aug:'ส.ค.',sep:'ก.ย.'};
+  const mLabel = Object.assign({all: moRange(moKeysOf(VIDEOS))}, MONTH_LABEL_TH);
   tbody.innerHTML = sorted.map((v,i)=>{
     const pct = Math.round((v.dGMV/maxGMV)*100);
     const rnk = i<3 ? `<span class="rnk rk${i+1}">${i+1}</span>` : `<span class="rnk rk-">${i+1}</span>`;
@@ -23212,6 +23240,7 @@ function applyAfLabels(){
   if(hdr) hdr.textContent = afHeaderLabel();
   document.querySelectorAll('.af-mo-lbl').forEach(el=>{ el.textContent = afMoShort(); });
   renderTrendKpi();
+  buildMonthButtons();
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', applyAfLabels);
 else applyAfLabels();
