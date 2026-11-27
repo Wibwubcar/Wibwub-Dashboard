@@ -465,10 +465,22 @@ def write_prod_monthly(dry, rebuild=False):
             if new2 is None:
                 skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง ret ในแถว', 'สินค้า': name})
                 break
+            # gmv (ยอดสะสม ใช้ตอนกดปุ่ม "รวม") = ผลรวม monthly เสมอ
+            # 27 พ.ย. 69: ก่อนเขียน monthly ใหม่ ค่าทั้งสองเกือบเท่ากันอยู่แล้ว
+            # พอ monthly ถูกแก้ให้ถูกนิยาม gmv เดิมจะต่ำกว่า 3 เท่า ปุ่ม "รวม" เลยขัดกับรายเดือน
+            mm2 = re.search(r'monthly:\{([^}]*)\}', new2)
+            gm = re.search(r'gmv:(\d+)', new2)
+            if not gm:
+                skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง gmv ในแถว', 'สินค้า': name})
+                break
+            tot_m = sum(int(v) for _k, v in re.findall(r'(\w+):(-?\d+)', mm2.group(1)))
+            prev_gmv = int(gm.group(1))
+            new2 = new2[:gm.start()] + 'gmv:%d' % tot_m + new2[gm.end():]
             if new2 != ln:
                 changes.append({'เดือน': mo, 'สินค้า': name,
                                 'monthly': [prev_g and int(prev_g), round(g)],
-                                'ret': [prev_r and int(prev_r), round(r)]})
+                                'ret': [prev_r and int(prev_r), round(r)],
+                                'gmv': [prev_gmv, tot_m]})
             block = block.replace(ln, new2, 1)
         else:
             written[mo] = '1-%d' % int(d1[6:])
