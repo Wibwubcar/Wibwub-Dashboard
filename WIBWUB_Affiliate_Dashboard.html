@@ -575,10 +575,10 @@ tr:hover td{background:rgba(59,130,246,.04)}
 <!-- ════ TREND ════ -->
 <div id="tab-trend" class="panel">
   <div class="tr-kstrip">
-    <div class="tr-k" style="--kac:var(--teal)"><div class="tr-kl">GMV รวมทั้งปี</div><div class="tr-kv" style="color:var(--teal)">฿4.46M</div><div class="tr-ks">ม.ค.–ส.ค. 2026</div></div>
-    <div class="tr-k" style="--kac:var(--green)"><div class="tr-kl">Net GMV รวม</div><div class="tr-kv" style="color:var(--green)">฿4.31M</div><div class="tr-ks">หลังหักคืน ~3.4%</div></div>
-    <div class="tr-k" style="--kac:var(--amber)"><div class="tr-kl">Commission รวม</div><div class="tr-kv" style="color:var(--amber)">฿447K</div><div class="tr-ks">avg rate 11.3%</div></div>
-    <div class="tr-k" style="--kac:var(--purple)"><div class="tr-kl">Peak Month</div><div class="tr-kv" style="color:var(--purple)">ก.ค. 69</div><div class="tr-ks">฿975K GMV</div></div>
+    <div class="tr-k" style="--kac:var(--teal)"><div class="tr-kl">GMV รวมทั้งปี</div><div class="tr-kv" style="color:var(--teal)" id="tr-k-gmv">—</div><div class="tr-ks" id="tr-k-gmv-s">—</div></div>
+    <div class="tr-k" style="--kac:var(--green)"><div class="tr-kl">Net GMV รวม</div><div class="tr-kv" style="color:var(--green)" id="tr-k-net">—</div><div class="tr-ks" id="tr-k-net-s">—</div></div>
+    <div class="tr-k" style="--kac:var(--amber)"><div class="tr-kl">Commission รวม</div><div class="tr-kv" style="color:var(--amber)" id="tr-k-com">—</div><div class="tr-ks" id="tr-k-com-s">—</div></div>
+    <div class="tr-k" style="--kac:var(--purple)"><div class="tr-kl">Peak Month</div><div class="tr-kv" style="color:var(--purple)" id="tr-k-peak">—</div><div class="tr-ks" id="tr-k-peak-s">—</div></div>
   </div>
   <div class="g2">
     <div class="cc"><div class="ct">Monthly Affiliate GMV vs Net GMV</div><div class="cw" style="height:240px"><canvas id="tr-gmv"></canvas></div></div>
@@ -23118,10 +23118,48 @@ function afHeaderLabel(){
   const yr = new Date().getFullYear()+543;
   return `📅 ${prev} เต็มเดือน + ${afMoLast()} ${yr}`;
 }
+// ── การ์ดสรุปแท็บ Trend 4 ใบ — คำนวณจาก AF_GMV/AF_NET/AF_COM/AF_MO ตอนโหลด
+//    เดิมเป็นข้อความฝังในหน้า (฿4.46M / ม.ค.–ส.ค. / Peak ก.ค.) แล้วค้างอยู่หลายเดือน
+//    ห้ามกลับไป hardcode (ดู skill: wibwub-avoid-stale-hardcoded-labels)
+function afLastPartial(){
+  // ใช้ afMonthPartial() เป็นตัวตัดสินหลัก (มันดูจำนวนวันจริงของเดือนนั้น)
+  try{
+    if(typeof afMonthPartial === 'function' && typeof TIER_MONTH_COUNT === 'number')
+      return !!afMonthPartial(TIER_MONTH_COUNT-1);
+  }catch(e){}
+  return /\(\s*\d+\s*-\s*\d+\s*\)/.test(String(afMoLast()));  // สำรอง: มีช่วงวัน = ยังไม่จบ
+}
+function renderTrendKpi(){
+  if(typeof AF_GMV === 'undefined' || !document.getElementById('tr-k-gmv')) return;
+  const idx = AF_GMV.map((v,i)=>i).filter(i=>AF_GMV[i]>0);   // ข้ามเดือนที่ยังไม่มีข้อมูล (ม.ค./ก.พ. = 0)
+  if(!idx.length) return;
+  const sum = a => idx.reduce((s,i)=>s+(a[i]||0),0);
+  const gmv = sum(AF_GMV), net = sum(AF_NET), com = sum(AF_COM);
+  const bare = s => String(s).replace(/\s*\([\d\-]+\)/,'');
+  const yr   = new Date().getFullYear();
+  const first = idx[0], last = idx[idx.length-1];
+  const partial = (last === AF_MO.length-1) && afLastPartial();
+  const set = (id,v) => { const el=document.getElementById(id); if(el) el.textContent = v; };
+
+  set('tr-k-gmv', fmtK(gmv));
+  set('tr-k-gmv-s', `${bare(AF_MO[first])}–${AF_MO[last]} ${yr}`);
+  set('tr-k-net', fmtK(net));
+  set('tr-k-net-s', `หลังหักคืน ~${(gmv? (1-net/gmv)*100 : 0).toFixed(1)}%`);
+  set('tr-k-com', fmtK(com));
+  set('tr-k-com-s', `avg rate ${(gmv? com/gmv*100 : 0).toFixed(1)}%`);
+
+  const pk = idx.reduce((mi,i)=> AF_GMV[i]>AF_GMV[mi] ? i : mi, idx[0]);
+  const pkPartial = (pk === AF_MO.length-1) && partial;
+  set('tr-k-peak', `${bare(AF_MO[pk])} ${(yr+543)%100}`);
+  set('tr-k-peak-s', `${fmtK(AF_GMV[pk])} GMV`
+      + (pkPartial ? ` · ${AF_MO[pk].match(/\(([\d\-]+)\)/) ? AF_MO[pk].match(/\(([\d\-]+)\)/)[1] : ''} ยังนับไม่จบเดือน` : ''));
+}
+
 function applyAfLabels(){
   const hdr = document.getElementById('aff-updated');
   if(hdr) hdr.textContent = afHeaderLabel();
   document.querySelectorAll('.af-mo-lbl').forEach(el=>{ el.textContent = afMoShort(); });
+  renderTrendKpi();
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', applyAfLabels);
 else applyAfLabels();
