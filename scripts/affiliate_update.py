@@ -333,6 +333,7 @@ def write_af_live(dry):
 # เงื่อนไขไฟล์: ต้องขึ้นวันที่ 1 และ d0/d1 เดือนเดียวกัน (กันไฟล์คร่อมเดือนลงช่องผิด)
 # ด่าน: ผลรวม GMV ทุกสินค้าในไฟล์ เทียบ AF_GMV เดือนนั้น ต่างเกิน 2% = ข้ามเดือนนั้น
 GMV_HDR, RET_HDR = 'GMV จากครีเอเตอร์', 'การคืนเงิน'
+UNIT_HDR = 'สินค้าที่ขายได้จากครีเอเตอร์'
 MO_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
            'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 GATE_PCT = 0.02
@@ -343,7 +344,7 @@ def _money(x):
 
 
 def read_prod_money(fp):
-    """{รหัสสินค้า: (gmv, ret)} — แกะ sheet1.xml เองแบบเดียวกับ read_vid_map()"""
+    """{รหัสสินค้า: (gmv, ret, units)} — แกะ sheet1.xml เองแบบเดียวกับ read_vid_map()"""
     import zipfile
     with zipfile.ZipFile(fp) as zf:
         xml = zf.open('xl/worksheets/sheet1.xml').read().decode('utf-8', 'replace')
@@ -356,9 +357,9 @@ def read_prod_money(fp):
     cols = {}
     for col, val in hdr.items():
         v = val.strip()
-        if v in (GMV_HDR, RET_HDR, ID_HDR) and v not in cols:
+        if v in (GMV_HDR, RET_HDR, UNIT_HDR, ID_HDR) and v not in cols:
             cols[v] = col
-    miss = [h for h in (GMV_HDR, RET_HDR, ID_HDR) if h not in cols]
+    miss = [h for h in (GMV_HDR, RET_HDR, UNIT_HDR, ID_HDR) if h not in cols]
     if miss:
         die('Product_List ไม่มีคอลัมน์เงินที่ต้องใช้ — รูปแบบไฟล์เปลี่ยน',
             {'ขาด': miss, 'ไฟล์': fp.name, 'header': sorted(hdr.values())[:30]})
@@ -369,7 +370,8 @@ def read_prod_money(fp):
         c = rows[rn]
         pid = (c.get(cols[ID_HDR]) or '').strip()
         if pid:
-            out[pid] = (_money(c.get(cols[GMV_HDR])), _money(c.get(cols[RET_HDR])))
+            out[pid] = (_money(c.get(cols[GMV_HDR])), _money(c.get(cols[RET_HDR])),
+                        _money(c.get(cols[UNIT_HDR])))
     return out
 
 
@@ -452,7 +454,7 @@ def write_prod_monthly(dry, rebuild=False):
             skipped.append({'เดือน': mo, 'เหตุผล': 'จับคู่รหัสสินค้าไม่ครบ ไม่เขียนทั้งเดือน',
                             'ไฟล์': fp.name, 'ขาด': missing[:5]})
             continue
-        for ln, name, (g, r) in rows:
+        for ln, name, (g, r, u) in rows:
             old_g = re.search(r'monthly:\{([^}]*)\}', ln)
             old_r = re.search(r'ret:\{([^}]*)\}', ln)
             prev_g = dict(re.findall(r'(\w+):(-?\d+)', old_g.group(1))).get(mo) if old_g else None
@@ -465,6 +467,27 @@ def write_prod_monthly(dry, rebuild=False):
             if new2 is None:
                 skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง ret ในแถว', 'สินค้า': name})
                 break
+            # monthly_u — จำนวนชิ้นรายเดือน (คอลัมน์ "สินค้าที่ขายได้จากครีเอเตอร์")
+            # สร้างช่องให้เองถ้ายังไม่มี · เดือนที่ไม่มีข้อมูล = ไม่มีคีย์ (หน้าโชว์ "—" ไม่ใช่ 0)
+            if 'monthly_u:{' not in new2:
+                mr = re.search(r'ret:\{[^}]*\}', new2)
+                new2 = new2[:mr.end()] + ',monthly_u:{}' + new2[mr.end():]
+            prev_u = None
+            mu0 = re.search(r'monthly_u:\{([^}]*)\}', new2)
+            if mu0:
+                prev_u = dict(re.findall(r'(\w+):(-?\d+)', mu0.group(1))).get(mo)
+            new2 = _set_month(new2, 'monthly_u', mo, round(u))
+            if new2 is None:
+                skipped.append({'เดือน': mo, 'เหตุผล': 'สร้างช่อง monthly_u ไม่ได้', 'สินค้า': name})
+                break
+            un = re.search(r'units:(\d+)', new2)
+            if not un:
+                skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง units ในแถว', 'สินค้า': name})
+                break
+            mu = re.search(r'monthly_u:\{([^}]*)\}', new2)
+            tot_u = sum(int(v) for _k, v in re.findall(r'(\w+):(-?\d+)', mu.group(1)))
+            prev_units = int(un.group(1))
+            new2 = new2[:un.start()] + 'units:%d' % tot_u + new2[un.end():]
             # gmv (ยอดสะสม ใช้ตอนกดปุ่ม "รวม") = ผลรวม monthly เสมอ
             # 27 พ.ย. 69: ก่อนเขียน monthly ใหม่ ค่าทั้งสองเกือบเท่ากันอยู่แล้ว
             # พอ monthly ถูกแก้ให้ถูกนิยาม gmv เดิมจะต่ำกว่า 3 เท่า ปุ่ม "รวม" เลยขัดกับรายเดือน
@@ -480,7 +503,9 @@ def write_prod_monthly(dry, rebuild=False):
                 changes.append({'เดือน': mo, 'สินค้า': name,
                                 'monthly': [prev_g and int(prev_g), round(g)],
                                 'ret': [prev_r and int(prev_r), round(r)],
-                                'gmv': [prev_gmv, tot_m]})
+                                'gmv': [prev_gmv, tot_m],
+                                'units_mo': [prev_u and int(prev_u), round(u)],
+                                'units': [prev_units, tot_u]})
             block = block.replace(ln, new2, 1)
         else:
             written[mo] = '1-%d' % int(d1[6:])
