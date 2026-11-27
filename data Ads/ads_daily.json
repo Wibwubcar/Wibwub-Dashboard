@@ -16395,16 +16395,16 @@
      "orders": 0
     }
    },
-   "lz_real": {
-    "gmv": 0.0,
-    "orders": 0
-   },
    "lz_ads": {
     "spend": 330.0,
     "revenue": 0.0,
     "orders": 0,
     "imp": 2300,
     "clicks": 78
+   },
+   "lz_real": {
+    "gmv": 0.0,
+    "orders": 0
    },
    "fb_real": {
     "gmv": 25202.0,
@@ -16452,16 +16452,16 @@
      "orders": 55
     }
    },
-   "lz_real": {
-    "gmv": 1773.0,
-    "orders": 3
-   },
    "lz_ads": {
     "spend": 300.17,
     "revenue": 442.0,
     "orders": 1,
     "imp": 2634,
     "clicks": 105
+   },
+   "lz_real": {
+    "gmv": 1773.0,
+    "orders": 3
    },
    "fb_real": {
     "gmv": 24619.0,
@@ -16499,19 +16499,15 @@
    },
    "tk_ads": {
     "product": {
-     "gmv": 169293.83,
+     "gmv": 169164.33,
      "spend": 49851.57,
      "orders": 818
     },
     "live": {
-     "gmv": 4380.49,
+     "gmv": 4379.92,
      "spend": 400.0,
      "orders": 14
     }
-   },
-   "lz_real": {
-    "gmv": 428.0,
-    "orders": 1
    },
    "lz_ads": {
     "spend": 303.42,
@@ -16520,9 +16516,13 @@
     "imp": 2841,
     "clicks": 104
    },
+   "lz_real": {
+    "gmv": 428.0,
+    "orders": 1
+   },
    "fb_real": {
-    "gmv": 16810.0,
-    "orders": 27
+    "gmv": 19437.0,
+    "orders": 31
    }
   }
  },
