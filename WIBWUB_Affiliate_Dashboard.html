@@ -6454,14 +6454,18 @@ const CREATOR_MONTHS = {
 
 const TOTAL_GMV = CREATORS.reduce((s,c)=>s+c.gmv,0);
 const COLORS = ['#3b82f6','#14b8a6','#8b5cf6','#f59e0b','#ec4899','#22c55e'];
+// เดือนที่ `monthly`/`ret` ถูกเขียนใหม่จากไฟล์ Transaction_Analysis_Product_List
+// เต็มเดือน (สคริปต์เขียน — ห้ามแก้มือ) · ค่าคือช่วงวันในไฟล์ที่ใช้
+// เดือนที่ไม่อยู่ในนี้ = ค่าชุดเก่าคนละแหล่ง เทียบกับเดือนในนี้ไม่ได้
+const PROD_MO_SRC = {"jul": "1-31", "aug": "1-31", "sep": "1-30", "oct": "1-31", "nov": "1-25"};
 const PRODUCTS = [
-  {name:'WIBWUB Refresh Leather Wipes',id:'1731731059674744388',short:'Leather Wipes',gmv:1310071,units:9957,cr:508,vid:1046,monthly:{mar:25400,apr:134300,may:393400,jun:7146,jul:460227,aug:48243,sep:230207},ret:{mar:178,apr:1500,may:2900,jun:179,jul:20192,aug:1998}},
-  {name:'WIBWUB Interior wipes',id:'1730355874064534084',short:'Interior Wipes',gmv:828215,units:6412,cr:253,vid:597,monthly:{mar:36100,apr:162600,may:168300,jun:105801,jul:257081,aug:19588,sep:86946},ret:{mar:246,apr:2200,may:1100,jun:678,jul:13170,aug:1220}},
-  {name:'WIBWUB Sugar',id:'1729451577908759108',short:'Sugar',gmv:1014452,units:2242,cr:169,vid:449,monthly:{mar:39000,apr:147300,may:119400,jun:131398,jul:334926,aug:62533,sep:214193},ret:{mar:732,apr:4200,may:3100,jun:2440,jul:28535,aug:4905}},
-  {name:'WIBWUB CLEANER',id:'1731372281981470276',short:'Cleaner',gmv:321016,units:1675,cr:36,vid:29,monthly:{mar:31900,apr:69400,may:67500,jun:64597,jul:76425,aug:10957,sep:12934},ret:{mar:567,apr:1700,may:2200,jun:768,jul:4100,aug:1508}},
-  {name:'WIBWUB Interior',id:'1729446145772784196',short:'Interior',gmv:276487,units:657,cr:80,vid:472,monthly:{mar:25800,apr:54500,may:59000,jun:34281,jul:68139,aug:14307,sep:27841},ret:{mar:744,apr:2300,may:350,jun:398,jul:7010,aug:2306}},
-  {name:'WIBWUB Refresh',id:'1729446143390288452',short:'Refresh',gmv:211253,units:469,cr:14,vid:38,monthly:{mar:25400,apr:49600,may:40400,jun:28414,jul:58577,aug:0,sep:18976},ret:{mar:1200,apr:1400,may:355,jun:355,jul:5628,aug:0}},
-  {name:'WIBWUB Visible',id:'1729646310884805188',short:'Visible',gmv:49241,units:160,cr:13,vid:26,monthly:{mar:3700,apr:15900,may:10200,jun:7679,jul:8952,aug:2692,sep:2597},ret:{mar:0,apr:230,may:539,jun:0,jul:443,aug:311}},
+  {name:'WIBWUB Refresh Leather Wipes',id:'1731731059674744388',short:'Leather Wipes',gmv:1310071,units:9957,cr:508,vid:1046,monthly:{mar:25400,apr:134300,may:393400,jun:7146,jul:458713,aug:662621,sep:776242,oct:769692,nov:1076276},ret:{mar:178,apr:1500,may:2900,jun:179,jul:5645,aug:7521,sep:8309,oct:10587,nov:15933}},
+  {name:'WIBWUB Interior wipes',id:'1730355874064534084',short:'Interior Wipes',gmv:828215,units:6412,cr:253,vid:597,monthly:{mar:36100,apr:162600,may:168300,jun:105801,jul:257081,aug:257082,sep:268751,oct:379705,nov:288759},ret:{mar:246,apr:2200,may:1100,jun:678,jul:3299,aug:2064,sep:2808,oct:5783,nov:4242}},
+  {name:'WIBWUB Sugar',id:'1729451577908759108',short:'Sugar',gmv:1014452,units:2242,cr:169,vid:449,monthly:{mar:39000,apr:147300,may:119400,jun:131398,jul:349138,aug:383887,sep:584066,oct:657180,nov:447852},ret:{mar:732,apr:4200,may:3100,jun:2440,jul:9441,aug:8649,sep:14805,oct:16231,nov:10883}},
+  {name:'WIBWUB CLEANER',id:'1731372281981470276',short:'Cleaner',gmv:321016,units:1675,cr:36,vid:29,monthly:{mar:31900,apr:69400,may:67500,jun:64597,jul:77844,aug:52812,sep:37628,oct:53458,nov:42826},ret:{mar:567,apr:1700,may:2200,jun:768,jul:1248,aug:741,sep:1264,oct:1587,nov:1618}},
+  {name:'WIBWUB Interior',id:'1729446145772784196',short:'Interior',gmv:276487,units:657,cr:80,vid:472,monthly:{mar:25800,apr:54500,may:59000,jun:34281,jul:71699,aug:74439,sep:74121,oct:143598,nov:233776},ret:{mar:744,apr:2300,may:350,jun:398,jul:2673,aug:3588,sep:1018,oct:2698,nov:5729}},
+  {name:'WIBWUB Refresh',id:'1729446143390288452',short:'Refresh',gmv:211253,units:469,cr:14,vid:38,monthly:{mar:25400,apr:49600,may:40400,jun:28414,jul:59666,aug:55898,sep:41300,oct:22876,nov:15544},ret:{mar:1200,apr:1400,may:355,jun:355,jul:722,aug:1431,sep:1053,oct:652,nov:331}},
+  {name:'WIBWUB Visible',id:'1729646310884805188',short:'Visible',gmv:49241,units:160,cr:13,vid:26,monthly:{mar:3700,apr:15900,may:10200,jun:7679,jul:9492,aug:10449,sep:10842,oct:13785,nov:11815},ret:{mar:0,apr:230,may:539,jun:0,jul:0,aug:551,sep:0,oct:890,nov:0}},
 ];
 const VIDEOS = [
   {creator:'fahareejun',product:'WIBWUB Refresh Leather Wipes',vid_id:'7631514449261628680',caption:'คนรักรถถูกใจสิ่งนี้มากกกก✨',gmv:406175,units:1394,date:'มิ.ย.–พ.ย.',monthly:{mar:0,apr:0,may:0,jun:21829,jul:140001,aug:58946,sep:64533,oct:57313,nov:63553}},
@@ -22818,12 +22822,25 @@ function renderProducts(){
   // Product-level monthly breakdown now covers มี.ค.–ส.ค. (ส.ค. = ข้อมูลบางส่วน 1-5 ส.ค. เท่านั้น)
   const hasMonthData = activeMonth==='all' || PRODUCTS.some(p=>p.monthly && activeMonth in p.monthly);
   if(noteEl){
+    const src = (typeof PROD_MO_SRC !== 'undefined' && activeMonth !== 'all')
+                ? PROD_MO_SRC[activeMonth] : null;
+    let msg = '';
     if(!hasMonthData){
-      noteEl.style.display = 'block';
-      noteEl.textContent = `⚠️ ยังไม่มีข้อมูลสินค้าแยกรายเดือนสำหรับเดือนนี้ (ดูยอดรวมทุกเดือนได้ที่ปุ่ม "รวม")`;
-    } else {
-      noteEl.style.display = 'none';
+      msg = `⚠️ ยังไม่มีข้อมูลสินค้าแยกรายเดือนสำหรับเดือนนี้ (ดูยอดรวมทุกเดือนได้ที่ปุ่ม "รวม")`;
+    } else if(activeMonth !== 'all' && !src){
+      // เดือนที่สคริปต์ยังเขียนใหม่ไม่ได้ (ไม่มีไฟล์เต็มเดือน หรือไม่ผ่านด่าน 2%)
+      const ok = Object.keys(PROD_MO_SRC || {});
+      msg = `⚠️ เดือนนี้เป็นข้อมูลชุดเก่า คนละแหล่งกับเดือนอื่น — เทียบกันตรง ๆ ไม่ได้`
+          + (ok.length ? ` (เดือนที่เทียบกันได้: ${ok.join(', ')})` : '');
+    } else if(src){
+      const m = String(src).match(/^1-(\d+)$/);
+      const dim = (typeof AF_MONTH_NUM !== 'undefined')
+                  ? new Date(new Date().getFullYear(), AF_MONTH_NUM[activeMonth], 0).getDate() : 0;
+      if(m && dim && (+m[1]) < dim)
+        msg = `ℹ️ เดือนนี้นับถึงวันที่ ${m[1]} เท่านั้น ยังไม่จบเดือน`;
     }
+    noteEl.style.display = msg ? 'block' : 'none';
+    noteEl.textContent = msg;
   }
 
   const sorted = [...allP].sort((a,b)=>b.dGMV-a.dGMV);

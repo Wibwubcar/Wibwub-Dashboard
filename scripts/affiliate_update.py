@@ -325,15 +325,192 @@ def write_af_live(dry):
             'changed': changed}
 
 
+# ── PRODUCTS[].monthly / .ret — เขียนใหม่จากไฟล์ Product_List เต็มเดือน ──────
+# 27 พ.ย. 69: ค่าเดิมกรอกมือและ "คนละนิยามในแต่ละเดือน" — รวมทุกสินค้าต่อเดือน
+# เทียบ AF_GMV ได้ 9%(ส.ค.) ถึง 90%(พ.ค.) → เติมเดือนใหม่ต่อท้ายจะอ่านเป็นโตพรวด
+# ที่มาใหม่: คอลัมน์ "GMV จากครีเอเตอร์" (monthly) และ "การคืนเงิน" (ret)
+# จับคู่ด้วย "รหัสสินค้า" = PRODUCTS[].id เหมือน vid
+# เงื่อนไขไฟล์: ต้องขึ้นวันที่ 1 และ d0/d1 เดือนเดียวกัน (กันไฟล์คร่อมเดือนลงช่องผิด)
+# ด่าน: ผลรวม GMV ทุกสินค้าในไฟล์ เทียบ AF_GMV เดือนนั้น ต่างเกิน 2% = ข้ามเดือนนั้น
+GMV_HDR, RET_HDR = 'GMV จากครีเอเตอร์', 'การคืนเงิน'
+MO_KEYS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun',
+           'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
+GATE_PCT = 0.02
+
+
+def _money(x):
+    return float(re.sub(r'[฿,\s]', '', x or '') or 0)
+
+
+def read_prod_money(fp):
+    """{รหัสสินค้า: (gmv, ret)} — แกะ sheet1.xml เองแบบเดียวกับ read_vid_map()"""
+    import zipfile
+    with zipfile.ZipFile(fp) as zf:
+        xml = zf.open('xl/worksheets/sheet1.xml').read().decode('utf-8', 'replace')
+    row_re = re.compile(r'<row r="(\d+)"[^>]*>(.*?)</row>', re.DOTALL)
+    cell_re = re.compile(r'<c r="([A-Z]+)(\d+)"[^>]*>(?:<is><t[^>]*>(.*?)</t></is>|<v>(.*?)</v>)?</c>')
+    rows = {}
+    for rn, body in row_re.findall(xml):
+        rows[int(rn)] = {c: ((s if s else v) or '') for c, _, s, v in cell_re.findall(body)}
+    hdr = rows.get(1) or {}
+    cols = {}
+    for col, val in hdr.items():
+        v = val.strip()
+        if v in (GMV_HDR, RET_HDR, ID_HDR) and v not in cols:
+            cols[v] = col
+    miss = [h for h in (GMV_HDR, RET_HDR, ID_HDR) if h not in cols]
+    if miss:
+        die('Product_List ไม่มีคอลัมน์เงินที่ต้องใช้ — รูปแบบไฟล์เปลี่ยน',
+            {'ขาด': miss, 'ไฟล์': fp.name, 'header': sorted(hdr.values())[:30]})
+    out = {}
+    for rn in sorted(rows):
+        if rn <= 2:
+            continue
+        c = rows[rn]
+        pid = (c.get(cols[ID_HDR]) or '').strip()
+        if pid:
+            out[pid] = (_money(c.get(cols[GMV_HDR])), _money(c.get(cols[RET_HDR])))
+    return out
+
+
+def full_month_files():
+    """{'oct': (path, d0, d1)} — เฉพาะไฟล์ที่ d0 เป็นวันที่ 1 และเดือนเดียวกับ d1"""
+    best = {}
+    for fp in PROD_DIR.glob('Transaction_Analysis_Product_List_*.xlsx'):
+        if fp.name.startswith(('~', '.')):
+            continue
+        m = PL_RE.match(fp.name)
+        if not m:
+            continue
+        d0, d1 = m.group(1), m.group(2)
+        if d0[6:] != '01' or d0[:6] != d1[:6]:
+            continue                      # ไฟล์ไม่เต็มเดือน หรือคร่อมเดือน
+        key = MO_KEYS[int(d0[4:6]) - 1]
+        cand = (d1, fp.stat().st_mtime)
+        if key not in best or cand > (best[key][2], best[key][0].stat().st_mtime):
+            best[key] = (fp, d0, d1)
+    return best
+
+
+def _set_month(block_line, field, mo, val):
+    """คืนบรรทัดใหม่ที่ <field>:{...} มีคีย์ mo = val (เรียงตามปฏิทิน)"""
+    m = re.search(field + r':\{([^}]*)\}', block_line)
+    if not m:
+        return None
+    cur = dict((k, int(v)) for k, v in re.findall(r'(\w+):(-?\d+)', m.group(1)))
+    cur[mo] = int(val)
+    body = ','.join('%s:%d' % (k, cur[k]) for k in MO_KEYS if k in cur)
+    return block_line[:m.start()] + '%s:{%s}' % (field, body) + block_line[m.end():]
+
+
+def write_prod_monthly(dry, rebuild=False):
+    """เขียน monthly/ret ของเดือนปัจจุบัน (หรือทุกเดือนที่มีไฟล์เต็ม ถ้า rebuild)"""
+    files = full_month_files()
+    if not files:
+        return {'written': {}, 'skipped': [{'เหตุผล': 'ไม่พบไฟล์เต็มเดือนเลย'}], 'changes': []}
+    af = arr(AFF, 'AF_GMV') or []
+    targets = sorted(files, key=lambda k: MO_KEYS.index(k))
+    if not rebuild:
+        targets = targets[-1:]            # รอบปกติ = เดือนล่าสุดเท่านั้น
+
+    t = AFF.read_text(encoding='utf-8')
+    m = re.search(r'const PRODUCTS = \[\n(.*?\n)\];', t, re.DOTALL)
+    if not m:
+        die('หา const PRODUCTS ใน Affiliate Dashboard ไม่เจอ')
+    block = m.group(1)
+    written, skipped, changes = {}, [], []
+
+    for mo in targets:
+        fp, d0, d1 = files[mo]
+        vals = read_prod_money(fp)
+        idx = MO_KEYS.index(mo)
+        want = af[idx] if idx < len(af) else None
+        tot = sum(v[0] for v in vals.values())
+        if not want:
+            skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มี AF_GMV ให้เทียบ', 'ไฟล์': fp.name})
+            continue
+        diff = (tot - want) / want
+        if abs(diff) > GATE_PCT:
+            skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่ผ่านด่าน %.0f%%' % (GATE_PCT * 100),
+                            'ไฟล์': fp.name, 'ไฟล์รวม': round(tot), 'AF_GMV': round(want),
+                            'ต่าง': '%+.2f%%' % (diff * 100)})
+            continue
+        # ── ทุกสินค้าในหน้าต้องมีในไฟล์ ไม่งั้นข้ามทั้งเดือน (ห้ามเขียน 0) ──
+        lines = [ln for ln in block.split('\n') if ln.strip().startswith('{')]
+        rows, missing = [], []
+        for ln in lines:
+            pid = re.search(r"id:'(\d+)'", ln)
+            nm = re.search(r"name:'([^']*)'", ln)
+            if not pid:
+                missing.append(nm.group(1) if nm else '(ไม่มี name)')
+                continue
+            if pid.group(1) not in vals:
+                missing.append('%s (%s)' % (nm.group(1) if nm else '?', pid.group(1)))
+                continue
+            rows.append((ln, nm.group(1) if nm else '?', vals[pid.group(1)]))
+        if missing:
+            skipped.append({'เดือน': mo, 'เหตุผล': 'จับคู่รหัสสินค้าไม่ครบ ไม่เขียนทั้งเดือน',
+                            'ไฟล์': fp.name, 'ขาด': missing[:5]})
+            continue
+        for ln, name, (g, r) in rows:
+            old_g = re.search(r'monthly:\{([^}]*)\}', ln)
+            old_r = re.search(r'ret:\{([^}]*)\}', ln)
+            prev_g = dict(re.findall(r'(\w+):(-?\d+)', old_g.group(1))).get(mo) if old_g else None
+            prev_r = dict(re.findall(r'(\w+):(-?\d+)', old_r.group(1))).get(mo) if old_r else None
+            new = _set_month(ln, 'monthly', mo, round(g))
+            if new is None:
+                skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง monthly ในแถว', 'สินค้า': name})
+                break
+            new2 = _set_month(new, 'ret', mo, round(r))
+            if new2 is None:
+                skipped.append({'เดือน': mo, 'เหตุผล': 'ไม่มีช่อง ret ในแถว', 'สินค้า': name})
+                break
+            if new2 != ln:
+                changes.append({'เดือน': mo, 'สินค้า': name,
+                                'monthly': [prev_g and int(prev_g), round(g)],
+                                'ret': [prev_r and int(prev_r), round(r)]})
+            block = block.replace(ln, new2, 1)
+        else:
+            written[mo] = '1-%d' % int(d1[6:])
+            continue
+        break                              # เจอแถวพัง = หยุดทั้งหมด
+
+    if not written:
+        return {'written': {}, 'skipped': skipped, 'changes': []}
+
+    t = t[:m.start(1)] + block + t[m.end(1):]
+    # PROD_MO_SRC — เดือนที่เขียนใหม่แล้ว (เก็บของเดิมไว้ด้วย)
+    ms = re.search(r'const PROD_MO_SRC = \{([^}]*)\};', t)
+    if not ms:
+        die('หา const PROD_MO_SRC ในหน้า Affiliate ไม่เจอ')
+    cur = dict(re.findall(r'"(\w+)"\s*:\s*"([^"]*)"', ms.group(1)))
+    cur.update(written)
+    body = ', '.join('"%s": "%s"' % (k, cur[k]) for k in MO_KEYS if k in cur)
+    t = t[:ms.start()] + 'const PROD_MO_SRC = {%s};' % body + t[ms.end():]
+    if not dry:
+        AFF.write_text(t, encoding='utf-8')
+    return {'written': written, 'skipped': skipped, 'changes': changes}
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--dry-run', action='store_true')
     ap.add_argument('--live-only', action='store_true',
                     help='เขียนเฉพาะ const AF_LIVE แล้วจบ (ไม่ซิงก์ AF_* ทั้งก้อน)')
+    ap.add_argument('--rebuild-monthly', action='store_true',
+                    help='เขียน monthly/ret ใหม่ทุกเดือนที่มีไฟล์เต็มเดือน แล้วจบ')
     a = ap.parse_args()
 
     for p in (AFF, MOB):
         if not p.exists(): die('ไม่พบไฟล์', p.name)
+
+    if a.rebuild_monthly:
+        info = write_prod_monthly(a.dry_run, rebuild=True)
+        print(json.dumps({'status': 'DRY_RUN' if a.dry_run else
+                          ('UPDATED' if info['written'] else 'NO_CHANGE'),
+                          'prod_monthly': info}, ensure_ascii=False))
+        if info['written'] and not a.dry_run: W_bump()
+        return 0 if (info['written'] or a.dry_run) else 10
 
     if a.live_only:
         info = write_af_live(a.dry_run)
@@ -391,6 +568,7 @@ def main():
 
     summary['vid'] = write_vid(a.dry_run)
     summary['af_live'] = write_af_live(a.dry_run)
+    summary['prod_monthly'] = write_prod_monthly(a.dry_run)
 
     if a.dry_run:
         summary['current_page'] = {k: (before[k][-1] if before.get(k) else None) for k in ('AF_GMV', 'AF_CR')}
@@ -409,7 +587,8 @@ def main():
     summary['mobile_mismatch'] = mism
     after = {k: arr(AFF, k) for k in before}
     changed = (after != before or bool(summary['vid']['changes'])
-               or summary['af_live']['changed'])
+               or summary['af_live']['changed']
+               or bool(summary['prod_monthly']['changes']))
     if changed: W.bump_sw()
     print(json.dumps({'status': 'UPDATED' if changed else 'NO_CHANGE', **summary}, ensure_ascii=False))
     return 0 if changed else 10
