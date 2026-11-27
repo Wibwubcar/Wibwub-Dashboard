@@ -597,12 +597,14 @@ tr:hover td{background:rgba(59,130,246,.04)}
     <div class="kol-kpi"><div class="kol-kpi-l">Organic Stars</div><div class="kol-kpi-v" style="color:var(--blue)">1</div><div class="kol-kpi-s">pailong05</div></div>
   </div>
   <div class="note" style="margin-bottom:12px">💡 ROI = Affiliate GMV ÷ Spend · "Affiliate GMV (tracked) ฿812K" ด้านบน = ยอดขายเฉพาะของ KOL ที่จ่ายค่าจ้างในหน้านี้ (คนละตัวเลขกับ Affiliate GMV รวมทั้งระบบในแท็บ Overview/Creator) · Mega KOLs วัด brand awareness แยกต่างหาก · Organic = ไม่เคยจ่ายค่าจ้าง</div>
+  <div class="note" id="kol-asof-note" style="margin-bottom:12px"></div>
   <div class="kol-grid" id="kol-grid"></div>
 </div>
 
 <!-- ════ TOP 10 ════ -->
 <div id="tab-top10" class="panel">
   <div class="note" style="margin-bottom:12px">💡 วิเคราะห์จาก avg GMV รายเดือน, trend 3 เดือนล่าสุด และความสม่ำเสมอของยอดขาย</div>
+  <div class="note" id="t10-asof-note" style="margin-bottom:12px"></div>
   <div class="t10-tabs">
     <button class="t10-tab active" onclick="showT10('grow',this)">🚀 เพิ่มงบ+Seed</button>
     <button class="t10-tab" onclick="showT10('watch',this)">👀 จับตาดู</button>
@@ -23167,6 +23169,7 @@ function applyAfLabels(){
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', applyAfLabels);
 else applyAfLabels();
+// applyKolAsof เรียกท้ายสคริปต์ (หลังประกาศ KOL_ASOF) ไม่ใช่ในนี้ — const ยังอยู่ใน TDZ
 
 function buildTrendCharts(){
   if(document.getElementById('tr-gmv')._built) return;
@@ -23224,6 +23227,24 @@ function buildTrendCharts(){
 // ══════════════════════════════════════════
 //  KOL ROI DATA
 // ══════════════════════════════════════════
+// ── ป้าย "ข้อมูล ณ เดือน…" ของแท็บ KOL ROI / Top 10 ─────────────────────────
+// KOLS_DATA (spend/gmv) และ T10_DATA เขียนมือ ไม่มีสคริปต์ไหนอัปเดต และคลาดจาก
+// CREATORS มาก (27 พ.ย. 69: รวม gmv ในนี้ ฿812K เทียบ CREATORS ฿3.51M)
+// spend ไม่มีแหล่งในรีโปเลย จึงยังต้องกรอกมือ -> ประกาศเดือนไว้ "ที่เดียว" ที่นี่
+// แล้วให้ป้ายทั้ง 2 แท็บอ่านจากตัวนี้ ส่วนเดือนของข้อมูลที่สดอ่านจาก AF_MO
+// (ดู skill: wibwub-avoid-stale-hardcoded-labels — ห้ามพิมพ์เดือนซ้ำใน prose)
+const KOL_ASOF = 'มิ.ย. 2569';
+function applyKolAsof(){
+  const yr = new Date().getFullYear() + 543;
+  const msg = `📌 ตัวเลขในแท็บนี้ (spend / Affiliate GMV / ROI / avg-last-trend) เป็นข้อมูล ณ `
+    + `${KOL_ASOF} กรอกมือ — ไม่มีตัวอัปเดตอัตโนมัติ · ยอด Affiliate รวมทั้งระบบในแท็บ `
+    + `Overview / Creator / Trend อัปเดตถึง ${afMoLast()} ${yr} จึงเทียบกันตรง ๆ ไม่ได้`;
+  ['kol-asof-note', 't10-asof-note'].forEach(id => {
+    const el = document.getElementById(id);
+    if(el) el.textContent = msg;
+  });
+}
+
 const KOLS_DATA = [
   {n:"pailong05",      tier:"organic", tc:"#3b82f6", spend:0,      gmv:182430, insight:"ไม่เคยได้รับค่าจ้างเลย affiliate GMV ฿182K — pure organic top creator"},
   {n:"rita.fe_",       tier:"bonus",   tc:"#22c55e", spend:5000,   gmv:194461, insight:"Bonus ฿5K พ.ค. — affiliate GMV ฿194K ROI สูงมาก"},
@@ -23286,6 +23307,8 @@ function buildKolRoi(){
 // ══════════════════════════════════════════
 //  TOP 10 DATA
 // ══════════════════════════════════════════
+applyKolAsof();
+
 const T10_DATA = {
   grow:[
     {rank:1,n:".namoshop125", avg:32017,last:32017,trend:"📈 New",    tag:"🚀 Priority",tagC:"#3b82f6",why:"มิ.ย. เดือนแรก ฿32K — top creator ของเดือน · 84 orders · commission rate 12.6%",action:"Seed สินค้าหลายตัว ดู content style ที่ดีที่สุด ลอง bundle deal"},
