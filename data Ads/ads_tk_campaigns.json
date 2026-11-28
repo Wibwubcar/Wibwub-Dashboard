@@ -457,75 +457,75 @@
     },
     {
      "name": "19.10.26/Banyakart",
-     "spend": 339375.05,
+     "spend": 339375.06,
      "orders": 3885,
-     "revenue": 974462.42
+     "revenue": 974466.54
     },
     {
      "name": "17.08.26/Sugar",
-     "spend": 169719.11,
+     "spend": 169719.18,
      "orders": 1775,
-     "revenue": 675918.05
+     "revenue": 675922.46
     },
     {
      "name": "05.10.26/Interior",
      "spend": 120286.2,
      "orders": 1080,
-     "revenue": 353163.98
+     "revenue": 353165.99
     },
     {
      "name": "17.08.26/Interior wipe",
      "spend": 88156.81,
      "orders": 2834,
-     "revenue": 383461.96
+     "revenue": 383463.9
     },
     {
      "name": "23.11.26/Refresh wipe",
      "spend": 60703.21,
      "orders": 1481,
-     "revenue": 182975.35
+     "revenue": 182979.52
     },
     {
      "name": "18.08.26/AllProduct",
      "spend": 48740.96,
      "orders": 788,
-     "revenue": 303322.07
+     "revenue": 303323.35
     },
     {
      "name": "26.10.26/wool dust",
      "spend": 33545.34,
      "orders": 261,
-     "revenue": 125667.78
+     "revenue": 125668.91
     },
     {
      "name": "21.09.26/Reflex",
      "spend": 29613.49,
      "orders": 228,
-     "revenue": 131306.33
+     "revenue": 131306.62
     },
     {
      "name": "16.06.26/Xglass.Spot.Visible",
      "spend": 24418.98,
      "orders": 311,
-     "revenue": 134982.89
+     "revenue": 134983.46
     },
     {
      "name": "12.11.26/Cleaner",
      "spend": 11878.64,
      "orders": 242,
-     "revenue": 48499.4
+     "revenue": 48499.84
     },
     {
      "name": "12.11.26/mind-waterless",
      "spend": 6020.47,
      "orders": 45,
-     "revenue": 23038.29
+     "revenue": 23038.46
     },
     {
      "name": "12.11.26/Shampoo",
      "spend": 3937.03,
      "orders": 66,
-     "revenue": 20719.88
+     "revenue": 20719.99
     }
    ],
    "live": [
@@ -539,7 +539,7 @@
      "name": "25.11.26/Live",
      "spend": 798.84,
      "orders": 70,
-     "revenue": 31401.66
+     "revenue": 31401.83
     },
     {
      "name": "15.11.26/Live",
